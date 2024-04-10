@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:25\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:39\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -17,643 +17,401 @@ msgstr ""
 "X-Crowdin-File-ID: 98\n"
 "Language: pl_PL\n"
 
-#: simplesanction\settings.py:29
+#: simplesanction\constants.py:18
+msgid "Here is my informations about {member.display_name} ({member.id})."
+msgstr "Oto moje informacje na temat {member.display_name} ({member.id})."
+
+#: simplesanction\constants.py:27
+msgid "Why do you want to warn {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Dlaczego chcesz ostrzec {member.display_name} ({member.id})? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:31
+msgid "The member {member.display_name} ({member.id}) has received a warning."
+msgstr "Użytkownik {member.display_name} ({member.id}) otrzymał ostrzeżenie."
+
+#: simplesanction\constants.py:42
+msgid "Why do you want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Dlaczego chcesz zablokować {member.display_name} ({member.id})? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:45
+msgid "Do you really want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Czy naprawdę chcesz zbanować {member.display_name} ({member.id})? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:48
+msgid "The member {member.display_name} ({member.id}) has been banned."
+msgstr "Użytkownik {member.display_name} ({member.id}) został zbanowany."
+
+#: simplesanction\constants.py:57
+msgid "Why do you want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Dlaczego chcesz usunąć stronę {member.display_name} ({member.id})? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:60
+msgid "Do you really want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Czy naprawdę chcesz softban {member.display_name} ({member.id})? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:63
+msgid "The member {member.display_name} ({member.id}) has been softbanned."
+msgstr "Użytkownik {member.display_name} ({member.id}) został zbanowany."
+
+#: simplesanction\constants.py:71
+msgid "How long do you want to tempban {member.display_name} ({member.id})? (Type `cancel` to cancel.)"
+msgstr "Jak długo ma obowiązywać tempban {member.display_name} ({member.id})? (Wpisz `cancel`, aby anulować.)"
+
+#: simplesanction\constants.py:74
+msgid "Why do you want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Dlaczego chcesz tempbana {member.display_name} ({member.id}) podczas {duration}? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:77
+msgid "Do you really want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Czy naprawdę chcesz tempbana {member.display_name} ({member.id}) podczas {duration}? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:80
+msgid "The member {member.display_name} ({member.id}) has been tempbanned and will be unbanned in {duration}."
+msgstr "Członek {member.display_name} ({member.id}) został tymczasowo zbanowany i zostanie odbanowany w {duration}."
+
+#: simplesanction\constants.py:91
+msgid "Why do you want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Dlaczego chcesz wyrzucić {member.display_name} ({member.id})? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:94
+msgid "Do you really want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Czy naprawdę chcesz kopnąć {member.display_name} ({member.id})? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:97
+msgid "The member {member.display_name} ({member.id}) has been kicked."
+msgstr "Użytkownik {member.display_name} ({member.id}) został usunięty."
+
+#: simplesanction\constants.py:106
+msgid "Why do you want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Dlaczego chcesz wyciszyć {member.display_name} ({member.id})? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:109
+msgid "Do you really want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Czy naprawdę chcesz wyciszyć {member.display_name} ({member.id})? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:112
+msgid "The member {member.display_name} ({member.id}) has been muted."
+msgstr "Użytkownik {member.display_name} ({member.id}) został wyciszony."
+
+#: simplesanction\constants.py:121
+msgid "Why do you want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Dlaczego chcesz wyciszyć {member.display_name} ({member.id}) w {channel.mention}? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:124
+msgid "Do you really want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Czy naprawdę chcesz wyciszyć {member.display_name} ({member.id}) w {channel.mention}? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować)."
+
+#: simplesanction\constants.py:127
+msgid "The member {member.display_name} ({member.id}) has been muted in {channel.mention}."
+msgstr "Człon {member.display_name} ({member.id}) został wyciszony w {channel.mention}."
+
+#: simplesanction\constants.py:137
+msgid "How long do you want to tempmute {member.display_name} ({member.id})? (Type `cancel` to cancel.)"
+msgstr "Jak długo chcesz wyciszyć {member.display_name} ({member.id})? (Wpisz `cancel`, aby anulować)."
+
+#: simplesanction\constants.py:140
+msgid "Why do you want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Dlaczego chcesz wyciszyć {member.display_name} ({member.id}) podczas {duration}? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:143
+msgid "Do you really want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Czy naprawdę chcesz wyciszyć {member.display_name} ({member.id}) podczas {duration}? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:146
+msgid "The member {member.display_name} ({member.id}) has been tempmuted and will be unmuted in {duration}."
+msgstr "Członek {member.display_name} ({member.id}) został tymczasowo wyciszony i zostanie wyciszony w {duration}."
+
+#: simplesanction\constants.py:156
+msgid "How long do you want to tempmute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel.)"
+msgstr "Jak długo chcesz tempmute {member.display_name} ({member.id}) w {channel.mention}? (Wpisz `cancel`, aby anulować.)"
+
+#: simplesanction\constants.py:159
+msgid "Why do you want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Dlaczego chcesz tempmute {member.display_name} ({member.id}) w {channel.mention} podczas {duration}? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:162
+msgid "Do you really want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)"
+msgstr "Czy naprawdę chcesz tempmute {member.display_name} ({member.id}) w {channel.mention} podczas {duration}? (Wpisz `cancel`, aby anulować lub `not`, aby nie anulować.)"
+
+#: simplesanction\constants.py:165
+msgid "The member {member.display_name} ({member.id}) has been tempmuted in {channel.mention} and will be unmuted in {duration}."
+msgstr "Członek {member.display_name} ({member.id}) został wyciszony w {channel.mention} i zostanie wyciszony w {duration}."
+
+#: simplesanction\simplesanction.py:47
+msgid "You're not allowed to execute the `[p]sanction` command in this channel."
+msgstr "Na tym kanale nie można wykonywać polecenia `[p]sanction`."
+
+#: simplesanction\simplesanction.py:55
 #, docstring
-msgid "Set a color for the embed.\n\n"
-"        ``color``: Color.\n"
-"        You can also use \"None\" if you wish to reset the color.\n"
-"        "
-msgstr "Ustawienie koloru dla embedu.\n\n"
-"        `color``: Kolor.\n"
-"        Możesz również użyć \"None\", jeśli chcesz zresetować kolor.\n"
-"        "
+msgid "A cog to sanction members, with buttons!"
+msgstr "Tryb do sankcjonowania członków, z przyciskami!"
 
-#: simplesanction\settings.py:43 simplesanction\settings.py:54
-#: simplesanction\settings.py:75 simplesanction\settings.py:88
-msgid "Configure the embed"
-msgstr "Konfiguracja osadzenia"
-
-#: simplesanction\settings.py:44
-msgid "Reset color:"
-msgstr "Kolor resetowania:"
-
-#: simplesanction\settings.py:45 simplesanction\settings.py:58
-msgid "Color:"
-msgstr "Kolor:"
-
-#: simplesanction\settings.py:55
-msgid "Set color:"
-msgstr "Kolor zestawu:"
-
-#: simplesanction\settings.py:63
+#: simplesanction\simplesanction.py:209
 #, docstring
-msgid "Set a thumbnail for the embed.\n\n"
-"        ``link``: Thumbnail link.\n"
-"        You can also use \"None\" if you wish to reset the thumbnail.\n"
+msgid "\n"
+"        - Sanction a member quickly and easily.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 0 @member`\n"
+"        - `[p]sanction 0 @member What are these roles?`\n"
+"        - `[p]sanction 0 012345678987654321`\n"
 "        "
-msgstr "Ustaw miniaturkę dla embedu.\n\n"
-"        `link``: Link do miniaturki.\n"
-"        Możesz również użyć \"None\", jeśli chcesz zresetować miniaturę.\n"
+msgstr "\n"
+"        - Szybkie i łatwe nakładanie sankcji na użytkownika.\n\n"
+"        Przykłady:\n"
+"        - `[p]sankcja 0 @członek`\n"
+"        - `[p]sankcja 0 @członek Jakie są te role? `\n"
+"        - `[p]sankcja 0 012345678987654321`\n"
 "        "
 
-#: simplesanction\settings.py:76
-msgid "Reset thumbnail:"
-msgstr "Resetuj miniaturę:"
-
-#: simplesanction\settings.py:79 simplesanction\settings.py:92
-msgid "Thumbnail:"
-msgstr "Miniaturka:"
-
-#: simplesanction\settings.py:89
-msgid "Set thumbnail:"
-msgstr "Ustaw miniaturkę:"
-
-#: simplesanction\settings.py:97
+#: simplesanction\simplesanction.py:244
 #, docstring
-msgid "Enable or disable Show Author\n\n"
-"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+msgid "\n"
+"         - ℹ️ Show informations about a member.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 1 @member`: UserInfo for no reason.\n"
+"        - `[p]sanction 1 @member What are these roles?`: UserInfo for the reason \"What are these roles?\".\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo with the ID provided.\n"
 "        "
-msgstr "Włącz lub wyłącz opcję Show Author\n\n"
-"        Użyj `True` (lub `yes`) aby włączyć lub `False` (lub `no`) aby wyłączyć.\n"
+msgstr "\n"
+"         - ℹ️ Wyświetla informacje o użytkowniku.\n\n"
+"        Przykłady:\n"
+"        - `[p]sanction 1 @member`: UserInfo bez powodu.\n"
+"        - `[p]sanction 1 @member What are these roles?`: UserInfo dla powodu \"Jakie są te role?\".\n"
+"        - `[p]sanction 1 012345678987654321`: UserInfo z podanym identyfikatorem.\n"
 "        "
 
-#: simplesanction\settings.py:105
-msgid "Show Author is already set on {state}."
-msgstr "Show Author jest już ustawiony na {state}."
-
-#: simplesanction\settings.py:109
-msgid "Show Author state registered: {state}."
-msgstr "Pokaż stan autora zarejestrowany: {state}."
-
-#: simplesanction\settings.py:113
+#: simplesanction\simplesanction.py:280
 #, docstring
-msgid "Enable or disable Action Confirmation\n\n"
-"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
+msgid "\n"
+"         - ⚠️ Add a simple warning on a member.\n\n"
+"        Examples:\n"
+"        - `[p]sanction 2 @member not`: Warn for no reason.\n"
+"        - `[p]sanction 2 @member Insults`: Warn for the reason \"Insults\".\n"
+"        - `[p]sanction 2 012345678987654321 Advertising`: Warn the user with the ID provided.\n"
 "        "
-msgstr "Enable or disable Action Confirmation\n\n"
-"        Użyj `True` (lub `yes`) aby włączyć lub `False` (lub `no`) aby wyłączyć.\n"
+msgstr "\n"
+"         - ⚠️ Dodaje proste ostrzeżenie dla członka.\n\n"
+"        Przykłady:\n"
+"        - `[p]sanction 2 @member not`: Ostrzeżenie bez powodu.\n"
+"        - `[p]sanction 2 @member Insults`: Ostrzeżenie z powodu \"Obelgi\".\n"
+"        - `[p]sankcja 2 012345678987654321 Reklama`: Ostrzega użytkownika o podanym ID.\n"
 "        "
-
-#: simplesanction\settings.py:121
-msgid "Action Confirmation is already set on {state}."
-msgstr "Akcja Potwierdzenie jest już ustawiona na {state}."
-
-#: simplesanction\settings.py:125
-msgid "Action Confirmation state registered: {state}."
-msgstr "Działanie Stan potwierdzenia zarejestrowany: {state}."
-
-#: simplesanction\settings.py:131
-#, docstring
-msgid "Enable or disable Finish Message\n\n"
-"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
-"        "
-msgstr "Enable or disable Finish Message\n\n"
-"        Użyj `True` (lub `yes`) aby włączyć lub `False` (lub `no`) aby wyłączyć.\n"
-"        "
-
-#: simplesanction\settings.py:139
-msgid "Finish Message is already set on {state}."
-msgstr "Zakończ Wiadomość jest już ustawiona na {state}."
-
-#: simplesanction\settings.py:149
-#, docstring
-msgid "Enable or disable Warn System Use\n\n"
-"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
-"        "
-msgstr "Włącz lub wyłącz Warn System Use\n\n"
-"        Użyj `True` (lub `yes`) aby włączyć lub `False` (lub `no`) aby wyłączyć.\n"
-"        "
-
-#: simplesanction\settings.py:157
-msgid "Warn System Use is already set on {state}."
-msgstr "Warn System Use jest już ustawiony na {state}."
-
-#: simplesanction\settings.py:161
-msgid "Warn System Use state registered: {state}."
-msgstr "Warn System Use state registered: {state}."
-
-#: simplesanction\settings.py:167
-#, docstring
-msgid "Enable or disable Buttons Use\n\n"
-"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
-"        "
-msgstr "Włącz lub wyłącz Przyciski Użyj\n\n"
-"        Użyj `True` (lub `tak`) aby włączyć lub `False` (lub `nie`) aby wyłączyć.\n"
-"        "
-
-#: simplesanction\settings.py:175
-msgid "Way is already set on {way}."
-msgstr "Droga jest już wytyczona na {way}."
-
-#: simplesanction\settings.py:185
-#, docstring
-msgid "Enable or disable Reason Requiered\n\n"
-"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
-"        "
-msgstr "Włącz lub wyłącz Reason Requiered\n\n"
-"        Użyj `True` (lub `yes`) aby włączyć lub `False` (lub `no`) aby wyłączyć.\n"
-"        "
-
-#: simplesanction\settings.py:193
-msgid "Reason Required is already set on {state}."
-msgstr "Reason Required jest już ustawiony na {state}."
-
-#: simplesanction\settings.py:197
-msgid "Reason Required state registered: {state}."
-msgstr "Powód Wymagany stan zarejestrowany: {state}."
-
-#: simplesanction\settings.py:201
-#, docstring
-msgid "Enable or disable Delete Embed\n\n"
-"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
-"        "
-msgstr "Enable or disable Delete Embed\n\n"
-"        Użyj `True` (lub `yes`) aby włączyć lub `False` (lub `no`) aby wyłączyć.\n"
-"        "
-
-#: simplesanction\settings.py:209
-msgid "Delete Embed is already set on {state}."
-msgstr "Delete Embed jest już ustawiony na {state}."
-
-#: simplesanction\settings.py:219
-#, docstring
-msgid "Enable or disable Delete Message\n\n"
-"        Use `True` (Or `yes`) to enable or `False` (or `no`) to disable.\n"
-"        "
-msgstr "Enable or disable Delete Message\n\n"
-"        Użyj `True` (lub `yes`) aby włączyć lub `False` (lub `no`) aby wyłączyć.\n"
-"        "
-
-#: simplesanction\settings.py:227
-msgid "Delete Message is already set on {state}."
-msgstr "Usunięcie wiadomości jest już ustawione na {state}."
-
-#: simplesanction\settings.py:231
-msgid "Delete Message state registered: {state}."
-msgstr "Usuń wiadomość stan zarejestrowany: {state}."
-
-#: simplesanction\settings.py:235
-#, docstring
-msgid "Choose the timeout\n\n"
-"        Use a int. The default is 180 seconds.\n"
-"        "
-msgstr "Wybierz timeout\n\n"
-"        Użyj int. Domyślnie jest to 180 sekund.\n"
-"        "
-
-#: simplesanction\settings.py:244
-msgid "Timeout restored."
-msgstr "Czas przywrócony."
-
-#: simplesanction\settings.py:247
-msgid "Timeout is already set on {timeout}."
-msgstr "Timeout jest już ustawiony na {timeout}."
-
-#: simplesanction\settings.py:251
-msgid "Timeout state registered: {timeout}."
-msgstr "Stan Timeout zarejestrowany: {timeout}."
-
-#: simplesanction\simplesanction.py:38
-#, docstring
-msgid "A cog to sanction a user!"
-msgstr "Trybik do ukarania użytkownika!"
 
 #: simplesanction\simplesanction.py:315
 #, docstring
 msgid "\n"
-"        - Sanction a user quickly and easily.\n\n"
-"        Examples:\n"
-"        - `[p]sanction 0 @user`\n"
-"        - `[p]sanction 0 @user What are these roles?`\n"
-"        - `[p]sanction 0 012345678987654321`\n"
-"        "
-msgstr "\n"
-"        - Sankcje dla użytkownika szybko i łatwo.\n\n"
-"        Przykłady:\n"
-"        - `[p]sanction 0 @user`\n"
-"        - `[p]sanction 0 @user Co to za role?`\n"
-"        - `[p]sanction 0 012345678987654321`\n"
-"        "
-
-#: simplesanction\simplesanction.py:356
-#, docstring
-msgid "\n"
-"         - :information_source: Show info on a user.\n\n"
-"        Examples:\n"
-"        - `[p]sanction 1 @user`: UserInfo for no reason\n"
-"        - `[p]sanction 1 @user What are these roles?`: UserInfo for the reason \"What are these roles?\"\n"
-"        - `[p]sanction 1 012345678987654321`: UserInfo with the ID provided.\n"
-"        "
-msgstr "\n"
-"         - :information_source: Wyświetla informacje o użytkowniku.\n\n"
-"        Przykłady:\n"
-"        - `[p]sanction 1 @user`: UserInfo bez powodu\n"
-"        - `[p]sanction 1 @user What are these roles?`: UserInfo dla powodu \"Jakie są te role?\"\n"
-"        - `[p]sanction 1 012345678987654321`: UserInfo z podanym identyfikatorem.\n"
-"        "
-
-#: simplesanction\simplesanction.py:397
-#, docstring
-msgid "\n"
-"         - ⚠️ Set a simple warning on a user.\n\n"
-"        Examples:\n"
-"        - `[p]sanction 2 @user not`: Warn for no reason\n"
-"        - `[p]sanction 2 @user Insults`: Warn for the reason \"Insults\"\n"
-"        - `[p]sanction 2 012345678987654321 Advertising`: Warn the user with the ID provided.\n"
-"        "
-msgstr "\n"
-"         - ⚠️ Ustawienie prostego ostrzeżenia dla użytkownika.\n\n"
-"        Przykłady:\n"
-"        - `[p]sanction 2 @user not`: Ostrzeżenie bez powodu\n"
-"        - `[p]sanction 2 @user Insults`: Ostrzeżenie z powodu \"Obelgi\"\n"
-"        - `[p]sankcja 2 012345678987654321 Reklama`: Ostrzeżenie dla użytkownika z podanym identyfikatorem.\n"
-"        "
-
-#: simplesanction\simplesanction.py:438
-#, docstring
-msgid "\n"
-"         - :hammer: Ban the member from the server.\n\n"
+"         - 🔨 Ban a member from this server.\n\n"
 "        It won't delete messages by default.\n\n"
 "        Examples:\n"
-"        - `[p]sanction 3 @user not`: Ban for no reason\n"
-"        - `[p]sanction 3 @user Insults`: Ban for the reason \"Insults\"\n"
+"        - `[p]sanction 3 @member not`: Ban for no reason.\n"
+"        - `[p]sanction 3 @member Insults`: Ban for the reason \"Insults\".\n"
 "        - `[p]sanction 3 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
 "        "
 msgstr "\n"
-"         - :hammer: Zbanuj członka z serwera.\n\n"
-"        Domyślnie nie będzie usuwał wiadomości.\n\n"
+"         - Zbanowanie użytkownika na tym serwerze.\n\n"
+"        Domyślnie nie usuwa wiadomości.\n\n"
 "        Przykłady:\n"
-"        - `[p]sankcja 3 @user nie`: Ban bez powodu\n"
-"        - `[p]sanction 3 @user Insults`: Ban za powód \"Insults\"\n"
-"        - `[p]sanction 3 012345678987654321 Advertising`: Zbanuj użytkownika o podanym ID.\n"
+"        - `[p]sanction 3 @member not`: Ban bez powodu.\n"
+"        - `[p]sanction 3 @member Insults`: Ban za powód \"Obelgi\".\n"
+"        - `[p]sanction 3 012345678987654321 Advertising`: Ban dla użytkownika z podanym ID.\n"
 "        "
 
-#: simplesanction\simplesanction.py:481
+#: simplesanction\simplesanction.py:352
 #, docstring
 msgid "\n"
-"         - :repeat_one: Softban the member from the server.\n\n"
-"        This means that the user will be banned and immediately unbanned, so it will purge their messages in all channels.\n\n"
+"         - 🔂 SoftBan a member from this server.\n\n"
+"        This means that the user will be banned and immediately unbanned, so it will purge their messages in a period, in all channels.\n\n"
 "        Examples:\n"
-"        - `[p]sanction 4 @user not`: SoftBan for no reason\n"
-"        - `[p]sanction 4 @user Insults`: SoftBan for the reason \"Insults\"\n"
+"        - `[p]sanction 4 @member not`: SoftBan for no reason\n"
+"        - `[p]sanction 4 @member Insults`: SoftBan for the reason \"Insults\"\n"
 "        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan the user with the ID provided.\n"
 "        "
 msgstr "\n"
-"         - :repeat_one: Softban - usunięcie użytkownika z serwera.\n\n"
-"        Oznacza to, że użytkownik zostanie zbanowany i natychmiast odbanowany, więc oczyści jego wiadomości na wszystkich kanałach.\n\n"
+"         - SoftBan użytkownika z tego serwera.\n\n"
+"        Oznacza to, że użytkownik zostanie zbanowany i natychmiast odbanowany, co spowoduje wyczyszczenie jego wiadomości we wszystkich kanałach.\n\n"
 "        Przykłady:\n"
-"        - `[p]sanction 4 @user not`: SoftBan bez powodu\n"
-"        - `[p]sanction 4 @user Insults`: SoftBan z powodu \"Insults\"\n"
-"        - `[p]sanction 4 012345678987654321 Advertising`: SoftBan dla użytkownika o podanym ID.\n"
+"        - `[p]sanction 4 @member not`: SoftBan bez powodu\n"
+"        - `[p]sanction 4 @member Insults`: SoftBan z powodu \"Obelgi\"\n"
+"        - `[p]sankcja 4 012345678987654321 Reklama`: SoftBan użytkownika z podanym ID.\n"
 "        "
 
-#: simplesanction\simplesanction.py:524
+#: simplesanction\simplesanction.py:390
 #, docstring
 msgid "\n"
-"         - :dash: Tempban the member from the server.\n\n"
-"        It won't delete messages by default.\n\n"
+"         - 💨 TempBan a member from this server.\n\n"
+"        It won't delete messages by default.\n"
 "        If you want to perform a temporary ban, provide the time before the reason.\n\n"
 "        Examples:\n"
-"        - `[p]sanction 5 @user not`: Ban for no reason\n"
-"        - `[p]sanction 5 @user 7d Insults`: 7 days ban for the reason \"Insults\"\n"
+"        - `[p]sanction 5 @member not`: Ban for no reason.\n"
+"        - `[p]sanction 5 @member 7d Insults`: 7 days ban for the reason \"Insults\".\n"
 "        - `[p]sanction 5 012345678987654321 Advertising`: Ban the user with the ID provided.\n"
 "        "
 msgstr "\n"
-"         - :dash: Tempban członek z serwera.\n\n"
-"        Domyślnie nie będzie usuwał wiadomości.\n\n"
+"         - TempBan członka z tego serwera.\n\n"
+"        Domyślnie nie usuwa wiadomości.\n"
 "        Jeśli chcesz wykonać tymczasowy ban, podaj czas przed powodem.\n\n"
 "        Przykłady:\n"
-"        - `[p]sanction 5 @user not`: Ban bez powodu\n"
-"        - `[p]sanction 5 @user 7d Insults`: 7 dniowy ban z powodu \"Insults\"\n"
-"        - `[p]sanction 5 012345678987654321 Advertising`: Ban dla użytkownika o podanym ID.\n"
+"        - `[p]sanction 5 @member not`: Ban bez powodu.\n"
+"        - `[p]sanction 5 @member 7d Insults`: 7-dniowy ban z powodu \"Obelg\".\n"
+"        - `[p]sanction 5 012345678987654321 Advertising`: Ban dla użytkownika z podanym ID.\n"
 "        "
 
-#: simplesanction\simplesanction.py:569
+#: simplesanction\simplesanction.py:428
 #, docstring
 msgid "\n"
-"         - :boot: Kick the member from the server.\n\n"
+"         - 👢 Kick a member from this server.\n\n"
 "        Examples:\n"
-"        - `[p]sanction 6 @user not`: Kick for no reason\n"
-"        - `[p]sanction 6 @user Insults`: Kick for the reason \"Insults\"\n"
+"        - `[p]sanction 6 @member not`: Kick for no reason.\n"
+"        - `[p]sanction 6 @member Insults`: Kick for the reason \"Insults\".\n"
 "        - `[p]sanction 6 012345678987654321 Advertising`: Kick the user with the ID provided.\n"
 "        "
 msgstr "\n"
-"         - :boot: Wyrzucenie członka z serwera.\n\n"
+"         - Wykop członka z tego serwera.\n\n"
 "        Przykłady:\n"
-"        - `[p]sankcja 6 @user nie`: Kick bez powodu\n"
-"        - `[p]sanction 6 @user Insults`: Kick for the reason \"Insults\"\n"
-"        - `[p]sanction 6 012345678987654321 Reklama`: Kopnięcie użytkownika o podanym ID.\n"
+"        - `[p]sanction 6 @member not`: Kopnięcie bez powodu.\n"
+"        - `[p]sanction 6 @member Insults`: Wyrzucenie z powodu \"Obelgi\".\n"
+"        - `[p]sanction 6 012345678987654321 Advertising`: Kopnięcie użytkownika z podanym identyfikatorem.\n"
 "        "
 
-#: simplesanction\simplesanction.py:610
+#: simplesanction\simplesanction.py:463
 #, docstring
 msgid "\n"
-"         - :mute: Mute the user in all channels, including voice channels.\n\n"
+"         - 🔇 Mute a member in all channels, including voice channels.\n\n"
 "        Examples:\n"
-"        - `[p]sanction 7 @user not`: Infinite mute for no reason\n"
-"        - `[p]sanction 7 @user Spam`:Infinite  mute for the reason \"Spam\"\n"
-"        - `[p]sanction 7 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        - `[p]sanction 7 @member not`: Infinite mute for no reason.\n"
+"        - `[p]sanction 7 @member Spam`:Infinite  mute for the reason \"Spam\".\n"
+"        - `[p]sanction 7 @member Advertising`: Infinite mute for the reason \"Advertising\".\n"
 "        "
 msgstr "\n"
-"         - :mute: Wyciszenie użytkownika we wszystkich kanałach, w tym kanałach głosowych.\n\n"
+"         - Wyciszenie członka we wszystkich kanałach, w tym w kanałach głosowych.\n\n"
 "        Przykłady:\n"
-"        - `[p]sanction 7 @user not`: Infinite mute for no reason\n"
-"        - `[p]sanction 7 @user Spam`:Infinite mute for the reason \"Spam\"\n"
-"        - `[p]sanction 7 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        - `[p]sanction 7 @member not`: Nieskończone wyciszenie bez powodu.\n"
+"        - `[p]sanction 7 @member Spam`: Nieskończone wyciszenie z powodu \"Spam\".\n"
+"        - `[p]sankcja 7 @member Advertising`: Nieskończone wyciszenie z powodu \"Reklama\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:651
+#: simplesanction\simplesanction.py:498
 #, docstring
 msgid "\n"
-"         - :punch: Mute the user in this channel.\n\n"
+"         - 👊 Mute a member in this channel.\n\n"
 "        Examples:\n"
-"        - `[p]sanction 8 @user not`: Infinite mute for no reason\n"
-"        - `[p]sanction 8 @user Spam`: Infinite mute for the reason \"Spam\"\n"
-"        - `[p]sanction 8 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        - `[p]sanction 8 @member not`: Infinite mute for no reason.\n"
+"        - `[p]sanction 8 @member Spam`: Infinite mute for the reason \"Spam\".\n"
+"        - `[p]sanction 8 @member Advertising`: Infinite mute for the reason \"Advertising\".\n"
 "        "
 msgstr "\n"
-"         - :punch: Wyciszenie użytkownika w tym kanale.\n\n"
+"         - Wyciszenie użytkownika na tym kanale.\n\n"
 "        Przykłady:\n"
-"        - `[p]sanction 8 @user not`: Infinite mute for no reason\n"
-"        - `[p]sanction 8 @user Spam`: Infinite mute for the reason \"Spam\"\n"
-"        - `[p]sanction 8 @user Advertising`: Infinite mute for the reason \"Advertising\"\n"
+"        - `[p]sanction 8 @member not`: Nieskończone wyciszenie bez powodu.\n"
+"        - `[p]sanction 8 @member Spam`: Nieskończone wyciszenie z powodu \"Spam\".\n"
+"        - `[p]sankcja 8 @member Advertising`: Nieskończone wyciszenie z powodu \"Reklama\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:692
+#: simplesanction\simplesanction.py:534
 #, docstring
 msgid "\n"
-"         - :hourglass_flowing_sand: TempMute the user in all channels, including voice channels.\n\n"
+"         - ⏳ TempMute a member in all channels, including voice channels.\n\n"
 "        You can set a timed mute by providing a valid time before the reason.\n\n"
 "        Examples:\n"
-"        - `[p]sanction 9 @user 30m not`: 30 minutes mute for no reason\n"
-"        - `[p]sanction 9 @user 5h Spam`: 5 hours mute for the reason \"Spam\"\n"
-"        - `[p]sanction 9 @user 3d Advertising`: 3 days mute for the reason \"Advertising\"\n"
+"        - `[p]sanction 9 @member 30m not`: 30 minutes mute for no reason.\n"
+"        - `[p]sanction 9 @member 5h Spam`: 5 hours mute for the reason \"Spam\".\n"
+"        - `[p]sanction 9 @member 3d Advertising`: 3 days mute for the reason \"Advertising\".\n"
 "        "
 msgstr "\n"
-"         - :hourglass_flowing_sand: TempWyciszenie użytkownika na wszystkich kanałach, w tym na kanałach głosowych.\n\n"
-"        Można ustawić wyciszenie czasowe, podając ważny czas przed przyczyną.\n\n"
+"         - TempMute członka we wszystkich kanałach, w tym w kanałach głosowych.\n\n"
+"        Można ustawić wyciszenie czasowe, podając prawidłowy czas przed podaniem przyczyny.\n\n"
 "        Przykłady:\n"
-"        - `[p]sanction 9 @user 30m not`: 30 minutowe wyciszenie bez powodu\n"
-"        - `[p]sanction 9 @user 5h Spam`: 5 godzin mute z powodu \"Spam\"\n"
-"        - `[p]sanction 9 @user 3d Advertising`: 3 dni mute z powodu \"Reklama\"\n"
+"        - `[p]sanction 9 @member 30m not`: 30 minut wyciszenia bez podania przyczyny.\n"
+"        - `[p]sanction 9 @member 5h Spam`: 5 godzin wyciszenia z powodu \"Spam\".\n"
+"        - `[p]sankcja 9 @member 3d Reklama`: 3 dni wyciszenia z powodu \"Reklama\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:735
+#: simplesanction\simplesanction.py:572
 #, docstring
 msgid "\n"
-"         - :hourglass: TempMute the user in this channel.\n\n"
+"         - ⌛ TempMute a member in this channel.\n\n"
 "        You can set a timed mute by providing a valid time before the reason.\n\n"
 "        Examples:\n"
-"        - `[p]sanction 10 @user 30m not`: 30 minutes mute for no reason\n"
-"        - `[p]sanction 10 @user 5h Spam`: 5 hours mute for the reason \"Spam\"\n"
-"        - `[p]sanction 10 @user 3d Advertising`: 3 days mute for the reason \"Advertising\"\n"
+"        - `[p]sanction 10 @member 30m not`: 30 minutes mute for no reason.\n"
+"        - `[p]sanction 10 @member 5h Spam`: 5 hours mute for the reason \"Spam\".\n"
+"        - `[p]sanction 10 @member 3d Advertising`: 3 days mute for the reason \"Advertising\".\n"
 "        "
 msgstr "\n"
-"         - :hourglass: TempMute użytkownik w tym kanale.\n\n"
-"        Możesz ustawić wyciszenie czasowe, podając ważny czas przed przyczyną.\n\n"
+"         - TempMute członka w tym kanale.\n\n"
+"        Można ustawić wyciszenie czasowe, podając prawidłowy czas przed podaniem przyczyny.\n\n"
 "        Przykłady:\n"
-"        - `[p]sanction 10 @user 30m not`: 30 minut wyciszenia bez powodu\n"
-"        - `[p]sanction 10 @user 5h Spam`: 5 godzin mute z powodu \"Spam\"\n"
-"        - `[p]sanction 10 @user 3d Advertising`: 3 dni mute z powodu \"Reklama\"\n"
+"        - `[p]sanction 10 @member 30m not`: 30 minut wyciszenia bez podania przyczyny.\n"
+"        - `[p]sanction 10 @member 5h Spam`: 5 godzin wyciszenia z powodu \"Spam\".\n"
+"        - `[p]sankcja 10 @member 3d Reklama`: 3 dni wyciszenia z powodu \"Reklama\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:804 simplesanction\simplesanction.py:829
-msgid "Sanctioning a member"
-msgstr "Ukaranie członka"
-
-#: simplesanction\simplesanction.py:805
-msgid "Which member do you want to sanction? (Set `cancel` to cancel.)"
-msgstr "Którego członka chcesz ukarać? (Ustaw `cancel`, aby anulować.)"
-
-#: simplesanction\simplesanction.py:825 simplesanction\utils.py:54
-#: simplesanction\utils.py:84
-msgid "Timed out, please try again."
-msgstr "Czas minął, proszę spróbować ponownie."
-
-#: simplesanction\simplesanction.py:830 simplesanction\utils.py:147
-msgid "This tool allows you to easily sanction a server member.\n"
-"User mention: {user.mention} - User ID: {user.id}"
-msgstr "Narzędzie to pozwala w łatwy sposób ukarać członka serwera.\n"
-"Wzmianka o użytkowniku: {user.mention} - ID użytkownika: {user.id}"
-
-#: simplesanction\simplesanction.py:853 simplesanction\simplesanction.py:858
-#: simplesanction\utils.py:168
-msgid "Reason:"
-msgstr "Uzasadnienie:"
-
-#: simplesanction\simplesanction.py:854
-msgid "The reason was not given and will not be asked later."
-msgstr "Powód nie został podany i nie będzie później pytany."
-
-#: simplesanction\simplesanction.py:861 simplesanction\utils.py:120
-#: simplesanction\utils.py:126 simplesanction\utils.py:173
-#: simplesanction\utils.py:179
-msgid "Duration:"
-msgstr "Czas trwania:"
-
-#: simplesanction\simplesanction.py:869
-msgid "You are using this command in Fake mode, so no action will be taken, but I will pretend it is not the case."
-msgstr "Używasz tego polecenia w trybie Fake, więc żadne działania nie zostaną podjęte, ale będę udawał, że tak nie jest."
-
-#: simplesanction\simplesanction.py:1567
-msgid "Sanctioning a member - ℹ️ UserInfo"
-msgstr "Ukaranie członka - ℹ️ UserInfo"
-
-#: simplesanction\simplesanction.py:1568
-msgid "Here is the information about the user {user.name}!"
-msgstr "Tu są informacje o użytkowniku {user.name}!"
-
-#: simplesanction\simplesanction.py:1579
-msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`."
-msgstr "Mod cog nie jest załadowany. Aby go załadować, wykonaj `{ctx.prefix}load mod`."
-
-#: simplesanction\simplesanction.py:1601 simplesanction\simplesanction.py:1614
-#: simplesanction\simplesanction.py:1627
-msgid "Sanctioning a member - ⚠️ Warn"
-msgstr "Ukaranie członka - ⚠️ Ostrzeżenie"
-
-#: simplesanction\simplesanction.py:1602
-msgid "Why do you want warn {user}? (Set `cancel` to cancel or `not` for none)"
-msgstr "Dlaczego chcesz ostrzeżenia {user}? (Ustaw `cancel` na cancel lub `not` na none)"
-
-#: simplesanction\simplesanction.py:1615
-msgid "Do you really want to warn {user}?"
-msgstr "Czy naprawdę chcesz ostrzec {user}?"
-
-#: simplesanction\simplesanction.py:1628
-msgid "The user {user} has been received a warning!"
-msgstr "Użytkownik {user} otrzymał ostrzeżenie!"
-
-#: simplesanction\simplesanction.py:1640
-msgid "The cog Warnings is not loaded. To load it, do `{ctx.prefix}load warnings`. You can also install/load the WarnSystem cog."
-msgstr "Tryby Ostrzeżeń nie są załadowane. Aby go załadować, zrób `{ctx.prefix}load warnings`. Możesz również zainstalować/załadować kogę WarnSystem."
-
-#: simplesanction\simplesanction.py:1670 simplesanction\simplesanction.py:1683
-#: simplesanction\simplesanction.py:1696
-msgid "Sanctioning a member - 🔨 Ban"
-msgstr "Ukaranie członka - 🔨 Ban"
-
-#: simplesanction\simplesanction.py:1671
-msgid "Why do you want to ban {user}? (Set `cancel` to cancel or `not` to none)"
-msgstr "Dlaczego chcesz zbanować {user}? (Ustaw `cancel` na cancel lub `not` na none)"
-
-#: simplesanction\simplesanction.py:1684
-msgid "Do you really want to ban {user}?"
-msgstr "Czy naprawdę chcesz zakazać {user}?"
-
-#: simplesanction\simplesanction.py:1697
-msgid "The user {user} has been banned!"
-msgstr "Użytkownik {user} został zbanowany!"
-
-#: simplesanction\simplesanction.py:1709 simplesanction\simplesanction.py:1778
-#: simplesanction\simplesanction.py:1861 simplesanction\simplesanction.py:1932
-msgid "The cog Mod is not loaded. To load it, do `{ctx.prefix}load mod`. You can also install/load the WarnSystem cog."
-msgstr "Mod cog nie jest załadowany. Aby go załadować, zrób `{ctx.prefix}load mod`. Możesz również zainstalować/załadować trybik WarnSystem."
-
-#: simplesanction\simplesanction.py:1739 simplesanction\simplesanction.py:1752
-#: simplesanction\simplesanction.py:1765
-msgid "Sanctioning a member - 🔂 SoftBan"
-msgstr "Ukaranie członka - 🔂 SoftBan"
-
-#: simplesanction\simplesanction.py:1740
-msgid "Why do you want to softban {user}? (Set `cancel` to cancel or `not` to none)"
-msgstr "Dlaczego chcesz softbana {user}? (Ustaw `cancel` na cancel lub `not` na none)"
-
-#: simplesanction\simplesanction.py:1753
-msgid "Do you really want to softban {user}?"
-msgstr "Czy naprawdę chcesz softbana {user}?"
-
-#: simplesanction\simplesanction.py:1766
-msgid "The user {user} has been softbanned!"
-msgstr "Użytkownik {user} został objęty softbanem!"
-
-#: simplesanction\simplesanction.py:1807 simplesanction\simplesanction.py:1822
-#: simplesanction\simplesanction.py:1835 simplesanction\simplesanction.py:1848
-msgid "Sanctioning a member - 💨 TempBan"
-msgstr "Ukaranie członka - 💨 TempBan"
-
-#: simplesanction\simplesanction.py:1808
-msgid "How long do you want to tempban {user}? (Set `cancel` to cancel)"
-msgstr "Na jak długo chcesz tempban {user}? (Ustaw `cancel`, aby anulować)"
-
-#: simplesanction\simplesanction.py:1823
-msgid "Why do you want to tempban {user}? (Set `cancel` to cancel or `not` to none)"
-msgstr "Dlaczego chcesz tempban {user}? (Ustaw `cancel` na cancel lub `not` na none)"
-
-#: simplesanction\simplesanction.py:1836
-msgid "Do you really want to tempban {user}?"
-msgstr "Czy naprawdę chcesz tempban {user}?"
-
-#: simplesanction\simplesanction.py:1849
-msgid "The user {user} has been tempban!"
-msgstr "Użytkownik {user} otrzymał tempban!"
-
-#: simplesanction\simplesanction.py:1891 simplesanction\simplesanction.py:1904
-#: simplesanction\simplesanction.py:1919
-msgid "Sanctioning a member - 👢 Kick"
-msgstr "Ukaranie członka - 👢 Kick."
-
-#: simplesanction\simplesanction.py:1892 simplesanction\simplesanction.py:1905
-msgid "Why do you want to kick {user}? (Set `cancel` to cancel or `not` to none)"
-msgstr "Dlaczego chcesz wykopać {user}? (Ustaw `cancel` na cancel lub `not` na none)"
-
-#: simplesanction\simplesanction.py:1920
-msgid "The user {user} has been kicked!"
-msgstr "Użytkownik {user} został skopany!"
-
-#: simplesanction\simplesanction.py:1962 simplesanction\simplesanction.py:1975
-#: simplesanction\simplesanction.py:1988
-msgid "Sanctioning a member - 🔇 Mute"
-msgstr "Ukaranie członka - 🔇 Mute"
-
-#: simplesanction\simplesanction.py:1963
-msgid "Why do you want to mute {user}? (Set `cancel` to cancel or `not` to none)"
-msgstr "Dlaczego chcesz wyciszyć {user}? (Ustaw `cancel` na cancel lub `not` na none)"
-
-#: simplesanction\simplesanction.py:1976
-msgid "Do you really want to mute {user}?"
-msgstr "Czy naprawdę chcesz wyciszyć {user}?"
-
-#: simplesanction\simplesanction.py:1989
-msgid "The user {user} has been muted!"
-msgstr "Użytkownik {user} został wyciszony!"
-
-#: simplesanction\simplesanction.py:2001 simplesanction\simplesanction.py:2151
-msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`. You can also install/load the WarnSystem cog."
-msgstr "Tryb Mutes nie jest załadowany. Aby go załadować, zrób `{ctx.prefix}load mutes`. Możesz również zainstalować/ załadować trybik WarnSystem."
-
-#: simplesanction\simplesanction.py:2031 simplesanction\simplesanction.py:2044
-#: simplesanction\simplesanction.py:2059
-msgid "Sanctioning a member - 👊 MuteChannel"
-msgstr "Ukaranie członka - 👊 MuteChannel"
-
-#: simplesanction\simplesanction.py:2032
-msgid "Why do you want to mute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
-msgstr "Dlaczego chcesz wyciszyć {user} w {ctx.channel.mention}? (Ustaw `cancel` na cancel lub `not` na none)"
-
-#: simplesanction\simplesanction.py:2045
-msgid "Do you really want to mute {user} in {ctx.channel.mention}?"
-msgstr "Czy naprawdę chcesz wyciszyć {user} w {ctx.channel.mention}?"
-
-#: simplesanction\simplesanction.py:2060
-msgid "The user {user} has been muted in #{ctx.channel.name}!"
-msgstr "Użytkownik {user} został wyciszony w #{ctx.channel.name}!"
-
-#: simplesanction\simplesanction.py:2073 simplesanction\simplesanction.py:2237
-msgid "The cog Mutes is not loaded. To load it, do `{ctx.prefix}load mutes`."
-msgstr "Tryb Mutes nie jest załadowany. Aby go załadować, wykonaj `{ctx.prefix}load mutes`."
-
-#: simplesanction\simplesanction.py:2097 simplesanction\simplesanction.py:2112
-#: simplesanction\simplesanction.py:2125 simplesanction\simplesanction.py:2138
-msgid "Sanctioning a member - ⏳ TempMute"
-msgstr "Ukaranie członka - ⏳ TempMute"
-
-#: simplesanction\simplesanction.py:2098
-msgid "How long do you want to tempmute {user}? (Set `cancel` to cancel)"
-msgstr "Jak długo chcesz tempmute {user}? (Ustaw `cancel` na anulowanie)"
-
-#: simplesanction\simplesanction.py:2113
-msgid "Why do you want to tempmute {user}? (Set `cancel` to cancel or `not` to none)"
-msgstr "Dlaczego chcesz tempmute {user}? (Ustaw `cancel` na cancel lub `not` na none)"
-
-#: simplesanction\simplesanction.py:2126
-msgid "Do you really want to tempmute {user}?"
-msgstr "Czy naprawdę chcesz tempmute {user}?"
-
-#: simplesanction\simplesanction.py:2139
-msgid "The user {user} has been tempmuted!"
-msgstr "Użytkownik {user} został tempmutowany!"
-
-#: simplesanction\simplesanction.py:2180 simplesanction\simplesanction.py:2195
-#: simplesanction\simplesanction.py:2208 simplesanction\simplesanction.py:2223
-msgid "Sanctioning a member - ⌛ TempMuteChannel"
-msgstr "Ukaranie członka - ⌛ TempMuteChannel"
-
-#: simplesanction\simplesanction.py:2181
-msgid "How long do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel)"
-msgstr "Jak długo chcesz tempmute {user} w {ctx.channel.mention}? (Ustaw `cancel` na anulowanie)"
-
-#: simplesanction\simplesanction.py:2196
-msgid "Why do you want to tempmute {user} in {ctx.channel.mention}? (Set `cancel` to cancel or `not` to none)"
-msgstr "Dlaczego chcesz tempmute {user} w {ctx.channel.mention}? (Ustaw `cancel` na cancel lub `not` na none)"
-
-#: simplesanction\simplesanction.py:2209
-msgid "Do you really want to tempmute {user} in {ctx.channel.mention}?"
-msgstr "Czy naprawdę chcesz tempmute {user} w {ctx.channel.mention}?"
-
-#: simplesanction\simplesanction.py:2224
-msgid "The user {user} has been tempmuted in #{ctx.channel.name}!"
-msgstr "Użytkownik {user} został tempmutowany w #{ctx.channel.name}!"
-
-#: simplesanction\utils.py:112
+#: simplesanction\simplesanction.py:614 simplesanction\types.py:89
+#: simplesanction\types.py:103 simplesanction\types.py:146
+#: simplesanction\types.py:151
 msgid "The reason was not given."
 msgstr "Powód nie został podany."
 
-#: simplesanction\utils.py:127 simplesanction\utils.py:180
+#: simplesanction\simplesanction.py:618 simplesanction\view.py:99
+msgid "Sanction Member"
+msgstr "Członek sankcji"
+
+#: simplesanction\simplesanction.py:619
+msgid "Which member do you want to sanction? (Type `cancel` to cancel.)"
+msgstr "Którego członka chcesz ukarać? (Wpisz `cancel`, aby anulować.)"
+
+#: simplesanction\simplesanction.py:637 simplesanction\types.py:125
+#: simplesanction\types.py:148
+msgid "Timed out, please try again."
+msgstr "Czas minął, proszę spróbować ponownie."
+
+#: simplesanction\types.py:65
+msgid "The cog `{cog_required}` is not loaded. Please load it, with the command `{prefix}load {cog_required_lowered}`."
+msgstr "Tryb `{cog_required}` nie jest załadowany. Należy go załadować poleceniem `{prefix}load {cog_required_lowered}`."
+
+#: simplesanction\types.py:82
+msgid "The sanction duration."
+msgstr "Czas trwania sankcji."
+
+#: simplesanction\types.py:173
+msgid "This cog allows you to easily sanction a server member.\n"
+"Member mention: {member.mention} - Member ID: {member.id}"
+msgstr "Ten tryb pozwala łatwo usankcjonować członka serwera.\n"
+"Wzmianka o członku: {member.mention} - Identyfikator członka: {member.id}"
+
+#: simplesanction\types.py:197
+msgid "\n"
+"*The command may have failed. If so, an error will be displayed below.*"
+msgstr "\n"
+"*Polecenie mogło się nie powieść. Jeśli tak, poniżej zostanie wyświetlony błąd.*"
+
+#: simplesanction\types.py:203 simplesanction\view.py:125
+msgid "Reason:"
+msgstr "Uzasadnienie:"
+
+#: simplesanction\types.py:208 simplesanction\types.py:214
+#: simplesanction\view.py:128
+msgid "Duration:"
+msgstr "Czas trwania:"
+
+#: simplesanction\types.py:215
 msgid "Infinity"
 msgstr "Infinity"
 
-#: simplesanction\utils.py:165
-msgid "If an error has occurred, it will be displayed below."
-msgstr "Jeśli wystąpił błąd, zostanie on wyświetlony poniżej."
+#: simplesanction\types.py:238
+msgid "This command doesn't exist."
+msgstr "To polecenie nie istnieje."
+
+#: simplesanction\types.py:243
+msgid "You can't execute this command, in this context."
+msgstr "Nie można wykonać tego polecenia w tym kontekście."
+
+#: simplesanction\view.py:101
+msgid "This tool allows you to easily sanction a server member.\n"
+"Member mention: {member.mention} - Member ID: {member.id}"
+msgstr "To narzędzie pozwala na łatwe ukaranie członka serwera.\n"
+"Wzmianka o członku: {member.mention} - Identyfikator członka: {member.id}"
+
+#: simplesanction\view.py:135
+msgid "You are using this command in Fake mode, so no action will be taken, but I will pretend it is the case."
+msgstr "Używasz tego polecenia w trybie Fake, więc żadne działanie nie zostanie podjęte, ale będę udawać, że tak jest."
 

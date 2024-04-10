@@ -1,0 +1,31 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:41\n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: es-ES\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dashboard/rpc/locales/messages.pot\n"
+"X-Crowdin-File-ID: 310\n"
+"Language: es_ES\n"
+
+#: dashboard\rpc\__init__.py:98
+msgid "{name} Dashboard"
+msgstr "{name} Cuadro de mandos"
+
+#: dashboard\rpc\__init__.py:106
+msgid "Hello, welcome to the **Red-DiscordBot Dashboard** for {name}! {name} is based off the popular bot **Red-DiscordBot**, an open source, multifunctional bot. It has *tons of features* including moderation, audio, economy, fun and more! Here, you can control and interact with {name}'s settings. **So what are you waiting for? Invite it now!**"
+msgstr "Hola, bienvenido al **Red-DiscordBot Dashboard** para {name}! {name} está basado en el popular bot **Red-DiscordBot**, un bot multifuncional de código abierto. Tiene *toneladas de características* incluyendo moderación, audio, economía, diversión y ¡mucho más! Aquí puedes controlar e interactuar con la configuración de {name}. **¿A qué esperas? Invítalo ahora!**"
+
+#: dashboard\rpc\__init__.py:118
+msgid "Interactive Dashboard to control and interact with {name}."
+msgstr "Cuadro de mandos interactivo para controlar e interactuar con {name}."
+

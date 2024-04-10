@@ -80,7 +80,7 @@ msgid ""
 msgstr ""
 
 #: devutils\devutils.py:285
-msgid "The command isn't valid.."
+msgid "The command isn't valid."
 msgstr ""
 
 #: devutils\devutils.py:287

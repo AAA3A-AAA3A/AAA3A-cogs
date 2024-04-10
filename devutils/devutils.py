@@ -282,7 +282,7 @@ class DevUtils(Cog):
             message=message,
         )
         if not new_ctx.valid:
-            raise commands.UserFeedbackCheckFailure(_("The command isn't valid.."))
+            raise commands.UserFeedbackCheckFailure(_("The command isn't valid."))
         if not await discord.utils.async_all([check(new_ctx) for check in new_ctx.command.checks]):
             raise commands.UserFeedbackCheckFailure(_("This command can't be executed."))
 

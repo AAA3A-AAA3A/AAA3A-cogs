@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:11\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:41\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -17,31 +17,31 @@ msgstr ""
 "X-Crowdin-File-ID: 261\n"
 "Language: uk_UA\n"
 
-#: consolelogs\consolelogs.py:92
+#: consolelogs\consolelogs.py:94
 #, docstring
 msgid "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"
 msgstr "Гвинтик для відображення логів консолі, з кнопками та опціями фільтрації, а також для надсилання команд про помилки в налаштованих каналах!"
 
-#: consolelogs\consolelogs.py:243
+#: consolelogs\consolelogs.py:264
 msgid "No logs to display."
 msgstr "Немає журналів для відображення."
 
-#: consolelogs\consolelogs.py:380
-#, docstring
-msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
-msgstr "Переглядайте журнали консолі по черзі, для всіх рівнів/логгерів або вказаного рівня/логгера."
-
-#: consolelogs\consolelogs.py:395
-#, docstring
-msgid "View the `ERROR` console logs one by one, for all loggers or a provided logger name."
-msgstr "Перегляньте журнали консолі `ERROR` один за одним, для всіх журналів або для вказаного імені журналу."
-
-#: consolelogs\consolelogs.py:423 consolelogs\consolelogs.py:434
+#: consolelogs\consolelogs.py:415
 #, docstring
 msgid "Scroll the console logs, for all levels/loggers or provided level/logger name."
 msgstr "Прокрутіть журнали консолі для всіх рівнів/логгерів або для вказаного рівня/логгера."
 
-#: consolelogs\consolelogs.py:464
+#: consolelogs\consolelogs.py:451
+#, docstring
+msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
+msgstr "Переглядайте журнали консолі по черзі, для всіх рівнів/логгерів або вказаного рівня/логгера."
+
+#: consolelogs\consolelogs.py:462
+#, docstring
+msgid "Display the stats for the bot logs since the bot start."
+msgstr "Відображати статистику логів бота з моменту запуску бота."
+
+#: consolelogs\consolelogs.py:495
 #, docstring
 msgid "Enable errors logging in a channel.\n\n"
 "        **Parameters:**\n"
@@ -50,7 +50,9 @@ msgid "Enable errors logging in a channel.\n\n"
 "        - `prefixed_commands_errors`: Log prefixed commands errors.\n"
 "        - `slash_commands_errors`: Log slash commands errors.\n"
 "        - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).\n"
+"        - `full_console`: Log all the console logs.\n"
 "        - `guild_invite`: Add a button \"Guild Invite\" in commands errors logs, only for community servers.\n"
+"        - `ignored_cogs`: Ignore some cogs for `prefixed_commands_errors` and `slash_commands_errors`. You have to use the cog qualified_name like `ConsoleLogs` for this cog.\n"
 "        "
 msgstr "Увімкнути логування помилок у каналі.\n\n"
 "        **Параметри:**\n"
@@ -58,32 +60,34 @@ msgstr "Увімкнути логування помилок у каналі.\n\
 "        - `global_errors`: Писати помилки для всього бота, а не тільки для сервера каналу.\n"
 "        - `prefixed_commands_errors`: Записувати помилки префіксованих команд.\n"
 "        - `lash_commands_errors`: Журнал помилок косої риски.\n"
-"        - `dpy_ignored_exceptions`: Журнал ігнорованих dpy винятків (помилки слухачів подій та Views).\n"
-"        - `guild_invite`: Додати кнопку \"Запросити до гільдії\" до журналу помилок команд, лише для серверів спільноти.\n"
+"        - `dpy_ignored_exceptions`: Журнал винятків, проігнорованих dpy (помилки слухачів подій та Views).\n"
+"        - `full_console`: Записувати всі журнали консолі.\n"
+"        - `guild_invite`: Додати кнопку \"Запросити до гільдії\" до логів помилок команд, лише для серверів спільноти.\n"
+"        - `ignored_cogs`: Ігнорувати деякі гвинтики для `prefixed_commands_errors` та `slash_commands_errors`. Ви повинні використовувати кваліфіковане ім'я гвинтика на кшталт `ConsoleLogs` для цього гвинтика.\n"
 "        "
 
-#: consolelogs\consolelogs.py:483
+#: consolelogs\consolelogs.py:516
 msgid "I don't have the permissions to send embeds in this channel."
 msgstr "Я не маю дозволу надсилати вставки в цьому каналі."
 
-#: consolelogs\consolelogs.py:491
+#: consolelogs\consolelogs.py:532
 msgid "Errors logging enabled in {channel.mention}."
 msgstr "Логування помилок увімкнено в {channel.mention}."
 
-#: consolelogs\consolelogs.py:495
+#: consolelogs\consolelogs.py:540
 #, docstring
 msgid "Disable errors logging in a channel."
 msgstr "Вимкнути реєстрацію помилок у каналі."
 
-#: consolelogs\consolelogs.py:498
+#: consolelogs\consolelogs.py:543
 msgid "Errors logging isn't enabled in this channel."
 msgstr "Логування помилок у цьому каналі не ввімкнено."
 
-#: consolelogs\consolelogs.py:501
+#: consolelogs\consolelogs.py:546
 msgid "Errors logging disabled in {channel.mention}."
 msgstr "Логування помилок вимкнено в {channel.mention}."
 
-#: consolelogs\consolelogs.py:505
+#: consolelogs\consolelogs.py:550
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Отримайте вбудовування для перевірки стану циклів."

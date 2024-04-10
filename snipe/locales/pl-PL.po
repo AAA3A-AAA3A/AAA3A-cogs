@@ -1,0 +1,243 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:43\n"
+"Last-Translator: \n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/snipe/locales/messages.pot\n"
+"X-Crowdin-File-ID: 320\n"
+"Language: pl_PL\n"
+
+#: snipe\snipe.py:99
+msgid "Deleted Message (Sent at {created_timestamp})"
+msgstr "Usunięta wiadomość (Wysłane na {created_timestamp})"
+
+#: snipe\snipe.py:103
+msgid "Edited Message (Sent at {created_timestamp})"
+msgstr "Edytowana wiadomość (wysłana na {created_timestamp})"
+
+#: snipe\snipe.py:112
+msgid "Channel:"
+msgstr "Kanał:"
+
+#: snipe\snipe.py:114
+msgid "Deleted at:"
+msgstr "Usunięto w:"
+
+#: snipe\snipe.py:114
+msgid "Edited at:"
+msgstr "Edytowano w:"
+
+#: snipe\snipe.py:130
+msgid "Stickers:"
+msgstr "Naklejki:"
+
+#: snipe\snipe.py:138
+msgid "New Content:"
+msgstr "Nowa zawartość:"
+
+#: snipe\snipe.py:139 snipe\snipe.py:147
+msgid "Click to view attachments."
+msgstr "Kliknij, aby wyświetlić załączniki."
+
+#: snipe\snipe.py:146
+msgid "Replying to:"
+msgstr "Odpowiadając na:"
+
+#: snipe\snipe.py:156
+#, docstring
+msgid "Bulk sniping deleted and edited messages, for moderation purpose!"
+msgstr "Masowe usuwanie usuniętych i edytowanych wiadomości w celu moderacji!"
+
+#: snipe\snipe.py:226 snipe\snipe.py:256
+msgid "Deleted Message"
+msgstr "Usunięta wiadomość"
+
+#: snipe\snipe.py:226 snipe\snipe.py:256
+msgid "Edited Message"
+msgstr "Edytowana wiadomość"
+
+#: snipe\snipe.py:233 snipe\snipe.py:262 snipe\snipe.py:605
+msgid "Deleted Messages"
+msgstr "Usunięte wiadomości"
+
+#: snipe\snipe.py:233 snipe\snipe.py:262 snipe\snipe.py:954
+msgid "Edited Messages"
+msgstr "Edytowane wiadomości"
+
+#: snipe\snipe.py:291
+#, docstring
+msgid "Snipe a deleted message."
+msgstr "Snipe usuniętej wiadomości."
+
+#: snipe\snipe.py:300 snipe\snipe.py:338 snipe\snipe.py:374 snipe\snipe.py:413
+#: snipe\snipe.py:452 snipe\snipe.py:491 snipe\snipe.py:530 snipe\snipe.py:571
+#: snipe\snipe.py:649 snipe\snipe.py:687 snipe\snipe.py:723 snipe\snipe.py:762
+#: snipe\snipe.py:801 snipe\snipe.py:840 snipe\snipe.py:879 snipe\snipe.py:920
+msgid "You are not allowed to execute this command in this channel."
+msgstr "W tym kanale nie można wykonywać tego polecenia."
+
+#: snipe\snipe.py:306 snipe\snipe.py:344 snipe\snipe.py:380 snipe\snipe.py:419
+#: snipe\snipe.py:458 snipe\snipe.py:497 snipe\snipe.py:536 snipe\snipe.py:577
+#: snipe\snipe.py:655 snipe\snipe.py:693 snipe\snipe.py:729 snipe\snipe.py:768
+#: snipe\snipe.py:807 snipe\snipe.py:846 snipe\snipe.py:885 snipe\snipe.py:926
+msgid "This channel is in the ignored list."
+msgstr "Ten kanał znajduje się na liście ignorowanych."
+
+#: snipe\snipe.py:309 snipe\snipe.py:347 snipe\snipe.py:383 snipe\snipe.py:422
+#: snipe\snipe.py:461 snipe\snipe.py:500 snipe\snipe.py:539 snipe\snipe.py:580
+msgid "No deleted message recorded in this channel."
+msgstr "Na tym kanale nie zarejestrowano żadnej usuniętej wiadomości."
+
+#: snipe\snipe.py:317
+msgid "No deleted message at this index in this channel."
+msgstr "Brak usuniętych wiadomości w tym indeksie na tym kanale."
+
+#: snipe\snipe.py:329
+#, docstring
+msgid "Bulk snipe deleted messages."
+msgstr "Masowe usuwanie usuniętych wiadomości."
+
+#: snipe\snipe.py:365
+#, docstring
+msgid "Bulk snipe deleted messages for the specified member."
+msgstr "Zbiorcze usuwanie usuniętych wiadomości dla określonego użytkownika."
+
+#: snipe\snipe.py:392 snipe\snipe.py:602
+msgid "No deleted message recorded for this member in this channel."
+msgstr "Na tym kanale nie zarejestrowano żadnej usuniętej wiadomości dla tego użytkownika."
+
+#: snipe\snipe.py:404
+#, docstring
+msgid "Bulk snipe deleted messages with embeds."
+msgstr "Masowe usuwanie usuniętych wiadomości za pomocą osadzonych elementów."
+
+#: snipe\snipe.py:431 snipe\snipe.py:780
+msgid "No deleted message with embeds recorded in this channel."
+msgstr "Na tym kanale nie zarejestrowano żadnych usuniętych wiadomości z osadzonymi elementami."
+
+#: snipe\snipe.py:443
+#, docstring
+msgid "Bulk snipe deleted messages with roles/users mentions."
+msgstr "Masowe usuwanie usuniętych wiadomości ze wzmiankami o rolach/użytkownikach."
+
+#: snipe\snipe.py:470 snipe\snipe.py:819
+msgid "No deleted message with mentions recorded in this channel."
+msgstr "Na tym kanale nie zarejestrowano żadnej usuniętej wiadomości ze wzmiankami."
+
+#: snipe\snipe.py:482
+#, docstring
+msgid "Bulk snipe deleted messages with roles mentions."
+msgstr "Masowe usuwanie usuniętych wiadomości ze wzmiankami o rolach."
+
+#: snipe\snipe.py:509 snipe\snipe.py:858
+msgid "No deleted message with roles mentions recorded in this channel."
+msgstr "Na tym kanale nie zarejestrowano żadnych usuniętych wiadomości ze wzmiankami o rolach."
+
+#: snipe\snipe.py:521
+#, docstring
+msgid "Bulk snipe deleted messages with members mentions."
+msgstr "Masowe usuwanie usuniętych wiadomości ze wzmiankami o członkach."
+
+#: snipe\snipe.py:548 snipe\snipe.py:897
+msgid "No deleted message with members mentions recorded in this channel."
+msgstr "Na tym kanale nie zarejestrowano żadnych usuniętych wiadomości ze wzmiankami o członkach."
+
+#: snipe\snipe.py:562
+#, docstring
+msgid "List deleted messages."
+msgstr "Lista usuniętych wiadomości."
+
+#: snipe\snipe.py:640
+#, docstring
+msgid "Snipe an edited message."
+msgstr "Snipe edytowanej wiadomości."
+
+#: snipe\snipe.py:658 snipe\snipe.py:696 snipe\snipe.py:732 snipe\snipe.py:771
+#: snipe\snipe.py:810 snipe\snipe.py:849 snipe\snipe.py:888 snipe\snipe.py:929
+msgid "No edited message recorded in this channel."
+msgstr "Na tym kanale nie zarejestrowano edytowanego komunikatu."
+
+#: snipe\snipe.py:666
+msgid "No edited message at this index in this channel."
+msgstr "Brak edytowanej wiadomości w tym indeksie na tym kanale."
+
+#: snipe\snipe.py:678
+#, docstring
+msgid "Bulk snipe edited messages."
+msgstr "Zbiorcze usuwanie edytowanych wiadomości."
+
+#: snipe\snipe.py:714
+#, docstring
+msgid "Bulk snipe edited messages for the specified member."
+msgstr "Zbiorcze wycinanie edytowanych wiadomości dla określonego użytkownika."
+
+#: snipe\snipe.py:741 snipe\snipe.py:951
+msgid "No edited message recorded for this member in this channel."
+msgstr "Nie zarejestrowano edytowanej wiadomości dla tego użytkownika na tym kanale."
+
+#: snipe\snipe.py:753
+#, docstring
+msgid "Bulk snipe edited messages with embeds."
+msgstr "Masowe usuwanie edytowanych wiadomości z osadzonymi elementami."
+
+#: snipe\snipe.py:792
+#, docstring
+msgid "Bulk snipe edited messages with roles/users mentions."
+msgstr "Zbiorcze usuwanie edytowanych wiadomości ze wzmiankami o rolach/użytkownikach."
+
+#: snipe\snipe.py:831
+#, docstring
+msgid "Bulk snipe edited messages with roles mentions."
+msgstr "Zbiorcze usuwanie edytowanych wiadomości ze wzmiankami o rolach."
+
+#: snipe\snipe.py:870
+#, docstring
+msgid "Bulk snipe edited messages with members mentions."
+msgstr "Masowe usuwanie edytowanych wiadomości ze wzmiankami o członkach."
+
+#: snipe\snipe.py:911
+#, docstring
+msgid "List edited messages."
+msgstr "Lista edytowanych wiadomości."
+
+#: snipe\snipe.py:975
+#, docstring
+msgid "Show stats about Snipe cache."
+msgstr "Pokaż statystyki dotyczące pamięci podręcznej Snipe."
+
+#: snipe\snipe.py:978
+msgid "Snipe Stats"
+msgstr "Statystyki bekasa"
+
+#: snipe\snipe.py:980
+msgid "Deleted Messages Cache Size:"
+msgstr "Rozmiar pamięci podręcznej usuniętych wiadomości:"
+
+#: snipe\snipe.py:984
+msgid "Edited Messages Cache Size:"
+msgstr "Rozmiar pamięci podręcznej edytowanych wiadomości:"
+
+#: snipe\snipe.py:989
+msgid "Total Cache Size:"
+msgstr "Całkowity rozmiar pamięci podręcznej:"
+
+#: snipe\snipe.py:994
+msgid "Cache Entries:"
+msgstr "Wpisy w pamięci podręcznej:"
+
+#: snipe\snipe.py:995
+msgid "**Deleted Messages:** `{len_deleted_messages}`\n"
+"**Edited Messages:** `{len_edited_messages}`"
+msgstr "**Usunięte wiadomości:** `{len_deleted_messages}`\n"
+"**Edytowane wiadomości:** `{len_edited_messages}`"
+

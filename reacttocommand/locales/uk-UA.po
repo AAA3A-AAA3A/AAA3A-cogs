@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-08-10 13:42+0200\n"
-"PO-Revision-Date: 2023-08-10 11:46\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:19\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "A cog to allow a user to execute a command by clicking on a reaction!"
 msgstr "Гвинтик, який дозволяє користувачеві виконати команду, натиснувши на реакцію!"
 
-#: reacttocommand\reacttocommand.py:278
+#: reacttocommand\reacttocommand.py:277
 #, docstring
 msgid "Add a reaction-command for a message.\n\n"
 "        There should be no prefix in the command.\n"
@@ -35,56 +35,56 @@ msgstr "Додайте команду-реакцію для повідомлен
 "        Цей користувач повинен бачити, що в каналі пишуть.\n"
 "        "
 
-#: reacttocommand\reacttocommand.py:292
+#: reacttocommand\reacttocommand.py:291
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to add reactions and to see the messages in that channel."
 msgstr "Я не маю достатніх дозволів на каналі, де знаходиться вказане вами повідомлення.\n"
 "Мені потрібні дозволи, щоб додавати реакції та бачити повідомлення в цьому каналі."
 
-#: reacttocommand\reacttocommand.py:302
+#: reacttocommand\reacttocommand.py:301
 msgid "You have not specified a correct command."
 msgstr "Ви вказали неправильну команду."
 
-#: reacttocommand\reacttocommand.py:308
+#: reacttocommand\reacttocommand.py:307
 msgid "An error has occurred. It is possible that the emoji you provided is invalid."
 msgstr "Виникла помилка. Можливо, емодзі, який ви надали, є недійсним."
 
-#: reacttocommand\reacttocommand.py:315
+#: reacttocommand\reacttocommand.py:314
 msgid "Reaction-command added to this message."
 msgstr "Реакція-команда додана до цього повідомлення."
 
-#: reacttocommand\reacttocommand.py:319
+#: reacttocommand\reacttocommand.py:318
 #, docstring
 msgid "Remove a reaction-command for a message."
 msgstr "Видалити команду-реакцію для повідомлення."
 
-#: reacttocommand\reacttocommand.py:323 reacttocommand\reacttocommand.py:345
+#: reacttocommand\reacttocommand.py:322 reacttocommand\reacttocommand.py:344
 msgid "No reaction-command is configured for this message."
 msgstr "Для цього повідомлення не налаштовано жодної команди реакції."
 
-#: reacttocommand\reacttocommand.py:327
+#: reacttocommand\reacttocommand.py:326
 msgid "I wasn't watching for this reaction on this message."
 msgstr "Я не очікував такої реакції на це повідомлення."
 
-#: reacttocommand\reacttocommand.py:337
+#: reacttocommand\reacttocommand.py:336
 msgid "Reaction-command removed from this message."
 msgstr "Реакцію-команду видалено з цього повідомлення."
 
-#: reacttocommand\reacttocommand.py:341
+#: reacttocommand\reacttocommand.py:340
 #, docstring
 msgid "Clear all reactions-commands for a message."
 msgstr "Очистити всі реакції-команди для повідомлення."
 
-#: reacttocommand\reacttocommand.py:354
+#: reacttocommand\reacttocommand.py:353
 msgid "Reactions-commands cleared for this message."
 msgstr "Реакції-команди очищено для цього повідомлення."
 
-#: reacttocommand\reacttocommand.py:358
+#: reacttocommand\reacttocommand.py:357
 #, docstring
 msgid "Clear all reactions-commands for a guild."
 msgstr "Очистити всі реакції-команди для гільдії."
 
-#: reacttocommand\reacttocommand.py:360
+#: reacttocommand\reacttocommand.py:359
 msgid "All reactions-commands purged."
 msgstr "Всі реакції-команди очищені."
 

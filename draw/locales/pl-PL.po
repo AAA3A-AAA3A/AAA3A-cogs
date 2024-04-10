@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:20\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:23\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -26,11 +26,11 @@ msgstr "Trybik do tworzenia pixel artów na Discordzie!"
 msgid "This message isn't in the cache."
 msgstr "Tej wiadomości nie ma w pamięci podręcznej."
 
-#: draw\start_view.py:93 draw\start_view.py:102
+#: draw\start_view.py:94 draw\start_view.py:103
 msgid "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
 msgstr "Utwórz nową tablicę Draw Board z `height = {height}`, `width = {width}` i `background = {background}`."
 
-#: draw\view.py:331
+#: draw\view.py:332
 msgid "Please type all the colors you want to add. They can be either or all of:\n"
 "• The hex codes (e.g. `ff64c4` or `ff64c4ff` to include alpha) **separated by space**,\n"
 "• The RGB(A) values separated by space or comma or both (e.g. `(255 100 196)` or `(255, 100, 196, 125)`) of each color **surrounded by brackets**\n"
@@ -42,15 +42,15 @@ msgstr "Wpisz wszystkie kolory, które chcesz dodać. Mogą to być kody heksade
 "- Dowolne emoji, którego główny kolor chcesz wyodrębnić (np. 🐸 da 77b255)\n"
 "- Dowolny plik obrazu (zostanie wyodrębnionych pierwszych 5 kolorów)."
 
-#: draw\view.py:404
+#: draw\view.py:402
 msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
 msgstr "Wyślij wiadomość zawierającą emotikony, które chcesz dodać do swojej palety. Na przykład `😎 Lubię żółwie 🐢`."
 
-#: draw\view.py:817
+#: draw\view.py:809
 msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
 msgstr "Wpisz komórkę, do której chcesz przenieść kursor, np. `A1`, `a1`, `A10`, `A`, `10` itd."
 
-#: draw\view.py:949
+#: draw\view.py:938
 msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
 "B7-C9:green`."
 msgstr "Wpisz komórki z nazwami głównych kolorów. Jeden kolor dla każdej linii, oddzielony od komórki znakiem \":\". Przykład: `A1:czerwony\n"

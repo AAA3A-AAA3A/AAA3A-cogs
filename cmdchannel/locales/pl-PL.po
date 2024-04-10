@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 18:22\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -22,71 +22,65 @@ msgstr ""
 msgid "A cog to send the result of a command to another channel!"
 msgstr "Trybik do wysyłania wyniku polecenia na inny kanał!"
 
-#: cmdchannel\cmdchannel.py:75
+#: cmdchannel\cmdchannel.py:86
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmdchannel`!\n"
 "        "
-msgstr "Zachowuj się tak, jakby polecenie zostało wpisane w wybranym kanale.\n"
-"        Prefiks nie może być wprowadzony, jeśli jest to komenda. Będzie to tylko komunikat, jeśli polecenie jest nieważne.\n"
-"        Jeśli nie określisz kanału, użyty zostanie bieżący, chyba że polecenie, którego chcesz użyć jest nazwą istniejącego kanału (na przykład help lub test).\n\n"
+msgstr "Postępuj tak, jakby polecenie zostało wpisane w wybranym kanale.\n"
+"        Nie wolno wprowadzać prefiksu, jeśli jest to polecenie. Będzie to tylko komunikat, jeśli polecenie jest nieprawidłowe.\n\n"
 "        Użyj `[p]cmdchannel`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:84 cmdchannel\cmdchannel.py:153
+#: cmdchannel\cmdchannel.py:94 cmdchannel\cmdchannel.py:162
 msgid "To send commands to another server, you must be there."
 msgstr "Aby wysłać polecenia do innego serwera, musisz tam być."
 
-#: cmdchannel\cmdchannel.py:107
+#: cmdchannel\cmdchannel.py:117
 #, docstring
 msgid "Act as if the command had been typed by imitating the specified user.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a user, the author will be used.\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmduser`!\n"
 "        "
-msgstr "Zachowuj się tak, jakby polecenie zostało wpisane, naśladując określonego użytkownika.\n"
-"        Przedrostek nie może być wprowadzony, jeśli jest to polecenie. Będzie to tylko komunikat, jeśli polecenie jest nieprawidłowe.\n"
-"        Jeśli nie określisz użytkownika, użyty zostanie autor.\n\n"
+msgstr "Działa tak, jakby polecenie zostało wpisane przez naśladowanie określonego użytkownika.\n"
+"        Nie wolno wprowadzać prefiksu, jeśli jest to polecenie. Będzie to tylko komunikat, jeśli polecenie jest nieprawidłowe.\n\n"
 "        Użyj `[p]cmduser`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:117 cmdchannel\cmdchannel.py:158
+#: cmdchannel\cmdchannel.py:126 cmdchannel\cmdchannel.py:167
 msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
 msgstr "Aby móc uruchomić polecenie jako inny użytkownik, należy załadować cog Dev, aby upewnić się, że wiesz, co robisz."
 
-#: cmdchannel\cmdchannel.py:140
+#: cmdchannel\cmdchannel.py:150
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a user, the author will be used.\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmduserchannel`!\n"
 "        "
-msgstr "Zachowuj się tak, jakby polecenie zostało wpisane na wybranym kanale, naśladując określonego użytkownika.\n"
-"        Prefiks nie może być wprowadzony, jeśli jest to komenda. Będzie to tylko komunikat, jeśli komenda jest nieprawidłowa.\n"
-"        Jeśli nie określisz użytkownika, użyty zostanie autor.\n\n"
+msgstr "Działa tak, jakby polecenie zostało wpisane na wybranym kanale, naśladując określonego użytkownika.\n"
+"        Nie wolno wprowadzać prefiksu, jeśli jest to polecenie. Będzie to tylko komunikat, jeśli polecenie jest nieprawidłowe.\n\n"
 "        Użyj `[p]cmduserchannel`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:174
+#: cmdchannel\cmdchannel.py:184
 #, docstring
 msgid "Test variables."
 msgstr "Zmienne testowe."
 
-#: cmdchannel\cmdchannel.py:176
+#: cmdchannel\cmdchannel.py:186
 msgid "Testvar"
 msgstr "Testvar"
 
-#: cmdchannel\cmdchannel.py:177
+#: cmdchannel\cmdchannel.py:187
 msgid "Variables:"
 msgstr "Zmienne:"
 
-#: cmdchannel\cmdchannel.py:178
+#: cmdchannel\cmdchannel.py:188
 msgid "Author:"
 msgstr "Autor:"
 
-#: cmdchannel\cmdchannel.py:179
+#: cmdchannel\cmdchannel.py:189
 msgid "Channel:"
 msgstr "Kanał:"
 

@@ -1,0 +1,64 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:43\n"
+"Last-Translator: \n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/viewpermissions/locales/messages.pot\n"
+"X-Crowdin-File-ID: 322\n"
+"Language: pl_PL\n"
+
+#: viewpermissions\viewpermissions.py:25
+msgid "`{argument}` isn't a valid permission name"
+msgstr "`{argument}` nie jest poprawną nazwą uprawnienia"
+
+#: viewpermissions\viewpermissions.py:32
+#, docstring
+msgid "A cog to display permissions for roles and members, at guild level or in a specified channel!"
+msgstr "Tryb do wyświetlania uprawnień dla ról i członków, na poziomie gildii lub na określonym kanale!"
+
+#: viewpermissions\viewpermissions.py:202
+msgid "Advanced "
+msgstr "Zaawansowany "
+
+#: viewpermissions\viewpermissions.py:202
+#: viewpermissions\viewpermissions.py:256
+msgid "View Permissions"
+msgstr "Wyświetlanie uprawnień"
+
+#: viewpermissions\viewpermissions.py:209
+#: viewpermissions\viewpermissions.py:261
+msgid "\n"
+"**Role(s):** {roles}"
+msgstr "\n"
+"**Rola(e):** {roles}"
+
+#: viewpermissions\viewpermissions.py:213
+#: viewpermissions\viewpermissions.py:265
+msgid "\n"
+"**Member(s):** {members}"
+msgstr "\n"
+"**Członek/członkowie:** {members}"
+
+#: viewpermissions\viewpermissions.py:219
+msgid "\n"
+"**Channel:** {channel}"
+msgstr "\n"
+"**Kanał:** {channel}"
+
+#: viewpermissions\viewpermissions.py:223
+#: viewpermissions\viewpermissions.py:271
+msgid "\n"
+"**Permission(s) checked:** {permissions}"
+msgstr "\n"
+"**Sprawdzone uprawnienia:** {permissions}"
+

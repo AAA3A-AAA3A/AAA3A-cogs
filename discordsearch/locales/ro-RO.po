@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:26\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"PO-Revision-Date: 2024-04-10 12:36\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -17,32 +17,42 @@ msgstr ""
 "X-Crowdin-File-ID: 138\n"
 "Language: ro_RO\n"
 
-#: discordsearch\discordsearch.py:30
+#: discordsearch\discordsearch.py:34
 #, docstring
 msgid "A cog to edit roles!"
 msgstr "O rotiță pentru editarea rolurilor!"
 
-#: discordsearch\discordsearch.py:96
+#: discordsearch\discordsearch.py:106
 msgid "You must provide at least one parameter."
 msgstr "Trebuie să furnizați cel puțin un parametru."
 
-#: discordsearch\discordsearch.py:185
+#: discordsearch\discordsearch.py:167
+msgid "Your regex process took too long. Removing from memory."
+msgstr "Procesul regex a durat prea mult. Eliminarea din memorie."
+
+#: discordsearch\discordsearch.py:173
+msgid "There is an error in your regex.\n"
+"{e}"
+msgstr "Există o eroare în regex-ul dumneavoastră.\n"
+"{e}"
+
+#: discordsearch\discordsearch.py:211
 msgid "Look at the original message."
 msgstr "Uitați-vă la mesajul original."
 
-#: discordsearch\discordsearch.py:201
+#: discordsearch\discordsearch.py:227
 msgid "Search in #{channel.name} ({channel.id})"
 msgstr "Căutați în #{channel.name} ({channel.id})"
 
-#: discordsearch\discordsearch.py:202
+#: discordsearch\discordsearch.py:228
 msgid "Sorry, I could not find any results."
 msgstr "Îmi pare rău, dar nu am găsit niciun rezultat."
 
-#: discordsearch\discordsearch.py:215
+#: discordsearch\discordsearch.py:241
 msgid "Search in #{channel.name} ({channel.id}) in {total}s"
 msgstr "Căutați în #{channel.name} ({channel.id}) în {total}s"
 
-#: discordsearch\discordsearch.py:227
+#: discordsearch\discordsearch.py:253
 msgid "Unrecognized date/time."
 msgstr "Data/ora nerecunoscută."
 

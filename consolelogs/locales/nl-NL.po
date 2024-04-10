@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:11\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:39\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -17,31 +17,31 @@ msgstr ""
 "X-Crowdin-File-ID: 261\n"
 "Language: nl_NL\n"
 
-#: consolelogs\consolelogs.py:92
+#: consolelogs\consolelogs.py:94
 #, docstring
 msgid "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"
 msgstr "Een cog om console logs weer te geven, met knoppen en filter opties, en om commando's te versturen in ingestelde kanalen!"
 
-#: consolelogs\consolelogs.py:243
+#: consolelogs\consolelogs.py:264
 msgid "No logs to display."
 msgstr "Geen logs om weer te geven."
 
-#: consolelogs\consolelogs.py:380
-#, docstring
-msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
-msgstr "Bekijk de console logs één voor één, voor alle levels/loggers of geef een naam van een level/logger."
-
-#: consolelogs\consolelogs.py:395
-#, docstring
-msgid "View the `ERROR` console logs one by one, for all loggers or a provided logger name."
-msgstr "Bekijk de `ERROR` console logs één voor één, voor alle loggers of geen een naam van een logger."
-
-#: consolelogs\consolelogs.py:423 consolelogs\consolelogs.py:434
+#: consolelogs\consolelogs.py:415
 #, docstring
 msgid "Scroll the console logs, for all levels/loggers or provided level/logger name."
 msgstr "Scroll door de console logs, voor alle levels/loggers of geef een naam van een level/logger."
 
-#: consolelogs\consolelogs.py:464
+#: consolelogs\consolelogs.py:451
+#, docstring
+msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
+msgstr "Bekijk de console logs één voor één, voor alle levels/loggers of geef een naam van een level/logger."
+
+#: consolelogs\consolelogs.py:462
+#, docstring
+msgid "Display the stats for the bot logs since the bot start."
+msgstr "De statistieken van de botlogs sinds de botstart weergeven."
+
+#: consolelogs\consolelogs.py:495
 #, docstring
 msgid "Enable errors logging in a channel.\n\n"
 "        **Parameters:**\n"
@@ -50,40 +50,44 @@ msgid "Enable errors logging in a channel.\n\n"
 "        - `prefixed_commands_errors`: Log prefixed commands errors.\n"
 "        - `slash_commands_errors`: Log slash commands errors.\n"
 "        - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).\n"
+"        - `full_console`: Log all the console logs.\n"
 "        - `guild_invite`: Add a button \"Guild Invite\" in commands errors logs, only for community servers.\n"
+"        - `ignored_cogs`: Ignore some cogs for `prefixed_commands_errors` and `slash_commands_errors`. You have to use the cog qualified_name like `ConsoleLogs` for this cog.\n"
 "        "
-msgstr "Schakel enable logging in voor een channel.\n\n"
+msgstr "Het loggen van fouten in een kanaal inschakelen.\n\n"
 "        **Parameters:**\n"
-"        - `channel`: Het kanaal waar de commando foutmeldingen gestuurd worden.\n"
-"        - `global_errors`: Log foutmeldingen voor de hele bot, niet alleen the channel server.\n"
-"        - `prefixed_commands_errors`: Log prefixed commando's foutmeldingen.\n"
-"        - `slash_commands_errors`: Log slash commando's foutmeldingen.\n"
-"        - `dpy_ignored_exceptions`: Log dpy genegeerde uitzonderingen (events listeners en Views errors).\n"
-"        - `guild_invite`: Voeg een knop \"Guild Invite\" toe in commando's errors logs, alleen voor community servers.\n"
+"        - `kanaal`: Het kanaal waar de fouten van de commando's naartoe worden gestuurd.\n"
+"        - `global_errors`: Log fouten voor de hele bot, niet alleen de kanaalserver.\n"
+"        - `prefixed_commands_errors`: Log prefixed commando fouten.\n"
+"        - `slash_commands_errors`: Log slash commando fouten.\n"
+"        - `dpy_geaccepteerde_fouten`: Log dpy genegeerde uitzonderingen (events listeners en Views fouten).\n"
+"        - `full_console`: Log alle console logs.\n"
+"        - gilde uitnodigen`: Voeg een knop \"Guild Invite\" toe in commando fouten logs, alleen voor community servers.\n"
+"        - genegeerde_koggen`: Negeer sommige tandwielen voor `prefixed_commands_errors` en `slash_commands_errors`. Je moet de cog qualified_name gebruiken zoals `ConsoleLogs` voor deze cog.\n"
 "        "
 
-#: consolelogs\consolelogs.py:483
+#: consolelogs\consolelogs.py:516
 msgid "I don't have the permissions to send embeds in this channel."
 msgstr "Ik heb geen permissies om embeds te sturen in dit channel."
 
-#: consolelogs\consolelogs.py:491
+#: consolelogs\consolelogs.py:532
 msgid "Errors logging enabled in {channel.mention}."
 msgstr "Foutregistratie ingeschakeld in {channel.mention}."
 
-#: consolelogs\consolelogs.py:495
+#: consolelogs\consolelogs.py:540
 #, docstring
 msgid "Disable errors logging in a channel."
 msgstr "Schakel foutregistratie uit in een kanaal."
 
-#: consolelogs\consolelogs.py:498
+#: consolelogs\consolelogs.py:543
 msgid "Errors logging isn't enabled in this channel."
 msgstr "Foutregistratie is niet ingeschakeld in dit kanaal."
 
-#: consolelogs\consolelogs.py:501
+#: consolelogs\consolelogs.py:546
 msgid "Errors logging disabled in {channel.mention}."
 msgstr "Foutregistratie uitgeschakeld in {channel.mention}."
 
-#: consolelogs\consolelogs.py:505
+#: consolelogs\consolelogs.py:550
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Krijg een embed om de lusstatus te controleren."

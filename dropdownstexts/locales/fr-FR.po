@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:09\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:26\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -17,65 +17,64 @@ msgstr ""
 "X-Crowdin-File-ID: 158\n"
 "Language: fr_FR\n"
 
-#: dropdownstexts\converters.py:39
+#: dropdownstexts\converters.py:80
 msgid "Dropdown Text must be an emoji, followed by a label and a text, separated by either `;`, `,`, `|`, or `-`."
 msgstr "Le texte de la liste déroulante doit être un emoji, suivi d'un libellé et d'un texte, séparés par `;`, `,`, `|` ou `-`."
 
-#: dropdownstexts\dropdownstexts.py:23
+#: dropdownstexts\dropdownstexts.py:28
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Je dois être l'auteur du message. Vous pouvez utiliser EmbedUtils by AAA3A pour en envoyer un."
+
+#: dropdownstexts\dropdownstexts.py:37
 #, docstring
 msgid "A cog to have dropdowns-texts!"
 msgstr "Un cog pour avoir des textes déroulants !"
 
-#: dropdownstexts\dropdownstexts.py:121
+#: dropdownstexts\dropdownstexts.py:135
 msgid "This message is not in Config."
 msgstr "Ce message n'est pas dans Config."
 
-#: dropdownstexts\dropdownstexts.py:125
+#: dropdownstexts\dropdownstexts.py:139
 msgid "This option is not in Config."
 msgstr "Cette option n'est pas dans Config."
 
-#: dropdownstexts\dropdownstexts.py:172
+#: dropdownstexts\dropdownstexts.py:186
 #, docstring
 msgid "Add a dropdown-text for a message."
 msgstr "Ajouter un texte déroulant pour un message."
 
-#: dropdownstexts\dropdownstexts.py:175 dropdownstexts\dropdownstexts.py:230
-#: dropdownstexts\dropdownstexts.py:296 dropdownstexts\dropdownstexts.py:323
-msgid "I have to be the author of the message for the role-button to work."
-msgstr "Je dois être l'auteur du message pour que le bouton de rôle fonctionne."
-
-#: dropdownstexts\dropdownstexts.py:184 dropdownstexts\dropdownstexts.py:243
+#: dropdownstexts\dropdownstexts.py:194 dropdownstexts\dropdownstexts.py:249
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to see the messages in that channel."
 msgstr "Je n'ai pas les permissions suffisantes dans le canal où se trouve le message que vous avez spécifié.\n"
 "J'ai besoin des permissions pour voir les messages dans ce canal."
 
-#: dropdownstexts\dropdownstexts.py:193
+#: dropdownstexts\dropdownstexts.py:203
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "L'emoji que vous avez sélectionné ne semble pas valide. Vérifiez qu'il s'agit bien d'un emoji. Si vous avez Nitro, vous avez peut-être utilisé un emoji personnalisé provenant d'un autre serveur."
 
-#: dropdownstexts\dropdownstexts.py:200 dropdownstexts\dropdownstexts.py:262
+#: dropdownstexts\dropdownstexts.py:210 dropdownstexts\dropdownstexts.py:268
 msgid "This message already has components."
 msgstr "Ce message comporte déjà des éléments."
 
-#: dropdownstexts\dropdownstexts.py:204 dropdownstexts\dropdownstexts.py:266
+#: dropdownstexts\dropdownstexts.py:214 dropdownstexts\dropdownstexts.py:272
 msgid "I can't do more than 25 dropdown-texts for one message."
 msgstr "Je ne peux pas faire plus de 25 textes déroulants pour un message."
 
-#: dropdownstexts\dropdownstexts.py:227
+#: dropdownstexts\dropdownstexts.py:237
 #, docstring
 msgid "Add dropdown-texts for a message."
 msgstr "Ajouter des textes déroulants pour un message."
 
-#: dropdownstexts\dropdownstexts.py:234
+#: dropdownstexts\dropdownstexts.py:240
 msgid "You have not specified any valid dropdown-text."
 msgstr "Vous n'avez pas spécifié de texte descendant valide."
 
-#: dropdownstexts\dropdownstexts.py:255
+#: dropdownstexts\dropdownstexts.py:261
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "L'emoji que vous avez sélectionné ne semble pas valide. Vérifiez qu'il s'agit bien d'un emoji. Si vous avez Nitro, vous avez peut-être utilisé un emoji personnalisé provenant d'un autre serveur."
 
-#: dropdownstexts\dropdownstexts.py:290
+#: dropdownstexts\dropdownstexts.py:296
 #, docstring
 msgid "Remove a dropdown-text for a message.\n\n"
 "        Use `[p]dropdownstexts list <message>` to find the config identifier.\n"
@@ -84,53 +83,62 @@ msgstr "Supprime un texte déroulant pour un message.\n\n"
 "        Utilisez `[p]dropdownstexts list <message>` pour trouver l'identifiant de la configuration.\n"
 "        "
 
-#: dropdownstexts\dropdownstexts.py:301 dropdownstexts\dropdownstexts.py:328
+#: dropdownstexts\dropdownstexts.py:303 dropdownstexts\dropdownstexts.py:329
 msgid "No dropdown-texts is configured for this message."
 msgstr "Aucun texte déroulant n'est configuré pour ce message."
 
-#: dropdownstexts\dropdownstexts.py:305
+#: dropdownstexts\dropdownstexts.py:307
 msgid "I wasn't watching for this dropdown-text on this message."
 msgstr "Je n'avais pas prévu ce texte déroulant dans ce message."
 
-#: dropdownstexts\dropdownstexts.py:320
+#: dropdownstexts\dropdownstexts.py:321
+msgid "Dropdowns-buttons cleared for this message."
+msgstr "Les menus déroulants et les boutons ont été supprimés pour ce message."
+
+#: dropdownstexts\dropdownstexts.py:325
 #, docstring
 msgid "Clear a dropdown-texts for a message."
 msgstr "Effacer une liste déroulante de textes pour un message."
 
-#: dropdownstexts\dropdownstexts.py:336
+#: dropdownstexts\dropdownstexts.py:337
 msgid "Dropdown-texts cleared for this message."
 msgstr "Les textes de la liste déroulante ont été effacés pour ce message."
 
-#: dropdownstexts\dropdownstexts.py:348
+#: dropdownstexts\dropdownstexts.py:342
+#, docstring
+msgid "List all dropdowns-texts of this server or display the settings for a specific one."
+msgstr "Liste tous les textes déroulants de ce serveur ou affiche les paramètres d'un texte spécifique."
+
+#: dropdownstexts\dropdownstexts.py:350
 msgid "No dropdown-text is configured for this message."
 msgstr "Aucun texte déroulant n'est configuré pour ce message."
 
-#: dropdownstexts\dropdownstexts.py:354
+#: dropdownstexts\dropdownstexts.py:356
 msgid "No dropdowns-texts in this server."
 msgstr "Il n'y a pas de textes déroulants dans ce serveur."
 
-#: dropdownstexts\dropdownstexts.py:363
+#: dropdownstexts\dropdownstexts.py:358
 msgid "Dropdowns Texts"
 msgstr "Textes de la liste déroulante"
 
-#: dropdownstexts\dropdownstexts.py:364
+#: dropdownstexts\dropdownstexts.py:359
 msgid "There is {len_dropdowns_texts} dropdowns texts in this server."
 msgstr "Il y a {len_dropdowns_texts} textes dropdowns dans ce serveur."
 
-#: dropdownstexts\dropdownstexts.py:372
+#: dropdownstexts\dropdownstexts.py:370
 msgid "Message Jump Link: {message_jump_link}\n"
 msgstr "Message Jump Link : {message_jump_link}\n"
 
-#: dropdownstexts\dropdownstexts.py:388
+#: dropdownstexts\dropdownstexts.py:391
 #, docstring
 msgid "Clear all dropdowns-texts for a guild."
 msgstr "Effacer tous les textes déroulants d'une guilde."
 
-#: dropdownstexts\dropdownstexts.py:390
+#: dropdownstexts\dropdownstexts.py:393
 msgid "All dropdowns-texts purged."
 msgstr "Tous les textes des listes déroulantes ont été purgés."
 
-#: dropdownstexts\dropdownstexts.py:422
+#: dropdownstexts\dropdownstexts.py:425
 msgid "Select an option."
 msgstr "Sélectionnez une option."
 

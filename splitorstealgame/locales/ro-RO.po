@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:32\n"
+"POT-Creation-Date: 2023-07-15 21:14+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -26,11 +26,11 @@ msgstr "O rotiță pentru a juca un meci de SplitOrSteal joc!"
 msgid "Join the game by clicking on the button below. 2 players will be selected randomly."
 msgstr "Intrați în joc făcând clic pe butonul de mai jos. 2 jucători vor fi selectați aleatoriu."
 
-#: splitorstealgame\view.py:50
+#: splitorstealgame\view.py:49
 msgid "At least two players are needed to play."
 msgstr "Este nevoie de cel puțin doi jucători pentru a juca."
 
-#: splitorstealgame\view.py:60
+#: splitorstealgame\view.py:58
 msgid "The two players are {player_A.mention} and {player_B.mention}.\n"
 "You have to click the button that you choose (`split` or `steal`).\n"
 "• If you both choose `split` both of them win.\n"
@@ -50,35 +50,35 @@ msgstr "Cel puțin un jucător a încetat să mai joace."
 msgid "{player_A.display_name} and {player_B.display_name}, you both chose `split` and therefore both win."
 msgstr "{player_A.display_name} și {player_B.display_name}, amândoi ați ales `split` și, prin urmare, amândoi câștigați."
 
-#: splitorstealgame\view.py:91
+#: splitorstealgame\view.py:93
 msgid "{player_A.display_name} and {player_B.display_name}, you both chose `steal` and therefore both loose."
 msgstr "{player_A.display_name} și {player_B.display_name}, amândoi ați ales `fura` și, prin urmare, amândoi pierdeți."
 
-#: splitorstealgame\view.py:95
-msgid "{player_A.display_name} chose `split` and {player_B.display_name} chose `steal`, and therefore {player_A.display_name} win."
-msgstr "{player_A.display_name} a ales `split` și {player_B.display_name} a ales `steal`, și prin urmare {player_A.display_name} câștigă."
-
 #: splitorstealgame\view.py:99
-msgid "{player_B.display_name} chose `split` and {player_A.display_name} chose `steal`, and therefore {player_B.display_name} win."
-msgstr "{player_B.display_name} a ales `split` și {player_A.display_name} a ales `steal`, și prin urmare {player_B.display_name} câștigă."
+msgid "{player_A.display_name} chose `steal` and {player_B.display_name} chose `split`, and therefore {player_A.display_name} win."
+msgstr "{player_A.display_name} a ales `steal` și {player_B.display_name} a ales `split`, și prin urmare {player_A.display_name} câștigă."
 
-#: splitorstealgame\view.py:128
+#: splitorstealgame\view.py:105
+msgid "{player_B.display_name} chose `steal` and {player_A.display_name} chose `split`, and therefore {player_B.display_name} win."
+msgstr "{player_B.display_name} a ales `steal` și {player_A.display_name} a ales `split`, și prin urmare {player_B.display_name} câștigă."
+
+#: splitorstealgame\view.py:137
 msgid "You have already joined this game."
 msgstr "Te-ai alăturat deja acestui joc."
 
-#: splitorstealgame\view.py:131
+#: splitorstealgame\view.py:141
 msgid "You have joined this game."
 msgstr "Te-ai alăturat acestui joc."
 
-#: splitorstealgame\view.py:138 splitorstealgame\view.py:148
+#: splitorstealgame\view.py:149 splitorstealgame\view.py:164
 msgid "You have already chose `{original_response}`."
 msgstr "Ați ales deja `{original_response}`."
 
-#: splitorstealgame\view.py:141
+#: splitorstealgame\view.py:156
 msgid "You have chose `split`."
 msgstr "Ați ales `split`."
 
-#: splitorstealgame\view.py:151
+#: splitorstealgame\view.py:171
 msgid "You have chose `steal`."
 msgstr "Ați ales `steal`."
 

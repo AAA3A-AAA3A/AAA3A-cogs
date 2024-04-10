@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:18\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:22\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -26,11 +26,11 @@ msgstr "O rotiță pentru a face artă pixel pe Discord!"
 msgid "This message isn't in the cache."
 msgstr "Acest mesaj nu se află în memoria cache."
 
-#: draw\start_view.py:93 draw\start_view.py:102
+#: draw\start_view.py:94 draw\start_view.py:103
 msgid "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
 msgstr "Creați o nouă tablă de desen cu `height = {height}`, `width = {width}` și `background = {background}`."
 
-#: draw\view.py:331
+#: draw\view.py:332
 msgid "Please type all the colors you want to add. They can be either or all of:\n"
 "• The hex codes (e.g. `ff64c4` or `ff64c4ff` to include alpha) **separated by space**,\n"
 "• The RGB(A) values separated by space or comma or both (e.g. `(255 100 196)` or `(255, 100, 196, 125)`) of each color **surrounded by brackets**\n"
@@ -42,15 +42,15 @@ msgstr "Vă rugăm să introduceți toate culorile pe care doriți să le adăug
 "- Orice emoji a cărui culoare principală doriți să o extrageți (de exemplu, 🐸 va da 77b255)\n"
 "- Orice fișier de imagine (primele 5 culori abundente vor fi extrase)."
 
-#: draw\view.py:404
+#: draw\view.py:402
 msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
 msgstr "Vă rugăm să trimiteți un mesaj care să conțină emoticoanele pe care doriți să le adăugați la paleta dumneavoastră. De exemplu, `😎 Îmi plac broaștele țestoase 🐢`."
 
-#: draw\view.py:817
+#: draw\view.py:809
 msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
 msgstr "Vă rugăm să introduceți celula în care doriți să mutați cursorul. de exemplu, `A1`, `a1`, `A10`, `A`, `10`, etc."
 
-#: draw\view.py:949
+#: draw\view.py:938
 msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
 "B7-C9:green`."
 msgstr "Vă rugăm să introduceți celulele cu numele culorilor principale. O culoare pentru fiecare linie, separată de celulă prin \":\". Exemplu: `A1:roșu\n"

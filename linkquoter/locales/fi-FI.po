@@ -1,0 +1,81 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/linkquoter/locales/messages.pot\n"
+"X-Crowdin-File-ID: 316\n"
+"Language: fi_FI\n"
+
+#: linkquoter\converters.py:45 linkquoter\converters.py:57
+msgid "Can't read messages in {channel.mention}."
+msgstr "Ei voi lukea viestejä osoitteessa {channel.mention}."
+
+#: linkquoter\converters.py:49
+msgid "Can't read message history in {channel.mention}."
+msgstr "Viestihistoriaa ei voi lukea osoitteessa {channel.mention}."
+
+#: linkquoter\converters.py:65
+msgid "I can only quote messages from servers."
+msgstr "Voin lainata vain palvelimien viestejä."
+
+#: linkquoter\converters.py:69
+msgid "Messages from NSFW channels cannot be quoted in non-NSFW channels."
+msgstr "NSFW-kanavien viestejä ei voi lainata muissa kuin NSFW-kanavissa."
+
+#: linkquoter\converters.py:82
+msgid "This server is not opted in to quote messages from other servers."
+msgstr "Tämä palvelin ei ole oikeutettu lainaamaan muiden palvelimien viestejä."
+
+#: linkquoter\converters.py:86
+msgid "That server is not opted in to allow its messages to be quoted in other servers."
+msgstr "Kyseisellä palvelimella ei ole lupaa sallia, että sen viestejä siteerataan muilla palvelimilla."
+
+#: linkquoter\converters.py:95
+msgid "You don't have permission to read messages in that channel."
+msgstr "Sinulla ei ole lupaa lukea viestejä kyseisellä kanavalla."
+
+#: linkquoter\linkquoter.py:55
+#, docstring
+msgid "Quote any Discord message from its link!"
+msgstr "Lainaa mitä tahansa Discord-viestiä sen linkistä!"
+
+#: linkquoter\linkquoter.py:217
+msgid "{author.display_name} said..."
+msgstr "{author.display_name} sanoi..."
+
+#: linkquoter\linkquoter.py:241
+msgid "Attachments:"
+msgstr "Liitteet:"
+
+#: linkquoter\linkquoter.py:252
+msgid "Stickers:"
+msgstr "Tarrat:"
+
+#: linkquoter\linkquoter.py:266
+msgid "Replying to:"
+msgstr "Replying to:"
+
+#: linkquoter\linkquoter.py:267
+msgid "Click to view attachments."
+msgstr "Klikkaa nähdäksesi liitetiedostot."
+
+#: linkquoter\linkquoter.py:337
+#, docstring
+msgid "Migrate config from LinkQuoter by Phen."
+msgstr "Siirrä konfiguraatio LinkQuoterista Phen."
+
+#: linkquoter\linkquoter.py:362
+msgid "Data successfully migrated from LinkQuoter by Phen."
+msgstr "Tiedot siirretty onnistuneesti LinkQuoterista Phen."
+

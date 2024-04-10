@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 18:22\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:39\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -22,30 +22,43 @@ msgstr ""
 msgid "A cog to allow a member to choose custom prefixes, just for them!"
 msgstr "Trybik pozwalający członkowi wybrać niestandardowe prefiksy, tylko dla nich!"
 
-#: memberprefix\memberprefix.py:165
+#: memberprefix\memberprefix.py:160
 msgid "You now use this server or global prefixes."
 msgstr "Teraz używasz tego serwera lub prefiksów globalnych."
 
-#: memberprefix\memberprefix.py:169
+#: memberprefix\memberprefix.py:164
 msgid "A prefix is above the maximal length (25 characters).\n"
 "This is possible for global or per-server prefixes, but not for per-member prefixes."
 msgstr "Prefiks jest powyżej maksymalnej długości (25 znaków).\n"
 "Jest to możliwe dla prefiksów globalnych lub per-server, ale nie dla prefiksów per-member."
 
-#: memberprefix\memberprefix.py:175
+#: memberprefix\memberprefix.py:170
 msgid "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
 msgstr "Przedrostki nie mogą zaczynać się od `/`, ponieważ koliduje to z komendami ukośników Discorda."
 
-#: memberprefix\memberprefix.py:179
-msgid "Prefix for you only set."
-msgstr "Przedrostek dla ciebie tylko zestaw."
+#: memberprefix\memberprefix.py:175
+msgid "Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+msgstr "Prefiks ustawiony tylko dla użytkownika. Możesz użyć bieżących prefiksów lub wspomnieć bota, aby wywołać polecenie, lub zresetować prefiksy za pomocą tego samego polecenia, jeśli je zapomnisz."
 
 #: memberprefix\memberprefix.py:181
-msgid "Prefixes for you only set."
-msgstr "Przedrostki dla Ciebie tylko zestaw."
+msgid "Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
+msgstr "Prefiksy tylko dla ciebie. Możesz użyć bieżących prefiksów lub wspomnieć bota, aby wywołać polecenie, lub zresetować prefiksy za pomocą tego samego polecenia, jeśli je zapomnisz."
 
-#: memberprefix\memberprefix.py:250
+#: memberprefix\memberprefix.py:196
 #, docstring
-msgid "Clear all members prefixes for this guild."
-msgstr "Wyczyść wszystkie prefiksy członków dla tej gildii."
+msgid "Clear prefixes for a specified member in a specified server."
+msgstr "Wyczyszczenie prefiksów dla określonego elementu członkowskiego na określonym serwerze."
+
+#: memberprefix\memberprefix.py:198
+msgid "Prefixes cleared for this member in this guild."
+msgstr "Prefiksy wyczyszczone dla tego członka w tej gildii."
+
+#: memberprefix\memberprefix.py:202
+#, docstring
+msgid "Clear all members prefixes for a specified server."
+msgstr "Czyści wszystkie prefiksy członkowskie dla określonego serwera."
+
+#: memberprefix\memberprefix.py:204
+msgid "All members prefixes purged in this guild."
+msgstr "Prefiksy wszystkich członków tej gildii zostały usunięte."
 

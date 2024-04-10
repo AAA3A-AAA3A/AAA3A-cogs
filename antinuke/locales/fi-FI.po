@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:18\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:20\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -22,48 +22,48 @@ msgstr ""
 msgid "A cog to remove all permissions from a person who deletes a channel!"
 msgstr "Pyörä poistaa kaikki oikeudet henkilöltä, joka poistaa kanavan!"
 
-#: antinuke\antinuke.py:182
+#: antinuke\antinuke.py:179
 msgid "All your roles have been taken away because you have deleted channel #{old_channel}.\n"
 "Your previous roles: {rolelist_name}"
 msgstr "Kaikki roolisi on otettu pois, koska olet poistanut kanavan #{old_channel}.\n"
 "Aiemmat roolisi: {rolelist_name}"
 
-#: antinuke\antinuke.py:194
+#: antinuke\antinuke.py:191
 msgid "All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server."
 msgstr "Kaikki roolit osoitteessa {perp} ({perp.id}) olevat roolit on poistettu, koska antinuke-järjestelmä on käynnistetty tällä palvelimella."
 
-#: antinuke\antinuke.py:203
+#: antinuke\antinuke.py:200
 msgid "The user {perp} has deleted the channel #{old_channel.name}!"
 msgstr "Käyttäjä {perp} on poistanut kanavan #{old_channel.name}!"
 
-#: antinuke\antinuke.py:206
+#: antinuke\antinuke.py:203
 msgid "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\n"
 "User mention: {perp.mention} - User ID: {perp.id}"
 msgstr "Estääkseni häntä tekemästä mitään muuta, otin pois niin monta roolia kuin nykyiset oikeuteni sallivat.\n"
 "Käyttäjän maininta: {perp.mention} - Käyttäjätunnus: {perp.id}"
 
-#: antinuke\antinuke.py:217
+#: antinuke\antinuke.py:214
 msgid "Before I intervened, the user had the following roles:"
 msgstr "Ennen kuin puutuin asiaan, käyttäjällä oli seuraavat roolit:"
 
-#: antinuke\antinuke.py:253
+#: antinuke\antinuke.py:250
 #, docstring
 msgid "Reset number detected for a user."
 msgstr "Käyttäjälle havaittu nollausnumero."
 
-#: antinuke\antinuke.py:255
+#: antinuke\antinuke.py:252
 msgid "Only the owner of this server can access these commands!"
 msgstr "Vain tämän palvelimen omistaja voi käyttää näitä komentoja!"
 
-#: antinuke\antinuke.py:269
+#: antinuke\antinuke.py:266
 msgid "All former roles of {user} ({user.id}) have been restored at the request of the server owner."
 msgstr "Kaikki entiset {user} ({user.id}) roolit on palautettu palvelimen omistajan pyynnöstä."
 
-#: antinuke\antinuke.py:273
+#: antinuke\antinuke.py:270
 msgid "Restored roles for {user.name} ({user.id})."
 msgstr "Palautettu {user.name} ({user.id})."
 
-#: antinuke\antinuke.py:277
+#: antinuke\antinuke.py:274
 msgid "Count reset for {user.name} ({user.id})."
 msgstr "Count reset for {user.name} ({user.id})."
 

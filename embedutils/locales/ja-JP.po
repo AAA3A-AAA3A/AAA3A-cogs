@@ -1,0 +1,278 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:42\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/embedutils/locales/messages.pot\n"
+"X-Crowdin-File-ID: 314\n"
+"Language: ja_JP\n"
+
+#: embedutils\converters.py:63 embedutils\converters.py:78
+msgid "This doesn't seem to be properly formatted embed {conversion_type}. Refer to the link on `{ctx.clean_prefix}help {ctx.command.qualified_name}`."
+msgstr "これは適切にフォーマットされていないようです 埋め込み {conversion_type}。{ctx.clean_prefix}help {ctx.command.qualified_name}`のリンクを参照してください。"
+
+#: embedutils\converters.py:90
+msgid "JSON Parse Error"
+msgstr "JSONパースエラー"
+
+#: embedutils\converters.py:101
+msgid "YAML Parse Error"
+msgstr "YAMLパースエラー"
+
+#: embedutils\converters.py:111
+msgid "The `content` field is not supported for this command."
+msgstr "このコマンドでは`content`フィールドはサポートされていません。"
+
+#: embedutils\converters.py:125
+msgid "Embed Parse Error"
+msgstr "エンベッドパースエラー"
+
+#: embedutils\converters.py:130
+msgid "Embed size exceeds Discord limit of 6000 characters ({length})."
+msgstr "埋め込みサイズがDiscordの制限である6000文字を超えています ({length})。"
+
+#: embedutils\converters.py:142 embedutils\embedutils.py:102
+#: embedutils\embedutils.py:135 embedutils\embedutils.py:167
+#: embedutils\embedutils.py:202 embedutils\embedutils.py:233
+#: embedutils\embedutils.py:264 embedutils\embedutils.py:307
+#: embedutils\embedutils.py:414 embedutils\embedutils.py:505
+#: embedutils\embedutils.py:682 embedutils\embedutils.py:738
+msgid "Embed Send Error"
+msgstr "埋め込み送信エラー"
+
+#: embedutils\converters.py:155
+msgid "Use `{ctx.prefix}help {ctx.command.qualified_name}` to see an example."
+msgstr "{ctx.prefix}help {ctx.command.qualified_name}` で例を見ることができる。"
+
+#: embedutils\converters.py:195
+msgid "Embed limit reached ({limit})."
+msgstr "エンベッドリミットに達しました ({limit})。"
+
+#: embedutils\converters.py:200
+msgid "Failed to convert input into embeds."
+msgstr "入力を埋め込みに変換できませんでした。"
+
+#: embedutils\converters.py:219
+msgid "It's not a valid channel or thread."
+msgstr "有効なチャンネルでもスレッドでもない。"
+
+#: embedutils\converters.py:223
+msgid "I do not have permissions to send embeds in {channel.mention}."
+msgstr "{channel.mention}でエンベッドを送信する権限がありません。"
+
+#: embedutils\converters.py:230
+msgid "You do not have permissions to send embeds in {channel.mention}."
+msgstr "{channel.mention}でエンベッドを送信する権限がありません。"
+
+#: embedutils\converters.py:242
+msgid "I have to be the author of the message. You can use the command without providing a message to send one."
+msgstr "私はメッセージの作者でなければなりません。メッセージを送らなくても、このコマンドは使えます。"
+
+#: embedutils\converters.py:252
+msgid "You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`)."
+msgstr "既存のメッセージの埋め込みを編集することはできません（ボットのオーナーはコマンド `[p]embed edit` の Permissions コグで権限を設定できます）。"
+
+#: embedutils\embedutils.py:44
+#, docstring
+msgid "Create, send, and store embeds!"
+msgstr "エンベッドの作成、送信、保存"
+
+#: embedutils\embedutils.py:112
+#, docstring
+msgid "Post embeds from valid JSON.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        You can use an [**embeds creator**](https://embedutils.com/) to get a JSON payload.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        You can use an attachment and the command `[p]embed yamlfile` will be invoked automatically.\n"
+"        "
+msgstr "有効なJSONから埋め込みを投稿してください。\n\n"
+"        これは、[**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object) が期待するフォーマットでなければなりません。\n"
+"        以下に例を示します：[**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        JSON ペイロードを取得するには、[**embeds creator**](https://embedutils.com/) を使用します。\n\n"
+"        メッセージを指定すると、それが編集されます。\n"
+"        添付ファイルを使用すると、`[p]embed yamlfile`コマンドが自動的に呼び出されます。\n"
+"        "
+
+#: embedutils\embedutils.py:145
+#, docstring
+msgid "Post embeds from valid YAML.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        You can use an attachment and the command `[p]embed yamlfile` will be invoked automatically.\n"
+"        "
+msgstr "有効なYAMLから埋め込みを投稿してください。\n\n"
+"        これは[**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object)が期待するフォーマットでなければなりません。\n"
+"        以下に例を示します：[**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        メッセージを提供すると、編集されます。\n"
+"        添付ファイルを使用すると、コマンド `[p]embed yamlfile` が自動的に呼び出されます。\n"
+"        "
+
+#: embedutils\embedutils.py:173
+#, docstring
+msgid "Post an embed from a valid JSON file (upload it).\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        You can use an [**embeds creator**](https://embedutils.com/) to get a JSON payload.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "有効なJSONファイルから埋め込みを投稿してください（アップロードしてください）。\n\n"
+"        これは、[**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object)が期待するフォーマットでなければなりません。\n"
+"        以下に例を示します：[**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        JSON ペイロードを取得するには、[**embeds creator**](https://embedutils.com/) を使用します。\n\n"
+"        メッセージを提供すると、それが編集されます。\n"
+"        "
+
+#: embedutils\embedutils.py:188 embedutils\embedutils.py:219
+#: embedutils\embedutils.py:388 embedutils\embedutils.py:398
+#: embedutils\embedutils.py:478 embedutils\embedutils.py:488
+msgid "Unreadable attachment with `utf-8`."
+msgstr "utf-8`の添付ファイルが読めない。"
+
+#: embedutils\embedutils.py:208
+#, docstring
+msgid "Post an embed from a valid YAML file (upload it).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "有効なYAMLファイルから埋め込みを投稿する（アップロードする）。\n\n"
+"        メッセージを記入すると編集されます。\n"
+"        "
+
+#: embedutils\embedutils.py:245
+#, docstring
+msgid "Post embeds from a GitHub/Gist/Pastebin/Hastebin link containing valid JSON.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "有効なJSONを含むGitHub/Gist/Pastebin/Hastebinリンクから埋め込みを投稿してください。\n\n"
+"        これは、[**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object) が期待するフォーマットでなければなりません。\n"
+"        以下に例を示します：[**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        メッセージを提供した場合、そのメッセージは編集されます。\n"
+"        "
+
+#: embedutils\embedutils.py:275
+#, docstring
+msgid "Post embed(s) from an existing message.\n\n"
+"        The message must have at least one embed.\n"
+"        You can specify an index (starting by 0) if you want to send only one of the embeds.\n"
+"        You can include the content of the message already sent.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "既存のメッセージから埋め込みを投稿する。\n\n"
+"        メッセージには少なくとも一つの埋め込みが必要です。\n"
+"        つの埋め込みだけを送信したい場合は、インデックス（0から始まる）を指定することができます。\n"
+"        すでに送信したメッセージの内容を含めることができます。\n\n"
+"        メッセージを指定した場合、そのメッセージは編集されます。\n"
+"        "
+
+#: embedutils\embedutils.py:318
+#, docstring
+msgid "Download a JSON file for a message's embed(s).\n\n"
+"        The message must have at least one embed.\n"
+"        You can specify an index (starting by 0) if you want to include only one of the embeds.\n"
+"        You can include the content of the message already sent.\n"
+"        "
+msgstr "メッセージの埋め込み用の JSON ファイルをダウンロードします。\n\n"
+"        メッセージには少なくとも1つの埋め込みが必要です。\n"
+"        埋め込みを1つだけ含める場合は、インデックス（0から始まる）を指定できます。\n"
+"        すでに送信されたメッセージの内容を含めることができます。\n"
+"        "
+
+#: embedutils\embedutils.py:368
+#, docstring
+msgid "Edit a message sent by [botname].\n\n"
+"        It would be better to use the `message` parameter of all the other commands.\n"
+"        "
+msgstr "botname]が送信したメッセージを編集する。\n\n"
+"        他のコマンドの `message` パラメータを使用する方が良いでしょう。\n"
+"        "
+
+#: embedutils\embedutils.py:450
+#, docstring
+msgid "Store an embed.\n\n"
+"        Put the name in quotes if it is multiple words.\n"
+"        The `locked` argument specifies whether the embed should be locked to mod and superior only (guild level) or bot owners only (global level).\n"
+"        "
+msgstr "埋め込みを保存する。\n\n"
+"        複数単語の場合は引用符で囲む。\n"
+"        locked`引数は、埋め込みをMODと上長のみ(ギルドレベル)にロックするか、ボットオーナーのみ(グローバルレベル)にロックするかを指定します。\n"
+"        "
+
+#: embedutils\embedutils.py:458 embedutils\embedutils.py:539
+#: embedutils\embedutils.py:558 embedutils\embedutils.py:590
+#: embedutils\embedutils.py:622 embedutils\embedutils.py:651
+#: embedutils\embedutils.py:704
+msgid "You can't manage global stored embeds."
+msgstr "グローバルに保存されたエンベッドを管理することはできません。"
+
+#: embedutils\embedutils.py:516
+msgid "This server has reached the embed limit of {embed_limit}. You must remove an embed with `{ctx.clean_prefix}embed unstore` before you can add a new one."
+msgstr "このサーバーは {embed_limit}の埋め込み制限に達しました。新しいembedを追加する前に、`{ctx.clean_prefix}embed unstore`でembedを削除する必要があります。"
+
+#: embedutils\embedutils.py:535
+#, docstring
+msgid "Remove a stored embed."
+msgstr "保存されている埋め込みを削除する。"
+
+#: embedutils\embedutils.py:545 embedutils\embedutils.py:595
+#: embedutils\embedutils.py:627
+msgid "This is not a stored embed at this level."
+msgstr "このレベルではストアドの埋め込みはできない。"
+
+#: embedutils\embedutils.py:554 embedutils\embedutils.py:586
+#, docstring
+msgid "Get info about a stored embed."
+msgstr "保存された埋め込みに関する情報を取得する。"
+
+#: embedutils\embedutils.py:564
+msgid "No stored embeds is configured at this level."
+msgstr "このレベルではストアド・エンベッドは設定されない。"
+
+#: embedutils\embedutils.py:568
+msgid "Global "
+msgstr "グローバル "
+
+#: embedutils\embedutils.py:568
+msgid "Stored Embeds"
+msgstr "保存されたエンベッド"
+
+#: embedutils\embedutils.py:618
+#, docstring
+msgid "Download a JSON file for a stored embed."
+msgstr "ストアドエンベッドのJSONファイルをダウンロードする。"
+
+#: embedutils\embedutils.py:647
+#, docstring
+msgid "Post stored embeds."
+msgstr "保存されたエンベッドを投稿する。"
+
+#: embedutils\embedutils.py:671 embedutils\embedutils.py:724
+msgid "`{name}` is not a stored embed at this level."
+msgstr "{name}`は、このレベルではストアド・エンベッドではない。"
+
+#: embedutils\embedutils.py:700
+#, docstring
+msgid "Post stored embeds with a webhook."
+msgstr "保存されたエンベッドをウェブフックで投稿する。"
+
+#: embedutils\embedutils.py:743
+#, docstring
+msgid "Migrate stored embeds from EmbedUtils by Phen."
+msgstr "PhenによってEmbedUtilsから保存されたエンベッドを移行する。"
+
+#: embedutils\embedutils.py:787
+msgid "Data successfully migrated from EmbedUtils by Phen."
+msgstr "PhenによるEmbedUtilsからのデータ移行に成功。"
+

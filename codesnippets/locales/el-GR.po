@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-08-22 14:22+0200\n"
-"PO-Revision-Date: 2023-08-22 12:29\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:22\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -22,25 +22,25 @@ msgstr ""
 msgid "A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
 msgstr "Ένα γρανάζι για την αποστολή περιεχομένου κώδικα από μια διεύθυνση URL του GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin!"
 
-#: codesnippets\codesnippets.py:496
+#: codesnippets\codesnippets.py:495
 msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
 msgstr "Δεν βρέθηκε η διεύθυνση URL GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin."
 
-#: codesnippets\codesnippets.py:536
+#: codesnippets\codesnippets.py:533
 #, docstring
 msgid "Add a channel where the cog have to send automatically code snippets from URLs."
 msgstr "Προσθέστε ένα κανάλι όπου το γρανάζι πρέπει να στέλνει αυτόματα αποσπάσματα κώδικα από διευθύνσεις URL."
 
-#: codesnippets\codesnippets.py:540
+#: codesnippets\codesnippets.py:537
 msgid "The cog is already enabled in this channel"
 msgstr "Το γρανάζι είναι ήδη ενεργοποιημένο σε αυτό το κανάλι"
 
-#: codesnippets\codesnippets.py:551
+#: codesnippets\codesnippets.py:548
 #, docstring
 msgid "Remove a channel where the cog have to send automatically code snippets from URLs."
 msgstr "Αφαιρέστε ένα κανάλι όπου το γρανάζι πρέπει να στέλνει αυτόματα αποσπάσματα κώδικα από διευθύνσεις URL."
 
-#: codesnippets\codesnippets.py:555
+#: codesnippets\codesnippets.py:552
 msgid "The cog is already disabled in this channel"
 msgstr "Το γρανάζι είναι ήδη απενεργοποιημένο σε αυτό το κανάλι"
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 18:22\n"
+"POT-Creation-Date: 2023-08-10 13:42+0200\n"
+"PO-Revision-Date: 2024-04-10 12:39\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -22,71 +22,65 @@ msgstr ""
 msgid "A cog to send the result of a command to another channel!"
 msgstr "Зубец для отправки результата команды на другой канал!"
 
-#: cmdchannel\cmdchannel.py:75
+#: cmdchannel\cmdchannel.py:86
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a channel, the current one will be used, unless the command you want to use is the name of an existing channel (help or test for example).\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmdchannel`!\n"
 "        "
-msgstr "Действуйте так, как будто команда была набрана в выбранном вами канале.\n"
-"        Префикс не должен вводиться, если это команда. Это будет только сообщение, если команда недействительна.\n"
-"        Если вы не укажете канал, будет использоваться текущий канал, если только команда, которую вы хотите использовать, не является именем существующего канала (например, help или test).\n\n"
+msgstr "Действуйте так, как если бы команда была набрана в выбранном вами канале.\n"
+"        Префикс не должен вводиться, если это команда. Это будет только сообщение, если команда недействительна.\n\n"
 "        Используйте `[p]cmdchannel`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:84 cmdchannel\cmdchannel.py:153
+#: cmdchannel\cmdchannel.py:94 cmdchannel\cmdchannel.py:162
 msgid "To send commands to another server, you must be there."
 msgstr "Чтобы отправлять команды на другой сервер, вы должны находиться там."
 
-#: cmdchannel\cmdchannel.py:107
+#: cmdchannel\cmdchannel.py:117
 #, docstring
 msgid "Act as if the command had been typed by imitating the specified user.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a user, the author will be used.\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmduser`!\n"
 "        "
-msgstr "Действуйте так, как будто команда была набрана, имитируя указанного пользователя.\n"
-"        Префикс не должен вводиться, если это команда. Это будет только сообщение, если команда недействительна.\n"
-"        Если вы не укажете пользователя, будет использован автор.\n\n"
+msgstr "Действовать так, как будто команда была набрана, имитируя указанного пользователя.\n"
+"        Префикс не должен вводиться, если это команда. Он будет только в виде сообщения, если команда недействительна.\n\n"
 "        Используйте `[p]cmduser`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:117 cmdchannel\cmdchannel.py:158
+#: cmdchannel\cmdchannel.py:126 cmdchannel\cmdchannel.py:167
 msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
 msgstr "Чтобы иметь возможность выполнить команду от имени другого пользователя, необходимо загрузить cog Dev, чтобы убедиться, что вы знаете, что делаете."
 
-#: cmdchannel\cmdchannel.py:140
+#: cmdchannel\cmdchannel.py:150
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
-"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n"
-"        If you do not specify a user, the author will be used.\n\n"
+"        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
 "        Use `[p]cmduserchannel`!\n"
 "        "
 msgstr "Действуйте так, как будто команда была набрана в выбранном вами канале, имитируя указанного пользователя.\n"
-"        Префикс не должен вводиться, если это команда. Это будет только сообщение, если команда недействительна.\n"
-"        Если вы не укажете пользователя, будет использован автор.\n\n"
+"        Префикс не должен вводиться, если это команда. Он будет только в виде сообщения, если команда недействительна.\n\n"
 "        Используйте `[p]cmduserchannel`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:174
+#: cmdchannel\cmdchannel.py:184
 #, docstring
 msgid "Test variables."
 msgstr "Тестовые переменные."
 
-#: cmdchannel\cmdchannel.py:176
+#: cmdchannel\cmdchannel.py:186
 msgid "Testvar"
 msgstr "Testvar"
 
-#: cmdchannel\cmdchannel.py:177
+#: cmdchannel\cmdchannel.py:187
 msgid "Variables:"
 msgstr "Переменные:"
 
-#: cmdchannel\cmdchannel.py:178
+#: cmdchannel\cmdchannel.py:188
 msgid "Author:"
 msgstr "Автор:"
 
-#: cmdchannel\cmdchannel.py:179
+#: cmdchannel\cmdchannel.py:189
 msgid "Channel:"
 msgstr "Канал:"
 

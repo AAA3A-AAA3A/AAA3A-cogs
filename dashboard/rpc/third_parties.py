@@ -17,7 +17,8 @@ def dashboard_page(
     methods: typing.List[str] = ["GET"],
     context_ids: typing.List[str] = None,
     required_kwargs: typing.List[str] = None,
-    permissions_required: typing.List[str] = ["view"],
+    is_owner: bool = False,
+    # permissions_required: typing.List[str] = ["view"],
     hidden: typing.Optional[bool] = None,
 ):
     if context_ids is None:
@@ -39,7 +40,8 @@ def dashboard_page(
             "methods": methods,
             "context_ids": context_ids,
             "required_kwargs": required_kwargs,
-            "permissions_required": permissions_required,
+            "is_owner": is_owner,
+            # "permissions_required": permissions_required,
             "hidden": hidden,
         }
         for key, value in inspect.signature(func).parameters.items():
@@ -60,16 +62,17 @@ def dashboard_page(
                 and f"{key}_id" not in params["context_ids"]
             ):
                 params["context_ids"].append(f"{key}_id")
-            elif key not in ["method", "lang_code"]:
+            elif key not in ["method", "request_url", "csrf_token", "lang_code"]:
                 params["required_kwargs"].append(key)
 
         # A guild must be chose for these kwargs.
         for key in ["member_id", "role_id", "channel_id"]:
             if key in params["context_ids"] and "guild_id" not in params["context_ids"]:
                 params["context_ids"].append("guild_id")
+                break
 
-        # No guild available without user connection.
-        if "guild_id" in params["context_ids"] and "user_id" not in params["context_ids"]:
+        # No guild available and no owner check without user connection.
+        if "guild_id" in params["context_ids"] and ("user_id" not in params["context_ids"] or is_owner):
             params["context_ids"].append("user_id")
         if params["hidden"] is None:
             params["hidden"] = params["required_kwargs"] or [
@@ -179,6 +182,8 @@ class DashboardRPC_ThirdParties:
         method: str,
         name: str,
         page: str,
+        request_url: str,
+        csrf_token: str,
         context_ids: typing.Optional[typing.Dict[str, int]] = None,
         kwargs: typing.Dict[str, typing.Any] = None,
         lang_code: typing.Optional[str] = None,
@@ -214,12 +219,19 @@ class DashboardRPC_ThirdParties:
             if (user := self.bot.get_user(context_ids["user_id"])) is None:
                 return {
                     "status": 1,
-                    "message": "Page not found.",
+                    "message": "Forbidden access.",
                     "error_code": 404,
                     "error_message": "Looks like that I do not share any server with you...",
                 }
             kwargs["user_id"] = context_ids["user_id"]
             kwargs["user"] = user
+            if self.third_parties[name][page][1]["is_owner"] and context_ids["user_id"] not in self.bot.owner_ids:
+                return {
+                    "status": 1,
+                    "message": "Forbidden access.",
+                    "error_code": 403,
+                    "error_message": "You must be the owner of the bot to access this page.",
+                }
         if (
             "guild_id" in self.third_parties[name][page][1]["context_ids"]
             and "user_id" in self.third_parties[name][page][1]["context_ids"]
@@ -227,7 +239,7 @@ class DashboardRPC_ThirdParties:
             if (guild := self.bot.get_guild(context_ids["guild_id"])) is None:
                 return {
                     "status": 1,
-                    "message": "Page not found.",
+                    "message": "Forbidden access.",
                     "error_code": 404,
                     "error_message": "Looks like that I'm not in this server...",
                 }
@@ -237,14 +249,14 @@ class DashboardRPC_ThirdParties:
             ):
                 return {
                     "status": 1,
-                    "message": "Page not found.",
+                    "message": "Forbidden access.",
                     "error_code": 403,
                     "error_message": "Looks like that you're not in this server...",
                 }
             # if m.id != guild.owner.id:
             #     perms = self.cog.rpc.get_perms(guildid=guild.id, m=m)
             #     if perms is None:
-            #         return {"status": 1, "message": "Page not found.", "error_code": 403, "error_message": "Looks like that you haven't permissions in this server..."}
+            #         return {"status": 1, "message": "Forbidden access.", "error_code": 403, "error_message": "Looks like that you haven't permissions in this server..."}
             #     for permission in self.third_parties[name][page][1]["permissions_required"]:
             #         if permission not in perms:
             #             return {"status": 1, "message": "Page not found.", "error_code": 403, "error_message": "Looks like that you haven't permissions in this server..."}
@@ -254,7 +266,7 @@ class DashboardRPC_ThirdParties:
                 if (member := guild.get_member(context_ids["member_id"])) is None:
                     return {
                         "status": 1,
-                        "message": "Page not found.",
+                        "message": "Forbidden access.",
                         "error_code": 403,
                         "error_message": "Looks like that this member is not found in this guild...",
                     }
@@ -264,7 +276,7 @@ class DashboardRPC_ThirdParties:
                 if (role := guild.get_role(context_ids["role_id"])) is None:
                     return {
                         "status": 1,
-                        "message": "Page not found.",
+                        "message": "Forbidden access.",
                         "error_code": 404,
                         "error_message": "Looks like that this role is not found in this guild...",
                     }
@@ -274,12 +286,14 @@ class DashboardRPC_ThirdParties:
                 if (channel := guild.get_channel(context_ids["channel_id"])) is None:
                     return {
                         "status": 1,
-                        "message": "Page not found.",
+                        "message": "Forbidden access.",
                         "error_code": 404,
                         "error_message": "Looks like that this channel is not found in this guild...",
                     }
                 kwargs["channel_id"] = context_ids["channel_id"]
                 kwargs["channel"] = channel
+        kwargs["request_url"] = request_url
+        kwargs["csrf_token"] = csrf_token
         kwargs["lang_code"] = lang_code or await get_locale_from_guild(
             self.bot, guild=kwargs.get("guild")
         )

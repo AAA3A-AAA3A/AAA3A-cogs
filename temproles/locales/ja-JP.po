@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:09\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:38\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -22,120 +22,140 @@ msgstr ""
 msgid "A cog to assign temporary roles to users, expiring after a set time!"
 msgstr "ユーザーに一時的なロールを割り当てるための歯車！"
 
-#: temproles\temproles.py:166 temproles\temproles.py:241
-#: temproles\temproles.py:283 temproles\temproles.py:364
+#: temproles\temproles.py:166 temproles\temproles.py:250
+#: temproles\temproles.py:308 temproles\temproles.py:353
+#: temproles\temproles.py:437
 msgid "Temp Roles"
 msgstr "臨時の役割"
 
 #: temproles\temproles.py:167
-msgid "Temp Role {temp_role.mention} ({role.id}) has been automatically unassigned from {member.mention} ({member.id})."
-msgstr "Temp Role {temp_role.mention} ({role.id}) は {member.mention} ({member.id}) から自動的に割り当て解除されました。"
+msgid "Temp Role {temp_role.mention} ({temp_role.id}) has been automatically unassigned from {member.mention} ({member.id})."
+msgstr "Temp Role {temp_role.mention} ({temp_role.id}) は {member.mention} ({member.id}) から自動的に割り当て解除されました。"
 
 #: temproles\temproles.py:197
 #, docstring
 msgid "Assign/Add a TempRole to a member, for a specified duration."
 msgstr "指定された期間、メンバーに TempRole を割り当て/追加します。"
 
-#: temproles\temproles.py:200
+#: temproles\temproles.py:206
+msgid "This role is already a TempRole of this member. Do you want to edit the duration?\n"
+"Currently, this Temp Role expires {timestamp}."
+msgstr "このロールはすでにこのメンバーのTempRoleです。期間を編集しますか？\n"
+"現在、この Temp Role の有効期限は {timestamp}です。"
+
+#: temproles\temproles.py:214
 msgid "This member already has {role.mention} ({role.id})."
 msgstr "このメンバーはすでに {role.mention} ({role.id})を持っている。"
 
-#: temproles\temproles.py:206
+#: temproles\temproles.py:220
 msgid "This role cannot be assigned due to the Discord role hierarchy."
 msgstr "Discordのロール階層により、このロールを割り当てることはできません。"
 
-#: temproles\temproles.py:212
+#: temproles\temproles.py:226
 msgid "You can't assign this role to this member, due to the Discord role hierarchy."
 msgstr "Discordのロール階層により、このメンバーにこのロールを割り当てることはできません。"
 
-#: temproles\temproles.py:217
-msgid "This role is already a temprole of this member."
-msgstr "この役割は、すでにこのメンバーのテンプレとなっている。"
-
-#: temproles\temproles.py:223
+#: temproles\temproles.py:232 temproles\temproles.py:291
 msgid "The time set is way too high, consider setting something reasonable."
 msgstr "設定時間が高すぎる。"
 
-#: temproles\temproles.py:242 temproles\temproles.py:250
+#: temproles\temproles.py:251 temproles\temproles.py:259
 msgid "Self "
 msgstr "セルフ "
 
-#: temproles\temproles.py:243
+#: temproles\temproles.py:252
 msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
 msgstr "一時的な役割 {role.mention} ({role.id}) は {author.mention} ({author.id}) によって {member.mention} ({member.id}) に割り当てられました。 {time_string}で期限切れ。"
 
-#: temproles\temproles.py:251
-msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires in {time_string}."
-msgstr "Temp Role {role.mention} ({role.id}) は {member.mention} ({member.id}) に割り当てられました。 {time_string}で期限切れ。"
+#: temproles\temproles.py:260
+msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
+msgstr "Temp Role {role.mention} ({role.id}) は {member.mention} ({member.id}) に割り当てられました。有効期限は ** {time_string}** ({timestamp}) です。"
 
-#: temproles\temproles.py:262
+#: temproles\temproles.py:281
+#, docstring
+msgid "Edit a TempRole for a member, for a specified duration."
+msgstr "指定された期間、メンバーの TempRole を編集します。"
+
+#: temproles\temproles.py:285
+msgid "This role isn't a TempRole of this member."
+msgstr "このロールは、このメンバーのTempRoleではありません。"
+
+#: temproles\temproles.py:309
+msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
+msgstr "Temp Role {role.mention} ({role.id}) は {member.mention} ({member.id}) を {author.mention} ({author.id}) が編集しました。 {time_string}で期限切れ。"
+
+#: temproles\temproles.py:316
+msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
+msgstr "Temp Role {role.mention} ({role.id}) は {member.mention} ({member.id}) のために編集されました。Expires **in {time_string}** ({timestamp})."
+
+#: temproles\temproles.py:332
 #, docstring
 msgid "Unassign/Remove a TempRole from a member."
 msgstr "メンバーから TempRole の割り当てを解除/削除します。"
 
-#: temproles\temproles.py:266
+#: temproles\temproles.py:336
 msgid "This role isn't a temprole of this member."
 msgstr "この役割は、このメンバーのテンプレではない。"
 
-#: temproles\temproles.py:284
+#: temproles\temproles.py:354
 msgid "TempRole {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id}) by {author.mention} ({author.id})."
 msgstr "TempRole {role.mention} ({role.id}) は、 {member.mention} ({member.id}) から、 {author.mention} ({author.id}) によって割り当て解除された。"
 
-#: temproles\temproles.py:291
+#: temproles\temproles.py:361
 msgid "Temp Role {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id})."
 msgstr "Temp Role {role.mention} ({role.id}) が {member.mention} ({member.id}) から割り当て解除されました。"
 
-#: temproles\temproles.py:306
+#: temproles\temproles.py:376
 #, docstring
 msgid "List active Temp Roles on this server, for optional specified member and/or role."
 msgstr "このサーバー上のアクティブな一時的ロールの一覧を表示します。"
 
-#: temproles\temproles.py:309
+#: temproles\temproles.py:379
 msgid "This member has this Temp Role."
 msgstr "このメンバーにはこの派遣の役割がある。"
 
-#: temproles\temproles.py:311
+#: temproles\temproles.py:381
 msgid "This member hasn't this Temp Role."
 msgstr "このメンバーはこの派遣の役割を担っていない。"
 
-#: temproles\temproles.py:314
+#: temproles\temproles.py:384
 msgid "This member hasn't any Temp Roles."
 msgstr "このメンバーには派遣の役割はありません。"
 
-#: temproles\temproles.py:316
+#: temproles\temproles.py:386
 msgid "This member has these Temp Roles: {temp_roles}."
 msgstr "{temp_roles}。"
 
-#: temproles\temproles.py:335
+#: temproles\temproles.py:405
 msgid "No members have this Temp Role."
 msgstr "この派遣の役割を持つメンバーはいない。"
 
-#: temproles\temproles.py:337
+#: temproles\temproles.py:407
 msgid "These members have this Temp Role: {temp_roles_members}."
 msgstr "これらのメンバーはこの派遣の役割を持っている: {temp_roles_members}。"
 
-#: temproles\temproles.py:359
+#: temproles\temproles.py:432
 msgid "No active Temp Roles on this server."
 msgstr "このサーバーにアクティブな Temp Roles はありません。"
 
-#: temproles\temproles.py:375
+#: temproles\temproles.py:448
 #, docstring
 msgid "Set the logs channel for Temp Roles."
 msgstr "Temp Rolesのログチャンネルを設定する。"
 
-#: temproles\temproles.py:378
+#: temproles\temproles.py:451
 msgid "Logs channel unset."
 msgstr "チャンネルが設定されていないことをログに記録する。"
 
-#: temproles\temproles.py:382
+#: temproles\temproles.py:455
 msgid "I need of the `embed_links` permission in the logs channel."
 msgstr "ログチャンネルに`embed_links`パーミッションが必要です。"
 
-#: temproles\temproles.py:385
+#: temproles\temproles.py:458
 msgid "Logs channel set."
 msgstr "チャンネルセットのログ。"
 
-#: temproles\temproles.py:396
+#: temproles\temproles.py:469
 #, docstring
 msgid "Add an allowed self Temp Role.\n\n"
 "        **Parameters:**\n"
@@ -148,58 +168,58 @@ msgstr "許可された自己の Temp Role を追加する。\n\n"
 "        - max_time`：self temp ロールの最小時間。none`で無効にする。デフォルトは365日。\n"
 "        "
 
-#: temproles\temproles.py:406
+#: temproles\temproles.py:479
 msgid "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy."
 msgstr "Discordのロール階層により、ロール {role.mention} ({role.id})を割り当てることはできません。"
 
-#: temproles\temproles.py:413
+#: temproles\temproles.py:486
 msgid "This role is already an allowed self temp role."
 msgstr "この役割は、すでに許可された自己派遣の役割である。"
 
-#: temproles\temproles.py:420
+#: temproles\temproles.py:493
 msgid "Allowed self Temp Role added."
 msgstr "許可された自己の一時的な役割が追加されました。"
 
-#: temproles\temproles.py:425
+#: temproles\temproles.py:498
 #, docstring
 msgid "Remove an allowed self Temp Role."
 msgstr "許可された自己の Temp Role を削除する。"
 
-#: temproles\temproles.py:429
+#: temproles\temproles.py:502
 msgid "This role isn't an allowed self temp role."
 msgstr "この役割は、自己派遣の役割としては認められていない。"
 
-#: temproles\temproles.py:433
+#: temproles\temproles.py:506
 msgid "Allowed self Temp Role removed."
 msgstr "許可された自己の一時的な役割は削除された。"
 
-#: temproles\temproles.py:439
+#: temproles\temproles.py:512
 #, docstring
 msgid "Assign/Add an allowed self Temp Role to yourself, for a specified duration."
 msgstr "指定された期間、許可された自己の一時的な役割を自分に割り当てる/追加する。"
 
-#: temproles\temproles.py:444
+#: temproles\temproles.py:517
 msgid "This role isn't an allowed self Temp Role on this server."
 msgstr "このロールは、このサーバーで許可されている自己派遣ロールではありません。"
 
-#: temproles\temproles.py:452
+#: temproles\temproles.py:525
 msgid "The time for this role must be greater than {min_time_string}."
 msgstr "この役割の時間は {min_time_string}以上でなければならない。"
 
-#: temproles\temproles.py:462
+#: temproles\temproles.py:535
 msgid "The time for this role must be less than {max_time_string}."
 msgstr "この職務にかかる時間は {max_time_string}未満でなければならない。"
 
-#: temproles\temproles.py:470 temproles\temproles.py:477
+#: temproles\temproles.py:543 temproles\temproles.py:550
 #, docstring
 msgid "Unassign/Remove an allowed self Temp Role from yourself."
 msgstr "許可された自己の一時的な役割の割り当てを解除する。"
 
-#: temproles\temproles.py:472
+#: temproles\temproles.py:545
 msgid "You can't remove this role from yourself."
 msgstr "この役割を自分から外すことはできない。"
 
-#: temproles\temproles.py:500
+#: temproles\temproles.py:573
 msgid "Self Temp Roles"
 msgstr "自己派遣の役割"
 

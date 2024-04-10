@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-06-05 20:09+0200\n"
-"PO-Revision-Date: 2023-06-05 19:26\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 12:37\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -17,61 +17,62 @@ msgstr ""
 "X-Crowdin-File-ID: 163\n"
 "Language: es_ES\n"
 
-#: discordedit\discordedit.py:22
+#: discordedit\discordedit.py:23
 #, docstring
 msgid "A cog to edit Discord default objects, like guilds, roles, text channels, voice channels, threads and AutoMod!"
 msgstr "Un engranaje para editar objetos predeterminados de Discord, como gremios, roles, canales de texto, canales de voz, hilos y AutoMod!"
 
-#: discordedit\editautomod.py:15 discordedit\editguild.py:21
-#: discordedit\editrole.py:12 discordedit\edittextchannel.py:21
-#: discordedit\editthread.py:26 discordedit\editvoicechannel.py:12
+#: discordedit\editautomod.py:18 discordedit\editguild.py:27
+#: discordedit\editrole.py:25 discordedit\edittextchannel.py:27
+#: discordedit\editthread.py:32 discordedit\editvoicechannel.py:27
+#: discordedit\view.py:18
 msgid "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n"
 "{error}"
 msgstr "Intenté hacer algo para lo que Discord me denegó los permisos. Tu comando no se ha completado correctamente.\n"
 "{error}"
 
-#: discordedit\editautomod.py:24
+#: discordedit\editautomod.py:30
 msgid "Invalid rule ID."
 msgstr "ID de regla no válida."
 
-#: discordedit\editautomod.py:28
+#: discordedit\editautomod.py:34
 msgid "Rule not found."
 msgstr "Regla no encontrada."
 
-#: discordedit\editautomod.py:37 discordedit\editautomod.py:66
+#: discordedit\editautomod.py:43 discordedit\editautomod.py:72
 msgid "Invalid JSON."
 msgstr "JSON no válido."
 
-#: discordedit\editautomod.py:44
+#: discordedit\editautomod.py:50
 msgid "Invalid data. Must be a dict with `trigger_type` and `trigger_metadara` keys."
 msgstr "Datos no válidos. Debe ser un dict con las claves `trigger_type` y `trigger_metadara`."
 
-#: discordedit\editautomod.py:49
+#: discordedit\editautomod.py:55
 msgid "Invalid trigger type."
 msgstr "Tipo de activador no válido."
 
-#: discordedit\editautomod.py:55
+#: discordedit\editautomod.py:61
 msgid "Invalid trigger metadata."
 msgstr "Metadatos de activación no válidos."
 
-#: discordedit\editautomod.py:69 discordedit\editautomod.py:79
+#: discordedit\editautomod.py:75 discordedit\editautomod.py:85
 msgid "Invalid data. Must be a list of dicts with `type` and `data` keys."
 msgstr "Datos no válidos. Debe ser una lista de dicts con claves `type` y `data`."
 
-#: discordedit\editautomod.py:84
+#: discordedit\editautomod.py:90
 msgid "Invalid action type."
 msgstr "Tipo de acción no válido."
 
-#: discordedit\editautomod.py:91
+#: discordedit\editautomod.py:97
 msgid "Invalid action metadata."
 msgstr "Metadatos de acción no válidos."
 
-#: discordedit\editautomod.py:98
+#: discordedit\editautomod.py:104
 #, docstring
 msgid "A cog to edit AutoMod rules!"
 msgstr "Un engranaje para editar las reglas de AutoMod!"
 
-#: discordedit\editautomod.py:122
+#: discordedit\editautomod.py:126
 #, docstring
 msgid "Create an AutoMod rule.\n\n"
 "        event_type:\n"
@@ -96,25 +97,25 @@ msgstr "Crear una regla AutoMod.\n\n"
 "        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
 "        "
 
-#: discordedit\editautomod.py:148
+#: discordedit\editautomod.py:152
 msgid "AutoMod rule {rule.name} ({rule.id}) created."
 msgstr "Regla AutoMod {rule.name} ({rule.id}) creada."
 
-#: discordedit\editautomod.py:155
+#: discordedit\editautomod.py:160
 #, docstring
 msgid "List all AutoMod rules in the current guild."
 msgstr "Lista todas las reglas AutoMod en el gremio actual."
 
-#: discordedit\editautomod.py:161
+#: discordedit\editautomod.py:166
 msgid "List of AutoMod rules in {guild.name} ({guild.id})"
 msgstr "Lista de reglas AutoMod en {guild.name} ({guild.id})"
 
-#: discordedit\editautomod.py:176
+#: discordedit\editautomod.py:181
 #, docstring
 msgid "Edit AutoMod rule name."
 msgstr "Editar el nombre de la regla AutoMod."
 
-#: discordedit\editautomod.py:212
+#: discordedit\editautomod.py:217
 #, docstring
 msgid "Edit AutoMod rule trigger.\n\n"
 "        trigger:\n"
@@ -127,7 +128,7 @@ msgstr "Editar disparador de regla AutoMod.\n\n"
 "        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
 "        "
 
-#: discordedit\editautomod.py:236
+#: discordedit\editautomod.py:241
 #, docstring
 msgid "Edit AutoMod rule actions.\n\n"
 "        actions:\n"
@@ -140,142 +141,199 @@ msgstr "Editar las acciones de la regla AutoMod.\n\n"
 "        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
 "        "
 
-#: discordedit\editautomod.py:256
+#: discordedit\editautomod.py:261
 #, docstring
 msgid "Edit AutoMod rule enabled."
 msgstr "Editar regla AutoMod activada."
 
-#: discordedit\editautomod.py:275
+#: discordedit\editautomod.py:280
 #, docstring
 msgid "Edit AutoMod rule exempt roles."
 msgstr "Editar roles exentos de la regla AutoMod."
 
-#: discordedit\editautomod.py:298
+#: discordedit\editautomod.py:303
 #, docstring
 msgid "Edit AutoMod rule exempt channels."
 msgstr "Editar canales exentos de la regla AutoMod."
 
-#: discordedit\editautomod.py:316
+#: discordedit\editautomod.py:321
 #, docstring
 msgid "Delete automod rule."
 msgstr "Borrar regla automod."
 
-#: discordedit\editautomod.py:319
+#: discordedit\editautomod.py:325
 msgid "⚠️ - Delete AutoMod rule"
 msgstr "⚠️ - Borrar regla AutoMod"
 
-#: discordedit\editautomod.py:320
+#: discordedit\editautomod.py:326 discordedit\editautomod.py:333
 msgid "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
 msgstr "¿Realmente desea eliminar la regla AutoMod {rule.name} ({rule.id}) en {guild.name} ({guild.id})?"
 
-#: discordedit\editautomod.py:399 discordedit\editautomod.py:422
-msgid "Rule `{rule.name} ({rule.id})` modified."
-msgstr "Regla `{rule.name} ({rule.id})` modificada."
+#: discordedit\editautomod.py:409 discordedit\editautomod.py:432
+msgid "Rule `{rule.name} ({rule.id})` edited."
+msgstr "Regla `{rule.name} ({rule.id})` editada."
 
-#: discordedit\editautomod.py:615
+#: discordedit\editautomod.py:623
 msgid "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`."
 msgstr "Seleccione los canales/roles a eximir para la regla AutoMod `{rule.name} ({rule.id})`."
 
-#: discordedit\editautomod.py:637
+#: discordedit\editautomod.py:645
 msgid "Rule `{rule.name} ({rule.id})` enabled."
 msgstr "Regla `{rule.name} ({rule.id})` activada."
 
-#: discordedit\editautomod.py:639
+#: discordedit\editautomod.py:647
 msgid "Rule {rule.name} `{rule.id}` disabled."
 msgstr "Regla {rule.name} `{rule.id}` desactivada."
 
-#: discordedit\editautomod.py:657
+#: discordedit\editautomod.py:665
 msgid "Rule `{rule.name} ({rule.id})` deleted."
 msgstr "Regla `{rule.name} ({rule.id})` suprimida."
 
-#: discordedit\editguild.py:32
+#: discordedit\editguild.py:47
 msgid "Converting to `Locale` failed for parameter `preferred_locale`."
 msgstr "La conversión a `Locale` falló para el parámetro `preferred_locale`."
 
-#: discordedit\editguild.py:38
+#: discordedit\editguild.py:59 discordedit\editguild.py:67
+msgid "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."
+msgstr "El nivel de verificación debe ser \"ninguno\", \"bajo\", \"medio\", \"alto\", \"máximo\", \"0\", \"1\", \"2\", \"3\" o \"4\"."
+
+#: discordedit\editguild.py:78 discordedit\editguild.py:82
+#: discordedit\editguild.py:90
+msgid "The video quality mode must be `0` or `1`."
+msgstr "El modo de calidad de vídeo debe ser `0` o `1`."
+
+#: discordedit\editguild.py:98
 #, docstring
 msgid "A cog to edit guilds!"
 msgstr "Un engranaje para editar gremios!"
 
-#: discordedit\editguild.py:58
+#: discordedit\editguild.py:119
 #, docstring
 msgid "Create a guild with the bot as owner."
 msgstr "Crea un gremio con el bot como propietario."
 
-#: discordedit\editguild.py:76
+#: discordedit\editguild.py:137
 #, docstring
 msgid "Clone a guild."
 msgstr "Clonar un gremio."
 
-#: discordedit\editguild.py:96
+#: discordedit\editguild.py:159
 #, docstring
 msgid "Edit guild name."
 msgstr "Editar nombre de gremio."
 
-#: discordedit\editguild.py:112
+#: discordedit\editguild.py:175
 #, docstring
 msgid "Edit guild description."
 msgstr "Editar descripción del gremio."
 
-#: discordedit\editguild.py:126
+#: discordedit\editguild.py:193
+#, docstring
+msgid "Edit guild icon.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Editar icono de gremio.\n\n"
+"        Puede utilizar una URL o cargar un archivo adjunto.\n"
+"        "
+
+#: discordedit\editguild.py:228
+#, docstring
+msgid "Edit guild banner.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Editar banner de gremio.\n\n"
+"        Puedes usar una URL o subir un archivo adjunto.\n"
+"        "
+
+#: discordedit\editguild.py:235
+msgid "This server doesn't have the `BANNER` feature. This server needs more boosts to perform this action."
+msgstr "Este servidor no tiene la función `BANNER`. Este servidor necesita más boosts para realizar esta acción."
+
+#: discordedit\editguild.py:269
+#, docstring
+msgid "Edit guild splash.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Editar splash de gremio.\n\n"
+"        Puedes usar una URL o subir un archivo adjunto.\n"
+"        "
+
+#: discordedit\editguild.py:276
+msgid "This server doesn't have the `INVITE_SPLASH` feature. This server needs more boosts to perform this action."
+msgstr "Este servidor no tiene la función `INVITE_SPLASH`. Este servidor necesita más boosts para realizar esta acción."
+
+#: discordedit\editguild.py:310
+#, docstring
+msgid "Edit guild discovery splash.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Editar splash de descubrimiento de gremio.\n\n"
+"        Puedes usar una URL o subir un archivo adjunto.\n"
+"        "
+
+#: discordedit\editguild.py:317
+msgid "This server doesn't have the `DISCOVERABLE` feature. This server needs more boosts to perform this action."
+msgstr "Este servidor no tiene la función `DISCOVERABLE`. Este servidor necesita más boosts para realizar esta acción."
+
+#: discordedit\editguild.py:349
 #, docstring
 msgid "Edit guild community state."
 msgstr "Editar estado de comunidad de gremio."
 
-#: discordedit\editguild.py:142
+#: discordedit\editguild.py:365
 #, docstring
 msgid "Edit guild afkchannel."
 msgstr "Editar afkchannel gremio."
 
-#: discordedit\editguild.py:156
+#: discordedit\editguild.py:379
 #, docstring
-msgid "Edit guild afktimeout."
-msgstr "Editar gremio afktimeout."
+msgid "Edit guild afk timeout."
+msgstr "Editar guild afk timeout."
 
-#: discordedit\editguild.py:176
+#: discordedit\editguild.py:399
 #, docstring
 msgid "Edit guild owner (if the bot is bot owner)."
 msgstr "Editar propietario de gremio (si el bot es propietario de bot)."
 
-#: discordedit\editguild.py:180
+#: discordedit\editguild.py:404
 msgid ":⚠️ - Change Guild Owner"
 msgstr ":⚠️ - Cambiar propietario de gremio"
 
-#: discordedit\editguild.py:181
+#: discordedit\editguild.py:405 discordedit\editguild.py:412
 msgid "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
 msgstr "¿De verdad quieres cambiar de gremio propietario del gremio {guild.name} ({guild.id})?"
 
-#: discordedit\editguild.py:204
+#: discordedit\editguild.py:432
 #, docstring
 msgid "Edit guild verification level."
 msgstr "Editar nivel de verificación del gremio."
 
-#: discordedit\editguild.py:220
+#: discordedit\editguild.py:450
 #, docstring
 msgid "Edit guild notification level."
 msgstr "Editar el nivel de notificación del gremio."
 
-#: discordedit\editguild.py:237
+#: discordedit\editguild.py:466
 #, docstring
 msgid "Edit guild explicit content filter."
 msgstr "Editar filtro de contenido explícito del gremio."
 
-#: discordedit\editguild.py:251
+#: discordedit\editguild.py:480
 #, docstring
 msgid "Edit guild vanity code."
 msgstr "Editar código de vanidad del gremio."
 
-#: discordedit\editguild.py:267
+#: discordedit\editguild.py:496
 #, docstring
 msgid "Edit guild system channel."
 msgstr "Editar canal del sistema de gremios."
 
-#: discordedit\editguild.py:283
+#: discordedit\editguild.py:512
 #, docstring
 msgid "Edit guild system channel flags."
 msgstr "Editar banderas de canal del sistema de gremios."
 
-#: discordedit\editguild.py:301
+#: discordedit\editguild.py:528
 #, docstring
 msgid "Edit guild preferred locale.\n\n"
 "        american_english = 'en-US'\n"
@@ -342,103 +400,143 @@ msgstr "Editar configuración regional preferida del gremio.\n\n"
 "        vietnamita = 'vi'\n"
 "        "
 
-#: discordedit\editguild.py:349
+#: discordedit\editguild.py:576
 #, docstring
 msgid "Edit guild rules channel."
 msgstr "Editar canal de reglas del gremio."
 
-#: discordedit\editguild.py:367
+#: discordedit\editguild.py:594
 #, docstring
 msgid "Edit guild public updates channel."
 msgstr "Editar canal de actualizaciones públicas del gremio."
 
-#: discordedit\editguild.py:383
+#: discordedit\editguild.py:614
 #, docstring
 msgid "Edit guild premium progress bar enabled."
 msgstr "Barra de progreso activada."
 
-#: discordedit\editguild.py:397
+#: discordedit\editguild.py:630
 #, docstring
 msgid "Edit guild discoverable state."
 msgstr "Editar estado descubrible del gremio."
 
-#: discordedit\editguild.py:413
+#: discordedit\editguild.py:646
 #, docstring
 msgid "Edit guild invites disabled state."
 msgstr "Editar gremio invita estado desactivado."
 
-#: discordedit\editguild.py:432
+#: discordedit\editguild.py:660
+#, docstring
+msgid "Edit guild invites widget enabled state."
+msgstr "Estado activado del widget Editar invitaciones de gremio."
+
+#: discordedit\editguild.py:676
+#, docstring
+msgid "Edit guild invites widget channel."
+msgstr "Editar canal de widget de invitaciones de gremio."
+
+#: discordedit\editguild.py:694
+#, docstring
+msgid "Edit guild invites raid alerts disabled state."
+msgstr "Editar gremio invita raid alertas estado desactivado."
+
+#: discordedit\editguild.py:712
+#, docstring
+msgid "Edit guild invites safety alerts channel."
+msgstr "Editar gremio invita canal de alertas de seguridad."
+
+#: discordedit\editguild.py:731
 #, docstring
 msgid "Delete guild (if the bot is owner)."
 msgstr "Borrar gremio (si el bot es propietario)."
 
-#: discordedit\editguild.py:436
+#: discordedit\editguild.py:736
 msgid "⚠️ - Delete Guild"
 msgstr "⚠️ - Borrar gremio"
 
-#: discordedit\editguild.py:437
+#: discordedit\editguild.py:737 discordedit\editguild.py:744
 msgid "Do you really want to delete the guild {guild.name} ({guild.id})?"
 msgstr "¿De verdad quieres borrar el gremio {guild.name} ({guild.id})?"
 
-#: discordedit\editrole.py:22
+#: discordedit\editguild.py:762
+#, docstring
+msgid "View and edit guild."
+msgstr "Ver y editar gremio."
+
+#: discordedit\editrole.py:50
 msgid "The position must be an integer."
 msgstr "La posición debe ser un número entero."
 
-#: discordedit\editrole.py:26
+#: discordedit\editrole.py:54
 msgid "The indicated position must be between 1 and {max_guild_roles_position}."
 msgstr "La posición indicada debe estar comprendida entre 1 y {max_guild_roles_position}."
 
-#: discordedit\editrole.py:41
-msgid "The permissions must be an integer."
-msgstr "Los permisos deben ser un número entero."
+#: discordedit\editrole.py:69 discordedit\edittextchannel.py:57
+#: discordedit\editvoicechannel.py:57
+msgid "This permission is invalid."
+msgstr "Este permiso no es válido."
 
-#: discordedit\editrole.py:46
-msgid "The indicated permissions value must be between {permissions_none} and {permissions_all}."
-msgstr "El valor de permisos indicado debe estar comprendido entre {permissions_none} y {permissions_all}."
-
-#: discordedit\editrole.py:55
+#: discordedit\editrole.py:92
 #, docstring
 msgid "A cog to edit roles!"
 msgstr "¡Un engranaje para editar roles!"
 
-#: discordedit\editrole.py:69
-msgid "I can not let you edit {role.mention} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
-msgstr "No puedo dejarte editar {role.mention} ({role.id}) porque ese rol es superior o igual a tu rol más alto en la jerarquía de Discord."
+#: discordedit\editrole.py:104
+msgid "I can not let you edit @{role.name} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
+msgstr "No puedo dejarte editar @{role.name} ({role.id}) porque ese rol es superior o igual a tu rol más alto en la jerarquía de Discord."
 
-#: discordedit\editrole.py:76
-msgid "I can not edit {role.mention} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
-msgstr "No puedo editar {role.mention} ({role.id}) porque ese rol es superior o igual a mi rol más alto en la jerarquía de Discord."
+#: discordedit\editrole.py:110
+msgid "I can not edit @{role.name} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
+msgstr "No puedo editar @{role.name} ({role.id}) porque ese rol es superior o igual a mi rol más alto en la jerarquía de Discord."
 
-#: discordedit\editrole.py:99
+#: discordedit\editrole.py:132
 #, docstring
 msgid "Create a role."
 msgstr "Crea un rol."
 
-#: discordedit\editrole.py:116
+#: discordedit\editrole.py:150
 #, docstring
 msgid "List all roles in the current guild."
 msgstr "Enumera todos los roles del gremio actual."
 
-#: discordedit\editrole.py:122
+#: discordedit\editrole.py:156
 msgid "List of roles in {guild.name} ({guild.id})"
 msgstr "Lista de funciones en {guild.name} ({guild.id})"
 
-#: discordedit\editrole.py:133
+#: discordedit\editrole.py:169
 #, docstring
 msgid "Edit role name."
 msgstr "Editar nombre de rol."
 
-#: discordedit\editrole.py:149
+#: discordedit\editrole.py:185
 #, docstring
 msgid "Edit role color."
 msgstr "Editar color de rol."
 
-#: discordedit\editrole.py:165
+#: discordedit\editrole.py:201
+#, docstring
+msgid "Edit role hoist."
+msgstr "Editar la elevación del rol."
+
+#: discordedit\editrole.py:222
+#, docstring
+msgid "Edit role display icon.\n\n"
+"        `display_icon` can be an Unicode emoji, a custom emoji or an url. You can also upload an attachment.\n"
+"        "
+msgstr "Editar el icono de visualización del rol.\n\n"
+"        `display_icon` puede ser un emoji Unicode, un emoji personalizado o una url. También puede cargar un archivo adjunto.\n"
+"        "
+
+#: discordedit\editrole.py:228
+msgid "This server doesn't have the `ROLE_ICONS` feature. This server needs more boosts to perform this action."
+msgstr "Este servidor no tiene la característica `ROLE_ICONS`. Este servidor necesita más boosts para realizar esta acción."
+
+#: discordedit\editrole.py:272
 #, docstring
 msgid "Edit role mentionable."
 msgstr "Editar papel mencionable."
 
-#: discordedit\editrole.py:181
+#: discordedit\editrole.py:290
 #, docstring
 msgid "Edit role position.\n\n"
 "        Warning: The role with a position 1 is the highest role in the Discord hierarchy.\n"
@@ -447,67 +545,133 @@ msgstr "Editar posición de rol.\n\n"
 "        Atención: El rol con posición 1 es el rol más alto en la jerarquía de Discordia.\n"
 "        "
 
-#: discordedit\editrole.py:200
+#: discordedit\editrole.py:313
 #, docstring
 msgid "Edit role permissions.\n\n"
-"        Warning: You must use the permissions value in numbers (admnistrator=8).\n"
-"        You can use: https://discordapi.com/permissions.html\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
 "        "
 msgstr "Editar permisos de rol.\n\n"
-"        Atención: Debe utilizar el valor de los permisos en números (admnistrator=8).\n"
-"        Puede utilizar: https://discordapi.com/permissions.html\n"
+"        Debe poseer los permisos que desea modificar.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `send_messages`\n"
+"        - `send_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect` - `speak`\n"
+"        - `speak`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands` - `request_to_speak`\n"
+"        -\n"
+"        - `manage_threads`\n"
+"        - `create_public_threads`\n"
+"        - `create_private_threads`\n"
+"        - `external_stickers`\n"
+"        - `send_messages_in_threads`\n"
 "        "
 
-#: discordedit\editrole.py:223
+#: discordedit\editrole.py:350 discordedit\edittextchannel.py:564
+#: discordedit\editvoicechannel.py:464
+msgid "You need to provide at least one permission."
+msgstr "Debe proporcionar al menos un permiso."
+
+#: discordedit\editrole.py:356
+msgid "You don't have the permission {permission_name} in this guild."
+msgstr "Usted no tiene el permiso {permission_name} en este gremio."
+
+#: discordedit\editrole.py:378
 #, docstring
 msgid "Delete a role."
 msgstr "Borrar un rol."
 
-#: discordedit\editrole.py:227
+#: discordedit\editrole.py:383
 msgid "⚠️ - Delete role"
 msgstr "⚠️ - Eliminar función"
 
-#: discordedit\editrole.py:228
+#: discordedit\editrole.py:384 discordedit\editrole.py:391
 msgid "Do you really want to delete the role {role.mention} ({role.id})?"
 msgstr "¿Realmente quieres borrar el rol {role.mention} ({role.id})?"
 
-#: discordedit\edittextchannel.py:49 discordedit\editvoicechannel.py:40
-msgid "This permission is invalid."
-msgstr "Este permiso no es válido."
+#: discordedit\editrole.py:412
+#, docstring
+msgid "View and edit role."
+msgstr "Ver y editar rol."
 
-#: discordedit\edittextchannel.py:55
+#: discordedit\edittextchannel.py:68 discordedit\edittextchannel.py:72
+msgid "The channel type must be `text`, `news`, `0` or `5`."
+msgstr "El tipo de canal debe ser `text`, `news`, `0` o `5`."
+
+#: discordedit\edittextchannel.py:77
 #, docstring
 msgid "A cog to edit text channels!"
 msgstr "Un engranaje para editar canales de texto!"
 
-#: discordedit\edittextchannel.py:73
-msgid "I can not let you edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
-msgstr "No puedo dejarte editar el canal de texto {channel.mention} ({channel.id}) porque no tengo el permiso `manage_channel`."
+#: discordedit\edittextchannel.py:97
+msgid "I can not edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "No puedo editar el canal de texto {channel.mention} ({channel.id}) porque no tengo el permiso `manage_channel`."
 
-#: discordedit\edittextchannel.py:81
-msgid "I can not edit the text channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
-msgstr "No puedo editar el canal de texto {channel.mention} ({channel.id}) porque no tiene el permiso `manage_channel`."
-
-#: discordedit\edittextchannel.py:102
+#: discordedit\edittextchannel.py:119
 #, docstring
 msgid "Create a text channel."
 msgstr "Crea un canal de texto."
 
-#: discordedit\edittextchannel.py:119
+#: discordedit\edittextchannel.py:137
 #, docstring
 msgid "List all text channels in the current guild."
 msgstr "Lista todos los canales de texto del gremio actual."
 
-#: discordedit\edittextchannel.py:125
+#: discordedit\edittextchannel.py:143
 msgid "List of text channels in {guild.name} ({guild.id})"
 msgstr "Lista de canales de texto en {guild.name} ({guild.id})"
 
-#: discordedit\edittextchannel.py:140
+#: discordedit\edittextchannel.py:162
 #, docstring
 msgid "Clone a text channel."
 msgstr "Clonar un canal de texto."
 
-#: discordedit\edittextchannel.py:164
+#: discordedit\edittextchannel.py:189
 #, docstring
 msgid "Create an invite for a text channel.\n\n"
 "        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.\n"
@@ -522,17 +686,17 @@ msgstr "Crear una invitación para un canal de texto.\n\n"
 "        `unique`: Indica si se debe crear una URL de invitación única. Por defecto es True. Si se establece en False, devolverá una invitación creada previamente.\n"
 "        "
 
-#: discordedit\edittextchannel.py:193
+#: discordedit\edittextchannel.py:224
 #, docstring
 msgid "Edit text channel name."
 msgstr "Editar el nombre del canal de texto."
 
-#: discordedit\edittextchannel.py:211
+#: discordedit\edittextchannel.py:249
 #, docstring
 msgid "Edit text channel topic."
 msgstr "Editar tema del canal de texto."
 
-#: discordedit\edittextchannel.py:233
+#: discordedit\edittextchannel.py:274
 #, docstring
 msgid "Edit text channel position.\n\n"
 "        Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.\n"
@@ -543,31 +707,31 @@ msgstr "Editar posición del canal de texto.\n\n"
 "        Los canales no pueden moverse a una posición que los saque de su categoría actual.\n"
 "        "
 
-#: discordedit\edittextchannel.py:255
+#: discordedit\edittextchannel.py:302
 #, docstring
 msgid "Edit text channel nsfw."
 msgstr "Editar canal de texto nsfw."
 
-#: discordedit\edittextchannel.py:276
+#: discordedit\edittextchannel.py:328
 #, docstring
 msgid "Edit text channel syncpermissions with category."
 msgstr "Editar canal de texto syncpermissions con categoría."
 
-#: discordedit\edittextchannel.py:297
+#: discordedit\edittextchannel.py:354
 #, docstring
 msgid "Edit text channel category."
 msgstr "Editar categoría de canal de texto."
 
-#: discordedit\edittextchannel.py:318
+#: discordedit\edittextchannel.py:378
 #, docstring
 msgid "Edit text channel slowmode delay.\n\n"
-"        Specifies the slowmode rate limit for user in this channel, in seconds. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
+"        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
 "        "
 msgstr "Editar retardo de modo lento del canal de texto.\n\n"
-"        Especifica el límite de velocidad en modo lento para el usuario en este canal, en segundos. Un valor de 0s desactiva el modo lento. El valor máximo posible es 21600s.\n"
+"        Especifica el límite de velocidad en modo lento para el usuario en este canal. Un valor de 0s desactiva el modo lento. El valor máximo posible es 21600s.\n"
 "        "
 
-#: discordedit\edittextchannel.py:346
+#: discordedit\edittextchannel.py:408
 #, docstring
 msgid "Edit text channel type.\n\n"
 "        `text`: 0\n"
@@ -580,7 +744,7 @@ msgstr "Editar tipo de canal de texto.\n\n"
 "        Actualmente, sólo se admite la conversión entre ChannelType.text y ChannelType.news. Esto sólo está disponible para los gremios que contienen NEWS en Guild.features.\n"
 "        "
 
-#: discordedit\edittextchannel.py:373
+#: discordedit\edittextchannel.py:439
 #, docstring
 msgid "Edit text channel default auto archive duration.\n\n"
 "        The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.\n"
@@ -589,159 +753,185 @@ msgstr "Editar la duración por defecto del archivo automático del canal de tex
 "        La nueva duración por defecto en minutos para los hilos creados en este canal. Debe ser uno de `60`, `1440`, `4320`, o `10080`.\n"
 "        "
 
-#: discordedit\edittextchannel.py:401
+#: discordedit\edittextchannel.py:468
 #, docstring
-msgid "Edit text channel permissions/overwrites.\n\n"
-"        create_instant_invite\n"
-"        manage_channels\n"
-"        add_reactions\n"
-"        priority_speaker\n"
-"        stream\n"
-"        read_messages\n"
-"        send_messages\n"
-"        send_tts_messages\n"
-"        manage_messages\n"
-"        embed_links\n"
-"        attach_files\n"
-"        read_message_history\n"
-"        mention_everyone\n"
-"        external_emojis\n"
-"        connect\n"
-"        speak\n"
-"        mute_members\n"
-"        deafen_members\n"
-"        move_members\n"
-"        use_voice_activation\n"
-"        manage_roles\n"
-"        manage_webhooks\n"
-"        use_application_commands\n"
-"        request_to_speak\n"
-"        manage_threads\n"
-"        create_public_threads\n"
-"        create_private_threads\n"
-"        external_stickers\n"
-"        send_messages_in_threads\n"
+msgid "Edit text channel default thread slowmode delay.\n\n"
+"        The new default thread slowmode delay in seconds for threads created in this channel. Must be between 0 and 21600 (6 hours) seconds.\n"
 "        "
-msgstr "Editar permisos/sobrescrituras de canales de texto.\n\n"
-"        create_instant_invite\n"
-"        manage_channels\n"
-"        add_reactions\n"
-"        priority_speaker\n"
-"        stream\n"
-"        read_messages\n"
-"        send_messages\n"
-"        send_tts_messages\n"
-"        manage_messages\n"
-"        embed_links\n"
-"        attach_files\n"
-"        read_message_history\n"
-"        mention_everyone\n"
-"        external_emojis\n"
-"        connect\n"
-"        speak\n"
-"        mute_members\n"
-"        deafen_members\n"
-"        move_members\n"
-"        use_voice_activation\n"
-"        manage_roles\n"
-"        manage_webhooks\n"
-"        use_application_commands\n"
-"        request_to_speak\n"
-"        manage_threads\n"
-"        create_public_threads\n"
-"        create_private_threads\n"
-"        external_stickers\n"
-"        send_messages_in_threads\n"
+msgstr "Editar el retardo por defecto del canal de texto.\n\n"
+"        El nuevo retardo por defecto en segundos para los hilos creados en este canal. Debe estar entre 0 y 21600 (6 horas) segundos.\n"
 "        "
 
-#: discordedit\edittextchannel.py:443 discordedit\editvoicechannel.py:385
+#: discordedit\edittextchannel.py:501
+#, docstring
+msgid "Edit text channel overwrites/permissions.\n\n"
+"        You may not specify `True` or `False` to reset the permission(s).\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Editar sobreescrituras/permisos del canal de texto.\n\n"
+"        No puede especificar `True` o `False` para restablecer los permisos.\n"
+"        Debe poseer los permisos que desea modificar.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `send_messages`\n"
+"        - `send_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect` - `speak`\n"
+"        - `speak`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands`\n"
+"        -\n"
+"        - `manage_threads`\n"
+"        - `create_public_threads`\n"
+"        - `create_private_threads`\n"
+"        - `external_stickers`\n"
+"        - `send_messages_in_threads`\n"
+"        "
+
+#: discordedit\edittextchannel.py:549 discordedit\editvoicechannel.py:449
 msgid "You need to provide a role or user you want to edit permissions for."
 msgstr "Debe indicar el rol o usuario para el que desea editar los permisos."
 
-#: discordedit\edittextchannel.py:447 discordedit\editvoicechannel.py:389
-msgid "You need to provide at least one permission."
-msgstr "Debe proporcionar al menos un permiso."
+#: discordedit\edittextchannel.py:570 discordedit\editvoicechannel.py:470
+msgid "You don't have the permission {permission_name} in this channel."
+msgstr "Usted no tiene el permiso {permission_name} en este canal."
 
-#: discordedit\edittextchannel.py:477
+#: discordedit\edittextchannel.py:595 discordedit\editvoicechannel.py:495
+msgid "You cannot remove permissions from you in this channel."
+msgstr "No puedes quitarte permisos en este canal."
+
+#: discordedit\edittextchannel.py:605 discordedit\editvoicechannel.py:505
+msgid "You cannot remove permissions from the bot in this channel."
+msgstr "No puedes quitar permisos al bot en este canal."
+
+#: discordedit\edittextchannel.py:624
 #, docstring
 msgid "Delete a text channel."
 msgstr "Borrar un canal de texto."
 
-#: discordedit\edittextchannel.py:483
+#: discordedit\edittextchannel.py:634
 msgid "⚠️ - Delete text channel"
 msgstr "⚠️ - Borrar canal de texto"
 
-#: discordedit\edittextchannel.py:484
+#: discordedit\edittextchannel.py:635 discordedit\edittextchannel.py:642
 msgid "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
 msgstr "¿Realmente quieres borrar el canal de texto {channel.mention} ({channel.id})?"
 
-#: discordedit\editthread.py:54
+#: discordedit\edittextchannel.py:661
+#, docstring
+msgid "View and edit text channel."
+msgstr "Ver y editar canal de texto."
+
+#: discordedit\editthread.py:103
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "Emoji El rol debe ser un emoji seguido de un rol separado por `;`, `,`, `|`, o `-`."
 
-#: discordedit\editthread.py:64
+#: discordedit\editthread.py:113
 #, docstring
 msgid "A cog to edit threads!"
 msgstr "Un engranaje para editar hilos!"
 
-#: discordedit\editthread.py:80
-msgid "I can not let you edit the thread {thread.mention} ({thread.id}) because I don't have the `manage_channel` permission."
-msgstr "No puedo dejarte editar el hilo {thread.mention} ({thread.id}) porque no tengo el permiso `manage_channel`."
-
-#: discordedit\editthread.py:88
+#: discordedit\editthread.py:134
 msgid "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission."
 msgstr "No puedo editar el hilo {thread.mention} ({thread.id}) porque no tienes el permiso `manage_channel`."
 
-#: discordedit\editthread.py:110
+#: discordedit\editthread.py:158
 #, docstring
-msgid "Create a thread."
-msgstr "Crea un hilo."
+msgid "Create a thread.\n\n"
+"        You'll join it automatically.\n"
+"        "
+msgstr "Crea un hilo.\n\n"
+"        Te unirás a él automáticamente.\n"
+"        "
 
-#: discordedit\editthread.py:129
+#: discordedit\editthread.py:182
 #, docstring
 msgid "List all threads in the current guild."
 msgstr "Lista todos los hilos del gremio actual."
 
-#: discordedit\editthread.py:137
+#: discordedit\editthread.py:190
 msgid "List of threads in {guild.name} ({guild.id})"
 msgstr "Lista de temas en {guild.name} ({guild.id})"
 
-#: discordedit\editthread.py:150
+#: discordedit\editthread.py:206
 #, docstring
 msgid "Edit thread name."
 msgstr "Editar el nombre del hilo."
 
-#: discordedit\editthread.py:166
+#: discordedit\editthread.py:227
 #, docstring
 msgid "Edit thread archived."
 msgstr "Editar hilo archivado."
 
-#: discordedit\editthread.py:182
+#: discordedit\editthread.py:249
 #, docstring
 msgid "Edit thread locked."
 msgstr "Editar hilo cerrado."
 
-#: discordedit\editthread.py:198
+#: discordedit\editthread.py:272
 #, docstring
 msgid "Edit thread pinned."
 msgstr "Editar hilo anclado."
 
-#: discordedit\editthread.py:214
+#: discordedit\editthread.py:296
 #, docstring
 msgid "Edit thread invitable."
 msgstr "Editar hilo invitable."
 
-#: discordedit\editthread.py:233
+#: discordedit\editthread.py:322
 #, docstring
 msgid "Edit thread auto archive duration."
 msgstr "Editar hilo auto archivar duración."
 
-#: discordedit\editthread.py:249
+#: discordedit\editthread.py:346
 #, docstring
 msgid "Edit thread slowmode delay."
 msgstr "Editar hilo retardo slowmode."
 
-#: discordedit\editthread.py:268
+#: discordedit\editthread.py:370
 #, docstring
 msgid "Edit thread applied tags.\n\n"
 "        ```\n"
@@ -756,52 +946,67 @@ msgstr "Etiquetas aplicadas en el hilo de edición.\n\n"
 "        ```\n"
 "        "
 
-#: discordedit\editthread.py:293
+#: discordedit\editthread.py:400
+#, docstring
+msgid "Add member to thread."
+msgstr "Añadir miembro al hilo."
+
+#: discordedit\editthread.py:425
+#, docstring
+msgid "Remove member from thread."
+msgstr "Eliminar miembro del hilo."
+
+#: discordedit\editthread.py:446
 #, docstring
 msgid "Delete a thread."
 msgstr "Borrar una conversación."
 
-#: discordedit\editthread.py:297
+#: discordedit\editthread.py:456
 msgid "⚠️ - Delete thread"
 msgstr "⚠️ - Borrar hilo"
 
-#: discordedit\editthread.py:298
+#: discordedit\editthread.py:457 discordedit\editthread.py:464
 msgid "Do you really want to delete the thread {thread.mention} ({thread.id})?"
 msgstr "¿De verdad quieres borrar el hilo {thread.mention} ({thread.id})?"
 
-#: discordedit\editvoicechannel.py:46
+#: discordedit\editthread.py:479
+#, docstring
+msgid "View and edit thread."
+msgstr "Ver y editar tema."
+
+#: discordedit\editvoicechannel.py:66 discordedit\editvoicechannel.py:70
+msgid "The video quality mode must be `1` or `2`."
+msgstr "El modo de calidad de vídeo debe ser `1` o `2`."
+
+#: discordedit\editvoicechannel.py:75
 #, docstring
 msgid "A cog to edit voice channels!"
 msgstr "Un engranaje para editar canales de voz!"
 
-#: discordedit\editvoicechannel.py:64
-msgid "I can not let you edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
-msgstr "No puedo dejarte editar el canal de voz {channel.mention} ({channel.id}) porque no tengo el permiso `manage_channel`."
+#: discordedit\editvoicechannel.py:95
+msgid "I can not edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "No puedo editar el canal de voz {channel.mention} ({channel.id}) porque no tengo el permiso `manage_channel`."
 
-#: discordedit\editvoicechannel.py:72
-msgid "I can not edit the voice channel {channel.mention} ({channel.id}) because you don't have the `manage_channel` permission."
-msgstr "No puedo editar el canal de voz {channel.mention} ({channel.id}) porque no tiene el permiso `manage_channel`."
-
-#: discordedit\editvoicechannel.py:93
+#: discordedit\editvoicechannel.py:117
 #, docstring
 msgid "Create a voice channel."
 msgstr "Crea un canal de voz."
 
-#: discordedit\editvoicechannel.py:110
+#: discordedit\editvoicechannel.py:135
 #, docstring
 msgid "List all voice channels in the current guild."
 msgstr "Lista todos los canales de voz del gremio actual."
 
-#: discordedit\editvoicechannel.py:116
+#: discordedit\editvoicechannel.py:141
 msgid "List of voice channels in {guild.name} ({guild.id})"
 msgstr "Lista de canales de voz en {guild.name} ({guild.id})"
 
-#: discordedit\editvoicechannel.py:131
+#: discordedit\editvoicechannel.py:160
 #, docstring
 msgid "Clone a voice channel."
 msgstr "Clonar un canal de voz."
 
-#: discordedit\editvoicechannel.py:153
+#: discordedit\editvoicechannel.py:182
 #, docstring
 msgid "Create an invite for a voice channel.\n\n"
 "        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.\n"
@@ -816,12 +1021,12 @@ msgstr "Crear una invitación para un canal de voz.\n\n"
 "        `unique`: Indica si se debe crear una URL de invitación única. Por defecto es True. Si se establece en False, devolverá una invitación creada previamente.\n"
 "        "
 
-#: discordedit\editvoicechannel.py:180
+#: discordedit\editvoicechannel.py:212
 #, docstring
 msgid "Edit voice channel name."
 msgstr "Editar el nombre del canal de voz."
 
-#: discordedit\editvoicechannel.py:196
+#: discordedit\editvoicechannel.py:228
 #, docstring
 msgid "Edit voice channel bitrate.\n\n"
 "        It must be a number between 8000 and\n"
@@ -836,12 +1041,12 @@ msgstr "Edita el bitrate del canal de voz.\n\n"
 "        Nivel 3: 384000\n"
 "        "
 
-#: discordedit\editvoicechannel.py:221
+#: discordedit\editvoicechannel.py:252
 #, docstring
 msgid "Edit voice channel nsfw."
 msgstr "Editar canal de voz nsfw."
 
-#: discordedit\editvoicechannel.py:237
+#: discordedit\editvoicechannel.py:273
 #, docstring
 msgid "Edit voice channel user limit.\n\n"
 "        It must be a number between 0 and 99.\n"
@@ -850,7 +1055,7 @@ msgstr "Edita el límite de usuarios del canal de voz.\n\n"
 "        Debe ser un número entre 0 y 99.\n"
 "        "
 
-#: discordedit\editvoicechannel.py:259
+#: discordedit\editvoicechannel.py:292
 #, docstring
 msgid "Edit voice channel position.\n\n"
 "        Warning: Only voice channels are taken into account. Channel 1 is the highest positioned voice channel.\n"
@@ -861,17 +1066,26 @@ msgstr "Editar la posición del canal de voz.\n\n"
 "        Los canales no pueden moverse a una posición que los saque de su categoría actual.\n"
 "        "
 
-#: discordedit\editvoicechannel.py:279
+#: discordedit\editvoicechannel.py:312
 #, docstring
 msgid "Edit voice channel sync permissions."
 msgstr "Edita los permisos de sincronización del canal de voz."
 
-#: discordedit\editvoicechannel.py:298
+#: discordedit\editvoicechannel.py:333
 #, docstring
 msgid "Edit voice channel category."
 msgstr "Editar categoría de canal de voz."
 
-#: discordedit\editvoicechannel.py:317
+#: discordedit\editvoicechannel.py:352
+#, docstring
+msgid "Edit voice channel slowmode delay.\n\n"
+"        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
+"        "
+msgstr "Editar retardo de modo lento del canal de voz.\n\n"
+"        Especifica el límite de velocidad en modo lento para el usuario en este canal. Un valor de 0s desactiva el modo lento. El valor máximo posible es 21600s.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:377
 #, docstring
 msgid "Edit voice channel video quality mode.\n\n"
 "        auto = 1\n"
@@ -882,81 +1096,94 @@ msgstr "Editar el modo de calidad de vídeo del canal de voz.\n\n"
 "        full = 2\n"
 "        "
 
-#: discordedit\editvoicechannel.py:345
+#: discordedit\editvoicechannel.py:406
 #, docstring
-msgid "Edit voice channel permissions/overwrites.\n\n"
-"        create_instant_invite\n"
-"        manage_channels\n"
-"        add_reactions\n"
-"        priority_speaker\n"
-"        stream\n"
-"        read_messages\n"
-"        send_messages\n"
-"        send_tts_messages\n"
-"        manage_messages\n"
-"        embed_links\n"
-"        attach_files\n"
-"        read_message_history\n"
-"        mention_everyone\n"
-"        external_emojis\n"
-"        connect\n"
-"        speak\n"
-"        mute_members\n"
-"        deafen_members\n"
-"        move_members\n"
-"        use_voice_activation\n"
-"        manage_roles\n"
-"        manage_webhooks\n"
-"        use_application_commands\n"
-"        request_to_speak\n"
-"        manage_threads\n"
-"        create_public_threads\n"
-"        create_private_threads\n"
-"        external_stickers\n"
-"        send_messages_in_threads\n"
+msgid "Edit voice channel overwrites/permissions.\n\n"
+"        You may not specify `True` or `False` to reset the overwrite(s).\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
 "        "
-msgstr "Editar permisos/sobrescrituras de canales de voz.\n\n"
-"        create_instant_invite\n"
-"        manage_channels\n"
-"        add_reactions\n"
-"        priority_speaker\n"
-"        stream\n"
-"        read_messages\n"
-"        send_messages\n"
-"        send_tts_messages\n"
-"        manage_messages\n"
-"        embed_links\n"
-"        attach_files\n"
-"        read_message_history\n"
-"        mention_everyone\n"
-"        external_emojis\n"
-"        connect\n"
-"        speak\n"
-"        mute_members\n"
-"        deafen_members\n"
-"        move_members\n"
-"        use_voice_activation\n"
-"        manage_roles\n"
-"        manage_webhooks\n"
-"        use_application_commands\n"
-"        request_to_speak\n"
-"        manage_threads\n"
-"        create_public_threads\n"
-"        create_private_threads\n"
-"        external_stickers\n"
-"        send_messages_in_threads\n"
+msgstr "Edita las sobreescrituras/permisos de los canales de voz.\n\n"
+"        No puede especificar `Verdadero` o `Falso` para restablecer la(s) sobreescritura(s).\n"
+"        Debe poseer los permisos que desea modificar.\n\n"
+"        - `create_instant_invite`\n"
+"        - `manage_channels`\n"
+"        - `add_reactions`\n"
+"        - `priority_speaker`\n"
+"        - `stream`\n"
+"        - `read_messages`\n"
+"        - `send_messages`\n"
+"        - `send_tts_messages`\n"
+"        - `manage_messages`\n"
+"        - `embed_links`\n"
+"        - `attach_files`\n"
+"        - `read_message_history`\n"
+"        - `mention_everyone`\n"
+"        - `external_emojis`\n"
+"        - `connect` - `speak`\n"
+"        - `speak`\n"
+"        - `mute_members`\n"
+"        - `deafen_members`\n"
+"        - `move_members`\n"
+"        - `use_voice_activation`\n"
+"        - `manage_roles`\n"
+"        - `manage_webhooks`\n"
+"        - `use_application_commands`\n"
+"        -\n"
+"        - `manage_threads`\n"
+"        - `create_public_threads`\n"
+"        - `create_private_threads`\n"
+"        - `external_stickers`\n"
+"        - `send_messages_in_threads`\n"
 "        "
 
-#: discordedit\editvoicechannel.py:419
+#: discordedit\editvoicechannel.py:524
 #, docstring
 msgid "Delete voice channel."
 msgstr "Borrar canal de voz."
 
-#: discordedit\editvoicechannel.py:423
+#: discordedit\editvoicechannel.py:529
 msgid "⚠️ - Delete voice channel"
 msgstr "⚠️ - Borrar canal de voz"
 
-#: discordedit\editvoicechannel.py:424
+#: discordedit\editvoicechannel.py:530 discordedit\editvoicechannel.py:537
 msgid "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
 msgstr "¿Realmente quieres borrar el canal de voz {channel.mention} ({channel.id})?"
+
+#: discordedit\editvoicechannel.py:556
+#, docstring
+msgid "View and edit voice channel."
+msgstr "Ver y editar el canal de voz."
+
+#: discordedit\view.py:120
+msgid "You are not allowed to execute this command."
+msgstr "No está permitido ejecutar este comando."
 

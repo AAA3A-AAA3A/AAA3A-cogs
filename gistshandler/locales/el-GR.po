@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:19\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:23\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr "Πρέπει πρώτα να δημιουργήσετε ένα token τ�
 msgid "{public.value} is not a recognised boolean option."
 msgstr "{public.value} δεν είναι αναγνωρισμένη επιλογή boolean."
 
-#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:384
+#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:381
 msgid "GitHub token is invalid or expired."
 msgstr "Το token του GitHub είναι άκυρο ή έχει λήξει."
 
@@ -50,11 +50,11 @@ msgstr "Δεν επιτρέπεται να επεξεργαστείτε αυτή
 msgid "Gist `{gist.id}` updated."
 msgstr "Gist `{gist.id}` updated."
 
-#: gistshandler\view.py:388
+#: gistshandler\view.py:385
 msgid "You're not allowed to delete this gist."
 msgstr "Δεν επιτρέπεται να διαγράψετε αυτό το κείμενο."
 
-#: gistshandler\view.py:394
+#: gistshandler\view.py:391
 msgid "Gist `{gist.id}` deleted."
 msgstr "Gist `{gist.id}` deleted."
 

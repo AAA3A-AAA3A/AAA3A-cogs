@@ -513,7 +513,7 @@ class Reminder:
                     else (
                         f"Message {self.content['message_jump_url']}."
                         if self.content["type"] == "message"
-                        else f"Command `[p]{self.content['command']}` executed with your privilege rights."
+                        else "Command `[p]" + (f"{self.content['command'][:175]}..." if len(self.content["command"]) > 175 else self.content["command"]) + "` executed with your privilege rights."
                     )
                 )
             ),

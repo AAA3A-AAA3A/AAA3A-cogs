@@ -190,17 +190,17 @@ class Dashboard(Cog):
             },
             "meta_icon": {
                 "converter": str,
-                "description": "The website description to use.",
+                "description": "The website icon to use.",
                 "path": ["webserver", "ui", "meta", "icon"],
             },
             "meta_website_description": {
                 "converter": str,
-                "description": "The website description to use.",
+                "description": "The website short description to use.",
                 "path": ["webserver", "ui", "meta", "website_description"],
             },
             "meta_description": {
                 "converter": str,
-                "description": "The website description to use.",
+                "description": "The website long description to use.",
                 "path": ["webserver", "ui", "meta", "description"],
             },
             "support_server": {

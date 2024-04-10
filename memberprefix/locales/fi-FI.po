@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:10\n"
+"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"PO-Revision-Date: 2024-04-10 11:21\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -22,43 +22,43 @@ msgstr ""
 msgid "A cog to allow a member to choose custom prefixes, just for them!"
 msgstr "Hammasratas, jonka avulla jäsen voi valita omia etuliitteitä, juuri heille!"
 
-#: memberprefix\memberprefix.py:161
+#: memberprefix\memberprefix.py:160
 msgid "You now use this server or global prefixes."
 msgstr "Käytät nyt tätä palvelinta tai maailmanlaajuisia etuliitteitä."
 
-#: memberprefix\memberprefix.py:165
+#: memberprefix\memberprefix.py:164
 msgid "A prefix is above the maximal length (25 characters).\n"
 "This is possible for global or per-server prefixes, but not for per-member prefixes."
 msgstr "Etuliite on enimmäispituuden (25 merkkiä) yläpuolella.\n"
 "Tämä on mahdollista globaaleille tai palvelinkohtaisille etuliitteille, mutta ei jäsenkohtaisille etuliitteille."
 
-#: memberprefix\memberprefix.py:171
+#: memberprefix\memberprefix.py:170
 msgid "Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."
 msgstr "Etuliitteet eivät voi alkaa `/`:llä, koska se on ristiriidassa Discordin slash-komentojen kanssa."
 
-#: memberprefix\memberprefix.py:176
+#: memberprefix\memberprefix.py:175
 msgid "Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
 msgstr "Etuliite vain sinulle. Voit käyttää nykyisiä etuliitteitä tai mainita botin kutsuaksesi komennon tai nollata etuliitteesi samalla komennolla, jos unohdat ne."
 
-#: memberprefix\memberprefix.py:182
+#: memberprefix\memberprefix.py:181
 msgid "Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
 msgstr "Etuliitteet vain sinulle asetettu. Voit käyttää nykyisiä etuliitteitä tai mainita botin kutsuvan komennon tai nollata etuliitteesi samalla komennolla, jos unohdat ne."
 
-#: memberprefix\memberprefix.py:197
+#: memberprefix\memberprefix.py:196
 #, docstring
 msgid "Clear prefixes for a specified member in a specified server."
 msgstr "Tyhjentää määritetyn jäsenen etuliitteet määritetyssä palvelimessa."
 
-#: memberprefix\memberprefix.py:199
+#: memberprefix\memberprefix.py:198
 msgid "Prefixes cleared for this member in this guild."
 msgstr "Tälle jäsenelle tässä killassa selvitetyt etuliitteet."
 
-#: memberprefix\memberprefix.py:203
+#: memberprefix\memberprefix.py:202
 #, docstring
 msgid "Clear all members prefixes for a specified server."
 msgstr "Tyhjentää kaikki määritetyn palvelimen jäsenten etuliitteet."
 
-#: memberprefix\memberprefix.py:205
+#: memberprefix\memberprefix.py:204
 msgid "All members prefixes purged in this guild."
 msgstr "Kaikkien jäsenten etuliitteet puhdistetaan tässä killassa."
 

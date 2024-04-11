@@ -132,6 +132,7 @@ class ExportChannel(Cog):
                 military_time: typing.Optional[bool] = False,
                 fancy_times: typing.Optional[bool] = True,
                 support_dev: typing.Optional[bool] = True,
+                attachment_handler: typing.Optional[typing.Any] = None,
             ):
                 if guild:
                     channel.guild = guild
@@ -146,6 +147,7 @@ class ExportChannel(Cog):
                     after=None,
                     support_dev=support_dev,
                     bot=bot,
+                    attachment_handler=attachment_handler,
                 )
                 if not self.after:
                     self.messages.reverse()

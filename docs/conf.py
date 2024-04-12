@@ -7,7 +7,7 @@ html_context = {
     "display_github": True,
     "github_user": "AAA3A-AAA3A",
     "github_repo": "AAA3A-cogs",
-    "github_version": "main/docs/",
+    "github_version": "main",
 }
 
 master_doc = "index"

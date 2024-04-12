@@ -66,8 +66,8 @@ Here are all the commands included in this cog (47):
 * ``[p]settickettool forumchannel <profile> <forum_channel>``
  Set the forum channel where the opened tickets will be, or a text channel to use private threads. If it's set, `category_open` and `category_close` will be ignored (except for existing tickets).
 
-* ``[p]settickettool logschannel <profile> <text channel>``
- Set the channel where the logs will be saved.
+* ``[p]settickettool logschannel <profile> <logschannel>``
+ Set the channel where the logs will be sent/saved.
 
 * ``[p]settickettool message <profile> [channel] [message] [reason_options]... [emoji=🎟️] [label]``
  Send a message with a button to open a ticket or dropdown with possible reasons.

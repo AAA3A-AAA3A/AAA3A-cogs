@@ -36,6 +36,9 @@ Here are all the commands included in this cog (23):
 * ``[p]medicat free``
  Is Medicat free?
 
+* ``[p]medicat getbootablestoolsdownloadlinks``
+ Get the download link of each Medicat USB bootable tool.
+
 * ``[p]medicat getlastbootablestoolsversions``
  Get the latest versions of each Medicat USB bootable tool.
 
@@ -68,9 +71,6 @@ Here are all the commands included in this cog (23):
 
 * ``[p]medicat secureboot``
  What to do about security violation when trying to boot into Medicat?
-
-* ``[p]medicat test``
- Test!
 
 * ``[p]medicat updateonly``
  How can I update Medicat USB without having to install all the files again?

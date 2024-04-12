@@ -91,7 +91,7 @@ Support
 -------
 
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
-Mention me in the #support_aaa3a-cogs channel in the `cogs support server <https://discord.gg/GET4DVk>`_ if you need any help.
+Mention me in the #support_aaa3a-cogs channel in the `cogs support server <https://discord.gg/red-cog-support-240154543684321280>`_ if you need any help.
 Please ping me or contact me in DM.
 Additionally, feel free to open an issue or pull request to this repo.
 

@@ -22,7 +22,7 @@ Quote any Discord message from its link!
 Commands
 --------
 
-Here are all the commands included in this cog (12):
+Here are all the commands included in this cog (14):
 
 * ``[p]linkquote [message]``
  Quote a message from a link.
@@ -36,8 +36,14 @@ Here are all the commands included in this cog (12):
 * ``[p]setlinkquoter crossserver <cross_server>``
  Toggle cross-server quoting.
 
+* ``[p]setlinkquoter deleteafter <delete_after>``
+ Set the time in seconds to delete the message after.
+
 * ``[p]setlinkquoter deletemessage <delete_message>``
  Toggle deleting of messages for automatic quoting.
+
+* ``[p]setlinkquoter deletemessagebutton <delete_message_button>``
+ Toggle the delete message button on the quote messages.
 
 * ``[p]setlinkquoter enabled <enabled>``
  Toggle automatic link-quoting.
@@ -55,7 +61,7 @@ Here are all the commands included in this cog (12):
  Show all settings for the cog with defaults and values.
 
 * ``[p]setlinkquoter webhooks <webhooks>``
- Toggle deleting of messages for automatic quoting.
+ Toggle sending message with the name and avatar of the Author of the quote (with webhooks)
 
 * ``[p]setlinkquoter whitelistchannels <whitelist_channels>``
  Set the channels in which auto-quoting will be enabled.

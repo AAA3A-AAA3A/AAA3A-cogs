@@ -47,6 +47,7 @@ class ThirdPartyConverter(commands.Converter):
 class Dashboard(Cog):
     """Interact with your bot through a web dashboard!
 
+    **Installation guide:** https://red-web-dashboard.readthedocs.io/en/latest
     ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.
     """
 
@@ -173,15 +174,18 @@ class Dashboard(Cog):
             "all_in_one": {
                 "converter": bool,
                 "description": "Run the Dashboard in the bot process, without having to open another window. You have to install Red-Dashboard in your bot venv with Pip and reload the cog.",
+                "hidden": True, "no_slash": True,
             },
             "flask_flags": {
                 "converter": commands.Greedy[StrConverter],
                 "description": "The flags used to setting the webserver if `all_in_one` is enabled. They are the cli flags of `reddash` without `--rpc-port`.",
+                "hidden": True, "no_slash": True,
             },
             "redirect_uri": {
                 "converter": RedirectURIConverter,
                 "description": "The redirect uri to use for the Discord Oauth.",
                 "path": ["webserver", "core", "redirect_uri"],
+                "aliases": ["redirect"],
             },
             "meta_title": {
                 "converter": str,
@@ -207,6 +211,7 @@ class Dashboard(Cog):
                 "converter": str,
                 "description": "Set the support server url of your bot.",
                 "path": ["webserver", "ui", "meta", "support_server"],
+                "aliases": ["support"],
             },
             "default_color": {
                 "converter": typing.Literal[

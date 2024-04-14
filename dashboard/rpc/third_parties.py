@@ -103,6 +103,7 @@ class DashboardRPC_ThirdParties:
         self.bot.dispatch("dashboard_cog_add", self.cog)
 
     def unload(self) -> None:
+        self.bot.dispatch("dashboard_cog_remove", self.cog)
         self.bot.unregister_rpc_handler(self.oauth_receive)
         self.bot.unregister_rpc_handler(self.get_third_parties)
         self.bot.unregister_rpc_handler(self.data_receive)

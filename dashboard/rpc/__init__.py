@@ -14,9 +14,10 @@ import time
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_list
 
+from .default_cogs import DashboardRPC_DefaultCogs
+from .webhooks import DashboardRPC_Webhooks
 from .third_parties import DashboardRPC_ThirdParties
 from .utils import rpc_check
-from .webhooks import DashboardRPC_Webhooks
 
 # Credits:
 # Thank you to NeuroAssassin for the original code.
@@ -52,6 +53,7 @@ class DashboardRPC:
 
         # Initialize extensions.
         self.extensions: typing.Dict[str, typing.Any] = {}
+        self.extensions["default_cogs"]: DashboardRPC_DefaultCogs = DashboardRPC_DefaultCogs(self.cog)
         self.extensions["webhooks"]: DashboardRPC_Webhooks = DashboardRPC_Webhooks(self.cog)
         self.third_parties_extension: DashboardRPC_ThirdParties = DashboardRPC_ThirdParties(
             self.cog
@@ -263,7 +265,7 @@ class DashboardRPC:
     ]:
         returning = {}
         downloader_cog = self.bot.get_cog("Downloader")
-        installed_cogs = await downloader_cog.installed_cogs()
+        installed_cogs = await downloader_cog.installed_cogs() if downloader_cog is not None else []
         for name, cog in self.bot.cogs.copy().items():
             stripped = [c for c in cog.__cog_commands__ if c.parent is None]
             cmds = await self.build_cmd_list(stripped)
@@ -347,7 +349,7 @@ class DashboardRPC:
 
         if not guilds:
             # This could take a while.
-            async for guild in AsyncIter(self.bot.guilds, steps=1300):
+            async for guild in AsyncIter(sorted(self.bot.guilds, key=lambda guild: (guild.owner.id != user_id, guild.name.lower())), steps=1300):
                 guild_infos = {
                     "id": guild.id,
                     "name": guild.name,
@@ -355,7 +357,7 @@ class DashboardRPC:
                     "owner_id": guild.owner.id,
                     "icon_url": guild.icon.url
                     if guild.icon is not None
-                    else "https://cdn.discordapp.com/embed/avatars/1",
+                    else "https://cdn.discordapp.com/embed/avatars/1.png",
                     "icon_animated": guild.icon.is_animated() if guild.icon is not None else False,
                     "user_role": None,
                 }
@@ -467,7 +469,7 @@ class DashboardRPC:
             "owner_id": guild.owner.id,
             "icon_url": guild.icon.url
             if guild.icon is not None
-            else "https://cdn.discordapp.com/embed/avatars/1.",
+            else "https://cdn.discordapp.com/embed/avatars/1.png",
             "icon_animated": guild.icon.is_animated() if guild.icon is not None else False,
             "verification_level": verification_level,
             "created_at": guild.created_at.timestamp(),
@@ -533,12 +535,13 @@ class DashboardRPC:
         member = guild.get_member(user_id)
         if (
             user_id not in self.bot.owner_ids
-            and member is None
-            and not await self.bot.is_admin(member)
-            and not member.guild_permissions.manage_guild
+            and (
+                member is None
+                or not (await self.bot.is_admin(member) or member.guild_permissions.manage_guild)
+            )
         ):
             return {"status": 1}
-        change_nickname_error = True
+        change_nickname_error = False
         if settings["bot_nickname"] != guild.me.nick:
             try:
                 await guild.me.edit(nick=settings["bot_nickname"])

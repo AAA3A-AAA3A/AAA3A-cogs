@@ -461,7 +461,7 @@ class CodeSnippets(Cog, DashboardIntegration):
                 except (RuntimeError, aiohttp.ClientResponseError) as e:
                     if e.status == 404:
                         continue
-                    self.log.error(
+                    self.logger.error(
                         f"Failed to fetch code snippet from {_match[0]!r}: {e.status} for GET {e.request_info.real_url.human_repr()}.",
                         exc_info=e,
                     )

@@ -121,7 +121,7 @@ class Draw(Cog):
                 try:
                     image = Image.open(io.BytesIO(image_bytes))
                 except (AttributeError, UnidentifiedImageError) as e:
-                    self.log.error(
+                    self.logger.error(
                         f"Error when retrieving the pixel {key} ({url}) image for the cache.",
                         exc_info=e,
                     )

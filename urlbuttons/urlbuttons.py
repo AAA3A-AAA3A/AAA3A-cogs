@@ -89,7 +89,7 @@ class UrlButtons(Cog):
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
-        self.log.info(
+        self.logger.info(
             f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
         )
 

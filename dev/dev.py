@@ -685,7 +685,7 @@ class Dev(Cog, dev_commands.Dev):
             try:
                 _console_custom_kwargs.update(_console_custom)
             except Exception:
-                self.log.exception(
+                self.logger.exception(
                     "Error updating console kwargs: falling back to default values."
                 )
         env["_console_custom"] = _console_custom_kwargs

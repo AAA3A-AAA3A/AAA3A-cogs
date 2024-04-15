@@ -145,7 +145,7 @@ class TempRoles(Cog):
                                         temp_role, reason="Temp Role automatically unassigned."
                                     )
                                 except discord.HTTPException as e:
-                                    self.log.error(
+                                    self.logger.error(
                                         f"Error when removing the Temp Role {temp_role.name} ({temp_role.id}) from {member} ({member.id}) in {guild.name} ({guild.id}).",
                                         exc_info=e,
                                     )

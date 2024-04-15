@@ -254,11 +254,11 @@ class Dashboard(Cog):
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.settings.add_commands()
-        self.log.info("Loading cog...")
+        self.logger.info("Loading cog...")
         asyncio.create_task(self.create_app(flask_flags=await self.config.flask_flags()))
 
     async def cog_unload(self) -> None:
-        self.log.info("Unloading cog...")
+        self.logger.info("Unloading cog...")
         if self.app is not None and self.app.server_thread is not None:
             await asyncio.to_thread(self.app.server_thread.shutdown)
             await asyncio.to_thread(self.app.tasks_manager.stop_tasks)
@@ -298,7 +298,7 @@ class Dashboard(Cog):
                 self.app: FlaskApp = FlaskApp(cog=self, **args)
                 await self.app.create_app()
             except Exception as e:
-                self.log.critical("Error when creating the Flask webserver app.", exc_info=e)
+                self.logger.critical("Error when creating the Flask webserver app.", exc_info=e)
 
     @commands.is_owner()
     @commands.hybrid_group()

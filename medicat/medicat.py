@@ -374,7 +374,7 @@ class Medicat(Cog):
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
-        self.log.info(
+        self.logger.info(
             f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
         )
 
@@ -383,7 +383,7 @@ class Medicat(Cog):
         try:
             self.remove_custom_commands()
         except Exception as e:
-            self.log.error("An error occurred while removing the custom_commands.", exc_info=e)
+            self.logger.error("An error occurred while removing the custom_commands.", exc_info=e)
         if self._session is not None:
             await self._session.close()
         await super().cog_unload()
@@ -699,7 +699,7 @@ class Medicat(Cog):
                     del command.params["ctx"]
                 setattr(self, f"CC_{name}", command)
             except Exception as e:
-                self.log.error(
+                self.logger.error(
                     f"An error occurred while adding the `medicat {name}` custom command.",
                     exc_info=e,
                 )

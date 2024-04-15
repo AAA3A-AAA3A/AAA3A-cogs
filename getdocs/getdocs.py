@@ -782,7 +782,7 @@ class Source:
     async def _build_rtfm_cache(self, recache: bool = False) -> Inventory:
         if self._rtfm_cache is not None and not recache:
             return self._rtfm_cache
-        self.cog.log.debug(f"`{self.name}`: Starting RTFM caching...")
+        self.cog.logger.debug(f"`{self.name}`: Starting RTFM caching...")
         partial = (
             functools.partial(Inventory, url=self._rtfm_cache_url)
             if self.url.startswith("http")
@@ -800,7 +800,7 @@ class Source:
             self._raw_rtfm_cache_with_std.append(item.name)
             if item.domain != "std":
                 self._raw_rtfm_cache_without_std.append(item.name)
-        self.cog.log.debug(f"`{self.name}`: RTFM cache built.")
+        self.cog.logger.debug(f"`{self.name}`: RTFM cache built.")
         return self._rtfm_cache
 
     async def _build_docs_cache(
@@ -810,7 +810,7 @@ class Source:
             return self._docs_cache
         self._docs_cache = []
         self._result_docs_cache = {}
-        self.cog.log.debug(f"`{self.name}`: Starting Documentations caching...")
+        self.cog.logger.debug(f"`{self.name}`: Starting Documentations caching...")
         start = time.monotonic()
         self.cog._docs_stats[self.name] = {"manuals": 0, "documentations": 0}
 
@@ -859,11 +859,11 @@ class Source:
                     self.cog._docs_stats["GLOBAL"]["manuals"] += 1
                     self.cog._docs_stats[self.name]["documentations"] += len(documentations)
                     self.cog._docs_stats["GLOBAL"]["documentations"] += len(documentations)
-                    self.cog.log.verbose(
+                    self.cog.logger.verbose(
                         f"`{self.name}`: `{name}` documentation added to documentation cache."
                     )
                 except Exception as e:
-                    self.cog.log.debug(
+                    self.cog.logger.debug(
                         f"`{self.name}`: Error occured while trying to cache `{name}` documentation.",
                         exc_info=e,
                     )
@@ -878,7 +878,7 @@ class Source:
         size = get_object_size(self._docs_cache)
         self.cog._docs_sizes[self.name] = size
         self.cog._docs_sizes["GLOBAL"] += size
-        self.cog.log.debug(
+        self.cog.logger.debug(
             f"`{self.name}`: Successfully cached {amount} Documentations/{len(manuals)} manuals."
         )
         return self._docs_cache
@@ -900,7 +900,7 @@ class Source:
             )
             result = await loop.run_in_executor(None, partial)
             if result.returncode != 0:
-                self.cog.log.error(
+                self.cog.logger.error(
                     f"`{self.name}`: Error occured while trying to clone Discord API Docs's GitHub repo."
                 )
                 return self._rtfm_cache, [], []
@@ -1116,11 +1116,11 @@ class Source:
                             )
                             documentations.append(documentation)
                             self._docs_cache.append(documentation)
-                        self.cog.log.verbose(
+                        self.cog.logger.verbose(
                             f"`{self.name}`: `{name}` documentation added to documentation cache."
                         )
                     except Exception as e:
-                        self.cog.log.debug(
+                        self.cog.logger.debug(
                             f"`{self.name}`: Error occured while trying to cache `{name}` documentation.",
                             exc_info=e,
                         )
@@ -1191,11 +1191,11 @@ class Source:
                 )
                 documentations.append(documentation)
                 self._docs_cache.append(documentation)
-                self.cog.log.verbose(
+                self.cog.logger.verbose(
                     f"`{self.name}`: `{manual[0]}` documentation added to documentation cache."
                 )
             except Exception as e:
-                self.cog.log.debug(
+                self.cog.logger.debug(
                     f"`{self.name}`: Error occured while trying to cache `{manual[0]}` documentation.",
                     exc_info=e,
                 )
@@ -1310,11 +1310,11 @@ class Source:
                 )
                 documentations.append(documentation)
                 self._docs_cache.append(documentation)
-                self.cog.log.verbose(
+                self.cog.logger.verbose(
                     f"`{self.name}`: `{manual[0]}` documentation added to documentation cache."
                 )
             except Exception as e:
-                self.cog.log.debug(
+                self.cog.logger.debug(
                     f"`{self.name}`: Error occured while trying to cache `{manual[0]}` documentation.",
                     exc_info=e,
                 )

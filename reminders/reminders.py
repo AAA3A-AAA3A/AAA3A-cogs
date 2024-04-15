@@ -234,7 +234,7 @@ class Reminders(Cog):
                     try:
                         await reminder.process(utc_now=utc_now)
                     except RuntimeError as e:
-                        self.log.error(str(e), exc_info=e)
+                        self.logger.error(str(e), exc_info=e)
         return executed
 
     async def create_reminder(

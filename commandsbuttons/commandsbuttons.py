@@ -98,7 +98,7 @@ class CommandsButtons(Cog):
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
-        self.log.info(
+        self.logger.info(
             f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
         )
 
@@ -117,7 +117,7 @@ class CommandsButtons(Cog):
                     self.bot.add_view(view, message_id=message_id)
                     self.views[discord.PartialMessage(channel=channel, id=message_id)] = view
                 except Exception as e:
-                    self.log.error(
+                    self.logger.error(
                         f"The Button View could not be added correctly for the `{guild}-{message}` message.",
                         exc_info=e,
                     )
@@ -211,7 +211,7 @@ class CommandsButtons(Cog):
         self.cache.remove(ctx)
         if isinstance(error, commands.CommandInvokeError):
             await asyncio.sleep(0.7)
-            self.log.error(
+            self.logger.error(
                 f"This exception in the '{ctx.command.qualified_name}' command may have been triggered by the use of CommandsButtons. Check that the same error occurs with the text command, before reporting it.",
                 exc_info=None,
             )

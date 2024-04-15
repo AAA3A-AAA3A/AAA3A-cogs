@@ -124,7 +124,7 @@ class Minecraft(Cog):
                 except (asyncio.CancelledError, TimeoutError):
                     continue
                 except Exception as e:
-                    self.log.error(
+                    self.logger.error(
                         f"No data found for {server_url} server in {channel.id} channel in {channel.guild.id} guild.",
                         exc_info=e,
                     )

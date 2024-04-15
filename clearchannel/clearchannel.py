@@ -123,7 +123,7 @@ class ClearChannel(Cog, DashboardIntegration):
             position=channel_position,
             reason=reason,
         )
-        self.log.info(
+        self.logger.info(
             f"{ctx.author} ({ctx.author.id}) deleted ALL messages in channel {old_channel.name} ({old_channel.id})."
         ),
         if config["first_message"]:

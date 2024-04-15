@@ -3,11 +3,13 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import base64
 import inspect
 import types
 
-from redbot.core.i18n import get_locale_from_guild
+from redbot.core.i18n import get_locale_from_guild, set_contextual_locale, set_regional_format
 
+from .form import get_form_class
 from .utils import rpc_check
 
 
@@ -184,7 +186,8 @@ class DashboardRPC_ThirdParties:
         name: str,
         page: str,
         request_url: str,
-        csrf_token: str,
+        csrf_token: typing.Tuple[str, str],
+        wtf_csrf_secret_key: str,
         context_ids: typing.Optional[typing.Dict[str, int]] = None,
         kwargs: typing.Dict[str, typing.Any] = None,
         lang_code: typing.Optional[str] = None,
@@ -294,8 +297,21 @@ class DashboardRPC_ThirdParties:
                 kwargs["channel_id"] = context_ids["channel_id"]
                 kwargs["channel"] = channel
         kwargs["request_url"] = request_url
-        kwargs["csrf_token"] = csrf_token
+        kwargs["csrf_token"] = tuple(csrf_token)
+        kwargs["wtf_csrf_secret_key"] = base64.urlsafe_b64decode(wtf_csrf_secret_key)
         kwargs["lang_code"] = lang_code or await get_locale_from_guild(
             self.bot, guild=kwargs.get("guild")
         )
-        return await self.third_parties[name][page][0](**kwargs)
+        set_contextual_locale(kwargs["lang_code"])
+        set_regional_format(kwargs["lang_code"])
+
+        kwargs["Form"], kwargs["DpyObjectConverter"], extra_notifications = await get_form_class(self, third_party_cog=self.third_parties_cogs[name], **kwargs)
+
+        result = await self.third_parties[name][page][0](**kwargs)
+        if "web_content" in result and isinstance(result["web_content"], typing.Dict):
+            for key, value in result["web_content"].items():
+                if isinstance(value, kwargs["Form"]):
+                    result["web_content"][key] = str(value)
+        result.setdefault("notifications", [])
+        result["notifications"].extend(extra_notifications)
+        return result

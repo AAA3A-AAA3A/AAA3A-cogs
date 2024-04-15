@@ -9,7 +9,7 @@
         "web",
         "panel"
     ],
-    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "fernet", "markdown2"],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "fernet", "markdown2", "wtforms", "werkzeug", "markupsafe"],
     "min_bot_version": "3.5.0",
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

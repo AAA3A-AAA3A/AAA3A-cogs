@@ -304,10 +304,12 @@ class DashboardRPC:
                     author = "AAA3A"
                     repo = "https://github.com/AAA3A-AAA3A/AAA3A-cogs"
             author = (
-                humanize_list(getattr(cog, "__authors__", []))
-                or getattr(cog, "__author__", None)
+                getattr(cog, "__authors__", [])
+                or getattr(cog, "__author__", [])
                 or author
             )
+            if isinstance(author, typing.List):
+                author = humanize_list(author)
             self.cogs_infos_cache[name] = {"author": author, "repo": repo}
             returning[name] = {
                 "name": name,

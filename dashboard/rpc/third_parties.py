@@ -75,7 +75,7 @@ def dashboard_page(
         if "user_id" not in params["context_ids"] and ("guild_id" in params["context_ids"] or is_owner):
             params["context_ids"].append("user_id")
         if params["hidden"] is None:
-            params["hidden"] = "GET" not in methods or is_owner or params["required_kwargs"] or [
+            params["hidden"] = "GET" not in methods or params["required_kwargs"] or [
                 x for x in params["context_ids"] if x not in ["user_id", "guild_id"]
             ]
 

@@ -20,7 +20,6 @@ def dashboard_page(
     context_ids: typing.List[str] = None,
     required_kwargs: typing.List[str] = None,
     is_owner: bool = False,
-    # permissions_required: typing.List[str] = ["view"],
     hidden: typing.Optional[bool] = None,
 ):
     if context_ids is None:
@@ -43,7 +42,6 @@ def dashboard_page(
             "context_ids": context_ids,
             "required_kwargs": required_kwargs,
             "is_owner": is_owner,
-            # "permissions_required": permissions_required,
             "hidden": hidden,
         }
         for key, value in inspect.signature(func).parameters.items():
@@ -73,11 +71,11 @@ def dashboard_page(
                 params["context_ids"].append("guild_id")
                 break
 
-        # No guild available and no owner check without user connection.
-        if "guild_id" in params["context_ids"] and ("user_id" not in params["context_ids"] or is_owner):
+        # No method `GET`, no guild available and no owner check without user connection.
+        if "user_id" not in params["context_ids"] and ("guild_id" in params["context_ids"] or is_owner):
             params["context_ids"].append("user_id")
         if params["hidden"] is None:
-            params["hidden"] = params["required_kwargs"] or [
+            params["hidden"] = "GET" not in methods or is_owner or params["required_kwargs"] or [
                 x for x in params["context_ids"] if x not in ["user_id", "guild_id"]
             ]
 
@@ -189,13 +187,20 @@ class DashboardRPC_ThirdParties:
         csrf_token: typing.Tuple[str, str],
         wtf_csrf_secret_key: str,
         context_ids: typing.Optional[typing.Dict[str, int]] = None,
-        kwargs: typing.Dict[str, typing.Any] = None,
+        required_kwargs: typing.Dict[str, typing.Any] = None,
+        extra_kwargs: typing.Dict[str, typing.Any] = None,
+        data: typing.Dict[typing.Literal["form", "json"], typing.Dict[str, typing.Any]] = None,
         lang_code: typing.Optional[str] = None,
     ) -> typing.Dict[str, typing.Any]:
         if context_ids is None:
             context_ids = {}
-        if kwargs is None:
-            kwargs = {}
+        if required_kwargs is None:
+            required_kwargs = {}
+        if extra_kwargs is None:
+            extra_kwargs = {}
+        if data is None:
+            data = {"form": {}, "json": {}}
+        kwargs = {}
         if not name or name not in self.third_parties or name not in self.third_parties_cogs:
             return {
                 "status": 1,
@@ -219,6 +224,9 @@ class DashboardRPC_ThirdParties:
                 "error_message": "Looks like that page doesn't exist... Strange...",
             }
         kwargs["method"] = method
+        kwargs["request_url"] = request_url
+        kwargs["csrf_token"] = tuple(csrf_token)
+        kwargs["wtf_csrf_secret_key"] = base64.urlsafe_b64decode(wtf_csrf_secret_key)
         if "user_id" in self.third_parties[name][page][1]["context_ids"]:
             if (user := self.bot.get_user(context_ids["user_id"])) is None:
                 return {
@@ -257,13 +265,6 @@ class DashboardRPC_ThirdParties:
                     "error_code": 403,
                     "error_message": "Looks like that you're not in this server...",
                 }
-            # if m.id != guild.owner.id:
-            #     perms = self.cog.rpc.get_perms(guildid=guild.id, m=m)
-            #     if perms is None:
-            #         return {"status": 1, "message": "Forbidden access.", "error_code": 403, "error_message": "Looks like that you haven't permissions in this server..."}
-            #     for permission in self.third_parties[name][page][1]["permissions_required"]:
-            #         if permission not in perms:
-            #             return {"status": 1, "message": "Page not found.", "error_code": 403, "error_message": "Looks like that you haven't permissions in this server..."}
             kwargs["guild_id"] = context_ids["guild_id"]
             kwargs["guild"] = guild
             if "member_id" in self.third_parties[name][page][1]["context_ids"]:
@@ -296,9 +297,10 @@ class DashboardRPC_ThirdParties:
                     }
                 kwargs["channel_id"] = context_ids["channel_id"]
                 kwargs["channel"] = channel
-        kwargs["request_url"] = request_url
-        kwargs["csrf_token"] = tuple(csrf_token)
-        kwargs["wtf_csrf_secret_key"] = base64.urlsafe_b64decode(wtf_csrf_secret_key)
+        for key, value in required_kwargs.items():
+            kwargs[key] = value
+        kwargs["extra_kwargs"] = extra_kwargs
+        kwargs["data"] = data
         kwargs["lang_code"] = lang_code or await get_locale_from_guild(
             self.bot, guild=kwargs.get("guild")
         )

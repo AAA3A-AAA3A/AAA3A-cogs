@@ -23,7 +23,7 @@ import inspect
 INITIAL_INIT_FIELD = Field.__init__
 
 
-async def get_form_class(_self, third_party_cog: commands.Cog, method: str, csrf_token: typing.Tuple[str, str], wtf_csrf_secret_key: bytes, **kwargs):
+async def get_form_class(_self, third_party_cog: commands.Cog, method: str, csrf_token: typing.Tuple[str, str], wtf_csrf_secret_key: bytes, data: typing.Dict[typing.Literal["form", "json"], typing.Dict[str, typing.Any]], **kwargs):
     extra_notifications = []
     _Auto = object()
 
@@ -71,10 +71,10 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: str, csrf
             def wrap_formdata(self, form, formdata) -> typing.Optional[ImmutableMultiDict]:
                 if formdata is _Auto:
                     if _is_submitted():
-                        if kwargs["form"]:
-                            return ImmutableMultiDict(kwargs["form"])
-                        elif kwargs["json"]:
-                            return ImmutableMultiDict(kwargs["json"])
+                        if data["form"]:
+                            return ImmutableMultiDict(data["form"])
+                        elif data["json"]:
+                            return ImmutableMultiDict(data["json"])
                     return None
                 return formdata
 
@@ -105,7 +105,7 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: str, csrf
                     try:
                         field.data = await validator.convert(field.data)
                     except commands.BadArgument as e:
-                        extra_notifications.append({"message": f"{field.label.text}: {e}", "category": "warning"})
+                        extra_notifications.append({"message": f"{field.name}: {e}", "category": "warning"})
                         result = False
             return result
 

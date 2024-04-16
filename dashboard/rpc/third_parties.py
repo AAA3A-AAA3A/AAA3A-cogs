@@ -19,6 +19,7 @@ def dashboard_page(
     methods: typing.Tuple[str] = ("GET",),
     context_ids: typing.List[str] = None,
     required_kwargs: typing.List[str] = None,
+    optional_kwargs: typing.List[str] = None,
     is_owner: bool = False,
     hidden: typing.Optional[bool] = None,
 ):
@@ -26,6 +27,8 @@ def dashboard_page(
         context_ids = []
     if required_kwargs is None:
         required_kwargs = []
+    if optional_kwargs is None:
+        optional_kwargs = []
 
     def decorator(func: typing.Callable):
         if name is not None:
@@ -41,6 +44,7 @@ def dashboard_page(
             "methods": methods,
             "context_ids": context_ids,
             "required_kwargs": required_kwargs,
+            "optional_kwargs": optional_kwargs,
             "is_owner": is_owner,
             "hidden": hidden,
         }
@@ -51,6 +55,7 @@ def dashboard_page(
             ]:
                 continue
             if value.default is not inspect._empty:
+                params["optional_kwargs"].append(key)
                 continue
             if (
                 key in ("user_id", "guild_id", "member_id", "role_id", "channel_id")
@@ -188,6 +193,7 @@ class DashboardRPC_ThirdParties:
         wtf_csrf_secret_key: str,
         context_ids: typing.Optional[typing.Dict[str, int]] = None,
         required_kwargs: typing.Dict[str, typing.Any] = None,
+        optional_kwargs: typing.Dict[str, typing.Any] = None,
         extra_kwargs: typing.Dict[str, typing.Any] = None,
         data: typing.Dict[typing.Literal["form", "json"], typing.Dict[str, typing.Any]] = None,
         lang_code: typing.Optional[str] = None,
@@ -196,6 +202,8 @@ class DashboardRPC_ThirdParties:
             context_ids = {}
         if required_kwargs is None:
             required_kwargs = {}
+        if optional_kwargs is None:
+            optional_kwargs = {}
         if extra_kwargs is None:
             extra_kwargs = {}
         if data is None:
@@ -223,10 +231,6 @@ class DashboardRPC_ThirdParties:
                 "error_code": 404,
                 "error_message": "Looks like that page doesn't exist... Strange...",
             }
-        kwargs["method"] = method
-        kwargs["request_url"] = request_url
-        kwargs["csrf_token"] = tuple(csrf_token)
-        kwargs["wtf_csrf_secret_key"] = base64.urlsafe_b64decode(wtf_csrf_secret_key)
         if "user_id" in self.third_parties[name][page][1]["context_ids"]:
             if (user := self.bot.get_user(context_ids["user_id"])) is None:
                 return {
@@ -299,6 +303,13 @@ class DashboardRPC_ThirdParties:
                 kwargs["channel"] = channel
         for key, value in required_kwargs.items():
             kwargs[key] = value
+        for key, value in optional_kwargs.items():
+            if key not in kwargs:
+                kwargs[key] = value
+        kwargs["method"] = method
+        kwargs["request_url"] = request_url
+        kwargs["csrf_token"] = tuple(csrf_token)
+        kwargs["wtf_csrf_secret_key"] = base64.urlsafe_b64decode(wtf_csrf_secret_key)
         kwargs["extra_kwargs"] = extra_kwargs
         kwargs["data"] = data
         kwargs["lang_code"] = lang_code or await get_locale_from_guild(

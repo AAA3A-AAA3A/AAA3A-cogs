@@ -10,6 +10,7 @@ from copy import deepcopy
 from redbot.core.utils.chat_formatting import pagify
 
 from .converters import MESSAGE_LINK_REGEX, LinkToMessageConverter
+from .dashboard_integration import DashboardIntegration
 
 # Credits:
 # General repo credits.
@@ -51,7 +52,7 @@ class LinkQuoterView(discord.ui.View):
 
 
 @cog_i18n(_)
-class LinkQuoter(Cog):
+class LinkQuoter(Cog, DashboardIntegration):
     """Quote any Discord message from its link!"""
 
     def __init__(self, bot: Red) -> None:

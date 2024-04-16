@@ -12,6 +12,8 @@ from sys import getsizeof
 
 from redbot.core.utils.chat_formatting import pagify
 
+from .dashboard_integration import DashboardIntegration
+
 # Credits:
 # General repo credits.
 # Thanks to Epic for the original code (https://github.com/npc203/npc-cogs/tree/dpy2/snipe)!
@@ -152,7 +154,7 @@ class SnipedMessage:
 
 
 @cog_i18n(_)
-class Snipe(Cog):
+class Snipe(Cog, DashboardIntegration):
     """Bulk sniping deleted and edited messages, for moderation purpose!"""
 
     def __init__(self, bot: Red) -> None:

@@ -51,14 +51,14 @@ class DashboardRPC:
         self.bot.register_rpc_handler(self.get_bot_settings)
         self.bot.register_rpc_handler(self.set_bot_settings)
 
-        # Initialize extensions.
-        self.extensions: typing.Dict[str, typing.Any] = {}
-        self.extensions["default_cogs"]: DashboardRPC_DefaultCogs = DashboardRPC_DefaultCogs(self.cog)
-        self.extensions["webhooks"]: DashboardRPC_Webhooks = DashboardRPC_Webhooks(self.cog)
-        self.third_parties_extension: DashboardRPC_ThirdParties = DashboardRPC_ThirdParties(
+        # Initialize handlers.
+        self.handlers: typing.Dict[str, typing.Any] = {}
+        self.handlers["default_cogs"]: DashboardRPC_DefaultCogs = DashboardRPC_DefaultCogs(self.cog)
+        self.handlers["webhooks"]: DashboardRPC_Webhooks = DashboardRPC_Webhooks(self.cog)
+        self.third_parties_handler: DashboardRPC_ThirdParties = DashboardRPC_ThirdParties(
             self.cog
         )
-        self.extensions["third_parties"]: DashboardRPC_ThirdParties = self.third_parties_extension
+        self.handlers["third_parties"]: DashboardRPC_ThirdParties = self.third_parties_handler
 
         # Caches: you can thank Trusty for the cogs infos.
         self.invite_url: str = None
@@ -86,7 +86,7 @@ class DashboardRPC:
         self.bot.unregister_rpc_handler(self.set_dashboard_settings)
         self.bot.unregister_rpc_handler(self.get_bot_settings)
         self.bot.unregister_rpc_handler(self.set_bot_settings)
-        for extension in self.extensions:
+        for extension in self.handlers:
             extension.unload()
 
     @rpc_check()
@@ -129,7 +129,7 @@ class DashboardRPC:
         self, only_bot_variables: bool = False
     ) -> typing.Dict[str, typing.Any]:
         variables = await self.get_bot_variables()
-        variables.update(third_parties=await self.extensions["third_parties"].get_third_parties())
+        variables.update(third_parties=await self.handlers["third_parties"].get_third_parties())
         variables.update(commands={} if only_bot_variables else await self.get_commands())
         return variables
 

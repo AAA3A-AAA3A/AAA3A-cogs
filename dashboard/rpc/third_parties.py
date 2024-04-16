@@ -9,14 +9,14 @@ import types
 
 from redbot.core.i18n import get_locale_from_guild, set_contextual_locale, set_regional_format
 
-from .form import get_form_class
+from .form import get_form_class, Field, INITIAL_INIT_FIELD
 from .utils import rpc_check
 
 
 def dashboard_page(
     name: typing.Optional[str] = None,
     description: typing.Optional[str] = None,
-    methods: typing.List[str] = ["GET"],
+    methods: typing.Tuple[str] = ("GET",),
     context_ids: typing.List[str] = None,
     required_kwargs: typing.List[str] = None,
     is_owner: bool = False,
@@ -53,20 +53,20 @@ def dashboard_page(
             if value.default is not inspect._empty:
                 continue
             if (
-                key in ["user_id", "guild_id", "member_id", "role_id", "channel_id"]
+                key in ("user_id", "guild_id", "member_id", "role_id", "channel_id")
                 and key not in params["context_ids"]
             ):
                 params["context_ids"].append(key)
             elif (
-                f"{key}_id" in ["user_id", "guild_id", "member_id", "role_id", "channel_id"]
-                and f"{key}_id" not in params["context_ids"]
+                f"{key}_id" in ("user_id", "guild_id", "member_id", "role_id", "channel_id")
             ):
-                params["context_ids"].append(f"{key}_id")
-            elif key not in ["method", "request_url", "csrf_token", "lang_code"]:
+                if f"{key}_id" not in params["context_ids"]:
+                    params["context_ids"].append(f"{key}_id")
+            elif key not in ("method", "request_url", "csrf_token", "wtf_csrf_secret_key", "extra_kwargs", "data", "lang_code"):
                 params["required_kwargs"].append(key)
 
         # A guild must be chose for these kwargs.
-        for key in ["member_id", "role_id", "channel_id"]:
+        for key in ("member_id", "role_id", "channel_id"):
             if key in params["context_ids"] and "guild_id" not in params["context_ids"]:
                 params["context_ids"].append("guild_id")
                 break
@@ -75,9 +75,9 @@ def dashboard_page(
         if "user_id" not in params["context_ids"] and ("guild_id" in params["context_ids"] or is_owner):
             params["context_ids"].append("user_id")
         if params["hidden"] is None:
-            params["hidden"] = "GET" not in methods or params["required_kwargs"] or [
+            params["hidden"] = "GET" not in methods or params["required_kwargs"] or any([
                 x for x in params["context_ids"] if x not in ["user_id", "guild_id"]
-            ]
+            ])
 
         func.__dashboard_params__ = params.copy()
         return func
@@ -180,7 +180,7 @@ class DashboardRPC_ThirdParties:
     @rpc_check()
     async def data_receive(
         self,
-        method: str,
+        method: typing.Literal["HEAD", "GET", "OPTIONS", "POST", "PATCH", "DELETE"],
         name: str,
         page: str,
         request_url: str,
@@ -314,6 +314,7 @@ class DashboardRPC_ThirdParties:
             for key, value in result["web_content"].items():
                 if isinstance(value, kwargs["Form"]):
                     result["web_content"][key] = str(value)
+        setattr(Field, "__init__", INITIAL_INIT_FIELD)
         result.setdefault("notifications", [])
         result["notifications"].extend(extra_notifications)
         return result

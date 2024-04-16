@@ -23,7 +23,7 @@ import inspect
 INITIAL_INIT_FIELD = Field.__init__
 
 
-async def get_form_class(_self, third_party_cog: commands.Cog, method: str, csrf_token: typing.Tuple[str, str], wtf_csrf_secret_key: bytes, data: typing.Dict[typing.Literal["form", "json"], typing.Dict[str, typing.Any]], **kwargs):
+async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Literal["HEAD", "GET", "OPTIONS", "POST", "PATCH", "DELETE"], csrf_token: typing.Tuple[str, str], wtf_csrf_secret_key: bytes, data: typing.Dict[typing.Literal["form", "json"], typing.Dict[str, typing.Any]], **kwargs):
     extra_notifications = []
     _Auto = object()
 
@@ -102,6 +102,9 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: str, csrf
                 for validator in field.validators:
                     if not isinstance(validator, DpyObjectConverter):
                         continue
+                    if not field.data.strip():
+                        field.data = ""
+                        continue
                     try:
                         field.data = await validator.convert(field.data)
                     except commands.BadArgument as e:
@@ -173,9 +176,9 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: str, csrf
 
 
     class DpyObjectConverter:
-        def __init__(self, converter: typing.Callable[[str], typing.Any]) -> None:
+        def __init__(self, converter: typing.Callable[[str], typing.Any], param: typing.Optional[discord.ext.commands.parameters.Parameter] = None) -> None:
             self.converter: typing.Callable[[str], typing.Any] = converter
-            self.param: discord.ext.commands.parameters.Parameter = discord.ext.commands.parameters.Parameter(
+            self.param: discord.ext.commands.parameters.Parameter = param or discord.ext.commands.parameters.Parameter(
                 name="converter", kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=self.converter
             )
 

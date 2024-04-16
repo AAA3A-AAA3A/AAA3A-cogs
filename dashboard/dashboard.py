@@ -38,7 +38,7 @@ class RedirectURIConverter(commands.Converter):
 class ThirdPartyConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> str:
         cog = ctx.bot.get_cog("Dashboard")
-        if argument not in cog.rpc.third_parties_extension.third_parties:
+        if argument not in cog.rpc.third_parties_handler.third_parties:
             raise commands.BadArgument(_("This third party is not available."))
         return argument
 

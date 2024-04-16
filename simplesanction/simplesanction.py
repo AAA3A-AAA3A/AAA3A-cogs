@@ -11,6 +11,7 @@ from redbot.core.commands.converter import parse_timedelta, timedelta
 from redbot.core.utils.predicates import MessagePredicate
 
 from .constants import ACTIONS_DICT
+from .dashboard_integration import DashboardIntegration
 from .types import Action
 from .view import SimpleSanctionView
 
@@ -51,7 +52,7 @@ async def sanction_member_context_menu(interaction: discord.Interaction, member:
 
 
 @cog_i18n(_)
-class SimpleSanction(Cog):
+class SimpleSanction(Cog, DashboardIntegration):
     """A cog to sanction members, with buttons!"""
 
     def __init__(self, bot: Red) -> None:

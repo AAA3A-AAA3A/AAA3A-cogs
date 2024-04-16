@@ -23,6 +23,7 @@ from redbot.core import dev_commands
 from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.predicates import MessagePredicate
 
+from .dashboard_integration import DashboardIntegration
 from .env import DevEnv, DevSpace, Exit, ctxconsole
 
 # Credits:
@@ -477,7 +478,7 @@ class DevOutput(dev_commands.DevOutput):
 
 
 @cog_i18n(_)
-class Dev(Cog, dev_commands.Dev):
+class Dev(Cog, dev_commands.Dev, DashboardIntegration):
     """Various development focused utilities!"""
 
     def __init__(self, bot: Red) -> None:

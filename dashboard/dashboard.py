@@ -45,7 +45,7 @@ class ThirdPartyConverter(commands.Converter):
 
 @cog_i18n(_)
 class Dashboard(Cog):
-    """Interact with your bot through a web dashboard!
+    """Interact with your bot through a web Dashboard!
 
     **Installation guide:** https://red-web-dashboard.readthedocs.io/en/latest
     ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.

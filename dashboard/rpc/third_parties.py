@@ -71,18 +71,25 @@ def dashboard_page(
                 params["required_kwargs"].append(key)
 
         # A guild must be chose for these kwargs.
-        for key in ("member_id", "role_id", "channel_id"):
-            if key in params["context_ids"] and "guild_id" not in params["context_ids"]:
-                params["context_ids"].append("guild_id")
-                break
+        if "guild_id" not in params["context_ids"]:
+            for key in ("member_id", "role_id", "channel_id"):
+                if key in params["context_ids"]:
+                    params["context_ids"].append("guild_id")
+                    break
 
         # No method `GET`, no guild available and no owner check without user connection.
         if "user_id" not in params["context_ids"] and ("guild_id" in params["context_ids"] or is_owner):
             params["context_ids"].append("user_id")
         if params["hidden"] is None:
-            params["hidden"] = "GET" not in methods or params["required_kwargs"] or any([
-                x for x in params["context_ids"] if x not in ["user_id", "guild_id"]
-            ])
+            params["hidden"] = (
+                "GET" not in methods
+                or params["required_kwargs"]
+                or any(
+                    x
+                    for x in params["context_ids"]
+                    if x not in ["user_id", "guild_id"]
+                )
+            )
 
         func.__dashboard_params__ = params.copy()
         return func

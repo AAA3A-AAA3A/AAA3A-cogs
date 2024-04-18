@@ -188,8 +188,8 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
         async def convert(self, argument: str) -> typing.Any:
             context = await CogsUtils.invoke_command(
                 bot=_self.bot,
-                author=kwargs.get("user", None),
-                channel=kwargs.get("channel", (kwargs["guild"].text_channels[0] if kwargs.get("guild") is not None else discord.Object(0))),
+                author=kwargs["user"],
+                channel=kwargs.get("channel", (kwargs["guild"].text_channels[0] if kwargs.get("guild") is not None else kwargs["user"].create_dm())),
                 command="ping",
                 invoke=False,
                 cog=third_party_cog,

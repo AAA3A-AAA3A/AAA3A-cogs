@@ -129,7 +129,7 @@ class DashboardRPC:
         self, only_bot_variables: bool = False
     ) -> typing.Dict[str, typing.Any]:
         variables = await self.get_bot_variables()
-        variables.update(third_parties=await self.handlers["third_parties"].get_third_parties())
+        variables.update(third_parties=await self.third_parties_handler.get_third_parties())
         variables.update(commands={} if only_bot_variables else await self.get_commands())
         return variables
 

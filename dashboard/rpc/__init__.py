@@ -554,6 +554,15 @@ class DashboardRPC:
         await config_group.admin_role.set([int(role_id) for role_id in settings["admin_roles"]])
         await config_group.mod_role.set([int(role_id) for role_id in settings["mod_roles"]])
         await config_group.ignore.set(settings["ignored"])
+        for command_name in settings["disabled_commands"].copy():
+            if (command := self.bot.get_command(command_name)) is None or isinstance(command, commands.commands._RuleDropper) or (command.requires.privilege_level is not None and command.requires.privilege_level > await commands.PrivilegeLevel.from_ctx(type("Context", (), {"bot": self.bot, "author": member, "guild": guild}))):
+                settings["disabled_commands"].remove(command_name)
+            else:
+                command.disable_in(guild)
+        for command_name in await config_group.disabled_commands():
+            if command_name not in settings["disabled_commands"]:
+                if (command := self.bot.get_command(command_name)) is not None and (command.requires.privilege_level is None or not command.requires.privilege_level > await commands.PrivilegeLevel.from_ctx(type("Context", (), {"bot": self.bot, "author": member, "guild": guild}))):
+                    command.enable_in(guild)
         await config_group.disabled_commands.set(settings["disabled_commands"])
         await config_group.embeds.set(settings["embeds"])
         await config_group.use_bot_color.set(settings["use_bot_color"])
@@ -673,6 +682,15 @@ class DashboardRPC:
         config_group = self.bot._config
         await config_group.prefix.set(settings["prefixes"])
         await config_group.invoke_error_msg.set(settings["invoke_error_msg"])
+        for command_name in settings["disabled_commands"].copy():
+            if (command := self.bot.get_command(command_name)) is None or isinstance(command, commands.commands._RuleDropper):
+                settings["disabled_commands"].remove(command_name)
+            else:
+                command.disabled = True
+        for command_name in await config_group.disabled_commands():
+            if command_name not in settings["disabled_commands"]:
+                if (command := self.bot.get_command(command_name)) is not None:
+                    command.disabled = False
         await config_group.disabled_commands.set(settings["disabled_commands"])
         if settings["disabled_command_msg"] is not None:
             await config_group.disabled_command_msg.set(settings["disabled_command_msg"])
@@ -691,7 +709,7 @@ class DashboardRPC:
         await config_group.embeds.set(settings["embeds"])
         if settings["color"] is not None:
             hex_color = settings["color"].lstrip("#")
-            r = int(hex_color[0:2], 16)
+            r = int(hex_color[:2], 16)
             g = int(hex_color[2:4], 16)
             b = int(hex_color[4:6], 16)
             color = discord.Color.from_rgb(r, g, b)

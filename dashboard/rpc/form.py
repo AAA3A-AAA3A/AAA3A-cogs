@@ -149,8 +149,8 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
         if hasattr(field, "_value"):
             field._real_value = field._value
         field._value = lambda: (field._real_value() if hasattr(field, "_real_value") else "") or (
-            (str(field.default) if not isinstance(field.default, typing.List) else field.default)
-            if field.default
+            (field.default if isinstance(field.default, typing.List) else str(field.default))
+            if field.default is not None
             else ""
         )
         if isinstance(field, SelectFieldBase):

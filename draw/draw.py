@@ -93,18 +93,16 @@ class Draw(Cog):
             key = getattr(pixel, "id", pixel)
             url = f"https://cdn.discordapp.com/emojis/{key}.png"
         elif isinstance(pixel, str):
-            if pixel.startswith("http"):  # url
+            if pixel.startswith("http"):  # URL
                 key = pixel
                 url = pixel
-            else:  # unicode
-                key = pixel
-                url = f"https://emojicdn.elk.sh/{quote_plus(key)}?style=twitter"
-                # chars = [hex(ord(char))[2:] for char in key]
-                # if len(chars) == 2 and "fe0f" in chars:
-                #     chars.remove("fe0f")
-                # if "20e3" in chars:
-                #     chars.remove("fe0f")
-                # url = f"https://twemoji.maxcdn.com/2/svg/{'-'.join(chars)}.svg"
+            else:  # Unicode
+                try:
+                    key = hex(ord(pixel))[2:]
+                    url = f"https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/{key}.png"
+                except TypeError:
+                    key = pixel
+                    url = f"https://emojicdn.elk.sh/{quote_plus(key)}?style=twitter"
         elif isinstance(pixel, Color):
             key = pixel.RGBA
             if key not in self.cache:

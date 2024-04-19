@@ -56,6 +56,7 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
 
 
     class FlaskForm(Form):
+
         class Meta(DefaultMeta):
             csrf_class = _FlaskFormCSRF
             @cached_property
@@ -85,16 +86,18 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
             return _is_submitted()
 
         def validate_on_submit(self, extra_validators=None) -> bool:
-            if not self.is_submitted() or not self.validate(extra_validators=extra_validators):
-                if any(field.data for field in self if isinstance(field, SubmitField)) and self.errors:
-                    for field_name, error_messages in self.errors.items():
-                        if isinstance(error_messages[0], typing.Dict):
-                            for sub_field_name, sub_error_messages in error_messages[0].items():
-                                extra_notifications.append({"message": f"{field_name}-{sub_field_name}: {' '.join(sub_error_messages)}", "category": "warning"})
-                            continue
-                        extra_notifications.append({"message": f"{field_name}: {' '.join(error_messages)}", "category": "warning"})
-                return False
-            return True
+            if self.is_submitted() and self.validate(
+                extra_validators=extra_validators
+            ):
+                return True
+            if any(field.data for field in self if isinstance(field, SubmitField)) and self.errors:
+                for field_name, error_messages in self.errors.items():
+                    if isinstance(error_messages[0], typing.Dict):
+                        for sub_field_name, sub_error_messages in error_messages[0].items():
+                            extra_notifications.append({"message": f"{field_name}-{sub_field_name}: {' '.join(sub_error_messages)}", "category": "warning"})
+                        continue
+                    extra_notifications.append({"message": f"{field_name}: {' '.join(error_messages)}", "category": "warning"})
+            return False
 
         async def validate_dpy_converters(self) -> bool:
             result = True
@@ -135,8 +138,9 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
             html_form.append('    <div class="text-center">')
             for field in self:
                 if isinstance(field, SubmitField):
-                    setattr(field, "render_kw", {})
-                    field.render_kw["class"] = "btn mb-0 bg-gradient-success btn-md w-100 my-4 mb-2"
+                    if field.render_kw is None:
+                        field.render_kw = {}
+                    field.render_kw.setdefault("class", "btn mb-0 bg-gradient-success btn-md w-100 my-4 mb-2")
                     html_form.append(f"        {field()}")
             html_form.extend(["    </div>", "</form>"])
             return Markup("\n".join(html_form))
@@ -163,9 +167,7 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
                         label,
                         selected
                         or (
-                            field.coerce(value) == field._value()
-                            if not isinstance(field._value(), typing.List)
-                            else field.coerce(value) in field._value()
+                            field.coerce(value) in field._value() if isinstance(field._value(), typing.List) else field.coerce(value) == field._value()
                         ),
                         render_kw,
                     )
@@ -195,7 +197,11 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
                 cog=third_party_cog,
             )
             return await discord.ext.commands.converter.run_converters(
-                context, converter=self.param.converter, argument=str(argument), param=self.param
+                context,
+                converter=self.param.converter,
+                argument=argument,
+                param=self.param,
             )
+
 
     return FlaskForm, DpyObjectConverter, extra_notifications

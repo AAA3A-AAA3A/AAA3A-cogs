@@ -534,15 +534,16 @@ class DrawView(discord.ui.View):
             ):
                 child.disabled = True
         try:
-            await self._update()
+            await self._update(empty=True)
         except discord.HTTPException:
             pass
         self._ready.set()
 
-    async def _update(self) -> None:
+    async def _update(self, empty: bool = False) -> None:
         self._embed: discord.Embed = await self.get_embed(self.ctx)
         file = await self.board.to_file()
-        self.load_items()
+        if not empty:
+            self.load_items()
         if self._message is None:
             self._message: discord.Message = await self.ctx.send(
                 embed=self._embed,

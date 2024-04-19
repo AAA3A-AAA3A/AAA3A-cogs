@@ -554,12 +554,15 @@ class DashboardRPC:
         await config_group.admin_role.set([int(role_id) for role_id in settings["admin_roles"]])
         await config_group.mod_role.set([int(role_id) for role_id in settings["mod_roles"]])
         await config_group.ignore.set(settings["ignored"])
+        already_disabled_commands = await config_group.disabled_commands()
         for command_name in settings["disabled_commands"].copy():
+            if command_name in already_disabled_commands:
+                continue
             if (command := self.bot.get_command(command_name)) is None or isinstance(command, commands.commands._RuleDropper) or (command.requires.privilege_level is not None and command.requires.privilege_level > await commands.PrivilegeLevel.from_ctx(type("Context", (), {"bot": self.bot, "author": member, "guild": guild}))):
                 settings["disabled_commands"].remove(command_name)
             else:
                 command.disable_in(guild)
-        for command_name in await config_group.disabled_commands():
+        for command_name in already_disabled_commands:
             if command_name not in settings["disabled_commands"]:
                 if (command := self.bot.get_command(command_name)) is not None and (command.requires.privilege_level is None or not command.requires.privilege_level > await commands.PrivilegeLevel.from_ctx(type("Context", (), {"bot": self.bot, "author": member, "guild": guild}))):
                     command.enable_in(guild)
@@ -682,15 +685,18 @@ class DashboardRPC:
         config_group = self.bot._config
         await config_group.prefix.set(settings["prefixes"])
         await config_group.invoke_error_msg.set(settings["invoke_error_msg"])
+        already_disabled_commands = await config_group.disabled_commands()
         for command_name in settings["disabled_commands"].copy():
+            if command_name in already_disabled_commands:
+                continue
             if (command := self.bot.get_command(command_name)) is None or isinstance(command, commands.commands._RuleDropper):
                 settings["disabled_commands"].remove(command_name)
             else:
-                command.disabled = True
-        for command_name in await config_group.disabled_commands():
+                command.enabled = False
+        for command_name in already_disabled_commands:
             if command_name not in settings["disabled_commands"]:
                 if (command := self.bot.get_command(command_name)) is not None:
-                    command.disabled = False
+                    command.enabled = True
         await config_group.disabled_commands.set(settings["disabled_commands"])
         if settings["disabled_command_msg"] is not None:
             await config_group.disabled_command_msg.set(settings["disabled_command_msg"])

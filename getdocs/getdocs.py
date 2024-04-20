@@ -1050,16 +1050,17 @@ class Source:
                                             if len(_param) <= 2 or len(_param[0]) <= 3:
                                                 continue
                                             _param_raw = "\n    "
+                                            to_replace = "\\*"
                                             if _param[0][2:].strip().endswith("?"):
                                                 _param_raw += (
-                                                    f'# ? "{_param[0][2:].strip()[:-1]}": '
+                                                    f'# ? "{_param[0][2:].replace(to_replace, "").strip()[:-1]}": '
                                                 )
                                             elif _param[0][2:].strip().endswith("?\\*"):
                                                 _param_raw += (
                                                     f'# ?\\* "{_param[0][2:].strip()[:-3]}": '
                                                 )
                                             else:
-                                                _param_raw += f'"{_param[0][2:].strip()}": '
+                                                _param_raw += f'"{_param[0][2:].replace(to_replace, "").strip()}": '
                                             if (
                                                 len(fields[key].split("\n")[0].split(" | ")) > 3
                                                 and "default"

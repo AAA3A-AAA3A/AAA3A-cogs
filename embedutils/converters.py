@@ -53,8 +53,10 @@ class StringToEmbed(commands.Converter):
         argument = cleanup_code(argument)
         data = await self.converter(ctx, argument=argument)
 
-        content = self.get_content(data)
-        if "embed" in data:
+        content = self.get_content(data) if isinstance(data, typing.Dict) else None
+        if isinstance(data, typing.List):
+            data = data[0]
+        elif "embed" in data:
             data = data["embed"]
         elif "embeds" in data:
             data = data.get("embeds")[0]
@@ -172,9 +174,9 @@ class ListStringToEmbed(StringToEmbed):
         argument = cleanup_code(argument)
         data = await self.converter(ctx, argument=argument, data_type=(dict, list))
 
-        content = data.get("content")
+        content = data.get("content") if isinstance(data, typing.Dict) else None
         if isinstance(data, typing.List):
-            pass
+            embeds = data
         elif "embed" in data:
             data = [data["embed"]]
         elif "embeds" in data:

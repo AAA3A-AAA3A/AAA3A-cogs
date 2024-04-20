@@ -264,6 +264,14 @@ class Dashboard(Cog):
             await asyncio.to_thread(self.app.tasks_manager.stop_tasks)
         await super().cog_unload()
 
+    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
+        """Nothing to delete."""
+        return
+
+    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+        """Nothing to get."""
+        return {}
+
     async def create_app(self, flask_flags: str) -> None:
         await self.bot.wait_until_red_ready()
         if await self.config.webserver.core.secret_key() is None:

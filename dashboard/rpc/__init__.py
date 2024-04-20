@@ -103,7 +103,7 @@ class DashboardRPC:
                 "{name}", self.bot.user.name
             )
         if data["ui"]["meta"]["icon"] is None:
-            data["ui"]["meta"]["icon"] = self.bot.user.avatar.url
+            data["ui"]["meta"]["icon"] = self.bot.user.display_avatar.url
         if data["ui"]["meta"]["description"] is None:
             data["ui"]["meta"]["description"] = _(
                 "Hello, welcome to the **Red-DiscordBot Dashboard** for {name}! "
@@ -416,13 +416,13 @@ class DashboardRPC:
         }
 
     @rpc_check()
-    async def get_guild(self, user_id: int, guild_id: int):
+    async def get_guild(self, user_id: int, guild_id: int, for_third_parties: bool = False):
         guild = self.bot.get_guild(guild_id)
         if guild is None:
             return {"status": 1}
         member = guild.get_member(user_id)
         is_owner = user_id in self.bot.owner_ids
-        if not is_owner and (member is None or not await self.bot.is_mod(member)):
+        if not is_owner and (member is None or (not await self.bot.is_mod(member) and not for_third_parties)):
             return {"status": 1}
 
         # joined_at = member.joined_at if member is not None else None

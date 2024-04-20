@@ -17,6 +17,7 @@ from redbot.core.utils.chat_formatting import humanize_list
 from .default_cogs import DashboardRPC_DefaultCogs
 from .webhooks import DashboardRPC_Webhooks
 from .third_parties import DashboardRPC_ThirdParties
+from .pagination import Pagination
 from .utils import rpc_check
 
 # Credits:
@@ -357,7 +358,7 @@ class DashboardRPC:
                     "name": guild.name,
                     "owner": guild.owner.display_name,
                     "owner_id": guild.owner.id,
-                    "icon_url": guild.icon.url
+                    "icon_url": guild.icon.url.split("?")[0]
                     if guild.icon is not None
                     else "https://cdn.discordapp.com/embed/avatars/1.png",
                     "icon_animated": guild.icon.is_animated() if guild.icon is not None else False,
@@ -388,32 +389,7 @@ class DashboardRPC:
                 for guild in guilds
                 if query in guild["name"].lower() or query == str(guild["id"])
             ]
-        per_page = (
-            20
-            if per_page is None
-            else (
-                int(per_page)
-                if isinstance(per_page, str) and per_page.isdigit() and 1 <= int(per_page) <= 100
-                else 20
-            )
-        )
-        page = (
-            1
-            if page is None
-            else (int(page) if isinstance(page, str) and page.isdigit() and int(page) >= 1 else 1)
-        )
-        total = len(guilds)
-        pages = (total // per_page) + (total % per_page > 0)
-        page = min(page, pages)
-        start = (page - 1) * per_page
-        end = start + per_page
-        return {
-            "guilds": guilds[start:end],
-            "total": total,
-            "per_page": per_page,
-            "pages": pages,
-            "page": page,
-        }
+        return Pagination.from_list(guilds, per_page=per_page, page=page).to_dict()
 
     @rpc_check()
     async def get_guild(self, user_id: int, guild_id: int, for_third_parties: bool = False):

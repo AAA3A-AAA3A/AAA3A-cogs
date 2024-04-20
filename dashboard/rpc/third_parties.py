@@ -10,6 +10,7 @@ import types
 from redbot.core.i18n import get_locale_from_guild, set_contextual_locale, set_regional_format
 
 from .form import get_form_class, Field, INITIAL_INIT_FIELD
+from .pagination import Pagination
 from .utils import rpc_check
 
 
@@ -67,7 +68,7 @@ def dashboard_page(
             ):
                 if f"{key}_id" not in params["context_ids"]:
                     params["context_ids"].append(f"{key}_id")
-            elif key not in ("method", "request_url", "csrf_token", "wtf_csrf_secret_key", "extra_kwargs", "data", "lang_code"):
+            elif key not in ("method", "request_url", "csrf_token", "wtf_csrf_secret_key", "extra_kwargs", "data", "lang_code", "Form", "DpyObjectConverter", "Pagination"):
                 params["required_kwargs"].append(key)
 
         # A guild must be chose for these kwargs.
@@ -326,12 +327,15 @@ class DashboardRPC_ThirdParties:
         set_regional_format(kwargs["lang_code"])
 
         kwargs["Form"], kwargs["DpyObjectConverter"], extra_notifications = await get_form_class(self, third_party_cog=self.third_parties_cogs[name], **kwargs)
+        kwargs["Pagination"] = Pagination
 
         result = await self.third_parties[name][page][0](**kwargs)
         if "web_content" in result and isinstance(result["web_content"], typing.Dict):
             for key, value in result["web_content"].items():
                 if isinstance(value, kwargs["Form"]):
                     result["web_content"][key] = str(value)
+                elif isinstance(value, Pagination):
+                    result["web_content"][key] = value.to_dict()
         setattr(Field, "__init__", INITIAL_INIT_FIELD)
         result.setdefault("notifications", [])
         result["notifications"].extend(extra_notifications)

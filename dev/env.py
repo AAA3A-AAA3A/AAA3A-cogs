@@ -185,6 +185,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "__spec__": None,
             }
         )
+        env["interaction"] = ctx.interaction
         if getattr(ctx.channel, "category", None) is not None:
             env["category"] = ctx.channel.category
         Dev = ctx.bot.get_cog("Dev")

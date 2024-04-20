@@ -25,6 +25,7 @@ from redbot.core.utils.predicates import MessagePredicate
 
 from .dashboard_integration import DashboardIntegration
 from .env import DevEnv, DevSpace, Exit, ctxconsole
+from .view import cleanup_code, ExecuteView
 
 # Credits:
 # General repo credits.
@@ -44,18 +45,6 @@ TimeConverter: commands.converter.TimedeltaConverter = commands.converter.Timede
 class SolarizedCustom(get_style_by_name("solarized-dark")):
     background_color = None
     line_number_background_color = None
-
-
-def cleanup_code(code: str) -> str:
-    code = dev_commands.cleanup_code(textwrap.dedent(code)).strip()
-    with io.StringIO(code) as codeio:
-        for line in codeio:
-            line = line.strip()
-            if line and not line.startswith("#"):
-                break
-        else:
-            return "pass"
-    return code
 
 
 @contextlib.contextmanager
@@ -783,7 +772,7 @@ class Dev(Cog, dev_commands.Dev, DashboardIntegration):
                 else:
                     raise commands.UserFeedbackCheckFailure(_("This message isn't reachable."))
             else:
-                raise commands.UserInputError()
+                return asyncio.create_task(ExecuteView(cog=self).start(ctx))
         source = cleanup_code(code)
         await self.my_exec(
             getattr(ctx, "original_context", ctx),
@@ -847,7 +836,7 @@ class Dev(Cog, dev_commands.Dev, DashboardIntegration):
                 else:
                     raise commands.UserInputError()
             else:
-                raise commands.UserInputError()
+                return asyncio.create_task(ExecuteView(cog=self).start(ctx))
         source = cleanup_code(body)
         await self.my_exec(
             getattr(ctx, "original_context", ctx),

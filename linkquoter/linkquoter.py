@@ -231,13 +231,13 @@ class LinkQuoter(Cog, DashboardIntegration):
 
         if message.attachments:
             image = message.attachments[0].proxy_url
-            pages = pagify(
+            pages = list(pagify(
                 "\n".join(
                     f"[{attachment.filename}]({attachment.url})"
                     for attachment in message.attachments
                 ),
                 page_length=1024,
-            )
+            ))
             embed.add_field(
                 name=_("Attachments:"),
                 value=pages[0] if len(pages) == 1 else f"{pages[0]}\n...",

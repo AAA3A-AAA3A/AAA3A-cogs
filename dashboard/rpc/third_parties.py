@@ -321,7 +321,7 @@ class DashboardRPC_ThirdParties:
         kwargs["csrf_token"] = tuple(csrf_token)
         kwargs["wtf_csrf_secret_key"] = base64.urlsafe_b64decode(wtf_csrf_secret_key)
         kwargs["extra_kwargs"] = extra_kwargs
-        kwargs["data"] = data
+        kwargs["data"] = {"form": data["form"], "json": data["json"]}
         kwargs["lang_code"] = lang_code or await get_locale_from_guild(
             self.bot, guild=kwargs.get("guild")
         )

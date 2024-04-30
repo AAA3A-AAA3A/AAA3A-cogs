@@ -6,6 +6,7 @@ import typing  # isort:skip
 import base64
 import inspect
 import types
+from werkzeug.datastructures import ImmutableMultiDict
 
 from redbot.core.i18n import get_locale_from_guild, set_contextual_locale, set_regional_format
 
@@ -321,7 +322,7 @@ class DashboardRPC_ThirdParties:
         kwargs["csrf_token"] = tuple(csrf_token)
         kwargs["wtf_csrf_secret_key"] = base64.urlsafe_b64decode(wtf_csrf_secret_key)
         kwargs["extra_kwargs"] = extra_kwargs
-        kwargs["data"] = {"form": data["form"], "json": data["json"]}
+        kwargs["data"] = {"form": ImmutableMultiDict(data["form"]), "json": ImmutableMultiDict(data["json"])}
         kwargs["lang_code"] = lang_code or await get_locale_from_guild(
             self.bot, guild=kwargs.get("guild")
         )

@@ -290,7 +290,7 @@ class DevUtils(Cog):
     async def loglevel(
         self, ctx: commands.Context, level: LogLevelConverter, logger_name: str = "red"
     ) -> None:
-        """Change the logging level for a logger. if no name is provided, the root logger (red) is used.
+        """Change the logging level for a logger. If no name is provided, the root logger (`red`) is used.
 
         Levels are the following:
         - `0`: `CRITICAL`

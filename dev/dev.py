@@ -1011,7 +1011,7 @@ class Dev(Cog, dev_commands.Dev, DashboardIntegration):
     async def _eshell(
         self, ctx: commands.Context, silent: typing.Optional[bool] = False, *, command: str = None
     ) -> None:
-        """Execute shell commands.
+        """Execute Shell commands.
 
         This command wraps the shell command into a Python code to invoke them.
 
@@ -1052,49 +1052,48 @@ class Dev(Cog, dev_commands.Dev, DashboardIntegration):
         source = (
             cleanup_code(
                 """
-            import asyncio
-            import asyncio.subprocess as asp
-            import os
-            import sys
-            import typing
-            command = '''
-            [COMMAND]
-            '''.strip()
-            # devenv["prefix_dev_output"] = command
+                import asyncio
+                import asyncio.subprocess as asp
+                import os
+                import sys
+                import typing
 
-            def get_env() -> typing.Dict[str, str]:
-                env = os.environ.copy()
-                if hasattr(sys, "real_prefix") or sys.base_prefix != sys.prefix:
-                    if sys.platform == "win32":
-                        binfolder = f"{sys.prefix}{os.path.sep}Scripts"
-                        env["PATH"] = f"{binfolder}{os.pathsep}{env['PATH']}"
-                    else:
-                        binfolder = f"{sys.prefix}{os.path.sep}bin"
-                        env["PATH"] = f"{binfolder}{os.pathsep}{env['PATH']}"
-                return env
+                command = '''
+                COMMAND
+                '''.strip()
 
-            process = await asp.create_subprocess_shell(
-                command,
-                stdout=asp.PIPE,
-                stderr=asp.STDOUT,
-                env=get_env(),
-                executable=None,
-            )
-            try:
-                await process.wait()
-            except asyncio.CancelledError:
-                prefix = f"Command was terminated early and this is a partial output:\\n\\n"
-                # raise
-            else:
-                prefix = ""
+                def get_env() -> typing.Dict[str, str]:
+                    env = os.environ.copy()
+                    if hasattr(sys, "real_prefix") or sys.base_prefix != sys.prefix:
+                        if sys.platform == "win32":
+                            binfolder = f"{sys.prefix}{os.path.sep}Scripts"
+                            env["PATH"] = f"{binfolder}{os.pathsep}{env['PATH']}"
+                        else:
+                            binfolder = f"{sys.prefix}{os.path.sep}bin"
+                            env["PATH"] = f"{binfolder}{os.pathsep}{env['PATH']}"
+                    return env
 
-            finally:
-                lines = [line async for line in process.stdout]
-                print(prefix + b"".join(lines).decode("utf-8", "replace").strip().replace("\\r", ""))
-        """
+                process = await asp.create_subprocess_shell(
+                    command,
+                    stdout=asp.PIPE,
+                    stderr=asp.STDOUT,
+                    env=get_env(),
+                    executable=None,
+                )
+                try:
+                    await process.wait()
+                except asyncio.CancelledError:
+                    prefix = f"Command was terminated early and this is a partial output:\\n\\n"
+                    # raise
+                else:
+                    prefix = ""
+                finally:
+                    lines = [line async for line in process.stdout]
+                    print(prefix + b"".join(lines).decode("utf-8", "replace").strip().replace("\\r", ""))
+                """
             )
             .strip()
-            .replace("[COMMAND]", command)
+            .replace("COMMAND", command)
         )
         if silent:
             source = "\n".join(source.split("\n")[:-3])
@@ -1103,6 +1102,7 @@ class Dev(Cog, dev_commands.Dev, DashboardIntegration):
             getattr(ctx, "original_context", ctx),
             type="eval",
             source=source,
+            send_result=True,
         )
 
     @commands.is_owner()

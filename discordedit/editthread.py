@@ -12,9 +12,9 @@ from redbot.core.commands.converter import get_timedelta_converter
 from redbot.core.utils.chat_formatting import box, pagify
 
 try:
-    from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
-except ImportError:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
+except ImportError:
+    from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 
 from .view import DiscordEditView
 
@@ -44,18 +44,6 @@ class Emoji(commands.EmojiConverter):
         if argument in EMOJI_DATA:
             return argument
         if argument in {
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "#",
-            "*",
             "🇦",
             "🇧",
             "🇨",

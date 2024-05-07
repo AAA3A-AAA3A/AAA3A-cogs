@@ -266,10 +266,10 @@ class DevUtils(Cog):
         You may reply to a message to reinvoke it or pass a message ID/link.
         The command will be invoked with the author and the channel of the specified message.
         """
+        await ctx.send(ctx.message.reference)
         if message is None:
             if not (
-                hasattr(ctx.message, "reference")
-                and ctx.message.reference is not None
+                ctx.message.reference is not None
                 and isinstance((message := ctx.message.reference.resolved), discord.Message)
             ):
                 raise commands.UserInputError()
@@ -277,7 +277,7 @@ class DevUtils(Cog):
             bot=ctx.bot,
             author=message.author,
             channel=message.channel,
-            command=message.content,
+            command=f"{ctx.prefix}devutils reinvoke{message.content[len(ctx.prefix)+8:]}" if message.content.startswith(f"{ctx.prefix}reinvoke") else message.content,
             prefix="",
             message=message,
         )

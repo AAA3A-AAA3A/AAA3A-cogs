@@ -754,8 +754,7 @@ class Dev(Cog, dev_commands.Dev, DashboardIntegration):
                         _("Unreadable attachment with `utf-8`.")
                     )
             elif (
-                hasattr(ctx.message, "reference")
-                and ctx.message.reference is not None
+                ctx.message.reference is not None
                 and isinstance((reference := ctx.message.reference.resolved), discord.Message)
             ):
                 if (
@@ -818,8 +817,7 @@ class Dev(Cog, dev_commands.Dev, DashboardIntegration):
                         _("Unreadable attachment with `utf-8`.")
                     )
             elif (
-                hasattr(ctx.message, "reference")
-                and ctx.message.reference is not None
+                ctx.message.reference is not None
                 and isinstance((reference := ctx.message.reference.resolved), discord.Message)
             ):
                 if (
@@ -1027,8 +1025,7 @@ class Dev(Cog, dev_commands.Dev, DashboardIntegration):
                         _("Unreadable attachment with `utf-8`.")
                     )
             elif (
-                hasattr(ctx.message, "reference")
-                and ctx.message.reference is not None
+                ctx.message.reference is not None
                 and isinstance((reference := ctx.message.reference.resolved), discord.Message)
             ):
                 if (

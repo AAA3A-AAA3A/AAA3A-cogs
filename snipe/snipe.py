@@ -58,8 +58,7 @@ class SnipedMessage:
         self.deleted_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
 
         if (
-            hasattr(message, "reference")
-            and message.reference is not None
+            message.reference is not None
             and isinstance((reference := message.reference.resolved), discord.Message)
         ):
             self.reference: discord.Message = reference

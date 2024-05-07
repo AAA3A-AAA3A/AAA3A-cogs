@@ -353,8 +353,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
         def reference(ctx: commands.Context) -> typing.Optional[discord.Message]:
             if (
-                hasattr(ctx.message, "reference")
-                and ctx.message.reference is not None
+                ctx.message.reference is not None
                 and isinstance(ctx.message.reference.resolved, discord.Message)
             ):
                 return ctx.message.reference.resolved

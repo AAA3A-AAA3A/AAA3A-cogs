@@ -257,8 +257,7 @@ class LinkQuoter(Cog, DashboardIntegration):
             embed.set_image(url=image)
 
         if (
-            hasattr(message, "reference")
-            and message.reference is not None
+            message.reference is not None
             and isinstance((reference := message.reference.resolved), discord.Message)
         ):
             jump_url = reference.jump_url
@@ -289,8 +288,7 @@ class LinkQuoter(Cog, DashboardIntegration):
         """Quote a message from a link."""
         if message is None:
             if not (
-                hasattr(ctx.message, "reference")
-                and ctx.message.reference is not None
+                ctx.message.reference is not None
                 and isinstance((message := ctx.message.reference.resolved), discord.Message)
             ):
                 raise commands.UserInputError()

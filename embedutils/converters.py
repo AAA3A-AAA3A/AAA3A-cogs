@@ -4,6 +4,7 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import aiohttp
 import io
 import json
 import re
@@ -298,12 +299,17 @@ class PastebinMixin:
                     if "headers" not in kwargs:
                         kwargs["headers"] = {}
                     kwargs["headers"]["Authorization"] = f"Token {token}"
-            async with ctx.bot.get_cog("EmbedUtils")._session.get(
-                url, raise_for_status=True, **kwargs
-            ) as response:
-                if response_format == "text":
-                    return await response.text()
-                return await response.json() if response_format == "json" else None
+            try:
+                async with ctx.bot.get_cog("EmbedUtils")._session.get(
+                    url, raise_for_status=True, **kwargs
+                ) as response:
+                    if response_format == "text":
+                        return await response.text()
+                    return await response.json() if response_format == "json" else None
+            except (aiohttp.ClientResponseError, aiohttp.ClientError) as error:
+                raise commands.BadArgument(
+                    f"Failed to fetch the content from the URL: {url}\n{box(error.message, lang='py')}"
+                )
 
         def _find_ref(path: str, refs: typing.List[dict]) -> typing.Tuple[str, str]:
             ref, file_path = path.split("/", 1)

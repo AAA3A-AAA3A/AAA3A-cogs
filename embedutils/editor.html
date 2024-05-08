@@ -8094,7 +8094,7 @@
                         if (!allowPlaceholders) invalid = true, err = "Timestamp is invalid";
                     } else if (re) { // If a URL is found without a protocol
                         if (!/\w+:|\/\/|^\//g.exec(re[2]) && re[2].includes(".")) {
-                            let activeInput = document.querySelector("input[class$="link" i]:focus")
+                            let activeInput = document.querySelector('input[class$="link" i]:focus')
                             if (activeInput && !allowPlaceholders) {
                                 lastPos = activeInput.selectionStart + 7;
                                 activeInput.value = `http://${re[2]}`;

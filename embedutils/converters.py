@@ -177,13 +177,15 @@ class ListStringToEmbed(StringToEmbed):
 
         content = data.get("content") if isinstance(data, typing.Dict) else None
         if isinstance(data, typing.List):
-            embeds = data
+            pass
         elif "embed" in data:
             data = [data["embed"]]
         elif "embeds" in data:
             data = data["embeds"]
             if isinstance(data, typing.Dict):
                 data = list(data.values())
+        elif "content" in data:
+            data = []
         else:
             data = [data]
         self.check_data_type(ctx, data=data, data_type=list)
@@ -197,7 +199,7 @@ class ListStringToEmbed(StringToEmbed):
                 raise commands.BadArgument(
                     _("Embed limit reached ({limit}).").format(limit=self.limit)
                 )
-        if embeds:
+        if content or embeds:
             return {"content": content, "embeds": embeds}
         else:
             raise commands.BadArgument(_("Failed to convert input into embeds."))

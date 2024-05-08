@@ -157,14 +157,19 @@ class ViewPermissions(Cog):
         ]
         permissions_dict = {
             permission_name: {
-                "qualified_name": [
-                    p
-                    for p in discord.Permissions.VALID_FLAGS
-                    if discord.Permissions.VALID_FLAGS[p]
-                    == discord.Permissions.VALID_FLAGS[permission_name]
-                ][-1]
-                .replace("_", " ")
-                .title(),
+                "qualified_name": (
+                    (
+                        [
+                            p
+                            for p in discord.Permissions.VALID_FLAGS
+                            if discord.Permissions.VALID_FLAGS[p]
+                            == discord.Permissions.VALID_FLAGS[permission_name]
+                        ][-1]
+                        .replace("_", " ")
+                        .title()
+                    ) if permission_name != "manage_roles"
+                    else permission_name.replace("_", " ").title()
+                ),
                 "value": value,
                 "source": sources.get(permission_name) if value else None,
             }

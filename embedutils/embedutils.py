@@ -20,6 +20,7 @@ from .converters import (
     StrConverter,
     StringToEmbed,
 )  # NOQA
+from .dashboard_integration import DashboardIntegration
 
 # Credits:
 # General repo credits.
@@ -40,7 +41,7 @@ PASTEBIN_LIST_CONVERTER = PastebinListConverter(conversion_type="json")
 
 
 @cog_i18n(_)
-class EmbedUtils(Cog):
+class EmbedUtils(Cog, DashboardIntegration):
     """Create, send, and store embeds!"""
 
     def __init__(self, bot: Red) -> None:

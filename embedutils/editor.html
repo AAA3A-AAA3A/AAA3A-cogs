@@ -1134,6 +1134,15 @@
                 background: #292b2f;
                 border-radius: 4px;
             }
+            .chooser>.opt p {
+                display: flex;
+                justify-content: center;
+                font-size: 10px;
+                position: relative;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+            }
             /* body.gui .chooser>.gui {
                 background: #41444a;
             }
@@ -1151,15 +1160,6 @@
             }
             body:not(.gui) .chooser>.back {
                 transform: translateX(43px);
-            }
-            .chooser>.opt p {
-                display: flex;
-                justify-content: center;
-                font-size: 10px;
-                position: relative;
-                top: 50%;
-                transform: translateY(-50%);
-                pointer-events: none;
             }
             .bottom {
                 /* margin: 40px auto auto auto!important; */
@@ -7897,8 +7897,81 @@
                     }
                 }
             }
+            // Set default data.
+            const defaultData = {
+                content: "You can~~not~~ do `this`: *italics* and **bold**!",
+                embeds: [
+                    {
+                        title: "Hello ~~people~~ world :wave:",
+                        description: "You can use [links](https://discord.com) or emojis! :smile: 😎\n```And also code blocks!```",
+                        color: 0x2ecc71,
+                        timestamp: new Date().toISOString(),
+                        url: "{{ request.scheme }}://{{ request.host + request.path }}",
+                        author: {
+                            name: '{{"Author name" if not current_user.is_authenticated else current_user.display_name }}',
+                            url: '{{"https://discord.com" if not current_user.is_authenticated else "https://discord.com/users/" + current_user.id|string }}',
+                            icon_url: '{{"https://cdn.discordapp.com/embed/avatars/0.png" if not current_user.is_authenticated else current_user.display_avatar }}'
+                        },
+                        thumbnail: {
+                            url: '{{ variables["bot"]["avatar"] }}'
+                        },
+                        image: {
+                            url: "https://glitchii.github.io/embedbuilder/assets/media/banner.png"
+                        },
+                        footer: {
+                            text: "Footer text",
+                            icon_url: "https://cdn.discordapp.com/embed/avatars/0.png"
+                        },
+                        fields: [
+                            {
+                                name: "Field 1, *lorem* **ipsum**, ~~dolor~~",
+                                value: "Field value"
+                            },
+                            {
+                                name: "Field 2",
+                                value: "You can use custom emojis: <:pikaLUL:386933336066752512> <:aha:350653489044652052>",
+                                inline: false
+                            },
+                            {
+                                name: "Inline field",
+                                value: "Fields can be inline",
+                                inline: true
+                            },
+                            {
+                                name: "Inline field",
+                                value: "*Lorem ipsum*",
+                                inline: true
+                            },
+                            {
+                                name: "Inline field",
+                                value: "value",
+                                inline: true
+                            },
+                            {
+                                name: "Another field",
+                                value: "> Nope, didn't forget about this",
+                                inline: false
+                            }
+                        ]
+                    }
+                ]
+            }
             // Called after building embed for extra work.
-            const afterBuilding = () => autoUpdateURL && urlOptions({ set: ["data", encodeJson(json)] });
+            const afterBuilding = () => {
+                let encodedJson = encodeJson(json);
+                if (multiEmbeds && defaultData.embed) {
+                    defaultData.embeds = [defaultData.embed];
+                    delete defaultData.embed;
+                } else if (!multiEmbeds && defaultData.embeds) {
+                    defaultData.embed = defaultData.embeds[0];
+                    delete defaultData.embeds;
+                }
+                if (autoUpdateURL && encodedJson !== encodeJson(defaultData)) {
+                    urlOptions({ set: ["data", encodedJson] });
+                } else {
+                    urlOptions({ remove: "data" });
+                }
+            }
             // Parses emojis to images and adds code highlighting.
             const externalParsing = ({ noEmojis, element } = {}) => {
                 !noEmojis && twemoji.parse(element || document.querySelector(".msgEmbed"), { base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/" });
@@ -7914,62 +7987,7 @@
             let allJsonKeys = [...mainKeys, ...embedKeys];
             // `jsonObject` is used internally, do not change it's value. Assign to `json` instead.
             // `json` is the object that is used to build the embed. Assigning to it also updates the editor.
-            let jsonObject = window.json || {
-                content: "You can~~not~~ do `this`: *italics* and **bold**!",
-                embed: {
-                    title: "Hello ~~people~~ world :wave:",
-                    description: "You can use [links](https://discord.com) or emojis! :smile: 😎\n```And also code blocks!```",
-                    color: 0x2ecc71,
-                    timestamp: new Date().toISOString(),
-                    url: "{{ request.scheme }}://{{ request.host + request.path }}",
-                    author: {
-                        name: '{{"Author name" if not current_user.is_authenticated else current_user.display_name }}',
-                        url: '{{"https://discord.com" if not current_user.is_authenticated else "https://discord.com/users/" + current_user.id|string }}',
-                        icon_url: '{{"https://cdn.discordapp.com/embed/avatars/0.png" if not current_user.is_authenticated else current_user.display_avatar }}'
-                    },
-                    thumbnail: {
-                        url: '{{ variables["bot"]["avatar"] }}'
-                    },
-                    image: {
-                        url: "https://glitchii.github.io/embedbuilder/assets/media/banner.png"
-                    },
-                    footer: {
-                        text: "Footer text",
-                        icon_url: "https://cdn.discordapp.com/embed/avatars/0.png"
-                    },
-                    fields: [
-                        {
-                            name: "Field 1, *lorem* **ipsum**, ~~dolor~~",
-                            value: "Field value"
-                        },
-                        {
-                            name: "Field 2",
-                            value: "You can use custom emojis: <:pikaLUL:386933336066752512> <:aha:350653489044652052>",
-                            inline: false
-                        },
-                        {
-                            name: "Inline field",
-                            value: "Fields can be inline",
-                            inline: true
-                        },
-                        {
-                            name: "Inline field",
-                            value: "*Lorem ipsum*",
-                            inline: true
-                        },
-                        {
-                            name: "Inline field",
-                            value: "value",
-                            inline: true
-                        },
-                        {
-                            name: "Another field",
-                            value: "> Nope, didn't forget about this",
-                            inline: false
-                        }
-                    ]
-                }
-            }
+            let jsonObject = JSON.parse(JSON.stringify(window.json || defaultData));
             if (dataSpecified)
                 jsonObject = decodeJson();
             if (allowPlaceholders)
@@ -8037,9 +8055,9 @@
                     gui = guiParent.querySelector(".gui:first-of-type");
                 editor = CodeMirror(elt => editorHolder.parentNode.replaceChild(elt, editorHolder), {
                     value: JSON.stringify(json, null, 4),
-                    gutters: ["CodeMirror-foldgutter", "CodeMirror-lint-markers"],
                     scrollbarStyle: "overlay",
                     mode: "application/json",
+                    gutters: ["CodeMirror-foldgutter", "CodeMirror-lint-markers"],
                     theme: "material-darker",
                     matchBrackets: true,
                     foldGutter: true,

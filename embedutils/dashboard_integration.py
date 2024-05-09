@@ -157,7 +157,7 @@ class DashboardIntegration:
                             }
                         )
             if not notifications:
-                self.logger.trace(f"{len(send_form.channels.data)} message(s) sent successfully in `{guild.name}` ({guild.id}), from the Dashboard by `{user.display_name}` ({user.id}).")
+                self.logger.trace(f"{len(send_form.channels.data)} message(s) sent successfully in `{channel.name}` ({channel.id}) in `{guild.name}` ({guild.id}), from the Dashboard by `{user.display_name}` ({user.id}).")
                 notifications.append({"message": _("Message(s) sent successfully!"), "category": "success"})
             return {"status": 0, "notifications": notifications, "redirect_url": kwargs["request_url"]}
 

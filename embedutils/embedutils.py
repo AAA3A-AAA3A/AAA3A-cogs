@@ -778,7 +778,7 @@ class EmbedUtils(Cog, DashboardIntegration):
             raise commands.UserFeedbackCheckFailure(_("You can't access the Dashboard."))
         if self.qualified_name in await self.bot.get_cog("Dashboard").config.webserver.disabled_third_parties():
             raise commands.UserFeedbackCheckFailure(_("This third party is disabled on the Dashboard."))
-        url = f"{dashboard_url[0]}/dashboard/{ctx.guild.id}/third-party/{self.qualified_name}"
+        url = f"{dashboard_url[0]}/dashboard/{ctx.guild.id}/third-party/{self.qualified_name}/guild"
 
         if conversion_type is not None:
             if conversion_type in ("json", "fromjson", "fromdata"):
@@ -832,9 +832,14 @@ class EmbedUtils(Cog, DashboardIntegration):
         embed: discord.Embed = discord.Embed(
             title=_("Dashboard - ") + self.qualified_name,
             color=await ctx.embed_color(),
-            description=_("You can create and send rich embeds directly from the Dashboard!"),
-            url=url,
         )
+        if len(url) <= 2048:
+            embed.description = _("You can create and send rich embeds directly from the Dashboard!")
+            embed.url = url
+        elif len(url) <= 4096-15:
+            embed.description = f"[Click here!]({url})"
+        else:
+            embed.description = _("The URL is too long to be displayed.")
         await ctx.send(embed=embed)
 
     @commands.is_owner()

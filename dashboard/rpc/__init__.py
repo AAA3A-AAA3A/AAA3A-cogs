@@ -188,7 +188,7 @@ class DashboardRPC:
                 "owner": self.owner,
                 "avatar": str(self.bot.user.display_avatar.url).split("?")[0],
                 "default_avatar": str(self.bot.user.default_avatar.url).split("?")[0],
-                "is_verified": self.bot.user.verified,
+                "is_verified": self.bot.user.public_flags.verified_bot,
                 "invite_url": self.invite_url,
                 "invite_public": await self.bot._config.invite_public(),
                 "blacklisted_users": list(await self.bot.get_blacklist()),

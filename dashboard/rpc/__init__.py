@@ -73,6 +73,8 @@ class DashboardRPC:
         ] = {}
 
     def unload(self) -> None:
+        if hasattr(self.bot, "dashboard_url"):
+            delattr(self.bot, "dashboard_url")
         self.bot.unregister_rpc_handler(self.check_version)
         self.bot.unregister_rpc_handler(self.get_data)
         self.bot.unregister_rpc_handler(self.get_variables)
@@ -127,11 +129,25 @@ class DashboardRPC:
 
     @rpc_check()
     async def get_variables(
-        self, only_bot_variables: bool = False
+        self, only_bot_variables: bool = False, host_port: typing.Optional[typing.Tuple[str, int]] = None
     ) -> typing.Dict[str, typing.Any]:
         variables = await self.get_bot_variables()
         variables.update(third_parties=await self.third_parties_handler.get_third_parties())
         variables.update(commands={} if only_bot_variables else await self.get_commands())
+        if host_port is not None:
+            redirect_uri = await self.cog.config.webserver.core.redirect_uri()
+            host, port = host_port
+            dashboard_url = (
+                redirect_uri[:-9]
+                if redirect_uri is not None else
+                (
+                    f"http://127.0.0.1:{port}"
+                    if host in ("0.0.0.0", "127.0.0.1")
+                    else f"http://{host}"
+                )
+            )
+            is_private = redirect_uri is None and host in ("0.0.0.0", "127.0.0.1")
+            setattr(self.bot, "dashboard_url", (dashboard_url, not is_private))
         return variables
 
     @rpc_check()

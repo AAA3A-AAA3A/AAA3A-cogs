@@ -2,14 +2,17 @@
     "author": ["PhenoM4n4n", "AAA3A"],
     "name": "EmbedUtils",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you like my work, please consider donating on my [Buy Me a Coffee page](<https://www.buymeacoffee.com/aaa3a>)!\nIf you previously used Phen's cog, please run `[p]embed migratefromphen`.",
-    "short": "Create, send, and store embeds!",
-    "description": "Create, send, and store embeds!",
+    "short": "Create, send, and store rich embeds, from Red-Dashboard too!",
+    "description": "Create, send, and store rich embeds, from Red-Dashboard too!",
     "tags": [
         "embed",
         "creator",
         "content",
         "advanced",
-        "json"
+        "json",
+        "yaml",
+        "rich",
+        "dashboard"
     ],
     "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git"],
     "min_bot_version": "3.5.0",

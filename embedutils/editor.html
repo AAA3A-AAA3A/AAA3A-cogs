@@ -1069,6 +1069,10 @@
                 left: 0;
                 margin-left: 20px;
             }
+            body.no-preview.gui .bottom .sending {
+                left: 0;
+                margin-left: 120px;
+            }
             @media screen and (min-width: 1015px) {
                 body.no-preview.gui .top>.gui :is(.item, .item ~ .edit) {
                     width: 95%;
@@ -1171,7 +1175,7 @@
                     opacity: 0;
                 }
             }
-            .bottom .colors {
+            .bottom .colors, .bottom .sending {
                 z-index: 5;
                 animation: colorsAn .25s ease-out;
                 background: #212226;
@@ -1184,6 +1188,10 @@
                 display: grid;
                 grid-template-columns: 27% 73%;
                 grid-template-columns: 5% 27.5% 67.5%;
+            }
+            .bottom .sending {
+                width: 330px;
+                margin-left: 277px;
             }
             .bottom .colors .color {
                 background: #41f097;
@@ -2330,7 +2338,7 @@
                     background-color: #20222500;
                     border: none;
                 }
-                .bottom .colors {
+                .bottom .colors, .bottom .sending {
                     bottom: 40px;
                     top: 100px;
                     top: 90px;
@@ -2375,7 +2383,7 @@
                 }
             }
             @media screen and (max-height: 830px) {
-                .bottom .colors {
+                .bottom .colors, .bottom .sending {
                     bottom: 10px;
                 }
                 body.gui .side1 .item.top {
@@ -7730,6 +7738,7 @@
                 "united_nations": "🇺🇳"
             }
         </script>
+
         <script>
             options = {
                 username: '{{ variables["bot"]["name"] }}',
@@ -7737,7 +7746,7 @@
                 verified: {{ "true" if variables["bot"]["is_verified"] else "false"}},
                 noUser: false,
                 data: null,
-                guiTabs: ["author", "description"],
+                guiTabs: ["title", "description"],
                 useJsonEditor: false,
                 reverseColumns: false,
                 allowPlaceholders: false,
@@ -7751,6 +7760,7 @@
                 sourceOption: true, // Display link to source code in menu.
             }
         </script>
+
         <script defer>
             /**
             * Discord Embed Builder
@@ -7782,8 +7792,11 @@
                 sourceOption = localStorage.getItem("sourceOption") || hasParam("sourceoption") || options.sourceOption,
                 validationError, activeFields, lastActiveGuiEmbedIndex = -1, lastGuiJson, colNum = 1, num = 0;
             const guiEmbedIndex = guiEl => {
-                const guiEmbed = guiEl?.closest(".guiEmbed");
-                const gui = guiEmbed?.closest(".gui")
+                let guiEmbed = guiEl?.closest(".guiEmbed");
+                if (!guiEmbed) {
+                    guiEmbed = guiEl.nextElementSibling;
+                }
+                let gui = guiEmbed?.closest(".gui")
                 return !gui ? -1 : Array.from(gui.querySelectorAll(".guiEmbed")).indexOf(guiEmbed)
             }
             const toggleStored = item => {
@@ -7902,7 +7915,7 @@
                 content: "You can~~not~~ do `this`: *italics* and **bold**!",
                 embeds: [
                     {
-                        title: "Hello ~~people~~ world :wave:",
+                        title: "Hello ~~people~~ world 👋",
                         description: "You can use [links](https://discord.com) or emojis! :smile: 😎\n```And also code blocks!```",
                         color: 0x2ecc71,
                         timestamp: new Date().toISOString(),
@@ -7983,13 +7996,18 @@
                 afterBuilding()
             };
             let embedKeys = ["author", "footer", "color", "thumbnail", "image", "fields", "title", "description", "url", "timestamp"];
-            let mainKeys = ["embed", "embeds", "content"];
+            let mainKeys = ["embed", "embeds", "sender", "content"];
             let allJsonKeys = [...mainKeys, ...embedKeys];
             // `jsonObject` is used internally, do not change it's value. Assign to `json` instead.
             // `json` is the object that is used to build the embed. Assigning to it also updates the editor.
             let jsonObject = JSON.parse(JSON.stringify(window.json || defaultData));
-            if (dataSpecified)
-                jsonObject = decodeJson();
+            if (dataSpecified) {
+                try {
+                    jsonObject = decodeJson();
+                } catch (error) {
+                    console.error("Error decoding JSON in `data`.", error);
+                }
+            }
             if (allowPlaceholders)
                 allowPlaceholders = params.get("placeholders") === "errors" ? 1 : 2;
             // Even if not in multi-embed mode, `jsonObject` should always have an array `embeds`
@@ -8000,6 +8018,7 @@
             else if (!multiEmbeds)
                 jsonObject.embeds = jsonObject.embeds?.[0] ? [jsonObject.embeds[0]] : jsonObject.embed ? [jsonObject.embed] : [];
             delete jsonObject.embed;
+            const imgSrc = (elm, src, remove) => remove ? elm.style.removeProperty("content") : elm.style.content = `url(${src})`;
             addEventListener("DOMContentLoaded", () => {
                 if (reverseColumns || localStorage.getItem("reverseColumns"))
                     reverse();
@@ -8043,7 +8062,9 @@
                 }
                 else {
                     if (username) document.querySelector(".username").textContent = username;
+                    if (params.get("username")) document.querySelector(".editSenderUsername").value = params.get("username");
                     if (avatar) document.querySelector(".avatar").src = avatar;
+                    if (params.get("avatar")) imgSrc(document.querySelector(".editSenderAvatar").previousElementSibling, params.get("avatar")) && (document.querySelector(".editSenderAvatar").value = params.get("avatar"));
                     if (verified) document.querySelector(".msgEmbed > .contents").classList.add("verified");
                 }
                 for (const e of document.querySelectorAll(".clickable > img"))
@@ -8237,8 +8258,7 @@
                     if (data) el.innerHTML = data;
                     el.style.display = displayType || "unset";
                 }
-                const hide = el => el.style.removeProperty("display"),
-                    imgSrc = (elm, src, remove) => remove ? elm.style.removeProperty("content") : elm.style.content = `url(${src})`;
+                const hide = el => el.style.removeProperty("display");
                 const [guiFragment, fieldFragment, embedFragment, guiEmbedAddFragment] = Array.from({ length: 4 }, () => document.createDocumentFragment());
                 embedFragment.appendChild(document.querySelector(".embed.markup").cloneNode(true));
                 guiEmbedAddFragment.appendChild(document.querySelector(".guiEmbedAdd").cloneNode(true));
@@ -8257,7 +8277,7 @@
                             buildGui();
                         });
                     for (const child of Array.from(guiFragment.childNodes)) {
-                        if (child.classList?.[1] === "content")
+                        if (child.classList?.[1] == "sender" || child.classList?.[1] == "content")
                             gui.insertBefore(gui.appendChild(child.cloneNode(true)), gui.appendChild(child.nextElementSibling.cloneNode(true))).nextElementSibling.firstElementChild.value = object.content || "";
                         else if (child.classList?.[1] === "guiEmbedName") {
                             for (const [i, embed] of (object.embeds.length ? object.embeds : [{}]).entries()) {
@@ -8284,7 +8304,7 @@
                                                 edit.querySelector(".editAuthorName").value = embed?.author?.name || "";
                                                 break;
                                             case "title":
-                                                row.querySelector(".editTitle").value = embed?.title || "";
+                                                edit.querySelector(".editTitle").value = embed?.title || "";
                                                 break;
                                             case "description":
                                                 edit.querySelector(".editDescription").value = embed?.description || "";
@@ -8437,6 +8457,42 @@
                                     }
                                 } else {
                                     switch (el.target.classList?.[0]) {
+                                        case "editSenderUsername":
+                                            if (value) {
+                                                document.querySelector(".username").textContent = value;
+                                                if (autoParams) {
+                                                    urlOptions({ set: ["username", value] });
+                                                }
+                                                document.querySelector(".msgEmbed > .contents").classList.remove("verified");
+                                            } else {
+                                                document.querySelector(".username").textContent = options.username;
+                                                if (autoParams) {
+                                                    urlOptions({ remove: "username" });
+                                                }
+                                                if (options.verified) {
+                                                    document.querySelector(".msgEmbed > .contents").classList.add("verified");
+                                                }
+                                            }
+                                            break;
+                                        case "editSenderAvatar":
+                                            if (value) {
+                                                imgSrc(el.target.previousElementSibling, value);
+                                                imgSrc(document.querySelector(".avatar"), value);
+                                                if (autoParams) {
+                                                    urlOptions({ set: ["avatar", value] });
+                                                }
+                                                document.querySelector(".msgEmbed > .contents").classList.remove("verified");
+                                            } else {
+                                                imgSrc(el.target.previousElementSibling, options.avatar);
+                                                imgSrc(document.querySelector(".avatar"), options.avatar);
+                                                if (autoParams) {
+                                                    urlOptions({ remove: "avatar" });
+                                                }
+                                                if (options.verified) {
+                                                    document.querySelector(".msgEmbed > .contents").classList.add("verified");
+                                                }
+                                            }
+                                            break;
                                         case "editContent":
                                             jsonObject.content = value;
                                             buildEmbed({ only: "content" });
@@ -8541,7 +8597,7 @@
                                 }
                                 fileInput.click();
                             }
-                        if (multiEmbeds) {
+                        if (multiEmbeds && jsonObject.embeds.length > 1) {
                             for (const e of document.querySelectorAll(".guiEmbed"))
                                 e.onclick = () => {
                                     const guiEmbed = e.closest(".guiEmbed");
@@ -8549,7 +8605,6 @@
                                     if (indexOfGuiEmbed === -1) return error("Could not find the embed to add the field to.");
                                     changeLastActiveGuiEmbed(indexOfGuiEmbed);
                                 };
-
                             if (!jsonObject.embeds[lastActiveGuiEmbedIndex])
                                 changeLastActiveGuiEmbed(
                                     jsonObject.embeds[lastActiveGuiEmbedIndex - 1] ?
@@ -9049,7 +9104,27 @@
                 return obj;
             }
         </script>
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+        <style>
+            body #toast-container > div {
+                opacity: 1;
+                margin-top: 6px;
+                width: 500px !important;
+            }
+        </style>
+        <link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" />
+        <style>
+            .choices {
+                width: 330px;
+                color: black;
+            }
+            .choices:not([data-type*=select-one]) .choices__item:not(.choices__item--choice) {
+                background-color: #2dce89 !important;
+            }
+        </style>
     </head>
+
     <body class="gui emptyEmbed">
         <div class="main">
             <section class="side1 noDisplay">
@@ -9241,6 +9316,40 @@
                 </div>
                 <div class="top item">
                     <div class="gui">
+                        <div class="item sender rows2">
+                            <p class="ttle">Sender</p>
+                        </div>
+                        <div class="edit">
+                            <div class="linkName">
+                                <div class="editIcon">
+                                    <span class="imgParent"></span>
+                                    <input class="editSenderAvatar" type="text" placeholder="Avatar URL" autocomplete="off">
+                                </div>
+                                <div class="editName">
+                                    <input class="editSenderUsername" type="text" maxlength="80" placeholder="Sender username" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="browse">
+                                <svg version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 64 64">
+                                    <g>
+                                        <path d="m23.414 21.414 6.586-6.586v29.172c0 1.104.896 2 2 2s2-.896 2-2v-29.172l6.586 6.586c.39.391.902.586 1.414.586s1.024-.195 1.414-.586c.781-.781.781-2.047 0-2.828l-10-10c-.78-.781-2.048-.781-2.828 0l-10 10c-.781.781-.781 2.047 0 2.828.78.781 2.048.781 2.828 0z" fill="#ffffff" data-original="#000000"></path>
+                                        <path d="m50 40c-1.104 0-2 .896-2 2v8c0 1.103-.897 2-2 2h-28c-1.103 0-2-.897-2-2v-8c0-1.104-.896-2-2-2s-2 .896-2 2v8c0 3.309 2.691 6 6 6h28c3.309 0 6-2.691 6-6v-8c0-1.104-.896-2-2-2z" fill="#ffffff" data-original="#000000"></path>
+                                    </g>
+                                </svg>
+                                <svg version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0">
+                                    <circle fill="#fff" stroke="none" cx="6" cy="50" r="6">
+                                        <animateTransform attributeName="transform" dur="1s" type="translate" values="0 15 ; 0 -15; 0 15" repeatCount="indefinite" begin="0.1"></animateTransform>
+                                    </circle>
+                                    <circle fill="#fff" stroke="none" cx="30" cy="50" r="6">
+                                        <animateTransform attributeName="transform" dur="1s" type="translate" values="0 10 ; 0 -10; 0 10" repeatCount="indefinite" begin="0.2"></animateTransform>
+                                    </circle>
+                                    <circle fill="#fff" stroke="none" cx="54" cy="50" r="6">
+                                        <animateTransform attributeName="transform" dur="1s" type="translate" values="0 5 ; 0 -5; 0 5" repeatCount="indefinite" begin="0.3"></animateTransform>
+                                    </circle>
+                                </svg>
+                                <p></p>
+                            </div>
+                        </div>
                         <div class="item content">
                             <p class="ttle">Message content</p>
                         </div>
@@ -9264,7 +9373,7 @@
                             </span>
                         </div>
                         <div class="guiEmbed">
-                            <div class="item author rows2 active">
+                            <div class="item author rows2">
                                 <p class="ttle">Author</p>
                             </div>
                             <div class="edit">
@@ -9298,11 +9407,13 @@
                                     <p></p>
                                 </div>
                             </div>
-                            <div class="item title inlineField">
+                            <div class="item title">
                                 <p class="ttle">Title</p>
-                                <input class="editTitle" type="text" placeholder="Title" autocomplete="off" maxlength="256">
                             </div>
-                            <div class="item description active">
+                            <div class="edit">
+                                <textarea class="editTitle" placeholder="Embed title" maxlength="256" autocomplete="off"></textarea>
+                            </div>
+                            <div class="item description">
                                 <p class="ttle">Description</p>
                             </div>
                             <div class="edit">
@@ -9488,7 +9599,7 @@
                                     <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"></path>
                                 </svg>
                             </div>
-                            <div class="text">Add embed</div>
+                            <div class="text">Add Embed</div>
                         </div>
                     </div>
                     <div class="editorHolder"></div>
@@ -9559,8 +9670,8 @@
                                 </svg>
                             </div>
                             <div class="cTop">
-                                <h2><span class="embedText">Embed <span class="pointer"></span></span> Colour</h2>
-                                <p class="desc">Pick the embed colour</p>
+                                <h2><span class="embedText">Embed <span class="pointer"></span></span> Color</h2>
+                                <p class="desc">Pick the embed color</p>
                             </div>
                             <div class="pallets">
                                 <div class="color" class="color" style="background: #00bb9c"></div>
@@ -9578,6 +9689,13 @@
                             </div>
                         </div>
                     </div>
+                    {% if send_form %}
+                        <div class="sending high">
+                            <div style="margin-top: 5px;">
+                                {{ send_form|safe }}
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </section>
             <section class="side2">
@@ -9590,7 +9708,7 @@
                                 <svg aria-label="Verified bot" class="botTagVerified" aria-hidden="false" width="16" height="16" viewBox="0 0 16 15.2">
                                     <path d="M7.4,11.17,4,8.62,5,7.26l2,1.53L10.64,4l1.36,1Z" fill="currentColor"></path>
                                  </svg>                                 
-                                <span class="botText">BOT</span>
+                                <span class="botText">APP</span>
                             </span>
                             <span class="timeText"></span>
                         </h2>
@@ -9629,7 +9747,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="emptyTxt">Nothing here</div>
+                    <div class="emptyTxt">NOTHING HERE</div>
                 </div>
                 <div class="bottomSide">
                     <div class="notification">There is an error</div>
@@ -9637,5 +9755,12 @@
             </section>
         </div>
         <input type="hidden" value>
+
+        {% include "includes/scripts.html" %}
+        <script>
+            {% if send_form %}
+                document.querySelector("input[type=search].choices__input").placeholder = "Choose destination(s)...";
+            {% endif %}
+        </script>
     </body>
 </html>

@@ -5,9 +5,11 @@ from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import base64
 import json
 
 import aiohttp
+from urllib.parse import quote
 from redbot.core.utils.chat_formatting import pagify, text_to_file
 
 from .converters import (
@@ -29,20 +31,20 @@ from .dashboard_integration import DashboardIntegration
 
 _ = Translator("EmbedUtils", __file__)
 
-YAML_CONVERTER = StringToEmbed(conversion_type="yaml", content=False)
-YAML_CONTENT_CONVERTER = StringToEmbed(conversion_type="yaml")
-YAML_LIST_CONVERTER = ListStringToEmbed(conversion_type="yaml")
-JSON_CONVERTER = StringToEmbed(content=False)
+JSON_CONVERTER = StringToEmbed(allow_content=False)
 JSON_CONTENT_CONVERTER = StringToEmbed()
 JSON_LIST_CONVERTER = ListStringToEmbed()
-PASTEBIN_CONVERTER = PastebinConverter(conversion_type="json", content=False)
+YAML_CONVERTER = StringToEmbed(conversion_type="yaml", allow_content=False)
+YAML_CONTENT_CONVERTER = StringToEmbed(conversion_type="yaml")
+YAML_LIST_CONVERTER = ListStringToEmbed(conversion_type="yaml")
+PASTEBIN_CONVERTER = PastebinConverter(conversion_type="json", allow_content=False)
 PASTEBIN_CONTENT_CONVERTER = PastebinConverter(conversion_type="json")
 PASTEBIN_LIST_CONVERTER = PastebinListConverter(conversion_type="json")
 
 
 @cog_i18n(_)
 class EmbedUtils(Cog, DashboardIntegration):
-    """Create, send, and store embeds!"""
+    """Create, send, and store rich embeds, from Red-Dashboard too!"""
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -264,26 +266,30 @@ class EmbedUtils(Cog, DashboardIntegration):
         except discord.HTTPException as error:
             return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
 
-    @embed.command(name="message", aliases=["frommessage", "frommsg"])
+    @embed.command(name="message", aliases=["frommessage", "msg", "frommsg"])
     async def embed_message(
         self,
         ctx: commands.Context,
         channel_or_message: typing.Optional[MessageableOrMessageConverter],
         message: discord.Message,
-        index: typing.Optional[int] = None,
-        include_content: typing.Optional[bool] = False,
+        index: int = None,
+        include_content: typing.Optional[bool] = None,
     ):
         """Post embed(s) from an existing message.
 
         The message must have at least one embed.
         You can specify an index (starting by 0) if you want to send only one of the embeds.
-        You can include the content of the message already sent.
+        The content of the message already sent is included if no index is specified.
 
         If you provide a message, it will be edited.
         """
+        if include_content is None and message.content:
+            include_content = index is None
         data = {}
-        if not message.embeds:
-            raise commands.UserInputError()
+        # if not message.embeds:
+        #     raise commands.UserInputError()
+        if include_content:
+            data["content"] = message.content
         if index is None:
             data["embeds"] = message.embeds.copy()
         else:
@@ -291,8 +297,6 @@ class EmbedUtils(Cog, DashboardIntegration):
                 data["embeds"] = [message.embeds[index]]
             except IndexError:
                 raise commands.UserInputError
-        if include_content:
-            data["content"] = message.content
         try:
             if not isinstance(channel_or_message, discord.Message):
                 channel = channel_or_message or ctx.channel
@@ -313,18 +317,22 @@ class EmbedUtils(Cog, DashboardIntegration):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        index: typing.Optional[int] = None,
-        include_content: typing.Optional[bool] = False,
+        index: int = None,
+        include_content: typing.Optional[bool] = None,
     ):
         """Download a JSON file for a message's embed(s).
 
         The message must have at least one embed.
         You can specify an index (starting by 0) if you want to include only one of the embeds.
-        You can include the content of the message already sent.
+        The content of the message already sent is included if no index is specified.
         """
+        if include_content is None:
+            include_content = index is None
         data = {}
-        if not message.embeds:
-            raise commands.UserInputError()
+        # if not message.embeds:
+        #     raise commands.UserInputError()
+        if include_content and message.content:
+            data["content"] = message.content
         if index is None:
             data["embeds"] = [embed.to_dict() for embed in message.embeds.copy()]
         else:
@@ -332,8 +340,6 @@ class EmbedUtils(Cog, DashboardIntegration):
                 data["embeds"] = [message.embeds[index].to_dict()]
             except IndexError:
                 raise commands.UserInputError
-        if include_content:
-            data["content"] = message.content
         await ctx.send(file=text_to_file(text=json.dumps(data, indent=4), filename="embed.json"))
 
     @commands.mod_or_permissions(manage_messages=True)
@@ -361,6 +367,7 @@ class EmbedUtils(Cog, DashboardIntegration):
             "hastebin",
             "message",
             "frommessage",
+            "msg",
             "frommsg",
         ],
         *,
@@ -402,13 +409,17 @@ class EmbedUtils(Cog, DashboardIntegration):
             if data is None:
                 raise commands.UserInputError()
             data = await PASTEBIN_LIST_CONVERTER.convert(ctx, argument=data)
-        elif conversion_type in ("message", "frommessage", "frommsg"):
+        elif conversion_type in ("message", "frommessage", "msg", "frommsg"):
             if data is None:
                 raise commands.UserInputError()
             message = await commands.MessageConverter().convert(ctx, argument=data)
-            if not message.embeds:
+            data = {}
+            if message.content:
+                data["content"] = message.content
+            if message.embeds:
+                data["embeds"] = message.embeds.copy()
+            if not data:
                 raise commands.UserInputError()
-            data = {"embeds": [embed.to_dict() for embed in message.embeds]}
         try:
             await message.edit(**data)
         except discord.HTTPException as error:
@@ -443,6 +454,7 @@ class EmbedUtils(Cog, DashboardIntegration):
             "hastebin",
             "message",
             "frommessage",
+            "msg",
             "frommsg",
         ],
         *,
@@ -492,7 +504,7 @@ class EmbedUtils(Cog, DashboardIntegration):
             if data is None:
                 raise commands.UserInputError()
             data = await PASTEBIN_CONVERTER.convert(ctx, argument=data)
-        elif conversion_type in ("message", "frommessage", "frommsg"):
+        elif conversion_type in ("message", "frommessage", "msg", "frommsg"):
             if data is None:
                 raise commands.UserInputError()
             message = await commands.MessageConverter().convert(ctx, argument=data)
@@ -549,13 +561,11 @@ class EmbedUtils(Cog, DashboardIntegration):
 
     @commands.mod_or_permissions(manage_guild=True)
     @embed.command(
-        name="list", aliases=["liststored", "liststoredembeds"], usage="[global_level=False]"
+        name="list", aliases=["liststored", "liststoredembeds"]
     )
-    async def embed_list(self, ctx: commands.Context, global_level: typing.Optional[bool]):
+    async def embed_list(self, ctx: commands.Context, global_level: bool = False):
         """Get info about a stored embed."""
-        if global_level is None:
-            global_level = False
-        elif global_level and ctx.author.id not in ctx.bot.owner_ids:
+        if global_level and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(_("You can't manage global stored embeds."))
         stored_embeds = await (
             self.config if global_level else self.config.guild(ctx.guild)
@@ -648,12 +658,10 @@ class EmbedUtils(Cog, DashboardIntegration):
         """Post stored embeds."""
         if global_level is None:
             global_level = False
-        elif global_level and ctx.author.id not in ctx.bot.owner_ids:
-            raise commands.UserFeedbackCheckFailure(_("You can't manage global stored embeds."))
+        embeds = []
         async with (
             self.config if global_level else self.config.guild(ctx.guild)
         ).stored_embeds() as stored_embeds:
-            embeds = []
             for name in names:
                 if (
                     name not in stored_embeds
@@ -701,12 +709,10 @@ class EmbedUtils(Cog, DashboardIntegration):
         """Post stored embeds with a webhook."""
         if global_level is None:
             global_level = False
-        elif global_level and ctx.author.id not in ctx.bot.owner_ids:
-            raise commands.UserFeedbackCheckFailure(_("You can't manage global stored embeds."))
+        embeds = []
         async with (
             self.config if global_level else self.config.guild(ctx.guild)
         ).stored_embeds() as stored_embeds:
-            embeds = []
             for name in names:
                 if (
                     name not in stored_embeds
@@ -737,6 +743,99 @@ class EmbedUtils(Cog, DashboardIntegration):
             )
         except discord.HTTPException as error:
             return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+
+    @embed.command()
+    async def dashboard(
+        self,
+        ctx: commands.Context,
+        conversion_type: typing.Optional[typing.Literal[
+            "json",
+            "fromjson",
+            "fromdata",
+            "yaml",
+            "fromyaml",
+            "fromfile",
+            "jsonfile",
+            "fromjsonfile",
+            "fromdatafile",
+            "yamlfile",
+            "fromyamlfile",
+            "gist",
+            "pastebin",
+            "hastebin",
+            "message",
+            "frommessage",
+            "msg",
+            "frommsg",
+        ]] = None,
+        *,
+        data: str = None,
+    ) -> None:
+        """Get the link to the Dashboard."""
+        if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
+            raise commands.UserFeedbackCheckFailure(_("Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."))
+        if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:
+            raise commands.UserFeedbackCheckFailure(_("You can't access the Dashboard."))
+        if self.qualified_name in await self.bot.get_cog("Dashboard").config.webserver.disabled_third_parties():
+            raise commands.UserFeedbackCheckFailure(_("This third party is disabled on the Dashboard."))
+        url = f"{dashboard_url[0]}/dashboard/{ctx.guild.id}/third-party/{self.qualified_name}"
+
+        if conversion_type is not None:
+            if conversion_type in ("json", "fromjson", "fromdata"):
+                if data is None:
+                    raise commands.UserInputError()
+                data = await JSON_LIST_CONVERTER.convert(ctx, argument=data)
+            elif conversion_type in ("yaml", "fromyaml"):
+                if data is None:
+                    raise commands.UserInputError()
+                data = await YAML_LIST_CONVERTER.convert(ctx, argument=data)
+            elif conversion_type in ("fromfile", "jsonfile", "fromjsonfile", "fromdatafile"):
+                if not ctx.message.attachments or ctx.message.attachments[0].filename.split(".")[
+                    -1
+                ] not in ("json", "txt"):
+                    raise commands.UserInputError()
+                try:
+                    argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                except UnicodeDecodeError:
+                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
+                data = await JSON_LIST_CONVERTER.convert(ctx, argument=argument)
+            elif conversion_type in ("yamlfile", "fromyamlfile"):
+                if not ctx.message.attachments or ctx.message.attachments[0].filename.split(".")[
+                    -1
+                ] not in ("yaml", "txt"):
+                    raise commands.UserInputError()
+                try:
+                    argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
+                except UnicodeDecodeError:
+                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
+                data = await YAML_LIST_CONVERTER.convert(ctx, argument=argument)
+            elif conversion_type in ("gist", "pastebin", "hastebin"):
+                if data is None:
+                    raise commands.UserInputError()
+                data = await PASTEBIN_LIST_CONVERTER.convert(ctx, argument=data)
+            elif conversion_type in ("message", "frommessage", "msg", "frommsg"):
+                if data is None:
+                    raise commands.UserInputError()
+                message = await commands.MessageConverter().convert(ctx, argument=data)
+                data = {}
+                if message.content:
+                    data["content"] = message.content
+                if message.embeds:
+                    data["embeds"] = message.embeds.copy()
+                if not data:
+                    raise commands.UserInputError()
+
+            if data["embeds"]:
+                data["embeds"] = [embed.to_dict() for embed in data["embeds"]]
+            url += f"?data={base64.b64encode(quote(json.dumps(data)).encode()).decode()}"
+
+        embed: discord.Embed = discord.Embed(
+            title=_("Dashboard - ") + self.qualified_name,
+            color=await ctx.embed_color(),
+            description=_("You can create and send rich embeds directly from the Dashboard!"),
+            url=url,
+        )
+        await ctx.send(embed=embed)
 
     @commands.is_owner()
     @embed.command(aliases=["migratefromembedutils"])

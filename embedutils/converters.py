@@ -31,7 +31,7 @@ def cleanup_code(code: str) -> str:
 
 class StringToEmbed(commands.Converter):
     def __init__(
-        self, *, conversion_type: str = "json", validate: bool = False, content: bool = True
+        self, *, conversion_type: str = "json", validate: bool = False, allow_content: bool = True
     ) -> None:
         self.CONVERSION_TYPES: typing.Dict[str, typing.Any] = {
             "json": self.load_from_json,
@@ -40,7 +40,7 @@ class StringToEmbed(commands.Converter):
 
         self.validate: bool = validate
         self.conversion_type: typing.Literal["json", "yaml"] = conversion_type.lower()
-        self.allow_content: bool = content
+        self.allow_content: bool = allow_content
         try:
             self.converter = self.CONVERSION_TYPES[self.conversion_type]
         except KeyError as exc:
@@ -50,7 +50,7 @@ class StringToEmbed(commands.Converter):
 
     async def convert(
         self, ctx: commands.Context, argument: str
-    ) -> typing.Dict[typing.Literal["embed", "content"], typing.Union[discord.Embed, str]]:
+    ) -> typing.Dict[typing.Literal["content", "embed"], typing.Union[discord.Embed, str]]:
         argument = cleanup_code(argument)
         data = await self.converter(ctx, argument=argument)
 
@@ -116,7 +116,7 @@ class StringToEmbed(commands.Converter):
 
     async def create_embed(
         self, ctx: commands.Context, data: typing.Dict[str, typing.Any], *, content: str = None
-    ) -> typing.Dict[typing.Literal["embed", "content"], typing.Union[discord.Embed, str]]:
+    ) -> typing.Dict[typing.Literal["content", "embed"], typing.Union[discord.Embed, str]]:
         content = self.get_content(data, content=content)
 
         if timestamp := data.get("timestamp"):
@@ -134,7 +134,7 @@ class StringToEmbed(commands.Converter):
                     length=length
                 )
             )
-        return {"embed": embed, "content": content}
+        return {"content": content, "embed": embed}
 
     async def validate_embed(
         self, ctx: commands.Context, kwargs: typing.Dict[str, typing.Union[discord.Embed, str]]
@@ -149,6 +149,8 @@ class StringToEmbed(commands.Converter):
     async def embed_convert_error(
         ctx: commands.Context, error_type: str, error: Exception
     ) -> None:
+        if getattr(ctx, "__is_mocked__", False):
+            raise commands.BadArgument(f"{error_type}: `{type(error).__name__}`")
         embed: discord.Embed = discord.Embed(
             title=f"{error_type}: `{type(error).__name__}`",
             description=box(str(error), lang="py"),
@@ -164,13 +166,13 @@ class StringToEmbed(commands.Converter):
 
 class ListStringToEmbed(StringToEmbed):
     def __init__(self, *, conversion_type: str = "json", limit: int = 10) -> None:
-        super().__init__(conversion_type=conversion_type, content=False)
+        super().__init__(conversion_type=conversion_type, allow_content=False)
         self.limit: int = min(limit, 10)
 
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Dict[
-        typing.Literal["embeds", "content"], typing.Union[typing.List[discord.Embed], str]
+        typing.Literal["content", "embeds"], typing.Union[typing.List[discord.Embed], str]
     ]:
         argument = cleanup_code(argument)
         data = await self.converter(ctx, argument=argument, data_type=(dict, list))
@@ -230,7 +232,7 @@ class MessageableConverter(commands.Converter):
                 )
             )
         permissions = channel.permissions_for(ctx.author)
-        if not (permissions.send_messages and permissions.embed_links):
+        if not (permissions.send_messages and permissions.embed_links and permissions.manage_messages):
             raise commands.BadArgument(
                 _("You do not have permissions to send embeds in {channel.mention}.").format(
                     channel=channel
@@ -291,7 +293,7 @@ class PastebinMixin:
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Dict[
-        typing.Literal["embed", "embeds", "content"],
+        typing.Literal["content", "embed", "embeds"],
         typing.Union[discord.Embed, typing.List[discord.Embed], str],
     ]:
         async def _fetch_response(url: str, response_format: str, **kwargs) -> typing.Any:

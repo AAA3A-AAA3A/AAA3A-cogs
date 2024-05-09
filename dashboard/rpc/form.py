@@ -3,7 +3,7 @@ from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from wtforms import Form, Field, HiddenField, SubmitField, SelectFieldBase, FormField
+from wtforms import Form, Field, HiddenField, SubmitField, SelectFieldBase, FormField, SelectMultipleField
 from wtforms.fields.core import UnboundField
 from wtforms.meta import DefaultMeta
 from wtforms.widgets import HiddenInput
@@ -104,6 +104,13 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
             for field in self:
                 for validator in field.validators:
                     if not isinstance(validator, DpyObjectConverter):
+                        continue
+                    if isinstance(field, SelectMultipleField):
+                        try:
+                            field.data = [await validator.convert(value) for value in field.data]
+                        except commands.BadArgument as e:
+                            extra_notifications.append({"message": f"{field.name}: {e}", "category": "warning"})
+                            result = False
                         continue
                     if not field.data.strip():
                         field.data = ""

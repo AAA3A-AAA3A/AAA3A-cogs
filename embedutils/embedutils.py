@@ -271,7 +271,7 @@ class EmbedUtils(Cog, DashboardIntegration):
         self,
         ctx: commands.Context,
         channel_or_message: typing.Optional[MessageableOrMessageConverter],
-        message: discord.Message,
+        message: discord.Message = None,
         index: int = None,
         include_content: typing.Optional[bool] = None,
     ):
@@ -283,6 +283,14 @@ class EmbedUtils(Cog, DashboardIntegration):
 
         If you provide a message, it will be edited.
         """
+        if message is None:
+            if (
+                ctx.message.reference is not None
+                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            ):
+                message = reference
+            else:
+                raise commands.UserInputError()
         if include_content is None and message.content:
             include_content = index is None
         data = {}
@@ -316,7 +324,7 @@ class EmbedUtils(Cog, DashboardIntegration):
     async def embed_download(
         self,
         ctx: commands.Context,
-        message: discord.Message,
+        message: discord.Message = None,
         index: int = None,
         include_content: typing.Optional[bool] = None,
     ):
@@ -326,6 +334,14 @@ class EmbedUtils(Cog, DashboardIntegration):
         You can specify an index (starting by 0) if you want to include only one of the embeds.
         The content of the message already sent is included if no index is specified.
         """
+        if message is None:
+            if (
+                ctx.message.reference is not None
+                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            ):
+                message = reference
+            else:
+                raise commands.UserInputError()
         if include_content is None:
             include_content = index is None
         data = {}
@@ -410,9 +426,15 @@ class EmbedUtils(Cog, DashboardIntegration):
                 raise commands.UserInputError()
             data = await PASTEBIN_LIST_CONVERTER.convert(ctx, argument=data)
         elif conversion_type in ("message", "frommessage", "msg", "frommsg"):
-            if data is None:
+            if data is not None:
+                message = await commands.MessageConverter().convert(ctx, argument=data)
+            elif (
+                ctx.message.reference is not None
+                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            ):
+                message = reference
+            else:
                 raise commands.UserInputError()
-            message = await commands.MessageConverter().convert(ctx, argument=data)
             data = {}
             if message.content:
                 data["content"] = message.content
@@ -505,9 +527,15 @@ class EmbedUtils(Cog, DashboardIntegration):
                 raise commands.UserInputError()
             data = await PASTEBIN_CONVERTER.convert(ctx, argument=data)
         elif conversion_type in ("message", "frommessage", "msg", "frommsg"):
-            if data is None:
+            if data is not None:
+                message = await commands.MessageConverter().convert(ctx, argument=data)
+            elif (
+                ctx.message.reference is not None
+                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            ):
+                message = reference
+            else:
                 raise commands.UserInputError()
-            message = await commands.MessageConverter().convert(ctx, argument=data)
             if not message.embeds:
                 raise commands.UserInputError()
             data = {"embed": message.embeds[0].to_dict()}
@@ -814,9 +842,15 @@ class EmbedUtils(Cog, DashboardIntegration):
                     raise commands.UserInputError()
                 data = await PASTEBIN_LIST_CONVERTER.convert(ctx, argument=data)
             elif conversion_type in ("message", "frommessage", "msg", "frommsg"):
-                if data is None:
+                if data is not None:
+                    message = await commands.MessageConverter().convert(ctx, argument=data)
+                elif (
+                    ctx.message.reference is not None
+                    and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+                ):
+                    message = reference
+                else:
                     raise commands.UserInputError()
-                message = await commands.MessageConverter().convert(ctx, argument=data)
                 data = {}
                 if message.content:
                     data["content"] = message.content

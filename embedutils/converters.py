@@ -165,7 +165,7 @@ class StringToEmbed(commands.Converter):
 class ListStringToEmbed(StringToEmbed):
     def __init__(self, *, conversion_type: str = "json", limit: int = 10) -> None:
         super().__init__(conversion_type=conversion_type, content=False)
-        self.limit: int = limit
+        self.limit: int = min(limit, 10)
 
     async def convert(
         self, ctx: commands.Context, argument: str
@@ -195,7 +195,7 @@ class ListStringToEmbed(StringToEmbed):
             kwargs = await self.create_embed(ctx, data=embed_data)
             embed = kwargs["embed"]
             embeds.append(embed)
-            if i >= self.limit:
+            if i > self.limit:
                 raise commands.BadArgument(
                     _("Embed limit reached ({limit}).").format(limit=self.limit)
                 )

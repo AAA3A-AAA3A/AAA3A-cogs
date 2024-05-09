@@ -7924,7 +7924,7 @@
                     url: "{{ request.scheme }}://{{ request.host + request.path }}",
                     author: {
                         name: '{{"Author name" if not current_user.is_authenticated else current_user.display_name }}',
-                        url: "https://discord.com",
+                        url: '{{"https://discord.com" if not current_user.is_authenticated else "https://discord.com/users/" + current_user.id|string }}',
                         icon_url: '{{"https://cdn.discordapp.com/embed/avatars/0.png" if not current_user.is_authenticated else current_user.display_avatar }}'
                     },
                     thumbnail: {
@@ -7944,7 +7944,7 @@
                         },
                         {
                             name: "Field 2",
-                            value: "You can use custom emojis <:Kekwlaugh:722088222766923847>. <:GangstaBlob:742256196295065661>",
+                            value: "You can use custom emojis: <:pikaLUL:386933336066752512> <:aha:350653489044652052>",
                             inline: false
                         },
                         {

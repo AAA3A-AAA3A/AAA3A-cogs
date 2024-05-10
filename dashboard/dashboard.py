@@ -308,6 +308,25 @@ class Dashboard(Cog):
             except Exception as e:
                 self.logger.critical("Error when creating the Flask webserver app.", exc_info=e)
 
+    @commands.bot_has_permissions(embed_links=True)
+    @commands.hybrid_command()
+    async def dashboard(self, ctx: commands.Context) -> None:
+        """Get the link to the Dashboard."""
+        if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
+            raise commands.UserFeedbackCheckFailure(_("Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."))
+        if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:
+            raise commands.UserFeedbackCheckFailure(_("You can't access the Dashboard."))
+        embed: discord.Embed = discord.Embed(
+            title=_("Red-Dashboard"),
+            color=await ctx.embed_color(),
+        )
+        url = dashboard_url[0]
+        if ctx.guild is not None and (ctx.author.id in ctx.bot.owner_ids or await self.bot.is_mod(ctx.author)):
+            url += f"/dashboard/{ctx.guild.id}"
+            embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
+        embed.url = url
+        await ctx.send(embed=embed)
+
     @commands.is_owner()
     @commands.hybrid_group()
     async def setdashboard(self, ctx: commands.Context) -> None:

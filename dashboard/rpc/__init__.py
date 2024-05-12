@@ -616,7 +616,7 @@ class DashboardRPC:
             "support_server": await config_group.support_server(),
             "default_color": await config_group.default_color(),
             "default_background_theme": await config_group.default_background_theme(),
-            "default_sidebar_theme": await config_group.default_sidebar_theme(),
+            "default_sidenav_theme": await config_group.default_sidenav_theme(),
             "disabled_third_parties": await self.cog.config.webserver.disabled_third_parties(),
         }
 
@@ -632,7 +632,7 @@ class DashboardRPC:
         await config_group.support_server.set(settings["support_server"])
         await config_group.default_color.set(settings["default_color"])
         await config_group.default_background_theme.set(settings["default_background_theme"])
-        await config_group.default_sidebar_theme.set(settings["default_sidebar_theme"])
+        await config_group.default_sidenav_theme.set(settings["default_sidenav_theme"])
         await self.cog.config.webserver.disabled_third_parties.set(
             settings["disabled_third_parties"]
         )

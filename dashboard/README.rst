@@ -38,8 +38,8 @@ Here are all the commands included in this cog (17):
 * ``[p]setdashboard defaultcolor <default_color>``
  Set the default color of the dashboard.
 
-* ``[p]setdashboard defaultsidebartheme <default_sidebar_theme>``
- Set the default sidebar theme of the dashboard.
+* ``[p]setdashboard defaultsidenavtheme <default_sidenav_theme>``
+ Set the default sidenav theme of the dashboard.
 
 * ``[p]setdashboard disabledthirdparties <disabled_third_parties>``
  The third parties to disable.

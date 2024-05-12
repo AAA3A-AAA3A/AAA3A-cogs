@@ -60,7 +60,9 @@ class Dashboard(Cog):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
+        self.CONFIG_SCHEMA: int = 2
         self.dashboard_global: typing.Dict[str, typing.Any] = {
+            "CONFIG_SCHEMA": None,
             "all_in_one": False,
             "flask_flags": [],
             "webserver": {
@@ -80,9 +82,9 @@ class Dashboard(Cog):
                         "support_server": None,
                         "default_color": "success",
                         "default_background_theme": "white",
-                        "default_sidebar_theme": "white",
+                        "default_sidenav_theme": "white",
                     },
-                    "sidebar": [
+                    "sidenav": [
                         {
                             "pos": 1,
                             "name": "builtin-home",
@@ -217,18 +219,18 @@ class Dashboard(Cog):
                 "converter": typing.Literal[
                     "success", "danger", "primary", "info", "warning", "dark"
                 ],
-                "description": "Set the default color of the dashboard.",
+                "description": "Set the default Color of the dashboard.",
                 "path": ["webserver", "ui", "meta", "default_color"],
             },
             "default_background_theme": {
                 "converter": typing.Literal["white", "dark"],
-                "description": "Set the default background theme of the dashboard.",
+                "description": "Set the default Background theme of the dashboard.",
                 "path": ["webserver", "ui", "meta", "default_background_theme"],
             },
-            "default_sidebar_theme": {
+            "default_sidenav_theme": {
                 "converter": typing.Literal["white", "dark"],
-                "description": "Set the default sidebar theme of the dashboard.",
-                "path": ["webserver", "ui", "meta", "default_sidebar_theme"],
+                "description": "Set the default Sidenav theme of the dashboard.",
+                "path": ["webserver", "ui", "meta", "default_sidenav_theme"],
             },
             "disabled_third_parties": {
                 "converter": commands.Greedy[ThirdPartyConverter],
@@ -253,9 +255,31 @@ class Dashboard(Cog):
 
     async def cog_load(self) -> None:
         await super().cog_load()
+        await self.edit_config_schema()
         await self.settings.add_commands()
         self.logger.info("Loading cog...")
         asyncio.create_task(self.create_app(flask_flags=await self.config.flask_flags()))
+
+    async def edit_config_schema(self) -> None:
+        CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
+        if CONFIG_SCHEMA is None:
+            CONFIG_SCHEMA = 1
+            await self.config.CONFIG_SCHEMA(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA == self.CONFIG_SCHEMA:
+            return
+        if CONFIG_SCHEMA == 1:
+            global_group = self.config._get_base_group(self.config.GLOBAL)
+            async with global_group() as global_data:
+                if "default_sidebar_theme" in global_data:
+                    global_data["default_sidenav_theme"] = global_data.pop("default_sidebar_theme")
+            CONFIG_SCHEMA = 2
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
+            CONFIG_SCHEMA = self.CONFIG_SCHEMA
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        self.logger.info(
+            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
+        )
 
     async def cog_unload(self) -> None:
         self.logger.info("Unloading cog...")

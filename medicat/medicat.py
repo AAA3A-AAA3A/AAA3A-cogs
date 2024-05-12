@@ -351,8 +351,6 @@ class Medicat(Cog):
 
     async def cog_load(self) -> None:
         await super().cog_load()
-        global MEDICAT_ICON_URL
-        MEDICAT_ICON_URL = (await self.bot.fetch_invite("medicat")).guild.icon.url
         await self.edit_config_schema()
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
         self.loops.append(
@@ -373,6 +371,12 @@ class Medicat(Cog):
         )
         self.CC_added: asyncio.Event = asyncio.Event()
         await self.add_custom_commands()
+        asyncio.create_task(self.cog_after_load())
+
+    async def cog_after_load(self) -> None:
+        await self.bot.wait_until_red_ready()
+        global MEDICAT_ICON_URL
+        MEDICAT_ICON_URL = (await self.bot.fetch_invite("medicat")).guild.icon.url
 
     async def red_delete_data_for_user(self, *args, **kwargs) -> None:
         """Nothing to delete."""

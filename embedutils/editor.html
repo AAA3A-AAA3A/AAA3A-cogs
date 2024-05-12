@@ -8469,7 +8469,7 @@
                                                 if (autoParams) {
                                                     urlOptions({ remove: "username" });
                                                 }
-                                                if (options.verified) {
+                                                if (options.verified && !document.querySelector(".editSenderAvatar").value) {
                                                     document.querySelector(".msgEmbed > .contents").classList.add("verified");
                                                 }
                                             }
@@ -8488,7 +8488,7 @@
                                                 if (autoParams) {
                                                     urlOptions({ remove: "avatar" });
                                                 }
-                                                if (options.verified) {
+                                                if (options.verified && !document.querySelector(".editSenderUsername").value) {
                                                     document.querySelector(".msgEmbed > .contents").classList.add("verified");
                                                 }
                                             }

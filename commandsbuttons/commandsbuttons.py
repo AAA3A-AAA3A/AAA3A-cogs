@@ -46,7 +46,7 @@ class CommandsButtons(Cog):
             identifier=205192943327321000143939875896557571750,  # 370638632963
             force_registration=True,
         )
-        self.CONFIG_SCHEMA = 2
+        self.CONFIG_SCHEMA: int = 2
         self.commands_buttons_global: typing.Dict[str, typing.Optional[int]] = {
             "CONFIG_SCHEMA": None,
         }

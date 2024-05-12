@@ -73,7 +73,7 @@ class ReactToCommand(Cog):
             identifier=205192943327321000143939875896557571750,  # 703485369742
             force_registration=True,
         )
-        self.CONFIG_SCHEMA = 2
+        self.CONFIG_SCHEMA: int = 2
         self.reacttocommand_global: typing.Dict[str, typing.Optional[int]] = {
             "CONFIG_SCHEMA": None,
         }

@@ -93,7 +93,10 @@ class Reminders(Cog, DashboardIntegration):
             snooze_view=True,
             seconds_allowed=True,
         )
-        self.config.register_user(**self.reminders_user)
+        self.config.register_user(
+            timezone=None,
+            reminders={},
+        )
 
         self.cache: typing.Dict[int, typing.Dict[int, Reminder]] = {}
 

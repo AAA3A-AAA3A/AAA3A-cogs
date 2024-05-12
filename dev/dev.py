@@ -470,13 +470,10 @@ class DevOutput(dev_commands.DevOutput):
 class Dev(Cog, dev_commands.Dev, DashboardIntegration):
     """Various development focused utilities!"""
 
+    __authors__: typing.List[str] = ["Cog-Creators", "Zephyrkul (Zephyrkul#1089)", "AAA3A"]
+
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = [
-            "Cog-Creators",
-            "Zephyrkul (Zephyrkul#1089)",
-            "AAA3A",
-        ]
 
         self.env_extensions: typing.Dict[str, typing.Any] = {}
         self.source_cache: dev_commands.SourceCache = dev_commands.SourceCache()
@@ -510,7 +507,17 @@ class Dev(Cog, dev_commands.Dev, DashboardIntegration):
             "downloader_already_agreed": False,
             "use_extended_environment": True,
         }
-        self.config.register_global(**self.dev_global)
+        self.config.register_global(
+            auto_imports=True,
+            output_mode="repr",
+            rich_tracebacks=False,
+            ansi_formatting=False,
+            send_interactive=False,
+            send_dpy_objects=True,
+            use_last_locals=True,
+            downloader_already_agreed=False,
+            use_extended_environment=True,
+        )
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
@@ -587,14 +594,6 @@ class Dev(Cog, dev_commands.Dev, DashboardIntegration):
             task.cancel()
         await self.bot.add_cog(core_dev)
         await super().cog_unload()
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
 
     def get_environment(
         self, ctx: commands.Context, use_extended_environment: bool = True

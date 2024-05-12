@@ -46,27 +46,16 @@ class RolesButtons(Cog):
             force_registration=True,
         )
         self.CONFIG_SCHEMA: int = 2
-        self.roles_buttons_global: typing.Dict[str, typing.Optional[int]] = {
-            "CONFIG_SCHEMA": None,
-        }
-        self.roles_buttons_guild: typing.Dict[
-            str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]
-        ] = {"roles_buttons": {}, "modes": {}}
-        self.config.register_global(**self.roles_buttons_global)
-        self.config.register_guild(**self.roles_buttons_guild)
+        self.config.register_global(CONFIG_SCHEMA=None)
+        self.config.register_guild(
+            roles_buttons={},
+            modes={},
+        )
 
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.edit_config_schema()
         asyncio.create_task(self.load_buttons())
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
 
     async def edit_config_schema(self) -> None:
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()

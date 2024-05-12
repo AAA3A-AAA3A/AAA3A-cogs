@@ -30,13 +30,12 @@ class ClearChannel(Cog, DashboardIntegration):
             identifier=205192943327321000143939875896557571750,  # 837018163805
             force_registration=True,
         )
-        self.clearchannel_guild = {
-            "channel_delete": True,
-            "first_message": True,
-            "author_dm": False,
-            "custom_message": {},
-        }
-        self.config.register_guild(**self.clearchannel_guild)
+        self.config.register_guild(
+            channel_delete=True,
+            first_message=True,
+            author_dm=False,
+            custom_message={},
+        )
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
@@ -73,14 +72,6 @@ class ClearChannel(Cog, DashboardIntegration):
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.settings.add_commands()
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
 
     @commands.guild_only()
     @commands.guildowner()

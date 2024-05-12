@@ -51,9 +51,10 @@ class Dashboard(Cog):
     ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.
     """
 
+    __authors__: typing.List[str] = ["Neuro Assassin", "AAA3A"]
+
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = ["Neuro Assassin", "AAA3A"]
 
         self.config: Config = Config.get_conf(
             self,
@@ -61,11 +62,11 @@ class Dashboard(Cog):
             force_registration=True,
         )
         self.CONFIG_SCHEMA: int = 2
-        self.dashboard_global: typing.Dict[str, typing.Any] = {
-            "CONFIG_SCHEMA": None,
-            "all_in_one": False,
-            "flask_flags": [],
-            "webserver": {
+        self.config.register_global(
+            CONFIG_SCHEMA=None,
+            all_in_one=False,
+            flask_flags=[],
+            webserver={
                 "core": {
                     "secret_key": None,
                     "jwt_secret_key": None,
@@ -168,9 +169,8 @@ class Dashboard(Cog):
                     ],
                 },
                 "disabled_third_parties": [],
-            },
-        }
-        self.config.register_global(**self.dashboard_global)
+            }
+        )
 
         _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
             "all_in_one": {
@@ -287,14 +287,6 @@ class Dashboard(Cog):
             await asyncio.to_thread(self.app.server_thread.shutdown)
             await asyncio.to_thread(self.app.tasks_manager.stop_tasks)
         await super().cog_unload()
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
 
     async def create_app(self, flask_flags: str) -> None:
         await self.bot.wait_until_red_ready()

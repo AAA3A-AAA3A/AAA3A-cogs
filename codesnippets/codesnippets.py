@@ -74,10 +74,9 @@ class CodeSnippets(Cog, DashboardIntegration):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.codesnippets_guild: typing.Dict[str, typing.List] = {
-            "channels": [],
-        }
-        self.config.register_guild(**self.codesnippets_guild)
+        self.config.register_guild(
+            channels=[],
+        )
 
         self.pattern_handlers = {
             GITHUB_RE: self.fetch_github_snippet,
@@ -124,14 +123,6 @@ class CodeSnippets(Cog, DashboardIntegration):
         if self._session is not None:
             await self._session.close()
         await super().cog_unload()
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
 
     async def _fetch_response(self, url: str, response_format: str, **kwargs) -> typing.Any:
         if "github.com" in url:

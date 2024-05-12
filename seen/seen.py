@@ -23,48 +23,35 @@ _ = Translator("Seen", __file__)
 class Seen(Cog):
     """A cog to check when a member/role/channel/category/user/guild was last active!"""
 
+    __authors__: typing.List[str] = ["AAA3A", "aikaterna"]
+
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = ["AAA3A", "aikaterna"]
 
         self.config: Config = Config.get_conf(
             self,
             identifier=205192943327321000143939875896557571750,  # 864398642893
             force_registration=True,
         )
-        self.global_config: typing.Dict[
-            str,
-            typing.Union[
-                typing.Dict[
-                    str,
-                    typing.Union[
-                        typing.Dict[str, typing.Dict[str, typing.Union[int, str]]],
-                        typing.Dict[str, str],
-                        typing.Dict[str, bool],
-                    ],
-                ],
-                typing.List[int],
-            ],
-        ] = {
-            "message": {},
-            "message_edit": {},
-            "reaction_add": {},
-            "reaction_remove": {},
-            "ignored_users": [345628097929936898],  # MAX
-            "listeners": {
+        self.config.register_global(
+            message={},
+            message_edit={},
+            reaction_add={},
+            reaction_remove={},
+            ignored_users=[],
+            listeners={
                 "message": True,
                 "message_edit": True,
                 "reaction_add": True,
                 "reaction_remove": True,
             },
-        }
+        )
         self.default_config: typing.Dict[str, typing.Optional[str]] = {
             "message": None,
             "message_edit": None,
             "reaction_add": None,
             "reaction_remove": None,
         }
-        self.config.register_global(**self.global_config)
         self.config.register_user(**self.default_config)
         self.config.register_member(**self.default_config)
         self.config.register_role(**self.default_config)

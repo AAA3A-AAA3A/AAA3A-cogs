@@ -43,9 +43,7 @@ class Sudo(Cog):
     ⚠️ This cog makes bot owners unable to be perceived as bot owners in commands while the cog is loaded unless the `[p]su` command is used.
     """
 
-    def __init__(self, bot: Red) -> None:
-        super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"]
+    __authors__: typing.List[str] = ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"]
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -56,14 +54,6 @@ class Sudo(Cog):
         self.bot.owner_ids.update(copy(self.all_owner_ids))
         self.all_owner_ids.clear()
         await super().cog_unload()
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):

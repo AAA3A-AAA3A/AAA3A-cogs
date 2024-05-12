@@ -31,9 +31,10 @@ _ = Translator("LintCodes", __file__)
 class LintCodes(Cog):
     """A cog to lint a code from Discord, with Flake8, PyLint, MyPy, Bandit, Black, Isort, Yapf, AutoFlake8, PyRight and Ruff!"""
 
+    __authors__: typing.List[str] = ["rtk-rnjn", "AAA3A"]
+
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = ["rtk-rnjn", "AAA3A"]
 
         self._session: aiohttp.ClientSession = None
 
@@ -45,14 +46,6 @@ class LintCodes(Cog):
         if self._session is not None:
             await self._session.close()
         await super().cog_unload()
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
 
     async def get_code_from_context(
         self,

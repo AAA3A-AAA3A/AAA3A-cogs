@@ -24,24 +24,13 @@ class CmdChannel(Cog):
         #     identifier=205192943327321000143939875896557571750,  # 793502759720
         #     force_registration=True,
         # )
-        # self.cmd_guild: typing.Dict[
-        #     str, typing.Union[typing.Optional[discord.TextChannel], bool]
-        # ] = {
-        #     "logschannel": None,  # The channel for logs.
-        #     "enabled_cmdchannel": True,  # Enable the possibility of commands.
-        #     "confirmation_cmdchannel": False,  # Enable the confirmation.
-        #     "deletemessage_cmdchannel": False,  # Enable the message delete.
-        #     "informationmessage_cmdchannel": False,  # Enable the information message.
-        # }
-        # self.config.register_guild(**self.cmd_guild)
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
+        # self.config.register_guild(
+            # logschannel=None,
+            # enabled=True,
+            # confirmation=False,
+            # delete_message=False,
+            # information_message=False,
+        # )
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:

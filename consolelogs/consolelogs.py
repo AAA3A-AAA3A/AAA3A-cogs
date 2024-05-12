@@ -93,26 +93,26 @@ class ConsoleLog:
 class ConsoleLogs(Cog, DashboardIntegration):
     """A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"""
 
+    __authors__: typing.List[str] = ["AAA3A", "Tobotimus"]
+
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = ["AAA3A", "Tobotimus"]
 
         self.config: Config = Config.get_conf(
             self,
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.consolelogs_channel: typing.Dict[str, typing.Union[bool, typing.List[str]]] = {
-            "enabled": False,
-            "global_errors": True,
-            "prefixed_commands_errors": True,
-            "slash_commands_errors": True,
-            "dpy_ignored_exceptions": False,
-            "full_console": False,
-            "guild_invite": True,
-            "ignored_cogs": [],
-        }
-        self.config.register_channel(**self.consolelogs_channel)
+        self.config.register_channel(
+            enabled=False,
+            global_errors=True,
+            prefixed_commands_errors=True,
+            slash_commands_errors=True,
+            dpy_ignored_exceptions=False,
+            full_console=False,
+            guild_invite=True,
+            ignored_cogs=[],
+        )
 
         self.RED_INTRO: str = None
         self._last_console_log_sent_timestamp: int = None
@@ -228,14 +228,6 @@ class ConsoleLogs(Cog, DashboardIntegration):
             console_log.id = id
 
         return console_logs
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
 
     async def send_console_logs(
         self,

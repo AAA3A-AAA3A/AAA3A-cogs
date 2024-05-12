@@ -46,23 +46,18 @@ PASTEBIN_LIST_CONVERTER = PastebinListConverter(conversion_type="json")
 class EmbedUtils(Cog, DashboardIntegration):
     """Create, send, and store rich embeds, from Red-Dashboard too!"""
 
+    __authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
+
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
 
         self.config: Config = Config.get_conf(
             self,
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.embedutils_global: typing.Dict[str, typing.Dict[str, typing.Any]] = {
-            "stored_embeds": {}
-        }
-        self.embedutils_guild: typing.Dict[str, typing.Dict[str, typing.Any]] = {
-            "stored_embeds": {}
-        }
-        self.config.register_global(**self.embedutils_global)
-        self.config.register_guild(**self.embedutils_guild)
+        self.config.register_global(stored_embeds={})
+        self.config.register_guild(stored_embeds={})
 
         self._session: aiohttp.ClientSession = None
 

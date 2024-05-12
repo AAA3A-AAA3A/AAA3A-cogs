@@ -81,56 +81,34 @@ class GuildStats(Cog):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.guildstats_global: typing.Dict[str, typing.Union[int, bool, typing.List[int]]] = {
-            "first_loading_time": None,
-            "toggle_activities_stats": True,
-            "default_state": True,
-            "ignored_users": [],
-        }
-        self.guildstats_guild: typing.Dict[
-            str, typing.Union[bool, typing.List[int], typing.List[str]]
-        ] = {
-            "enabled": None,
-            "ignored_categories": [],
-            "ignored_channels": [],
-            "ignored_activities": [],
-        }
-        self.guildstats_channel: typing.Dict[
-            str,
-            typing.Union[
-                int,
-                typing.Dict[int, int],
-                typing.Dict[int, typing.List[int]],
-                typing.Dict[int, typing.List[typing.List[int]]],
-            ],
-        ] = {
-            "total_messages": 0,
-            "total_humans_messages": 0,
-            "total_bots_messages": 0,
-            "total_messages_members": {},
-            "messages": {},
-            "total_voice": 0,
-            "total_humans_voice": 0,
-            "total_bots_voice": 0,
-            "total_voice_members": {},
-            "voice": {},
-        }
-        self.guildstats_member: typing.Dict[
-            str,
-            typing.Union[
-                int,
-                typing.Dict[int, int],
-                typing.Dict[int, typing.List[int]],
-                typing.Dict[int, typing.List[typing.List[int]]],
-            ],
-        ] = {
-            "total_activities": 0,
-            "total_activities_times": {},
-        }
-        self.config.register_global(**self.guildstats_global)
-        self.config.register_guild(**self.guildstats_guild)
-        self.config.register_channel(**self.guildstats_channel)
-        self.config.register_member(**self.guildstats_member)
+        self.config.register_global(
+            first_loading_time=None,
+            toggle_activities_stats=True,
+            default_state=True,
+            ignored_users=[],
+        )
+        self.config.register_guild(
+            enabled=None,
+            ignored_categories=[],
+            ignored_channels=[],
+            ignored_activities=[],
+        )
+        self.config.register_channel(
+            total_messages=0,
+            total_humans_messages=0,
+            total_bots_messages=0,
+            total_messages_members={},
+            messages={},
+            total_voice=0,
+            total_humans_voice=0,
+            total_bots_voice=0,
+            total_voice_members={},
+            voice={},
+        )
+        self.config.register_member(
+            total_activities=0,
+            total_activities_times={},
+        )
 
         self.cache: typing.Dict[
             typing.Dict[

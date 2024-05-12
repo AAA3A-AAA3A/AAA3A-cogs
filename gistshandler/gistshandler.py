@@ -49,14 +49,6 @@ class GistsHandler(Cog):
             except gists.AuthorizationFailure as e:
                 self.logger.error("The GitHub token is invalid.", exc_info=e)
 
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
-
     @commands.Cog.listener()
     async def on_red_api_tokens_update(
         self, service_name: str, api_tokens: typing.Mapping[str, str]

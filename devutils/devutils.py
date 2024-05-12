@@ -84,9 +84,7 @@ class RawRequestConverter(commands.Converter):
 class DevUtils(Cog):
     """Various development utilities!"""
 
-    def __init__(self, bot: Red) -> None:
-        super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
+    __authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):

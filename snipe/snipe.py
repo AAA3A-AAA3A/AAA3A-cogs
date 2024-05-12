@@ -156,9 +156,10 @@ class SnipedMessage:
 class Snipe(Cog, DashboardIntegration):
     """Bulk sniping deleted and edited messages, for moderation purpose!"""
 
+    __authors__: typing.List[str] = ["epic guy", "AAA3A"]
+
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = ["epic guy", "AAA3A"]
 
         self.deleted_messages: typing.Dict[
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
@@ -175,11 +176,10 @@ class Snipe(Cog, DashboardIntegration):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.snipe_guild: typing.Dict[str, bool] = {
-            "ignored": False,
-            "ignored_channels": [],
-        }
-        self.config.register_guild(**self.snipe_guild)
+        self.config.register_guild(
+            ignored=False,
+            ignored_channels=[],
+        )
 
         _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
             "ignored": {

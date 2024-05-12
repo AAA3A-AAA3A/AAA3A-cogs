@@ -30,16 +30,8 @@ class PresenceChart(Cog):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.presencechart_global: typing.Dict[str, typing.List[int]] = {
-            "ignored_users": [],
-        }
-        self.presencechart_user: typing.Dict[
-            str, typing.List[typing.Tuple[typing.Literal["online", "dnd", "idle", "offline"], int]]
-        ] = {
-            "presence_data": [],
-        }
-        self.config.register_global(**self.presencechart_global)
-        self.config.register_user(**self.presencechart_user)
+        self.config.register_global(ignored_users=[])
+        self.config.register_user(presence_data=[])
 
         self.presence_map: typing.Dict[
             typing.Literal["online", "dnd", "idle", "offline"],

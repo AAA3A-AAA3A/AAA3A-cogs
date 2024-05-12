@@ -359,29 +359,13 @@ class DiscordModals(Cog):
             force_registration=True,
         )
         self.CONFIG_SCHEMA: int = 3
-        self.discordmodals_global: typing.Dict[str, typing.Optional[int]] = {
-            "CONFIG_SCHEMA": None,
-        }
-        self.discordmodals_guild: typing.Dict[
-            str, typing.Dict[str, typing.Union[str, typing.Dict[str, typing.Any]]]
-        ] = {
-            "modals": {},
-        }
-        self.config.register_global(**self.discordmodals_global)
-        self.config.register_guild(**self.discordmodals_guild)
+        self.config.register_global(CONFIG_SCHEMA=None)
+        self.config.register_guild(modal={})
 
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.edit_config_schema()
         asyncio.create_task(self.load_buttons())
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
 
     async def edit_config_schema(self) -> None:
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()

@@ -43,17 +43,6 @@ class MessageOrObjectConverter(commands.Converter):
 class ExportChannel(Cog):
     """A cog to export all or a part of the messages of a channel in an html file!"""
 
-    def __init__(self, bot: Red) -> None:
-        super().__init__(bot=bot)
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
-
     async def check_channel(self, ctx: commands.Context, channel: discord.TextChannel) -> None:
         channel_permissions = channel.permissions_for(ctx.me)
         if not all(

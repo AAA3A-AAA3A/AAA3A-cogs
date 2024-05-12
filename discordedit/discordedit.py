@@ -22,9 +22,6 @@ BASES = [EditGuild, EditRole, EditTextChannel, EditThread, EditVoiceChannel]  # 
 class DiscordEdit(*BASES, Cog):
     """A cog to edit Discord default objects, like guilds, roles, text channels, voice channels, threads and AutoMod!"""
 
-    def __init__(self, bot: Red) -> None:
-        super().__init__(bot=bot)
-
     async def red_delete_data_for_user(self, *args, **kwargs) -> None:
         """Nothing to delete."""
         return

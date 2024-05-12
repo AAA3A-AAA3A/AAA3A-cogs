@@ -33,8 +33,8 @@ class MemberPrefix(Cog):
         self.memberprefix_member: typing.Dict[str, typing.List[str]] = {
             "custom_prefixes": [],
         }
-        self.config.register_global(**self.memberprefix_global)
-        self.config.register_member(**self.memberprefix_member)
+        self.config.register_global(use_normal_prefixes=True)
+        self.config.register_member(custom_prefixes=[])
 
         self.original_prefix_manager = self.bot.command_prefix
 

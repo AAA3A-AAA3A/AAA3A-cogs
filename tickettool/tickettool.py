@@ -40,24 +40,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
             force_registration=True,
         )
         self.CONFIG_SCHEMA: int = 4
-        self.tickettool_global: typing.Dict[str, typing.Optional[int]] = {
-            "CONFIG_SCHEMA": None,
-        }
-        self.tickettool_guild: typing.Dict[
-            str,
-            typing.Union[
-                typing.Dict[
-                    str,
-                    typing.Dict[
-                        str, typing.Union[bool, str, typing.Optional[str], typing.Optional[int]]
-                    ],
-                ],
-                typing.Dict[
-                    str, typing.Union[bool, str, typing.Optional[str], typing.Optional[int]]
-                ],
-            ],
-        ] = {
-            "profiles": {},
+        self.config.register_global(CONFIG_SCHEMA=None)
+        self.config.register_guild(
+            profiles={},
             "default_profile_settings": {
                 "enable": False,
                 "logschannel": None,
@@ -100,9 +85,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             "tickets": {},
             "buttons": {},
             "dropdowns": {},
-        }
-        self.config.register_global(**self.tickettool_global)
-        self.config.register_guild(**self.tickettool_guild)
+        )
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], typing.Any, str]]

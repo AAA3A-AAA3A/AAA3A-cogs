@@ -31,17 +31,6 @@ class EditFile(Cog):
     ⚠️ This cog can be very dangerous, since it allows direct read/write/delete of files on the bot’s machine, considering the fact that reading the wrong file can expose sensitive information like tokens and deleting the wrong file can corrupt the bot or the system entirely.
     """
 
-    def __init__(self, bot: Red) -> None:
-        super().__init__(bot=bot)
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
-
     @commands.is_owner()
     @commands.hybrid_group(aliases=["fileedit"])
     async def editfile(self, ctx: commands.Context) -> None:

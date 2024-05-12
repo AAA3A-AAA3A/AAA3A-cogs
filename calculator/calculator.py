@@ -36,14 +36,13 @@ class Calculator(Cog):
             identifier=205192943327321000143939875896557571750,  # 905683670375
             force_registration=True,
         )
-        self.calculator_global: typing.Dict[str, typing.Dict[str, typing.Union[int, str]]] = {
-            "settings": {
+        self.config.register_global(
+            settings={
                 "time_max": 180,
                 "color": 0x01D758,
                 "thumbnail": "https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png",
-            },
-        }
-        self.config.register_global(**self.calculator_global)
+            }
+        )
 
         # blocks: typing.List[block.Block] = [
         #     block.MathBlock(),
@@ -67,14 +66,6 @@ class Calculator(Cog):
         ] = {}
 
         self.cache: typing.List[discord.Message] = []
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
 
     async def calculate(self, expression: str) -> str:
         lst = list(expression)

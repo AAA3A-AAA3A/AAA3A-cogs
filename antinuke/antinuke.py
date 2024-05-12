@@ -28,19 +28,17 @@ class AntiNuke(Cog, DashboardIntegration):
             identifier=205192943327321000143939875896557571750,  # 947269490247
             force_registration=True,
         )
-        self.antinuke_guild: typing.Dict[str, typing.Union[bool, int]] = {
-            "logschannel": None,  # The channel for logs.
-            "enabled": False,  # Enable the possibility.
-            "user_dm": True,  # Enable the user dm.
-            "number_detected_member": 1,  # Number.
-            "number_detected_bot": 1,  # Number.
-        }
-        self.antinuke_member: typing.Dict[str, typing.Union[int, typing.List[int]]] = {
-            "count": 0,  # The count of channel's deletes.
-            "old_roles": [],  # The roles to be handed in if it wasn't a nuke.
-        }
-        self.config.register_guild(**self.antinuke_guild)
-        self.config.register_member(**self.antinuke_member)
+        self.config.register_guild(
+            logschannel=None,
+            enabled=False,
+            user_dm=True,
+            number_detected_member=1,
+            number_detected_bot=1,
+        )
+        self.config.register_member(
+            count=0,
+            old_roles=[],
+        )
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]

@@ -34,20 +34,18 @@ class MemoryGame(Cog, DashboardIntegration):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.memorygame_guild: typing.Dict[str, typing.Union[typing.Optional[int], bool]] = {
-            "max_wrong_matches": None,
-            "red_economy": False,
-            "max_prize": 5000,
-            "reduction_per_second": 5,
-            "reduction_per_wrong_match": 15,
-        }
-        self.memorygame_member: typing.Dict[str, int] = {
-            "score": 0,
-            "wins": 0,
-            "games": 0,
-        }
-        self.config.register_guild(**self.memorygame_guild)
-        self.config.register_member(**self.memorygame_member)
+        self.config.register_guild(
+            max_wrong_matches=None,
+            red_economy=False,
+            max_prize=5000,
+            reduction_per_second=5,
+            reduction_per_wrong_match=15,
+        )
+        self.config.register_member(
+            score=0,
+            wins=0,
+            games=0,
+        )
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]

@@ -82,22 +82,17 @@ class Reminders(Cog, DashboardIntegration):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.reminders_global: typing.Dict[str, typing.Union[int, bool]] = {
-            "total_sent": 0,
-            "maximum_user_reminders": 20,  # except bot owners
-            "me_too": True,
-            "repeat_allowed": True,
-            "minimum_repeat": 60 * 1,  # minutes, so 1 hour.
-            "fifo_allowed": False,
-            "creation_view": True,
-            "snooze_view": True,
-            "seconds_allowed": True,
-        }
-        self.reminders_user: typing.Dict[str, typing.List[Data]] = {
-            "timezone": None,
-            "reminders": {},
-        }
-        self.config.register_global(**self.reminders_global)
+        self.config.register_global(
+            total_sent=0,
+            maximum_user_reminders=20,  # (except bot owners)
+            me_too=True,
+            repeat_allowed=True,
+            minimum_repeat=60 * 1,  # minutes, so 1 hour | (except bot owners)
+            fifo_allowed=False,
+            creation_view=True,
+            snooze_view=True,
+            seconds_allowed=True,
+        )
         self.config.register_user(**self.reminders_user)
 
         self.cache: typing.Dict[int, typing.Dict[int, Reminder]] = {}

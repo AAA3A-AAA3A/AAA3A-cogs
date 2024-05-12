@@ -378,14 +378,6 @@ class Medicat(Cog):
         global MEDICAT_ICON_URL
         MEDICAT_ICON_URL = (await self.bot.fetch_invite("medicat")).guild.icon.url
 
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
-
     async def edit_config_schema(self) -> None:
         CONFIG_SCHEMA = await self.config.CONFIG_SCHEMA()
         ALL_CONFIG_GLOBAL = await self.config.all()

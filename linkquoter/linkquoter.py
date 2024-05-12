@@ -55,26 +55,26 @@ class LinkQuoterView(discord.ui.View):
 class LinkQuoter(Cog, DashboardIntegration):
     """Quote any Discord message from its link!"""
 
+    __authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
+
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
 
         self.config: Config = Config.get_conf(
             self,
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.linkquoter_guild: typing.Dict[str, bool] = {
-            "enabled": False,
-            "webhooks": True,
-            "cross_server": False,
-            "delete_message": False,
-            "delete_after": 0,
-            "delete_message_button": True,
-            "whitelist_channels": [],
-            "blacklist_channels": [],
-        }
-        self.config.register_guild(**self.linkquoter_guild)
+        self.config.register_guild(
+            enabled=False,
+            webhooks=True,
+            cross_server=False,
+            delete_message=False,
+            delete_after=0,
+            delete_message_button=True,
+            whitelist_channels=[],
+            blacklist_channels=[],
+        )
 
         _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
             "enabled": {

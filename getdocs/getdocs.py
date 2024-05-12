@@ -230,21 +230,21 @@ class StrConverter(commands.Converter):
 class GetDocs(Cog, DashboardIntegration):
     """A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."""
 
+    __authors__: typing.List[str] = ["AAA3A", "amyrinbot"]
+
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.__authors__: typing.List[str] = ["AAA3A", "amyrinbot"]
 
         self.config: Config = Config.get_conf(
             self,
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.getdocs_global: typing.Dict[str, typing.Union[str, bool, typing.List[str]]] = {
-            "default_source": "discord.py",
-            "caching": True,
-            "enabled_sources": ["discord.py", "redbot", "aiohttp", "discordapi"],
-        }
-        self.config.register_global(**self.getdocs_global)
+        self.config.register_global(
+            default_source="discord.py",
+            caching=True,
+            enabled_sources=["discord.py", "redbot", "aiohttp", "discordapi"],
+        )
 
         self.documentations: typing.Dict[str, Source] = {}
         self._docs_stats: typing.Dict[str, int] = {"GLOBAL": {"manuals": 0, "documentations": 0}}
@@ -307,14 +307,6 @@ class GetDocs(Cog, DashboardIntegration):
         await super().cog_unload()  # Close loops before session closing.
         if self._session is not None:
             await self._session.close()
-
-    async def red_delete_data_for_user(self, *args, **kwargs) -> None:
-        """Nothing to delete."""
-        return
-
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
-        """Nothing to get."""
-        return {}
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(

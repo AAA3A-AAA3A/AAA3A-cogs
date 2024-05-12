@@ -183,7 +183,7 @@ BOOTABLES_TOOLS = {
     "EaseUS Todo Backup": {
         "url": "https://www.fcportables.com/easeus-todo-backup-winpe/",
         "category": "USB\\Backup_and_Recovery\\",
-        "regex": r"EaseUS Todo Backup v.(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Technician winPE",
+        "regex": r"EaseUS Todo Backup v.(\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) winPE \(x64\)",
     },
     "Macrium Reflect": {
         "url": "https://www.fcportables.com/macrium-reflect-rescue-winpe/",
@@ -198,7 +198,7 @@ BOOTABLES_TOOLS = {
     "MiniTool Power Data Recovery": {
         "url": "https://www.fcportables.com/minitool-data-recovery-winpe/",
         "category": "USB\\Backup_and_Recovery\\",
-        "regex": r"Portable MiniTool Power Data Recovery (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Business Technician \+ WinPE",
+        "regex": r"Portable MiniTool Power Data Recovery (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ WinPE",
     },
     "Boot Repair Disk": {
         "url": "https://www.fcportables.com/boot-repair-disk/",
@@ -208,7 +208,7 @@ BOOTABLES_TOOLS = {
     "EasyUEFI Technician": {
         "url": "https://www.fcportables.com/easyuefi-portable-winpe/",
         "category": "USB\\Boot_Repair\\",
-        "regex": r"Portable EasyUEFI Technicians (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \+ WinPE",
+        "regex": r"Portable EasyUEFI Technicians (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) \+ WinPE",
     },
     "SystemRescue": {
         "url": "https://www.fcportables.com/systemrescuecd/",
@@ -248,7 +248,7 @@ BOOTABLES_TOOLS = {
     "EaseUS Partition Master": {
         "url": "https://www.fcportables.com/easeus-partition-master-winpe/",
         "category": "USB\\Partition_Tools\\",
-        "regex": r"EaseUS Partition Master (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) Build (\d*) \(x64\) WinPE",
+        "regex": r"EaseUS Partition Master (\d*(\.|-)\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*(\.|-)\d*|\d*(\.|-)\d*|\d*) \(x64\) WinPE",
     },
     "MiniTool Partition Wizard Technician": {
         "url": "https://www.fcportables.com/minitool-partition-wizard-portable/",
@@ -298,12 +298,12 @@ class Medicat(Cog):
                 "Acronis True Image": "2021.6",
                 "AOMEI Backupper Technician Plus": "7.2.3",
                 "EaseUS Data Recovery Wizard": "15.2",
-                "EaseUS Todo Backup": "2023",
+                "EaseUS Todo Backup": "16.2",
                 "Macrium Reflect": "8.1.7544",
                 "MiniTool ShadowMaker Business Deluxe": "4.1.0",
-                "MiniTool Power Data Recovery": "11.5",
+                "MiniTool Power Data Recovery": "11.9",
                 "Boot Repair Disk": "2021-12-16",
-                "EasyUEFI Technician": "5.0",
+                "EasyUEFI Technician": "5.5.0",
                 "SystemRescue": "10.01",
                 "Ultimate Boot": "5.3.8",
                 "HDAT2": "7.5",
@@ -311,14 +311,41 @@ class Medicat(Cog):
                 "Active@ Boot Disk": "22.0",
                 "Acronis Disk Director": "12.5.163",
                 "AOMEI Partition Assistant Technician Edition": "10.0.0",
-                "EaseUS Partition Master": "17.8.0",
+                "EaseUS Partition Master": "18.5.0",
                 "MiniTool Partition Wizard Technician": "12.7",
                 "NIUBI Partition Editor Technician Edition": "9.6.0",
                 "Paragon Hard Disk Manager Advanced": "17.20.11",
                 "Parted Magic": "2023.05.21",
             },
         }
-        self.config.register_global(**self.medicat_global)
+        self.config.register_global(
+            CONFIG_SCHEMA=None,
+            last_ventoy_version="1.0.74",
+            last_bootables_tools_versions={
+                "Acronis Cyber Backup": "12.5",
+                "Acronis True Image": "2021.6",
+                "AOMEI Backupper Technician Plus": "7.3.5",
+                "EaseUS Data Recovery Wizard": "15.2",
+                "EaseUS Todo Backup": "2023",
+                "Macrium Reflect": "8.1.7909",
+                "MiniTool ShadowMaker Business Deluxe": "4.4.0",
+                "MiniTool Power Data Recovery": "11.5",
+                "Boot Repair Disk": "2021-12-16",
+                "EasyUEFI Technician": "5.0",
+                "SystemRescue": "11.01",
+                "Ultimate Boot": "5.3.8",
+                "HDAT2": "7.5",
+                "Memtest86 Pro": "10.7.1000",
+                "Active@ Boot Disk": "24.0",
+                "Acronis Disk Director": "12.5.163",
+                "AOMEI Partition Assistant Technician Edition": "10.4.0",
+                "EaseUS Partition Master": "17.8.0",
+                "MiniTool Partition Wizard Technician": "12.8",
+                "NIUBI Partition Editor Technician Edition": "9.9.5",
+                "Paragon Hard Disk Manager Advanced": "17.20.17",
+                "Parted Magic": "2024.05.02",
+            },
+        )
 
         self._session: aiohttp.ClientSession = None
 

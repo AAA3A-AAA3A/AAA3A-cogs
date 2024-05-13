@@ -360,7 +360,7 @@ class DiscordModals(Cog):
         )
         self.CONFIG_SCHEMA: int = 3
         self.config.register_global(CONFIG_SCHEMA=None)
-        self.config.register_guild(modal={})
+        self.config.register_guild(modals={})
 
     async def cog_load(self) -> None:
         await super().cog_load()

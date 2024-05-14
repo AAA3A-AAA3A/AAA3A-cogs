@@ -43,7 +43,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         self.config.register_global(CONFIG_SCHEMA=None)
         self.config.register_guild(
             profiles={},
-            "default_profile_settings": {
+            default_profile_settings={
                 "enable": False,
                 "logschannel": None,
                 "forum_channel": None,
@@ -82,9 +82,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 },
                 "custom_modal": None,
             },
-            "tickets": {},
-            "buttons": {},
-            "dropdowns": {},
+            tickts={},
+            buttons={},
+            dropdowns={},
         )
 
         _settings: typing.Dict[

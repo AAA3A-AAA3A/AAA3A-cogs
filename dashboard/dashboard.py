@@ -72,6 +72,7 @@ class Dashboard(Cog):
                     "jwt_secret_key": None,
                     "secret": None,
                     "redirect_uri": None,
+                    "allow_unsecure_http_requests": False,
                     "blacklisted_ips": [],
                 },
                 "ui": {
@@ -188,6 +189,12 @@ class Dashboard(Cog):
                 "description": "The redirect uri to use for the Discord Oauth.",
                 "path": ["webserver", "core", "redirect_uri"],
                 "aliases": ["redirect"],
+            },
+            "allow_unsecure_http_requests": {
+                "converter": bool,
+                "description": "Allow unsecure http requests. This is not recommended for production, but required if you can't set up a SSL certificate.",
+                "path": ["webserver", "core", "allow_unsecure_http_requests"],
+                "aliases": ["allowunsecure"],
             },
             "meta_title": {
                 "converter": str,

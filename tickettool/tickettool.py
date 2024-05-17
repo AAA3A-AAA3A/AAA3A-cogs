@@ -82,7 +82,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 },
                 "custom_modal": None,
             },
-            tickts={},
+            tickets={},
             buttons={},
             dropdowns={},
         )

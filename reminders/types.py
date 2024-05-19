@@ -724,7 +724,7 @@ class Reminder:
                 )
             elif not await discord.utils.async_all(
                 [check(context) for check in context.command.checks]
-            ):  # To prevent an user with important permissions a time to execute dangerous command with a reminder.
+            ):  # To prevent an user with important permissions a time to execute a dangerous command with a Reminder.
                 if not testing:
                     await self.delete()
                 raise RuntimeError(

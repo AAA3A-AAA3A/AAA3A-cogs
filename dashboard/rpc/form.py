@@ -133,8 +133,10 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
             return Markup("\n".join(str(f) for f in hidden_fields(fields or self)))
 
         def __str__(self) -> Markup:
-            html_form = ['<form action="" method="POST" role="form" enctype="multipart/form-data">']
-            html_form.append(f"    {self.hidden_tag()}")
+            html_form = [
+                '<form action="" method="POST" role="form" enctype="multipart/form-data">',
+                f"    {self.hidden_tag()}",
+            ]
             for field in self:
                 if isinstance(field, (HiddenField, SubmitField)):
                     continue

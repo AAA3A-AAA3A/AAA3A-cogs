@@ -326,7 +326,7 @@ class DashboardRPC:
                 or getattr(cog, "__author__", [])
                 or author
             )
-            if isinstance(author, typing.List):
+            if isinstance(author, (typing.List, typing.Tuple)):
                 author = humanize_list(author)
             self.cogs_infos_cache[name] = {"author": author, "repo": repo}
             returning[name] = {

@@ -36,7 +36,7 @@ class DashboardIntegration:
             source = f.read()
         return {"status": 0, "web_content": {"source": source, "standalone": True}}
 
-    @dashboard_page(name="guild", description="Create rich Embeds and send them to a guild!", methods=["GET", "POST"])
+    @dashboard_page(name="guild", description="Create rich Embeds and send them to a guild!", methods=("GET", "POST"))
     async def dashboard_guild(self, user: discord.User, guild: discord.Guild, **kwargs) -> None:
         is_owner = user.id in self.bot.owner_ids
         member = guild.get_member(user.id)

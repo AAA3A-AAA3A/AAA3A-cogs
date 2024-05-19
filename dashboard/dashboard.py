@@ -328,6 +328,7 @@ class Dashboard(Cog):
                 args = vars(parser.parse_args(args=flask_flags))
                 self.app: FlaskApp = FlaskApp(cog=self, **args)
                 await self.app.create_app()
+                await self.app.run_app()
             except Exception as e:
                 self.logger.critical("Error when creating the Flask webserver app.", exc_info=e)
 

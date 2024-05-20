@@ -58,7 +58,7 @@ class Pagination(typing.List):
             if per_page is None
             else (
                 int(per_page)
-                if isinstance(per_page, str) and per_page.isdigit() and 1 <= int(per_page) <= default_per_page * 5
+                if isinstance(per_page, str) and per_page.isdigit() and 1 <= int(per_page) <= max(default_per_page * 5, 100)
                 else default_per_page
             )
         )

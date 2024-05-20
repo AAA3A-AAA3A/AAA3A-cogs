@@ -44,7 +44,7 @@ class DropdownsTexts(Cog):
             identifier=205192943327321000143939875896557571750,  # 985347935839
             force_registration=True,
         )
-        self.CONFIG_SCHEMA: int = 2
+        self.CONFIG_SCHEMA: int = 3
         self.dropdowns_texts_global: typing.Dict[str, typing.Optional[int]] = {
             "CONFIG_SCHEMA": None,
         }
@@ -80,6 +80,16 @@ class DropdownsTexts(Cog):
                         dropdowns_texts[message][config_identifier] = data
                 await self.config.guild_from_id(guild_id).dropdowns_texts.set(dropdowns_texts)
             CONFIG_SCHEMA = 2
+            await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
+        if CONFIG_SCHEMA == 2:
+            for guild_id in await self.config.all_guilds():
+                dropdowns_texts = await self.config.guild_from_id(guild_id).dropdowns_texts()
+                for message in dropdowns_texts:
+                    for custom_id in dropdowns_texts[message]:
+                        if "text" in dropdowns_texts[message][custom_id]:
+                            dropdowns_texts[message][custom_id]["data"] = {"content": dropdowns_texts[message][custom_id].pop("text")}
+                await self.config.guild_from_id(guild_id).dropdowns_texts.set(dropdowns_texts)
+            CONFIG_SCHEMA = 3
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
@@ -130,22 +140,17 @@ class DropdownsTexts(Cog):
         if config_identifier not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
             await interaction.followup.send(_("This option is not in Config."), ephemeral=True)
             return
+        data = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier]["data"]
         if interaction.channel.permissions_for(interaction.guild.me).embed_links:
-            embed: discord.Embed = discord.Embed()
-            embed.title = config[f"{interaction.channel.id}-{interaction.message.id}"][
-                config_identifier
-            ]["label"]
-            embed.description = config[f"{interaction.channel.id}-{interaction.message.id}"][
-                config_identifier
-            ]["text"]
-            await interaction.followup.send(embed=embed, ephemeral=True)
-        else:
-            await interaction.followup.send(
-                config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier][
-                    "text"
-                ],
-                ephemeral=True,
-            )
+            if "embed" in data:
+                if "title" not in data["embed"]:
+                    data["embed"]["title"] = config[f"{interaction.channel.id}-{interaction.message.id}"][
+                        config_identifier
+                    ]["label"]
+                data["embed"] = discord.Embed.from_dict(data["embed"])
+            await interaction.followup.send(**data, ephemeral=True)
+        elif "embed" in data:
+            await interaction.followup.send(data["embed"]["description"], ephemeral=True)
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message) -> None:
@@ -173,7 +178,7 @@ class DropdownsTexts(Cog):
         emoji: typing.Optional[Emoji],
         label: commands.Range[str, 1, 100],
         *,
-        text: commands.Range[str, 1, 1000],
+        text_or_message: commands.Range[str, 1, 2000],
     ) -> None:
         """Add a dropdown-text for a message."""
         channel_permissions = message.channel.permissions_for(ctx.me)
@@ -208,10 +213,14 @@ class DropdownsTexts(Cog):
         config_identifier = CogsUtils.generate_key(
             length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
         )
+        try:
+            text_or_message = await commands.MessageConverter().convert(ctx, text_or_message)
+        except commands.BadArgument:
+            pass
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
             "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
             "label": label,
-            "text": text,
+            "data": {"embed": {"description": text_or_message}} if isinstance(text_or_message, str) else {"content": text_or_message.content, "embed": text_or_message.embeds[0].to_dict()},
         }
         view = self.get_dropdown(config=config, message=message)
         message = await message.edit(view=view)
@@ -263,14 +272,18 @@ class DropdownsTexts(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("I can't do more than 25 dropdown-texts for one message.")
             )
-        for emoji, label, text in dropdown_texts:
+        for emoji, label, text_or_message in dropdown_texts:
             config_identifier = CogsUtils.generate_key(
                 length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
             )
+            try:
+                text_or_message = await commands.MessageConverter().convert(ctx, text_or_message)
+            except commands.BadArgument:
+                pass
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
                 "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
                 "label": label,
-                "text": text,
+                "data": {"embed": {"description": text_or_message}} if isinstance(text_or_message, str) else {"content": text_or_message.content, "embed": text_or_message.embeds[0].to_dict()},
             }
         view = self.get_dropdown(config=config, message=message)
         message = await message.edit(view=view)
@@ -355,16 +368,16 @@ class DropdownsTexts(Cog):
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
         embeds = []
+        break_line, fake_backstick = "\n", "\u02CB"
         for li in discord.utils.as_chunks(_dropdowns_texts, max_size=5):
             e = embed.copy()
-            break_line = "\n"
             for dropdown_text in li:
                 value = _("Message Jump Link: {message_jump_link}\n").format(
                     message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{dropdown_text['message'].replace('-', '/')}"
                 )
                 value += "\n".join(
                     [
-                        f"• `{config_identifier}` - Emoji {(ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'].isdigit() else data['emoji']) if data['emoji'] is not None else '`None`'} - Label `{data['label']}` - Text `{data['text'].replace(break_line, ' ')}`"
+                        f"• `{config_identifier}` - Emoji {(ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'].isdigit() else data['emoji']) if data['emoji'] is not None else '`None`'} - Label `{data['label']}`{' - Text `' + data['data']['embed']['description'].replace(break_line, ' ').replace('`', fake_backstick) + '`' if 'embed' in data['data'] else ''}"
                         for config_identifier, data in dropdown_text.items()
                         if config_identifier != "message"
                     ]
@@ -415,7 +428,7 @@ class DropdownsTexts(Cog):
         dropdown = discord.ui.Select(
             custom_id=f"DropdownsTexts_{message}",
             placeholder=_("Select an option."),
-            min_values=1,
+            min_values=0,
             max_values=1,
             options=options,
             disabled=False,

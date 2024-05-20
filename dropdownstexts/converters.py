@@ -58,17 +58,17 @@ class EmojiLabelTextConverter(commands.Converter):
     ) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
         arg_split = re.split(r";|\||-", argument)
         try:
-            emoji, label, text = arg_split
+            emoji, label, text_or_message = arg_split
         except Exception:
             # emoji = None
             # try:
-            #     label, text = arg_split
+            #     label, text_or_message = arg_split
             # except Exception:
             raise commands.BadArgument(
                 _(
-                    "Dropdown Text must be an emoji, followed by a label and a text, separated by either `;`, `,`, `|`, or `-`."
+                    "Dropdown Text must be an `emoji`, followed by a `label` and a `text_or_message`, separated by either `;`, `,`, `|`, or `-`."
                 )
             )
         # if emoji is not None:
         emoji = await Emoji().convert(ctx, emoji.strip())
-        return emoji, label, text
+        return emoji, label, text_or_message

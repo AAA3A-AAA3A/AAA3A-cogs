@@ -54,6 +54,14 @@ IGNORED_ERRORS = (
 )
 
 
+class IdConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> int:
+        try:
+            return int(argument.lstrip("#"))
+        except ValueError:
+            raise commands.BadArgument()
+
+
 @dataclass(frozen=False)
 class ConsoleLog:
     id: int
@@ -359,7 +367,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 "nodes",
             ]
         ] = None,
-        ids: commands.Greedy[int] = None,
+        ids: commands.Greedy[IdConverter] = None,
         logger_name: typing.Optional[str] = None,
     ) -> None:
         """View a console log, for a provided level/logger name."""
@@ -401,7 +409,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 "nodes",
             ]
         ] = None,
-        ids: commands.Greedy[int] = None,
+        ids: commands.Greedy[IdConverter] = None,
         logger_name: typing.Optional[str] = None,
     ) -> None:
         """Scroll the console logs, for all levels/loggers or provided level/logger name."""
@@ -437,7 +445,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
                 "nodes",
             ]
         ] = None,
-        ids: commands.Greedy[int] = None,
+        ids: commands.Greedy[IdConverter] = None,
         logger_name: typing.Optional[str] = None,
     ) -> None:
         """View the console logs one by one, for all levels/loggers or provided level/logger name."""

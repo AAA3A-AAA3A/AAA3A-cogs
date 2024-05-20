@@ -281,7 +281,7 @@ class Reminders(Cog, DashboardIntegration):
         """Create a reminder with optional reminder text or message.
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
-        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
+        You don't have to put quotes around the `time` argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
 
         **Examples:**
@@ -417,7 +417,7 @@ class Reminders(Cog, DashboardIntegration):
         """Create a reminder with optional reminder text or message, in a channel with an user/role ping.
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
-        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
+        You don't have to put quotes around the `time` argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
 
         Examples:
@@ -604,7 +604,7 @@ class Reminders(Cog, DashboardIntegration):
         """Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
-        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
+        You don't have to put quotes around the `time` argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
 
         Examples:
@@ -721,7 +721,7 @@ class Reminders(Cog, DashboardIntegration):
         """Create a reminder who will say/send text.
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.
-        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
+        You don't have to put quotes around the `time` argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.
         Use `[p]reminder timetips` to display tips for time parsing.
 
         Examples:
@@ -1103,17 +1103,22 @@ class Reminders(Cog, DashboardIntegration):
 
     @commands.bot_has_permissions(embed_links=True)
     @reminder.command(aliases=["timestamp"])
-    async def timestamps(self, ctx: commands.Context, number: typing.Optional[int] = 100, *, time: str = "now") -> None:
-        """Get a list of Discord timestamps for a given time."""
+    async def timestamps(self, ctx: commands.Context, repeat_times: typing.Optional[int] = 100, *, time: str = "now") -> None:
+        """Get a list of Discord timestamps for a given time. You can provide a repeat.
+
+        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule.
+        You don't have to put quotes around the `time` argument.
+        Use `[p]reminder timetips` to display tips for time parsing.
+        """
         try:
             __, time, repeat = await TimeConverter().convert(ctx, time)
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         timezone = await self.config.user(ctx.author).timezone() or "UTC"
         embeds = []
-        for __ in range(number):
+        for __ in range(repeat_times):
             embed: discord.Embed = discord.Embed(
-                title=_("Timestamps for {time}").format(time=time.astimezone(pytz.timezone(timezone))),
+                title=_("Timestamps for {time}").format(time=discord.utils.format_dt(time, "F")),
                 color=await ctx.embed_color()
             )
             embed.description = "\n".join(
@@ -1126,6 +1131,32 @@ class Reminders(Cog, DashboardIntegration):
             if repeat is None or (time := await repeat.next_trigger(last_expires_at=time, utc_now=time, timezone=timezone)) is None:
                 break
         await Menu(pages=embeds).start(ctx)
+
+    @commands.Cog.listener()
+    async def on_message_without_command(self, message: discord.Message):
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=message.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
+            return
+        if message.webhook_id is not None or message.author.bot:
+            return
+        context = await self.bot.get_context(message)
+        if context.prefix is None:
+            return
+        command = context.message.content[len(str(context.prefix)) :]
+        if len(command.split(" ")) == 0:
+            return
+        command_name = command.split(" ")[0]
+        if command_name != "timestamps":
+            return
+        await CogsUtils.invoke_command(
+            bot=self.bot,
+            author=context.author,
+            channel=context.channel,
+            command=f"reminder {command}",
+            prefix=context.prefix,
+            message=context.message,
+        )
 
     # async def _cogsutils_add_hybrid_commands(
     #     self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]

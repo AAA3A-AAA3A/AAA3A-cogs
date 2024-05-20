@@ -165,12 +165,12 @@ class DevUtils(Cog):
 
     @devutils.command()
     async def execute(
-        self, ctx: commands.Context, sequential: typing.Optional[bool] = True, *, commands: str
+        self, ctx: commands.Context, sequential: typing.Optional[bool] = True, *, commands_list: str
     ) -> None:
         """Execute multiple commands at once. Split them using |."""
-        commands = [command.strip() for command in commands.split("|")]
+        commands_list = [command.strip() for command in commands_list.split("|")]
         if sequential:
-            for command in commands:
+            for command in commands_list:
                 new_ctx = await CogsUtils.invoke_command(
                     bot=ctx.bot,
                     author=ctx.author,

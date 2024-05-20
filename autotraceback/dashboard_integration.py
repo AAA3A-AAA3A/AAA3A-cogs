@@ -1,7 +1,6 @@
 from redbot.core import commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
 import typing  # isort:skip
 
 _ = Translator("AutoTraceback", __file__)
@@ -34,7 +33,7 @@ class DashboardIntegration:
             {% for traceback in tracebacks %}
                 {{ traceback|highlight("python")|safe }}
                 {% if not loop.last %}
-                    <br /><br />
+                    <br />
                 {% endif %}
             {% endfor %}
         """

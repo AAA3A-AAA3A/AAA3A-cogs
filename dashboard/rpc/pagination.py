@@ -2,7 +2,7 @@ import typing  # isort:skip
 
 
 class Pagination(typing.List):
-    """Pagination class for lists."""
+    """Pagination system for lists."""
 
     DEFAULT_PER_PAGE: int = 20
     DEFAULT_PAGE: int = 1
@@ -78,4 +78,6 @@ class Pagination(typing.List):
             per_page=per_page,
             pages=pages,
             page=page,
+            default_per_page=default_per_page,
+            default_page=default_page,
         )

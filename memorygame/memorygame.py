@@ -94,7 +94,7 @@ class MemoryGame(Cog, DashboardIntegration):
         user_id: int,
     ) -> None:
         """Delete all user's levels/xp in each guild."""
-        if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
+        if requester not in ("discord_deleted_user", "owner", "user", "user_strict"):
             return
         guild_group = self.config._get_base_group(self.config.GUILD)
         async with guild_group.all() as guilds_data:

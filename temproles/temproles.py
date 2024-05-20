@@ -72,9 +72,9 @@ class TempRoles(Cog):
         user_id: int,
     ) -> None:
         """Delete temporary roles only in cog data for the user."""
-        if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
+        if requester not in ("discord_deleted_user", "owner", "user", "user_strict"):
             return
-        if requester not in ["discord_deleted_user", "owner"]:
+        if requester not in ("discord_deleted_user", "owner"):
             return
         member_group = self.config._get_base_group(self.config.MEMBER)
         async with member_group.all() as members_data:

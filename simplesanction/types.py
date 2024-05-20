@@ -34,7 +34,7 @@ class Action:
         return {
             v: getattr(self, v)
             for v in dir(self)
-            if not v.startswith("_") and v not in ["to_json", "process"]
+            if not v.startswith("_") and v not in ("to_json", "process")
         }
 
     async def process(

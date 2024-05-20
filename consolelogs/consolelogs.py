@@ -701,7 +701,7 @@ class ConsoleLogs(Cog, DashboardIntegration):
             self._last_console_log_sent_timestamp = console_log.time_timestamp
             pages_to_send.append(console_log.__str__(with_ansi=False, with_extra_break_line=False))
             if (
-                console_log.level in ["CRITICAL", "ERROR"]
+                console_log.level in ("CRITICAL", "ERROR")
                 and console_log.logger_name.split(".")[0] == "discord"
                 and console_log.message.split("\n")[0].startswith("Ignoring exception ")
             ):

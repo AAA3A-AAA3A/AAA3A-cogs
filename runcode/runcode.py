@@ -145,7 +145,7 @@ class RunCode(Cog):
             result = await r.json()
         for info in result:
             language = info["language"]
-            if language not in ["CPP", "OpenSSL"]:
+            if language not in ("CPP", "OpenSSL"):
                 if language.endswith(" script"):  # Bash and Vim
                     language = language[:-7]
                 if language not in self.wandbox_languages:

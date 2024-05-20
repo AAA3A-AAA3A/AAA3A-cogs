@@ -396,7 +396,7 @@ class DiscordModals(Cog):
                             **guilds_data[guild]["modals"][modal]["button"]["buttons"][0]
                         )
                         guilds_data[guild]["modals"][modal]["button"] = button_data
-                        for key in ["members", "check", "function", "function_args"]:
+                        for key in ("members", "check", "function", "function_args"):
                             if key in guilds_data[guild]["modals"][modal]["modal"]:
                                 del guilds_data[guild]["modals"][modal]["modal"][key]
             CONFIG_SCHEMA = 2

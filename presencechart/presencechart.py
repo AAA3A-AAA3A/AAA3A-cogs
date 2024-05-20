@@ -64,7 +64,7 @@ class PresenceChart(Cog):
         user_id: int,
     ) -> None:
         """Delete all GuildStats data for user, members, roles, channels, categories, guilds; if the user ID matches."""
-        if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
+        if requester not in ("discord_deleted_user", "owner", "user", "user_strict"):
             return
         await self.save_to_config()  # To clean up the cache too.
 

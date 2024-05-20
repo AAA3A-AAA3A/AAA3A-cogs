@@ -203,10 +203,10 @@ class Ticket:
         if self.first_message is not None:
             self.first_message = int(self.first_message.id)
         json = self.__dict__
-        for key in ["bot", "cog"]:
+        for key in ("bot", "cog"):
             del json[key]
         if clean:
-            for key in [
+            for key in (
                 "claim",
                 "opened_by",
                 "closed_by",
@@ -220,12 +220,12 @@ class Ticket:
                 "renamed_at",
                 "locked_at",
                 "unlocked_at",
-            ]:
+            ):
                 if json[key] is None:
                     del json[key]
             if json["members"] == []:
                 del json["members"]
-            for key in ["logs_messages", "save_data"]:
+            for key in ("logs_messages", "save_data"):
                 if json[key]:
                     del json[key]
         data = await cog.config.guild(guild).tickets.all()

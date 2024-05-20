@@ -131,7 +131,7 @@ class GuildStats(Cog):
         self.font_to_remove_unprintable_characters: TTFont = TTFont(self.font_path)
         self.icons: typing.Dict[str, Path] = {
             name: (bundled_data_path(self) / f"{name}.png")
-            for name in [
+            for name in (
                 "trophy",
                 "#",
                 "sound",
@@ -142,7 +142,7 @@ class GuildStats(Cog):
                 "game",
                 "home",
                 "globe",
-            ]
+            )
         }
 
     async def cog_load(self) -> None:
@@ -225,7 +225,7 @@ class GuildStats(Cog):
         user_id: int,
     ) -> None:
         """Delete all GuildStats data for user, members, roles, channels, categories, guilds; if the user ID matches."""
-        if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
+        if requester not in ("discord_deleted_user", "owner", "user", "user_strict"):
             return
         await self.save_to_config()  # To clean up the cache too.
 
@@ -977,7 +977,7 @@ class GuildStats(Cog):
                             if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                         ]
                     )
-                    for delta in [1, 7, 30]
+                    for delta in (1, 7, 30)
                 },
                 "voice_activity": {  # days: hours
                     delta: roundest_value
@@ -1009,7 +1009,7 @@ class GuildStats(Cog):
                     )
                     != 0
                     else 0
-                    for delta in [1, 7, 30]
+                    for delta in (1, 7, 30)
                 },
                 "server_ranks": {  # type: rank #
                     "text": (members_messages_sorted.index(str(_object.id)) + 1)
@@ -1244,7 +1244,7 @@ class GuildStats(Cog):
                             and time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                         ]
                     )
-                    for delta in [1, 7, 30]
+                    for delta in (1, 7, 30)
                 },
                 "voice_activity": {  # days: hours
                     delta: roundest_value
@@ -1278,7 +1278,7 @@ class GuildStats(Cog):
                     )
                     != 0
                     else 0
-                    for delta in [1, 7, 30]
+                    for delta in (1, 7, 30)
                 },
                 "server_ranks": {  # type: rank #
                     "text": (roles_messages_sorted.index(str(_object.id)) + 1)
@@ -1473,7 +1473,7 @@ class GuildStats(Cog):
                                 and is_valid(int(member_id))
                             ]
                         )
-                        for delta in [1, 7, 30]
+                        for delta in (1, 7, 30)
                     },
                     "voice_activity": {  # days: hours
                         delta: roundest_value
@@ -1505,7 +1505,7 @@ class GuildStats(Cog):
                         )
                         != 0
                         else 0
-                        for delta in [1, 7, 30]
+                        for delta in (1, 7, 30)
                     },
                     "top_members": {  # type: (member, messages/hours)
                         "text": {
@@ -1662,7 +1662,7 @@ class GuildStats(Cog):
                                 and is_valid(int(member_id))
                             ]
                         )
-                        for delta in [1, 7, 30]
+                        for delta in (1, 7, 30)
                     },
                     "contributors": {  # days: members
                         delta: len(
@@ -1677,7 +1677,7 @@ class GuildStats(Cog):
                                 and is_valid(int(member_id))
                             }
                         )
-                        for delta in [1, 7, 30]
+                        for delta in (1, 7, 30)
                     },
                     "top_messages_members": {  # member: messages
                         int(member_id): count_messages
@@ -1771,7 +1771,7 @@ class GuildStats(Cog):
                         )
                         != 0
                         else 0
-                        for delta in [1, 7, 30]
+                        for delta in (1, 7, 30)
                     },
                     "contributors": {  # days: hours
                         delta: len(
@@ -1785,7 +1785,7 @@ class GuildStats(Cog):
                                 and is_valid(int(member_id))
                             }
                         )
-                        for delta in [1, 7, 30]
+                        for delta in (1, 7, 30)
                     },
                     "top_voice_members": {  # member: messages
                         int(member_id): (
@@ -2157,7 +2157,7 @@ class GuildStats(Cog):
                             and is_valid(int(member_id))
                         ]
                     )
-                    for delta in [1, 7, 30]
+                    for delta in (1, 7, 30)
                 },
                 "voice_activity": {  # days: hours
                     delta: roundest_value
@@ -2193,7 +2193,7 @@ class GuildStats(Cog):
                     )
                     != 0
                     else 0
-                    for delta in [1, 7, 30]
+                    for delta in (1, 7, 30)
                 },
                 "top_members": {  # type: (member, messages/hours)
                     "text": {
@@ -2373,7 +2373,7 @@ class GuildStats(Cog):
                         if _object.id in all_channels_data
                         else 0
                     )
-                    for delta in [1, 7, 30]
+                    for delta in (1, 7, 30)
                 },
                 "contributors": {  # days: members
                     delta: (
@@ -2391,7 +2391,7 @@ class GuildStats(Cog):
                         if _object.id in all_channels_data
                         else 0
                     )
-                    for delta in [1, 7, 30]
+                    for delta in (1, 7, 30)
                 },
                 "server_rank": (top_messages_channels_sorted.index(_object.id) + 1)
                 if _object.id in top_messages_channels_sorted
@@ -2522,7 +2522,7 @@ class GuildStats(Cog):
                         if _object.id in all_channels_data
                         else 0
                     )
-                    for delta in [1, 7, 30]
+                    for delta in (1, 7, 30)
                 },
                 "contributors": {  # days: hours
                     delta: (
@@ -2539,7 +2539,7 @@ class GuildStats(Cog):
                         if _object.id in all_channels_data
                         else 0
                     )
-                    for delta in [1, 7, 30]
+                    for delta in (1, 7, 30)
                 },
                 "server_rank": (top_voice_channels_sorted.index(_object.id) + 1)
                 if _object.id in top_voice_channels_sorted
@@ -3408,14 +3408,14 @@ class GuildStats(Cog):
                     fillcolor="rgba(0,255,0,0.2)",
                 )
             )
-        for key in [
+        for key in (
             "activities",
             "top_messages_members",
             "top_messages_channels",
             "top_voice_members",
             "top_voice_channels",
             "top_members",
-        ]:
+        ):
             if data["graphic"].get(key) is not None:
                 fig.add_trace(
                     go.Pie(
@@ -5711,7 +5711,7 @@ class GuildStats(Cog):
                 _object, size=(1840, 464), data=data, to_file=False
             )
         elif _type == "activities" or (
-            isinstance(_type, typing.Tuple) and _type[0] in ["top", "activity"]
+            isinstance(_type, typing.Tuple) and _type[0] in ("top", "activity")
         ):
             graphic = await self.generate_graphic(
                 _object, size=(885, 675), data=data, to_file=False
@@ -6108,7 +6108,7 @@ class GuildStats(Cog):
         await GuildStatsView(
             cog=self,
             _object=_object
-            if _object not in ["voice", "messages", "activities"]
+            if _object not in ("voice", "messages", "activities")
             else (ctx.guild, _object),
             members_type=members_type,
             show_graphic_in_main=False,

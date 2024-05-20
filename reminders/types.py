@@ -338,7 +338,7 @@ class Reminder:
             "repeat": self.repeat.to_json() if self.repeat is not None else self.repeat,
         }
         if clean:
-            for attr in [
+            for attr in (
                 "jump_url",
                 "snooze",
                 "me_too",
@@ -346,7 +346,7 @@ class Reminder:
                 "targets",
                 "repeat",
                 "last_expires_at",
-            ]:
+            ):
                 if not getattr(self, attr):
                     del data[attr]
         return data
@@ -509,7 +509,7 @@ class Reminder:
                         if self.content["text"] is not None
                         else _("No content.")
                     )
-                    if self.content["type"] in ["text", "say"]
+                    if self.content["type"] in ("text", "say")
                     else (
                         f"Message {self.content['message_jump_url']}."
                         if self.content["type"] == "message"
@@ -732,7 +732,7 @@ class Reminder:
                 )
 
         else:
-            if self.content["type"] in ["text", "message"]:
+            if self.content["type"] in ("text", "message"):
                 embeds = [self.to_embed(utc_now=utc_now, embed_color=self.cog.bot._color)]
             else:
                 embeds = []
@@ -759,7 +759,7 @@ class Reminder:
                         f"Member {self.user_id} not found in the guild {destination.guild.id} for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
                     )
                 reference = None
-                if self.content["type"] in ["text", "message"]:
+                if self.content["type"] in ("text", "message"):
                     if self.content["type"] == "message" and destination.id == int(
                         self.content["message_jump_url"].split("/")[-2]
                     ):

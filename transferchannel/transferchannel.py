@@ -68,7 +68,7 @@ class TransferChannel(Cog):
             a = message.attachments[0]
             fname = a.filename
             url = a.url
-            if fname.split(".")[-1] in ["WEBP", "jpg", "gif", "jpeg"]:
+            if fname.split(".")[-1] in ("WEBP", "jpg", "gif", "jpeg"):
                 em.set_image(url=url)
             else:
                 em.add_field(

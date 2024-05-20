@@ -412,7 +412,7 @@ class TimeConverter(commands.Converter):
                             [
                                 t
                                 for t in text_tuple
-                                if t.strip() not in ["", "\n", ",", " ,", "in", "on", "at", "the"]
+                                if t.strip() not in ("", "\n", ",", " ,", "in", "on", "at", "the")
                             ]
                         ).strip()
                         or text

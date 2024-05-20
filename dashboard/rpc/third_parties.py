@@ -51,10 +51,10 @@ def dashboard_page(
             "hidden": hidden,
         }
         for key, value in inspect.signature(func).parameters.items():
-            if value.name == "self" or value.kind in [
+            if value.name == "self" or value.kind in (
                 inspect._ParameterKind.POSITIONAL_ONLY,
                 inspect._ParameterKind.VAR_KEYWORD,
-            ]:
+            ):
                 continue
             if value.default is not inspect._empty:
                 params["optional_kwargs"].append(key)
@@ -89,7 +89,7 @@ def dashboard_page(
                 or any(
                     x
                     for x in params["context_ids"]
-                    if x not in ["user_id", "guild_id"]
+                    if x not in ("user_id", "guild_id")
                 )
             )
 

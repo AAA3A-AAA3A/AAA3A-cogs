@@ -239,7 +239,7 @@ class Calculator(Cog):
             not content_to_check
             or content_to_check.isdecimal()
             or content_to_check
-            in [
+            in (
                 "k",
                 "m",
                 "b",
@@ -261,7 +261,7 @@ class Calculator(Cog):
                 "Oc",
                 "No",
                 "Vi",
-            ]
+            )
         ):
             return
         fake_context = await CogsUtils.invoke_command(

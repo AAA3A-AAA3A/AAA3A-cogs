@@ -70,7 +70,7 @@ class Sudo(Cog):
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
-        if command_name not in ["su", "unsu", "sutimeout"]:
+        if command_name not in ("su", "unsu", "sutimeout"):
             return
         await CogsUtils.invoke_command(
             bot=self.bot,

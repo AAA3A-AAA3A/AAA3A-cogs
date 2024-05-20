@@ -1343,10 +1343,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         permissions = interaction.channel.permissions_for(interaction.guild.me)
         if not permissions.read_messages and not permissions.read_message_history:
             return
-        if not interaction.response.is_done() and interaction.data["custom_id"] not in [
+        if not interaction.response.is_done() and interaction.data["custom_id"] not in (
             "create_ticket_button",
             "close_ticket_button",
-        ]:
+        ):
             await interaction.response.defer(ephemeral=True)
         if interaction.data["custom_id"] == "create_ticket_button":
             buttons = await self.config.guild(interaction.guild).buttons.all()

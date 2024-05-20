@@ -492,10 +492,10 @@ class Medicat(Cog):
             ventoy_tag_body = ventoy_tag_body.split("\n")
             result = []
             for x in ventoy_tag_body:
-                if x in [
+                if x in (
                     "See [https://www.ventoy.net/en/doc_news.html](https://www.ventoy.net/en/doc_news.html) for more details.\r",
                     "**Wana boot and install OS through network (PXE)? Welcome to my new project iVentoy.**\r",
-                ]:
+                ):
                     break
                 if x != "\r":
                     result.append(x)
@@ -659,7 +659,7 @@ class Medicat(Cog):
                 return True
             if ctx.guild is None:
                 return False
-            return ctx.guild.id in [MEDICAT_GUILD, TEST_GUILD]
+            return ctx.guild.id in (MEDICAT_GUILD, TEST_GUILD)
 
         return commands.check(pred)
 

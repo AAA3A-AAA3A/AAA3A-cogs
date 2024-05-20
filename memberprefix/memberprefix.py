@@ -75,7 +75,7 @@ class MemberPrefix(Cog):
         user_id: int,
     ) -> None:
         """Delete all user chosen prefixes in all Config guilds."""
-        if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
+        if requester not in ("discord_deleted_user", "owner", "user", "user_strict"):
             return
         member_group = self.config._get_base_group(self.config.MEMBER)
         async with member_group.all() as members_data:

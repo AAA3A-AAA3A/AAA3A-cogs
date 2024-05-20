@@ -204,7 +204,7 @@ class CalculatorView(discord.ui.View):
             pass
 
     async def _callback(self, interaction: discord.Interaction) -> None:
-        if self._result in [_("Error!"), "∞", ""]:
+        if self._result in (_("Error!"), "∞", ""):
             self._result = None
         if self._result is not None and interaction.data["custom_id"] != "result_button":
             self._expression = f"{self._result}|"

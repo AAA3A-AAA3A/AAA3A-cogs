@@ -90,9 +90,9 @@ class AntiNuke(Cog, DashboardIntegration):
         user_id: int,
     ) -> None:
         """Delete actions count and old roles, if the requester is `discord_deleted_user` or `owner`."""
-        if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
+        if requester not in ("discord_deleted_user", "owner", "user", "user_strict"):
             return
-        if requester not in ["discord_deleted_user", "owner"]:
+        if requester not in ("discord_deleted_user", "owner"):
             return
         member_group = self.config._get_base_group(self.config.MEMBER)
         async with member_group.all() as members_data:

@@ -186,7 +186,7 @@ class Reminders(Cog, DashboardIntegration):
         user_id: int,
     ) -> None:
         """Delete all user reminders."""
-        if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
+        if requester not in ("discord_deleted_user", "owner", "user", "user_strict"):
             return
         try:
             del self.cache[user_id]
@@ -673,7 +673,7 @@ class Reminders(Cog, DashboardIntegration):
             raise commands.UserFeedbackCheckFailure(
                 _("You can't execute this command, in this context.")
             )
-        elif context.command.qualified_name in ["shutdown", "restart", "load", "unload", "reload"]:
+        elif context.command.qualified_name in ("shutdown", "restart", "load", "unload", "reload"):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command."
@@ -1124,7 +1124,7 @@ class Reminders(Cog, DashboardIntegration):
             embed.description = "\n".join(
                 [
                     f"`{discord.utils.format_dt(time, style)}`: {discord.utils.format_dt(time, style)}"
-                    for style in ["R", "d", "D", "t", "T", "f", "F"]
+                    for style in ("R", "d", "D", "t", "T", "f", "F")
                 ]
             )
             embeds.append(embed)
@@ -1147,7 +1147,7 @@ class Reminders(Cog, DashboardIntegration):
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
-        if command_name != "timestamps":
+        if command_name in ("timestamps", "timestamp"):
             return
         await CogsUtils.invoke_command(
             bot=self.bot,
@@ -1409,7 +1409,7 @@ class Reminders(Cog, DashboardIntegration):
             [
                 reminder
                 for reminder in reminders.values()
-                if reminder.content["type"] in ["text", "message"]
+                if reminder.content["type"] in ("text", "message")
             ],
             key=lambda reminder: reminder.next_expires_at,
         )[:5]

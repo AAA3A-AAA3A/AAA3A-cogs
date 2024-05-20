@@ -94,7 +94,7 @@ def get_object_size(obj: typing.Any) -> int:
 
 # https://stackoverflow.com/questions/1094841/get-human-readable-version-of-file-size
 def sizeof_fmt(num, suffix: str = "B") -> str:
-    for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
+    for unit in ("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"):
         if abs(num) < 1024.0:
             return f"{num:3.1f} {unit}{suffix}"
         num /= 1024.0
@@ -404,7 +404,7 @@ class GetDocs(Cog, DashboardIntegration):
                     )
                 source = "discord.py"
         source: Source = self.documentations[source]
-        if query in ["", "events"]:
+        if query in ("", "events"):
             limit = None
         try:
             result = await source.search(query.strip(), limit=limit, exclude_std=not with_std)
@@ -508,7 +508,7 @@ class GetDocs(Cog, DashboardIntegration):
         source, result = await self.query_autocomplete(
             interaction, current, exclude_std=exclude_std
         )
-        if not current and source.name in ["discord.py", "redbot", "pylav"]:
+        if not current and source.name in ("discord.py", "redbot", "pylav"):
             result.insert(0, app_commands.Choice(name="events", value="events"))
         return result[:25]
 
@@ -692,12 +692,12 @@ class GetDocs(Cog, DashboardIntegration):
             if documentation.parameters
             else "No parameter(s)",
         }
-        for _type in ["attributes", "properties", "methods"]:
+        for _type in ("attributes", "properties", "methods"):
             if getattr(documentation.attributes, _type):
-                # result += f"{_type.capitalize()}:\n{BREAK_LINE.join([f'• {inline(attribute.name)}' for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
+                # result += f"{_type.capitalize()}:\n{BREAK_LINE.join([f'• {inline(attribute.name)}' for _type in ('attributes', 'properties', 'methods') for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
                 data[
                     _type.capitalize()
-                ] = f"{humanize_list([inline(attribute.name) for _type in ['attributes', 'properties', 'methods'] for attribute in getattr(documentation.attributes, _type).values()])}."
+                ] = f"{humanize_list([inline(attribute.name) for _type in ('attributes', 'properties', 'methods') for attribute in getattr(documentation.attributes, _type).values()])}."
         return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
 
 
@@ -1007,7 +1007,7 @@ class Source:
                                             f'"{_kwarg.split(".")[0].upper()}_ID",  # snowflake'
                                             if _kwarg.split(".")[-1] == "id"
                                             and _kwarg.split(".")[-2]
-                                            in [
+                                            in (
                                                 "user",
                                                 "member",
                                                 "guild",
@@ -1015,7 +1015,7 @@ class Source:
                                                 "role",
                                                 "message",
                                                 "application",
-                                            ]
+                                            )
                                             else "MISSING,"
                                         )
                                         example += _kwarg_raw
@@ -1214,7 +1214,7 @@ class Source:
             for potential_manual in soup.find_all("a")
             if potential_manual.attrs.get("href") is not None
             and potential_manual.attrs["href"].startswith("/wiki/API_")
-            and potential_manual.text.strip() not in ["API changes", "loadstring"]
+            and potential_manual.text.strip() not in ("API changes", "loadstring")
         )
         # Iter manuals.
         for manual in manuals:
@@ -1251,7 +1251,7 @@ class Source:
                                 fields_values.remove(field_value)
                     used_fields_values = set()
                     for field_label in fields_labels:
-                        if field_label.text.strip().lower() in ["patch changes"]:
+                        if field_label.text.strip().lower() in ("patch changes"):
                             continue
                         _field_value = self._get_text(
                             fields_values.pop(0), parsed_url=self.url.split("/wiki")[0]
@@ -1690,10 +1690,10 @@ class Source:
             if result is not None:
                 results.append(result)
         # Add attributes for Python stdtypes.
-        if self.name == "python" and page_url[len(self.url) :] in [
+        if self.name == "python" and page_url[len(self.url) :] in (
             "library/stdtypes.html",
             "tutorial/datastructures.html",
-        ]:
+        ):
             for documentation in results:
                 if len(documentation.name.split(".")) > 1:
                     parent_name = ".".join(documentation.name.split(".")[:-1])
@@ -1785,7 +1785,7 @@ class Source:
                     if query.lower() == name:
                         query = f"aiohttp.ClientSession.{name.lower()}"
                         break
-        if self.name in ["discord.py", "redbot"]:
+        if self.name("discord.py", "redbot"):
             if query.split(".")[0] == "ctx":
                 query = f"commands.Context{query[4:]}"
             if self.name == "discord.py":
@@ -1798,7 +1798,7 @@ class Source:
             return matches[:limit]
 
         def get_name(obj: DataObjStr) -> str:
-            name = obj.name or (obj.dispname if obj.dispname not in ["-", None] else None)
+            name = obj.name or (obj.dispname if obj.dispname not in ("-", None) else None)
             original_name = name
             if obj.domain == "std" or obj.role == "command" or self.name == "discordapi":
                 name = f"{obj.role}: {name}"
@@ -1833,7 +1833,7 @@ class Source:
                 location = CogsUtils.replace_var_paths(location)
             return urljoin(self.url, location)
 
-        if self.name in ["discord.py", "redbot", "pylav"] and query == "events":
+        if self.name in ("discord.py", "redbot", "pylav") and query == "events":
             exclude_std = True
             matches = [
                 item
@@ -1871,7 +1871,7 @@ class Source:
         #     elif f"discord.ext.commands.{name}" in self._raw_rtfm_cache_without_std:
         #         name = f"discord.ext.commands.{name}"
         documentation = discord.utils.get(self._docs_cache, name=name)
-        if self.name not in ["discordapi", "git", "warcraftapi"] and documentation is None:
+        if self.name not in ("discordapi", "git", "warcraftapi") and documentation is None:
             item = discord.utils.get(self._rtfm_cache.objects, name=name)
             location = item.uri
             if location.endswith("$"):

@@ -47,7 +47,7 @@ class CmdChannel(Cog):
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
-        if command_name not in ["cmduser", "cmduserchannel"]:
+        if command_name not in ("cmduser", "cmduserchannel"):
             return
         command = command[3:]
         await CogsUtils.invoke_command(

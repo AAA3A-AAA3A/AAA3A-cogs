@@ -83,7 +83,7 @@ class DiscordSearch(Cog):
             channel = ctx.channel
         if all(
             setting is None
-            for setting in [
+            for setting in (
                 authors,
                 mentions,
                 before,
@@ -93,7 +93,7 @@ class DiscordSearch(Cog):
                 regex,
                 contains,
                 limit,
-            ]
+            )
         ):
             raise commands.UserFeedbackCheckFailure(_("You must provide at least one parameter."))
         args_str = [

@@ -101,7 +101,7 @@ class DevUtils(Cog):
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
-        if command_name not in [
+        if command_name not in (
             "do",
             "execute",
             "bypass",
@@ -110,7 +110,7 @@ class DevUtils(Cog):
             "loglevel",
             "reloadmodule",
             "rawrequest",
-        ]:
+        ):
             return
         await CogsUtils.invoke_command(
             bot=self.bot,

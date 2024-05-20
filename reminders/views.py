@@ -30,7 +30,7 @@ class EditReminderModal(discord.ui.Modal):
 
         super().__init__(title=f"Edit Reminder #{self.reminder.id}")
 
-        if self.reminder.content["type"] not in ["command", "say"]:
+        if self.reminder.content["type"] not in ("command", "say"):
             self.title_input: discord.ui.TextInput = discord.ui.TextInput(
                 label="Title",
                 placeholder="(optional)",
@@ -43,7 +43,7 @@ class EditReminderModal(discord.ui.Modal):
             self.add_item(self.title_input)
         else:
             self.title_input = None
-        if self.reminder.content["type"] in ["text", "say"]:
+        if self.reminder.content["type"] in ("text", "say"):
             self.content: discord.ui.TextInput = discord.ui.TextInput(
                 label="Text",
                 placeholder="(required)"
@@ -69,7 +69,7 @@ class EditReminderModal(discord.ui.Modal):
             self.add_item(self.content)
         else:
             self.content = None
-        if self.reminder.content["type"] not in ["command", "say"]:
+        if self.reminder.content["type"] not in ("command", "say"):
             self.image_url: discord.ui.TextInput = discord.ui.TextInput(
                 label="Image URL",
                 placeholder="(optional)",
@@ -164,7 +164,7 @@ class ReminderView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self.reminder = reminder
-        if not me_too or self.reminder.content["type"] in ["command", "say"]:
+        if not me_too or self.reminder.content["type"] in ("command", "say"):
             self.remove_item(self.me_too)
         self.me_too_members: typing.Dict[discord.Member, typing.Any] = {}
 

@@ -118,7 +118,7 @@ class Seen(Cog):
         user_id: int,
     ) -> None:
         """Delete all Seen data for user, members, roles, channels, categories, guilds; if the user ID matches."""
-        if requester not in ["discord_deleted_user", "owner", "user", "user_strict"]:
+        if requester not in ("discord_deleted_user", "owner", "user", "user_strict"):
             return
         await self.save_to_config()  # To clean up the cache too.
         global_data = await self.config.all()
@@ -320,7 +320,7 @@ class Seen(Cog):
     def upsert_cache(
         self,
         time: typing.Optional[datetime.datetime],
-        _type: typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"],
+        _type: typing.Literal("message", "message_edit", "reaction_add", "reaction_remove"),
         member: discord.Member,
         guild: discord.Guild,
         channel: discord.TextChannel,
@@ -754,7 +754,7 @@ class Seen(Cog):
             discord.Guild,
         ],
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         all_data_config: typing.Optional[typing.Dict] = None,
         all_data_cache: typing.Optional[typing.Dict] = None,
@@ -800,10 +800,10 @@ class Seen(Cog):
         if _type is not None:
             custom_ids = [
                 custom_id
-                for custom_id in [
+                for custom_id in (
                     all_data_config.get(_type, None),
                     all_data_cache.get(_type, None),
-                ]
+                )
                 if custom_id is not None
             ]
             if not custom_ids:
@@ -820,12 +820,12 @@ class Seen(Cog):
         else:
             all_data_config = {
                 x: all_data_config[x]
-                for x in ["message", "message_edit", "reaction_add", "reaction_remove"]
+                for x in ("message", "message_edit", "reaction_add", "reaction_remove")
                 if all_data_config[x] is not None
             }
             all_data_cache = {
                 x: all_data_cache.get(x, None)
-                for x in ["message", "message_edit", "reaction_add", "reaction_remove"]
+                for x in ("message", "message_edit", "reaction_add", "reaction_remove")
                 if all_data_cache.get(x, None) is not None
             }
             all_data_config = [
@@ -965,7 +965,7 @@ class Seen(Cog):
             discord.Guild,
         ],
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         show_details: typing.Optional[bool],
         all_data_config: typing.Optional[typing.Dict] = None,
@@ -1096,7 +1096,7 @@ class Seen(Cog):
         ctx: commands.Context,
         _object: typing.Literal["users", "members", "roles", "channels", "categories", "guilds"],
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         reverse: typing.Optional[bool] = False,
         bots: typing.Optional[bool] = None,
@@ -1205,7 +1205,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1225,7 +1225,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1245,7 +1245,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1265,7 +1265,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         show_details: typing.Optional[bool],
         channel: typing.Optional[discord.TextChannel] = None,
@@ -1288,7 +1288,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         show_details: typing.Optional[bool],
         category: typing.Optional[discord.CategoryChannel] = None,
@@ -1317,7 +1317,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         show_details: typing.Optional[bool],
         user: discord.User,
@@ -1344,7 +1344,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1364,7 +1364,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1384,7 +1384,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         show_details: typing.Optional[bool],
         user_id: int,
@@ -1404,7 +1404,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
         _object: typing.Optional[
             typing.Literal["members", "roles", "channels", "categories", "guilds", "users"]
@@ -1418,7 +1418,7 @@ class Seen(Cog):
 
         `bots` is a parameter for `members` and `users`. `include_role` and `exclude_role` are parameters for only `members`.
         """
-        if _object in ["guilds", "users"] and ctx.author.id not in ctx.bot.owner_ids:
+        if _object in ("guilds", "users") and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(
                 _("You're not allowed to view the Seen board for guilds and users.")
             )
@@ -1466,7 +1466,7 @@ class Seen(Cog):
         ctx: commands.Context,
         state: bool,
         _types: commands.Greedy[
-            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
+            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
         ],
     ) -> None:
         """Enable or disable a listener."""

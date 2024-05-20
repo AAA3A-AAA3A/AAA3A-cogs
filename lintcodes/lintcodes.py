@@ -59,7 +59,7 @@ class LintCodes(Cog):
             buffer = io.BytesIO()
             await ctx.message.attachments[0].save(buffer)
             code = buffer.read().decode("utf-8")
-            if ctx.message.attachments[0].filename.split(".")[-1] not in [
+            if ctx.message.attachments[0].filename.split(".")[-1] not in (
                 "txt",
                 "py",
                 "pyc",
@@ -67,7 +67,7 @@ class LintCodes(Cog):
                 "pyd",
                 "pyw",
                 "rpy",
-            ]:
+            ):
                 raise commands.UserFeedbackCheckFailure(_("Incorrect Python file extension."))
         elif code is not None:
             if code.strip().startswith("url="):
@@ -108,7 +108,7 @@ class LintCodes(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("Incorrect syntax, please use Markdown's syntax for your code.")
             )
-        if language_identifier not in ["python", "py"]:
+        if language_identifier not in ("python", "py"):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "Incorrect language identifier for your code, use `python` for the code syntax."

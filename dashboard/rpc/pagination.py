@@ -46,6 +46,7 @@ class Pagination(typing.List):
         per_page: typing.Optional[typing.Union[int, str]] = None,
         page: typing.Optional[typing.Union[int, str]] = None,
         default_per_page: int = DEFAULT_PER_PAGE,
+        default_page: int = 1,
     ) -> typing.Any:
         per_page = (
             default_per_page
@@ -57,9 +58,9 @@ class Pagination(typing.List):
             )
         )
         page = (
-            1
+            default_page
             if page is None
-            else (int(page) if isinstance(page, str) and page.isdigit() and int(page) >= 1 else 1)
+            else (int(page) if isinstance(page, str) and page.isdigit() and int(page) >= 1 else default_page)
         )
         total = len(items)
         pages = (total // per_page) + (total % per_page > 0)

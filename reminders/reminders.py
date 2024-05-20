@@ -866,6 +866,7 @@ class Reminders(Cog, DashboardIntegration):
         await self.config.user(ctx.author).timezone.set(timezone)
         await ctx.send(_("Your timezone has been set to `{timezone}`.").format(timezone=timezone))
 
+    @commands.bot_has_permissions(embed_links=True)
     @reminder.command()
     async def list(
         self,
@@ -950,6 +951,7 @@ class Reminders(Cog, DashboardIntegration):
                 )
             )
 
+    @commands.bot_has_permissions(embed_links=True)
     @reminder.command(aliases=["info", "show"])
     async def edit(self, ctx: commands.Context, reminder: ExistingReminderConverter) -> None:
         """Edit an existing Reminder from its ID.
@@ -1076,6 +1078,7 @@ class Reminders(Cog, DashboardIntegration):
             )
         )
 
+    @commands.bot_has_permissions(embed_links=True)
     @reminder.command()
     async def clear(self, ctx: commands.Context, confirmation: bool = False) -> None:
         """Clear all your existing reminders."""
@@ -1097,6 +1100,32 @@ class Reminders(Cog, DashboardIntegration):
         except KeyError:
             pass
         await ctx.send(_("All your reminders have been successfully removed."))
+
+    @commands.bot_has_permissions(embed_links=True)
+    @reminder.command(aliases=["timestamp"])
+    async def timestamps(self, ctx: commands.Context, number: typing.Optional[int] = 100, *, time: str = "now") -> None:
+        """Get a list of Discord timestamps for a given time."""
+        try:
+            __, time, repeat = await TimeConverter().convert(ctx, time)
+        except commands.BadArgument as e:
+            raise commands.UserFeedbackCheckFailure(str(e))
+        timezone = await self.config.user(ctx.author).timezone() or "UTC"
+        embeds = []
+        for __ in range(number):
+            embed: discord.Embed = discord.Embed(
+                title=_("Timestamps for {time}").format(time=time.astimezone(pytz.timezone(timezone))),
+                color=await ctx.embed_color()
+            )
+            embed.description = "\n".join(
+                [
+                    f"`{discord.utils.format_dt(time, style)}`: {discord.utils.format_dt(time, style)}"
+                    for style in ["R", "d", "D", "t", "T", "f", "F"]
+                ]
+            )
+            embeds.append(embed)
+            if repeat is None or (time := await repeat.next_trigger(last_expires_at=time, utc_now=time, timezone=timezone)) is None:
+                break
+        await Menu(pages=embeds).start(ctx)
 
     # async def _cogsutils_add_hybrid_commands(
     #     self, command: typing.Union[commands.HybridCommand, commands.HybridGroup]

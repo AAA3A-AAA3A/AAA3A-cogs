@@ -117,8 +117,8 @@ class TimeConverter(commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str, content: typing.Optional[str] = None
     ) -> typing.Union[
-        typing.Tuple[datetime.datetime, datetime.datetime, typing.Optional[dict], str],
-        typing.Tuple[datetime.datetime, datetime.datetime, typing.Optional[dict]],
+        typing.Tuple[datetime.datetime, datetime.datetime, typing.Optional[typing.Any], str],
+        typing.Tuple[datetime.datetime, datetime.datetime, typing.Optional[typing.Any]],
     ]:
         cog = ctx.bot.get_cog("Reminders")
         utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(second=0, microsecond=0)
@@ -466,33 +466,34 @@ class TimeConverter(commands.Converter):
                 expires_at.replace(second=0)
             else:
                 expires_at.replace(second=30)
-            if expires_at < utc_now.replace(
-                second=0, microsecond=0
-            ):  # Negative intervals are not allowed.
-                info = [  # info.append(
-                    f"• Global check: The given date must be in the future. Interpreted date: <t:{int(expires_at.timestamp())}:F>."
-                ]
-                expires_at = None
-            else:
-                try:
-                    datetime.datetime.timestamp(expires_at)
-                except OSError:  # protect against out of epoch dates
+            if ctx.command.qualified_name != "reminder timestamps":
+                if expires_at < utc_now.replace(
+                    second=0, microsecond=0
+                ):  # Negative intervals are not allowed.
                     info = [  # info.append(
-                        "• Global check: The given date is exceeding the linux epoch. Please choose an earlier date."
+                        f"• Global check: The given date must be in the future. Interpreted date: <t:{int(expires_at.timestamp())}:F>."
                     ]
                     expires_at = None
                 else:
-                    if expires_at < utc_now + dateutil.relativedelta.relativedelta(minutes=1):
+                    try:
+                        datetime.datetime.timestamp(expires_at)
+                    except OSError:  # protect against out of epoch dates
                         info = [  # info.append(
-                            "• Global check: Reminder time must be at least 1 minute."  # RRULES don't understand that...
+                            "• Global check: The given date is exceeding the linux epoch. Please choose an earlier date."
                         ]
                         expires_at = None
-                    # else:
-                    #     if expires_at.second != 0:
-                    #         if expires_at.minute == 59 or expires_at.second <= 30:
-                    #             expires_at = expires_at.replace(day=(expires_at.day + 1) if expires_at.minute == 59 and expires_at.hour == 23 else expires_at.day, hour=(0 if expires_at.hour == 23 else (expires_at.hour + 1)) if expires_at.minute == 59 else expires_at.hour, minute=0 if expires_at.minute == 59 else (expires_at.minute + 1), second=0, microsecond=0)
-                    #         else:
-                    #             expires_at = expires_at.replace(second=0, microsecond=0)
+                    else:
+                        if expires_at < utc_now + dateutil.relativedelta.relativedelta(minutes=1):
+                            info = [  # info.append(
+                                "• Global check: Reminder time must be at least 1 minute."  # RRULES don't understand that...
+                            ]
+                            expires_at = None
+                        # else:
+                        #     if expires_at.second != 0:
+                        #         if expires_at.minute == 59 or expires_at.second <= 30:
+                        #             expires_at = expires_at.replace(day=(expires_at.day + 1) if expires_at.minute == 59 and expires_at.hour == 23 else expires_at.day, hour=(0 if expires_at.hour == 23 else (expires_at.hour + 1)) if expires_at.minute == 59 else expires_at.hour, minute=0 if expires_at.minute == 59 else (expires_at.minute + 1), second=0, microsecond=0)
+                        #         else:
+                        #             expires_at = expires_at.replace(second=0, microsecond=0)
         if expires_at is None:
             info = "\n".join(info)
             raise commands.BadArgument(f"Error(s) during parsing the input:\n{info}")

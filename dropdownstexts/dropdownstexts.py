@@ -220,7 +220,14 @@ class DropdownsTexts(Cog):
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
             "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
             "label": label,
-            "data": {"embed": {"description": text_or_message}} if isinstance(text_or_message, str) else {"content": text_or_message.content, "embed": text_or_message.embeds[0].to_dict()},
+            "data": (
+                {"embed": {"description": text_or_message}}
+                if isinstance(text_or_message, str) else (
+                    {"content": text_or_message.content, "embed": text_or_message.embeds[0].to_dict()}
+                    if text_or_message.embeds else
+                    {"content": text_or_message.content}
+                )
+            ),
         }
         view = self.get_dropdown(config=config, message=message)
         message = await message.edit(view=view)
@@ -283,7 +290,14 @@ class DropdownsTexts(Cog):
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
                 "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
                 "label": label,
-                "data": {"embed": {"description": text_or_message}} if isinstance(text_or_message, str) else {"content": text_or_message.content, "embed": text_or_message.embeds[0].to_dict()},
+                "data": (
+                    {"embed": {"description": text_or_message}}
+                    if isinstance(text_or_message, str) else (
+                        {"content": text_or_message.content, "embed": text_or_message.embeds[0].to_dict()}
+                        if text_or_message.embeds else
+                        {"content": text_or_message.content}
+                    )
+                ),
             }
         view = self.get_dropdown(config=config, message=message)
         message = await message.edit(view=view)

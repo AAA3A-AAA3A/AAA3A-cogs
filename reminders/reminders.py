@@ -1147,7 +1147,7 @@ class Reminders(Cog, DashboardIntegration):
         if len(command.split(" ")) == 0:
             return
         command_name = command.split(" ")[0]
-        if command_name in ("timestamps", "timestamp"):
+        if command_name not in ("timestamps", "timestamp"):
             return
         await CogsUtils.invoke_command(
             bot=self.bot,

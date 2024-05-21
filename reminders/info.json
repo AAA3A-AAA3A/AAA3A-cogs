@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "Reminders",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you like my work, please consider donating on my [Buy Me a Coffee page](<https://www.buymeacoffee.com/aaa3a>)!",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!",
     "short": "Don't forget anything anymore! Reminders in DMs, channels, FIFO commands scheduler, say scheduler... With 'Me Too', snooze and buttons.",
     "description": "Don't forget anything anymore! Reminders in DMs, channels, FIFO commands scheduler, say scheduler... With 'Me Too', snooze and buttons. You can migrate reminders from RemindMe by PhasecoreX.",
     "tags": [

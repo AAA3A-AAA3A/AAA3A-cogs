@@ -1,7 +1,7 @@
 {
     "author": ["Neuro Assassin", "AAA3A"],
     "name": "Dashboard",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you like my work, please consider donating on my [Buy Me a Coffee page](<https://www.buymeacoffee.com/aaa3a>)!\nPlease follow this **installation documentation**: https://red-web-dashboard.readthedocs.io/en/latest\n⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!\nPlease follow this **installation documentation**: https://red-web-dashboard.readthedocs.io/en/latest\n⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.",
     "short": "Interact with your bot through a web Dashboard!",
     "description": "Interact with your bot through a web Dashboard! Thank you very much to Neuro for the initial work!",
     "tags": [

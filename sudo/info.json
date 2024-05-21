@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"],
     "name": "Sudo",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you like my work, please consider donating on my [Buy Me a Coffee page](<https://www.buymeacoffee.com/aaa3a>)! The commands `[p]su`, `[p]unsu`, `[p]sudo` and `[p]sutimeout` work directly.\n⚠️ This cog makes bot owners unable to be perceived as bot owners in commands while the cog is loaded unless the `[p]su` command is used.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)! The commands `[p]su`, `[p]unsu`, `[p]sudo` and `[p]sutimeout` work directly.\n⚠️ This cog makes bot owners unable to be perceived as bot owners in commands while the cog is loaded unless the `[p]su` command is used.",
     "short": "A cog to allow bot owners to be normal users in terms of permissions!",
     "description": "Have you ever wanted to allow bot owners to be normal users in terms of permissions? Then this cog is for you!",
     "tags": [

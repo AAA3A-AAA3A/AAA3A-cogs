@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "CmdChannel",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you like my work, please consider donating on my [Buy Me a Coffee page](<https://www.buymeacoffee.com/aaa3a>)!\nThe commands `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel` work directly.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!\nThe commands `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel` work directly.",
     "short": "A cog to send the result of a command to another channel!",
     "description": "Have you ever wanted to send commands to the bot and get a result in the channel of your choice? Then this cog is for you! It allows you to hide the author of the command and to do as if you had sent the command in the specified channel, by the specified user... It is up to the owner of a server to activate the option and to choose a channel for the logs.",
     "tags": [

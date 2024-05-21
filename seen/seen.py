@@ -320,7 +320,7 @@ class Seen(Cog):
     def upsert_cache(
         self,
         time: typing.Optional[datetime.datetime],
-        _type: typing.Literal("message", "message_edit", "reaction_add", "reaction_remove"),
+        _type: typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"],
         member: discord.Member,
         guild: discord.Guild,
         channel: discord.TextChannel,
@@ -754,7 +754,7 @@ class Seen(Cog):
             discord.Guild,
         ],
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         all_data_config: typing.Optional[typing.Dict] = None,
         all_data_cache: typing.Optional[typing.Dict] = None,
@@ -965,7 +965,7 @@ class Seen(Cog):
             discord.Guild,
         ],
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         all_data_config: typing.Optional[typing.Dict] = None,
@@ -1096,7 +1096,7 @@ class Seen(Cog):
         ctx: commands.Context,
         _object: typing.Literal["users", "members", "roles", "channels", "categories", "guilds"],
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         reverse: typing.Optional[bool] = False,
         bots: typing.Optional[bool] = None,
@@ -1205,7 +1205,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1225,7 +1225,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1245,7 +1245,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1265,7 +1265,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         channel: typing.Optional[discord.TextChannel] = None,
@@ -1288,7 +1288,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         category: typing.Optional[discord.CategoryChannel] = None,
@@ -1317,7 +1317,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         user: discord.User,
@@ -1344,7 +1344,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1364,7 +1364,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         *,
@@ -1384,7 +1384,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         show_details: typing.Optional[bool],
         user_id: int,
@@ -1404,7 +1404,7 @@ class Seen(Cog):
         self,
         ctx: commands.Context,
         _type: typing.Optional[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
         _object: typing.Optional[
             typing.Literal["members", "roles", "channels", "categories", "guilds", "users"]
@@ -1466,7 +1466,7 @@ class Seen(Cog):
         ctx: commands.Context,
         state: bool,
         _types: commands.Greedy[
-            typing.Literal("message", "message_edit", "reaction_add", "reaction_remove")
+            typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"]
         ],
     ) -> None:
         """Enable or disable a listener."""

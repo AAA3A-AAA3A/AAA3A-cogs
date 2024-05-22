@@ -390,7 +390,7 @@ class DashboardRPC:
                 if (filter is None or filter == "owner") and member == guild.owner:
                     guild_infos["user_role"] = "OWNER"
                     guilds.append(guild_infos)
-                elif (filter is None or filter == "admin") and await self.bot.is_admin(member):
+                elif (filter is None or filter == "admin") and (await self.bot.is_admin(member) or member.guild_permissions.manage_guild):
                     guild_infos["user_role"] = "ADMIN"
                     guilds.append(guild_infos)
                 elif (filter is None or filter == "mod") and await self.bot.is_mod(member):
@@ -415,7 +415,7 @@ class DashboardRPC:
             return {"status": 1}
         member = guild.get_member(user_id)
         is_owner = user_id in self.bot.owner_ids
-        if not is_owner and (member is None or (not await self.bot.is_mod(member) and not for_third_parties)):
+        if not is_owner and (member is None or (not await self.bot.is_mod(member) and not member.guild_permissions.manage_guild and not for_third_parties)):
             return {"status": 1}
 
         # joined_at = member.joined_at if member is not None else None

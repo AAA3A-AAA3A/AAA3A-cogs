@@ -284,7 +284,8 @@ class DashboardRPC:
         returning = {}
         downloader_cog = self.bot.get_cog("Downloader")
         installed_cogs = await downloader_cog.installed_cogs() if downloader_cog is not None else []
-        for name, cog in self.bot.cogs.copy().items():
+        for cog in self.bot.cogs.copy().values():
+            name = cog.qualifid_name
             stripped = [c for c in cog.__cog_commands__ if c.parent is None]
             cmds = await self.build_cmd_list(stripped)
             if not cmds:

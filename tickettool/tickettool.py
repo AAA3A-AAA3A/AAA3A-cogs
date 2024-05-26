@@ -770,23 +770,21 @@ class TicketTool(settings, DashboardIntegration, Cog):
         Many commands to manage tickets appear when you run help in a ticket channel.
         """
 
-    @ticket.command(name="create", aliases=["+"])
-    async def command_create(
+    async def create_ticket(
         self,
         ctx: commands.Context,
-        profile: typing.Optional[ProfileConverter] = None,
-        *,
+        profile: typing.Optional[str],
         reason: typing.Optional[str] = "No reason provided.",
-    ) -> None:
-        """Create a Ticket.
-
-        If only one profile has been created on this server, you don't need to specify its name.
-        """
+        member: typing.Optional[discord.Member] = None,
+    ):
         profiles = await self.config.guild(ctx.guild).profiles()
-        if profile is None and len(profiles) == 1:
-            profile = list(profiles)[0]
-        if profile not in profiles:
-            raise commands.UserFeedbackCheckFailure(_("This profile does not exist."))
+        if profiles:
+            if len(profiles) == 1:
+                profile = list(profiles)[0]
+            else:
+                raise commands.UserFeedbackCheckFailure(_("Please provide a profile."))
+        else:
+            raise commands.UserFeedbackCheckFailure(_("No profile has been created on this server."))
         config = await self.get_config(ctx.guild, profile)
         forum_channel: typing.Union[discord.ForumChannel, discord.Thread] = config["forum_channel"]
         category_open: discord.CategoryChannel = config["category_open"]
@@ -803,7 +801,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
                 ).format(ctx=ctx)
             )
-        if not await self.check_limit(ctx.author, profile):
+        if not await self.check_limit(member, profile):
             limit = config["nb_max"]
             raise commands.UserFeedbackCheckFailure(
                 _("Sorry. You have already reached the limit of {limit} open tickets.").format(
@@ -846,6 +844,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     inputs.append(text_input)
                     modal.add_item(text_input)
                 view: discord.ui.View = discord.ui.View()
+                view.interaction_check = lambda interaction: interaction.user == ctx.author or interaction.user.id in ctx.bot.owner_ids
                 button: discord.ui.Button = discord.ui.Button(
                     label="Create Ticket", emoji="🎟️", style=discord.ButtonStyle.secondary
                 )
@@ -872,6 +871,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             else:
                 modal_answers: typing.Dict[str, str] = ctx._tickettool_modal_answers
         ticket: Ticket = Ticket.instance(ctx, profile=profile, reason=reason)
+        ticket.owner = member or ctx.author
         await ticket.create()
         if config["custom_modal"] is not None:
             embed: discord.Embed = discord.Embed()
@@ -893,6 +893,42 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 channel = ctx.guild.get_channel(int(ticket.channel))
             await channel.send(embed=embed)
         ctx.ticket: Ticket = ticket
+
+    @ticket.command(name="create", aliases=["+"])
+    async def command_create(
+        self,
+        ctx: commands.Context,
+        profile: typing.Optional[ProfileConverter] = None,
+        *,
+        reason: typing.Optional[str] = "No reason provided.",
+    ) -> None:
+        """Create a Ticket.
+
+        If only one profile has been created on this server, you don't need to specify its name.
+        """
+        await self.create_ticket(ctx, profile, reason)
+
+    @commands.mod_or_permissions(manage_channels=True)
+    @ticket.command(name="createfor")
+    async def command_createfor(
+        self,
+        ctx: commands.Context,
+        profile: typing.Optional[ProfileConverter],
+        member: discord.Member,
+        *,
+        reason: typing.Optional[str],
+    ):
+        """Create a Ticket for a member.
+
+        If only one profile has been created on this server, you don't need to specify its name.
+        """
+        if member.bot:
+            raise commands.UserFeedbackCheckFailure(_("You cannot create a ticket for a bot."))
+        elif member.top_role >= ctx.author.top_role:
+            raise commands.UserFeedbackCheckFailure(
+                _("You cannot create a ticket for a member with a higher or equal role.")
+            )
+        await self.create_ticket(ctx, profile, reason, member=member)
 
     @decorator(
         ticket_check=True,

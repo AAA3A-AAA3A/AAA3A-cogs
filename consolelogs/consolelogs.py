@@ -98,7 +98,7 @@ class ConsoleLog:
 
 
 @cog_i18n(_)
-class ConsoleLogs(Cog, DashboardIntegration):
+class ConsoleLogs(DashboardIntegration, Cog):
     """A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"""
 
     __authors__: typing.List[str] = ["AAA3A", "Tobotimus"]

@@ -30,7 +30,7 @@ IGNORED_ERRORS = (
 
 
 @cog_i18n(_)
-class AutoTraceback(Cog, DashboardIntegration):
+class AutoTraceback(DashboardIntegration, Cog):
     """A cog to display the error traceback of a command automatically after the error!"""
 
     def __init__(self, bot: Red) -> None:

@@ -23,7 +23,7 @@ _ = Translator("MemoryGame", __file__)
 
 
 @cog_i18n(_)
-class MemoryGame(Cog, DashboardIntegration):
+class MemoryGame(DashboardIntegration, Cog):
     """A cog to play to Memory game, with buttons, leaderboard and Red bank!"""
 
     def __init__(self, bot: Red) -> None:

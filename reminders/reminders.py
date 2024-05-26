@@ -66,7 +66,7 @@ async def remind_message_context_menu(interaction: discord.Interaction, message:
 
 
 @cog_i18n(_)
-class Reminders(Cog, DashboardIntegration):
+class Reminders(DashboardIntegration, Cog):
     """Don't forget anything anymore! Reminders in DMs, channels, FIFO commands scheduler, say scheduler... With 'Me Too', snooze and buttons."""
 
     # To prevent circular imports...

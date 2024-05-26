@@ -43,7 +43,7 @@ PASTEBIN_LIST_CONVERTER = PastebinListConverter(conversion_type="json")
 
 
 @cog_i18n(_)
-class EmbedUtils(Cog, DashboardIntegration):
+class EmbedUtils(DashboardIntegration, Cog):
     """Create, send, and store rich embeds, from Red-Dashboard too!"""
 
     __authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]

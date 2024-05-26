@@ -63,7 +63,7 @@ _ = Translator("CodeSnippets", __file__)
 
 
 @cog_i18n(_)
-class CodeSnippets(Cog, DashboardIntegration):
+class CodeSnippets(DashboardIntegration, Cog):
     """A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"""
 
     def __init__(self, bot: Red) -> None:

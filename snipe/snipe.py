@@ -153,7 +153,7 @@ class SnipedMessage:
 
 
 @cog_i18n(_)
-class Snipe(Cog, DashboardIntegration):
+class Snipe(DashboardIntegration, Cog):
     """Bulk sniping deleted and edited messages, for moderation purpose!"""
 
     __authors__: typing.List[str] = ["epic guy", "AAA3A"]

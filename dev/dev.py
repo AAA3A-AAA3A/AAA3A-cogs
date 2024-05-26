@@ -467,7 +467,7 @@ class DevOutput(dev_commands.DevOutput):
 
 
 @cog_i18n(_)
-class Dev(Cog, dev_commands.Dev, DashboardIntegration):
+class Dev(dev_commands.Dev, DashboardIntegration, Cog):
     """Various development focused utilities!"""
 
     __authors__: typing.List[str] = ["Cog-Creators", "Zephyrkul (Zephyrkul#1089)", "AAA3A"]

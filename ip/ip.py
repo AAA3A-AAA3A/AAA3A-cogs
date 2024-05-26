@@ -19,7 +19,7 @@ _ = Translator("Ip", __file__)
 
 
 @cog_i18n(_)
-class Ip(Cog, DashboardIntegration):
+class Ip(DashboardIntegration, Cog):
     """A cog to get the ip address  of the bot's host machine!"""
 
     def __init__(self, bot: Red) -> None:

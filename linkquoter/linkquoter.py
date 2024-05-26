@@ -52,7 +52,7 @@ class LinkQuoterView(discord.ui.View):
 
 
 @cog_i18n(_)
-class LinkQuoter(Cog, DashboardIntegration):
+class LinkQuoter(DashboardIntegration, Cog):
     """Quote any Discord message from its link!"""
 
     __authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]

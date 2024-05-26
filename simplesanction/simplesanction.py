@@ -52,7 +52,7 @@ async def sanction_member_context_menu(interaction: discord.Interaction, member:
 
 
 @cog_i18n(_)
-class SimpleSanction(Cog, DashboardIntegration):
+class SimpleSanction(DashboardIntegration, Cog):
     """A cog to sanction members, with buttons!"""
 
     def __init__(self, bot: Red) -> None:

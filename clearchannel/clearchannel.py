@@ -16,7 +16,7 @@ _ = Translator("ClearChannel", __file__)
 
 
 @cog_i18n(_)
-class ClearChannel(Cog, DashboardIntegration):
+class ClearChannel(DashboardIntegration, Cog):
     """A cog to delete ALL messages of a channel!
 
     ⚠ The channel will be cloned, and then **deleted**.

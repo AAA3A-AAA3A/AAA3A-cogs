@@ -227,7 +227,7 @@ class StrConverter(commands.Converter):
 
 
 @cog_i18n(_)
-class GetDocs(Cog, DashboardIntegration):
+class GetDocs(DashboardIntegration, Cog):
     """A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."""
 
     __authors__: typing.List[str] = ["AAA3A", "amyrinbot"]

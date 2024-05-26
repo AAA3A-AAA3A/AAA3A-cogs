@@ -17,7 +17,7 @@ _ = Translator("AntiNuke", __file__)
 
 
 @cog_i18n(_)
-class AntiNuke(Cog, DashboardIntegration):
+class AntiNuke(DashboardIntegration, Cog):
     """A cog to remove all permissions from a person who deletes a channel!"""
 
     def __init__(self, bot: Red) -> None:

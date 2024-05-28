@@ -314,6 +314,12 @@ class Reminders(DashboardIntegration, Cog):
                     )
                 except commands.BadArgument:
                     pass
+                else:
+                    member_permissions = message_or_text.channel.permissions_for(ctx.author)
+                    if ctx.author.id not in ctx.bot.owner_ids and (not member_permissions.view_channel or not member_permissions.read_message_history):
+                        raise commands.UserFeedbackCheckFailure(
+                            _("You can't access this message.")
+                        )
             else:
                 utc_now, expires_at, repeat = await TimeConverter().convert(ctx, argument=time)
         except commands.BadArgument as e:
@@ -343,7 +349,9 @@ class Reminders(DashboardIntegration, Cog):
         message_or_text = message_or_text or (
             ctx.message.reference.cached_message if ctx.message.reference is not None else None
         )
-        if isinstance(message_or_text, discord.Message):
+        if message_or_text is None:
+            raise commands.UserFeedbackCheckFailure(_("You must provide a message or a text."))
+        elif isinstance(message_or_text, discord.Message):
             content = {
                 "type": "message",
                 "text": (
@@ -444,6 +452,12 @@ class Reminders(DashboardIntegration, Cog):
                     )
                 except commands.BadArgument:
                     pass
+                else:
+                    member_permissions = message_or_text.channel.permissions_for(ctx.author)
+                    if ctx.author.id not in ctx.bot.owner_ids and (not member_permissions.view_channel or not member_permissions.read_message_history):
+                        raise commands.UserFeedbackCheckFailure(
+                            _("You can't access this message.")
+                        )
             else:
                 utc_now, expires_at, repeat = await TimeConverter().convert(ctx, argument=time)
         except commands.BadArgument as e:
@@ -520,7 +534,9 @@ class Reminders(DashboardIntegration, Cog):
         message_or_text = message_or_text or (
             ctx.message.reference.cached_message if ctx.message.reference is not None else None
         )
-        if isinstance(message_or_text, discord.Message):
+        if message_or_text is None:
+            raise commands.UserFeedbackCheckFailure(_("You must provide a message or a text."))
+        elif isinstance(message_or_text, discord.Message):
             content = {
                 "type": "message",
                 "text": (

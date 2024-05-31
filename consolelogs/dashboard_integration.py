@@ -3,7 +3,7 @@ from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import typing  # isort:skip
 
-_ = Translator("AutoTraceback", __file__)
+_ = Translator("ConsoleLogs", __file__)
 
 
 def dashboard_page(*args, **kwargs):

@@ -149,7 +149,7 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
                 if isinstance(field, SubmitField):
                     if field.render_kw is None:
                         field.render_kw = {}
-                    field.render_kw.setdefault("class", "btn mb-0 bg-gradient-success btn-md w-100 my-4 mb-2")
+                    field.render_kw.setdefault("class", "btn mb-0 bg-gradient-success btn-md w-100 my-4")
                     html_form.append(f"        {field()}")
             html_form.extend(["    </div>", "</form>"])
             return Markup("\n".join(html_form))

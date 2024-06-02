@@ -801,7 +801,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
                 ).format(ctx=ctx)
             )
-        if not await self.check_limit(member, profile):
+        if not await self.check_limit(member or ctx.author, profile):
             limit = config["nb_max"]
             raise commands.UserFeedbackCheckFailure(
                 _("Sorry. You have already reached the limit of {limit} open tickets.").format(

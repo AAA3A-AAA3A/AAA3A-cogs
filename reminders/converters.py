@@ -194,7 +194,7 @@ class TimeConverter(commands.Converter):
             try:
                 timestamp = float(arg)
                 expires_at = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
-            except ValueError as e:
+            except (ValueError, OverflowError) as e:
                 raise ValueError(
                     f"• Timestamp parsing: {' '.join([f'{e_arg}.' for e_arg in e.args])}."
                 )

@@ -63,13 +63,13 @@ Here are all the commands included in this cog (17):
  Set all settings for the cog with a Discord Modal.
 
 * ``[p]setdashboard redirecturi <redirect_uri>``
- The redirect uri to use for the Discord Oauth.
+ The redirect uri to use for the Discord OAuth.
 
 * ``[p]setdashboard resetsetting <setting>``
  Reset a setting.
 
 * ``[p]setdashboard secret [secret]``
- Set the client secret needed for Discord Oauth.
+ Set the client secret needed for Discord OAuth.
 
 * ``[p]setdashboard showsettings [with_dev=False]``
  Show all settings for the cog with defaults and values.

@@ -40,8 +40,8 @@ msgstr "ウェブダッシュボードを通してボットと対話する！\n\
 
 #: dashboard\dashboard.py:306
 #, docstring
-msgid "Set the client secret needed for Discord Oauth."
-msgstr "Discord Oauthに必要なクライアントシークレットを設定します。"
+msgid "Set the client secret needed for Discord OAuth."
+msgstr "Discord OAuthに必要なクライアントシークレットを設定します。"
 
 #: dashboard\dashboard.py:315
 msgid "Discord Secret"

@@ -40,8 +40,8 @@ msgstr "Αλληλεπίδραση με το ρομπότ σας μέσω ενό
 
 #: dashboard\dashboard.py:306
 #, docstring
-msgid "Set the client secret needed for Discord Oauth."
-msgstr "Ορίστε το μυστικό του πελάτη που απαιτείται για το Discord Oauth."
+msgid "Set the client secret needed for Discord OAuth."
+msgstr "Ορίστε το μυστικό του πελάτη που απαιτείται για το Discord OAuth."
 
 #: dashboard\dashboard.py:315
 msgid "Discord Secret"

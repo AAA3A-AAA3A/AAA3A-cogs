@@ -35,7 +35,7 @@ msgstr ""
 
 #: dashboard\dashboard.py:306
 #, docstring
-msgid "Set the client secret needed for Discord Oauth."
+msgid "Set the client secret needed for Discord OAuth."
 msgstr ""
 
 #: dashboard\dashboard.py:315

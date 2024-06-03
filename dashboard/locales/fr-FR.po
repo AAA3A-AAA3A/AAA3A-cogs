@@ -40,8 +40,8 @@ msgstr "Interagissez avec votre bot à travers un tableau de bord web !\n\n"
 
 #: dashboard\dashboard.py:306
 #, docstring
-msgid "Set the client secret needed for Discord Oauth."
-msgstr "Définir le secret client nécessaire pour Discord Oauth."
+msgid "Set the client secret needed for Discord OAuth."
+msgstr "Définir le secret client nécessaire pour Discord OAuth."
 
 #: dashboard\dashboard.py:315
 msgid "Discord Secret"

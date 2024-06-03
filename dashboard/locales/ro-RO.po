@@ -40,8 +40,8 @@ msgstr "Interacționați cu robotul dvs. prin intermediul unui tablou de bord we
 
 #: dashboard\dashboard.py:306
 #, docstring
-msgid "Set the client secret needed for Discord Oauth."
-msgstr "Setați secretul clientului necesar pentru Discord Oauth."
+msgid "Set the client secret needed for Discord OAuth."
+msgstr "Setați secretul clientului necesar pentru Discord OAuth."
 
 #: dashboard\dashboard.py:315
 msgid "Discord Secret"

@@ -186,7 +186,7 @@ class Dashboard(Cog):
             },
             "redirect_uri": {
                 "converter": RedirectURIConverter,
-                "description": "The redirect uri to use for the Discord Oauth.",
+                "description": "The redirect uri to use for the Discord OAuth.",
                 "path": ["webserver", "core", "redirect_uri"],
                 "aliases": ["redirect"],
             },
@@ -359,7 +359,7 @@ class Dashboard(Cog):
 
     @setdashboard.command()
     async def secret(self, ctx: commands.Context, *, secret: str = None):
-        """Set the client secret needed for Discord Oauth."""
+        """Set the client secret needed for Discord OAuth."""
         if secret is not None:
             await self.config.webserver.core.secret.set(secret)
             return

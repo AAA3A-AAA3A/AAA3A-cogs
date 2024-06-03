@@ -40,8 +40,8 @@ msgstr "Vuorovaikuta botin kanssa web-kojelaudan kautta!\n\n"
 
 #: dashboard\dashboard.py:306
 #, docstring
-msgid "Set the client secret needed for Discord Oauth."
-msgstr "Aseta asiakassalaisuus, jota tarvitaan Discord Oauthia varten."
+msgid "Set the client secret needed for Discord OAuth."
+msgstr "Aseta asiakassalaisuus, jota tarvitaan Discord OAuthia varten."
 
 #: dashboard\dashboard.py:315
 msgid "Discord Secret"

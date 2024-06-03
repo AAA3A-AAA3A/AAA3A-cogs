@@ -46,40 +46,7 @@ class DashboardIntegration:
                 "error_code": 403,
                 "message": _("You don't have permissions to access this page."),
             }
-        text_channels = []
-        voice_channels = []
-        categorized_channels = {}
-        for channel in sorted(guild.channels, key=lambda channel: channel.position):
-            if not isinstance(channel, (discord.TextChannel, discord.VoiceChannel)):
-                continue
-            bot_permissions = channel.permissions_for(guild.me)
-            if (
-                not bot_permissions.send_messages
-                or not bot_permissions.embed_links
-            ):
-                continue
-            if not is_owner:
-                permissions = channel.permissions_for(member)
-                if not permissions.send_messages or not permissions.embed_links:
-                    continue
-            channel_payload = {"id": str(channel.id), "name": channel.name, "type": channel.type, "position": channel.position}
-            if channel.category is not None:
-                categorized_channels.setdefault(channel.category, []).append(channel_payload)
-            elif isinstance(channel, discord.TextChannel):
-                text_channels.append(channel_payload)
-            else:
-                voice_channels.append(channel_payload)
-        channels = text_channels + voice_channels
-        for category in sorted(categorized_channels.items(), key=lambda category: category[0].position):
-            channels.extend(
-                sorted(
-                    category[1],
-                    key=lambda channel: (
-                        1 if channel["type"] == discord.ChannelType.voice else 0,
-                        channel["position"],
-                    ),
-                )
-            )
+        channels = kwargs["get_sorted_channels"](guild)
         if not channels:
             return {
                 "status": 0,
@@ -102,7 +69,7 @@ class DashboardIntegration:
             channels: wtforms.SelectMultipleField = wtforms.SelectMultipleField(_("Channels:"), choices=[], validators=[wtforms.validators.DataRequired(), kwargs["DpyObjectConverter"](typing.Union[discord.TextChannel, discord.VoiceChannel])])
             submit = wtforms.SubmitField(_("Send Message(s)"))
         send_form: SendForm = SendForm()
-        send_form.channels.choices = [(str(channel["id"]), channel["name"]) for channel in channels]
+        send_form.channels.choices = channels
         send_form_string = f"""
             <form action="" method="POST" role="form" enctype="multipart/form-data">
                 {send_form.hidden_tag()}

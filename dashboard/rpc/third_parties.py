@@ -329,7 +329,7 @@ class DashboardRPC_ThirdParties:
         set_contextual_locale(kwargs["lang_code"])
         set_regional_format(kwargs["lang_code"])
 
-        kwargs["Form"], kwargs["DpyObjectConverter"], extra_notifications = await get_form_class(self, third_party_cog=self.third_parties_cogs[name], **kwargs)
+        kwargs["Form"], kwargs["DpyObjectConverter"], extra_notifications, kwargs["get_sorted_channels"], kwargs["get_sorted_roles"] = await get_form_class(self, third_party_cog=self.third_parties_cogs[name], **kwargs)
         kwargs["Pagination"] = Pagination
 
         result = await self.third_parties[name][page][0](**kwargs)

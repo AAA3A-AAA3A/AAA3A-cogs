@@ -213,4 +213,59 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
             )
 
 
-    return FlaskForm, DpyObjectConverter, extra_notifications
+    def get_sorted_channels(
+        guild: discord.Guild,
+        types: typing.Optional[typing.Tuple[discord.abc.GuildChannel]] = (discord.TextChannel, discord.VoiceChannel),
+        filter_func: typing.Optional[typing.Callable[[discord.abc.GuildChannel], bool]] = discord.utils.MISSING,
+    ) -> typing.List[typing.Tuple[int, str]]:
+        if filter_func is discord.utils.MISSING:
+            def filter_func(channel: discord.abc.GuildChannel) -> bool:
+                bot_permissions = channel.permissions_for(guild.me)
+                member = guild.get_member(kwargs["user"].id)
+                member_permissions = channel.permissions_for(member) if member is not None else None
+                return (
+                    bot_permissions.view_channel and bot_permissions.send_messages and bot_permissions.embed_links
+                    and (kwargs["user"].id in _self.bot.owner_ids or (member_permissions is not None and member_permissions.view_channel and member_permissions.send_messages and member_permissions.embed_links))
+                )
+        channels = []
+        voice_channels = []
+        categorized_channels = {}
+        for channel in sorted(guild.channels, key=lambda channel: channel.position):
+            if not isinstance(channel, types) or (filter_func is not None and not filter_func(channel)):
+                continue
+            if channel.category is not None:
+                categorized_channels.setdefault(channel.category, []).append(channel)
+            elif isinstance(channel, discord.VoiceChannel):
+                voice_channels.append(channel)
+            else:
+                channels.append(channel)
+        channels += voice_channels
+        for category in sorted(categorized_channels.items(), key=lambda category: category[0].position):
+            channels.extend(
+                sorted(
+                    category[1],
+                    key=lambda channel: (
+                        1 if isinstance(channel, discord.VoiceChannel) else 0,
+                        channel.position,
+                    ),
+                )
+            )
+        return [
+            (str(channel.id), channel.name)
+            for channel in channels
+        ]
+
+
+    def get_sorted_roles(
+        guild: discord.Guild,
+        filter_func: typing.Optional[typing.Callable[[discord.Role], bool]] = discord.utils.MISSING,
+    ) -> typing.List[typing.Tuple[int, str]]:
+        if filter_func is discord.utils.MISSING:
+            filter_func = lambda role: not role.is_managed() and role.position < guild.me.top_role.position
+        return [
+            (str(role.id), role.name)
+            for role in sorted(guild.roles, reverse=True) if not role.is_default() and (filter_func is None or filter_func(role))
+        ]
+
+
+    return FlaskForm, DpyObjectConverter, extra_notifications, get_sorted_channels, get_sorted_roles

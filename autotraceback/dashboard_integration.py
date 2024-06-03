@@ -31,7 +31,7 @@ class DashboardIntegration:
             return {"status": 0, "error_title": _("No exception has occurred yet.")}
         source = """
             {% for traceback in tracebacks %}
-                {{ traceback|highlight("python")|safe }}
+                {{ traceback|highlight("python") }}
                 {% if not loop.last %}
                     <br />
                 {% endif %}

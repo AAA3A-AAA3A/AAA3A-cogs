@@ -29,7 +29,7 @@ class DashboardIntegration:
         console_logs = self.console_logs
         source = """
             {% for console_log in console_logs %}
-                {{ console_log|highlight("python")|safe }}
+                {{ console_log|highlight("python") }}
                 {% if not loop.last %}
                     <br />
                 {% endif %}

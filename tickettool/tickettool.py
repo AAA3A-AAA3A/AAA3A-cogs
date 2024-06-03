@@ -777,14 +777,15 @@ class TicketTool(settings, DashboardIntegration, Cog):
         reason: typing.Optional[str] = "No reason provided.",
         member: typing.Optional[discord.Member] = None,
     ):
-        profiles = await self.config.guild(ctx.guild).profiles()
-        if profiles:
-            if len(profiles) == 1:
-                profile = list(profiles)[0]
+        if profile is None:
+            profiles = await self.config.guild(ctx.guild).profiles()
+            if profiles:
+                if len(profiles) == 1:
+                    profile = list(profiles)[0]
+                else:
+                    raise commands.UserFeedbackCheckFailure(_("Please provide a profile."))
             else:
-                raise commands.UserFeedbackCheckFailure(_("Please provide a profile."))
-        else:
-            raise commands.UserFeedbackCheckFailure(_("No profile has been created on this server."))
+                raise commands.UserFeedbackCheckFailure(_("No profile has been created on this server."))
         config = await self.get_config(ctx.guild, profile)
         forum_channel: typing.Union[discord.ForumChannel, discord.Thread] = config["forum_channel"]
         category_open: discord.CategoryChannel = config["category_open"]

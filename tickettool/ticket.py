@@ -88,7 +88,7 @@ class Ticket:
     def instance(
         ctx: commands.Context,
         profile: str,
-        reason: typing.Optional[str] = _("No reason provided."),
+        reason: str = "No reason provided.",
     ) -> typing.Any:
         ticket: Ticket = Ticket(
             bot=ctx.bot,

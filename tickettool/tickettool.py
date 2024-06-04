@@ -774,7 +774,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         self,
         ctx: commands.Context,
         profile: typing.Optional[str],
-        reason: typing.Optional[str] = "No reason provided.",
+        reason: str = "No reason provided.",
         member: typing.Optional[discord.Member] = None,
     ):
         if profile is None:
@@ -857,8 +857,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     label="Create Ticket", emoji="🎟️", style=discord.ButtonStyle.secondary
                 )
 
-                async def send_modal(interaction: discord.Interaction) -> None:
-                    await interaction.response.send_modal(modal)
+                async def send_modal(_interaction: discord.Interaction) -> None:
+                    nonlocal interaction
+                    interaction = _interaction
+                    await _interaction.response.send_modal(modal)
                     view.stop()
 
                 button.callback = send_modal
@@ -877,6 +879,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     _input.label: _input.value.strip() or "Not provided." for _input in inputs
                 }
             else:
+                interaction = None
                 modal_answers: typing.Dict[str, str] = ctx._tickettool_modal_answers
         ticket: Ticket = Ticket.instance(ctx, profile=profile, reason=reason)
         ticket.owner = member or ctx.author
@@ -884,7 +887,10 @@ class TicketTool(settings, DashboardIntegration, Cog):
         if config["custom_modal"] is not None:
             embed: discord.Embed = discord.Embed()
             embed.title = "Custom Modal"
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
+            embed.set_author(
+                name=ctx.author.display_name if interaction is None else interaction.user.display_name,
+                icon_url=ctx.author.display_avatar if interaction is None else interaction.user.display_avatar,
+            )
             embed.color = await ctx.embed_color()
             for label, value in modal_answers.items():
                 try:
@@ -908,7 +914,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ctx: commands.Context,
         profile: typing.Optional[ProfileConverter] = None,
         *,
-        reason: typing.Optional[str] = "No reason provided.",
+        reason: str = "No reason provided.",
     ) -> None:
         """Create a Ticket.
 
@@ -924,7 +930,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         profile: typing.Optional[ProfileConverter],
         member: discord.Member,
         *,
-        reason: typing.Optional[str],
+        reason: str = "No reason provided.",
     ):
         """Create a Ticket for a member.
 

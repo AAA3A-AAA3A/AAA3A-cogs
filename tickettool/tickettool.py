@@ -845,7 +845,14 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     inputs.append(text_input)
                     modal.add_item(text_input)
                 view: discord.ui.View = discord.ui.View()
-                view.interaction_check = lambda interaction: interaction.user == ctx.author or interaction.user.id in ctx.bot.owner_ids
+                async def interaction_check(interaction: discord.Interaction):
+                    if interaction.user.id not in [self.ctx.author.id] + ([member.id] if member is not None else []) + list(self.ctx.bot.owner_ids):
+                        await interaction.response.send_message(
+                            "You are not allowed to use this interaction.", ephemeral=True
+                        )
+                        return False
+                    return True
+                view.interaction_check = interaction_check
                 button: discord.ui.Button = discord.ui.Button(
                     label="Create Ticket", emoji="🎟️", style=discord.ButtonStyle.secondary
                 )

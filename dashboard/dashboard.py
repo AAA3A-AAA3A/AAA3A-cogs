@@ -293,6 +293,7 @@ class Dashboard(Cog):
         if self.app is not None and self.app.server_thread is not None:
             await asyncio.to_thread(self.app.server_thread.shutdown)
             await asyncio.to_thread(self.app.tasks_manager.stop_tasks)
+        self.rpc.unload()
         await super().cog_unload()
 
     async def create_app(self, flask_flags: str) -> None:

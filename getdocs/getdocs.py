@@ -1785,7 +1785,7 @@ class Source:
                     if query.lower() == name:
                         query = f"aiohttp.ClientSession.{name.lower()}"
                         break
-        if self.name("discord.py", "redbot"):
+        if self.name in ("discord.py", "redbot"):
             if query.split(".")[0] == "ctx":
                 query = f"commands.Context{query[4:]}"
             if self.name == "discord.py":

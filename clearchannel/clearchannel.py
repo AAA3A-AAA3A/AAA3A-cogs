@@ -132,7 +132,7 @@ class ClearChannel(DashboardIntegration, Cog):
             else:
                 env = {
                     "user_name": ctx.author.display_name,
-                    "user_avatar_url": ctx.author.display_avatar,
+                    "user_avatar_url": ctx.author.display_avatar.url,
                     "channel_name": new_channel.name,
                     "channel_mention": new_channel.mention,
                     "channel_id": new_channel.id,

@@ -54,7 +54,7 @@ class ClearChannel(DashboardIntegration, Cog):
             },
             "custom_message": {
                 "converter": CustomMessageConverter,
-                "description": "Specify a custom message to be sent from the link of another message or a json (https://discohook.org/ for example).\n\nUse the variables `{user_name}`, `{user_avatar_url}`, `{channel_name}`, `{channel_mention}` and `{channel_id}`.",
+                "description": "Specify a custom message to be sent from the link of another message or a json (https://discohook.org/ for example).\n\nUse the variables `{user_name}`, `{user_avatar_url}`, `{user_mention}`, `{user_id}`, `{channel_name}`, `{channel_mention}` and `{channel_id}`.",
             },
             "prompt_message": {
                 "converter": CustomMessageConverter,
@@ -108,6 +108,8 @@ class ClearChannel(DashboardIntegration, Cog):
                 env = {
                     "user_name": ctx.author.display_name,
                     "user_avatar_url": ctx.author.display_avatar.url,
+                    "user_mention": ctx.author.mention,
+                    "user_id": ctx.author.id,
                     "channel_name": old_channel.name,
                     "channel_mention": old_channel.mention,
                     "channel_id": old_channel.id,
@@ -158,6 +160,8 @@ class ClearChannel(DashboardIntegration, Cog):
                 env = {
                     "user_name": ctx.author.display_name,
                     "user_avatar_url": ctx.author.display_avatar.url,
+                    "user_mention": ctx.author.mention,
+                    "user_id": ctx.author.id,
                     "channel_name": new_channel.name,
                     "channel_mention": new_channel.mention,
                     "channel_id": new_channel.id,

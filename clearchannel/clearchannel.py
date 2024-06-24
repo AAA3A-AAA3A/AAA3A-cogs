@@ -54,7 +54,7 @@ class ClearChannel(DashboardIntegration, Cog):
             },
             "custom_message": {
                 "converter": CustomMessageConverter,
-                "description": "Specify a custom message to be sent from the link of another message or a json (https://discohook.org/ for example).\n\nUse `{name}` or `{icon_url}` for the user.",
+                "description": "Specify a custom message to be sent from the link of another message or a json (https://discohook.org/ for example).\n\nUse the variables `{user_name}`, `{user_avatar_url}`, `{channel_name}`, `{channel_mention}` and `{channel_id}`.",
             },
         }
         self.settings: Settings = Settings(
@@ -132,7 +132,10 @@ class ClearChannel(DashboardIntegration, Cog):
             else:
                 env = {
                     "user_name": ctx.author.display_name,
-                    "icon_url": ctx.author.display_avatar,
+                    "user_avatar_url": ctx.author.display_avatar,
+                    "channel_name": new_channel.name,
+                    "channel_mention": new_channel.mention,
+                    "channel_id": new_channel.id,
                 }
                 await CustomMessageConverter(**config["custom_message"]).send_message(
                     ctx, channel=new_channel, env=env

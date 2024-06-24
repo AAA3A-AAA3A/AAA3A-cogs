@@ -56,6 +56,10 @@ class ClearChannel(DashboardIntegration, Cog):
                 "converter": CustomMessageConverter,
                 "description": "Specify a custom message to be sent from the link of another message or a json (https://discohook.org/ for example).\n\nUse the variables `{user_name}`, `{user_avatar_url}`, `{channel_name}`, `{channel_mention}` and `{channel_id}`.",
             },
+            "prompt_message": {
+                "converter": CustomMessageConverter,
+                "description": "Specify a custom message to be sent to confirm the clearing of the channel.\n\nUse the variables `{user_name}`, `{user_avatar_url}`, `{channel_name}`, `{channel_mention}` and `{channel_id}`.",
+            },
         }
         self.settings: Settings = Settings(
             bot=self.bot,
@@ -88,17 +92,38 @@ class ClearChannel(DashboardIntegration, Cog):
         channel_position = old_channel.position
 
         if not confirmation and not ctx.assume_yes:
-            embed: discord.Embed = discord.Embed()
-            embed.title = _("⚠️ - ClearChannel")
-            embed.description = _(
-                "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n⚠ The channel will be cloned, and then **deleted**."
-            ).format(old_channel=old_channel)
-            embed.color = 0xF00020
-            if not await CogsUtils.ConfirmationAsk(
-                ctx, content=f"{ctx.author.mention}", embed=embed
-            ):
-                await CogsUtils.delete_message(ctx.message)
-                return
+            if not config["prompt_message"]:
+                embed: discord.Embed = discord.Embed()
+                embed.title = _("⚠️ - ClearChannel")
+                embed.description = _(
+                    "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n⚠ The channel will be cloned, and then **deleted**."
+                ).format(old_channel=old_channel)
+                embed.color = 0xF00020
+                if not await CogsUtils.ConfirmationAsk(
+                    ctx, content=f"{ctx.author.mention}", embed=embed
+                ):
+                    await CogsUtils.delete_message(ctx.message)
+                    return
+            else:
+                env = {
+                    "user_name": ctx.author.display_name,
+                    "user_avatar_url": ctx.author.display_avatar.url,
+                    "channel_name": old_channel.name,
+                    "channel_mention": old_channel.mention,
+                    "channel_id": old_channel.id,
+                }
+                _kwargs = {}
+                class FakeChannel:
+                    async def send(self, **kwargs):
+                        _kwargs.update(kwargs)
+                await CustomMessageConverter(**config["prompt_message"]).send_message(
+                    ctx, channel=FakeChannel(), env=env
+                )
+                if not await CogsUtils.ConfirmationAsk(
+                    ctx, **_kwargs
+                ):
+                    await CogsUtils.delete_message(ctx.message)
+                    return
 
         reason = _("Clear Channel requested by {ctx.author} ({ctx.author.id}).").format(ctx=ctx)
         new_channel = await old_channel.clone(reason=reason)

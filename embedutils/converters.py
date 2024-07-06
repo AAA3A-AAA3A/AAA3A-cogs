@@ -120,7 +120,7 @@ class StringToEmbed(commands.Converter):
         content = self.get_content(data, content=content)
 
         if timestamp := data.get("timestamp"):
-            data["timestamp"] = timestamp.strip("Z")
+            data["timestamp"] = timestamp.strip("Z") if isinstance(timestamp, str) else str(timestamp)
         try:
             embed = discord.Embed.from_dict(data)
             length = len(embed)

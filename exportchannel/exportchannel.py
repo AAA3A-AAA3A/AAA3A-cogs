@@ -5,6 +5,8 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from redbot.core.utils.chat_formatting import humanize_list
+
 import io
 
 import chat_exporter
@@ -19,7 +21,7 @@ def _(untranslated: str) -> str:  # `redgettext` will found these strings.
 
 
 RESULT_MESSAGE = _(
-    "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS."
+    "Here is the transcript's {mode} file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS."
 )
 LINK_MESSAGE = _("[Click here to view the transcript.]({url})")
 
@@ -106,6 +108,7 @@ class ExportChannel(Cog):
         self,
         ctx: commands.Context,
         channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        mode: typing.Literal["html", "txt"] = "html",
         **kwargs,
     ) -> typing.Union[int, typing.List[discord.Message], discord.File]:
         if "messages" in kwargs:
@@ -114,48 +117,58 @@ class ExportChannel(Cog):
         else:
             count_messages, messages = await self.get_messages(ctx, channel=channel, **kwargs)
 
-        class Transcript(chat_exporter.construct.transcript.TranscriptDAO):
-            @classmethod
-            async def export(
-                cls,
-                channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-                messages: typing.List[discord.Message],
-                tz_info="UTC",
-                guild: typing.Optional[discord.Guild] = None,
-                bot: typing.Optional[discord.Client] = None,
-                military_time: typing.Optional[bool] = False,
-                fancy_times: typing.Optional[bool] = True,
-                support_dev: typing.Optional[bool] = True,
-                attachment_handler: typing.Optional[typing.Any] = None,
-            ):
-                if guild:
-                    channel.guild = guild
-                self = cls(
-                    channel=channel,
-                    limit=None,
-                    messages=messages,
-                    pytz_timezone=tz_info,
-                    military_time=military_time,
-                    fancy_times=fancy_times,
-                    before=None,
-                    after=None,
-                    support_dev=support_dev,
-                    bot=bot,
-                    attachment_handler=attachment_handler,
-                )
-                if not self.after:
-                    self.messages.reverse()
-                return (await self.build_transcript()).html
+        if mode == "html":
+            class Transcript(chat_exporter.construct.transcript.TranscriptDAO):
+                @classmethod
+                async def export(
+                    cls,
+                    channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+                    messages: typing.List[discord.Message],
+                    tz_info="UTC",
+                    guild: typing.Optional[discord.Guild] = None,
+                    bot: typing.Optional[discord.Client] = None,
+                    military_time: typing.Optional[bool] = False,
+                    fancy_times: typing.Optional[bool] = True,
+                    support_dev: typing.Optional[bool] = True,
+                    attachment_handler: typing.Optional[typing.Any] = None,
+                ):
+                    if guild:
+                        channel.guild = guild
+                    self = cls(
+                        channel=channel,
+                        limit=None,
+                        messages=messages,
+                        pytz_timezone=tz_info,
+                        military_time=military_time,
+                        fancy_times=fancy_times,
+                        before=None,
+                        after=None,
+                        support_dev=support_dev,
+                        bot=bot,
+                        attachment_handler=attachment_handler,
+                    )
+                    if not self.after:
+                        self.messages.reverse()
+                    return (await self.build_transcript()).html
 
-        transcript = await Transcript.export(
-            channel=channel,
-            messages=messages,
-            tz_info="UTC",
-            guild=channel.guild,
-            bot=ctx.bot,
-        )
+            transcript = await Transcript.export(
+                channel=channel,
+                messages=messages,
+                tz_info="UTC",
+                guild=channel.guild,
+                bot=ctx.bot,
+            )
+        else:
+            BREAK_LINE, BREAK_REPLACE = "\n", "\\n"
+            transcript = "\n".join(
+                [
+                    f"{message.created_at.strftime('%d/%m/%Y %H:%M:%S')} | {message.id} | {message.author.display_name} ({message.author.id}) | {message.content.replace(BREAK_LINE, BREAK_REPLACE)} | {humanize_list([attachment.filename for attachment in message.attachments])}"
+                    for message in messages
+                ]
+            )
+
         file = discord.File(
-            io.BytesIO(transcript.encode()), filename=f"transcript-{channel.id}.html"
+            io.BytesIO(transcript.encode()), filename=f"transcript-{channel.id}.{mode}"
         )
         return count_messages, messages, file
 
@@ -171,6 +184,7 @@ class ExportChannel(Cog):
         self,
         ctx: commands.Context,
         channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread] = None,
+        mode: typing.Literal["html", "txt"] = "html",
         exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export all of a channel's messages to an html file.
@@ -182,27 +196,36 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel,
+            ctx, channel=channel, mode=mode,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(
-            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+            _(RESULT_MESSAGE).format(channel=channel, mode=mode, count_messages=count_messages),
+            file=file,
         )
-        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
-        embed = discord.Embed(
-            title="Transcript Link",
-            description=_(LINK_MESSAGE).format(url=url),
-            color=await ctx.embed_color(),
-        )
-        view = discord.ui.View()
-        view.add_item(
-            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-        )
+        if mode == "html":
+            url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
+            embed = discord.Embed(
+                title="Transcript Link",
+                description=_(LINK_MESSAGE).format(url=url),
+                color=await ctx.embed_color(),
+            )
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
+        else:
+            embed, view = None, None
         await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
-    async def message(self, ctx: commands.Context, message: discord.Message) -> None:
-        """Export a specific file in an html file.
+    async def message(
+        self,
+        ctx: commands.Context,
+        message: discord.Message,
+        mode: typing.Literal["html", "txt"] = "html",
+    ) -> None:
+        """Export a specific message in an html file.
 
         Specify the message to export, with its ID or its link.
         Please note: all attachments and user avatars are saved with the Discord link in this file.
@@ -210,23 +233,26 @@ class ExportChannel(Cog):
         """
         await self.check_channel(ctx, message.channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=message.channel,
+            ctx, channel=message.channel, mode=mode,
             messages=[message],
         )
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=message.channel, count_messages=count_messages),
             file=file,
         )
-        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
-        embed = discord.Embed(
-            title="Transcript Link",
-            description=_(LINK_MESSAGE).format(url=url),
-            color=await ctx.embed_color(),
-        )
-        view = discord.ui.View()
-        view.add_item(
-            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-        )
+        if mode == "html":
+            url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
+            embed = discord.Embed(
+                title="Transcript Link",
+                description=_(LINK_MESSAGE).format(url=url),
+                color=await ctx.embed_color(),
+            )
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
+        else:
+            embed, view = None, None
         await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
@@ -237,6 +263,7 @@ class ExportChannel(Cog):
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
         limit: int,
+        mode: typing.Literal["html", "txt"] = "html",
         exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
@@ -249,23 +276,27 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel,
+            ctx, channel=channel, mode=mode,
             limit=limit,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(
-            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+            _(RESULT_MESSAGE).format(channel=channel, mode=mode, count_messages=count_messages),
+            file=file,
         )
-        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
-        embed = discord.Embed(
-            title="Transcript Link",
-            description=_(LINK_MESSAGE).format(url=url),
-            color=await ctx.embed_color(),
-        )
-        view = discord.ui.View()
-        view.add_item(
-            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-        )
+        if mode == "html":
+            url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
+            embed = discord.Embed(
+                title="Transcript Link",
+                description=_(LINK_MESSAGE).format(url=url),
+                color=await ctx.embed_color(),
+            )
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
+        else:
+            embed, view = None, None
         await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
@@ -276,6 +307,7 @@ class ExportChannel(Cog):
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
         before: MessageOrObjectConverter,
+        mode: typing.Literal["html", "txt"] = "html",
         exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
@@ -288,23 +320,27 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel,
+            ctx, channel=channel, mode=mode,
             before=before,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(
-            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+            _(RESULT_MESSAGE).format(channel=channel, mode=mode, count_messages=count_messages),
+            file=file,
         )
-        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
-        embed = discord.Embed(
-            title="Transcript Link",
-            description=_(LINK_MESSAGE).format(url=url),
-            color=await ctx.embed_color(),
-        )
-        view = discord.ui.View()
-        view.add_item(
-            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-        )
+        if mode == "html":
+            url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
+            embed = discord.Embed(
+                title="Transcript Link",
+                description=_(LINK_MESSAGE).format(url=url),
+                color=await ctx.embed_color(),
+            )
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
+        else:
+            embed, view = None, None
         await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
@@ -315,6 +351,7 @@ class ExportChannel(Cog):
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
         after: MessageOrObjectConverter,
+        mode: typing.Literal["html", "txt"] = "html",
         exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
@@ -327,23 +364,27 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel,
+            ctx, channel=channel, mode=mode,
             after=after,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(
-            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+            _(RESULT_MESSAGE).format(channel=channel, mode=mode, count_messages=count_messages),
+            file=file,
         )
-        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
-        embed = discord.Embed(
-            title="Transcript Link",
-            description=_(LINK_MESSAGE).format(url=url),
-            color=await ctx.embed_color(),
-        )
-        view = discord.ui.View()
-        view.add_item(
-            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-        )
+        if mode == "html":
+            url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
+            embed = discord.Embed(
+                title="Transcript Link",
+                description=_(LINK_MESSAGE).format(url=url),
+                color=await ctx.embed_color(),
+            )
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
+        else:
+            embed, view = None, None
         await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
@@ -355,6 +396,7 @@ class ExportChannel(Cog):
         ],
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
+        mode: typing.Literal["html", "txt"] = "html",
         exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
@@ -367,23 +409,27 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel,
+            ctx, channel=channel, mode=mode,
             before=before, after=after,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(
-            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+            _(RESULT_MESSAGE).format(channel=channel, mode=mode, count_messages=count_messages),
+            file=file,
         )
-        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
-        embed = discord.Embed(
-            title="Transcript Link",
-            description=_(LINK_MESSAGE).format(url=url),
-            color=await ctx.embed_color(),
-        )
-        view = discord.ui.View()
-        view.add_item(
-            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-        )
+        if mode == "html":
+            url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
+            embed = discord.Embed(
+                title="Transcript Link",
+                description=_(LINK_MESSAGE).format(url=url),
+                color=await ctx.embed_color(),
+            )
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
+        else:
+            embed, view = None, None
         await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
@@ -395,6 +441,7 @@ class ExportChannel(Cog):
         ],
         user: discord.User,
         limit: typing.Optional[int] = None,
+        mode: typing.Literal["html", "txt"] = "html",
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -406,22 +453,26 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel,
+            ctx, channel=channel, mode=mode,
             user_id=getattr(user, "id", user), limit=limit,
         )
         message = await ctx.send(
-            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+            _(RESULT_MESSAGE).format(channel=channel, mode=mode, count_messages=count_messages),
+            file=file,
         )
-        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
-        embed = discord.Embed(
-            title="Transcript Link",
-            description=_(LINK_MESSAGE).format(url=url),
-            color=await ctx.embed_color(),
-        )
-        view = discord.ui.View()
-        view.add_item(
-            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-        )
+        if mode == "html":
+            url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
+            embed = discord.Embed(
+                title="Transcript Link",
+                description=_(LINK_MESSAGE).format(url=url),
+                color=await ctx.embed_color(),
+            )
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
+        else:
+            embed, view = None, None
         await message.edit(embed=embed, view=view)
 
     @exportchannel.command()
@@ -433,6 +484,7 @@ class ExportChannel(Cog):
         ],
         bot: typing.Optional[bool] = True,
         limit: typing.Optional[int] = None,
+        mode: typing.Literal["html", "txt"] = "html",
         exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
@@ -445,21 +497,25 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel,
+            ctx, channel=channel, mode=mode,
             bot=bot, limit=limit,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(
-            _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
+            _(RESULT_MESSAGE).format(channel=channel, mode=mode, count_messages=count_messages),
+            file=file,
         )
-        url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
-        embed = discord.Embed(
-            title="Transcript Link",
-            description=_(LINK_MESSAGE).format(url=url),
-            color=await ctx.embed_color(),
-        )
-        view = discord.ui.View()
-        view.add_item(
-            discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
-        )
+        if mode == "html":
+            url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
+            embed = discord.Embed(
+                title="Transcript Link",
+                description=_(LINK_MESSAGE).format(url=url),
+                color=await ctx.embed_color(),
+            )
+            view = discord.ui.View()
+            view.add_item(
+                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+            )
+        else:
+            embed, view = None, None
         await message.edit(embed=embed, view=view)

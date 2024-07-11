@@ -251,7 +251,7 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
                 )
             )
         return [
-            (str(channel.id), f"{'#!' if isinstance(channel, discord.VoiceChannel) '#'}{channel.name}")
+            (str(channel.id), f"{'#!' if isinstance(channel, discord.VoiceChannel) else '#'}{channel.name}")
             for channel in channels
         ]
 

@@ -68,6 +68,7 @@ class ExportChannel(Cog):
         after: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
         user_id: typing.Optional[int] = None,
         bot: typing.Optional[bool] = None,
+        exclude_users_and_roles: typing.List[typing.Union[discord.User, discord.Role]] = [],
     ) -> typing.Tuple[int, typing.List[discord.Message]]:
         messages = []
         async for message in channel.history(
@@ -83,6 +84,10 @@ class ExportChannel(Cog):
             if user_id is not None and message.author.id != user_id:
                 continue
             if bot is not None and message.author.bot != bot:
+                continue
+            if message.author in exclude_users_and_roles or any(
+                role in exclude_users_and_roles for role in message.author.roles
+            ):
                 continue
             messages.append(message)
             if number is not None and number <= len(messages):
@@ -166,6 +171,7 @@ class ExportChannel(Cog):
         self,
         ctx: commands.Context,
         channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread] = None,
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export all of a channel's messages to an html file.
 
@@ -175,7 +181,10 @@ class ExportChannel(Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, __, file = await self.export_messages(ctx, channel=channel)
+        count_messages, __, file = await self.export_messages(
+            ctx, channel=channel,
+            exclude_users_and_roles=exclude_users_and_roles,
+        )
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
@@ -201,8 +210,7 @@ class ExportChannel(Cog):
         """
         await self.check_channel(ctx, message.channel)
         count_messages, __, file = await self.export_messages(
-            ctx,
-            channel=message.channel,
+            ctx, channel=message.channel,
             messages=[message],
         )
         message = await ctx.send(
@@ -229,6 +237,7 @@ class ExportChannel(Cog):
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
         limit: int,
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -240,9 +249,9 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx,
-            channel=channel,
+            ctx, channel=channel,
             limit=limit,
+            exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
@@ -267,6 +276,7 @@ class ExportChannel(Cog):
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
         before: MessageOrObjectConverter,
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -277,7 +287,11 @@ class ExportChannel(Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, __, file = await self.export_messages(ctx, channel=channel, before=before)
+        count_messages, __, file = await self.export_messages(
+            ctx, channel=channel,
+            before=before,
+            exclude_users_and_roles=exclude_users_and_roles,
+        )
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
@@ -301,6 +315,7 @@ class ExportChannel(Cog):
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
         after: MessageOrObjectConverter,
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -311,7 +326,11 @@ class ExportChannel(Cog):
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
-        count_messages, __, file = await self.export_messages(ctx, channel=channel, after=after)
+        count_messages, __, file = await self.export_messages(
+            ctx, channel=channel,
+            after=after,
+            exclude_users_and_roles=exclude_users_and_roles,
+        )
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
         )
@@ -336,6 +355,7 @@ class ExportChannel(Cog):
         ],
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -347,7 +367,9 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel, before=before, after=after
+            ctx, channel=channel,
+            before=before, after=after,
+            exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
@@ -384,10 +406,8 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx,
-            channel=channel,
-            user_id=user.id if isinstance(user, discord.Member) else user,
-            limit=limit,
+            ctx, channel=channel,
+            user_id=getattr(user, "id", user), limit=limit,
         )
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file
@@ -413,6 +433,7 @@ class ExportChannel(Cog):
         ],
         bot: typing.Optional[bool] = True,
         limit: typing.Optional[int] = None,
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -424,7 +445,9 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel, bot=bot, limit=limit
+            ctx, channel=channel,
+            bot=bot, limit=limit,
+            exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, count_messages=count_messages), file=file

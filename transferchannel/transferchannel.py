@@ -119,6 +119,7 @@ class TransferChannel(Cog):
         after: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
         user_id: typing.Optional[int] = None,
         bot: typing.Optional[bool] = None,
+        exclude_users_and_roles: typing.List[typing.Union[discord.User, discord.Role]] = [],
     ) -> typing.Tuple[int, typing.List[discord.Message]]:
         messages = []
         async for message in channel.history(
@@ -136,6 +137,10 @@ class TransferChannel(Cog):
             if user_id is not None and message.author.id != user_id:
                 continue
             if bot is not None and message.author.bot != bot:
+                continue
+            if message.author in exclude_users_and_roles or any(
+                role in exclude_users_and_roles for role in message.author.roles
+            ):
                 continue
             messages.append(message)
             if number is not None and number <= len(messages):
@@ -280,6 +285,7 @@ class TransferChannel(Cog):
         source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Transfer all messages from a channel to another channel. This might take a long time.
 
@@ -289,7 +295,8 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way
+            ctx, source=source, destination=destination, way=way,
+            exclude_users_and_roles=exclude_users_and_roles,
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
@@ -336,6 +343,7 @@ class TransferChannel(Cog):
         destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         limit: int,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -346,11 +354,9 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx,
-            source=source,
-            destination=destination,
-            way=way,
+            ctx, source=source, destination=destination, way=way,
             limit=limit,
+            exclude_users_and_roles=exclude_users_and_roles,
         )
         await ctx.send(
             _(
@@ -366,6 +372,7 @@ class TransferChannel(Cog):
         destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         before: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -376,7 +383,9 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way, before=before
+            ctx, source=source, destination=destination, way=way,
+            before=before,
+            exclude_users_and_roles=exclude_users_and_roles,
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
@@ -392,6 +401,7 @@ class TransferChannel(Cog):
         destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         after: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -402,7 +412,9 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way, after=after
+            ctx, source=source, destination=destination, way=way,
+            after=after,
+            exclude_users_and_roles=exclude_users_and_roles,
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
@@ -419,6 +431,7 @@ class TransferChannel(Cog):
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -429,7 +442,9 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way, before=before, after=after
+            ctx, source=source, destination=destination, way=way,
+            before=before, after=after,
+            exclude_users_and_roles=exclude_users_and_roles,
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
@@ -456,12 +471,8 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx,
-            source=source,
-            destination=destination,
-            way=way,
-            user_id=user.id if isinstance(user, discord.Member) else user,
-            limit=limit,
+            ctx, source=source, destination=destination, way=way,
+            user_id=user.id if isinstance(user, discord.Member) else user, limit=limit,
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
@@ -478,6 +489,7 @@ class TransferChannel(Cog):
         bot: typing.Optional[bool] = True,
         limit: typing.Optional[int] = None,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
+        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -488,7 +500,9 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way, bot=bot, limit=limit
+            ctx, source=source, destination=destination, way=way,
+            bot=bot, limit=limit,
+            exclude_users_and_roles=exclude_users_and_roles,
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(

@@ -112,7 +112,7 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
                             extra_notifications.append({"message": f"{field.name}: {e}", "category": "warning"})
                             result = False
                         continue
-                    if not field.data.strip():
+                    if field.data is None or not field.data.strip():
                         field.data = ""
                         continue
                     try:
@@ -251,7 +251,7 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
                 )
             )
         return [
-            (str(channel.id), channel.name)
+            (str(channel.id), f"{'#!' if isinstance(channel, discord.VoiceChannel) '#'}{channel.name}")
             for channel in channels
         ]
 
@@ -261,7 +261,7 @@ async def get_form_class(_self, third_party_cog: commands.Cog, method: typing.Li
         filter_func: typing.Optional[typing.Callable[[discord.Role], bool]] = discord.utils.MISSING,
     ) -> typing.List[typing.Tuple[int, str]]:
         if filter_func is discord.utils.MISSING:
-            filter_func = lambda role: not role.is_managed() and role.position < guild.me.top_role.position
+            filter_func = lambda role: not role.is_bot_managed()  # and role.position < guild.me.top_role.position
         return [
             (str(role.id), role.name)
             for role in sorted(guild.roles, reverse=True) if not role.is_default() and (filter_func is None or filter_func(role))

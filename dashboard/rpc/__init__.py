@@ -89,8 +89,8 @@ class DashboardRPC:
         self.bot.unregister_rpc_handler(self.set_dashboard_settings)
         self.bot.unregister_rpc_handler(self.get_bot_settings)
         self.bot.unregister_rpc_handler(self.set_bot_settings)
-        for extension in self.handlers:
-            extension.unload()
+        for handler in self.handlers.values():
+            handler.unload()
 
     @rpc_check()
     async def check_version(self) -> typing.Dict[str, int]:

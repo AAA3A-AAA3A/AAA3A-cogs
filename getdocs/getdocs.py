@@ -111,6 +111,7 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "url": "https://docs.discord.red/en/latest/",
         "icon_url": "https://media.discordapp.net/attachments/133251234164375552/1074432427201663086/a_aab012f3206eb514cac0432182e9e9ec.png",
         "aliases": ["red"],
+        "display_name": "Red",
     },
     "python": {
         "url": "https://docs.python.org/3/",
@@ -120,7 +121,7 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
     "aiohttp": {
         "url": "https://docs.aiohttp.org/en/stable/",
         "icon_url": "https://docs.aiohttp.org/en/v3.7.3/_static/aiohttp-icon-128x128.png",
-        "aliases": ["ahttp"],
+        "aliases": ["aioHTTP"],
     },
     "requests": {
         "url": "https://requests.readthedocs.io/en/latest/",
@@ -130,15 +131,18 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "url": "https://discord.com/developers/docs/",
         "icon_url": "https://c.clc2l.com/t/d/i/discord-4OXyS2.png",
         "aliases": ["apidiscord"],
+        "display_name": "Discord API",
     },
     "pylav": {
         "url": "https://pylav.readthedocs.io/en/latest/",
         "icon_url": "https://avatars.githubusercontent.com/u/125160897?s=88&v=4",
+        "display_name": "PyLav",
     },
     "phentags": {  # Cogs `Tags` and `SlashTags` by Phen.
         "url": "https://phen-cogs.readthedocs.io/en/latest/",
         "icon_url": "https://i.imgur.com/dIOX12K.png",
         "aliases": ["slashtags"],
+        "display_name": "Phen Tags",
     },
     "git": {  # Special source.
         "url": "https://git-scm.com/docs/",
@@ -198,11 +202,13 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
     "websockets": {
         "url": "https://websockets.readthedocs.io/en/latest/",
         "icon_url": "https://repository-images.githubusercontent.com/9113587/aa03b380-afdb-11eb-8e88-2c7542e1670f",
+        "aliases": ["ws"],
     },
     "warcraftapi": {  # Special source.
         "url": "https://wowpedia.fandom.com/wiki/World_of_Warcraft_API",
         "icon_url": "https://static.wikia.nocookie.net/wowpedia/images/e/e6/Site-logo.png",
         "aliases": ["warcraft"],
+        "display_name": "Warcraft API",
     },
 }
 
@@ -300,6 +306,7 @@ class GetDocs(DashboardIntegration, Cog):
                 url=BASE_URLS[source]["url"],
                 icon_url=BASE_URLS[source]["icon_url"],
                 aliases=BASE_URLS[source].get("aliases", []),
+                display_name=BASE_URLS[source].get("display_name"),
             )
             asyncio.create_task(self.documentations[source].load())
 
@@ -709,6 +716,7 @@ class Source:
         url: str,
         icon_url: typing.Optional[str] = None,
         aliases: typing.Optional[typing.List[str]] = None,
+        display_name: typing.Optional[str] = None,
     ) -> None:
         if aliases is None:
             aliases = []
@@ -717,6 +725,7 @@ class Source:
         self.url: str = url
         self.icon_url: typing.Optional[str] = icon_url
         self.aliases: typing.List[str] = aliases
+        self.display_name: str = display_name or name.capitalize()
 
         if self.url.startswith("http"):
             self._rtfm_cache_url: str = urljoin(url, "objects.inv")

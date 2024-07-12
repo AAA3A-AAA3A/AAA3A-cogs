@@ -259,7 +259,7 @@ class Documentation:
             color=embed_color,
         )
         embed.set_author(
-            name=f"{self.source.name} Documentation",
+            name=f"{self.source.display_name} Documentation",
             icon_url=self.source.icon_url,
         )
         fields = {}

@@ -317,13 +317,13 @@ class GetDocs(DashboardIntegration, Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(
-        aliases=["getdoc", "docs", "doc"],
+        aliases=["getdocs", "getdoc", "doc"],
     )
     @app_commands.describe(
         source="The name of the documentation to use.",
         query="The documentation node/query. (`random` to get a random documentation)",
     )
-    async def getdocs(
+    async def docs(
         self,
         ctx: commands.Context,
         source: typing.Optional[SourceConverter] = None,

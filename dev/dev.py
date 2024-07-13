@@ -671,12 +671,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                 "soft_wrap": False,
             }
         if _console_custom := env.get("_console_custom"):
-            try:
-                _console_custom_kwargs.update(_console_custom)
-            except Exception:
-                self.logger.exception(
-                    "Error updating console kwargs: falling back to default values."
-                )
+            _console_custom_kwargs.update(_console_custom)
         env["_console_custom"] = _console_custom_kwargs
         output: DevOutput = await types[type](
             ctx,

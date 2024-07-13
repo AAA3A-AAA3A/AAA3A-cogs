@@ -436,7 +436,7 @@ class Ticket:
                     _("Report on the creation of the ticket {ticket.id}.").format(ticket=self),
                     embed=embed,
                 )
-        except Exception:
+        except discord.HTTPException:
             if config["ticket_role"] is not None and self.owner:
                 try:
                     await self.owner.remove_roles(config["ticket_role"], reason=_reason)

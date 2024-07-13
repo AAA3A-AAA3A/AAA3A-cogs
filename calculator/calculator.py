@@ -71,7 +71,7 @@ class Calculator(Cog):
         lst = list(expression)
         try:
             lst.remove("|")
-        except Exception:
+        except ValueError:
             pass
         expression = "".join(lst)
         expression = expression.replace(",", ".")
@@ -146,7 +146,7 @@ class Calculator(Cog):
             result = f"{float(result):,}"
             if result == "inf":
                 result = "∞"
-        except Exception:
+        except (ValueError, TypeError, OverflowError):
             result = None
         return f"{result}".replace(",", " ") if result is not None else _("Error!")
 
@@ -185,7 +185,7 @@ class Calculator(Cog):
         try:
             index = lst.index("|")
             lst.remove("|")
-        except Exception:
+        except ValueError:
             index = 0
         if new in {"abs", "cos", "sin", "tan", "ln", "√"}:
             lst.insert(index, f"{new}(")

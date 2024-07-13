@@ -893,14 +893,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
             )
             embed.color = await ctx.embed_color()
             for label, value in modal_answers.items():
-                try:
-                    embed.add_field(
-                        name=label,
-                        value=value,
-                        inline=False,
-                    )
-                except Exception:
-                    pass
+                embed.add_field(
+                    name=label,
+                    value=value if len(value) <= 1024 else f"{value[:1021]}...",
+                    inline=False,
+                )
             if config["forum_channel"] is not None:
                 channel = config["forum_channel"].get_thread(int(ticket.channel))
             else:

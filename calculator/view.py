@@ -238,7 +238,7 @@ class CalculatorView(discord.ui.View):
                     index = lst.index("|")
                     lst.pop(index - 1)
                     self._expression = "".join(lst)
-                except Exception:
+                except (ValueError, IndexError):
                     self._expression = None
         elif interaction.data["custom_id"] == "left_button":
             lst = list(self._expression)
@@ -247,7 +247,7 @@ class CalculatorView(discord.ui.View):
                     index = lst.index("|")
                     lst.remove("|")
                     lst.insert(index - 1, "|")
-                except Exception:
+                except (ValueError, IndexError):
                     lst = ["|"]
             self._expression = "".join(lst)
             if self._expression == "|":
@@ -259,7 +259,7 @@ class CalculatorView(discord.ui.View):
                     index = lst.index("|")
                     lst.remove("|")
                     lst.insert(index + 1, "|")
-                except Exception:
+                except (ValueError, IndexError):
                     lst = ["|"]
             self._expression = "".join(lst)
             if self._expression == "|":

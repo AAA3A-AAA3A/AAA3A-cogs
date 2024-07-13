@@ -72,7 +72,7 @@ class EmojiUrlConverter(commands.Converter):
         arg_split = re.split(r";|\||-", argument)
         try:
             emoji, url = arg_split
-        except Exception:
+        except Valu:
             # emoji = None
             # url = arg_split[0]
             raise commands.BadArgument(

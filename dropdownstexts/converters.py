@@ -59,16 +59,11 @@ class EmojiLabelTextConverter(commands.Converter):
         arg_split = re.split(r";|\||-", argument)
         try:
             emoji, label, text_or_message = arg_split
-        except Exception:
-            # emoji = None
-            # try:
-            #     label, text_or_message = arg_split
-            # except Exception:
+        except ValueError:
             raise commands.BadArgument(
                 _(
                     "Dropdown Text must be an `emoji`, followed by a `label` and a `text_or_message`, separated by either `;`, `,`, `|`, or `-`."
                 )
             )
-        # if emoji is not None:
         emoji = await Emoji().convert(ctx, emoji.strip())
         return emoji, label, text_or_message

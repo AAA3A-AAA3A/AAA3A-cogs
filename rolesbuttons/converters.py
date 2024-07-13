@@ -105,15 +105,12 @@ class EmojiRoleConverter(commands.Converter):
         arg_split = re.split(r";|\||-", argument)
         try:
             emoji, role = arg_split
-        except Exception:
-            # emoji = None
-            # role = arg_split[0]
+        except ValueError:
             raise commands.BadArgument(
                 _(
                     "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
                 )
             )
-        # if emoji is not None:
         emoji = await Emoji().convert(ctx, emoji.strip())
         role = await RoleHierarchyConverter().convert(ctx, role.strip())
         return emoji, role

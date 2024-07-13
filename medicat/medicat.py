@@ -768,20 +768,14 @@ class Medicat(Cog):
     @medicat.command(aliases=["lastventoyversion"])
     async def getlastventoyversion(self, ctx: commands.Context) -> None:
         """Get the latest version of Ventoy."""
-        try:
-            await self.ventoy_updates(channel=ctx, ping_role=False, force=True)
-        except Exception:
-            raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
+        await self.ventoy_updates(channel=ctx, ping_role=False, force=True)
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @commands.bot_has_permissions(embed_links=True)
     @medicat.command(aliases=["ventoyversion"])
     async def getventoyversion(self, ctx: commands.Context, version: str) -> None:
         """Get a version of Ventoy."""
-        try:
-            await self.ventoy_updates(channel=ctx, ping_role=False, force=True, version=version)
-        except Exception:
-            raise commands.UserFeedbackCheckFailure(_("An error has occurred. Please try again."))
+        await self.ventoy_updates(channel=ctx, ping_role=False, force=True, version=version)
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @commands.bot_has_permissions(embed_links=True)
@@ -843,74 +837,71 @@ class Medicat(Cog):
     @medicat.command(hidden=True)
     async def debugbootabletoolversion(self, ctx: commands.Context, *, url: str) -> None:
         """Get the debug for a FCportables's tool."""
-        try:
-            result = {
-                "Settings": {
-                    "Found": False,
-                    "Name": None,
-                    "Url": None,
-                    "Category": None,
-                    "Regex": None,
-                },
-                "Web request": {
-                    "Web request url": None,
-                    "Web request status": None,
-                    "Web request result": None,
-                },
-                "Search for the tool name": {"Tool name line": None, "Tool name full": None},
-                "Find version": {
-                    "Regex used": None,
-                    "Result 1": None,
-                    "Result 2": None,
-                    "Result 3": None,
-                },
-            }
-            tool = None
-            if url in BOOTABLES_TOOLS:
-                tool = url
-                url = BOOTABLES_TOOLS[tool]["url"]
-            else:
-                if not url.startswith("https://www.fcportables.com/"):
-                    url = f"https://www.fcportables.com/{url}"
-                if not url.endswith("/"):
-                    url += "/"
-                for t in BOOTABLES_TOOLS:
-                    if BOOTABLES_TOOLS[t]["url"] == url:
-                        tool = t
-                        break
-            if tool is not None:
-                result["Settings"]["Found"] = True
-                result["Settings"]["Name"] = tool
-                result["Settings"]["Url"] = BOOTABLES_TOOLS[tool]["url"]
-                result["Settings"]["Category"] = BOOTABLES_TOOLS[tool]["category"]
-                result["Settings"]["Regex"] = BOOTABLES_TOOLS[tool]["regex"]
-            async with self._session.get(url, timeout=3) as r:
-                result["Web request"]["Web request url"] = r.url
-                result["Web request"]["Web request status"] = r.status
-                content = await r.text()
-            result["Web request"]["Web request result"] = list(content.split("\n"))[20:29]
-            # for x in r.split("\n"):
-            #     if '"headline":' in x and '<html lang="en-US">' not in x:
-            #         break
-            # result["Search for the tool name"]["Tool name line"] = x
-            # x = x.replace('    "headline": "', "").replace('",', "")
-            # result["Search for the tool name"]["Tool name full"] = x
-            soup = BeautifulSoup(content, "lxml")
-            found = soup.find("script", class_="yoast-schema-graph")
-            _json = json.loads(found.text)
-            x = _json["@graph"][0]["headline"]
-            result["Search for the tool name"]["Tool name line"] = str(found)[:301] + "\n..."
-            result["Search for the tool name"]["Tool name full"] = x
-            if tool is not None:
-                result["Find version"]["Regex used"] = BOOTABLES_TOOLS[tool]["regex"]
-                regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
-                result["Find version"]["Result 1"] = regex
-                regex = regex[0] if len(regex) > 0 else None
-                result["Find version"]["Result 2"] = regex
-                regex = regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
-                result["Find version"]["Result 3"] = regex
-        except Exception:
-            pass
+        result = {
+            "Settings": {
+                "Found": False,
+                "Name": None,
+                "Url": None,
+                "Category": None,
+                "Regex": None,
+            },
+            "Web request": {
+                "Web request url": None,
+                "Web request status": None,
+                "Web request result": None,
+            },
+            "Search for the tool name": {"Tool name line": None, "Tool name full": None},
+            "Find version": {
+                "Regex used": None,
+                "Result 1": None,
+                "Result 2": None,
+                "Result 3": None,
+            },
+        }
+        tool = None
+        if url in BOOTABLES_TOOLS:
+            tool = url
+            url = BOOTABLES_TOOLS[tool]["url"]
+        else:
+            if not url.startswith("https://www.fcportables.com/"):
+                url = f"https://www.fcportables.com/{url}"
+            if not url.endswith("/"):
+                url += "/"
+            for t in BOOTABLES_TOOLS:
+                if BOOTABLES_TOOLS[t]["url"] == url:
+                    tool = t
+                    break
+        if tool is not None:
+            result["Settings"]["Found"] = True
+            result["Settings"]["Name"] = tool
+            result["Settings"]["Url"] = BOOTABLES_TOOLS[tool]["url"]
+            result["Settings"]["Category"] = BOOTABLES_TOOLS[tool]["category"]
+            result["Settings"]["Regex"] = BOOTABLES_TOOLS[tool]["regex"]
+        async with self._session.get(url, timeout=3) as r:
+            result["Web request"]["Web request url"] = r.url
+            result["Web request"]["Web request status"] = r.status
+            content = await r.text()
+        result["Web request"]["Web request result"] = list(content.split("\n"))[20:29]
+        # for x in r.split("\n"):
+        #     if '"headline":' in x and '<html lang="en-US">' not in x:
+        #         break
+        # result["Search for the tool name"]["Tool name line"] = x
+        # x = x.replace('    "headline": "', "").replace('",', "")
+        # result["Search for the tool name"]["Tool name full"] = x
+        soup = BeautifulSoup(content, "lxml")
+        found = soup.find("script", class_="yoast-schema-graph")
+        _json = json.loads(found.text)
+        x = _json["@graph"][0]["headline"]
+        result["Search for the tool name"]["Tool name line"] = str(found)[:301] + "\n..."
+        result["Search for the tool name"]["Tool name full"] = x
+        if tool is not None:
+            result["Find version"]["Regex used"] = BOOTABLES_TOOLS[tool]["regex"]
+            regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
+            result["Find version"]["Result 1"] = regex
+            regex = regex[0] if len(regex) > 0 else None
+            result["Find version"]["Result 2"] = regex
+            regex = regex[0] if isinstance(regex, typing.Tuple) and len(regex) > 0 else regex
+            result["Find version"]["Result 3"] = regex
         message = ""
         for x in result:
             message += f"\n\n--------------- {x} ---------------"

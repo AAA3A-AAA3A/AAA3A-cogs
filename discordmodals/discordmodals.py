@@ -106,7 +106,7 @@ class ModalConverter(commands.Converter):
     ) -> typing.Dict[str, typing.Union[str, bool, typing.Dict, typing.List]]:
         try:
             argument_dict = yaml.safe_load(argument)
-        except Exception:
+        except yaml.YAMLError:
             raise commands.BadArgument(
                 _(
                     "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
@@ -565,14 +565,11 @@ class DiscordModals(Cog):
                     icon_url="https://forum.mtasa.com/uploads/monthly_2016_10/Anonyme.png.4060431ce866962fa496657f752d5613.png",
                 )
             for _input in inputs:
-                try:
-                    embed.add_field(
-                        name=_input.label,
-                        value=_input.value.strip() or "Not provided.",
-                        inline=False,
-                    )
-                except Exception:
-                    pass
+                embed.add_field(
+                    name=_input.label,
+                    value=(_input.value.strip() if len(_input.value.strip()) <= 1024 else f"{_input.value.strip()[:1021]}...") or "Not provided.",
+                    inline=False,
+                )
             embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
             await channel.send(
                 None if config["pings"] is None else humanize_list(config["pings"])[:2000],

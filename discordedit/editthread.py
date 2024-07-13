@@ -83,10 +83,10 @@ class ForumTagConverter(discord.ext.commands.Converter):
         try:
             try:
                 name, emoji, moderated = arg_split
-            except Exception:
+            except ValueError:
                 name, emoji = arg_split
                 moderated = False
-        except Exception:
+        except ValueError:
             raise commands.BadArgument(
                 _(
                     "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."

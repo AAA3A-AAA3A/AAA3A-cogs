@@ -178,7 +178,7 @@ class AntiNuke(DashboardIntegration, Cog):
                             "All your roles have been taken away because you have deleted channel #{old_channel}.\nYour previous roles: {rolelist_name}"
                         ).format(old_channel=old_channel, rolelist_name=rolelist_name)
                     )
-                except Exception:
+                except discord.HTTPException:
                     pass
             if old_channel.guild.me.guild_permissions.manage_roles:
                 # await perp.edit(roles=[], reason=f"All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server.")
@@ -190,7 +190,7 @@ class AntiNuke(DashboardIntegration, Cog):
                                 "All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server."
                             ).format(perp=perp),
                         )
-                    except Exception:
+                    except discord.HTTPException:
                         pass
                 await self.config.member(perp).old_roles.set(old_roles)
             if logschannel:

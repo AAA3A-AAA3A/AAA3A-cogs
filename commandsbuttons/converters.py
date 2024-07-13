@@ -59,14 +59,11 @@ class EmojiCommandConverter(commands.Converter):
         arg_split = re.split(r";|\||-", argument)
         try:
             emoji, command = arg_split
-        except Exception:
-            # emoji = None
-            # command = arg_split[0]
+        except ValueError:
             raise commands.BadArgument(
                 _(
                     "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
                 )
             )
-        # if emoji is not None:
         emoji = await Emoji().convert(ctx, emoji.strip())
         return emoji, command

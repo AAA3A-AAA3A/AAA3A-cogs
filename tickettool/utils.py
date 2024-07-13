@@ -130,15 +130,15 @@ class EmojiLabelDescriptionValueConverter(commands.Converter):
         try:
             try:
                 emoji, label, description, value = arg_split
-            except Exception:
+            except ValueError:
                 try:
                     emoji, label, description = arg_split
                     value = label
-                except Exception:
+                except ValueError:
                     emoji, label = arg_split
                     description = None
                     value = label
-        except Exception:
+        except ValueError:
             raise commands.BadArgument(
                 _(
                     "Emoji Label must be An emoji followed by a label, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
@@ -155,7 +155,7 @@ class CustomModalConverter(commands.Converter):
     ) -> typing.Dict[str, typing.Union[str, bool, typing.Dict, typing.List]]:
         try:
             argument_dict = yaml.safe_load(argument)
-        except Exception:
+        except yaml.YAMLError:
             raise commands.BadArgument(
                 _(
                     "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"

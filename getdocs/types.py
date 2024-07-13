@@ -66,7 +66,7 @@ class SearchResults:
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed = discord.Embed(color=embed_color)
         embed.set_author(
-            name=f"{self.source.name} Documentation",
+            name=f"{self.source.display_name} Documentation",
             icon_url=self.source.icon_url,
         )
         # query_time = format_timespan(self.query_time)

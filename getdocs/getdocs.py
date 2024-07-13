@@ -138,11 +138,11 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "icon_url": "https://avatars.githubusercontent.com/u/125160897?s=88&v=4",
         "display_name": "PyLav",
     },
-    "phentags": {  # Cogs `Tags` and `SlashTags` by Phen.
-        "url": "https://phen-cogs.readthedocs.io/en/latest/",
+    "tags": {  # Cog `Tags` by Lemon.
+        "url": "https://seina-cogs.readthedocs.io/en/latest/",
         "icon_url": "https://i.imgur.com/dIOX12K.png",
-        "aliases": ["slashtags"],
-        "display_name": "Phen Tags",
+        "aliases": ["lemontags"],
+        "display_name": "Tags cog",
     },
     "git": {  # Special source.
         "url": "https://git-scm.com/docs/",
@@ -249,7 +249,7 @@ class GetDocs(DashboardIntegration, Cog):
         self.config.register_global(
             default_source="discord.py",
             caching=True,
-            enabled_sources=["discord.py", "redbot", "aiohttp", "discordapi"],
+            enabled_sources=["discord.py", "redbot", "python", "aiohttp", "discordapi"],
         )
 
         self.documentations: typing.Dict[str, Source] = {}
@@ -339,42 +339,39 @@ class GetDocs(DashboardIntegration, Cog):
         - `source`: The name of the documentation to use. Defaults to the one configured with `[p]setgetdocs defaultsource`.
         - `query`: The documentation node/query. (`random` to get a random documentation)
         """
-        try:
-            if source is None:
-                source = await self.config.default_source()
-                if source not in self.documentations:
-                    if "discord.py" not in self.documentations:
-                        raise commands.UserFeedbackCheckFailure(
-                            _("Please provide a valid documentations source.")
-                        )
-                    source = "discord.py"
-            source: Source = self.documentations[source]
-            if query is None:
-                embed = discord.Embed(description=source.url)
-                embed.set_author(
-                    name=f"{source.name} Documentation",
-                    icon_url=source.icon_url,
-                )
-                view = discord.ui.View()
-                view.add_item(discord.ui.Button(label="Click to view", url=source.url))
-                await ctx.send(embed=embed, view=view)
-                return
-            if query == "random":
-                if not source._docs_cache:
+        if source is None:
+            source = await self.config.default_source()
+            if source not in self.documentations:
+                if "discord.py" not in self.documentations:
                     raise commands.UserFeedbackCheckFailure(
-                        _("Documentations cache is not yet built.")
+                        _("Please provide a valid documentations source.")
                     )
-                choice: Documentation = random.choice(source._docs_cache)
-                if not any([choice.parameters, choice.examples, choice.attributes]):
-                    await ctx.send(embed=choice.to_embed(embed_color=await ctx.embed_color()))
-                    return
-                query = choice.name
-            try:
-                await GetDocsView(cog=self, query=query.strip(), source=source).start(ctx)
-            except RuntimeError as e:
-                raise commands.UserFeedbackCheckFailure(str(e))
-        except GeneratorExit as e:
-            await self.cog_command_error(ctx, commands.CommandInvokeError(e))
+                source = "discord.py"
+        source: Source = self.documentations[source]
+        if query is None:
+            embed = discord.Embed(description=source.url)
+            embed.set_author(
+                name=f"{source.display_name} Documentation",
+                icon_url=source.icon_url,
+            )
+            view = discord.ui.View()
+            view.add_item(discord.ui.Button(label="Click to view", url=source.url))
+            await ctx.send(embed=embed, view=view)
+            return
+        if query == "random":
+            if not source._docs_cache:
+                raise commands.UserFeedbackCheckFailure(
+                    _("Documentations cache is not yet built.")
+                )
+            choice: Documentation = random.choice(source._docs_cache)
+            if not any([choice.parameters, choice.examples, choice.attributes]):
+                await ctx.send(embed=choice.to_embed(embed_color=await ctx.embed_color()))
+                return
+            query = choice.name
+        try:
+            await GetDocsView(cog=self, query=query.strip(), source=source).start(ctx)
+        except RuntimeError as e:
+            raise commands.UserFeedbackCheckFailure(str(e))
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["rtfd"])
@@ -590,6 +587,7 @@ class GetDocs(DashboardIntegration, Cog):
                 url=BASE_URLS[source]["url"],
                 icon_url=BASE_URLS[source]["icon_url"],
                 aliases=BASE_URLS[source]["aliases"],
+                display_name=BASE_URLS[source].get("display_name"),
             )
             asyncio.create_task(self.documentations[source].load())
         await self.config.enabled_sources.set(enabled_sources)
@@ -725,7 +723,7 @@ class Source:
         self.url: str = url
         self.icon_url: typing.Optional[str] = icon_url
         self.aliases: typing.List[str] = aliases
-        self.display_name: str = display_name or name.capitalize()
+        self.display_name: str = display_name or self.name.capitalize()
 
         if self.url.startswith("http"):
             self._rtfm_cache_url: str = urljoin(url, "objects.inv")

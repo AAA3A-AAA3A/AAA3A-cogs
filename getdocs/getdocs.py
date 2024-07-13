@@ -355,7 +355,7 @@ class GetDocs(DashboardIntegration, Cog):
                 icon_url=source.icon_url,
             )
             view = discord.ui.View()
-            view.add_item(discord.ui.Button(label="Click to view", url=source.url))
+            view.add_item(discord.ui.Button(label="Click to View", url=source.url))
             await ctx.send(embed=embed, view=view)
             return
         if query == "random":

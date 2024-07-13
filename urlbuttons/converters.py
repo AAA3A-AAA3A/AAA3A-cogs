@@ -72,15 +72,12 @@ class EmojiUrlConverter(commands.Converter):
         arg_split = re.split(r";|\||-", argument)
         try:
             emoji, url = arg_split
-        except Valu:
-            # emoji = None
-            # url = arg_split[0]
+        except ValueError:
             raise commands.BadArgument(
                 _(
                     "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
                 )
             )
-        # if emoji is not None:
         emoji = await Emoji().convert(ctx, emoji.strip())
         url = await UrlConverter().convert(ctx, argument=url)
         return emoji, url

@@ -444,7 +444,7 @@ class GetDocs(DashboardIntegration, Cog):
     #     _params3 = {key: _params1[key] for key in _params2}
     #     command.app_command._params = _params3
 
-    @getdocs.autocomplete("source")
+    @docs.autocomplete("source")
     async def getdocs_source_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> typing.List[app_commands.Choice[str]]:
@@ -493,7 +493,7 @@ class GetDocs(DashboardIntegration, Cog):
         )
         return source, [app_commands.Choice(name=name, value=name) for name in matches]
 
-    @getdocs.autocomplete("query")
+    @docs.autocomplete("query")
     async def getdocs_query_autocomplete(
         self, interaction: discord.Interaction, current: str
     ) -> typing.List[app_commands.Choice[str]]:

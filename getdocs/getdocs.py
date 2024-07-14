@@ -140,7 +140,7 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
     },
     "tags": {  # Cog `Tags` by Lemon.
         "url": "https://seina-cogs.readthedocs.io/en/latest/",
-        "icon_url": "https://i.imgur.com/dIOX12K.png",
+        "icon_url": "https://www.aprifel.com/wp-content/uploads/2018/10/une-citron.jpg",
         "aliases": ["lemontags"],
         "display_name": "Tags cog",
     },

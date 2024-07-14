@@ -1241,9 +1241,9 @@ class Source:
                 fields = {}
                 try:
                     fields_labels = soup.find_all("span", class_="mw-headline")
-                    fields_values = soup.find_all(("dl", "ul"))
+                    fields_values = soup.find_all("dl")
                     for field_value in fields_values.copy():
-                        if field_value.name == "ul":
+                        if field_value.name == "dl":
                             text = self._get_text(
                                 field_value, parsed_url=self.url.split("/wiki")[0]
                             )

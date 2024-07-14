@@ -205,8 +205,8 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "aliases": ["ws"],
     },
     "warcraftapi": {  # Special source.
-        "url": "https://wowpedia.fandom.com/wiki/World_of_Warcraft_API",
-        "icon_url": "https://static.wikia.nocookie.net/wowpedia/images/e/e6/Site-logo.png",
+        "url": "https://warcraft.wiki.gg/wiki/World_of_Warcraft_API",
+        "icon_url": "https://warcraft.wiki.gg/images/e/e6/Site-logo.png",
         "aliases": ["warcraft"],
         "display_name": "Warcraft API",
     },
@@ -1241,21 +1241,20 @@ class Source:
                 fields = {}
                 try:
                     fields_labels = soup.find_all("span", class_="mw-headline")
-                    fields_values = soup.find_all(("dl", "ul"))
+                    fields_values = soup.find_all("dl")
                     for field_value in fields_values.copy():
-                        if field_value.name == "ul":
-                            text = self._get_text(
-                                field_value, parsed_url=self.url.split("/wiki")[0]
-                            )
-                            if (
-                                len(text.split("\n\n")) > 1
-                                or "WoW API" in text
-                                or "Hyperlinks" in text
-                                or "mainline" in text
-                                or "Wowprogramming" in text
-                                or "Townlong Yak" in text
-                            ):
-                                fields_values.remove(field_value)
+                        text = self._get_text(
+                            field_value, parsed_url=self.url.split("/wiki")[0]
+                        )
+                        if (
+                            len(text.split("\n\n")) > 1
+                            or "WoW API" in text
+                            or "Hyperlinks" in text
+                            or "mainline" in text
+                            or "Wowprogramming" in text
+                            or "Townlong Yak" in text
+                        ):
+                            fields_values.remove(field_value)
                     used_fields_values = set()
                     for field_label in fields_labels:
                         if field_label.text.strip().lower() in ("patch changes"):
@@ -1271,7 +1270,7 @@ class Source:
                         lines = _field_value.split("\n")
                         field_value = (
                             "".join(
-                                f"**{line.strip()}**\n"
+                                f"**•** **{line.strip()}**\n"
                                 if i % 2 == 0
                                 else f"> {line.split(' - ')[0].strip()}{' - ' if line.split(' - ')[1:] else ''}{' - '.join(line.split(' - ')[1:]).strip()}\n"
                                 for i, line in enumerate(lines)

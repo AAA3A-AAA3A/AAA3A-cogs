@@ -170,6 +170,7 @@ class Dashboard(Cog):
                     ],
                 },
                 "disabled_third_parties": [],
+                "custom_pages": [],
             }
         )
 

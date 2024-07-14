@@ -51,6 +51,7 @@ class DashboardRPC:
         self.bot.register_rpc_handler(self.set_dashboard_settings)
         self.bot.register_rpc_handler(self.get_bot_settings)
         self.bot.register_rpc_handler(self.set_bot_settings)
+        self.bot.register_rpc_handler(self.set_custom_pages)
 
         # Initialize handlers.
         self.handlers: typing.Dict[str, typing.Any] = {}
@@ -89,6 +90,7 @@ class DashboardRPC:
         self.bot.unregister_rpc_handler(self.set_dashboard_settings)
         self.bot.unregister_rpc_handler(self.get_bot_settings)
         self.bot.unregister_rpc_handler(self.set_bot_settings)
+        self.bot.unregister_rpc_handler(self.set_custom_pages)
         for handler in self.handlers.values():
             handler.unload()
 
@@ -729,4 +731,11 @@ class DashboardRPC:
         await self.bot._i18n_cache.set_locale(None, settings["locale"])
         i18n.set_contextual_regional_format(settings["regional_format"])
         await self.bot._i18n_cache.set_regional_format(None, settings["regional_format"])
+        return {"status": 0}
+
+    @rpc_check()
+    async def set_custom_pages(self, user_id: int, custom_pages: typing.List[typing.Dict[str, str]]):
+        if user_id not in self.bot.owner_ids:
+            return {"status": 1}
+        await self.cog.config.webserver.custom_pages.set(custom_pages)
         return {"status": 0}

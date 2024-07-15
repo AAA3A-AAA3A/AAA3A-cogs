@@ -385,12 +385,12 @@ class DevEnv(typing.Dict[str, typing.Any]):
             command_or_function: typing.Union[str, commands.Command, typing.Callable], arguments: str
         ) -> typing.Dict[str, typing.Any]:
             if isinstance(command_or_function, str):
-                if (command := ctx.bot.get_command(command_or_function) is None):
+                if (command := ctx.bot.get_command(command_or_function)) is None:
                     raise RuntimeError()
             elif isinstance(command_or_function, commands.Command):
                 command = command_or_function
             else:
-                command = commands.Command(function)
+                command = commands.Command(command_or_function)
             view = discord.ext.commands.view.StringView(arguments)
             fake_context = type(
                 "FakeContext",

@@ -1,3 +1,4 @@
+import discord.ext
 from redbot.core import commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 import discord  # isort:skip
@@ -371,17 +372,32 @@ class DevEnv(typing.Dict[str, typing.Any]):
             ]
 
         async def run_converter(
-            converter: typing.Any, value: str, label: typing.Optional[str] = "test"
+            converter: typing.Any, argument: str, label: typing.Optional[str] = "test"
         ) -> typing.Any:
             param = discord.ext.commands.parameters.Parameter(
                 name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
             )
-            try:
-                return await discord.ext.commands.converter.run_converters(
-                    ctx, converter=param.converter, argument=value, param=param
-                )
-            except commands.CommandError as e:
-                return e
+            return await discord.ext.commands.converter.run_converters(
+                ctx, converter=param.converter, argument=argument, param=param
+            )
+
+        async def run_converters(
+            function: typing.Callable, arguments: str
+        ) -> typing.Dict[str, typing.Any]:
+            fake_command = commands.Command(function)
+            fake_command.params = discord.ext.commands.core.get_signature_parameters(function, {}, skip_parameters=0)
+            view = discord.ext.commands.view.StringView(arguments)
+            fake_context = type(
+                "FakeContext",
+                (),
+                {"bot": ctx.bot, "command": fake_command, "message": ctx.message, "prefix": None, "view": view},
+            )
+            await fake_command._parse_arguments(fake_context)
+            kwargs = {}
+            for i, arg in enumerate(fake_context.args[1:]):
+                kwargs[list(fake_command.params.keys())[i]] = arg
+            kwargs.update(fake_context.kwargs)
+            return kwargs
 
         def get_internal(ctx: commands.Context):
             def _get_internal(
@@ -538,6 +554,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "cf": lambda ctx: cf,
                 "Config": lambda ctx: Config,
                 "run_converter": lambda ctx: run_converter,
+                "run_converters": lambda ctx: run_converters,
                 "Route": lambda ctx: discord.http.Route,
                 "websocket": lambda ctx: ctx.bot._get_websocket(0),
                 "get_internal": get_internal,

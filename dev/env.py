@@ -382,20 +382,25 @@ class DevEnv(typing.Dict[str, typing.Any]):
             )
 
         async def run_converters(
-            function: typing.Callable, arguments: str
+            command_or_function: typing.Union[str, commands.Command, typing.Callable], arguments: str
         ) -> typing.Dict[str, typing.Any]:
-            fake_command = commands.Command(function)
-            fake_command.params = discord.ext.commands.core.get_signature_parameters(function, {}, skip_parameters=0)
+            if isinstance(command_or_function, str):
+                if (command := ctx.bot.get_command(command_or_function) is None):
+                    raise RuntimeError()
+            elif isinstance(command_or_function, commands.Command):
+                command = command_or_function
+            else:
+                command = commands.Command(function)
             view = discord.ext.commands.view.StringView(arguments)
             fake_context = type(
                 "FakeContext",
                 (),
-                {"bot": ctx.bot, "command": fake_command, "message": ctx.message, "prefix": None, "view": view},
+                {"bot": ctx.bot, "command": command, "message": ctx.message, "prefix": None, "view": view},
             )
-            await fake_command._parse_arguments(fake_context)
+            await command._parse_arguments(fake_context)
             kwargs = {}
             for i, arg in enumerate(fake_context.args[1:]):
-                kwargs[list(fake_command.params.keys())[i]] = arg
+                kwargs[list(command.params.keys())[i]] = arg
             kwargs.update(fake_context.kwargs)
             return kwargs
 

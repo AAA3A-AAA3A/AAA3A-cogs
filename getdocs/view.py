@@ -11,15 +11,11 @@ from .types import Documentation, SearchResults
 
 
 class DocsSelect(discord.ui.Select):
-    def __init__(self, parent: discord.ui.View, results: SearchResults) -> None:
+    def __init__(self, parent: discord.ui.View, results: typing.List[str]) -> None:
         self._parent: discord.ui.View = parent
-        self.texts: typing.Dict[str, typing.Tuple[str, str]] = {}
-        for name, original_name, __, __ in results.results:
-            if name not in self.texts.keys():
-                self.texts[name] = original_name
         self._options = [
-            discord.SelectOption(label=name, value=original_name)
-            for name, original_name in self.texts.items()
+            discord.SelectOption(label=name, value=name)
+            for name in results
         ]
         super().__init__(
             placeholder="Select an option.",
@@ -28,8 +24,8 @@ class DocsSelect(discord.ui.Select):
         )
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        option = discord.utils.get(self._options, value=self.values[0])
-        await self._parent._callback(interaction, option)
+        await interaction.response.defer()
+        await self._parent._update(self.values[0])
 
 
 class GetDocsView(discord.ui.View):
@@ -40,6 +36,7 @@ class GetDocsView(discord.ui.View):
 
         self.query: str = query
         self.source = source
+        self.results: typing.List[str] = None
 
         self._message: discord.Message = None
         self._current: Documentation = None
@@ -50,16 +47,15 @@ class GetDocsView(discord.ui.View):
 
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
-        results = await self.source.search(self.query, limit=25, exclude_std=True)
-        self.results = results
-        if not results or not results.results:
+        self.results = await self.source.search(self.query, limit=25, exclude_std=True, with_raw_search=True)
+        if not self.results:
             raise RuntimeError("No results found.")
         if self.source.name == "discordapi":
             self.show_parameters.label = "Show fields"
-        if len(results.results) > 1:
-            select = DocsSelect(self, results)
+        if self.query != "random" and len(self.results) > 1:
+            select = DocsSelect(self, self.results)
             self.add_item(select)
-        await self._update(results.results[0][1])
+        await self._update(self.results[0])
         await self._ready.wait()
         return self._message
 
@@ -85,12 +81,9 @@ class GetDocsView(discord.ui.View):
 
     async def _update(self, name: str) -> None:
         documentation: Documentation = await self.source.get_documentation(name)
-        i = 0
-        while documentation is None and i < len(self.results.results):
-            if name == self.results.results[i][1]:
-                i += 1
-                continue
-            documentation = await self.source.get_documentation(self.results.results[i][1])
+        i = 1
+        while documentation is None and i < len(self.results):
+            documentation = await self.source.get_documentation(self.results[i])
             if documentation is not None:
                 break
             i += 1
@@ -129,12 +122,6 @@ class GetDocsView(discord.ui.View):
                 content=content, embed=embed, view=self
             )
         self._mode = "documentation"
-
-    async def _callback(
-        self, interaction: discord.Interaction, option: discord.SelectOption
-    ) -> None:
-        await interaction.response.defer()
-        await self._update(option.value)
 
     @discord.ui.button(label="Show Parameters", custom_id="show_parameters", row=1)
     async def show_parameters(

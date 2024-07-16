@@ -359,11 +359,11 @@ class GetDocs(DashboardIntegration, Cog):
             await ctx.send(embed=embed, view=view)
             return
         if query == "random":
-            if not source._docs_cache:
-                raise commands.UserFeedbackCheckFailure(
-                    _("Documentations cache is not yet built.")
-                )
-            choice: Documentation = random.choice(source._docs_cache)
+            if source._rtfm_cache is None or (
+                source._rtfm_caching_task is not None and source._rtfm_caching_task.currently_running
+            ):
+                raise RuntimeError(_("RTFM caching isn't finished."))
+            choice: Documentation = await source.get_documentation(random.choice(source._raw_rtfm_cache_without_std))
             if not any([choice.parameters, choice.examples, choice.attributes]):
                 await ctx.send(embed=choice.to_embed(embed_color=await ctx.embed_color()))
                 return
@@ -1638,20 +1638,11 @@ class Source:
 
         attributes: typing.Dict[str, typing.List[Attribute]] = {}
         attribute_list = documentation.find_all("dl", class_="py attribute")
-        if attribute_list:
-            attributes["attributes"] = format_attributes(attribute_list)
-        else:
-            attributes["attributes"] = {}
+        attributes["attributes"] = format_attributes(attribute_list) if attribute_list else {}
         property_list = documentation.find_all("dl", class_="py property")
-        if property_list:
-            attributes["properties"] = format_attributes(property_list)
-        else:
-            attributes["properties"] = {}
+        attributes["properties"] = format_attributes(property_list) if property_list else {}
         methods_list = documentation.find_all("dl", class_="py method")
-        if methods_list:
-            attributes["methods"] = format_attributes(methods_list)
-        else:
-            attributes["methods"] = {}
+        attributes["methods"] = format_attributes(methods_list) if methods_list else {}
         attributes = Attributes(**attributes)
 
         return Documentation(
@@ -1718,7 +1709,7 @@ class Source:
         return results
 
     #######################
-    # Get a documentation #
+    # Get a Documentation #
     #######################
 
     async def search(
@@ -1739,26 +1730,22 @@ class Source:
             collection: typing.Iterable[typing.Union[str, typing.Any]],
             key: typing.Optional[typing.Callable] = None,
         ) -> typing.List[typing.Union[str, typing.Any]]:
-            if self.name != None:  # "python":
+            if self.name != ...:  # "python"
                 matches = []
                 pat = ".*?".join(map(re.escape, text))
                 regex = re.compile(pat, flags=re.IGNORECASE)
 
                 def _key(item: typing.Union[str, typing.Any]) -> str:
                     item_name = key(item) if key is not None else item
-                    if self.name == "discord.py" and item_name.startswith("discord.ext.commands."):
-                        item_name = item_name[21:]
-                    elif self.name == "discord.py" and item_name.startswith("discord."):
-                        item_name = item_name[8:]
+                    if self.name == "discord.py":
+                        if item_name.startswith("discord.ext.commands."):
+                            item_name = item_name[21:]
+                        elif item_name.startswith("discord."):
+                            item_name = item_name[8:]
                     return item_name
 
                 for item in collection:
-                    item_name = key(item) if key is not None else item
-                    if self.name == "discord.py" and item_name.startswith("discord.ext.commands."):
-                        item_name = item_name[21:]
-                    elif self.name == "discord.py" and item_name.startswith("discord."):
-                        item_name = item_name[8:]
-                    r = regex.search(item_name)
+                    r = regex.search(_key(item))
                     if r:
                         matches.append((len(r.group()), r.start(), item))
 
@@ -1841,12 +1828,13 @@ class Source:
 
         if self.name in ("discord.py", "redbot", "pylav") and query == "events":
             exclude_std = True
-            matches = [
-                item
-                for item in self._rtfm_cache.objects
-                if item.name.split(".")[-1].startswith("on_")
-            ]
-            if self.name == "pylav":
+            if self.name != "pylav":
+                matches = [
+                    item
+                    for item in self._rtfm_cache.objects
+                    if item.name.split(".")[-1].startswith("on_")
+                ]
+            else:
                 matches = [
                     item
                     for item in self._rtfm_cache.objects

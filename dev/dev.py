@@ -95,11 +95,11 @@ class DevOutput(dev_commands.DevOutput):
                 if self.formatted_exc:
                     console.print(self.formatted_exc.strip())
                 elif (
-                    self.always_include_result
-                    and not self.prints
-                    and not formatted_imports
-                    and not printed
-                    or self.result is not None
+                    self.result is not None
+                    or self.always_include_result
+                    # and not self.prints
+                    # and not formatted_imports
+                    # and not printed
                 ):
                     if output_mode == "str":
                         result = str(self.result)
@@ -139,20 +139,16 @@ class DevOutput(dev_commands.DevOutput):
                 kwargs["file"] = self.result
             elif isinstance(self.result, discord.abc.Iterable):
                 kwargs = {"embeds": [], "files": []}
-                for x in self.result:
-                    if isinstance(x, discord.Embed) and channel_permissions.embed_links:
-                        if "embeds" not in kwargs:
-                            kwargs["embeds"] = []
+                for element in self.result:
+                    if isinstance(element, discord.Embed) and channel_permissions.embed_links:
                         if (
                             len(kwargs["embeds"]) < 10
-                            and (sum(len(embed) for embed in kwargs["embeds"]) + len(x)) <= 6000
+                            and (sum(len(embed) for embed in kwargs["embeds"]) + len(element)) <= 6000
                         ):
-                            kwargs["embeds"].append(x)
-                    elif isinstance(x, discord.File) and channel_permissions.attach_files:
-                        if "files" not in kwargs:
-                            kwargs["files"] = []
-                        if (sum(len(file) for file in kwargs["files"]) + len(x)) <= 6000:
-                            kwargs["files"].append(x)
+                            kwargs["embeds"].append(element)
+                    elif isinstance(element, discord.File) and channel_permissions.attach_files:
+                        if (sum(len(file) for file in kwargs["files"]) + len(element)) <= 6000:
+                            kwargs["files"].append(element)
                 for key in ("embeds", "files"):
                     if not kwargs[key]:
                         del kwargs[key]

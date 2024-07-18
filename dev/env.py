@@ -346,7 +346,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
     def get_env(
         cls, bot: Red, ctx: typing.Optional[commands.Context] = None
     ) -> typing.Dict[str, typing.Any]:
-        log = CogsUtils.get_logger(name="Test")
+        logger = CogsUtils.get_logger(name="Test")
 
         async def _rtfs(ctx: commands.Context, object):
             code = inspect.getsource(object)
@@ -522,7 +522,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "Context": lambda ctx: Context,
                 "Settings": lambda ctx: Settings,
                 "SentryHelper": lambda ctx: SentryHelper,
-                "log": lambda ctx: log,
+                "logger": lambda ctx: logger,
                 "_rtfs": lambda ctx: partial(_rtfs, ctx),
                 "DevEnv": lambda ctx: cls,
                 "DevSpace": lambda ctx: DevSpace,
@@ -561,7 +561,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "run_converter": lambda ctx: run_converter,
                 "run_converters": lambda ctx: run_converters,
                 "Route": lambda ctx: discord.http.Route,
-                "websocket": lambda ctx: ctx.bot._get_websocket(0),
+                "websocket": lambda ctx: ctx.bot._get_websocket(ctx.guild.id),
                 "get_internal": get_internal,
                 "set_loggers_level": lambda ctx: set_loggers_level,
                 "find": lambda ctx: discord.utils.find,

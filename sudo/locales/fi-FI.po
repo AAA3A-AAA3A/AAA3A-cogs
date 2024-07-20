@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:10\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:20\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Hammasratas, jonka avulla botin omistajat voivat olla normaaleja käytt�
 "    ⚠️ Tämä cog tekee botin omistajista sellaisia, että heitä ei voida pitää botin omistajina komennoissa, kun cog on ladattu, ellei komentoa `[p]su` käytetä.\n"
 "    "
 
-#: sudo\sudo.py:115
+#: sudo\sudo.py:105
 #, docstring
 msgid "Sudo as the owner of the bot.\n\n"
 "        Use `[p]su`!\n"
@@ -35,7 +35,7 @@ msgstr "Sudo botin omistajaksi.\n\n"
 "        Käytä `[p]su`!\n"
 "        "
 
-#: sudo\sudo.py:124
+#: sudo\sudo.py:114
 #, docstring
 msgid "Unsudo as normal user.\n\n"
 "        Use `[p]unsu`!\n"
@@ -44,7 +44,7 @@ msgstr "Unsudo tavallisena käyttäjänä.\n\n"
 "        Käytä `[p]unsu`!\n"
 "        "
 
-#: sudo\sudo.py:135
+#: sudo\sudo.py:125
 #, docstring
 msgid "Rise as the bot owner for the specified command only.\n\n"
 "        Use `[p]sudo`!\n"
@@ -53,7 +53,7 @@ msgstr "Nousu botin omistajaksi vain määritetyn komennon osalta.\n\n"
 "        Käytä `[p]sudo`!\n"
 "        "
 
-#: sudo\sudo.py:164
+#: sudo\sudo.py:154
 #, docstring
 msgid "Sudo as the owner of the bot for the specified timeout.\n"
 "        The time should be between 10 seconds and 1 day.\n\n"

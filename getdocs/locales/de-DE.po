@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:22\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:22\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -17,24 +17,24 @@ msgstr ""
 "X-Crowdin-File-ID: 183\n"
 "Language: de_DE\n"
 
-#: getdocs\getdocs.py:220 getdocs\getdocs.py:349 getdocs\getdocs.py:411
+#: getdocs\getdocs.py:226 getdocs\getdocs.py:347 getdocs\getdocs.py:410
 msgid "Please provide a valid documentations source."
 msgstr "Bitte geben Sie eine gültige Dokumentationsquelle an."
 
-#: getdocs\getdocs.py:231
+#: getdocs\getdocs.py:237
 #, docstring
 msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
 msgstr "Ein Cog, um einige Dokumentationen in Discord zu erhalten und anzuzeigen! Benutze `[p]listsources` um eine Liste aller verfügbaren Quellen zu erhalten."
 
-#: getdocs\getdocs.py:366
-msgid "Documentations cache is not yet built."
-msgstr "Der Dokumentations-Cache ist noch nicht aufgebaut."
+#: getdocs\getdocs.py:366 getdocs\getdocs.py:1724
+msgid "RTFM caching isn't finished."
+msgstr "Das RTFM-Caching ist noch nicht abgeschlossen."
 
-#: getdocs\getdocs.py:422
+#: getdocs\getdocs.py:421
 msgid "No results found."
 msgstr "Keine Ergebnisse gefunden."
 
-#: getdocs\getdocs.py:574
+#: getdocs\getdocs.py:573
 #, docstring
 msgid "\n"
 "        Enable Documentations source(s).\n"
@@ -43,11 +43,11 @@ msgstr "\n"
 "        Aktivieren Sie die Dokumentationsquelle(n).\n"
 "        "
 
-#: getdocs\getdocs.py:581
+#: getdocs\getdocs.py:580
 msgid "The source `{source}` is already enabled."
 msgstr "Die Quelle \"{source}\" ist bereits aktiviert."
 
-#: getdocs\getdocs.py:585 getdocs\getdocs.py:614
+#: getdocs\getdocs.py:584 getdocs\getdocs.py:614
 msgid "The source `{source}` doesn't exist."
 msgstr "Die Quelle `{source}` existiert nicht."
 
@@ -77,8 +77,4 @@ msgstr "\n"
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Holen Sie sich eine Einbettung, um den Schleifenstatus zu überprüfen."
-
-#: getdocs\getdocs.py:1735
-msgid "RTFM caching isn't finished."
-msgstr "Das RTFM-Caching ist noch nicht abgeschlossen."
 

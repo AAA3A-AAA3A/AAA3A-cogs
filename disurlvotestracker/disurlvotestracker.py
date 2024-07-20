@@ -69,11 +69,11 @@ class DisurlVotesTracker(Cog):
             },
             "custom_vote_message": {
                 "converter": CustomMessageConverter,
-                "description": "Custom vote message. You can specify the ID or the link of an existing message, or provide an embed payload. Use the variables `{member_name}`, `{member_avatar_url}`, `{member_mention}`, `{member_id}`, `{guild_name}`, `{guild_icon_url}`, `{guild_id}`, `{votes_channel_name}`, `{votes_channel_mention}`, `{votes_channel_id}`, `{voters_role_name}`, `{voters_role_mention}`, `{voters_role_id}`, `{number_member_votes}` and `{number_member_monthly_votes}`.",
+                "description": "Custom vote message. You can specify the ID or the link of an existing message, or provide an embed payload. Use the variables `{member_name}`, `{member_avatar_url}`, `{member_mention}`, `{member_id}`, `{guild_name}`, `{guild_icon_url}`, `{guild_id}`, `{votes_channel_name}`, `{votes_channel_mention}`, `{votes_channel_id}`, `{voters_role_name}`, `{voters_role_mention}`, `{voters_role_id}`, `{number_member_votes}`, `{number_member_monthly_votes}`, `{s_1}` (`number_member_votes` plural) and `{s_2}` (`number_member_monthly_votes` plural).",
             },
             "custom_vote_reminder_message": {
                 "converter": CustomMessageConverter,
-                "description": "Custom vote reminder message. You can specify the ID or the link of an existing message, or provide an embed payload. Use the variables `{member_name}`, `{member_avatar_url}`, `{member_mention}`, `{member_id}`, `{guild_name}`, `{guild_icon_url}`, `{guild_id}`, `{votes_channel_name}`, `{votes_channel_mention}`, `{votes_channel_id}`, `{voters_role_name}`, `{voters_role_mention}`, `{voters_role_id}`, `{number_member_votes}` and `{number_member_monthly_votes}`.",
+                "description": "Custom vote reminder message. You can specify the ID or the link of an existing message, or provide an embed payload. Use the variables `{member_name}`, `{member_avatar_url}`, `{member_mention}`, `{member_id}`, `{guild_name}`, `{guild_icon_url}`, `{guild_id}`, `{votes_channel_name}`, `{votes_channel_mention}`, `{votes_channel_id}`, `{voters_role_name}`, `{voters_role_mention}`, `{voters_role_id}`, `{number_member_votes}`, `{number_member_monthly_votes}`, `{s_1}` (`number_member_votes` plural) and `{s_2}` (`number_member_monthly_votes` plural).",
             },
         }
         self.settings: Settings = Settings(
@@ -183,6 +183,8 @@ class DisurlVotesTracker(Cog):
                         number_member_monthly_votes = len(
                             [vote for vote in member_data["votes"] if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc) < datetime.timedelta(days=30)]
                         )
+                        s_1 = "" if number_member_votes == 1 else "s"
+                        s_2 = "" if number_member_monthly_votes == 1 else "s"
                         env = {
                             "member_name": member.display_name,
                             "member_avatar_url": member.display_avatar.url,
@@ -197,8 +199,8 @@ class DisurlVotesTracker(Cog):
                             "voters_role_name": voters_role.name if voters_role is not None else None,
                             "voters_role_mention": voters_role.mention if voters_role is not None else None,
                             "voters_role_id": voters_role.id if voters_role is not None else None,
-                            "number_member_votes": number_member_votes,
-                            "number_member_monthly_votes": number_member_monthly_votes,
+                            "number_member_votes": number_member_votes, "s_1": s_1,
+                            "number_member_monthly_votes": number_member_monthly_votes, "s_2": s_2,
                         }
                         await CustomMessageConverter(**custom_vote_reminder_message).send_message(
                             None, channel=votes_channel, env=env
@@ -244,17 +246,25 @@ class DisurlVotesTracker(Cog):
         number_member_monthly_votes = len(
             [vote for vote in member_data["votes"] if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc) < datetime.timedelta(days=30)]
         ) + 1
+        s_1 = "" if number_member_votes == 1 else "s"
+        s_2 = "" if number_member_monthly_votes == 1 else "s"
         if (custom_vote_message := await self.config.guild(guild).custom_vote_message()) is None:
-            embed: discord.Embed = discord.Embed(color=discord.Color.orange())
+            embed: discord.Embed = discord.Embed(color=discord.Color.green())
             embed.title = _("New vote for {guild.name}!").format(guild=guild)
+            embed.set_author(name=member.display_name, icon_url=member.display_avatar)
+            embed.set_thumbnail(url=member.display_avatar)
             embed.description = _(
                 "{member.mention} voted on Disurl!\n"
-                "{number_member_votes} vote this month & {number_member_monthly_votes} lifetime vote\n\n"
-                "You can vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!"
-            ).format(member=member, guild=guild, number_member_votes=number_member_votes, number_member_monthly_votes=number_member_monthly_votes)
+                "`{number_member_votes} vote{s_1} this month & {number_member_monthly_votes} lifetime vote{s_2}`"
+            ).format(
+                member=member,
+                number_member_votes=number_member_votes, s_1=s_1,
+                number_member_monthly_votes=number_member_monthly_votes, s_2=s_2,
+            )
             if voters_role is not None:
                 embed.description += _("\n\n{member.display_name} received the role {voters_role.mention} for the next 12 hours.").format(voters_role=voters_role)
-            embed.set_footer(text=_("Thanks for supporting the server! | User ID: {member.id}").format(member=member))
+            embed.description += _("You can vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!").format(guild=guild)
+            embed.set_footer(text=_("Thanks for supporting the server! | User ID: {member.id}").format(member=member), icon_url=guild.icon)
             await votes_channel.send(embed=embed)
         else:
             env = {
@@ -271,8 +281,8 @@ class DisurlVotesTracker(Cog):
                 "voters_role_name": voters_role.name if voters_role is not None else None,
                 "voters_role_mention": voters_role.mention if voters_role is not None else None,
                 "voters_role_id": voters_role.id if voters_role is not None else None,
-                "number_member_votes": number_member_votes,
-                "number_member_monthly_votes": number_member_monthly_votes,
+                "number_member_votes": number_member_votes, "s_1": s_1,
+                "number_member_monthly_votes": number_member_monthly_votes, "s_2": s_2,
             }
             await CustomMessageConverter(**custom_vote_message).send_message(
                 None, channel=votes_channel, env=env
@@ -307,11 +317,12 @@ class DisurlVotesTracker(Cog):
             color=await ctx.embed_color(),
             description=_(
                 "1. Go to [Disurl Dashboard](https://disurl.me/dashboard/server/{guild_id}/webhooks) and set the webhook URL to `{webhook_url}`.\n"
-                "2. Set the `disurl_authaurization_key` with the key which you provided on Disurl.\n"
-                "3. Set the `votes_channel` where vote notifications will be sent.\n"
-                "4. Set the optional `voters_role` that will be assigned to voters.\n"
-                "5. Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`."
-                "6. Enable the cog."
+                "2. Set the Disurl API authorization key with the key which you provided on Disurl.\n"
+                "3. Set the votes channel where vote notifications will be sent.\n"
+                "4. Set the optional the voters role that will be assigned to voters.\n"
+                "5. Optionally, toggle the vote reminder.\n"
+                "6. Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`."
+                "7. Enable the cog."
             ).format(guild_id=ctx.guild.id, webhook_url=f"{dashboard_url[0]}/api/webhook"),
         )
         await ctx.send(embed=embed)

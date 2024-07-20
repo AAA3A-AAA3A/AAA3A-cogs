@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:18\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:23\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "A cog to search an english term/word in the dictionary! Synonyms, antonyms, phonetics (with audio)..."
 msgstr "O rotiță pentru a căuta un termen/cuvânt englezesc în dicționar! Sinonime, antonime, fonetică (cu audio)..."
 
-#: dictionary\dictionary.py:94
+#: dictionary\dictionary.py:86
 msgid "Word not found in English dictionary."
 msgstr "Cuvânt care nu se găsește în dicționarul englez."
 

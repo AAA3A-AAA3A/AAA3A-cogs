@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2024-04-10 12:39\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:20\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Um cog para permitir que os donos de bots sejam utilizadores normais em 
 "    ⚠️ Este cog faz com que os donos de bots não possam ser vistos como donos de bots em comandos enquanto o cog estiver carregado, a menos que o comando `[p]su` seja usado.\n"
 "    "
 
-#: sudo\sudo.py:115
+#: sudo\sudo.py:105
 #, docstring
 msgid "Sudo as the owner of the bot.\n\n"
 "        Use `[p]su`!\n"
@@ -35,7 +35,7 @@ msgstr "Sudo como o dono do bot.\n\n"
 "        Utilize `[p]su`!\n"
 "        "
 
-#: sudo\sudo.py:124
+#: sudo\sudo.py:114
 #, docstring
 msgid "Unsudo as normal user.\n\n"
 "        Use `[p]unsu`!\n"
@@ -44,7 +44,7 @@ msgstr "Insuficiente como utilizador normal.\n\n"
 "        Utilize `[p]unsu`!\n"
 "        "
 
-#: sudo\sudo.py:135
+#: sudo\sudo.py:125
 #, docstring
 msgid "Rise as the bot owner for the specified command only.\n\n"
 "        Use `[p]sudo`!\n"
@@ -53,7 +53,7 @@ msgstr "Ascender como o proprietário do bot apenas para o comando especificado.
 "        Utilize `[p]sudo`!\n"
 "        "
 
-#: sudo\sudo.py:164
+#: sudo\sudo.py:154
 #, docstring
 msgid "Sudo as the owner of the bot for the specified timeout.\n"
 "        The time should be between 10 seconds and 1 day.\n\n"

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:22\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:23\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -22,25 +22,25 @@ msgstr ""
 msgid "A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
 msgstr "Шестеренка для отправки содержимого кода из URL GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin!"
 
-#: codesnippets\codesnippets.py:495
+#: codesnippets\codesnippets.py:486
 msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
 msgstr "URL GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin не найден."
 
-#: codesnippets\codesnippets.py:533
+#: codesnippets\codesnippets.py:524
 #, docstring
 msgid "Add a channel where the cog have to send automatically code snippets from URLs."
 msgstr "Добавьте канал, по которому cog должен автоматически отправлять фрагменты кода из URL."
 
-#: codesnippets\codesnippets.py:537
+#: codesnippets\codesnippets.py:528
 msgid "The cog is already enabled in this channel"
 msgstr "Зубчатка уже включена в этом канале"
 
-#: codesnippets\codesnippets.py:548
+#: codesnippets\codesnippets.py:539
 #, docstring
 msgid "Remove a channel where the cog have to send automatically code snippets from URLs."
 msgstr "Удалите канал, по которому ког должен автоматически отправлять фрагменты кода из URL."
 
-#: codesnippets\codesnippets.py:552
+#: codesnippets\codesnippets.py:543
 msgid "The cog is already disabled in this channel"
 msgstr "В этом канале зубчатка уже отключена"
 

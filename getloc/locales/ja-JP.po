@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:19\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:21\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -22,11 +22,11 @@ msgstr ""
 msgid "A cog to display information about a location based on its address or geographical coordinates!"
 msgstr "住所や地理座標に基づいた位置情報を表示するためのコグです！"
 
-#: getloc\getloc.py:162
+#: getloc\getloc.py:151
 msgid "An error has occurred. Please try again."
 msgstr "エラーが発生しました。もう一度お試しください。"
 
-#: getloc\getloc.py:165
+#: getloc\getloc.py:154
 msgid "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
 msgstr "入力された住所や連絡先が、結果につながらない。入力した内容に間違いはありませんか？"
 

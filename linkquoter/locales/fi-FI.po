@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:42\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:25\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -45,28 +45,28 @@ msgstr "Kyseisellä palvelimella ei ole lupaa sallia, että sen viestejä siteer
 msgid "You don't have permission to read messages in that channel."
 msgstr "Sinulla ei ole lupaa lukea viestejä kyseisellä kanavalla."
 
-#: linkquoter\linkquoter.py:55
+#: linkquoter\linkquoter.py:56
 #, docstring
 msgid "Quote any Discord message from its link!"
 msgstr "Lainaa mitä tahansa Discord-viestiä sen linkistä!"
 
-#: linkquoter\linkquoter.py:217
+#: linkquoter\linkquoter.py:218
 msgid "{author.display_name} said..."
 msgstr "{author.display_name} sanoi..."
 
-#: linkquoter\linkquoter.py:241
+#: linkquoter\linkquoter.py:244
 msgid "Attachments:"
 msgstr "Liitteet:"
 
-#: linkquoter\linkquoter.py:252
+#: linkquoter\linkquoter.py:255
 msgid "Stickers:"
 msgstr "Tarrat:"
 
-#: linkquoter\linkquoter.py:266
+#: linkquoter\linkquoter.py:267
 msgid "Replying to:"
 msgstr "Replying to:"
 
-#: linkquoter\linkquoter.py:267
+#: linkquoter\linkquoter.py:268
 msgid "Click to view attachments."
 msgstr "Klikkaa nähdäksesi liitetiedostot."
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:23\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:23\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "A cog to make pixel arts on Discord!"
 msgstr "Ког для создания пиксель-артов на Discord!"
 
-#: draw\draw.py:174
+#: draw\draw.py:165
 msgid "This message isn't in the cache."
 msgstr "Этого сообщения нет в кэше."
 
@@ -46,11 +46,11 @@ msgstr "Пожалуйста, введите все цвета, которые �
 msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
 msgstr "Пожалуйста, отправьте сообщение с эмодзи, которые вы хотите добавить в свою палитру. Например, `😎 Я люблю черепах 🐢`."
 
-#: draw\view.py:809
+#: draw\view.py:810
 msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
 msgstr "Введите ячейку, в которую вы хотите переместить курсор. Например, `A1`, `a1`, `A10`, `A`, `10` и т.д."
 
-#: draw\view.py:938
+#: draw\view.py:939
 msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
 "B7-C9:green`."
 msgstr "Пожалуйста, введите ячейки с названиями основных цветов. Один цвет для каждой строки, отделенный от ячейки знаком \":\". Пример: `A1:красный\n"

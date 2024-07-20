@@ -240,10 +240,10 @@ class DisurlVotesTracker(Cog):
                 )
 
         member_data = await self.config.member(member).all()
-        number_member_votes = len(member_data["votes"])
+        number_member_votes = len(member_data["votes"]) + 1
         number_member_monthly_votes = len(
             [vote for vote in member_data["votes"] if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc) < datetime.timedelta(days=30)]
-        )
+        ) + 1
         if (custom_vote_message := await self.config.guild(guild).custom_vote_message()) is None:
             embed: discord.Embed = discord.Embed(color=discord.Color.orange())
             embed.title = _("New vote for {guild.name}!").format(guild=guild)
@@ -311,6 +311,7 @@ class DisurlVotesTracker(Cog):
                 "3. Set the `votes_channel` where vote notifications will be sent.\n"
                 "4. Set the optional `voters_role` that will be assigned to voters.\n"
                 "5. Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`."
+                "6. Enable the cog."
             ).format(guild_id=ctx.guild.id, webhook_url=f"{dashboard_url[0]}/api/webhook"),
         )
         await ctx.send(embed=embed)

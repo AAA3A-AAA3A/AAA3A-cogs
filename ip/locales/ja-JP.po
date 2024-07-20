@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:21\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:19\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -17,26 +17,26 @@ msgstr ""
 "X-Crowdin-File-ID: 88\n"
 "Language: ja_JP\n"
 
-#: ip\ip.py:21
+#: ip\ip.py:23
 #, docstring
 msgid "A cog to get the ip address  of the bot's host machine!"
 msgstr "ボットのホストマシンのipアドレスを取得するためのコグです！"
 
-#: ip\ip.py:76
+#: ip\ip.py:67
 #, docstring
 msgid "Get the ip address of the bot's host machine."
 msgstr "ボットのホストマシンのipアドレスを取得します。"
 
-#: ip\ip.py:81
+#: ip\ip.py:72
 msgid "The ip address of your bot is `{ip}`."
 msgstr "あなたのボットのipアドレスは `{ip}` です。"
 
-#: ip\ip.py:85
+#: ip\ip.py:76
 #, docstring
 msgid "Get the ip address website of the bot's host machine."
 msgstr "ボットのホストマシンのipアドレスのサイトを取得します。"
 
-#: ip\ip.py:92
+#: ip\ip.py:83
 msgid "The Administrator Panel website is http://{ip}:{port}/."
 msgstr "Administrator Panelのサイトは、http://{ip}:{port}/ です。"
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:22\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:23\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "MIME-Version: 1.0\n"
@@ -22,25 +22,25 @@ msgstr ""
 msgid "A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
 msgstr "Uma engrenagem para enviar conteúdo de código de um URL GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin!"
 
-#: codesnippets\codesnippets.py:495
+#: codesnippets\codesnippets.py:486
 msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
 msgstr "Nenhum URL do GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin encontrado."
 
-#: codesnippets\codesnippets.py:533
+#: codesnippets\codesnippets.py:524
 #, docstring
 msgid "Add a channel where the cog have to send automatically code snippets from URLs."
 msgstr "Adicionar um canal onde a engrenagem tem de enviar automaticamente fragmentos de código a partir de URLs."
 
-#: codesnippets\codesnippets.py:537
+#: codesnippets\codesnippets.py:528
 msgid "The cog is already enabled in this channel"
 msgstr "A roda dentada já está activada neste canal"
 
-#: codesnippets\codesnippets.py:548
+#: codesnippets\codesnippets.py:539
 #, docstring
 msgid "Remove a channel where the cog have to send automatically code snippets from URLs."
 msgstr "Remover um canal onde a engrenagem tem de enviar automaticamente fragmentos de código a partir de URLs."
 
-#: codesnippets\codesnippets.py:552
+#: codesnippets\codesnippets.py:543
 msgid "The cog is already disabled in this channel"
 msgstr "A roda dentada já está desactivada neste canal"
 

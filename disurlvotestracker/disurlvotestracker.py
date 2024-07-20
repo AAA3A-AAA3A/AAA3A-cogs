@@ -207,7 +207,7 @@ class DisurlVotesTracker(Cog):
 
     @commands.Cog.listener()
     async def on_webhook_receive(self, payload: typing.Dict[str, typing.Any]) -> None:
-        if payload.get("type") not in ("Vote", "testVote"):
+        if payload.get("type") not in ("vote", "testVote"):
             return
         if "guildId" not in payload or "userId" not in payload:
             return

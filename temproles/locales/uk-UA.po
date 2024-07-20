@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:40\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:24\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -22,140 +22,140 @@ msgstr ""
 msgid "A cog to assign temporary roles to users, expiring after a set time!"
 msgstr "Гвинтик для призначення тимчасових ролей користувачам, термін дії яких закінчується через певний час!"
 
-#: temproles\temproles.py:166 temproles\temproles.py:250
-#: temproles\temproles.py:308 temproles\temproles.py:353
-#: temproles\temproles.py:437
+#: temproles\temproles.py:158 temproles\temproles.py:244
+#: temproles\temproles.py:302 temproles\temproles.py:347
+#: temproles\temproles.py:431
 msgid "Temp Roles"
 msgstr "Тимчасові ролі"
 
-#: temproles\temproles.py:167
+#: temproles\temproles.py:159
 msgid "Temp Role {temp_role.mention} ({temp_role.id}) has been automatically unassigned from {member.mention} ({member.id})."
 msgstr "Тимчасову роль {temp_role.mention} ({temp_role.id}) було автоматично звільнено з {member.mention} ({member.id})."
 
-#: temproles\temproles.py:197
+#: temproles\temproles.py:189
 #, docstring
 msgid "Assign/Add a TempRole to a member, for a specified duration."
 msgstr "Призначити/додати тимчасову роль користувачеві на вказаний термін."
 
-#: temproles\temproles.py:206
+#: temproles\temproles.py:198
 msgid "This role is already a TempRole of this member. Do you want to edit the duration?\n"
 "Currently, this Temp Role expires {timestamp}."
 msgstr "Ця роль вже є TempRole цього користувача. Ви хочете змінити тривалість?\n"
 "Наразі термін дії цієї Тимчасової ролі закінчується {timestamp}."
 
-#: temproles\temproles.py:214
+#: temproles\temproles.py:206
 msgid "This member already has {role.mention} ({role.id})."
 msgstr "Цей учасник вже має {role.mention} ({role.id})."
 
-#: temproles\temproles.py:220
+#: temproles\temproles.py:212
 msgid "This role cannot be assigned due to the Discord role hierarchy."
 msgstr "Ця роль не може бути призначена через ієрархію ролей Розбрату."
 
-#: temproles\temproles.py:226
+#: temproles\temproles.py:220
 msgid "You can't assign this role to this member, due to the Discord role hierarchy."
 msgstr "Ви не можете призначити цю роль цьому учаснику через ієрархію ролей Discord."
 
-#: temproles\temproles.py:232 temproles\temproles.py:291
+#: temproles\temproles.py:226 temproles\temproles.py:285
 msgid "The time set is way too high, consider setting something reasonable."
 msgstr "Встановлений час занадто великий, подумайте про встановлення чогось розумного."
 
-#: temproles\temproles.py:251 temproles\temproles.py:259
+#: temproles\temproles.py:245 temproles\temproles.py:253
 msgid "Self "
 msgstr "Я "
 
-#: temproles\temproles.py:252
+#: temproles\temproles.py:246
 msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
 msgstr "Тимчасову роль {role.mention} ({role.id}) було призначено {member.mention} ({member.id}) за дорученням {author.mention} ({author.id}). Термін дії закінчується в {time_string}."
 
-#: temproles\temproles.py:260
+#: temproles\temproles.py:254
 msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
 msgstr "Тимчасову роль {role.mention} ({role.id}) було призначено {member.mention} ({member.id}). Закінчується **в {time_string}** ({timestamp})."
 
-#: temproles\temproles.py:281
+#: temproles\temproles.py:275
 #, docstring
 msgid "Edit a TempRole for a member, for a specified duration."
 msgstr "Редагувати TempRole для користувача на вказаний термін."
 
-#: temproles\temproles.py:285
+#: temproles\temproles.py:279
 msgid "This role isn't a TempRole of this member."
 msgstr "Ця роль не є тимчасовою роллю цього учасника."
 
-#: temproles\temproles.py:309
+#: temproles\temproles.py:303
 msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
 msgstr "Тимчасова роль {role.mention} ({role.id}) була відредагована на {member.mention} ({member.id}) {author.mention} ({author.id}). Термін дії закінчується в {time_string}."
 
-#: temproles\temproles.py:316
+#: temproles\temproles.py:310
 msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
 msgstr "Тимчасова роль {role.mention} ({role.id}) була відредагована на {member.mention} ({member.id}). Закінчується **в {time_string}** ({timestamp})."
 
-#: temproles\temproles.py:332
+#: temproles\temproles.py:326
 #, docstring
 msgid "Unassign/Remove a TempRole from a member."
 msgstr "Призначити/Видалити тимчасову роль від учасника."
 
-#: temproles\temproles.py:336
+#: temproles\temproles.py:330
 msgid "This role isn't a temprole of this member."
 msgstr "Ця роль не є темпролом цього члена."
 
-#: temproles\temproles.py:354
+#: temproles\temproles.py:348
 msgid "TempRole {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id}) by {author.mention} ({author.id})."
 msgstr "TempRole {role.mention} ({role.id}) було перепризначено з {member.mention} ({member.id}) на {author.mention} ({author.id})."
 
-#: temproles\temproles.py:361
+#: temproles\temproles.py:355
 msgid "Temp Role {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id})."
 msgstr "Тимчасову роль {role.mention} ({role.id}) було звільнено з {member.mention} ({member.id})."
 
-#: temproles\temproles.py:376
+#: temproles\temproles.py:370
 #, docstring
 msgid "List active Temp Roles on this server, for optional specified member and/or role."
 msgstr "Список активних тимчасових ролей на цьому сервері, для необов'язкового вказаного користувача та/або ролі."
 
-#: temproles\temproles.py:379
+#: temproles\temproles.py:373
 msgid "This member has this Temp Role."
 msgstr "Цей учасник має тимчасову роль."
 
-#: temproles\temproles.py:381
+#: temproles\temproles.py:375
 msgid "This member hasn't this Temp Role."
 msgstr "Цей учасник не має цієї тимчасової ролі."
 
-#: temproles\temproles.py:384
+#: temproles\temproles.py:378
 msgid "This member hasn't any Temp Roles."
 msgstr "Цей користувач не має тимчасових ролей."
 
-#: temproles\temproles.py:386
+#: temproles\temproles.py:380
 msgid "This member has these Temp Roles: {temp_roles}."
 msgstr "Цей учасник має такі тимчасові ролі: {temp_roles}."
 
-#: temproles\temproles.py:405
+#: temproles\temproles.py:399
 msgid "No members have this Temp Role."
 msgstr "Жоден учасник не має цієї Тимчасової ролі."
 
-#: temproles\temproles.py:407
+#: temproles\temproles.py:401
 msgid "These members have this Temp Role: {temp_roles_members}."
 msgstr "Ці учасники мають таку тимчасову роль: {temp_roles_members}."
 
-#: temproles\temproles.py:432
+#: temproles\temproles.py:426
 msgid "No active Temp Roles on this server."
 msgstr "На цьому сервері немає активних тимчасових ролей."
 
-#: temproles\temproles.py:448
+#: temproles\temproles.py:442
 #, docstring
 msgid "Set the logs channel for Temp Roles."
 msgstr "Встановіть канал журналів для тимчасових ролей."
 
-#: temproles\temproles.py:451
+#: temproles\temproles.py:445
 msgid "Logs channel unset."
 msgstr "Не встановлено канал."
 
-#: temproles\temproles.py:455
+#: temproles\temproles.py:449
 msgid "I need of the `embed_links` permission in the logs channel."
 msgstr "Мені потрібен дозвіл `embed_links` у каналі логів."
 
-#: temproles\temproles.py:458
+#: temproles\temproles.py:452
 msgid "Logs channel set."
 msgstr "Лог-канал встановлений."
 
-#: temproles\temproles.py:469
+#: temproles\temproles.py:463
 #, docstring
 msgid "Add an allowed self Temp Role.\n\n"
 "        **Parameters:**\n"
@@ -168,58 +168,58 @@ msgstr "Додати дозволену роль тимчасового адмі
 "        - `max_time`: Мінімальний час для тимчасової ролі. `none`, щоб вимкнути. За замовчуванням 365 днів.\n"
 "        "
 
-#: temproles\temproles.py:479
+#: temproles\temproles.py:473
 msgid "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy."
 msgstr "Роль {role.mention} ({role.id}) не може бути призначена через ієрархію ролей Discord."
 
-#: temproles\temproles.py:486
+#: temproles\temproles.py:480
 msgid "This role is already an allowed self temp role."
 msgstr "Ця роль вже є дозволеною самозайнятістю."
 
-#: temproles\temproles.py:493
+#: temproles\temproles.py:487
 msgid "Allowed self Temp Role added."
 msgstr "Дозволено самостійну тимчасову роль."
 
-#: temproles\temproles.py:498
+#: temproles\temproles.py:492
 #, docstring
 msgid "Remove an allowed self Temp Role."
 msgstr "Видалити дозволену власну тимчасову роль."
 
-#: temproles\temproles.py:502
+#: temproles\temproles.py:496
 msgid "This role isn't an allowed self temp role."
 msgstr "Ця роль не є дозволеною для самозайнятості."
 
-#: temproles\temproles.py:506
+#: temproles\temproles.py:500
 msgid "Allowed self Temp Role removed."
 msgstr "Дозволено самостійну тимчасову роль видалено."
 
-#: temproles\temproles.py:512
+#: temproles\temproles.py:506
 #, docstring
 msgid "Assign/Add an allowed self Temp Role to yourself, for a specified duration."
 msgstr "Призначити/додати собі дозволену тимчасову роль на певний час."
 
-#: temproles\temproles.py:517
+#: temproles\temproles.py:511
 msgid "This role isn't an allowed self Temp Role on this server."
 msgstr "Ця роль не є дозволеною тимчасовою роллю на цьому сервері."
 
-#: temproles\temproles.py:525
+#: temproles\temproles.py:519
 msgid "The time for this role must be greater than {min_time_string}."
 msgstr "Час виконання цієї ролі має бути більшим, ніж {min_time_string}."
 
-#: temproles\temproles.py:535
+#: temproles\temproles.py:529
 msgid "The time for this role must be less than {max_time_string}."
 msgstr "Час виконання цієї ролі має бути меншим, ніж {max_time_string}."
 
-#: temproles\temproles.py:543 temproles\temproles.py:550
+#: temproles\temproles.py:537 temproles\temproles.py:544
 #, docstring
 msgid "Unassign/Remove an allowed self Temp Role from yourself."
 msgstr "Призначити/Видалити дозволену тимчасову роль для себе."
 
-#: temproles\temproles.py:545
+#: temproles\temproles.py:539
 msgid "You can't remove this role from yourself."
 msgstr "Ви не можете зняти з себе цю роль."
 
-#: temproles\temproles.py:573
+#: temproles\temproles.py:567
 msgid "Self Temp Roles"
 msgstr "Тимчасові ролі"
 

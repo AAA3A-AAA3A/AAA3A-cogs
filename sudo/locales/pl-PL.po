@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2024-04-10 12:39\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:20\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Trybik pozwalający właścicielom botów być normalnymi użytkownikami
 "    ⚠️ Ten trybik sprawia, że właściciele botów nie mogą być postrzegani jako właściciele botów w poleceniach, gdy trybik jest załadowany, chyba że zostanie użyte polecenie `[p]su`.\n"
 "    "
 
-#: sudo\sudo.py:115
+#: sudo\sudo.py:105
 #, docstring
 msgid "Sudo as the owner of the bot.\n\n"
 "        Use `[p]su`!\n"
@@ -35,7 +35,7 @@ msgstr "Sudo jako właściciel bota.\n\n"
 "        Użyj `[p]su`!\n"
 "        "
 
-#: sudo\sudo.py:124
+#: sudo\sudo.py:114
 #, docstring
 msgid "Unsudo as normal user.\n\n"
 "        Use `[p]unsu`!\n"
@@ -44,7 +44,7 @@ msgstr "Unsudo jako normalny użytkownik.\n\n"
 "        Użyj `[p]unsu`!\n"
 "        "
 
-#: sudo\sudo.py:135
+#: sudo\sudo.py:125
 #, docstring
 msgid "Rise as the bot owner for the specified command only.\n\n"
 "        Use `[p]sudo`!\n"
@@ -53,7 +53,7 @@ msgstr "Rise jako właściciel bota tylko dla określonego polecenia.\n\n"
 "        Użyj `[p]sudo`!\n"
 "        "
 
-#: sudo\sudo.py:164
+#: sudo\sudo.py:154
 #, docstring
 msgid "Sudo as the owner of the bot for the specified timeout.\n"
 "        The time should be between 10 seconds and 1 day.\n\n"

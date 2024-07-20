@@ -4,12 +4,12 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
 import io
 import json
 import re
 import textwrap
 
+import aiohttp
 import yaml
 from redbot.core import dev_commands
 from redbot.core.utils.chat_formatting import box
@@ -120,7 +120,9 @@ class StringToEmbed(commands.Converter):
         content = self.get_content(data, content=content)
 
         if timestamp := data.get("timestamp"):
-            data["timestamp"] = timestamp.strip("Z") if isinstance(timestamp, str) else str(timestamp)
+            data["timestamp"] = (
+                timestamp.strip("Z") if isinstance(timestamp, str) else str(timestamp)
+            )
         try:
             embed = discord.Embed.from_dict(data)
             length = len(embed)
@@ -232,7 +234,9 @@ class MessageableConverter(commands.Converter):
                 )
             )
         permissions = channel.permissions_for(ctx.author)
-        if not (permissions.send_messages and permissions.embed_links and permissions.manage_messages):
+        if not (
+            permissions.send_messages and permissions.embed_links and permissions.manage_messages
+        ):
             raise commands.BadArgument(
                 _("You do not have permissions to send embeds in {channel.mention}.").format(
                     channel=channel

@@ -5,11 +5,10 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import humanize_list
-
 import io
 
 import chat_exporter
+from redbot.core.utils.chat_formatting import humanize_list
 
 # Credits:
 # General repo credits.
@@ -118,11 +117,14 @@ class ExportChannel(Cog):
             count_messages, messages = await self.get_messages(ctx, channel=channel, **kwargs)
 
         if mode == "html":
+
             class Transcript(chat_exporter.construct.transcript.TranscriptDAO):
                 @classmethod
                 async def export(
                     cls,
-                    channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+                    channel: typing.Union[
+                        discord.TextChannel, discord.VoiceChannel, discord.Thread
+                    ],
                     messages: typing.List[discord.Message],
                     tz_info="UTC",
                     guild: typing.Optional[discord.Guild] = None,
@@ -196,7 +198,9 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel, mode=mode,
+            ctx,
+            channel=channel,
+            mode=mode,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(
@@ -233,7 +237,9 @@ class ExportChannel(Cog):
         """
         await self.check_channel(ctx, message.channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=message.channel, mode=mode,
+            ctx,
+            channel=message.channel,
+            mode=mode,
             messages=[message],
         )
         message = await ctx.send(
@@ -276,7 +282,9 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel, mode=mode,
+            ctx,
+            channel=channel,
+            mode=mode,
             limit=limit,
             exclude_users_and_roles=exclude_users_and_roles,
         )
@@ -320,7 +328,9 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel, mode=mode,
+            ctx,
+            channel=channel,
+            mode=mode,
             before=before,
             exclude_users_and_roles=exclude_users_and_roles,
         )
@@ -364,7 +374,9 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel, mode=mode,
+            ctx,
+            channel=channel,
+            mode=mode,
             after=after,
             exclude_users_and_roles=exclude_users_and_roles,
         )
@@ -409,8 +421,11 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel, mode=mode,
-            before=before, after=after,
+            ctx,
+            channel=channel,
+            mode=mode,
+            before=before,
+            after=after,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(
@@ -453,8 +468,11 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel, mode=mode,
-            user_id=getattr(user, "id", user), limit=limit,
+            ctx,
+            channel=channel,
+            mode=mode,
+            user_id=getattr(user, "id", user),
+            limit=limit,
         )
         message = await ctx.send(
             _(RESULT_MESSAGE).format(channel=channel, mode=mode, count_messages=count_messages),
@@ -497,8 +515,11 @@ class ExportChannel(Cog):
             channel = ctx.channel
         await self.check_channel(ctx, channel)
         count_messages, __, file = await self.export_messages(
-            ctx, channel=channel, mode=mode,
-            bot=bot, limit=limit,
+            ctx,
+            channel=channel,
+            mode=mode,
+            bot=bot,
+            limit=limit,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         message = await ctx.send(

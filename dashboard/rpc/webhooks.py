@@ -20,4 +20,4 @@ class DashboardRPC_Webhooks:
         self, payload: typing.Dict[str, typing.Any]
     ) -> typing.Dict[str, int]:
         self.bot.dispatch("webhook_receive", payload)
-        return {"status": 1}
+        return {"status": 0}

@@ -156,7 +156,8 @@ class ViewPermissions(Cog):
                         ][-1]
                         .replace("_", " ")
                         .title()
-                    ) if permission_name != "manage_roles"
+                    )
+                    if permission_name != "manage_roles"
                     else permission_name.replace("_", " ").title()
                 ),
                 "value": value,

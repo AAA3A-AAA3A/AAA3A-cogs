@@ -785,7 +785,9 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 else:
                     raise commands.UserFeedbackCheckFailure(_("Please provide a profile."))
             else:
-                raise commands.UserFeedbackCheckFailure(_("No profile has been created on this server."))
+                raise commands.UserFeedbackCheckFailure(
+                    _("No profile has been created on this server.")
+                )
         config = await self.get_config(ctx.guild, profile)
         forum_channel: typing.Union[discord.ForumChannel, discord.Thread] = config["forum_channel"]
         category_open: discord.CategoryChannel = config["category_open"]
@@ -845,13 +847,17 @@ class TicketTool(settings, DashboardIntegration, Cog):
                     inputs.append(text_input)
                     modal.add_item(text_input)
                 view: discord.ui.View = discord.ui.View()
+
                 async def interaction_check(interaction: discord.Interaction):
-                    if interaction.user.id not in [ctx.author.id] + ([member.id] if member is not None else []) + list(ctx.bot.owner_ids):
+                    if interaction.user.id not in [ctx.author.id] + (
+                        [member.id] if member is not None else []
+                    ) + list(ctx.bot.owner_ids):
                         await interaction.response.send_message(
                             "You are not allowed to use this interaction.", ephemeral=True
                         )
                         return False
                     return True
+
                 view.interaction_check = interaction_check
                 button: discord.ui.Button = discord.ui.Button(
                     label="Create Ticket", emoji="🎟️", style=discord.ButtonStyle.secondary
@@ -888,8 +894,12 @@ class TicketTool(settings, DashboardIntegration, Cog):
             embed: discord.Embed = discord.Embed()
             embed.title = "Custom Modal"
             embed.set_author(
-                name=ctx.author.display_name if interaction is None else interaction.user.display_name,
-                icon_url=ctx.author.display_avatar if interaction is None else interaction.user.display_avatar,
+                name=ctx.author.display_name
+                if interaction is None
+                else interaction.user.display_name,
+                icon_url=ctx.author.display_avatar
+                if interaction is None
+                else interaction.user.display_avatar,
             )
             embed.color = await ctx.embed_color()
             for label, value in modal_answers.items():

@@ -50,5 +50,5 @@ class DashboardIntegration:
             "web_content": {
                 "source": source,
                 "console_logs": console_logs,
-            }
+            },
         }

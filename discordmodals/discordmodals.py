@@ -478,13 +478,7 @@ class DiscordModals(Cog):
                 "You are not allowed to use this interaction.", ephemeral=True
             )
             return
-        if (
-            config["unique_answer"]
-            and interaction.user.id
-            in config[
-                "existing_answers"
-            ]
-        ):
+        if config["unique_answer"] and interaction.user.id in config["existing_answers"]:
             await interaction.response.send_message(
                 "You have already answered this Modal.", ephemeral=True
             )
@@ -567,7 +561,12 @@ class DiscordModals(Cog):
             for _input in inputs:
                 embed.add_field(
                     name=_input.label,
-                    value=(_input.value.strip() if len(_input.value.strip()) <= 1024 else f"{_input.value.strip()[:1021]}...") or "Not provided.",
+                    value=(
+                        _input.value.strip()
+                        if len(_input.value.strip()) <= 1024
+                        else f"{_input.value.strip()[:1021]}..."
+                    )
+                    or "Not provided.",
                     inline=False,
                 )
             embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)

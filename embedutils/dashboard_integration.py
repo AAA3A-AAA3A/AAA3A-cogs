@@ -11,10 +11,12 @@ from .converters import ListStringToEmbed
 
 _ = Translator("EmbedUtils", __file__)
 
+
 def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
         func.__dashboard_decorator_params__ = (args, kwargs)
         return func
+
     return decorator
 
 
@@ -36,7 +38,11 @@ class DashboardIntegration:
             source = f.read()
         return {"status": 0, "web_content": {"source": source, "standalone": True}}
 
-    @dashboard_page(name="guild", description="Create rich Embeds and send them to a guild!", methods=("GET", "POST"))
+    @dashboard_page(
+        name="guild",
+        description="Create rich Embeds and send them to a guild!",
+        methods=("GET", "POST"),
+    )
     async def dashboard_guild(self, user: discord.User, guild: discord.Guild, **kwargs) -> None:
         is_owner = user.id in self.bot.owner_ids
         member = guild.get_member(user.id)
@@ -51,7 +57,9 @@ class DashboardIntegration:
             return {
                 "status": 0,
                 "error_code": 403,
-                "message": _("I or you don't have permissions to send messages or embeds in any channel in this guild."),
+                "message": _(
+                    "I or you don't have permissions to send messages or embeds in any channel in this guild."
+                ),
             }
 
         file_path = os.path.join(os.path.dirname(__file__), "editor.html")
@@ -59,15 +67,38 @@ class DashboardIntegration:
             source = f.read()
 
         import wtforms
+
         class SendForm(kwargs["Form"]):
             def __init__(self) -> None:
                 super().__init__(prefix="send_form_")
 
-            username: wtforms.HiddenField = wtforms.HiddenField(_("Username:"), validators=[wtforms.validators.Optional(), wtforms.validators.Length(max=80)])
-            avatar: wtforms.HiddenField = wtforms.HiddenField(_("Avatar URL:"), validators=[wtforms.validators.Optional(), wtforms.validators.URL()])
-            data: wtforms.HiddenField = wtforms.HiddenField(_("Data"), validators=[wtforms.validators.DataRequired(), kwargs["DpyObjectConverter"](ListStringToEmbed)])
-            channels: wtforms.SelectMultipleField = wtforms.SelectMultipleField(_("Channels:"), choices=[], validators=[wtforms.validators.DataRequired(), kwargs["DpyObjectConverter"](typing.Union[discord.TextChannel, discord.VoiceChannel])])
+            username: wtforms.HiddenField = wtforms.HiddenField(
+                _("Username:"),
+                validators=[wtforms.validators.Optional(), wtforms.validators.Length(max=80)],
+            )
+            avatar: wtforms.HiddenField = wtforms.HiddenField(
+                _("Avatar URL:"),
+                validators=[wtforms.validators.Optional(), wtforms.validators.URL()],
+            )
+            data: wtforms.HiddenField = wtforms.HiddenField(
+                _("Data"),
+                validators=[
+                    wtforms.validators.DataRequired(),
+                    kwargs["DpyObjectConverter"](ListStringToEmbed),
+                ],
+            )
+            channels: wtforms.SelectMultipleField = wtforms.SelectMultipleField(
+                _("Channels:"),
+                choices=[],
+                validators=[
+                    wtforms.validators.DataRequired(),
+                    kwargs["DpyObjectConverter"](
+                        typing.Union[discord.TextChannel, discord.VoiceChannel]
+                    ),
+                ],
+            )
             submit = wtforms.SubmitField(_("Send Message(s)"))
+
         send_form: SendForm = SendForm()
         send_form.channels.choices = channels
         send_form_string = f"""
@@ -99,7 +130,9 @@ class DashboardIntegration:
                         )
                         continue
                     try:
-                        hook: discord.Webhook = await CogsUtils.get_hook(bot=self.bot, channel=channel)
+                        hook: discord.Webhook = await CogsUtils.get_hook(
+                            bot=self.bot, channel=channel
+                        )
                         await hook.send(
                             **send_form.data.data,
                             username=send_form.username.data or guild.me.display_name,
@@ -124,9 +157,17 @@ class DashboardIntegration:
                             }
                         )
             if not notifications:
-                self.logger.trace(f"{len(send_form.channels.data)} message(s) sent successfully in `{channel.name}` ({channel.id}) in `{guild.name}` ({guild.id}), from the Dashboard by `{user.display_name}` ({user.id}).")
-                notifications.append({"message": _("Message(s) sent successfully!"), "category": "success"})
-            return {"status": 0, "notifications": notifications, "redirect_url": kwargs["request_url"]}
+                self.logger.trace(
+                    f"{len(send_form.channels.data)} message(s) sent successfully in `{channel.name}` ({channel.id}) in `{guild.name}` ({guild.id}), from the Dashboard by `{user.display_name}` ({user.id})."
+                )
+                notifications.append(
+                    {"message": _("Message(s) sent successfully!"), "category": "success"}
+                )
+            return {
+                "status": 0,
+                "notifications": notifications,
+                "redirect_url": kwargs["request_url"],
+            }
 
         return {
             "status": 0,

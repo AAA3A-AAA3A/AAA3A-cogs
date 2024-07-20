@@ -2748,10 +2748,18 @@ class GuildStats(Cog):
         # return f"{number:.1f}{suffixes[index] if index is not None else ''}"
         if number == int(number):
             formatted_number = int(number)
-        elif f'{number:.1f}' != "0.0":
-            formatted_number = int(float(f"{number:.1f}")) if float(f"{number:.1f}") == int(float(f"{number:.1f}")) else f"{number:.1f}"
+        elif f"{number:.1f}" != "0.0":
+            formatted_number = (
+                int(float(f"{number:.1f}"))
+                if float(f"{number:.1f}") == int(float(f"{number:.1f}"))
+                else f"{number:.1f}"
+            )
         else:
-            formatted_number = int(float(f"{number:.2f}")) if float(f"{number:.2f}") == int(float(f"{number:.2f}")) else f"{number:.2f}"
+            formatted_number = (
+                int(float(f"{number:.2f}"))
+                if float(f"{number:.2f}") == int(float(f"{number:.2f}"))
+                else f"{number:.2f}"
+            )
         suffix = suffixes[index] if index is not None else ""
         return f"{formatted_number}{suffix}"
 

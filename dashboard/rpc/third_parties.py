@@ -6,11 +6,11 @@ import typing  # isort:skip
 import base64
 import inspect
 import types
-from werkzeug.datastructures import ImmutableMultiDict
 
 from redbot.core.i18n import get_locale_from_guild, set_contextual_locale, set_regional_format
+from werkzeug.datastructures import ImmutableMultiDict
 
-from .form import get_form_class, Field, INITIAL_INIT_FIELD
+from .form import INITIAL_INIT_FIELD, Field, get_form_class
 from .pagination import Pagination
 from .utils import rpc_check
 
@@ -64,12 +64,21 @@ def dashboard_page(
                 and key not in params["context_ids"]
             ):
                 params["context_ids"].append(key)
-            elif (
-                f"{key}_id" in ("user_id", "guild_id", "member_id", "role_id", "channel_id")
-            ):
+            elif f"{key}_id" in ("user_id", "guild_id", "member_id", "role_id", "channel_id"):
                 if f"{key}_id" not in params["context_ids"]:
                     params["context_ids"].append(f"{key}_id")
-            elif key not in ("method", "request_url", "csrf_token", "wtf_csrf_secret_key", "extra_kwargs", "data", "lang_code", "Form", "DpyObjectConverter", "Pagination"):
+            elif key not in (
+                "method",
+                "request_url",
+                "csrf_token",
+                "wtf_csrf_secret_key",
+                "extra_kwargs",
+                "data",
+                "lang_code",
+                "Form",
+                "DpyObjectConverter",
+                "Pagination",
+            ):
                 params["required_kwargs"].append(key)
 
         # A guild must be chose for these kwargs.
@@ -80,17 +89,15 @@ def dashboard_page(
                     break
 
         # No method `GET`, no guild available and no owner check without user connection.
-        if "user_id" not in params["context_ids"] and ("guild_id" in params["context_ids"] or is_owner):
+        if "user_id" not in params["context_ids"] and (
+            "guild_id" in params["context_ids"] or is_owner
+        ):
             params["context_ids"].append("user_id")
         if params["hidden"] is None:
             params["hidden"] = (
                 "GET" not in methods
                 or params["required_kwargs"]
-                or any(
-                    x
-                    for x in params["context_ids"]
-                    if x not in ("user_id", "guild_id")
-                )
+                or any(x for x in params["context_ids"] if x not in ("user_id", "guild_id"))
             )
 
         func.__dashboard_params__ = params.copy()
@@ -181,7 +188,9 @@ class DashboardRPC_ThirdParties:
         return self.third_parties.pop(name, None)
 
     @rpc_check()
-    async def oauth_receive(self, user_id: int, payload: typing.Dict[str, str]) -> typing.Dict[str, int]:
+    async def oauth_receive(
+        self, user_id: int, payload: typing.Dict[str, str]
+    ) -> typing.Dict[str, int]:
         self.bot.dispatch("oauth_receive", user_id, payload)
         return {"status": 0}
 
@@ -252,7 +261,10 @@ class DashboardRPC_ThirdParties:
                 }
             kwargs["user_id"] = context_ids["user_id"]
             kwargs["user"] = user
-            if self.third_parties[name][page][1]["is_owner"] and context_ids["user_id"] not in self.bot.owner_ids:
+            if (
+                self.third_parties[name][page][1]["is_owner"]
+                and context_ids["user_id"] not in self.bot.owner_ids
+            ):
                 return {
                     "status": 1,
                     "message": "Forbidden access.",
@@ -322,14 +334,23 @@ class DashboardRPC_ThirdParties:
         kwargs["csrf_token"] = tuple(csrf_token)
         kwargs["wtf_csrf_secret_key"] = base64.urlsafe_b64decode(wtf_csrf_secret_key)
         kwargs["extra_kwargs"] = extra_kwargs
-        kwargs["data"] = {"form": ImmutableMultiDict(data["form"]), "json": ImmutableMultiDict(data["json"])}
+        kwargs["data"] = {
+            "form": ImmutableMultiDict(data["form"]),
+            "json": ImmutableMultiDict(data["json"]),
+        }
         kwargs["lang_code"] = lang_code or await get_locale_from_guild(
             self.bot, guild=kwargs.get("guild")
         )
         set_contextual_locale(kwargs["lang_code"])
         set_regional_format(kwargs["lang_code"])
 
-        kwargs["Form"], kwargs["DpyObjectConverter"], extra_notifications, kwargs["get_sorted_channels"], kwargs["get_sorted_roles"] = await get_form_class(self, third_party_cog=self.third_parties_cogs[name], **kwargs)
+        (
+            kwargs["Form"],
+            kwargs["DpyObjectConverter"],
+            extra_notifications,
+            kwargs["get_sorted_channels"],
+            kwargs["get_sorted_roles"],
+        ) = await get_form_class(self, third_party_cog=self.third_parties_cogs[name], **kwargs)
         kwargs["Pagination"] = Pagination
 
         result = await self.third_parties[name][page][0](**kwargs)

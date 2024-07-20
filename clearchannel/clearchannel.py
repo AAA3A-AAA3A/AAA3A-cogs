@@ -115,15 +115,15 @@ class ClearChannel(DashboardIntegration, Cog):
                     "channel_id": old_channel.id,
                 }
                 _kwargs = {}
+
                 class FakeChannel:
                     async def send(self, **kwargs):
                         _kwargs.update(kwargs)
+
                 await CustomMessageConverter(**config["prompt_message"]).send_message(
                     ctx, channel=FakeChannel(), env=env
                 )
-                if not await CogsUtils.ConfirmationAsk(
-                    ctx, **_kwargs
-                ):
+                if not await CogsUtils.ConfirmationAsk(ctx, **_kwargs):
                     await CogsUtils.delete_message(ctx.message)
                     return
 

@@ -21,7 +21,9 @@ class DashboardIntegration:
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
     @dashboard_page(name="transcript")
-    async def rpc_callback_transcript(self, attachment_url: str, **kwargs) -> typing.Dict[str, typing.Any]:
+    async def rpc_callback_transcript(
+        self, attachment_url: str, **kwargs
+    ) -> typing.Dict[str, typing.Any]:
         if not attachment_url.startswith("https://cdn.discordapp.com/attachments/"):
             if len(attachment_url.split("-")) >= 3:
                 attachment_url = f"{attachment_url.split('-')[0]}/{attachment_url.split('-')[1]}/{'-'.join(attachment_url.split('-')[2:])}"
@@ -30,9 +32,8 @@ class DashboardIntegration:
             attachment_url = f"https://cdn.discordapp.com/attachments/{attachment_url}"
         return {
             "status": 0,
-            "web_content": 
-                {
-                    "source": '<iframe src="https://mahto.id/chat-exporter?url={{ attachment_url }}" style="width:100%; height:550px;"></iframe>',
-                    "attachment_url": attachment_url,
-                },
+            "web_content": {
+                "source": '<iframe src="https://mahto.id/chat-exporter?url={{ attachment_url }}" style="width:100%; height:550px;"></iframe>',
+                "attachment_url": attachment_url,
+            },
         }

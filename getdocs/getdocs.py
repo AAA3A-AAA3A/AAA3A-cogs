@@ -360,10 +360,13 @@ class GetDocs(DashboardIntegration, Cog):
             return
         if query == "random":
             if source._rtfm_cache is None or (
-                source._rtfm_caching_task is not None and source._rtfm_caching_task.currently_running
+                source._rtfm_caching_task is not None
+                and source._rtfm_caching_task.currently_running
             ):
                 raise RuntimeError(_("RTFM caching isn't finished."))
-            choice: Documentation = await source.get_documentation(random.choice(source._raw_rtfm_cache_without_std))
+            choice: Documentation = await source.get_documentation(
+                random.choice(source._raw_rtfm_cache_without_std)
+            )
             if not any([choice.parameters, choice.examples, choice.attributes]):
                 await ctx.send(embed=choice.to_embed(embed_color=await ctx.embed_color()))
                 return
@@ -1051,9 +1054,7 @@ class Source:
                                             _param_raw = "\n    "
                                             to_replace = "\\*"
                                             if _param[0][2:].strip().endswith("?"):
-                                                _param_raw += (
-                                                    f'# ? "{_param[0][2:].replace(to_replace, "").strip()[:-1]}": '
-                                                )
+                                                _param_raw += f'# ? "{_param[0][2:].replace(to_replace, "").strip()[:-1]}": '
                                             elif _param[0][2:].strip().endswith("?\\*"):
                                                 _param_raw += (
                                                     f'# ?\\* "{_param[0][2:].strip()[:-3]}": '
@@ -1243,9 +1244,7 @@ class Source:
                     fields_labels = soup.find_all("span", class_="mw-headline")
                     fields_values = soup.find_all("dl")
                     for field_value in fields_values.copy():
-                        text = self._get_text(
-                            field_value, parsed_url=self.url.split("/wiki")[0]
-                        )
+                        text = self._get_text(field_value, parsed_url=self.url.split("/wiki")[0])
                         if (
                             len(text.split("\n\n")) > 1
                             or "WoW API" in text

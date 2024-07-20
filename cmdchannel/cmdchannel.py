@@ -25,11 +25,11 @@ class CmdChannel(Cog):
         #     force_registration=True,
         # )
         # self.config.register_guild(
-            # logschannel=None,
-            # enabled=True,
-            # confirmation=False,
-            # delete_message=False,
-            # information_message=False,
+        # logschannel=None,
+        # enabled=True,
+        # confirmation=False,
+        # delete_message=False,
+        # information_message=False,
         # )
 
     @commands.Cog.listener()

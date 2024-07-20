@@ -26,7 +26,12 @@ def cleanup_code(code: str) -> str:
 
 
 class ExecuteModal(discord.ui.Modal):
-    def __init__(self, cog: commands.Cog, ctx: commands.Context, choice: typing.Literal["debug", "eval"] = "eval") -> None:
+    def __init__(
+        self,
+        cog: commands.Cog,
+        ctx: commands.Context,
+        choice: typing.Literal["debug", "eval"] = "eval",
+    ) -> None:
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = ctx
         self.choice: typing.Literal["debug", "eval"] = choice
@@ -51,7 +56,6 @@ class ExecuteModal(discord.ui.Modal):
             source=source,
             send_result=True,
         )
-        
 
 
 class ExecuteView(discord.ui.View):
@@ -95,13 +99,17 @@ class ExecuteView(discord.ui.View):
     async def execute_debug(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        await interaction.response.send_modal(ExecuteModal(cog=self.cog, ctx=self.ctx, choice="debug"))
+        await interaction.response.send_modal(
+            ExecuteModal(cog=self.cog, ctx=self.ctx, choice="debug")
+        )
 
     @discord.ui.button(label=_("Execute Eval"), custom_id="execute_eval")
     async def execute_eval(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        await interaction.response.send_modal(ExecuteModal(cog=self.cog, ctx=self.ctx, choice="eval"))
+        await interaction.response.send_modal(
+            ExecuteModal(cog=self.cog, ctx=self.ctx, choice="eval")
+        )
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
     async def close_page(

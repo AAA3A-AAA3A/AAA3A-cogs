@@ -54,7 +54,9 @@ class DashboardIntegration:
         return {"status": 0, "source": source, "results": results.results}
 
     @dashboard_page(name="documentations", hidden=True)
-    async def rpc_callback_documentations(self, source: str, documentation: str, **kwargs) -> typing.Dict[str, typing.Any]:
+    async def rpc_callback_documentations(
+        self, source: str, documentation: str, **kwargs
+    ) -> typing.Dict[str, typing.Any]:
         if source not in self.documentations:
             return {"status": 1, "message": "Source not found."}
         _source = self.documentations[source]

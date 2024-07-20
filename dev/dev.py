@@ -25,7 +25,7 @@ from redbot.core.utils.predicates import MessagePredicate
 
 from .dashboard_integration import DashboardIntegration
 from .env import DevEnv, DevSpace, Exit, ctxconsole
-from .view import cleanup_code, ExecuteView
+from .view import ExecuteView, cleanup_code
 
 # Credits:
 # General repo credits.
@@ -143,7 +143,8 @@ class DevOutput(dev_commands.DevOutput):
                     if isinstance(element, discord.Embed) and channel_permissions.embed_links:
                         if (
                             len(kwargs["embeds"]) < 10
-                            and (sum(len(embed) for embed in kwargs["embeds"]) + len(element)) <= 6000
+                            and (sum(len(embed) for embed in kwargs["embeds"]) + len(element))
+                            <= 6000
                         ):
                             kwargs["embeds"].append(element)
                     elif isinstance(element, discord.File) and channel_permissions.attach_files:
@@ -743,9 +744,8 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                     raise commands.UserFeedbackCheckFailure(
                         _("Unreadable attachment with `utf-8`.")
                     )
-            elif (
-                ctx.message.reference is not None
-                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            elif ctx.message.reference is not None and isinstance(
+                (reference := ctx.message.reference.resolved), discord.Message
             ):
                 if (
                     match := re.compile(
@@ -806,9 +806,8 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                     raise commands.UserFeedbackCheckFailure(
                         _("Unreadable attachment with `utf-8`.")
                     )
-            elif (
-                ctx.message.reference is not None
-                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            elif ctx.message.reference is not None and isinstance(
+                (reference := ctx.message.reference.resolved), discord.Message
             ):
                 if (
                     match := re.compile(
@@ -1014,9 +1013,8 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                     raise commands.UserFeedbackCheckFailure(
                         _("Unreadable attachment with `utf-8`.")
                     )
-            elif (
-                ctx.message.reference is not None
-                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            elif ctx.message.reference is not None and isinstance(
+                (reference := ctx.message.reference.resolved), discord.Message
             ):
                 if (
                     match := re.compile(

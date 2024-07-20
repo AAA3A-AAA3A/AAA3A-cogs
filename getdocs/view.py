@@ -13,10 +13,7 @@ from .types import Documentation, SearchResults
 class DocsSelect(discord.ui.Select):
     def __init__(self, parent: discord.ui.View, results: typing.List[str]) -> None:
         self._parent: discord.ui.View = parent
-        self._options = [
-            discord.SelectOption(label=name, value=name)
-            for name in results
-        ]
+        self._options = [discord.SelectOption(label=name, value=name) for name in results]
         super().__init__(
             placeholder="Select an option.",
             options=self._options,
@@ -47,7 +44,9 @@ class GetDocsView(discord.ui.View):
 
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
-        self.results = await self.source.search(self.query, limit=25, exclude_std=True, with_raw_search=True)
+        self.results = await self.source.search(
+            self.query, limit=25, exclude_std=True, with_raw_search=True
+        )
         if not self.results:
             raise RuntimeError("No results found.")
         if self.source.name == "discordapi":

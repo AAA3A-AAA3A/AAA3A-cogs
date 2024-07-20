@@ -165,7 +165,11 @@ class DevUtils(Cog):
 
     @devutils.command()
     async def execute(
-        self, ctx: commands.Context, sequential: typing.Optional[bool] = True, *, commands_list: str
+        self,
+        ctx: commands.Context,
+        sequential: typing.Optional[bool] = True,
+        *,
+        commands_list: str,
     ) -> None:
         """Execute multiple commands at once. Split them using |."""
         commands_list = [command.strip() for command in commands_list.split("|")]
@@ -275,7 +279,9 @@ class DevUtils(Cog):
             bot=ctx.bot,
             author=message.author,
             channel=message.channel,
-            command=f"{ctx.prefix}devutils reinvoke{message.content[len(ctx.prefix)+8:]}" if message.content.startswith(f"{ctx.prefix}reinvoke") else message.content,
+            command=f"{ctx.prefix}devutils reinvoke{message.content[len(ctx.prefix)+8:]}"
+            if message.content.startswith(f"{ctx.prefix}reinvoke")
+            else message.content,
             prefix="",
             message=message,
         )

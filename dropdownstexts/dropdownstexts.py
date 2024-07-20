@@ -87,7 +87,9 @@ class DropdownsTexts(Cog):
                 for message in dropdowns_texts:
                     for custom_id in dropdowns_texts[message]:
                         if "text" in dropdowns_texts[message][custom_id]:
-                            dropdowns_texts[message][custom_id]["data"] = {"content": dropdowns_texts[message][custom_id].pop("text")}
+                            dropdowns_texts[message][custom_id]["data"] = {
+                                "content": dropdowns_texts[message][custom_id].pop("text")
+                            }
                 await self.config.guild_from_id(guild_id).dropdowns_texts.set(dropdowns_texts)
             CONFIG_SCHEMA = 3
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
@@ -140,13 +142,15 @@ class DropdownsTexts(Cog):
         if config_identifier not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
             await interaction.followup.send(_("This option is not in Config."), ephemeral=True)
             return
-        data = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier]["data"]
+        data = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier][
+            "data"
+        ]
         if interaction.channel.permissions_for(interaction.guild.me).embed_links:
             if "embed" in data:
                 if "title" not in data["embed"]:
-                    data["embed"]["title"] = config[f"{interaction.channel.id}-{interaction.message.id}"][
-                        config_identifier
-                    ]["label"]
+                    data["embed"]["title"] = config[
+                        f"{interaction.channel.id}-{interaction.message.id}"
+                    ][config_identifier]["label"]
                 data["embed"] = discord.Embed.from_dict(data["embed"])
             await interaction.followup.send(**data, ephemeral=True)
         elif "embed" in data:
@@ -222,10 +226,14 @@ class DropdownsTexts(Cog):
             "label": label,
             "data": (
                 {"embed": {"description": text_or_message}}
-                if isinstance(text_or_message, str) else (
-                    {"content": text_or_message.content, "embed": text_or_message.embeds[0].to_dict()}
-                    if text_or_message.embeds else
-                    {"content": text_or_message.content}
+                if isinstance(text_or_message, str)
+                else (
+                    {
+                        "content": text_or_message.content,
+                        "embed": text_or_message.embeds[0].to_dict(),
+                    }
+                    if text_or_message.embeds
+                    else {"content": text_or_message.content}
                 )
             ),
         }
@@ -292,10 +300,14 @@ class DropdownsTexts(Cog):
                 "label": label,
                 "data": (
                     {"embed": {"description": text_or_message}}
-                    if isinstance(text_or_message, str) else (
-                        {"content": text_or_message.content, "embed": text_or_message.embeds[0].to_dict()}
-                        if text_or_message.embeds else
-                        {"content": text_or_message.content}
+                    if isinstance(text_or_message, str)
+                    else (
+                        {
+                            "content": text_or_message.content,
+                            "embed": text_or_message.embeds[0].to_dict(),
+                        }
+                        if text_or_message.embeds
+                        else {"content": text_or_message.content}
                     )
                 ),
             }

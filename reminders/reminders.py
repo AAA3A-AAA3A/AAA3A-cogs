@@ -316,7 +316,10 @@ class Reminders(DashboardIntegration, Cog):
                     pass
                 else:
                     member_permissions = message_or_text.channel.permissions_for(ctx.author)
-                    if ctx.author.id not in ctx.bot.owner_ids and (not member_permissions.view_channel or not member_permissions.read_message_history):
+                    if ctx.author.id not in ctx.bot.owner_ids and (
+                        not member_permissions.view_channel
+                        or not member_permissions.read_message_history
+                    ):
                         raise commands.UserFeedbackCheckFailure(
                             _("You can't access this message.")
                         )
@@ -454,7 +457,10 @@ class Reminders(DashboardIntegration, Cog):
                     pass
                 else:
                     member_permissions = message_or_text.channel.permissions_for(ctx.author)
-                    if ctx.author.id not in ctx.bot.owner_ids and (not member_permissions.view_channel or not member_permissions.read_message_history):
+                    if ctx.author.id not in ctx.bot.owner_ids and (
+                        not member_permissions.view_channel
+                        or not member_permissions.read_message_history
+                    ):
                         raise commands.UserFeedbackCheckFailure(
                             _("You can't access this message.")
                         )
@@ -1119,7 +1125,9 @@ class Reminders(DashboardIntegration, Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @reminder.command(aliases=["timestamp"])
-    async def timestamps(self, ctx: commands.Context, repeat_times: typing.Optional[int] = 100, *, time: str = "now") -> None:
+    async def timestamps(
+        self, ctx: commands.Context, repeat_times: typing.Optional[int] = 100, *, time: str = "now"
+    ) -> None:
         """Get a list of Discord timestamps for a given time. You can provide a repeat.
 
         The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule.
@@ -1135,7 +1143,7 @@ class Reminders(DashboardIntegration, Cog):
         for __ in range(repeat_times):
             embed: discord.Embed = discord.Embed(
                 title=_("Timestamps for {time}").format(time=discord.utils.format_dt(time, "F")),
-                color=await ctx.embed_color()
+                color=await ctx.embed_color(),
             )
             embed.description = "\n".join(
                 [
@@ -1144,7 +1152,15 @@ class Reminders(DashboardIntegration, Cog):
                 ]
             )
             embeds.append(embed)
-            if repeat is None or (time := await repeat.next_trigger(last_expires_at=time, utc_now=time, timezone=timezone)) is None:
+            if (
+                repeat is None
+                or (
+                    time := await repeat.next_trigger(
+                        last_expires_at=time, utc_now=time, timezone=timezone
+                    )
+                )
+                is None
+            ):
                 break
         await Menu(pages=embeds).start(ctx)
 

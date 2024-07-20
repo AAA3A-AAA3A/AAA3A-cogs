@@ -7,9 +7,9 @@ import typing  # isort:skip
 
 import base64
 import json
+from urllib.parse import quote
 
 import aiohttp
-from urllib.parse import quote
 from redbot.core.utils.chat_formatting import pagify, text_to_file
 
 from .converters import (
@@ -279,9 +279,8 @@ class EmbedUtils(DashboardIntegration, Cog):
         If you provide a message, it will be edited.
         """
         if message is None:
-            if (
-                ctx.message.reference is not None
-                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            if ctx.message.reference is not None and isinstance(
+                (reference := ctx.message.reference.resolved), discord.Message
             ):
                 message = reference
             else:
@@ -330,9 +329,8 @@ class EmbedUtils(DashboardIntegration, Cog):
         The content of the message already sent is included if no index is specified.
         """
         if message is None:
-            if (
-                ctx.message.reference is not None
-                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            if ctx.message.reference is not None and isinstance(
+                (reference := ctx.message.reference.resolved), discord.Message
             ):
                 message = reference
             else:
@@ -423,9 +421,8 @@ class EmbedUtils(DashboardIntegration, Cog):
         elif conversion_type in ("message", "frommessage", "msg", "frommsg"):
             if data is not None:
                 message = await commands.MessageConverter().convert(ctx, argument=data)
-            elif (
-                ctx.message.reference is not None
-                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            elif ctx.message.reference is not None and isinstance(
+                (reference := ctx.message.reference.resolved), discord.Message
             ):
                 message = reference
             else:
@@ -524,9 +521,8 @@ class EmbedUtils(DashboardIntegration, Cog):
         elif conversion_type in ("message", "frommessage", "msg", "frommsg"):
             if data is not None:
                 message = await commands.MessageConverter().convert(ctx, argument=data)
-            elif (
-                ctx.message.reference is not None
-                and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+            elif ctx.message.reference is not None and isinstance(
+                (reference := ctx.message.reference.resolved), discord.Message
             ):
                 message = reference
             else:
@@ -583,9 +579,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             del stored_embeds[name]
 
     @commands.mod_or_permissions(manage_guild=True)
-    @embed.command(
-        name="list", aliases=["liststored", "liststoredembeds"]
-    )
+    @embed.command(name="list", aliases=["liststored", "liststoredembeds"])
     async def embed_list(self, ctx: commands.Context, global_level: bool = False):
         """Get info about a stored embed."""
         if global_level and ctx.author.id not in ctx.bot.owner_ids:
@@ -771,37 +765,50 @@ class EmbedUtils(DashboardIntegration, Cog):
     async def dashboard(
         self,
         ctx: commands.Context,
-        conversion_type: typing.Optional[typing.Literal[
-            "json",
-            "fromjson",
-            "fromdata",
-            "yaml",
-            "fromyaml",
-            "fromfile",
-            "jsonfile",
-            "fromjsonfile",
-            "fromdatafile",
-            "yamlfile",
-            "fromyamlfile",
-            "gist",
-            "pastebin",
-            "hastebin",
-            "message",
-            "frommessage",
-            "msg",
-            "frommsg",
-        ]] = None,
+        conversion_type: typing.Optional[
+            typing.Literal[
+                "json",
+                "fromjson",
+                "fromdata",
+                "yaml",
+                "fromyaml",
+                "fromfile",
+                "jsonfile",
+                "fromjsonfile",
+                "fromdatafile",
+                "yamlfile",
+                "fromyamlfile",
+                "gist",
+                "pastebin",
+                "hastebin",
+                "message",
+                "frommessage",
+                "msg",
+                "frommsg",
+            ]
+        ] = None,
         *,
         data: str = None,
     ) -> None:
         """Get the link to the Dashboard."""
         if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
-            raise commands.UserFeedbackCheckFailure(_("Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."))
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+                )
+            )
         if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(_("You can't access the Dashboard."))
-        if self.qualified_name in await self.bot.get_cog("Dashboard").config.webserver.disabled_third_parties():
-            raise commands.UserFeedbackCheckFailure(_("This third party is disabled on the Dashboard."))
-        url = f"{dashboard_url[0]}/dashboard/{ctx.guild.id}/third-party/{self.qualified_name}/guild"
+        if (
+            self.qualified_name
+            in await self.bot.get_cog("Dashboard").config.webserver.disabled_third_parties()
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _("This third party is disabled on the Dashboard.")
+            )
+        url = (
+            f"{dashboard_url[0]}/dashboard/{ctx.guild.id}/third-party/{self.qualified_name}/guild"
+        )
 
         if conversion_type is not None:
             if conversion_type in ("json", "fromjson", "fromdata"):
@@ -820,7 +827,9 @@ class EmbedUtils(DashboardIntegration, Cog):
                 try:
                     argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
                 except UnicodeDecodeError:
-                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
+                    raise commands.UserFeedbackCheckFailure(
+                        _("Unreadable attachment with `utf-8`.")
+                    )
                 data = await JSON_LIST_CONVERTER.convert(ctx, argument=argument)
             elif conversion_type in ("yamlfile", "fromyamlfile"):
                 if not ctx.message.attachments or ctx.message.attachments[0].filename.split(".")[
@@ -830,7 +839,9 @@ class EmbedUtils(DashboardIntegration, Cog):
                 try:
                     argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
                 except UnicodeDecodeError:
-                    raise commands.UserFeedbackCheckFailure(_("Unreadable attachment with `utf-8`."))
+                    raise commands.UserFeedbackCheckFailure(
+                        _("Unreadable attachment with `utf-8`.")
+                    )
                 data = await YAML_LIST_CONVERTER.convert(ctx, argument=argument)
             elif conversion_type in ("gist", "pastebin", "hastebin"):
                 if data is None:
@@ -839,9 +850,8 @@ class EmbedUtils(DashboardIntegration, Cog):
             elif conversion_type in ("message", "frommessage", "msg", "frommsg"):
                 if data is not None:
                     message = await commands.MessageConverter().convert(ctx, argument=data)
-                elif (
-                    ctx.message.reference is not None
-                    and isinstance((reference := ctx.message.reference.resolved), discord.Message)
+                elif ctx.message.reference is not None and isinstance(
+                    (reference := ctx.message.reference.resolved), discord.Message
                 ):
                     message = reference
                 else:
@@ -863,9 +873,11 @@ class EmbedUtils(DashboardIntegration, Cog):
             color=await ctx.embed_color(),
         )
         if len(url) <= 2048:
-            embed.description = _("You can create and send rich embeds directly from the Dashboard!")
+            embed.description = _(
+                "You can create and send rich embeds directly from the Dashboard!"
+            )
             embed.url = url
-        elif len(url) <= 4096-15:
+        elif len(url) <= 4096 - 15:
             embed.description = f"[Click here!]({url})"
         else:
             embed.description = _("The URL is too long to be displayed.")

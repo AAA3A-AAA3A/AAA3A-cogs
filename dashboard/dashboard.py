@@ -31,7 +31,9 @@ class RedirectURIConverter(commands.Converter):
         if not argument.startswith("http"):
             raise commands.BadArgument(_("This is not a valid URL."))
         if not argument.endswith("/callback"):
-            raise commands.BadArgument(_("This is not a valid Dashboard redirect URI: it must end with `/callback`."))
+            raise commands.BadArgument(
+                _("This is not a valid Dashboard redirect URI: it must end with `/callback`.")
+            )
         return argument
 
 
@@ -171,19 +173,21 @@ class Dashboard(Cog):
                 },
                 "disabled_third_parties": [],
                 "custom_pages": [],
-            }
+            },
         )
 
         _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
             "all_in_one": {
                 "converter": bool,
                 "description": "Run the Dashboard in the bot process, without having to open another window. You have to install Red-Dashboard in your bot venv with Pip and reload the cog.",
-                "hidden": True, "no_slash": True,
+                "hidden": True,
+                "no_slash": True,
             },
             "flask_flags": {
                 "converter": commands.Greedy[StrConverter],
                 "description": "The flags used to setting the webserver if `all_in_one` is enabled. They are the cli flags of `reddash` without `--rpc-port`.",
-                "hidden": True, "no_slash": True,
+                "hidden": True,
+                "no_slash": True,
             },
             "redirect_uri": {
                 "converter": RedirectURIConverter,
@@ -339,7 +343,11 @@ class Dashboard(Cog):
     async def dashboard(self, ctx: commands.Context) -> None:
         """Get the link to the Dashboard."""
         if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
-            raise commands.UserFeedbackCheckFailure(_("Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."))
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+                )
+            )
         if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(_("You can't access the Dashboard."))
         embed: discord.Embed = discord.Embed(
@@ -347,7 +355,9 @@ class Dashboard(Cog):
             color=await ctx.embed_color(),
         )
         url = dashboard_url[0]
-        if ctx.guild is not None and (ctx.author.id in ctx.bot.owner_ids or await self.bot.is_mod(ctx.author)):
+        if ctx.guild is not None and (
+            ctx.author.id in ctx.bot.owner_ids or await self.bot.is_mod(ctx.author)
+        ):
             url += f"/dashboard/{ctx.guild.id}"
             embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
         embed.url = url

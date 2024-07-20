@@ -58,14 +58,20 @@ class Pagination(typing.List):
             if per_page is None
             else (
                 int(per_page)
-                if isinstance(per_page, str) and per_page.isdigit() and 1 <= int(per_page) <= max(default_per_page * 5, 100)
+                if isinstance(per_page, str)
+                and per_page.isdigit()
+                and 1 <= int(per_page) <= max(default_per_page * 5, 100)
                 else default_per_page
             )
         )
         page = (
             default_page
             if page is None
-            else (int(page) if isinstance(page, str) and page.isdigit() and int(page) >= 1 else default_page)
+            else (
+                int(page)
+                if isinstance(page, str) and page.isdigit() and int(page) >= 1
+                else default_page
+            )
         )
         total = len(items)
         pages = (total // per_page) + (total % per_page > 0)

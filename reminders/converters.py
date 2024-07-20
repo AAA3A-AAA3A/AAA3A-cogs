@@ -427,7 +427,10 @@ class TimeConverter(commands.Converter):
             #     parsed_date = parsed_date.replace(hour=9)
             # parsed_date = parsed_date.replace(tzinfo=tz)
             parsed_date = parsed_date.astimezone(tz=datetime.timezone.utc)
-            return parsed_date, (reminder_text or "").strip() if return_text else text,
+            return (
+                parsed_date,
+                (reminder_text or "").strip() if return_text else text,
+            )
 
         expires_at = None
         repeat = None

@@ -24,7 +24,11 @@ class DashboardIntegration:
             await self.settings.commands_added.wait()
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
-    @dashboard_page(name=None, description="Display the traceback of the last occured exceptions.", is_owner=True)
+    @dashboard_page(
+        name=None,
+        description="Display the traceback of the last occured exceptions.",
+        is_owner=True,
+    )
     async def rpc_callback(self, **kwargs) -> typing.Dict[str, typing.Any]:
         tracebacks = self.tracebacks.copy()
         if not tracebacks:
@@ -48,5 +52,5 @@ class DashboardIntegration:
                     default_per_page=1,
                     default_page=len(tracebacks),
                 ),
-            }
+            },
         }

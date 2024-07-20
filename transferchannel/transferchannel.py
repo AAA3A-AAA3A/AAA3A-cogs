@@ -295,7 +295,10 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way,
+            ctx,
+            source=source,
+            destination=destination,
+            way=way,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         await Menu(
@@ -354,7 +357,10 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way,
+            ctx,
+            source=source,
+            destination=destination,
+            way=way,
             limit=limit,
             exclude_users_and_roles=exclude_users_and_roles,
         )
@@ -383,7 +389,10 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way,
+            ctx,
+            source=source,
+            destination=destination,
+            way=way,
             before=before,
             exclude_users_and_roles=exclude_users_and_roles,
         )
@@ -412,7 +421,10 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way,
+            ctx,
+            source=source,
+            destination=destination,
+            way=way,
             after=after,
             exclude_users_and_roles=exclude_users_and_roles,
         )
@@ -442,8 +454,12 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way,
-            before=before, after=after,
+            ctx,
+            source=source,
+            destination=destination,
+            way=way,
+            before=before,
+            after=after,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         await Menu(
@@ -471,8 +487,12 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way,
-            user_id=user.id if isinstance(user, discord.Member) else user, limit=limit,
+            ctx,
+            source=source,
+            destination=destination,
+            way=way,
+            user_id=user.id if isinstance(user, discord.Member) else user,
+            limit=limit,
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
@@ -500,8 +520,12 @@ class TransferChannel(Cog):
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
         count_messages, __ = await self.transfer_messages(
-            ctx, source=source, destination=destination, way=way,
-            bot=bot, limit=limit,
+            ctx,
+            source=source,
+            destination=destination,
+            way=way,
+            bot=bot,
+            limit=limit,
             exclude_users_and_roles=exclude_users_and_roles,
         )
         await Menu(

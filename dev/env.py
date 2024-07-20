@@ -1,9 +1,3 @@
-import discord.ext
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import builtins
 import collections
@@ -23,6 +17,7 @@ from functools import partial
 from io import BytesIO, StringIO
 
 import aiohttp
+import discord.ext
 import redbot
 import rich
 from AAA3A_utils.cog import Cog
@@ -50,6 +45,12 @@ from redbot.core.utils import chat_formatting as cf
 from redbot.core.utils.chat_formatting import box
 from rich.console import Console
 from rich.table import Table
+
+from redbot.core import commands  # isort:skip
+from redbot.core.bot import Red  # isort:skip
+import discord  # isort:skip
+import typing  # isort:skip
+
 
 ctxconsole = ContextVar[rich.console.Console]("ctxconsole")
 
@@ -353,9 +354,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
             await Menu(pages=code, lang="py").start(ctx)
 
         def reference(ctx: commands.Context) -> typing.Optional[discord.Message]:
-            if (
-                ctx.message.reference is not None
-                and isinstance(ctx.message.reference.resolved, discord.Message)
+            if ctx.message.reference is not None and isinstance(
+                ctx.message.reference.resolved, discord.Message
             ):
                 return ctx.message.reference.resolved
 
@@ -382,7 +382,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
             )
 
         async def run_converters(
-            command_or_function: typing.Union[str, commands.Command, typing.Callable], arguments: str
+            command_or_function: typing.Union[str, commands.Command, typing.Callable],
+            arguments: str,
         ) -> typing.Dict[str, typing.Any]:
             if isinstance(command_or_function, str):
                 if (command := ctx.bot.get_command(command_or_function)) is None:
@@ -395,7 +396,13 @@ class DevEnv(typing.Dict[str, typing.Any]):
             fake_context = type(
                 "FakeContext",
                 (),
-                {"bot": ctx.bot, "command": command, "message": ctx.message, "prefix": None, "view": view},
+                {
+                    "bot": ctx.bot,
+                    "command": command,
+                    "message": ctx.message,
+                    "prefix": None,
+                    "view": view,
+                },
             )
             await command._parse_arguments(fake_context)
             kwargs = {}

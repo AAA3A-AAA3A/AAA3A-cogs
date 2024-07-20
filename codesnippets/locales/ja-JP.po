@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:22\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:23\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -22,25 +22,25 @@ msgstr ""
 msgid "A cog to send code content from a GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
 msgstr "GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin のURLからコードコンテンツを送信するためのコグです！"
 
-#: codesnippets\codesnippets.py:495
+#: codesnippets\codesnippets.py:486
 msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
 msgstr "GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin のURLは見つかりませんでした。"
 
-#: codesnippets\codesnippets.py:533
+#: codesnippets\codesnippets.py:524
 #, docstring
 msgid "Add a channel where the cog have to send automatically code snippets from URLs."
 msgstr "URLからコードスニペットを自動送信するチャンネルを追加しました。"
 
-#: codesnippets\codesnippets.py:537
+#: codesnippets\codesnippets.py:528
 msgid "The cog is already enabled in this channel"
 msgstr "このチャンネルでは、すでにコグが有効になっています"
 
-#: codesnippets\codesnippets.py:548
+#: codesnippets\codesnippets.py:539
 #, docstring
 msgid "Remove a channel where the cog have to send automatically code snippets from URLs."
 msgstr "URLからコードスニペットを自動送信するチャンネルを削除しました。"
 
-#: codesnippets\codesnippets.py:552
+#: codesnippets\codesnippets.py:543
 msgid "The cog is already disabled in this channel"
 msgstr "このチャンネルでは、すでにコグは無効化されています"
 

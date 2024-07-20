@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:38\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:24\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -22,140 +22,140 @@ msgstr ""
 msgid "A cog to assign temporary roles to users, expiring after a set time!"
 msgstr "Ένα γρανάζι για την ανάθεση προσωρινών ρόλων σε χρήστες, οι οποίοι λήγουν μετά από ένα καθορισμένο χρονικό διάστημα!"
 
-#: temproles\temproles.py:166 temproles\temproles.py:250
-#: temproles\temproles.py:308 temproles\temproles.py:353
-#: temproles\temproles.py:437
+#: temproles\temproles.py:158 temproles\temproles.py:244
+#: temproles\temproles.py:302 temproles\temproles.py:347
+#: temproles\temproles.py:431
 msgid "Temp Roles"
 msgstr "Προσωρινοί ρόλοι"
 
-#: temproles\temproles.py:167
+#: temproles\temproles.py:159
 msgid "Temp Role {temp_role.mention} ({temp_role.id}) has been automatically unassigned from {member.mention} ({member.id})."
 msgstr "Ο προσωρινός ρόλος {temp_role.mention} ({temp_role.id}) αποδεσμεύτηκε αυτόματα από το {member.mention} ({member.id})."
 
-#: temproles\temproles.py:197
+#: temproles\temproles.py:189
 #, docstring
 msgid "Assign/Add a TempRole to a member, for a specified duration."
 msgstr "Ανάθεση/προσθήκη ενός TempRole σε ένα μέλος, για καθορισμένη διάρκεια."
 
-#: temproles\temproles.py:206
+#: temproles\temproles.py:198
 msgid "This role is already a TempRole of this member. Do you want to edit the duration?\n"
 "Currently, this Temp Role expires {timestamp}."
 msgstr "Αυτός ο ρόλος είναι ήδη ένας TempRole αυτού του μέλους. Θέλετε να επεξεργαστείτε τη διάρκεια;\n"
 "Επί του παρόντος, αυτός ο προσωρινός ρόλος λήγει {timestamp}."
 
-#: temproles\temproles.py:214
+#: temproles\temproles.py:206
 msgid "This member already has {role.mention} ({role.id})."
 msgstr "Αυτό το μέλος έχει ήδη {role.mention} ({role.id})."
 
-#: temproles\temproles.py:220
+#: temproles\temproles.py:212
 msgid "This role cannot be assigned due to the Discord role hierarchy."
 msgstr "Αυτός ο ρόλος δεν μπορεί να εκχωρηθεί λόγω της ιεραρχίας ρόλων του Discord."
 
-#: temproles\temproles.py:226
+#: temproles\temproles.py:220
 msgid "You can't assign this role to this member, due to the Discord role hierarchy."
 msgstr "Δεν μπορείτε να εκχωρήσετε αυτόν τον ρόλο σε αυτό το μέλος, λόγω της ιεραρχίας ρόλων του Discord."
 
-#: temproles\temproles.py:232 temproles\temproles.py:291
+#: temproles\temproles.py:226 temproles\temproles.py:285
 msgid "The time set is way too high, consider setting something reasonable."
 msgstr "Ο καθορισμένος χρόνος είναι πολύ υψηλός, σκεφτείτε να ορίσετε κάτι λογικό."
 
-#: temproles\temproles.py:251 temproles\temproles.py:259
+#: temproles\temproles.py:245 temproles\temproles.py:253
 msgid "Self "
 msgstr "Αυτο "
 
-#: temproles\temproles.py:252
+#: temproles\temproles.py:246
 msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
 msgstr "Ο προσωρινός ρόλος {role.mention} ({role.id}) έχει ανατεθεί στο {member.mention} ({member.id}) από το {author.mention} ({author.id}). Λήγει στο {time_string}."
 
-#: temproles\temproles.py:260
+#: temproles\temproles.py:254
 msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
 msgstr "Ο προσωρινός ρόλος {role.mention} ({role.id}) έχει εκχωρηθεί στο {member.mention} ({member.id}). Λήγει **στο {time_string}** ({timestamp})."
 
-#: temproles\temproles.py:281
+#: temproles\temproles.py:275
 #, docstring
 msgid "Edit a TempRole for a member, for a specified duration."
 msgstr "Επεξεργασία ενός TempRole για ένα μέλος, για καθορισμένη διάρκεια."
 
-#: temproles\temproles.py:285
+#: temproles\temproles.py:279
 msgid "This role isn't a TempRole of this member."
 msgstr "Αυτός ο ρόλος δεν είναι TempRole αυτού του μέλους."
 
-#: temproles\temproles.py:309
+#: temproles\temproles.py:303
 msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
 msgstr "Ο προσωρινός ρόλος {role.mention} ({role.id}) έχει επεξεργαστεί για το {member.mention} ({member.id}) από το {author.mention} ({author.id}). Λήγει στο {time_string}."
 
-#: temproles\temproles.py:316
+#: temproles\temproles.py:310
 msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
 msgstr "Ο προσωρινός ρόλος {role.mention} ({role.id}) έχει επεξεργαστεί για {member.mention} ({member.id}). Λήγει **στο {time_string}** ({timestamp})."
 
-#: temproles\temproles.py:332
+#: temproles\temproles.py:326
 #, docstring
 msgid "Unassign/Remove a TempRole from a member."
 msgstr "Ακύρωση/αφαίρεση ενός TempRole από ένα μέλος."
 
-#: temproles\temproles.py:336
+#: temproles\temproles.py:330
 msgid "This role isn't a temprole of this member."
 msgstr "Αυτός ο ρόλος δεν αποτελεί πρότυπο αυτού του μέλους."
 
-#: temproles\temproles.py:354
+#: temproles\temproles.py:348
 msgid "TempRole {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id}) by {author.mention} ({author.id})."
 msgstr "Το TempRole {role.mention} ({role.id}) έχει αποδεσμευτεί από το {member.mention} ({member.id}) από το {author.mention} ({author.id})."
 
-#: temproles\temproles.py:361
+#: temproles\temproles.py:355
 msgid "Temp Role {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id})."
 msgstr "Ο προσωρινός ρόλος {role.mention} ({role.id}) έχει αποδεσμευτεί από τον ρόλο {member.mention} ({member.id})."
 
-#: temproles\temproles.py:376
+#: temproles\temproles.py:370
 #, docstring
 msgid "List active Temp Roles on this server, for optional specified member and/or role."
 msgstr "Λίστα ενεργών ρόλων Temp σε αυτόν τον διακομιστή, για προαιρετικά καθορισμένο μέλος ή/και ρόλο."
 
-#: temproles\temproles.py:379
+#: temproles\temproles.py:373
 msgid "This member has this Temp Role."
 msgstr "Αυτό το μέλος έχει αυτόν τον Προσωρινό Ρόλο."
 
-#: temproles\temproles.py:381
+#: temproles\temproles.py:375
 msgid "This member hasn't this Temp Role."
 msgstr "Αυτό το μέλος δεν έχει αυτόν τον Προσωρινό Ρόλο."
 
-#: temproles\temproles.py:384
+#: temproles\temproles.py:378
 msgid "This member hasn't any Temp Roles."
 msgstr "Αυτό το μέλος δεν έχει κανέναν Προσωρινό Ρόλο."
 
-#: temproles\temproles.py:386
+#: temproles\temproles.py:380
 msgid "This member has these Temp Roles: {temp_roles}."
 msgstr "Αυτό το μέλος έχει τους εξής προσωρινούς ρόλους: {temp_roles}."
 
-#: temproles\temproles.py:405
+#: temproles\temproles.py:399
 msgid "No members have this Temp Role."
 msgstr "Κανένα μέλος δεν έχει αυτόν τον Προσωρινό Ρόλο."
 
-#: temproles\temproles.py:407
+#: temproles\temproles.py:401
 msgid "These members have this Temp Role: {temp_roles_members}."
 msgstr "Αυτά τα μέλη έχουν αυτόν τον προσωρινό ρόλο: {temp_roles_members}."
 
-#: temproles\temproles.py:432
+#: temproles\temproles.py:426
 msgid "No active Temp Roles on this server."
 msgstr "Δεν υπάρχουν ενεργοί ρόλοι Temp σε αυτόν τον διακομιστή."
 
-#: temproles\temproles.py:448
+#: temproles\temproles.py:442
 #, docstring
 msgid "Set the logs channel for Temp Roles."
 msgstr "Ορίστε το κανάλι καταγραφής για τους ρόλους Temp."
 
-#: temproles\temproles.py:451
+#: temproles\temproles.py:445
 msgid "Logs channel unset."
 msgstr "Καταγράφει κανάλι μη ρυθμισμένο."
 
-#: temproles\temproles.py:455
+#: temproles\temproles.py:449
 msgid "I need of the `embed_links` permission in the logs channel."
 msgstr "Χρειάζομαι την άδεια `embed_links` στο κανάλι των αρχείων καταγραφής."
 
-#: temproles\temproles.py:458
+#: temproles\temproles.py:452
 msgid "Logs channel set."
 msgstr "Σετ καναλιών καταγραφής."
 
-#: temproles\temproles.py:469
+#: temproles\temproles.py:463
 #, docstring
 msgid "Add an allowed self Temp Role.\n\n"
 "        **Parameters:**\n"
@@ -168,58 +168,58 @@ msgstr "Προσθέστε έναν επιτρεπόμενο αυτο-Ρόλο T
 "        - `max_time`: Ο ελάχιστος χρόνος για το ρόλο self temp. `none` για απενεργοποίηση. Οι προεπιλογές είναι 365 ημέρες.\n"
 "        "
 
-#: temproles\temproles.py:479
+#: temproles\temproles.py:473
 msgid "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy."
 msgstr "Ο ρόλος {role.mention} ({role.id}) δεν μπορεί να εκχωρηθεί λόγω της ιεραρχίας των ρόλων του Discord."
 
-#: temproles\temproles.py:486
+#: temproles\temproles.py:480
 msgid "This role is already an allowed self temp role."
 msgstr "Αυτός ο ρόλος είναι ήδη ένας επιτρεπόμενος ρόλος self temp."
 
-#: temproles\temproles.py:493
+#: temproles\temproles.py:487
 msgid "Allowed self Temp Role added."
 msgstr "Επιτρεπόμενος αυτοπροσδιορισμός Προστέθηκε ο ρόλος Temp."
 
-#: temproles\temproles.py:498
+#: temproles\temproles.py:492
 #, docstring
 msgid "Remove an allowed self Temp Role."
 msgstr "Αφαίρεση ενός επιτρεπόμενου ρόλου Temp."
 
-#: temproles\temproles.py:502
+#: temproles\temproles.py:496
 msgid "This role isn't an allowed self temp role."
 msgstr "Αυτός ο ρόλος δεν είναι ένας επιτρεπόμενος ρόλος αυτοπροσωποποίησης."
 
-#: temproles\temproles.py:506
+#: temproles\temproles.py:500
 msgid "Allowed self Temp Role removed."
 msgstr "Επιτρέπεται αυτοαπαλλαγή Ρόλος Temp καταργήθηκε."
 
-#: temproles\temproles.py:512
+#: temproles\temproles.py:506
 #, docstring
 msgid "Assign/Add an allowed self Temp Role to yourself, for a specified duration."
 msgstr "Αναθέστε/προσθέστε έναν επιτρεπόμενο προσωρινό ρόλο στον εαυτό σας, για μια καθορισμένη διάρκεια."
 
-#: temproles\temproles.py:517
+#: temproles\temproles.py:511
 msgid "This role isn't an allowed self Temp Role on this server."
 msgstr "Αυτός ο ρόλος δεν είναι ένας επιτρεπόμενος ρόλος self Temp σε αυτόν τον διακομιστή."
 
-#: temproles\temproles.py:525
+#: temproles\temproles.py:519
 msgid "The time for this role must be greater than {min_time_string}."
 msgstr "Ο χρόνος για τον ρόλο αυτό πρέπει να είναι μεγαλύτερος από {min_time_string}."
 
-#: temproles\temproles.py:535
+#: temproles\temproles.py:529
 msgid "The time for this role must be less than {max_time_string}."
 msgstr "Ο χρόνος για τον ρόλο αυτό πρέπει να είναι μικρότερος από {max_time_string}."
 
-#: temproles\temproles.py:543 temproles\temproles.py:550
+#: temproles\temproles.py:537 temproles\temproles.py:544
 #, docstring
 msgid "Unassign/Remove an allowed self Temp Role from yourself."
 msgstr "Ακυρώστε/αφαιρέστε έναν επιτρεπόμενο αυτορυθμιζόμενο προσωρινό ρόλο από τον εαυτό σας."
 
-#: temproles\temproles.py:545
+#: temproles\temproles.py:539
 msgid "You can't remove this role from yourself."
 msgstr "Δεν μπορείτε να αφαιρέσετε αυτόν τον ρόλο από τον εαυτό σας."
 
-#: temproles\temproles.py:573
+#: temproles\temproles.py:567
 msgid "Self Temp Roles"
 msgstr "Ρόλοι Self Temp"
 

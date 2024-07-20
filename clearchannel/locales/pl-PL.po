@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:38\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:18\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -26,33 +26,33 @@ msgstr "Tryb do usuwania WSZYSTKICH wiadomości z kanału!\n\n"
 "    Kanał zostanie sklonowany, a następnie **usunięty**.\n"
 "    "
 
-#: clearchannel\clearchannel.py:101
+#: clearchannel\clearchannel.py:97
 msgid "⚠️ - ClearChannel"
 msgstr "⚠️ - ClearChannel"
 
-#: clearchannel\clearchannel.py:102
+#: clearchannel\clearchannel.py:98
 msgid "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n"
 "⚠ The channel will be cloned, and then **deleted**."
 msgstr "Czy naprawdę chcesz usunąć WSZYSTKIE wiadomości z kanału {old_channel.mention} ({old_channel.id})?\n"
 "Kanał zostanie sklonowany, a następnie **usunięty**."
 
-#: clearchannel\clearchannel.py:112
+#: clearchannel\clearchannel.py:130
 msgid "Clear Channel requested by {ctx.author} ({ctx.author.id})."
 msgstr "Clear Channel na prośbę {ctx.author} ({ctx.author.id})."
 
-#: clearchannel\clearchannel.py:118
+#: clearchannel\clearchannel.py:136
 msgid "🗑️-Deleted-{old_channel.name}"
 msgstr "🗑️-Deleted-{old_channel.name}"
 
-#: clearchannel\clearchannel.py:132
+#: clearchannel\clearchannel.py:150
 msgid "ClearChannel"
 msgstr "ClearChannel"
 
-#: clearchannel\clearchannel.py:133
+#: clearchannel\clearchannel.py:151
 msgid "ALL the messages in this channel have been deleted..."
 msgstr "WSZYSTKIE wiadomości na tym kanale zostały usunięte..."
 
-#: clearchannel\clearchannel.py:151
+#: clearchannel\clearchannel.py:174
 msgid "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
 msgstr "Wszystkie wiadomości z kanału #{old_channel.name} ({old_channel.id}) zostały usunięte! Możesz znaleźć nowy kanał, z tymi samymi uprawnieniami: #{new_channel.name} ({new_channel.id})."
 

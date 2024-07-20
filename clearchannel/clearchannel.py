@@ -58,7 +58,7 @@ class ClearChannel(DashboardIntegration, Cog):
             },
             "prompt_message": {
                 "converter": CustomMessageConverter,
-                "description": "Specify a custom message to be sent to confirm the clearing of the channel.\n\nUse the variables `{user_name}`, `{user_avatar_url}`, `{channel_name}`, `{channel_mention}` and `{channel_id}`.",
+                "description": "Specify a custom message to be sent to confirm the clearing of the channel.\n\nUse the variables `{user_name}`, `{user_avatar_url}`, `{user_mention}`, `{user_id}`, `{channel_name}`, `{channel_mention}` and `{channel_id}`.",
             },
         }
         self.settings: Settings = Settings(

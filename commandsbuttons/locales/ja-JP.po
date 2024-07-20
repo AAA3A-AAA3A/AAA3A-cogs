@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:38\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:22\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -26,23 +26,23 @@ msgstr "メッセージの作者でなければならない。AAA3AのEmbedUtils
 msgid "A cog to allow a user to execute a command by clicking on a button!"
 msgstr "ボタンをクリックすることでコマンドを実行できるようにするための歯車です！"
 
-#: commandsbuttons\commandsbuttons.py:135
+#: commandsbuttons\commandsbuttons.py:119
 msgid "This message is not in Config."
 msgstr "このメッセージはConfigではありません。"
 
-#: commandsbuttons\commandsbuttons.py:140
+#: commandsbuttons\commandsbuttons.py:124
 msgid "This button is not in Config."
 msgstr "このボタンはConfigにはありません。"
 
-#: commandsbuttons\commandsbuttons.py:189
+#: commandsbuttons\commandsbuttons.py:173
 msgid "This command doesn't exist."
 msgstr "このコマンドは存在しません。"
 
-#: commandsbuttons\commandsbuttons.py:194
+#: commandsbuttons\commandsbuttons.py:178
 msgid "You are not allowed to execute this command."
 msgstr "このコマンドの実行は許可されていません。"
 
-#: commandsbuttons\commandsbuttons.py:250
+#: commandsbuttons\commandsbuttons.py:234
 #, docstring
 msgid "Add a command-button for a message.\n\n"
 "        (Use the number for the color.)\n"
@@ -71,39 +71,39 @@ msgstr "メッセージのコマンドボタンを追加する。\n\n"
 "        - `red`：4\n"
 "        "
 
-#: commandsbuttons\commandsbuttons.py:271
-#: commandsbuttons\commandsbuttons.py:348
+#: commandsbuttons\commandsbuttons.py:255
+#: commandsbuttons\commandsbuttons.py:332
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to see the messages in that channel."
 msgstr "指定されたメッセージがあるチャンネルのパーミッションが十分ではありません。\n"
 "そのチャンネルのメッセージを見るためのパーミッションが必要です。"
 
-#: commandsbuttons\commandsbuttons.py:286
+#: commandsbuttons\commandsbuttons.py:270
 msgid "You have not specified a correct command."
 msgstr "正しいコマンドを指定していません。"
 
-#: commandsbuttons\commandsbuttons.py:288
+#: commandsbuttons\commandsbuttons.py:272
 msgid "You can't execute yourself this command."
 msgstr "このコマンドを自分で実行することはできない。"
 
-#: commandsbuttons\commandsbuttons.py:291
+#: commandsbuttons\commandsbuttons.py:275
 msgid "You have to specify at least an emoji or a label."
 msgstr "少なくとも絵文字かラベルを指定しなければならない。"
 
-#: commandsbuttons\commandsbuttons.py:298
+#: commandsbuttons\commandsbuttons.py:282
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "選択した絵文字が無効のようです。絵文字であることを確認してください。Nitroをご利用の場合、他のサーバーのカスタム絵文字を使用した可能性があります。"
 
-#: commandsbuttons\commandsbuttons.py:305
-#: commandsbuttons\commandsbuttons.py:375
+#: commandsbuttons\commandsbuttons.py:289
+#: commandsbuttons\commandsbuttons.py:359
 msgid "This message already has components."
 msgstr "このメッセージはすでに構成要素を持っている。"
 
-#: commandsbuttons\commandsbuttons.py:309
+#: commandsbuttons\commandsbuttons.py:293
 msgid "I can't do more than 25 commands-buttons for one message."
 msgstr "1つのメッセージに対して25個以上のコマンド・ボタンができないんです。"
 
-#: commandsbuttons\commandsbuttons.py:333
+#: commandsbuttons\commandsbuttons.py:317
 #, docstring
 msgid "Add commands-buttons for a message.\n\n"
 "        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
@@ -112,23 +112,23 @@ msgstr "メッセージのコマンドボタンを追加する。\n\n"
 "        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"``\n"
 "        "
 
-#: commandsbuttons\commandsbuttons.py:339
+#: commandsbuttons\commandsbuttons.py:323
 msgid "You have not specified any valid command-button."
 msgstr "有効なコマンドボタンが指定されていません。"
 
-#: commandsbuttons\commandsbuttons.py:361
+#: commandsbuttons\commandsbuttons.py:345
 msgid "At least one of these commands is invalid."
 msgstr "これらのコマンドの少なくとも1つは無効である。"
 
-#: commandsbuttons\commandsbuttons.py:368
+#: commandsbuttons\commandsbuttons.py:352
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "選択した絵文字が無効のようです。絵文字であることを確認してください。Nitroをご利用の場合、他のサーバーのカスタム絵文字を使用した可能性があります。"
 
-#: commandsbuttons\commandsbuttons.py:379
+#: commandsbuttons\commandsbuttons.py:363
 msgid "I can't do more than 25 roles-buttons for one message."
 msgstr "1つのメッセージに対して25個以上のロールボタンをすることはできない。"
 
-#: commandsbuttons\commandsbuttons.py:401
+#: commandsbuttons\commandsbuttons.py:385
 #, docstring
 msgid "Remove a command-button for a message.\n\n"
 "        Use `[p]commandsbuttons list <message>` to find the config identifier.\n"
@@ -137,57 +137,57 @@ msgstr "メッセージのコマンドボタンを削除する。\n\n"
 "        コンフィグ識別子を見つけるには `[p]commandsbuttons list <message>` を使ってください。\n"
 "        "
 
-#: commandsbuttons\commandsbuttons.py:408
-#: commandsbuttons\commandsbuttons.py:434
-#: commandsbuttons\commandsbuttons.py:455
+#: commandsbuttons\commandsbuttons.py:392
+#: commandsbuttons\commandsbuttons.py:418
+#: commandsbuttons\commandsbuttons.py:439
 msgid "No command-button is configured for this message."
 msgstr "このメッセージには、コマンドボタンは設定されていません。"
 
-#: commandsbuttons\commandsbuttons.py:412
+#: commandsbuttons\commandsbuttons.py:396
 msgid "I wasn't watching for this button on this message."
 msgstr "このメッセージでこのボタンを見ていたわけではありません。"
 
+#: commandsbuttons\commandsbuttons.py:410
 #: commandsbuttons\commandsbuttons.py:426
-#: commandsbuttons\commandsbuttons.py:442
 msgid "Commands-buttons cleared for this message."
 msgstr "このメッセージのためにクリアされたコマンドボタン。"
 
-#: commandsbuttons\commandsbuttons.py:430
+#: commandsbuttons\commandsbuttons.py:414
 #, docstring
 msgid "Clear all commands-buttons for a message."
 msgstr "メッセージのコマンド・ボタンをすべて消去する。"
 
-#: commandsbuttons\commandsbuttons.py:447
+#: commandsbuttons\commandsbuttons.py:431
 #, docstring
 msgid "List all commands-buttons of this server or display the settings for a specific one."
 msgstr "このサーバーのすべてのコマンドボタンを一覧表示するか、特定のコマンドボタンの設定を表示します。"
 
-#: commandsbuttons\commandsbuttons.py:461
+#: commandsbuttons\commandsbuttons.py:445
 msgid "No commands-buttons in this server."
 msgstr "このサーバーにはコマンドボタンはない。"
 
-#: commandsbuttons\commandsbuttons.py:463
+#: commandsbuttons\commandsbuttons.py:447
 msgid "Commands Buttons"
 msgstr "コマンドボタン"
 
-#: commandsbuttons\commandsbuttons.py:464
+#: commandsbuttons\commandsbuttons.py:448
 msgid "There is {len_commands_buttons} commands buttons in this server."
 msgstr "このサーバーには {len_commands_buttons} のコマンドボタンがある。"
 
-#: commandsbuttons\commandsbuttons.py:474
+#: commandsbuttons\commandsbuttons.py:458
 msgid "Message Jump Link: {message_jump_link}\n"
 msgstr "メッセージジャンプリンク {message_jump_link}\n"
 
-#: commandsbuttons\commandsbuttons.py:495
+#: commandsbuttons\commandsbuttons.py:479
 #, docstring
 msgid "Clear all commands-buttons for a guild."
 msgstr "ギルドのコマンド・ボタンをすべて消去する。"
 
-#: commandsbuttons\commandsbuttons.py:497
+#: commandsbuttons\commandsbuttons.py:481
 msgid "All commands-buttons purged."
 msgstr "すべてのコマンドボタンがパージされた。"
 
-#: commandsbuttons\converters.py:78
+#: commandsbuttons\converters.py:64
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "絵文字 役割は絵文字の後に `;`, `,`, `|`, `-` のいずれかで区切られた役割でなければなりません。"
 

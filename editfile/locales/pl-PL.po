@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:38\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:19\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Trybik do pobierania pliku i zastępowania go ze ścieżki z Discorda!\n
 "    ⚠️ Ten tryb może być bardzo niebezpieczny, ponieważ umożliwia bezpośredni odczyt/zapis/usuwanie plików na komputerze bota, biorąc pod uwagę fakt, że odczyt niewłaściwego pliku może ujawnić poufne informacje, takie jak tokeny, a usunięcie niewłaściwego pliku może całkowicie uszkodzić bota lub system.\n"
 "    "
 
-#: editfile\editfile.py:60
+#: editfile\editfile.py:49
 #, docstring
 msgid "Get a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -35,37 +35,37 @@ msgstr "Pobierz plik na maszynie hosta bota z jego ścieżki.\n"
 "        Obsługiwane są `#L10` lub `#L10-L30`.\n"
 "        "
 
-#: editfile\editfile.py:65 editfile\editfile.py:141
+#: editfile\editfile.py:54 editfile\editfile.py:130
 msgid "Couldn't parse this input."
 msgstr "Nie można przetworzyć tego wejścia."
 
-#: editfile\editfile.py:77
+#: editfile\editfile.py:66
 msgid "Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible)."
 msgstr "Tchórzliwa odmowa odczytu pliku, który nie ma statutu rozmiaru. (może być pusty, nieskończony lub niedostępny)."
 
-#: editfile\editfile.py:83
+#: editfile\editfile.py:72
 msgid "Cowardly refusing to read a file >128MB."
 msgstr "Tchórzliwa odmowa odczytania pliku >128MB."
 
-#: editfile\editfile.py:101 editfile\editfile.py:293 editfile\editfile.py:303
-#: editfile\editfile.py:316 editfile\editfile.py:327
+#: editfile\editfile.py:90 editfile\editfile.py:282 editfile\editfile.py:292
+#: editfile\editfile.py:305 editfile\editfile.py:316
 msgid "This file cannot be found on the host machine."
 msgstr "Ten plik nie może być znaleziony na maszynie głównej."
 
-#: editfile\editfile.py:105 editfile\editfile.py:168 editfile\editfile.py:297
-#: editfile\editfile.py:307 editfile\editfile.py:320 editfile\editfile.py:331
+#: editfile\editfile.py:94 editfile\editfile.py:157 editfile\editfile.py:286
+#: editfile\editfile.py:296 editfile\editfile.py:309 editfile\editfile.py:320
 msgid "The path you specified refers to a directory, not a file."
 msgstr "Podana przez Ciebie ścieżka odnosi się do katalogu, a nie do pliku."
 
-#: editfile\editfile.py:125 editfile\editfile.py:159
+#: editfile\editfile.py:114 editfile\editfile.py:148
 msgid "There are only {len_lines} lines in this file."
 msgstr "W tym pliku znajduje się tylko {len_lines} linii."
 
-#: editfile\editfile.py:130
+#: editfile\editfile.py:119
 msgid "Here are the contents of the file `{path}`."
 msgstr "Oto zawartość pliku `{path}`."
 
-#: editfile\editfile.py:135
+#: editfile\editfile.py:124
 #, docstring
 msgid "Replace a file on the bot's host machine from its path.\n"
 "        `#L10` or `#L10-L30` is supported.\n"
@@ -74,64 +74,64 @@ msgstr "Zastąp plik na maszynie hosta bota z jego ścieżki.\n"
 "        Obsługiwane są `#L10` lub `#L10-L30`.\n"
 "        "
 
-#: editfile\editfile.py:164
+#: editfile\editfile.py:153
 msgid "This original file cannot be found on the host machine."
 msgstr "Ten oryginalny plik nie może być znaleziony na maszynie głównej."
 
-#: editfile\editfile.py:172
+#: editfile\editfile.py:161
 msgid "You must send the command with an attachment that will be used to replace the original file."
 msgstr "Polecenie należy wysłać z załącznikiem, który posłuży do zastąpienia oryginalnego pliku."
 
-#: editfile\editfile.py:197
+#: editfile\editfile.py:186
 msgid "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
 msgstr "To jest oryginalny/stary plik dostępny w ścieżce `{path}`. Normalnie, ten plik został zastąpiony poprawnie."
 
-#: editfile\editfile.py:205
+#: editfile\editfile.py:194
 #, docstring
 msgid "Get a cog directory on the bot's host machine from its name."
 msgstr "Pobierz katalog cog na maszynie hosta bota z jego nazwy."
 
-#: editfile\editfile.py:208
+#: editfile\editfile.py:197
 msgid "Could not find a cog with this name."
 msgstr "Nie udało się znaleźć trybika o tej nazwie."
 
-#: editfile\editfile.py:214
+#: editfile\editfile.py:203
 msgid "This cog has not yet stored any persistent data in its data folder."
 msgstr "Ten tryb nie zapisał jeszcze żadnych trwałych danych w swoim folderze danych."
 
-#: editfile\editfile.py:234
+#: editfile\editfile.py:223
 #, docstring
 msgid "List all files/directories of a directory from its path."
 msgstr "Wypisuje wszystkie pliki/katalogi katalogu z jego ścieżki."
 
-#: editfile\editfile.py:238 editfile\editfile.py:262
+#: editfile\editfile.py:227 editfile\editfile.py:251
 msgid "This directory cannot be found on the host machine."
 msgstr "Ten katalog nie może być znaleziony na maszynie głównej."
 
-#: editfile\editfile.py:242 editfile\editfile.py:266
+#: editfile\editfile.py:231 editfile\editfile.py:255
 msgid "The path you specified refers to a file, not a directory."
 msgstr "Podana ścieżka odnosi się do pliku, a nie do katalogu."
 
-#: editfile\editfile.py:258
+#: editfile\editfile.py:247
 #, docstring
 msgid "Make a tree with all files/directories of a directory from its path."
 msgstr "Tworzy drzewo ze wszystkimi plikami/katalogami katalogu z jego ścieżki."
 
-#: editfile\editfile.py:289
+#: editfile\editfile.py:278
 #, docstring
 msgid "Rename a file."
 msgstr "Zmiana nazwy pliku."
 
-#: editfile\editfile.py:309
+#: editfile\editfile.py:298
 msgid "The `{path}` file has been renamed."
 msgstr "Nazwa pliku `{path}` została zmieniona."
 
-#: editfile\editfile.py:313
+#: editfile\editfile.py:302
 #, docstring
 msgid "Delete a file."
 msgstr "Usuń plik."
 
-#: editfile\editfile.py:333
+#: editfile\editfile.py:322
 msgid "The `{path}` file has been deleted."
 msgstr "Plik `{path}` został usunięty."
 

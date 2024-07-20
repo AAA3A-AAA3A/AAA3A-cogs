@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-08-10 13:42+0200\n"
-"PO-Revision-Date: 2023-08-10 11:45\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:18\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "A cog to send the result of a command to another channel!"
 msgstr "Hammasratas, jolla lähetetään komennon tulos toiselle kanavalle!"
 
-#: cmdchannel\cmdchannel.py:86
+#: cmdchannel\cmdchannel.py:75
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice.\n"
 "        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
@@ -33,11 +33,11 @@ msgstr "Toimi ikään kuin komento olisi kirjoitettu valitsemallasi kanavalla.\n
 "        Käytä `[p]cmdchannel`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:94 cmdchannel\cmdchannel.py:162
+#: cmdchannel\cmdchannel.py:83 cmdchannel\cmdchannel.py:151
 msgid "To send commands to another server, you must be there."
 msgstr "Jos haluat lähettää komentoja toiselle palvelimelle, sinun on oltava siellä."
 
-#: cmdchannel\cmdchannel.py:117
+#: cmdchannel\cmdchannel.py:106
 #, docstring
 msgid "Act as if the command had been typed by imitating the specified user.\n"
 "        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
@@ -48,11 +48,11 @@ msgstr "Toimi ikään kuin komento olisi kirjoitettu jäljittelemällä määrit
 "        Käytä `[p]cmduser`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:126 cmdchannel\cmdchannel.py:167
+#: cmdchannel\cmdchannel.py:115 cmdchannel\cmdchannel.py:156
 msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
 msgstr "Jotta voit suorittaa komennon toisena käyttäjänä, cog Dev on ladattava, jotta tiedät varmasti, mitä olet tekemässä."
 
-#: cmdchannel\cmdchannel.py:150
+#: cmdchannel\cmdchannel.py:139
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
 "        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
@@ -63,24 +63,24 @@ msgstr "Toimi ikään kuin komento olisi kirjoitettu valitsemallasi kanavalla j�
 "        Käytä `[p]cmduserchannel`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:184
+#: cmdchannel\cmdchannel.py:173
 #, docstring
 msgid "Test variables."
 msgstr "Testimuuttujat."
 
-#: cmdchannel\cmdchannel.py:186
+#: cmdchannel\cmdchannel.py:175
 msgid "Testvar"
 msgstr "Testvar"
 
-#: cmdchannel\cmdchannel.py:187
+#: cmdchannel\cmdchannel.py:176
 msgid "Variables:"
 msgstr "Muuttujat:"
 
-#: cmdchannel\cmdchannel.py:188
+#: cmdchannel\cmdchannel.py:177
 msgid "Author:"
 msgstr "Kirjoittaja:"
 
-#: cmdchannel\cmdchannel.py:189
+#: cmdchannel\cmdchannel.py:178
 msgid "Channel:"
 msgstr "Kanava:"
 

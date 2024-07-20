@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,17 +16,17 @@ msgstr ""
 msgid "A cog to search and show a cooking recipe!"
 msgstr ""
 
-#: recipes\recipes.py:148 recipes\recipes.py:166
+#: recipes\recipes.py:140 recipes\recipes.py:158
 msgid "No recipe found."
 msgstr ""
 
-#: recipes\recipes.py:154
+#: recipes\recipes.py:146
 msgid ""
 "Error in parsing the response.\n"
 "{error}"
 msgstr ""
 
-#: recipes\recipes.py:171
+#: recipes\recipes.py:163
 msgid "View results on Food52"
 msgstr ""
 

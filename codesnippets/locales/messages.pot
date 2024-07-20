@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,28 +18,28 @@ msgid ""
 "GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL!"
 msgstr ""
 
-#: codesnippets\codesnippets.py:495
+#: codesnippets\codesnippets.py:486
 msgid "No GitHub/Gist/GitLab/BitBucket/Pastebin/Hastebin URL found."
 msgstr ""
 
-#: codesnippets\codesnippets.py:533
+#: codesnippets\codesnippets.py:524
 #, docstring
 msgid ""
 "Add a channel where the cog have to send automatically code snippets from "
 "URLs."
 msgstr ""
 
-#: codesnippets\codesnippets.py:537
+#: codesnippets\codesnippets.py:528
 msgid "The cog is already enabled in this channel"
 msgstr ""
 
-#: codesnippets\codesnippets.py:548
+#: codesnippets\codesnippets.py:539
 #, docstring
 msgid ""
 "Remove a channel where the cog have to send automatically code snippets from"
 " URLs."
 msgstr ""
 
-#: codesnippets\codesnippets.py:552
+#: codesnippets\codesnippets.py:543
 msgid "The cog is already disabled in this channel"
 msgstr ""

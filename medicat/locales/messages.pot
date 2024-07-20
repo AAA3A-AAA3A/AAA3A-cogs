@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -251,73 +251,69 @@ msgid ""
 "general public!"
 msgstr ""
 
-#: medicat\medicat.py:453
+#: medicat\medicat.py:476
 msgid "This Ventoy version doesn't exists."
 msgstr ""
 
-#: medicat\medicat.py:489
+#: medicat\medicat.py:512
 msgid "Ventoy v{ventoy_version_str} has been released!"
 msgstr ""
 
-#: medicat\medicat.py:492
+#: medicat\medicat.py:515
 msgid "New features:"
 msgstr ""
 
-#: medicat\medicat.py:497
+#: medicat\medicat.py:520
 msgid "Download this version:"
 msgstr ""
 
-#: medicat\medicat.py:505
+#: medicat\medicat.py:528
 msgid "View on Ventoy Official Website"
 msgstr ""
 
-#: medicat\medicat.py:589
+#: medicat\medicat.py:612
 msgid "{tool} now has a new version!"
 msgstr ""
 
-#: medicat\medicat.py:603
+#: medicat\medicat.py:626
 msgid "View on FCportables Official Website"
 msgstr ""
 
-#: medicat\medicat.py:747
+#: medicat\medicat.py:770
 #, docstring
 msgid "Get the latest version of Ventoy."
 msgstr ""
 
-#: medicat\medicat.py:751 medicat\medicat.py:761
-msgid "An error has occurred. Please try again."
-msgstr ""
-
-#: medicat\medicat.py:757
+#: medicat\medicat.py:777
 #, docstring
 msgid "Get a version of Ventoy."
 msgstr ""
 
-#: medicat\medicat.py:767
+#: medicat\medicat.py:784
 #, docstring
 msgid "Get the latest versions of each Medicat USB bootable tool."
 msgstr ""
 
-#: medicat\medicat.py:803 medicat\medicat.py:943
+#: medicat\medicat.py:820 medicat\medicat.py:957
 msgid "View FCportables Official Website"
 msgstr ""
 
-#: medicat\medicat.py:822
+#: medicat\medicat.py:839
 #, docstring
 msgid "Get the debug for a FCportables's tool."
 msgstr ""
 
-#: medicat\medicat.py:902
+#: medicat\medicat.py:916
 #, docstring
 msgid "Get the download link of each Medicat USB bootable tool."
 msgstr ""
 
-#: medicat\medicat.py:963
+#: medicat\medicat.py:977
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr ""
 
-#: medicat\medicat.py:970
+#: medicat\medicat.py:984
 #, docstring
 msgid "Update Medicat cog directly."
 msgstr ""

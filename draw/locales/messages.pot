@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 msgid "A cog to make pixel arts on Discord!"
 msgstr ""
 
-#: draw\draw.py:174
+#: draw\draw.py:165
 msgid "This message isn't in the cache."
 msgstr ""
 
@@ -41,13 +41,13 @@ msgid ""
 " E.g. `😎 I like turtles 🐢`."
 msgstr ""
 
-#: draw\view.py:809
+#: draw\view.py:810
 msgid ""
 "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`,"
 " `A`, `10`, etc."
 msgstr ""
 
-#: draw\view.py:938
+#: draw\view.py:939
 msgid ""
 "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
 "B7-C9:green`."

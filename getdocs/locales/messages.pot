@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,26 +11,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: getdocs\getdocs.py:220 getdocs\getdocs.py:349 getdocs\getdocs.py:411
+#: getdocs\getdocs.py:226 getdocs\getdocs.py:347 getdocs\getdocs.py:410
 msgid "Please provide a valid documentations source."
 msgstr ""
 
-#: getdocs\getdocs.py:231
+#: getdocs\getdocs.py:237
 #, docstring
 msgid ""
 "A cog to get and display some documentations in Discord! Use "
 "`[p]listsources` to get a list of all the available sources."
 msgstr ""
 
-#: getdocs\getdocs.py:366
-msgid "Documentations cache is not yet built."
+#: getdocs\getdocs.py:366 getdocs\getdocs.py:1724
+msgid "RTFM caching isn't finished."
 msgstr ""
 
-#: getdocs\getdocs.py:422
+#: getdocs\getdocs.py:421
 msgid "No results found."
 msgstr ""
 
-#: getdocs\getdocs.py:574
+#: getdocs\getdocs.py:573
 #, docstring
 msgid ""
 "\n"
@@ -38,11 +38,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: getdocs\getdocs.py:581
+#: getdocs\getdocs.py:580
 msgid "The source `{source}` is already enabled."
 msgstr ""
 
-#: getdocs\getdocs.py:585 getdocs\getdocs.py:614
+#: getdocs\getdocs.py:584 getdocs\getdocs.py:614
 msgid "The source `{source}` doesn't exist."
 msgstr ""
 
@@ -69,8 +69,4 @@ msgstr ""
 #: getdocs\getdocs.py:655
 #, docstring
 msgid "Get an embed to check loops status."
-msgstr ""
-
-#: getdocs\getdocs.py:1735
-msgid "RTFM caching isn't finished."
 msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: sudo\sudo.py:115
+#: sudo\sudo.py:105
 #, docstring
 msgid ""
 "Sudo as the owner of the bot.\n"
@@ -29,7 +29,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: sudo\sudo.py:124
+#: sudo\sudo.py:114
 #, docstring
 msgid ""
 "Unsudo as normal user.\n"
@@ -38,7 +38,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: sudo\sudo.py:135
+#: sudo\sudo.py:125
 #, docstring
 msgid ""
 "Rise as the bot owner for the specified command only.\n"
@@ -47,7 +47,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: sudo\sudo.py:164
+#: sudo\sudo.py:154
 #, docstring
 msgid ""
 "Sudo as the owner of the bot for the specified timeout.\n"

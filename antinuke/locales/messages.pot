@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,51 +16,51 @@ msgstr ""
 msgid "A cog to remove all permissions from a person who deletes a channel!"
 msgstr ""
 
-#: antinuke\antinuke.py:179
+#: antinuke\antinuke.py:177
 msgid ""
 "All your roles have been taken away because you have deleted channel #{old_channel}.\n"
 "Your previous roles: {rolelist_name}"
 msgstr ""
 
-#: antinuke\antinuke.py:191
+#: antinuke\antinuke.py:189
 msgid ""
 "All roles in {perp} ({perp.id}) roles have been removed as a result of the "
 "antinuke system being triggered on this server."
 msgstr ""
 
-#: antinuke\antinuke.py:200
+#: antinuke\antinuke.py:198
 msgid "The user {perp} has deleted the channel #{old_channel.name}!"
 msgstr ""
 
-#: antinuke\antinuke.py:203
+#: antinuke\antinuke.py:201
 msgid ""
 "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\n"
 "User mention: {perp.mention} - User ID: {perp.id}"
 msgstr ""
 
-#: antinuke\antinuke.py:214
+#: antinuke\antinuke.py:212
 msgid "Before I intervened, the user had the following roles:"
 msgstr ""
 
-#: antinuke\antinuke.py:250
+#: antinuke\antinuke.py:248
 #, docstring
 msgid "Reset number detected for a user."
 msgstr ""
 
-#: antinuke\antinuke.py:252
+#: antinuke\antinuke.py:250
 msgid "Only the owner of this server can access these commands!"
 msgstr ""
 
-#: antinuke\antinuke.py:266
+#: antinuke\antinuke.py:264
 msgid ""
 "All former roles of {user} ({user.id}) have been restored at the request of "
 "the server owner."
 msgstr ""
 
-#: antinuke\antinuke.py:270
+#: antinuke\antinuke.py:268
 msgid "Restored roles for {user.name} ({user.id})."
 msgstr ""
 
-#: antinuke\antinuke.py:274
+#: antinuke\antinuke.py:272
 msgid "Count reset for {user.name} ({user.id})."
 msgstr ""

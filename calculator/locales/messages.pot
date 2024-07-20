@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,12 +16,12 @@ msgstr ""
 msgid "A cog to do calculations from Discord with buttons!"
 msgstr ""
 
-#: calculator\calculator.py:160 calculator\calculator.py:290
+#: calculator\calculator.py:151 calculator\calculator.py:281
 #: calculator\view.py:207 calculator\view.py:214
 msgid "Error!"
 msgstr ""
 
-#: calculator\calculator.py:173
+#: calculator\calculator.py:164
 msgid "{ctx.me.display_name}'s Calculator"
 msgstr ""
 

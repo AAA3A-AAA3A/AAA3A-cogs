@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgid ""
 "geographical coordinates!"
 msgstr ""
 
-#: getloc\getloc.py:162
+#: getloc\getloc.py:151
 msgid "An error has occurred. Please try again."
 msgstr ""
 
-#: getloc\getloc.py:165
+#: getloc\getloc.py:154
 msgid ""
 "The address or contact details you have provided do not lead to any results."
 " Are you sure of your input?"

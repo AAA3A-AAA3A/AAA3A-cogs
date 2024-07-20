@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 msgid "A cog to send the result of a command to another channel!"
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:86
+#: cmdchannel\cmdchannel.py:75
 #, docstring
 msgid ""
 "Act as if the command had been typed in the channel of your choice.\n"
@@ -26,11 +26,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:94 cmdchannel\cmdchannel.py:162
+#: cmdchannel\cmdchannel.py:83 cmdchannel\cmdchannel.py:151
 msgid "To send commands to another server, you must be there."
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:117
+#: cmdchannel\cmdchannel.py:106
 #, docstring
 msgid ""
 "Act as if the command had been typed by imitating the specified user.\n"
@@ -40,13 +40,13 @@ msgid ""
 "        "
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:126 cmdchannel\cmdchannel.py:167
+#: cmdchannel\cmdchannel.py:115 cmdchannel\cmdchannel.py:156
 msgid ""
 "To be able to run a command as another user, the cog Dev must be loaded, to "
 "make sure you know what you are doing."
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:150
+#: cmdchannel\cmdchannel.py:139
 #, docstring
 msgid ""
 "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
@@ -56,23 +56,23 @@ msgid ""
 "        "
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:184
+#: cmdchannel\cmdchannel.py:173
 #, docstring
 msgid "Test variables."
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:186
+#: cmdchannel\cmdchannel.py:175
 msgid "Testvar"
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:187
+#: cmdchannel\cmdchannel.py:176
 msgid "Variables:"
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:188
+#: cmdchannel\cmdchannel.py:177
 msgid "Author:"
 msgstr ""
 
-#: cmdchannel\cmdchannel.py:189
+#: cmdchannel\cmdchannel.py:178
 msgid "Channel:"
 msgstr ""

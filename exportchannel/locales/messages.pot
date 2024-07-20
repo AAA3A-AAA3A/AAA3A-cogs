@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,35 +11,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: exportchannel\exportchannel.py:21
+#: exportchannel\exportchannel.py:22
 msgid ""
-"Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\n"
+"Here is the transcript's {mode} file of the messages in the channel {channel.mention} ({channel.id}).\n"
 "Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "There are {count_messages} exported messages.\n"
 "Remember that exporting other users' messages from Discord does not respect the TOS."
 msgstr ""
 
-#: exportchannel\exportchannel.py:24
+#: exportchannel\exportchannel.py:25
 msgid "[Click here to view the transcript.]({url})"
 msgstr ""
 
-#: exportchannel\exportchannel.py:44
+#: exportchannel\exportchannel.py:45
 #, docstring
 msgid ""
 "A cog to export all or a part of the messages of a channel in an html file!"
 msgstr ""
 
-#: exportchannel\exportchannel.py:67
+#: exportchannel\exportchannel.py:57
 msgid ""
 "Sorry, I can't read the content of the messages in {channel.mention} "
 "({channel.id})."
 msgstr ""
 
-#: exportchannel\exportchannel.py:108
+#: exportchannel\exportchannel.py:103
 msgid "Sorry. I could not find any messages."
 msgstr ""
 
-#: exportchannel\exportchannel.py:179
+#: exportchannel\exportchannel.py:192
 #, docstring
 msgid ""
 "Export all of a channel's messages to an html file.\n"
@@ -49,10 +49,10 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:205
+#: exportchannel\exportchannel.py:232
 #, docstring
 msgid ""
-"Export a specific file in an html file.\n"
+"Export a specific message in an html file.\n"
 "\n"
 "        Specify the message to export, with its ID or its link.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
@@ -60,7 +60,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:242
+#: exportchannel\exportchannel.py:275
 #, docstring
 msgid ""
 "Export a part of the messages of a channel in an html file.\n"
@@ -71,7 +71,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:280
+#: exportchannel\exportchannel.py:321
 #, docstring
 msgid ""
 "Export a part of the messages of a channel in an html file.\n"
@@ -82,7 +82,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:314
+#: exportchannel\exportchannel.py:367
 #, docstring
 msgid ""
 "Export a part of the messages of a channel in an html file.\n"
@@ -93,7 +93,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:349
+#: exportchannel\exportchannel.py:414
 #, docstring
 msgid ""
 "Export a part of the messages of a channel in an html file.\n"
@@ -104,7 +104,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:386
+#: exportchannel\exportchannel.py:461
 #, docstring
 msgid ""
 "Export a part of the messages of a channel in an html file.\n"
@@ -115,7 +115,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: exportchannel\exportchannel.py:426
+#: exportchannel\exportchannel.py:508
 #, docstring
 msgid ""
 "Export a part of the messages of a channel in an html file.\n"

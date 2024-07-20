@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 msgid "The cog is not fully charged."
 msgstr ""
 
-#: runcode\runcode.py:47 runcode\runcode.py:314
+#: runcode\runcode.py:47 runcode\runcode.py:306
 msgid ""
 "Incorrect language identifier for your code.\n"
 "To list all the supported languages identifiers, please use `{ctx.prefix}setruncode listidentifiers`."
@@ -32,43 +32,43 @@ msgid ""
 "listlanguages` to get a list of all the available languages."
 msgstr ""
 
-#: runcode\runcode.py:255
+#: runcode\runcode.py:247
 msgid "File must be smaller than 20 kio."
 msgstr ""
 
-#: runcode\runcode.py:289
+#: runcode\runcode.py:281
 msgid "Please provide the code!"
 msgstr ""
 
-#: runcode\runcode.py:305
+#: runcode\runcode.py:297
 msgid "Incorrect syntax, please use Markdown's syntax for your code."
 msgstr ""
 
-#: runcode\runcode.py:395
+#: runcode\runcode.py:387
 msgid ""
 "The language of your code could not be found. Specify it with the `language`"
 " parameter."
 msgstr ""
 
-#: runcode\runcode.py:424
+#: runcode\runcode.py:416
 msgid ""
 "`{engine}` is not a correct engine for {code_language}\n"
 "To list all the available engine for it, please use `{ctx.prefix}setruncode listengines {code_language}`."
 msgstr ""
 
-#: runcode\runcode.py:437
+#: runcode\runcode.py:429
 msgid ""
 "There is no options available for compilation using `{engine}`.\n"
 "Ignoring this option."
 msgstr ""
 
-#: runcode\runcode.py:450
+#: runcode\runcode.py:442
 msgid ""
 "There is no options available for runtime execution `{engine}`.\n"
 "Ignoring this option."
 msgstr ""
 
-#: runcode\runcode.py:586
+#: runcode\runcode.py:578
 #, docstring
 msgid ""
 "\n"
@@ -76,7 +76,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: runcode\runcode.py:607
+#: runcode\runcode.py:599
 #, docstring
 msgid ""
 "\n"
@@ -87,7 +87,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: runcode\runcode.py:635
+#: runcode\runcode.py:627
 #, docstring
 msgid ""
 "\n"
@@ -95,7 +95,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: runcode\runcode.py:652
+#: runcode\runcode.py:644
 #, docstring
 msgid ""
 "\n"

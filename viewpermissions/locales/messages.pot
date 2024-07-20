@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,37 +22,37 @@ msgid ""
 "specified channel!"
 msgstr ""
 
-#: viewpermissions\viewpermissions.py:202
+#: viewpermissions\viewpermissions.py:197
 msgid "Advanced "
 msgstr ""
 
-#: viewpermissions\viewpermissions.py:202
-#: viewpermissions\viewpermissions.py:256
+#: viewpermissions\viewpermissions.py:197
+#: viewpermissions\viewpermissions.py:251
 msgid "View Permissions"
 msgstr ""
 
-#: viewpermissions\viewpermissions.py:209
-#: viewpermissions\viewpermissions.py:261
+#: viewpermissions\viewpermissions.py:204
+#: viewpermissions\viewpermissions.py:256
 msgid ""
 "\n"
 "**Role(s):** {roles}"
 msgstr ""
 
-#: viewpermissions\viewpermissions.py:213
-#: viewpermissions\viewpermissions.py:265
+#: viewpermissions\viewpermissions.py:208
+#: viewpermissions\viewpermissions.py:260
 msgid ""
 "\n"
 "**Member(s):** {members}"
 msgstr ""
 
-#: viewpermissions\viewpermissions.py:219
+#: viewpermissions\viewpermissions.py:214
 msgid ""
 "\n"
 "**Channel:** {channel}"
 msgstr ""
 
-#: viewpermissions\viewpermissions.py:223
-#: viewpermissions\viewpermissions.py:271
+#: viewpermissions\viewpermissions.py:218
+#: viewpermissions\viewpermissions.py:266
 msgid ""
 "\n"
 "**Permission(s) checked:** {permissions}"

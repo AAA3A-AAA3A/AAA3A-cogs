@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,28 +41,28 @@ msgstr ""
 msgid "You don't have permission to read messages in that channel."
 msgstr ""
 
-#: linkquoter\linkquoter.py:55
+#: linkquoter\linkquoter.py:56
 #, docstring
 msgid "Quote any Discord message from its link!"
 msgstr ""
 
-#: linkquoter\linkquoter.py:217
+#: linkquoter\linkquoter.py:218
 msgid "{author.display_name} said..."
 msgstr ""
 
-#: linkquoter\linkquoter.py:241
+#: linkquoter\linkquoter.py:244
 msgid "Attachments:"
 msgstr ""
 
-#: linkquoter\linkquoter.py:252
+#: linkquoter\linkquoter.py:255
 msgid "Stickers:"
 msgstr ""
 
-#: linkquoter\linkquoter.py:266
+#: linkquoter\linkquoter.py:267
 msgid "Replying to:"
 msgstr ""
 
-#: linkquoter\linkquoter.py:267
+#: linkquoter\linkquoter.py:268
 msgid "Click to view attachments."
 msgstr ""
 

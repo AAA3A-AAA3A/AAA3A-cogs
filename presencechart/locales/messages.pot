@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,55 +18,55 @@ msgid ""
 "Discord member, in the previous x days (last 100 days maximum)!"
 msgstr ""
 
-#: presencechart\presencechart.py:135
+#: presencechart\presencechart.py:127
 msgid "{member_or_role.guild.name} Members' Presence"
 msgstr ""
 
-#: presencechart\presencechart.py:139
+#: presencechart\presencechart.py:131
 msgid "{member_or_role.guild.name} {member_or_role.name}' Presence"
 msgstr ""
 
-#: presencechart\presencechart.py:145
+#: presencechart\presencechart.py:137
 msgid "{member_or_role.display_name}'s Presence"
 msgstr ""
 
-#: presencechart\presencechart.py:335
+#: presencechart\presencechart.py:327
 #, docstring
 msgid ""
 "Make a chart with the different Discord statuses (presence) of a Discord "
 "member, in the previous x days (last 100 days maximum)."
 msgstr ""
 
-#: presencechart\presencechart.py:339
+#: presencechart\presencechart.py:331
 msgid ""
 "This user is in the ignored users list (`{prefix}presencechart ignoreme`)."
 msgstr ""
 
-#: presencechart\presencechart.py:383
+#: presencechart\presencechart.py:375
 #, docstring
 msgid ""
 "Make a chart with the different Discord statuses (presence) of all members "
 "of the guild/server."
 msgstr ""
 
-#: presencechart\presencechart.py:406
+#: presencechart\presencechart.py:398
 #, docstring
 msgid ""
 "Make a chart with the different Discord statuses (presence) of all members "
 "of the specfied role."
 msgstr ""
 
-#: presencechart\presencechart.py:423
+#: presencechart\presencechart.py:415
 #, docstring
 msgid "Asking PresenceChart to ignore your statuses (presence)."
 msgstr ""
 
-#: presencechart\presencechart.py:431
+#: presencechart\presencechart.py:423
 msgid ""
 "You will no longer be seen by this cog and the data I held on you have been "
 "deleted."
 msgstr ""
 
-#: presencechart\presencechart.py:438
+#: presencechart\presencechart.py:430
 msgid "You'll be seen again by this cog."
 msgstr ""

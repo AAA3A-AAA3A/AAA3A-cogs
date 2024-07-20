@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "A cog to create new Gists and edit/delete existing ones!"
 msgstr ""
 
-#: gistshandler\gistshandler.py:85
+#: gistshandler\gistshandler.py:77
 msgid ""
 "You need to set up a GitHub token with `{ctx.prefix}set api github "
 "token,[TOKEN]` first!"

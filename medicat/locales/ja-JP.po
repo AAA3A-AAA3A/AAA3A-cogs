@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:38\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:19\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -266,73 +266,69 @@ msgstr "それでうまくいったのか？"
 msgid "This cog will only work on x server and therefore cannot be used by the general public!"
 msgstr "このコグはエックスサーバーでのみ動作するため、一般の方が使用することはできません！"
 
-#: medicat\medicat.py:453
+#: medicat\medicat.py:476
 msgid "This Ventoy version doesn't exists."
 msgstr "このVentoyバージョンは存在しない。"
 
-#: medicat\medicat.py:489
+#: medicat\medicat.py:512
 msgid "Ventoy v{ventoy_version_str} has been released!"
 msgstr "Ventoy v{ventoy_version_str} がリリースされました！"
 
-#: medicat\medicat.py:492
+#: medicat\medicat.py:515
 msgid "New features:"
 msgstr "新機能を搭載しました："
 
-#: medicat\medicat.py:497
+#: medicat\medicat.py:520
 msgid "Download this version:"
 msgstr "このバージョンをダウンロードしてください："
 
-#: medicat\medicat.py:505
+#: medicat\medicat.py:528
 msgid "View on Ventoy Official Website"
 msgstr "Ventoy公式サイトで見る"
 
-#: medicat\medicat.py:589
+#: medicat\medicat.py:612
 msgid "{tool} now has a new version!"
 msgstr "{tool} は、新バージョンになりました！"
 
-#: medicat\medicat.py:603
+#: medicat\medicat.py:626
 msgid "View on FCportables Official Website"
 msgstr "FCportablesオフィシャルサイトで見る"
 
-#: medicat\medicat.py:747
+#: medicat\medicat.py:770
 #, docstring
 msgid "Get the latest version of Ventoy."
 msgstr "Ventoyの最新バージョンを入手することができます。"
 
-#: medicat\medicat.py:751 medicat\medicat.py:761
-msgid "An error has occurred. Please try again."
-msgstr "エラーが発生しました。もう一度お試しください。"
-
-#: medicat\medicat.py:757
+#: medicat\medicat.py:777
 #, docstring
 msgid "Get a version of Ventoy."
 msgstr "Ventoyのバージョンを取得します。"
 
-#: medicat\medicat.py:767
+#: medicat\medicat.py:784
 #, docstring
 msgid "Get the latest versions of each Medicat USB bootable tool."
 msgstr "各メディキャットUSBブータブルツールの最新版を入手することができます。"
 
-#: medicat\medicat.py:803 medicat\medicat.py:943
+#: medicat\medicat.py:820 medicat\medicat.py:957
 msgid "View FCportables Official Website"
 msgstr "FCportables公式サイトを見る"
 
-#: medicat\medicat.py:822
+#: medicat\medicat.py:839
 #, docstring
 msgid "Get the debug for a FCportables's tool."
 msgstr "FCportablesのツールのデバッグを取得します。"
 
-#: medicat\medicat.py:902
+#: medicat\medicat.py:916
 #, docstring
 msgid "Get the download link of each Medicat USB bootable tool."
 msgstr "各Medicat USBブータブルツールのダウンロードリンクを入手する。"
 
-#: medicat\medicat.py:963
+#: medicat\medicat.py:977
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "ループの状態を確認するためのエンベデッドを取得します。"
 
-#: medicat\medicat.py:970
+#: medicat\medicat.py:984
 #, docstring
 msgid "Update Medicat cog directly."
 msgstr "Medicat cogを直接更新します。"

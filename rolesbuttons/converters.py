@@ -53,9 +53,7 @@ class Emoji(commands.EmojiConverter):
 
 
 class RoleHierarchyConverter(commands.RoleConverter):
-    """Similar to d.py's RoleConverter but only returns if we have already
-    passed our hierarchy checks.
-    """
+    """Similar to d.py's RoleConverter but only returns if we have already passed our hierarchy checks."""
 
     async def convert(self, ctx: commands.Context, argument: str) -> discord.Role:
         if not ctx.me.guild_permissions.manage_roles:

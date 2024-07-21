@@ -168,7 +168,10 @@ class DisurlVotesTracker(Cog):
         ) is None:
             return
 
-        if (voters_role := await self.config.guild(guild).voters_role()) is not None:
+        if (
+            voters_role_id := await self.config.guild(guild).voters_role()
+            and (voters_role := guild.get_role(voters_role_id)) is not None
+        ) is not None:
             try:
                 await member.add_roles(voters_role, reason=_("Voted on Disurl! (12 hours)"))
             except discord.HTTPException as e:
@@ -249,7 +252,11 @@ class DisurlVotesTracker(Cog):
                 if (member := guild.get_member(member_id)) is None:
                     continue
 
-                if (voters_role := guild_data["voters_role"]) is not None and voters_role in member.roles:
+                if (
+                    (voters_role_id := guild_data["voters_role"]) is not None
+                    and (voters_role := guild.get_role(voters_role_id)) is not None
+                    and voters_role in member.roles
+                ):
                     try:
                         await member.remove_roles(voters_role, reason=_("Voters role expired! (12 hours)"))
                     except discord.HTTPException as e:

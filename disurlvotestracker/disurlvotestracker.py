@@ -207,7 +207,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             if voters_role is not None:
                 embed.description += _("\n\n{member.display_name} received the role {voters_role.mention} for the next 12 hours.").format(member=member, voters_role=voters_role)
             embed.description += _("\n\nYou could vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!").format(guild=guild)
-            embed.set_footer(text=_("Thanks for supporting the server! | User ID: {member.id}").format(member=member), icon_url=guild.icon)
+            embed.set_footer(text=_("Thanks for supporting this server! | User ID: {member.id}").format(member=member), icon_url=guild.icon)
             await votes_channel.send(embed=embed)
         else:
             env = {
@@ -275,7 +275,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                         view.add_item(discord.ui.Button(label=_("Vote on Disurl!"), url=f"https://disurl.me/server/{guild.id}/vote"))
                         await votes_channel.send(
                             _(
-                                "{member.mention}, don't forget to vote on **[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again 12 hours after this vote. **Thanks for supporting the server!**"
+                                "{member.mention}, don't forget to vote on **[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again 12 hours after this vote. **Thanks for supporting this server!**"
                             ).format(member=member, guild=guild),
                             view=view,
                         )

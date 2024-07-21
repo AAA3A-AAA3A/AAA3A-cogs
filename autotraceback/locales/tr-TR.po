@@ -1,0 +1,28 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/autotraceback/locales/messages.pot\n"
+"X-Crowdin-File-ID: 74\n"
+"Language: tr_TR\n"
+
+#: autotraceback\autotraceback.py:34
+#, docstring
+msgid "A cog to display the error traceback of a command automatically after the error!"
+msgstr "Bir komutun hata geri dönüşünü hatadan sonra otomatik olarak görüntülemek için bir cog!"
+
+#: autotraceback\autotraceback.py:61 autotraceback\dashboard_integration.py:35
+msgid "No exception has occurred yet."
+msgstr "Henüz hiçbir istisna gerçekleşmedi."
+

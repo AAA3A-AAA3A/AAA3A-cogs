@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:41\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:16\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -17,77 +17,109 @@ msgstr ""
 "X-Crowdin-File-ID: 314\n"
 "Language: de_DE\n"
 
-#: embedutils\converters.py:63 embedutils\converters.py:78
+#: embedutils\converters.py:66 embedutils\converters.py:81
 msgid "This doesn't seem to be properly formatted embed {conversion_type}. Refer to the link on `{ctx.clean_prefix}help {ctx.command.qualified_name}`."
 msgstr "Dies scheint nicht richtig formatiert zu sein, um {conversion_type}einzubetten. Siehe den Link auf `{ctx.clean_prefix}Hilfe {ctx.command.qualified_name}`."
 
-#: embedutils\converters.py:90
+#: embedutils\converters.py:93
 msgid "JSON Parse Error"
 msgstr "JSON-Parsing-Fehler"
 
-#: embedutils\converters.py:101
+#: embedutils\converters.py:104
 msgid "YAML Parse Error"
 msgstr "YAML-Parsing-Fehler"
 
-#: embedutils\converters.py:111
+#: embedutils\converters.py:114
 msgid "The `content` field is not supported for this command."
 msgstr "Das Feld `Inhalt` wird für diesen Befehl nicht unterstützt."
 
-#: embedutils\converters.py:125
+#: embedutils\converters.py:130
 msgid "Embed Parse Error"
 msgstr "Parse-Fehler einbetten"
 
-#: embedutils\converters.py:130
+#: embedutils\converters.py:135
 msgid "Embed size exceeds Discord limit of 6000 characters ({length})."
 msgstr "Die Größe der Einbettung überschreitet das Discord-Limit von 6000 Zeichen ({length})."
 
-#: embedutils\converters.py:142 embedutils\embedutils.py:102
-#: embedutils\embedutils.py:135 embedutils\embedutils.py:167
-#: embedutils\embedutils.py:202 embedutils\embedutils.py:233
-#: embedutils\embedutils.py:264 embedutils\embedutils.py:307
-#: embedutils\embedutils.py:414 embedutils\embedutils.py:505
-#: embedutils\embedutils.py:682 embedutils\embedutils.py:738
+#: embedutils\converters.py:147 embedutils\embedutils.py:100
+#: embedutils\embedutils.py:133 embedutils\embedutils.py:165
+#: embedutils\embedutils.py:200 embedutils\embedutils.py:231
+#: embedutils\embedutils.py:262 embedutils\embedutils.py:314
+#: embedutils\embedutils.py:440 embedutils\embedutils.py:537
+#: embedutils\embedutils.py:708 embedutils\embedutils.py:762
 msgid "Embed Send Error"
 msgstr "Sendefehler einbetten"
 
-#: embedutils\converters.py:155
+#: embedutils\converters.py:162
 msgid "Use `{ctx.prefix}help {ctx.command.qualified_name}` to see an example."
 msgstr "Verwenden Sie `{ctx.prefix}help {ctx.command.qualified_name}`, um ein Beispiel zu sehen."
 
-#: embedutils\converters.py:195
+#: embedutils\converters.py:204
 msgid "Embed limit reached ({limit})."
 msgstr "Einbettungsgrenze erreicht ({limit})."
 
-#: embedutils\converters.py:200
+#: embedutils\converters.py:209
 msgid "Failed to convert input into embeds."
 msgstr "Konnte die Eingabe nicht in Einbettungen umwandeln."
 
-#: embedutils\converters.py:219
+#: embedutils\converters.py:228
 msgid "It's not a valid channel or thread."
 msgstr "Es handelt sich nicht um einen gültigen Kanal oder Thread."
 
-#: embedutils\converters.py:223
+#: embedutils\converters.py:232
 msgid "I do not have permissions to send embeds in {channel.mention}."
 msgstr "Ich habe keine Berechtigung zum Senden von Einbettungen in {channel.mention}."
 
-#: embedutils\converters.py:230
+#: embedutils\converters.py:241
 msgid "You do not have permissions to send embeds in {channel.mention}."
 msgstr "Sie haben nicht die Berechtigung, Einbettungen in {channel.mention}zu senden."
 
-#: embedutils\converters.py:242
+#: embedutils\converters.py:253
 msgid "I have to be the author of the message. You can use the command without providing a message to send one."
 msgstr "Ich muss der Verfasser der Nachricht sein. Sie können den Befehl auch ohne eine Nachricht verwenden, um eine zu senden."
 
-#: embedutils\converters.py:252
+#: embedutils\converters.py:263
 msgid "You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`)."
 msgstr "Es ist nicht erlaubt, Einbettungen einer bestehenden Nachricht zu bearbeiten (der Bot-Besitzer kann die Berechtigungen mit dem Menüpunkt Berechtigungen auf dem Befehl `[p]embed edit` einstellen)."
 
-#: embedutils\embedutils.py:44
-#, docstring
-msgid "Create, send, and store embeds!"
-msgstr "Erstellen, senden und speichern Sie Einbettungen!"
+#: embedutils\dashboard_integration.py:53
+msgid "You don't have permissions to access this page."
+msgstr "Sie haben keine Berechtigung für den Zugriff auf diese Seite."
 
-#: embedutils\embedutils.py:112
+#: embedutils\dashboard_integration.py:60
+msgid "I or you don't have permissions to send messages or embeds in any channel in this guild."
+msgstr "Ich oder du haben keine Berechtigung, Nachrichten oder Einbettungen in irgendeinem Kanal dieser Gilde zu senden."
+
+#: embedutils\dashboard_integration.py:76
+msgid "Username:"
+msgstr "Benutzername:"
+
+#: embedutils\dashboard_integration.py:80
+msgid "Avatar URL:"
+msgstr "Avatar-URL:"
+
+#: embedutils\dashboard_integration.py:84
+msgid "Data"
+msgstr "Daten"
+
+#: embedutils\dashboard_integration.py:91
+msgid "Channels:"
+msgstr "Kanäle:"
+
+#: embedutils\dashboard_integration.py:100
+msgid "Send Message(s)"
+msgstr "Nachricht(en) senden"
+
+#: embedutils\dashboard_integration.py:164
+msgid "Message(s) sent successfully!"
+msgstr "Nachricht(en) erfolgreich gesendet!"
+
+#: embedutils\embedutils.py:47
+#, docstring
+msgid "Create, send, and store rich embeds, from Red-Dashboard too!"
+msgstr "Erstellen, senden und speichern Sie umfangreiche Einbettungen, auch von Red-Dashboard aus!"
+
+#: embedutils\embedutils.py:110
 #, docstring
 msgid "Post embeds from valid JSON.\n\n"
 "        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
@@ -104,7 +136,7 @@ msgstr "Posten Sie Einbettungen aus gültigem JSON.\n\n"
 "        Sie können einen Anhang verwenden und der Befehl `[p]embed yamlfile` wird automatisch aufgerufen.\n"
 "        "
 
-#: embedutils\embedutils.py:145
+#: embedutils\embedutils.py:143
 #, docstring
 msgid "Post embeds from valid YAML.\n\n"
 "        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
@@ -119,7 +151,7 @@ msgstr "Post-Embeds aus gültigem YAML.\n\n"
 "        Sie können einen Anhang verwenden und der Befehl `[p]embed yamlfile` wird automatisch aufgerufen.\n"
 "        "
 
-#: embedutils\embedutils.py:173
+#: embedutils\embedutils.py:171
 #, docstring
 msgid "Post an embed from a valid JSON file (upload it).\n\n"
 "        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
@@ -134,13 +166,14 @@ msgstr "Poste eine Einbettung aus einer gültigen JSON-Datei (lade sie hoch).\n\
 "        Wenn Sie eine Nachricht angeben, wird diese bearbeitet.\n"
 "        "
 
-#: embedutils\embedutils.py:188 embedutils\embedutils.py:219
-#: embedutils\embedutils.py:388 embedutils\embedutils.py:398
-#: embedutils\embedutils.py:478 embedutils\embedutils.py:488
+#: embedutils\embedutils.py:186 embedutils\embedutils.py:217
+#: embedutils\embedutils.py:405 embedutils\embedutils.py:415
+#: embedutils\embedutils.py:505 embedutils\embedutils.py:515
+#: embedutils\embedutils.py:831 embedutils\embedutils.py:843
 msgid "Unreadable attachment with `utf-8`."
 msgstr "Unleserlicher Anhang mit `utf-8`."
 
-#: embedutils\embedutils.py:208
+#: embedutils\embedutils.py:206
 #, docstring
 msgid "Post an embed from a valid YAML file (upload it).\n\n"
 "        If you provide a message, it will be edited.\n"
@@ -149,7 +182,7 @@ msgstr "Posten Sie eine Einbettung aus einer gültigen YAML-Datei (laden Sie sie
 "        Wenn Sie eine Nachricht angeben, wird diese bearbeitet.\n"
 "        "
 
-#: embedutils\embedutils.py:245
+#: embedutils\embedutils.py:243
 #, docstring
 msgid "Post embeds from a GitHub/Gist/Pastebin/Hastebin link containing valid JSON.\n\n"
 "        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
@@ -162,35 +195,35 @@ msgstr "Posten Sie Einbettungen von einem GitHub/Gist/Pastebin/Hastebin-Link mit
 "        Wenn Sie eine Nachricht angeben, wird diese bearbeitet.\n"
 "        "
 
-#: embedutils\embedutils.py:275
+#: embedutils\embedutils.py:273
 #, docstring
 msgid "Post embed(s) from an existing message.\n\n"
 "        The message must have at least one embed.\n"
 "        You can specify an index (starting by 0) if you want to send only one of the embeds.\n"
-"        You can include the content of the message already sent.\n\n"
+"        The content of the message already sent is included if no index is specified.\n\n"
 "        If you provide a message, it will be edited.\n"
 "        "
 msgstr "Einbettung(en) aus einer vorhandenen Nachricht posten.\n\n"
 "        Die Nachricht muss mindestens eine Einbettung enthalten.\n"
 "        Sie können einen Index angeben (beginnend mit 0), wenn Sie nur eine der Einbettungen senden möchten.\n"
-"        Sie können den Inhalt der bereits gesendeten Nachricht einfügen.\n\n"
+"        Wenn kein Index angegeben wird, wird der Inhalt der bereits gesendeten Nachricht übernommen.\n\n"
 "        Wenn Sie eine Nachricht angeben, wird diese bearbeitet.\n"
 "        "
 
-#: embedutils\embedutils.py:318
+#: embedutils\embedutils.py:325
 #, docstring
 msgid "Download a JSON file for a message's embed(s).\n\n"
 "        The message must have at least one embed.\n"
 "        You can specify an index (starting by 0) if you want to include only one of the embeds.\n"
-"        You can include the content of the message already sent.\n"
+"        The content of the message already sent is included if no index is specified.\n"
 "        "
 msgstr "Laden Sie eine JSON-Datei für die Einbettung(en) einer Nachricht herunter.\n\n"
 "        Die Nachricht muss mindestens eine Einbettung enthalten.\n"
 "        Sie können einen Index angeben (beginnend mit 0), wenn Sie nur eine der Einbettungen einschließen möchten.\n"
-"        Sie können den Inhalt der bereits gesendeten Nachricht einschließen.\n"
+"        Der Inhalt der bereits gesendeten Nachricht wird einbezogen, wenn kein Index angegeben wird.\n"
 "        "
 
-#: embedutils\embedutils.py:368
+#: embedutils\embedutils.py:385
 #, docstring
 msgid "Edit a message sent by [botname].\n\n"
 "        It would be better to use the `message` parameter of all the other commands.\n"
@@ -199,7 +232,7 @@ msgstr "Eine von [botname] gesendete Nachricht bearbeiten.\n\n"
 "        Es wäre besser, den Parameter `Meldung` aller anderen Befehle zu verwenden.\n"
 "        "
 
-#: embedutils\embedutils.py:450
+#: embedutils\embedutils.py:477
 #, docstring
 msgid "Store an embed.\n\n"
 "        Put the name in quotes if it is multiple words.\n"
@@ -210,69 +243,97 @@ msgstr "Speichern Sie eine Einbettung.\n\n"
 "        Das Argument `locked` gibt an, ob die Einbettung nur für Mods und Vorgesetzte (Gildenebene) oder nur für Bot-Besitzer (globale Ebene) gesperrt werden soll.\n"
 "        "
 
-#: embedutils\embedutils.py:458 embedutils\embedutils.py:539
-#: embedutils\embedutils.py:558 embedutils\embedutils.py:590
-#: embedutils\embedutils.py:622 embedutils\embedutils.py:651
-#: embedutils\embedutils.py:704
+#: embedutils\embedutils.py:485 embedutils\embedutils.py:571
+#: embedutils\embedutils.py:586 embedutils\embedutils.py:618
+#: embedutils\embedutils.py:650
 msgid "You can't manage global stored embeds."
 msgstr "Sie können keine global gespeicherten Einbettungen verwalten."
 
-#: embedutils\embedutils.py:516
+#: embedutils\embedutils.py:548
 msgid "This server has reached the embed limit of {embed_limit}. You must remove an embed with `{ctx.clean_prefix}embed unstore` before you can add a new one."
 msgstr "Dieser Server hat die Einbettungsgrenze von {embed_limit}erreicht. Sie müssen eine Einbettung mit \"{ctx.clean_prefix}embed unstore\" entfernen, bevor Sie eine neue Einbettung hinzufügen können."
 
-#: embedutils\embedutils.py:535
+#: embedutils\embedutils.py:567
 #, docstring
 msgid "Remove a stored embed."
 msgstr "Eine gespeicherte Einbettung entfernen."
 
-#: embedutils\embedutils.py:545 embedutils\embedutils.py:595
-#: embedutils\embedutils.py:627
+#: embedutils\embedutils.py:577 embedutils\embedutils.py:623
+#: embedutils\embedutils.py:655
 msgid "This is not a stored embed at this level."
 msgstr "Dies ist keine gespeicherte Einbettung auf dieser Ebene."
 
-#: embedutils\embedutils.py:554 embedutils\embedutils.py:586
+#: embedutils\embedutils.py:584 embedutils\embedutils.py:614
 #, docstring
 msgid "Get info about a stored embed."
 msgstr "Informationen über eine gespeicherte Einbettung abrufen."
 
-#: embedutils\embedutils.py:564
+#: embedutils\embedutils.py:592
 msgid "No stored embeds is configured at this level."
 msgstr "Auf dieser Ebene sind keine gespeicherten Einbettungen konfiguriert."
 
-#: embedutils\embedutils.py:568
+#: embedutils\embedutils.py:596
 msgid "Global "
 msgstr "Global "
 
-#: embedutils\embedutils.py:568
+#: embedutils\embedutils.py:596
 msgid "Stored Embeds"
 msgstr "Gespeicherte Einbettungen"
 
-#: embedutils\embedutils.py:618
+#: embedutils\embedutils.py:646
 #, docstring
 msgid "Download a JSON file for a stored embed."
 msgstr "Laden Sie eine JSON-Datei für eine gespeicherte Einbettung herunter."
 
-#: embedutils\embedutils.py:647
+#: embedutils\embedutils.py:675
 #, docstring
 msgid "Post stored embeds."
 msgstr "Gespeicherte Einbettungen buchen."
 
-#: embedutils\embedutils.py:671 embedutils\embedutils.py:724
+#: embedutils\embedutils.py:697 embedutils\embedutils.py:748
 msgid "`{name}` is not a stored embed at this level."
 msgstr "{name}\" ist keine gespeicherte Einbettung auf dieser Ebene."
 
-#: embedutils\embedutils.py:700
+#: embedutils\embedutils.py:726
 #, docstring
 msgid "Post stored embeds with a webhook."
 msgstr "Posten Sie gespeicherte Einbettungen mit einem Webhook."
 
-#: embedutils\embedutils.py:743
+#: embedutils\embedutils.py:793
+#, docstring
+msgid "Get the link to the Dashboard."
+msgstr "Holen Sie sich den Link zum Dashboard."
+
+#: embedutils\embedutils.py:796
+msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Dashboard ist nicht installiert. Prüfen Sie <https://red-web-dashboard.readthedocs.io>."
+
+#: embedutils\embedutils.py:801
+msgid "You can't access the Dashboard."
+msgstr "Sie können nicht auf das Dashboard zugreifen."
+
+#: embedutils\embedutils.py:807
+msgid "This third party is disabled on the Dashboard."
+msgstr "Diese dritte Partei ist auf dem Dashboard deaktiviert."
+
+#: embedutils\embedutils.py:872
+msgid "Dashboard - "
+msgstr "Armaturenbrett - "
+
+#: embedutils\embedutils.py:876
+msgid "You can create and send rich embeds directly from the Dashboard!"
+msgstr "Sie können Rich Embeds direkt vom Dashboard aus erstellen und versenden!"
+
+#: embedutils\embedutils.py:883
+msgid "The URL is too long to be displayed."
+msgstr "Die URL ist zu lang, um angezeigt zu werden."
+
+#: embedutils\embedutils.py:889
 #, docstring
 msgid "Migrate stored embeds from EmbedUtils by Phen."
 msgstr "Migrieren Sie gespeicherte Einbettungen aus EmbedUtils von Phen."
 
-#: embedutils\embedutils.py:787
+#: embedutils\embedutils.py:933
 msgid "Data successfully migrated from EmbedUtils by Phen."
 msgstr "Daten erfolgreich aus EmbedUtils von Phen migriert."
 

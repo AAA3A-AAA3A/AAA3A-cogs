@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:21\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:18\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -26,33 +26,33 @@ msgstr "チャンネルの全メッセージを削除する歯車！\n\n"
 "    チャンネルはクローンされ、**削除**されます。\n"
 "    "
 
-#: clearchannel\clearchannel.py:101
+#: clearchannel\clearchannel.py:97
 msgid "⚠️ - ClearChannel"
 msgstr "⚠️ - ClearChannel"
 
-#: clearchannel\clearchannel.py:102
+#: clearchannel\clearchannel.py:98
 msgid "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n"
 "⚠ The channel will be cloned, and then **deleted**."
 msgstr "本当にチャンネル {old_channel.mention} ({old_channel.id}) から全てのメッセージを削除したいですか？\n"
 "⚠ チャンネルはクローンされ、**削除**されます。"
 
-#: clearchannel\clearchannel.py:112
+#: clearchannel\clearchannel.py:130
 msgid "Clear Channel requested by {ctx.author} ({ctx.author.id})."
 msgstr "クリアチャンネルは、 {ctx.author} ({ctx.author.id})に依頼しました。"
 
-#: clearchannel\clearchannel.py:118
+#: clearchannel\clearchannel.py:136
 msgid "🗑️-Deleted-{old_channel.name}"
 msgstr "🗑️-Deleted-{old_channel.name}"
 
-#: clearchannel\clearchannel.py:132
+#: clearchannel\clearchannel.py:150
 msgid "ClearChannel"
 msgstr "ClearChannel"
 
-#: clearchannel\clearchannel.py:133
+#: clearchannel\clearchannel.py:151
 msgid "ALL the messages in this channel have been deleted..."
 msgstr "このチャンネルのメッセージはすべて削除されました...。"
 
-#: clearchannel\clearchannel.py:151
+#: clearchannel\clearchannel.py:174
 msgid "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
 msgstr "チャンネル #{old_channel.name} ({old_channel.id}) のメッセージはすべて削除されました！同じパーミッションで新しいチャンネルを見つけることができます: #{new_channel.name} ({new_channel.id})."
 

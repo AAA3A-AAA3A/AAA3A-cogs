@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:40\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:20\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -18,8 +18,8 @@ msgstr ""
 "Language: uk_UA\n"
 
 #: transferchannel\transferchannel.py:24
-#: transferchannel\transferchannel.py:335
-#: transferchannel\transferchannel.py:367
+#: transferchannel\transferchannel.py:334
+#: transferchannel\transferchannel.py:368
 msgid "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
 msgstr "Існує {count_messages} переданих повідомлень з {source.mention} на {destination.mention}."
 
@@ -28,35 +28,35 @@ msgstr "Існує {count_messages} переданих повідомлень з
 msgid "A cog to transfer messages from a channel to another channel, with many options!"
 msgstr "Гвинтик для передачі повідомлень з каналу на канал, з безліччю варіантів!"
 
-#: transferchannel\transferchannel.py:105
+#: transferchannel\transferchannel.py:94
 msgid "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
 msgstr "Вибачте, я не можу прочитати зміст повідомлень на {source.mention} ({source.id})."
 
-#: transferchannel\transferchannel.py:112
+#: transferchannel\transferchannel.py:101
 msgid "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id})."
 msgstr "Мені потрібно мати всі дозволи, щоб надсилати повідомлення з вбудовуваннями в {destination.guild.name} ({destination.guild.id})."
 
-#: transferchannel\transferchannel.py:118
+#: transferchannel\transferchannel.py:107
 msgid "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id}). You can use embeds or text messages by adding `embeds`/`messages` to your command."
 msgstr "Мені потрібно мати всі дозволи на створення веб-хуків в {destination.guild.name} ({destination.guild.id}). Ви можете використовувати вбудовування або текстові повідомлення, додавши до команди `embeds`/`messages`."
 
-#: transferchannel\transferchannel.py:161
+#: transferchannel\transferchannel.py:155
 msgid "Sorry. I could not find any messages."
 msgstr "Вибач. Я не знайшов жодного повідомлення."
 
-#: transferchannel\transferchannel.py:242
+#: transferchannel\transferchannel.py:236
 msgid "**Author:** {message.author.mention} ({message.author.id})"
 msgstr "**Автор:** {message.author.mention} ({message.author.id})"
 
-#: transferchannel\transferchannel.py:245
+#: transferchannel\transferchannel.py:239
 msgid "**Channel:** <#{message.channel.id}>"
 msgstr "**Канал:** <#{message.channel.id}>"
 
-#: transferchannel\transferchannel.py:246
+#: transferchannel\transferchannel.py:240
 msgid "**Time (UTC):** {iso_format}"
 msgstr "**Час (UTC):** {iso_format}"
 
-#: transferchannel\transferchannel.py:295
+#: transferchannel\transferchannel.py:290
 #, docstring
 msgid "Transfer all messages from a channel to another channel. This might take a long time.\n\n"
 "        Remember that transfering other users' messages does not respect the TOS.\n"
@@ -65,7 +65,7 @@ msgstr "Передайте всі повідомлення з одного ка�
 "        Пам'ятайте, що перенесення повідомлень інших користувачів не відповідає TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:319
+#: transferchannel\transferchannel.py:318
 #, docstring
 msgid "Transfer a specific message to another channel. This might take a long time.\n\n"
 "        Specify the message to transfer, with its ID or its link.\n"
@@ -87,7 +87,7 @@ msgstr "Передайте частину повідомлень з одного
 "        Пам'ятайте, що перенесення повідомлень інших користувачів не відповідає TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:381
+#: transferchannel\transferchannel.py:383
 #, docstring
 msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
 "        Specify the before message (id or link) or a valid Discord snowflake.\n"
@@ -98,7 +98,7 @@ msgstr "Передайте частину повідомлень з одного
 "        Пам'ятайте, що перенесення повідомлень інших користувачів не відповідає TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:407
+#: transferchannel\transferchannel.py:415
 #, docstring
 msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
 "        Specify the after message (id or link) or a valid Discord snowflake.\n"
@@ -109,7 +109,7 @@ msgstr "Передайте частину повідомлень з одного
 "        Пам'ятайте, що перенесення повідомлень інших користувачів не відповідає TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:434
+#: transferchannel\transferchannel.py:448
 #, docstring
 msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
 "        Specify the between messages (id or link) or a valid snowflake.\n"
@@ -120,7 +120,7 @@ msgstr "Передайте частину повідомлень з одного
 "        Пам'ятайте, що перенесення повідомлень інших користувачів не відповідає TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:461
+#: transferchannel\transferchannel.py:481
 #, docstring
 msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
 "        Specify the user/member (id, name or mention).\n"
@@ -131,7 +131,7 @@ msgstr "Передайте частину повідомлень з одного
 "        Пам'ятайте, що перенесення повідомлень інших користувачів не відповідає TOS.\n"
 "        "
 
-#: transferchannel\transferchannel.py:493
+#: transferchannel\transferchannel.py:514
 #, docstring
 msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
 "        Specify the bool option.\n"

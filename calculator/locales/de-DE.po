@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:21\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:17\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -22,12 +22,12 @@ msgstr ""
 msgid "A cog to do calculations from Discord with buttons!"
 msgstr "Ein Zahnrad, um Berechnungen von Discord mit Tasten durchzuführen!"
 
-#: calculator\calculator.py:160 calculator\calculator.py:290
+#: calculator\calculator.py:151 calculator\calculator.py:281
 #: calculator\view.py:207 calculator\view.py:214
 msgid "Error!"
 msgstr "Fehler!"
 
-#: calculator\calculator.py:173
+#: calculator\calculator.py:164
 msgid "{ctx.me.display_name}'s Calculator"
 msgstr "{ctx.me.display_name}Taschenrechner"
 

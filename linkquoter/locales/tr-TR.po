@@ -1,0 +1,81 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/linkquoter/locales/messages.pot\n"
+"X-Crowdin-File-ID: 316\n"
+"Language: tr_TR\n"
+
+#: linkquoter\converters.py:45 linkquoter\converters.py:57
+msgid "Can't read messages in {channel.mention}."
+msgstr "{channel.mention} kanalındaki mesajlar okunamıyor."
+
+#: linkquoter\converters.py:49
+msgid "Can't read message history in {channel.mention}."
+msgstr "{channel.mention} kanalındaki mesaj geçmişi okunamıyor."
+
+#: linkquoter\converters.py:65
+msgid "I can only quote messages from servers."
+msgstr "Sadece sunuculardaki mesajları alıntılayabilirim."
+
+#: linkquoter\converters.py:69
+msgid "Messages from NSFW channels cannot be quoted in non-NSFW channels."
+msgstr "NSFW kanallarından gelen mesajlar NSFW olmayan kanallarda alıntılanamaz."
+
+#: linkquoter\converters.py:82
+msgid "This server is not opted in to quote messages from other servers."
+msgstr "Bu sunucu, diğer sunuculardan mesaj alıntılamayı kabul etmedi."
+
+#: linkquoter\converters.py:86
+msgid "That server is not opted in to allow its messages to be quoted in other servers."
+msgstr "Bu sunucu, mesajlarının diğer sunucularda alıntılanmasına izin vermeyi kabul etmedi."
+
+#: linkquoter\converters.py:95
+msgid "You don't have permission to read messages in that channel."
+msgstr "Bu kanalda mesajları okuma izniniz yok."
+
+#: linkquoter\linkquoter.py:56
+#, docstring
+msgid "Quote any Discord message from its link!"
+msgstr "Herhangi bir Discord mesajını bağlantısından alıntıla!"
+
+#: linkquoter\linkquoter.py:218
+msgid "{author.display_name} said..."
+msgstr "{author.display_name} dedi ki..."
+
+#: linkquoter\linkquoter.py:244
+msgid "Attachments:"
+msgstr "Ekler:"
+
+#: linkquoter\linkquoter.py:255
+msgid "Stickers:"
+msgstr "Çıkartmalar:"
+
+#: linkquoter\linkquoter.py:267
+msgid "Replying to:"
+msgstr "Yanıtlıyor:"
+
+#: linkquoter\linkquoter.py:268
+msgid "Click to view attachments."
+msgstr "Ekleri görmek için tıklayın."
+
+#: linkquoter\linkquoter.py:337
+#, docstring
+msgid "Migrate config from LinkQuoter by Phen."
+msgstr "LinkQuoter by Phen'den yapılandırmayı taşı."
+
+#: linkquoter\linkquoter.py:362
+msgid "Data successfully migrated from LinkQuoter by Phen."
+msgstr "Veriler başarıyla LinkQuoter by Phen'den taşındı."
+

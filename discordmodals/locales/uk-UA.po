@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:40\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:18\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -21,116 +21,116 @@ msgstr ""
 msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
 msgstr "Я маю бути автором повідомлення. Ви можете скористатися EmbedUtils від AAA3A, щоб надіслати його."
 
-#: discordmodals\discordmodals.py:123
+#: discordmodals\discordmodals.py:111
 msgid "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
 msgstr "Помилка розбору YAML. Будь ласка, переконайтеся, що формат є коректним (може допомогти валідатор YAML)"
 
-#: discordmodals\discordmodals.py:142
+#: discordmodals\discordmodals.py:130
 msgid "The argument `/{arg}` is required in the root in the YAML."
 msgstr "Аргумент `/{arg}` є обов'язковим у корені в YAML."
 
-#: discordmodals\discordmodals.py:147
+#: discordmodals\discordmodals.py:135
 msgid "The argument `/{arg}` is invalid in in the YAML. Check the spelling."
 msgstr "Аргумент `/{arg}` є неприпустимим у YAML. Перевірте правопис."
 
-#: discordmodals\discordmodals.py:157
+#: discordmodals\discordmodals.py:145
 msgid "The argument `/button/{arg}` is required in the YAML."
 msgstr "Аргумент `/button/{arg}` є обов'язковим у YAML."
 
-#: discordmodals\discordmodals.py:162
+#: discordmodals\discordmodals.py:150
 msgid "The argument `/button/{arg}` is invalid in the YAML. Check the spelling."
 msgstr "Аргумент `/button/{arg}` є недійсним в YAML. Перевірте написання."
 
-#: discordmodals\discordmodals.py:176 discordmodals\discordmodals.py:180
+#: discordmodals\discordmodals.py:164 discordmodals\discordmodals.py:168
 msgid "The argument `/button/style` must be a number between 1 and 4."
 msgstr "Аргумент `/button/style` має бути числом від 1 до 4."
 
-#: discordmodals\discordmodals.py:188
+#: discordmodals\discordmodals.py:176
 msgid "The argument `/button/modal` must be a list of text inputs."
 msgstr "Аргумент `/button/modal` має бути списком текстових даних."
 
-#: discordmodals\discordmodals.py:200
+#: discordmodals\discordmodals.py:188
 msgid "You can only have 5 text inputs by modal."
 msgstr "Ви можете мати лише 5 текстових вхідних даних для кожного модального типу."
 
-#: discordmodals\discordmodals.py:206
+#: discordmodals\discordmodals.py:194
 msgid "The argument `/modal/{count}/{arg}` is required in the YAML."
 msgstr "Аргумент `/modal/{count}/{arg}` є обов'язковим у YAML."
 
-#: discordmodals\discordmodals.py:213
+#: discordmodals\discordmodals.py:201
 msgid "The argument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
 msgstr "Аргумент `/modal/{count}/{arg}` є недійсним у YAML. Перевірте написання."
 
-#: discordmodals\discordmodals.py:219
+#: discordmodals\discordmodals.py:207
 msgid "The argument `/modal/{count}/label` must be less than 45 characters long."
 msgstr "Аргумент `/modal/{count}/label` повинен мати довжину менше 45 символів."
 
-#: discordmodals\discordmodals.py:229 discordmodals\discordmodals.py:235
+#: discordmodals\discordmodals.py:217 discordmodals\discordmodals.py:223
 msgid "The argument `/modal/{count}/style` must be a number between 1 and 2."
 msgstr "Аргумент `/modal/{count}/style` має бути числом від 1 до 2."
 
-#: discordmodals\discordmodals.py:247
+#: discordmodals\discordmodals.py:235
 msgid "The argument `/modal/{count}/required` must be a boolean (True or False)."
 msgstr "Аргумент `/modal/{count}/required` має бути логічним (True або False)."
 
-#: discordmodals\discordmodals.py:257
+#: discordmodals\discordmodals.py:245
 msgid "The argument `/modal/{count}/default` must be less than 4000 characters long."
 msgstr "Аргумент `/modal/{count}/default` повинен мати довжину менше 4000 символів."
 
-#: discordmodals\discordmodals.py:265
+#: discordmodals\discordmodals.py:253
 msgid "The argument `/modal/{count}/placeholder` must be less than 100 characters long."
 msgstr "Аргумент `/modal/{count}/placeholder` повинен мати довжину менше 100 символів."
 
-#: discordmodals\discordmodals.py:273
+#: discordmodals\discordmodals.py:261
 msgid "The argument `/modal/{count}/min_length` must be between 0 and 4000."
 msgstr "Аргумент `/modal/{count}/min_length` має бути в діапазоні від 0 до 4000."
 
-#: discordmodals\discordmodals.py:281
+#: discordmodals\discordmodals.py:269
 msgid "The argument `/modal/{count}/max_length` must be between 0 and 4000."
 msgstr "Аргумент `/modal/{count}/max_length` має бути в межах від 0 до 4000."
 
-#: discordmodals\discordmodals.py:307
+#: discordmodals\discordmodals.py:295
 msgid "The argument `/anonymous` must be a boolean (True or False)."
 msgstr "Аргумент `/anonymous` має бути логічним (True або False)."
 
-#: discordmodals\discordmodals.py:317
+#: discordmodals\discordmodals.py:305
 msgid "The argument `/unique_answer` must be a boolean (True or False)."
 msgstr "Аргумент `/unique_answer` має бути логічним (True або False)."
 
-#: discordmodals\discordmodals.py:363
+#: discordmodals\discordmodals.py:351
 #, docstring
 msgid "A cog to use Discord Modals, forms with graphic interface!"
 msgstr "Гвинтик для використання Discord Modals, форм з графічним інтерфейсом!"
 
-#: discordmodals\discordmodals.py:491
+#: discordmodals\discordmodals.py:463
 msgid "This message is not in Config."
 msgstr "Цього повідомлення немає у конфігурації."
 
-#: discordmodals\discordmodals.py:545 discordmodals\discordmodals.py:635
+#: discordmodals\discordmodals.py:511 discordmodals\discordmodals.py:603
 msgid "Sorry. An error has occurred."
 msgstr "Вибачте. Виникла помилка."
 
-#: discordmodals\discordmodals.py:561
+#: discordmodals\discordmodals.py:527
 msgid "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server."
 msgstr "Канал, на який я мав надсилати результати цього методу, більше не існує. Будь ласка, повідомте про це адміністратора цього сервера."
 
-#: discordmodals\discordmodals.py:576
+#: discordmodals\discordmodals.py:542
 msgid "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server."
 msgstr "У мене недостатньо прав у каналі призначення (перегляд каналу, надсилання повідомлень, надсилання вбудовувань). Будь ласка, зверніться до адміністратора цього сервера."
 
-#: discordmodals\discordmodals.py:614
+#: discordmodals\discordmodals.py:582
 msgid "The role that was to be assigned no longer exists. Please notify an administrator."
 msgstr "Роль, яка мала бути призначена, більше не існує. Будь ласка, повідомте про це адміністратора."
 
-#: discordmodals\discordmodals.py:624
+#: discordmodals\discordmodals.py:592
 msgid "The role that was to be assigned could not be assigned. Please notify an administrator."
 msgstr "Роль, яку ви хотіли призначити, не може бути призначена. Будь ласка, повідомте про це адміністратора."
 
-#: discordmodals\discordmodals.py:644
+#: discordmodals\discordmodals.py:612
 msgid "Thank you for sending this Modal!"
 msgstr "Дякуємо, що надіслали цей модальний запит!"
 
-#: discordmodals\discordmodals.py:669
+#: discordmodals\discordmodals.py:637
 #, docstring
 msgid "Add a Modal for a message.\n\n"
 "        Use YAML syntax to set up everything.\n\n"
@@ -195,62 +195,62 @@ msgstr "Додайте модальний режим для повідомлен
 "        Параметри `emoji`, `style`, `required`, `default`, `placeholder`, `min_length`, `max_length`, `channel`, `anonymous`, `unique_answer`, `messages`, `pings`, `whitelist_roles`, `blacklist_roles` та `assign_roles` є необов'язковими.\n"
 "        "
 
-#: discordmodals\discordmodals.py:704
+#: discordmodals\discordmodals.py:672
 msgid "This message already has a Modal."
 msgstr "Це повідомлення вже має модальне значення."
 
-#: discordmodals\discordmodals.py:706
+#: discordmodals\discordmodals.py:674
 msgid "This message already has components."
 msgstr "Це повідомлення вже містить компоненти."
 
-#: discordmodals\discordmodals.py:719
+#: discordmodals\discordmodals.py:687
 msgid "Sorry. An error occurred when I tried to put the button on the message."
 msgstr "Вибачте. Виникла помилка, коли я намагався додати кнопку до повідомлення."
 
-#: discordmodals\discordmodals.py:762
+#: discordmodals\discordmodals.py:730
 msgid "Modal created."
 msgstr "Модал створено."
 
-#: discordmodals\discordmodals.py:767
+#: discordmodals\discordmodals.py:735
 #, docstring
 msgid "List all Modals of this server or display the settings for a specific one."
 msgstr "Перерахувати всі модальності цього сервера або відобразити налаштування для певної модальності."
 
-#: discordmodals\discordmodals.py:774
+#: discordmodals\discordmodals.py:742
 msgid "No modal is configured for this message."
 msgstr "Для цього повідомлення не налаштовано жодного модального режиму."
 
-#: discordmodals\discordmodals.py:779
+#: discordmodals\discordmodals.py:747
 msgid "No modals in this server."
 msgstr "На цьому сервері немає модальностей."
 
-#: discordmodals\discordmodals.py:781
+#: discordmodals\discordmodals.py:749
 msgid "Modals"
 msgstr "Модальні форми"
 
-#: discordmodals\discordmodals.py:786
+#: discordmodals\discordmodals.py:754
 msgid "There is {len_modals} modals in this server."
 msgstr "На цьому сервері є {len_modals} модалів."
 
-#: discordmodals\discordmodals.py:791
+#: discordmodals\discordmodals.py:759
 msgid "Message Jump Link: {message_jump_link}\n"
 msgstr "Перехід за посиланням: {message_jump_link}\n"
 
-#: discordmodals\discordmodals.py:801
+#: discordmodals\discordmodals.py:769
 #, docstring
 msgid "Remove a Modal for a message."
 msgstr "Видалити модальне повідомлення."
 
-#: discordmodals\discordmodals.py:804
+#: discordmodals\discordmodals.py:772
 msgid "No Modal is configured for this message."
 msgstr "Для цього повідомлення не налаштовано жодного модального режиму."
 
-#: discordmodals\discordmodals.py:814
+#: discordmodals\discordmodals.py:782
 #, docstring
 msgid "Clear all Modals for a guild."
 msgstr "Очистити всі модальності для гільдії."
 
-#: discordmodals\discordmodals.py:816
+#: discordmodals\discordmodals.py:784
 msgid "All Modals purged."
 msgstr "Всі модальні слова очищено."
 

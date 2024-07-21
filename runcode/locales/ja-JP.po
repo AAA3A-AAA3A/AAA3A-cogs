@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:11\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:22\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "The cog is not fully charged."
 msgstr "コグが十分に充電されていない。"
 
-#: runcode\runcode.py:47 runcode\runcode.py:314
+#: runcode\runcode.py:47 runcode\runcode.py:306
 msgid "Incorrect language identifier for your code.\n"
 "To list all the supported languages identifiers, please use `{ctx.prefix}setruncode listidentifiers`."
 msgstr "あなたのコードの言語識別子が間違っています。\n"
@@ -36,41 +36,41 @@ msgstr "引数でフラグを立てない。"
 msgid "A cog to compile and run codes in some languages! Use `[p]setruncode listlanguages` to get a list of all the available languages."
 msgstr "いくつかの言語でコードをコンパイルして実行するための歯車！[p]setruncode listlanguages` を使って、利用可能なすべての言語のリストを取得してください。"
 
-#: runcode\runcode.py:255
+#: runcode\runcode.py:247
 msgid "File must be smaller than 20 kio."
 msgstr "ファイルサイズは20kio以下であること。"
 
-#: runcode\runcode.py:289
+#: runcode\runcode.py:281
 msgid "Please provide the code!"
 msgstr "コードをご記入ください！"
 
-#: runcode\runcode.py:305
+#: runcode\runcode.py:297
 msgid "Incorrect syntax, please use Markdown's syntax for your code."
 msgstr "不正な構文です。コードにはMarkdownの構文を使用してください。"
 
-#: runcode\runcode.py:395
+#: runcode\runcode.py:387
 msgid "The language of your code could not be found. Specify it with the `language` parameter."
 msgstr "コードの言語が見つかりませんでした。language`パラメータで指定してください。"
 
-#: runcode\runcode.py:424
+#: runcode\runcode.py:416
 msgid "`{engine}` is not a correct engine for {code_language}\n"
 "To list all the available engine for it, please use `{ctx.prefix}setruncode listengines {code_language}`."
 msgstr "{engine}` は {code_language}\n"
 "の正しいエンジンではありません。利用可能なエンジンをすべてリストアップするには、 `{ctx.prefix}setruncode listengines {code_language}` を使用してください。"
 
-#: runcode\runcode.py:437
+#: runcode\runcode.py:429
 msgid "There is no options available for compilation using `{engine}`.\n"
 "Ignoring this option."
 msgstr "{engine}`を使ったコンパイルでは、利用できるオプションはありません。\n"
 "このオプションは無視する。"
 
-#: runcode\runcode.py:450
+#: runcode\runcode.py:442
 msgid "There is no options available for runtime execution `{engine}`.\n"
 "Ignoring this option."
 msgstr "実行時に利用できるオプションはありません `{engine}`.\n"
 "このオプションは無視する。"
 
-#: runcode\runcode.py:586
+#: runcode\runcode.py:578
 #, docstring
 msgid "\n"
 "        Shows a list of all the available languages, or Wandbox or Tio API.\n"
@@ -79,7 +79,7 @@ msgstr "\n"
 "        利用可能なすべての言語、またはWandbox、Tio APIの一覧を表示します。\n"
 "        "
 
-#: runcode\runcode.py:607
+#: runcode\runcode.py:599
 #, docstring
 msgid "\n"
 "        Shows a list of all the available engines for a specified language, only for Wandbox API.\n\n"
@@ -92,7 +92,7 @@ msgstr "\n"
 "        - language`：言語名。\n"
 "        "
 
-#: runcode\runcode.py:635
+#: runcode\runcode.py:627
 #, docstring
 msgid "\n"
 "        Lists all the languages identifiers recognized by the bot, only for Wandbox API.\n"
@@ -101,7 +101,7 @@ msgstr "\n"
 "        ボットが認識するすべての言語識別子を一覧表示します。Wandbox APIのみ。\n"
 "        "
 
-#: runcode\runcode.py:652
+#: runcode\runcode.py:644
 #, docstring
 msgid "\n"
 "        Lists all the languages extensions.\n"

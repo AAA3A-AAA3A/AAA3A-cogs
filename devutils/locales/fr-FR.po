@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:41\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:16\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "Aucun objet de discorde valide n'a été fourni."
 msgid "Various development utilities!"
 msgstr "Divers utilitaires de développement !"
 
-#: devutils\devutils.py:136
+#: devutils\devutils.py:134
 #, docstring
 msgid "\n"
 "        Repeats a command a specified number of times.\n\n"
@@ -41,42 +41,42 @@ msgstr "\n"
 "        `--sleep <int>` est un drapeau optionnel spécifiant le temps d'attente entre les invocations de commandes.\n"
 "        "
 
-#: devutils\devutils.py:157 devutils\devutils.py:233 devutils\devutils.py:249
+#: devutils\devutils.py:155 devutils\devutils.py:235 devutils\devutils.py:251
 msgid "You have not specified a correct command."
 msgstr "Vous n'avez pas spécifié une commande correcte."
 
-#: devutils\devutils.py:159 devutils\devutils.py:251
+#: devutils\devutils.py:157 devutils\devutils.py:253
 msgid "You can't execute yourself this command."
 msgstr "Vous ne pouvez pas exécuter vous-même cette commande."
 
-#: devutils\devutils.py:172
+#: devutils\devutils.py:174
 #, docstring
 msgid "Execute multiple commands at once. Split them using |."
 msgstr "Exécuter plusieurs commandes à la fois. Divisez-les à l'aide de |."
 
-#: devutils\devutils.py:187 devutils\devutils.py:209
+#: devutils\devutils.py:189 devutils\devutils.py:211
 msgid "`{command}` isn't a valid command."
 msgstr "`{command}` n'est pas une commande valide."
 
-#: devutils\devutils.py:193 devutils\devutils.py:215
+#: devutils\devutils.py:195 devutils\devutils.py:217
 msgid "You can't execute yourself `{command}`."
 msgstr "Vous ne pouvez pas vous exécuter vous-même `{command}`."
 
-#: devutils\devutils.py:222
+#: devutils\devutils.py:224
 #, docstring
 msgid "Bypass a command's checks and cooldowns."
 msgstr "Contourner les contrôles et les durées de vie d'une commande."
 
-#: devutils\devutils.py:238
+#: devutils\devutils.py:240
 #, docstring
 msgid "Run a command timing execution and catching exceptions."
 msgstr "Exécuter une commande en chronométrant l'exécution et en capturant les exceptions."
 
-#: devutils\devutils.py:257
+#: devutils\devutils.py:259
 msgid "Command `{command}` finished in `{timing}`s."
 msgstr "La commande `{command}` s'est terminée en `{timing}`s."
 
-#: devutils\devutils.py:264
+#: devutils\devutils.py:266
 #, docstring
 msgid "Reinvoke a command message.\n\n"
 "        You may reply to a message to reinvoke it or pass a message ID/link.\n"
@@ -87,17 +87,17 @@ msgstr "Réinvoquer un message de commande.\n\n"
 "        La commande sera invoquée avec l'auteur et le canal du message spécifié.\n"
 "        "
 
-#: devutils\devutils.py:285
+#: devutils\devutils.py:289
 msgid "The command isn't valid."
 msgstr "La commande n'est pas valide."
 
-#: devutils\devutils.py:287
+#: devutils\devutils.py:291
 msgid "This command can't be executed."
 msgstr "Cette commande ne peut pas être exécutée."
 
-#: devutils\devutils.py:293
+#: devutils\devutils.py:297
 #, docstring
-msgid "Change the logging level for a logger. if no name is provided, the root logger (red) is used.\n\n"
+msgid "Change the logging level for a logger. If no name is provided, the root logger (`red`) is used.\n\n"
 "        Levels are the following:\n"
 "        - `0`: `CRITICAL`\n"
 "        - `1`: `ERROR`\n"
@@ -107,7 +107,7 @@ msgid "Change the logging level for a logger. if no name is provided, the root l
 "        - `5`: `VERBOSE`\n"
 "        - `6`: `TRACE`\n"
 "        "
-msgstr "Modifier le niveau de journalisation d'un enregistreur. Si aucun nom n'est fourni, l'enregistreur racine (rouge) est utilisé.\n\n"
+msgstr "Modifier le niveau de journalisation d'un enregistreur. Si aucun nom n'est fourni, le logger racine (`red`) est utilisé.\n\n"
 "        Les niveaux sont les suivants :\n"
 "        - `0` : `CRITICAL`\n"
 "        - `1` : `ERROR`\n"
@@ -118,11 +118,11 @@ msgstr "Modifier le niveau de journalisation d'un enregistreur. Si aucun nom n'e
 "        - `6` : `TRACE`\n"
 "        "
 
-#: devutils\devutils.py:307
+#: devutils\devutils.py:311
 msgid "Logger `{logger_name}` level set to `{level}`."
 msgstr "Le niveau du logger `{logger_name}` est fixé à `{level}`."
 
-#: devutils\devutils.py:316
+#: devutils\devutils.py:320
 #, docstring
 msgid "Force reload a module (to use code changes without restarting your bot).\n\n"
 "        ⚠️ Please only use this if you know what you're doing.\n"
@@ -131,19 +131,19 @@ msgstr "Forcer le rechargement d'un module (pour utiliser les changements de cod
 "        ⚠️ N'utilisez cette option que si vous savez ce que vous faites.\n"
 "        "
 
-#: devutils\devutils.py:332
+#: devutils\devutils.py:336
 msgid "I couldn't find any module with this name."
 msgstr "Je n'ai trouvé aucun module portant ce nom."
 
-#: devutils\devutils.py:336
+#: devutils\devutils.py:340
 msgid "Module(s) {modules} reloaded."
 msgstr "Module(s) {modules} rechargé(s)."
 
-#: devutils\devutils.py:342
+#: devutils\devutils.py:346
 msgid "Modules [...] reloaded."
 msgstr "Modules [...] rechargés."
 
-#: devutils\devutils.py:346
+#: devutils\devutils.py:350
 #, docstring
 msgid "Display the JSON of a Discord object with a raw request."
 msgstr "Affiche le JSON d'un objet Discord avec une requête brute."

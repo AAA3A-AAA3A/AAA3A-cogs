@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:41\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:16\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -17,15 +17,27 @@ msgstr ""
 "X-Crowdin-File-ID: 310\n"
 "Language: de_DE\n"
 
-#: dashboard\rpc\__init__.py:98
+#: dashboard\rpc\__init__.py:105
 msgid "{name} Dashboard"
 msgstr "{name} Dashboard"
 
-#: dashboard\rpc\__init__.py:106
+#: dashboard\rpc\__init__.py:113
 msgid "Hello, welcome to the **Red-DiscordBot Dashboard** for {name}! {name} is based off the popular bot **Red-DiscordBot**, an open source, multifunctional bot. It has *tons of features* including moderation, audio, economy, fun and more! Here, you can control and interact with {name}'s settings. **So what are you waiting for? Invite it now!**"
 msgstr "Hallo, willkommen zum **Red-DiscordBot Dashboard** für {name}! {name} basiert auf dem beliebten Bot **Red-DiscordBot**, einem quelloffenen, multifunktionalen Bot. Er hat *tausende von Funktionen* wie Moderation, Audio, Wirtschaft, Spaß und mehr! Hier kannst du die Einstellungen von {name}kontrollieren und mit ihnen interagieren. **Worauf wartest du noch? Lade ihn jetzt ein!**"
 
-#: dashboard\rpc\__init__.py:118
+#: dashboard\rpc\__init__.py:125
 msgid "Interactive Dashboard to control and interact with {name}."
 msgstr "Interaktives Dashboard zur Steuerung und Interaktion mit {name}."
+
+#: dashboard\rpc\default_cogs.py:101
+msgid "You attempted to create a new alias with the name {name}, but that name is already a command on this bot."
+msgstr "Du hast versucht, einen neuen Alias mit dem Namen {name} zu erstellen, aber dieser Name ist bereits ein Befehl auf diesem Bot."
+
+#: dashboard\rpc\default_cogs.py:108
+msgid "You attempted to create a new alias with the name {name}, but the command {command} does not exist."
+msgstr "Sie haben versucht, einen neuen Alias mit dem Namen {name} zu erstellen, aber der Befehl {command} existiert nicht."
+
+#: dashboard\rpc\default_cogs.py:182
+msgid "`{command}`: "
+msgstr "{command}\": "
 

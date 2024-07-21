@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:42\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:25\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -22,47 +22,47 @@ msgstr ""
 msgid "A cog to make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum)!"
 msgstr "Tryb do tworzenia wykresu z różnymi statusami Discord (obecności) członka Discord w ciągu ostatnich x dni (maksymalnie 100 ostatnich dni)!"
 
-#: presencechart\presencechart.py:135
+#: presencechart\presencechart.py:127
 msgid "{member_or_role.guild.name} Members' Presence"
 msgstr "{member_or_role.guild.name} Obecność członków"
 
-#: presencechart\presencechart.py:139
+#: presencechart\presencechart.py:131
 msgid "{member_or_role.guild.name} {member_or_role.name}' Presence"
 msgstr "{member_or_role.guild.name} {member_or_role.name}' Obecność"
 
-#: presencechart\presencechart.py:145
+#: presencechart\presencechart.py:137
 msgid "{member_or_role.display_name}'s Presence"
 msgstr "{member_or_role.display_name}Obecność"
 
-#: presencechart\presencechart.py:335
+#: presencechart\presencechart.py:327
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum)."
 msgstr "Utwórz wykres z różnymi statusami Discord (obecności) członka Discord w ciągu ostatnich x dni (maksymalnie 100 dni)."
 
-#: presencechart\presencechart.py:339
+#: presencechart\presencechart.py:331
 msgid "This user is in the ignored users list (`{prefix}presencechart ignoreme`)."
 msgstr "Ten użytkownik znajduje się na liście ignorowanych użytkowników (`{prefix}presencechart ignoreme`)."
 
-#: presencechart\presencechart.py:383
+#: presencechart\presencechart.py:375
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of all members of the guild/server."
 msgstr "Stwórz wykres z różnymi statusami Discord (obecności) wszystkich członków gildii/serwera."
 
-#: presencechart\presencechart.py:406
+#: presencechart\presencechart.py:398
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of all members of the specfied role."
 msgstr "Utwórz wykres z różnymi statusami Discord (obecności) wszystkich członków określonej roli."
 
-#: presencechart\presencechart.py:423
+#: presencechart\presencechart.py:415
 #, docstring
 msgid "Asking PresenceChart to ignore your statuses (presence)."
 msgstr "Proszenie PresenceChart o ignorowanie statusów (obecności)."
 
-#: presencechart\presencechart.py:431
+#: presencechart\presencechart.py:423
 msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
 msgstr "Nie będziesz już widziany przez ten tryb, a dane, które przechowywałem na Twój temat, zostały usunięte."
 
-#: presencechart\presencechart.py:438
+#: presencechart\presencechart.py:430
 msgid "You'll be seen again by this cog."
 msgstr "Zostaniesz ponownie zauważony przez ten trybik."
 

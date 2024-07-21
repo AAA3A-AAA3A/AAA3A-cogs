@@ -1,0 +1,88 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2023-08-22 14:22+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/acronymgame/locales/messages.pot\n"
+"X-Crowdin-File-ID: 225\n"
+"Language: tr_TR\n"
+
+#: acronymgame\acronymgame.py:21
+#, docstring
+msgid "A cog to play a random match of Acrononym game, with Modals!"
+msgstr "Modallerle rastgele bir Akronim oyunu oynamak için bir cog!"
+
+#: acronymgame\view.py:39
+msgid "You have already joined this game, with `{answer}` answer."
+msgstr "Bu oyuna zaten `{answer}` cevabı ile katıldınız."
+
+#: acronymgame\view.py:47
+msgid "Sorry, maximum 20 players."
+msgstr "Üzgünüm, en fazla 20 oyuncu."
+
+#: acronymgame\view.py:52
+msgid "Sorry, the vote has already started."
+msgstr "Üzgünüm, oylama zaten başladı."
+
+#: acronymgame\view.py:58
+msgid "Sorry, the number of words in your answer must be {len_words}."
+msgstr "Üzgünüm, cevabınızdaki kelime sayısı {len_words} olmalıdır."
+
+#: acronymgame\view.py:67
+msgid "Sorry, the initial of each word in your answer must be each letter of the acronym ({acronym})."
+msgstr "Üzgünüm, cevabınızdaki her kelimenin baş harfi kısaltmanın ({acronym}) her harfi olmalıdır."
+
+#: acronymgame\view.py:79
+msgid "Join the game by clicking on the button below and entering your acronym. Maximum 20 players.\n"
+msgstr "Aşağıdaki düğmeye tıklayarak ve kısaltmanızı girerek oyuna katılın. En fazla 20 oyuncu.\n"
+
+#: acronymgame\view.py:84
+msgid "Game joined with `{answer}` answer."
+msgstr "`{answer}` cevabı ile oyuna katıldınız."
+
+#: acronymgame\view.py:131
+msgid "Join the game by clicking on the button below and entering your acronym. Maximum 20 players."
+msgstr "Aşağıdaki düğmeye tıklayarak ve kısaltmanızı girerek oyuna katılın. En fazla 20 oyuncu."
+
+#: acronymgame\view.py:146
+msgid "At least three players are needed to play."
+msgstr "Oynamak için en az üç oyuncu gereklidir."
+
+#: acronymgame\view.py:155
+msgid "Use the dropdown below to vote for the best answer for the random acronym. All guild members can vote.\n"
+msgstr "Aşağıdaki açılır menüyü kullanarak rastgele kısaltma için en iyi cevaba oy verin. Tüm sunucu üyeleri oy kullanabilir.\n"
+
+#: acronymgame\view.py:168
+msgid "No vote given."
+msgstr "Hiç oy verilmedi."
+
+#: acronymgame\view.py:198
+msgid "Here is the leaderboard for this game:"
+msgstr "Bu oyunun liderlik tablosu burada:"
+
+#: acronymgame\view.py:204
+msgid "Winner{s}: {winners}!"
+msgstr "Kazanan{lar}: {winners}!"
+
+#: acronymgame\view.py:241
+msgid "You have already voted in this game."
+msgstr "Bu oyunda zaten oy kullandınız."
+
+#: acronymgame\view.py:247
+msgid "You can't vote for yourself."
+msgstr "Kendinize oy veremezsiniz."
+
+#: acronymgame\view.py:253
+msgid "Vote given for answer {num}."
+msgstr "{num} numaralı cevap için oy verildi."
+

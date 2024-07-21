@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/reacttocommand/locales/messages.pot\n"
+"X-Crowdin-File-ID: 94\n"
+"Language: tr_TR\n"
+
+#: reacttocommand\reacttocommand.py:66
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a reaction!"
+msgstr "Bir kullanıcının bir tepkiye tıklayarak komut çalıştırmasını sağlayan bir cog!"
+
+#: reacttocommand\reacttocommand.py:249
+#, docstring
+msgid "Add a reaction-command for a message.\n\n"
+"        There should be no prefix in the command.\n"
+"        The command will be invoked with the permissions of the user who clicked on the reaction.\n"
+"        This user must be able to see writing in the channel.\n"
+"        "
+msgstr "Bir mesaj için tepki-komutu ekleyin.\n\n"
+"        Komutta herhangi bir önek olmamalıdır.\n"
+"        Komut, tepkiye tıklayan kullanıcının izinleriyle çağrılacaktır.\n"
+"        Bu kullanıcı kanal yazılarını görebilmelidir.\n"
+"        "
+
+#: reacttocommand\reacttocommand.py:263
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to add reactions and to see the messages in that channel."
+msgstr "Belirttiğiniz mesajın bulunduğu kanalda yeterli iznim yok.\n"
+"Tepki eklemek ve o kanaldaki mesajları görmek için izinlere ihtiyacım var."
+
+#: reacttocommand\reacttocommand.py:273
+msgid "You have not specified a correct command."
+msgstr "Doğru bir komut belirtmediniz."
+
+#: reacttocommand\reacttocommand.py:279
+msgid "An error has occurred. It is possible that the emoji you provided is invalid."
+msgstr "Bir hata oluştu. Sağladığınız emojinin geçersiz olması mümkün."
+
+#: reacttocommand\reacttocommand.py:286
+msgid "Reaction-command added to this message."
+msgstr "Bu mesaja tepki-komutu eklendi."
+
+#: reacttocommand\reacttocommand.py:290
+#, docstring
+msgid "Remove a reaction-command for a message."
+msgstr "Bir mesaj için tepki-komutunu kaldırın."
+
+#: reacttocommand\reacttocommand.py:294 reacttocommand\reacttocommand.py:316
+msgid "No reaction-command is configured for this message."
+msgstr "Bu mesaj için ayarlanmış bir tepki-komutu yok."
+
+#: reacttocommand\reacttocommand.py:298
+msgid "I wasn't watching for this reaction on this message."
+msgstr "Bu mesajdaki bu tepkiyi izlemiyordum."
+
+#: reacttocommand\reacttocommand.py:308
+msgid "Reaction-command removed from this message."
+msgstr "Bu mesajdan tepki-komutu kaldırıldı."
+
+#: reacttocommand\reacttocommand.py:312
+#, docstring
+msgid "Clear all reactions-commands for a message."
+msgstr "Bir mesaj için tüm tepki-komutlarını temizleyin."
+
+#: reacttocommand\reacttocommand.py:325
+msgid "Reactions-commands cleared for this message."
+msgstr "Bu mesaj için tepki-komutları temizlendi."
+
+#: reacttocommand\reacttocommand.py:329
+#, docstring
+msgid "Clear all reactions-commands for a guild."
+msgstr "Bir sunucu için tüm tepki-komutlarını temizleyin."
+
+#: reacttocommand\reacttocommand.py:331
+msgid "All reactions-commands purged."
+msgstr "Tüm tepki-komutları temizlendi."
+

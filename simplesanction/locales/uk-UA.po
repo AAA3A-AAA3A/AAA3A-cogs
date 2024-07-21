@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:21\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:20\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -137,16 +137,16 @@ msgstr "Ви дійсно хочете приглушити звук {member.dis
 msgid "The member {member.display_name} ({member.id}) has been tempmuted in {channel.mention} and will be unmuted in {duration}."
 msgstr "Користувача {member.display_name} ({member.id}) було вимкнено на {channel.mention} і буде вимкнено на {duration}."
 
-#: simplesanction\simplesanction.py:47
+#: simplesanction\simplesanction.py:48
 msgid "You're not allowed to execute the `[p]sanction` command in this channel."
 msgstr "Ви не маєте права виконувати команду `[p]sanction` в цьому каналі."
 
-#: simplesanction\simplesanction.py:55
+#: simplesanction\simplesanction.py:56
 #, docstring
 msgid "A cog to sanction members, with buttons!"
 msgstr "Гвинтик для санкціонування учасників, з кнопками!"
 
-#: simplesanction\simplesanction.py:209
+#: simplesanction\simplesanction.py:201
 #, docstring
 msgid "\n"
 "        - Sanction a member quickly and easily.\n\n"
@@ -163,7 +163,7 @@ msgstr "\n"
 "        - `[p]sanction 0 012345678987654321`\n"
 "        "
 
-#: simplesanction\simplesanction.py:244
+#: simplesanction\simplesanction.py:236
 #, docstring
 msgid "\n"
 "         - ℹ️ Show informations about a member.\n\n"
@@ -180,7 +180,7 @@ msgstr "\n"
 "        - `[p]sanction 1 012345678987654321`: UserInfo з наданим ідентифікатором.\n"
 "        "
 
-#: simplesanction\simplesanction.py:280
+#: simplesanction\simplesanction.py:272
 #, docstring
 msgid "\n"
 "         - ⚠️ Add a simple warning on a member.\n\n"
@@ -197,7 +197,7 @@ msgstr "\n"
 "        - `[p]sanction 2 012345678987654321 Реклама`: Попередження користувачеві з вказаним ID.\n"
 "        "
 
-#: simplesanction\simplesanction.py:315
+#: simplesanction\simplesanction.py:307
 #, docstring
 msgid "\n"
 "         - 🔨 Ban a member from this server.\n\n"
@@ -216,7 +216,7 @@ msgstr "\n"
 "        - `[p]sanction 3 012345678987654321 Реклама`: Забанити користувача з вказаним ID.\n"
 "        "
 
-#: simplesanction\simplesanction.py:352
+#: simplesanction\simplesanction.py:344
 #, docstring
 msgid "\n"
 "         - 🔂 SoftBan a member from this server.\n\n"
@@ -235,7 +235,7 @@ msgstr "\n"
 "        - `[p]sanction 4 012345678987654321 Реклама`: Софтбан користувача з наданим ID.\n"
 "        "
 
-#: simplesanction\simplesanction.py:390
+#: simplesanction\simplesanction.py:382
 #, docstring
 msgid "\n"
 "         - 💨 TempBan a member from this server.\n\n"
@@ -256,7 +256,7 @@ msgstr "\n"
 "        - `[p]sanction 5 012345678987654321 Реклама`: Забанити користувача з вказаним ID.\n"
 "        "
 
-#: simplesanction\simplesanction.py:428
+#: simplesanction\simplesanction.py:420
 #, docstring
 msgid "\n"
 "         - 👢 Kick a member from this server.\n\n"
@@ -273,7 +273,7 @@ msgstr "\n"
 "        - `[p]sanction 6 012345678987654321 Реклама`: Вигнати користувача з вказаним ідентифікатором.\n"
 "        "
 
-#: simplesanction\simplesanction.py:463
+#: simplesanction\simplesanction.py:455
 #, docstring
 msgid "\n"
 "         - 🔇 Mute a member in all channels, including voice channels.\n\n"
@@ -290,7 +290,7 @@ msgstr "\n"
 "        - `[p]sanction 7 @member Реклама`: Нескінченне вимкнення звуку з причини \"Реклама\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:498
+#: simplesanction\simplesanction.py:490
 #, docstring
 msgid "\n"
 "         - 👊 Mute a member in this channel.\n\n"
@@ -307,7 +307,7 @@ msgstr "\n"
 "        - `[p]sanction 8 @member Реклама`: Нескінченне вимкнення звуку з причини \"Реклама\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:534
+#: simplesanction\simplesanction.py:526
 #, docstring
 msgid "\n"
 "         - ⏳ TempMute a member in all channels, including voice channels.\n\n"
@@ -326,7 +326,7 @@ msgstr "\n"
 "        - `[p]санкція 9 @member 3d Реклама`: На 3 дні вимкнено звук з причини \"Реклама\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:572
+#: simplesanction\simplesanction.py:564
 #, docstring
 msgid "\n"
 "         - ⌛ TempMute a member in this channel.\n\n"
@@ -345,21 +345,21 @@ msgstr "\n"
 "        - `[p]санкція 10 @member 3d Реклама`: 3 дні ігнорування з причини \"Реклама\".\n"
 "        "
 
-#: simplesanction\simplesanction.py:614 simplesanction\types.py:89
+#: simplesanction\simplesanction.py:606 simplesanction\types.py:89
 #: simplesanction\types.py:103 simplesanction\types.py:146
 #: simplesanction\types.py:151
 msgid "The reason was not given."
 msgstr "Причину не назвали."
 
-#: simplesanction\simplesanction.py:618 simplesanction\view.py:99
+#: simplesanction\simplesanction.py:610 simplesanction\view.py:99
 msgid "Sanction Member"
 msgstr "Санкційний член"
 
-#: simplesanction\simplesanction.py:619
+#: simplesanction\simplesanction.py:611
 msgid "Which member do you want to sanction? (Type `cancel` to cancel.)"
 msgstr "До якого учасника ви хочете застосувати санкції? (Введіть `cancel`, щоб скасувати.)"
 
-#: simplesanction\simplesanction.py:637 simplesanction\types.py:125
+#: simplesanction\simplesanction.py:629 simplesanction\types.py:125
 #: simplesanction\types.py:148
 msgid "Timed out, please try again."
 msgstr "Закінчився час, спробуйте ще раз."

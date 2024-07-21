@@ -1,0 +1,1189 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/discordedit/locales/messages.pot\n"
+"X-Crowdin-File-ID: 163\n"
+"Language: tr_TR\n"
+
+#: discordedit\discordedit.py:23
+#, docstring
+msgid "A cog to edit Discord default objects, like guilds, roles, text channels, voice channels, threads and AutoMod!"
+msgstr "Sunucular, roller, metin kanalları, ses kanalları, başlıklar ve AutoMod gibi Discord varsayılan nesnelerini düzenlemek için bir cog!"
+
+#: discordedit\editautomod.py:18 discordedit\editguild.py:27
+#: discordedit\editrole.py:25 discordedit\edittextchannel.py:27
+#: discordedit\editthread.py:32 discordedit\editvoicechannel.py:27
+#: discordedit\view.py:18
+msgid "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n"
+"{error}"
+msgstr "Discord'un izin vermediği bir şeyi yapmaya çalıştım. Komutunuz başarıyla tamamlanamadı.\n"
+"{error}"
+
+#: discordedit\editautomod.py:30
+msgid "Invalid rule ID."
+msgstr "Geçersiz kural ID'si."
+
+#: discordedit\editautomod.py:34
+msgid "Rule not found."
+msgstr "Kural bulunamadı."
+
+#: discordedit\editautomod.py:43 discordedit\editautomod.py:72
+msgid "Invalid JSON."
+msgstr "Geçersiz JSON."
+
+#: discordedit\editautomod.py:50
+msgid "Invalid data. Must be a dict with `trigger_type` and `trigger_metadara` keys."
+msgstr "Geçersiz veri. `trigger_type` ve `trigger_metadata` anahtarlarına sahip bir sözlük olmalıdır."
+
+#: discordedit\editautomod.py:55
+msgid "Invalid trigger type."
+msgstr "Geçersiz tetikleyici türü."
+
+#: discordedit\editautomod.py:61
+msgid "Invalid trigger metadata."
+msgstr "Geçersiz tetikleyici verileri."
+
+#: discordedit\editautomod.py:75 discordedit\editautomod.py:85
+msgid "Invalid data. Must be a list of dicts with `type` and `data` keys."
+msgstr "Geçersiz veri. `type` ve `data` anahtarlarına sahip sözlüklerin bir listesi olmalıdır."
+
+#: discordedit\editautomod.py:90
+msgid "Invalid action type."
+msgstr "Geçersiz eylem türü."
+
+#: discordedit\editautomod.py:97
+msgid "Invalid action metadata."
+msgstr "Geçersiz eylem verileri."
+
+#: discordedit\editautomod.py:104
+#, docstring
+msgid "A cog to edit AutoMod rules!"
+msgstr "AutoMod kurallarını düzenlemek için bir cog!"
+
+#: discordedit\editautomod.py:126
+#, docstring
+msgid "Create an AutoMod rule.\n\n"
+"        event_type:\n"
+"        - message_send = 1\n\n"
+"        `trigger` and `actions` arguments must be JSON with specified keys. Warning, remove all spaces in the trigger dict.\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+msgstr "Bir AutoMod kuralı oluşturun.\n\n"
+"        event_type:\n"
+"        - message_send = 1\n\n"
+"        `trigger` ve `actions` argümanları belirtilen anahtarlarla JSON olmalıdır. Uyarı, tetikleyici diktesindeki tüm boşlukları kaldırın.\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:152
+msgid "AutoMod rule {rule.name} ({rule.id}) created."
+msgstr "AutoMod kuralı {rule.name} ({rule.id}) oluşturuldu."
+
+#: discordedit\editautomod.py:160
+#, docstring
+msgid "List all AutoMod rules in the current guild."
+msgstr "Mevcut sunucudaki tüm AutoMod kurallarını listeleyin."
+
+#: discordedit\editautomod.py:166
+msgid "List of AutoMod rules in {guild.name} ({guild.id})"
+msgstr "{guild.name} ({guild.id}) içindeki AutoMod kurallarının listesi"
+
+#: discordedit\editautomod.py:181
+#, docstring
+msgid "Edit AutoMod rule name."
+msgstr "AutoMod kural adını düzenleyin."
+
+#: discordedit\editautomod.py:217
+#, docstring
+msgid "Edit AutoMod rule trigger.\n\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        "
+msgstr "AutoMod kural tetikleyicisini düzenleyin.\n\n"
+"        trigger:\n"
+"        - `trigger_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types\n"
+"        - `trigger_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:241
+#, docstring
+msgid "Edit AutoMod rule actions.\n\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+msgstr "AutoMod kural eylemlerini düzenleyin.\n\n"
+"        actions:\n"
+"        - `action_type`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-types\n"
+"        - `action_metadata`: https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-action-metadata\n"
+"        "
+
+#: discordedit\editautomod.py:261
+#, docstring
+msgid "Edit AutoMod rule enabled."
+msgstr "AutoMod kuralının etkinleştirilmesini düzenleyin."
+
+#: discordedit\editautomod.py:280
+#, docstring
+msgid "Edit AutoMod rule exempt roles."
+msgstr "AutoMod kuralı muaf rollerini düzenleyin."
+
+#: discordedit\editautomod.py:303
+#, docstring
+msgid "Edit AutoMod rule exempt channels."
+msgstr "AutoMod kuralı muaf kanalları düzenleyin."
+
+#: discordedit\editautomod.py:321
+#, docstring
+msgid "Delete automod rule."
+msgstr "AutoMod kuralını silin."
+
+#: discordedit\editautomod.py:325
+msgid "⚠️ - Delete AutoMod rule"
+msgstr "⚠️ - AutoMod kuralını sil"
+
+#: discordedit\editautomod.py:326 discordedit\editautomod.py:333
+msgid "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
+msgstr "{guild.name} ({guild.id}) içindeki AutoMod kuralını {rule.name} ({rule.id}) gerçekten silmek istiyor musunuz?"
+
+#: discordedit\editautomod.py:409 discordedit\editautomod.py:432
+msgid "Rule `{rule.name} ({rule.id})` edited."
+msgstr "Kural `{rule.name} ({rule.id})` düzenlendi."
+
+#: discordedit\editautomod.py:623
+msgid "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`."
+msgstr "AutoMod kuralı `{rule.name} ({rule.id})` için muaf tutulacak kanalları/rolleri seçin."
+
+#: discordedit\editautomod.py:645
+msgid "Rule `{rule.name} ({rule.id})` enabled."
+msgstr "Kural `{rule.name} ({rule.id})` etkinleştirildi."
+
+#: discordedit\editautomod.py:647
+msgid "Rule {rule.name} `{rule.id}` disabled."
+msgstr "Kural {rule.name} `{rule.id}` devre dışı bırakıldı."
+
+#: discordedit\editautomod.py:665
+msgid "Rule `{rule.name} ({rule.id})` deleted."
+msgstr "Kural `{rule.name} ({rule.id})` silindi."
+
+#: discordedit\editguild.py:47
+msgid "Converting to `Locale` failed for parameter `preferred_locale`."
+msgstr "`preferred_locale` parametresi için `Locale`'a dönüştürme başarısız oldu."
+
+#: discordedit\editguild.py:59 discordedit\editguild.py:67
+msgid "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."
+msgstr "Doğrulama seviyesi `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` veya `4` olmalıdır."
+
+#: discordedit\editguild.py:78 discordedit\editguild.py:82
+#: discordedit\editguild.py:90
+msgid "The video quality mode must be `0` or `1`."
+msgstr "Video kalitesi modu `0` veya `1` olmalıdır."
+
+#: discordedit\editguild.py:98
+#, docstring
+msgid "A cog to edit guilds!"
+msgstr "Sunucuları düzenlemek için bir cog!"
+
+#: discordedit\editguild.py:119
+#, docstring
+msgid "Create a guild with the bot as owner."
+msgstr "Botun sahip olduğu bir sunucu oluşturun."
+
+#: discordedit\editguild.py:137
+#, docstring
+msgid "Clone a guild."
+msgstr "Bir sunucuyu klonlayın."
+
+#: discordedit\editguild.py:159
+#, docstring
+msgid "Edit guild name."
+msgstr "Sunucu adını düzenleyin."
+
+#: discordedit\editguild.py:175
+#, docstring
+msgid "Edit guild description."
+msgstr "Sunucu açıklamasını düzenleyin."
+
+#: discordedit\editguild.py:193
+#, docstring
+msgid "Edit guild icon.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Sunucu simgesini düzenle.\n\n"
+"        Bir URL kullanabilir veya bir ek yükleyebilirsiniz.\n"
+"        "
+
+#: discordedit\editguild.py:228
+#, docstring
+msgid "Edit guild banner.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Sunucu afişini düzenle.\n\n"
+"        Bir URL kullanabilir veya bir ek yükleyebilirsiniz.\n"
+"        "
+
+#: discordedit\editguild.py:235
+msgid "This server doesn't have the `BANNER` feature. This server needs more boosts to perform this action."
+msgstr "Bu sunucuda `BANNER` özelliği yok. Bu işlemi gerçekleştirmek için bu sunucunun daha fazla boosta ihtiyacı var."
+
+#: discordedit\editguild.py:269
+#, docstring
+msgid "Edit guild splash.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Sunucu açılışını düzenleyin.\n\n"
+"        Bir URL kullanabilir veya bir ek yükleyebilirsiniz.\n"
+"        "
+
+#: discordedit\editguild.py:276
+msgid "This server doesn't have the `INVITE_SPLASH` feature. This server needs more boosts to perform this action."
+msgstr "Bu sunucuda `INVITE_SPLASH` özelliği yok. Bu işlemi gerçekleştirmek için bu sunucunun daha fazla boosta ihtiyacı var."
+
+#: discordedit\editguild.py:310
+#, docstring
+msgid "Edit guild discovery splash.\n\n"
+"        You can use an URL or upload an attachment.\n"
+"        "
+msgstr "Sunucu keşif sıçramasını düzenleyin.\n\n"
+"        Bir URL kullanabilir veya bir ek yükleyebilirsiniz.\n"
+"        "
+
+#: discordedit\editguild.py:317
+msgid "This server doesn't have the `DISCOVERABLE` feature. This server needs more boosts to perform this action."
+msgstr "Bu sunucuda `DISCOVERABLE` özelliği yok. Bu işlemi gerçekleştirmek için bu sunucunun daha fazla boosta ihtiyacı var."
+
+#: discordedit\editguild.py:349
+#, docstring
+msgid "Edit guild community state."
+msgstr "Sunucu topluluk durumunu düzenleyin."
+
+#: discordedit\editguild.py:365
+#, docstring
+msgid "Edit guild afkchannel."
+msgstr "Sunucu afk kanalını düzenleyin."
+
+#: discordedit\editguild.py:379
+#, docstring
+msgid "Edit guild afk timeout."
+msgstr "Sunucu afk zaman aşımını düzenleyin."
+
+#: discordedit\editguild.py:399
+#, docstring
+msgid "Edit guild owner (if the bot is bot owner)."
+msgstr "Sunucu sahibini düzenleyin (eğer bot sahibi ise)."
+
+#: discordedit\editguild.py:404
+msgid ":⚠️ - Change Guild Owner"
+msgstr ":⚠️ - Sunucu Sahibini Değiştir"
+
+#: discordedit\editguild.py:405 discordedit\editguild.py:412
+msgid "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
+msgstr "{guild.name} ({guild.id}) sunucusunun sahibini gerçekten değiştirmek istiyor musunuz?"
+
+#: discordedit\editguild.py:432
+#, docstring
+msgid "Edit guild verification level."
+msgstr "Sunucu doğrulama seviyesini düzenleyin."
+
+#: discordedit\editguild.py:450
+#, docstring
+msgid "Edit guild notification level."
+msgstr "Sunucu bildirim seviyesini düzenleyin."
+
+#: discordedit\editguild.py:466
+#, docstring
+msgid "Edit guild explicit content filter."
+msgstr "Sunucu açık içerik filtresini düzenleyin."
+
+#: discordedit\editguild.py:480
+#, docstring
+msgid "Edit guild vanity code."
+msgstr "Sunucu özel kodunu düzenleyin."
+
+#: discordedit\editguild.py:496
+#, docstring
+msgid "Edit guild system channel."
+msgstr "Sunucu sistem kanalını düzenleyin."
+
+#: discordedit\editguild.py:512
+#, docstring
+msgid "Edit guild system channel flags."
+msgstr "Sunucu sistem kanalı bayraklarını düzenleyin."
+
+#: discordedit\editguild.py:528
+#, docstring
+msgid "Edit guild preferred locale.\n\n"
+"        american_english = 'en-US'\n"
+"        british_english = 'en-GB'\n"
+"        bulgarian = 'bg'\n"
+"        chinese = 'zh-CN'\n"
+"        taiwan_chinese = 'zh-TW'\n"
+"        croatian = 'hr'\n"
+"        czech = 'cs'\n"
+"        danish = 'da'\n"
+"        dutch = 'nl'\n"
+"        finnish = 'fi'\n"
+"        french = 'fr'\n"
+"        german = 'de'\n"
+"        greek = 'el'\n"
+"        hindi = 'hi'\n"
+"        hungarian = 'hu'\n"
+"        italian = 'it'\n"
+"        japanese = 'ja'\n"
+"        korean = 'ko'\n"
+"        lithuanian = 'lt'\n"
+"        norwegian = 'no'\n"
+"        polish = 'pl'\n"
+"        brazil_portuguese = 'pt-BR'\n"
+"        romanian = 'ro'\n"
+"        russian = 'ru'\n"
+"        spain_spanish = 'es-ES'\n"
+"        swedish = 'sv-SE'\n"
+"        thai = 'th'\n"
+"        turkish = 'tr'\n"
+"        ukrainian = 'uk'\n"
+"        vietnamese = 'vi'\n"
+"        "
+msgstr "Sunucunun tercih ettiği dili düzenle.\n\n"
+"        american_english = 'en-US'\n"
+"        british_english = 'en-GB'\n"
+"        bulgarian = 'bg'\n"
+"        chinese = 'zh-CN'\n"
+"        taiwan_chinese = 'zh-TW'\n"
+"        croatian = 'hr'\n"
+"        czech = 'cs'\n"
+"        danish = 'da'\n"
+"        dutch = 'nl'\n"
+"        finnish = 'fi'\n"
+"        french = 'fr'\n"
+"        german = 'de'\n"
+"        greek = 'el'\n"
+"        hindi = 'hi'\n"
+"        hungarian = 'hu'\n"
+"        italian = 'it'\n"
+"        japanese = 'ja'\n"
+"        korean = 'ko'\n"
+"        lithuanian = 'lt'\n"
+"        norwegian = 'no'\n"
+"        polish = 'pl'\n"
+"        brazil_portuguese = 'pt-BR'\n"
+"        romanian = 'ro'\n"
+"        russian = 'ru'\n"
+"        spain_spanish = 'es-ES'\n"
+"        swedish = 'sv-SE'\n"
+"        thai = 'th'\n"
+"        turkish = 'tr'\n"
+"        ukrainian = 'uk'\n"
+"        vietnamese = 'vi'\n"
+"        "
+
+#: discordedit\editguild.py:576
+#, docstring
+msgid "Edit guild rules channel."
+msgstr "Sunucu kuralları kanalını düzenleyin."
+
+#: discordedit\editguild.py:594
+#, docstring
+msgid "Edit guild public updates channel."
+msgstr "Sunucu genel güncellemeler kanalını düzenleyin."
+
+#: discordedit\editguild.py:614
+#, docstring
+msgid "Edit guild premium progress bar enabled."
+msgstr "Sunucu premium ilerleme çubuğu etkinleştirildi."
+
+#: discordedit\editguild.py:630
+#, docstring
+msgid "Edit guild discoverable state."
+msgstr "Sunucunun keşfedilebilir durumunu düzenleyin."
+
+#: discordedit\editguild.py:646
+#, docstring
+msgid "Edit guild invites disabled state."
+msgstr "Sunucu davetlerinin devre dışı bırakılmış durumunu düzenleyin."
+
+#: discordedit\editguild.py:660
+#, docstring
+msgid "Edit guild invites widget enabled state."
+msgstr "Sunucu davet widget'ının etkinleştirilmiş durumunu düzenleyin."
+
+#: discordedit\editguild.py:676
+#, docstring
+msgid "Edit guild invites widget channel."
+msgstr "Sunucu davet widget kanalı düzenleyin."
+
+#: discordedit\editguild.py:694
+#, docstring
+msgid "Edit guild invites raid alerts disabled state."
+msgstr "Sunucu baskın uyarılarının devre dışı bırakılmış durumunu düzenleyin."
+
+#: discordedit\editguild.py:712
+#, docstring
+msgid "Edit guild invites safety alerts channel."
+msgstr "Sunucu güvenlik uyarıları kanalını düzenleyin."
+
+#: discordedit\editguild.py:731
+#, docstring
+msgid "Delete guild (if the bot is owner)."
+msgstr "Sunucuyu silin (eğer bot sahibi ise)."
+
+#: discordedit\editguild.py:736
+msgid "⚠️ - Delete Guild"
+msgstr "⚠️ - Sunucuyu Sil"
+
+#: discordedit\editguild.py:737 discordedit\editguild.py:744
+msgid "Do you really want to delete the guild {guild.name} ({guild.id})?"
+msgstr "{guild.name} ({guild.id}) sunucusunu gerçekten silmek istiyor musunuz?"
+
+#: discordedit\editguild.py:762
+#, docstring
+msgid "View and edit guild."
+msgstr "Sunucuyu görüntüleyin ve düzenleyin."
+
+#: discordedit\editrole.py:50
+msgid "The position must be an integer."
+msgstr "Pozisyon bir tam sayı olmalıdır."
+
+#: discordedit\editrole.py:54
+msgid "The indicated position must be between 1 and {max_guild_roles_position}."
+msgstr "Belirtilen pozisyon 1 ile {max_guild_roles_position} arasında olmalıdır."
+
+#: discordedit\editrole.py:69 discordedit\edittextchannel.py:57
+#: discordedit\editvoicechannel.py:57
+msgid "This permission is invalid."
+msgstr "Bu izin geçersiz."
+
+#: discordedit\editrole.py:92
+#, docstring
+msgid "A cog to edit roles!"
+msgstr "Rolleri düzenlemek için bir cog!"
+
+#: discordedit\editrole.py:104
+msgid "I can not let you edit @{role.name} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
+msgstr "Discord hiyerarşisindeki en yüksek rolünüzden daha yüksek veya ona eşit olduğu için @{role.name} ({role.id}) rolünü düzenlemenize izin veremem."
+
+#: discordedit\editrole.py:110
+msgid "I can not edit @{role.name} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
+msgstr "Discord hiyerarşisindeki en yüksek rolümden daha yüksek veya ona eşit olduğu için @{role.name} ({role.id}) rolünü düzenleyemem."
+
+#: discordedit\editrole.py:132
+#, docstring
+msgid "Create a role."
+msgstr "Bir rol oluşturun."
+
+#: discordedit\editrole.py:150
+#, docstring
+msgid "List all roles in the current guild."
+msgstr "Mevcut sunucudaki tüm rolleri listeleyin."
+
+#: discordedit\editrole.py:156
+msgid "List of roles in {guild.name} ({guild.id})"
+msgstr "{guild.name} ({guild.id}) içindeki rollerin listesi"
+
+#: discordedit\editrole.py:169
+#, docstring
+msgid "Edit role name."
+msgstr "Rol adını düzenleyin."
+
+#: discordedit\editrole.py:185
+#, docstring
+msgid "Edit role color."
+msgstr "Rol rengini düzenleyin."
+
+#: discordedit\editrole.py:201
+#, docstring
+msgid "Edit role hoist."
+msgstr "Rolü yukarı taşıyın."
+
+#: discordedit\editrole.py:222
+#, docstring
+msgid "Edit role display icon.\n\n"
+"        `display_icon` can be an Unicode emoji, a custom emoji or an url. You can also upload an attachment.\n"
+"        "
+msgstr "Rol ekran simgesini düzenleyin.\n\n"
+"        `display_icon` bir Unicode emoji, özel bir emoji veya bir url olabilir. Ayrıca bir ek de yükleyebilirsiniz.\n"
+"        "
+
+#: discordedit\editrole.py:228
+msgid "This server doesn't have the `ROLE_ICONS` feature. This server needs more boosts to perform this action."
+msgstr "Bu sunucuda `ROLE_ICONS` özelliği yok. Bu işlemi gerçekleştirmek için bu sunucunun daha fazla boosta ihtiyacı var."
+
+#: discordedit\editrole.py:272
+#, docstring
+msgid "Edit role mentionable."
+msgstr "Rol etiketlenebilirliği düzenleyin."
+
+#: discordedit\editrole.py:290
+#, docstring
+msgid "Edit role position.\n\n"
+"        Warning: The role with a position 1 is the highest role in the Discord hierarchy.\n"
+"        "
+msgstr "Rol pozisyonunu düzenle.\n\n"
+"        Uyarı: Pozisyonu 1 olan rol Discord hiyerarşisindeki en yüksek roldür.\n"
+"        "
+
+#: discordedit\editrole.py:313
+#, docstring
+msgid "Edit role permissions.\n\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Rol izinlerini düzenleyin.\n\n"
+"        Değiştirmek istediğiniz izinlere sahip olmanız gerekir.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+
+#: discordedit\editrole.py:350 discordedit\edittextchannel.py:564
+#: discordedit\editvoicechannel.py:464
+msgid "You need to provide at least one permission."
+msgstr "En az bir izin sağlamalısınız."
+
+#: discordedit\editrole.py:356
+msgid "You don't have the permission {permission_name} in this guild."
+msgstr "Bu sunucuda {permission_name} iznine sahip değilsiniz."
+
+#: discordedit\editrole.py:378
+#, docstring
+msgid "Delete a role."
+msgstr "Bir rolü silin."
+
+#: discordedit\editrole.py:383
+msgid "⚠️ - Delete role"
+msgstr "⚠️ - Rolü sil"
+
+#: discordedit\editrole.py:384 discordedit\editrole.py:391
+msgid "Do you really want to delete the role {role.mention} ({role.id})?"
+msgstr "{role.mention} ({role.id}) rolünü gerçekten silmek istiyor musunuz?"
+
+#: discordedit\editrole.py:412
+#, docstring
+msgid "View and edit role."
+msgstr "Rolü görüntüleyin ve düzenleyin."
+
+#: discordedit\edittextchannel.py:68 discordedit\edittextchannel.py:72
+msgid "The channel type must be `text`, `news`, `0` or `5`."
+msgstr "Kanal türü `text`, `news`, `0` veya `5` olmalıdır."
+
+#: discordedit\edittextchannel.py:77
+#, docstring
+msgid "A cog to edit text channels!"
+msgstr "Metin kanallarını düzenlemek için bir cog!"
+
+#: discordedit\edittextchannel.py:97
+msgid "I can not edit the text channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "{channel.mention} ({channel.id}) metin kanalını düzenleyemem çünkü `manage_channel` iznim yok."
+
+#: discordedit\edittextchannel.py:119
+#, docstring
+msgid "Create a text channel."
+msgstr "Bir metin kanalı oluşturun."
+
+#: discordedit\edittextchannel.py:137
+#, docstring
+msgid "List all text channels in the current guild."
+msgstr "Mevcut sunucudaki tüm metin kanallarını listeleyin."
+
+#: discordedit\edittextchannel.py:143
+msgid "List of text channels in {guild.name} ({guild.id})"
+msgstr "{guild.name} ({guild.id}) içindeki metin kanallarının listesi"
+
+#: discordedit\edittextchannel.py:162
+#, docstring
+msgid "Clone a text channel."
+msgstr "Bir metin kanalını klonlayın."
+
+#: discordedit\edittextchannel.py:189
+#, docstring
+msgid "Create an invite for a text channel.\n\n"
+"        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.\n"
+"        `max_uses`: How many uses the invite could be used for. If it's 0 then there are unlimited uses.\n"
+"        `temporary`: Denotes that the invite grants temporary membership (i.e. they get kicked after they disconnect).\n"
+"        `unique`: Indicates if a unique invite URL should be created. Defaults to True. If this is set to False then it will return a previously created invite.\n"
+"        "
+msgstr "Bir metin kanalı için davet oluşturun.\n\n"
+"        `max_age`: Davetin gün olarak ne kadar sürmesi gerektiği. Eğer 0 ise davetin süresi dolmaz.\n"
+"        `max_uses`: Davetiyenin kaç kullanım için kullanılabileceği. Eğer 0 ise sınırsız kullanım vardır.\n"
+"        `temporary`: Davetin geçici üyelik verdiğini belirtir (yani bağlantı kesildikten sonra atılırlar).\n"
+"        `unique`: Benzersiz bir davet URL'si oluşturulup oluşturulmayacağını belirtir. Varsayılan değer True'dur. Bu False olarak ayarlanırsa, önceden oluşturulmuş bir davetiye döndürür.\n"
+"        "
+
+#: discordedit\edittextchannel.py:224
+#, docstring
+msgid "Edit text channel name."
+msgstr "Metin kanalının adını düzenleyin."
+
+#: discordedit\edittextchannel.py:249
+#, docstring
+msgid "Edit text channel topic."
+msgstr "Metin kanalının konusunu düzenleyin."
+
+#: discordedit\edittextchannel.py:274
+#, docstring
+msgid "Edit text channel position.\n\n"
+"        Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr "Metin kanalı konumunu düzenleyin.\n\n"
+"        Uyarı: Yalnızca metin kanalları dikkate alınır. Kanal 1 en yüksek konumlu metin kanalıdır.\n"
+"        Kanallar, onları mevcut kategorilerinin dışına çıkaracak bir konuma taşınamaz.\n"
+"        "
+
+#: discordedit\edittextchannel.py:302
+#, docstring
+msgid "Edit text channel nsfw."
+msgstr "Metin kanalının nsfw özelliğini düzenleyin."
+
+#: discordedit\edittextchannel.py:328
+#, docstring
+msgid "Edit text channel syncpermissions with category."
+msgstr "Metin kanalının izinlerini kategori ile senkronize edin."
+
+#: discordedit\edittextchannel.py:354
+#, docstring
+msgid "Edit text channel category."
+msgstr "Metin kanalının kategorisini düzenleyin."
+
+#: discordedit\edittextchannel.py:378
+#, docstring
+msgid "Edit text channel slowmode delay.\n\n"
+"        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
+"        "
+msgstr "Metin kanalı yavaş mod gecikmesini düzenleyin.\n\n"
+"        Bu kanaldaki kullanıcı için yavaş mod hız sınırını belirtir. 0s değeri yavaş modu devre dışı bırakır. Mümkün olan maksimum değer 21600s'dir.\n"
+"        "
+
+#: discordedit\edittextchannel.py:408
+#, docstring
+msgid "Edit text channel type.\n\n"
+"        `text`: 0\n"
+"        `news`: 5\n"
+"        Currently, only conversion between ChannelType.text and ChannelType.news is supported. This is only available to guilds that contain NEWS in Guild.features.\n"
+"        "
+msgstr "Metin kanalı türünü düzenleyin.\n\n"
+"        `text`: 0\n"
+"        `news`: 5\n"
+"        Şu anda sadece ChannelType.text ve ChannelType.news arasında dönüşüm desteklenmektedir. Bu yalnızca Guild.features içinde NEWS içeren sunucular tarafından kullanılabilir.\n"
+"        "
+
+#: discordedit\edittextchannel.py:439
+#, docstring
+msgid "Edit text channel default auto archive duration.\n\n"
+"        The new default auto archive duration in minutes for threads created in this channel. Must be one of `60`, `1440`, `4320`, or `10080`.\n"
+"        "
+msgstr "Metin kanalı varsayılan otomatik arşiv süresini düzenleyin.\n\n"
+"        Bu kanalda oluşturulan iş parçacıkları için dakika cinsinden yeni varsayılan otomatik arşiv süresi. 60`, `1440`, `4320` veya `10080` değerlerinden biri olmalıdır.\n"
+"        "
+
+#: discordedit\edittextchannel.py:468
+#, docstring
+msgid "Edit text channel default thread slowmode delay.\n\n"
+"        The new default thread slowmode delay in seconds for threads created in this channel. Must be between 0 and 21600 (6 hours) seconds.\n"
+"        "
+msgstr "Metin kanalı varsayılan iş parçacığı yavaş modu gecikmesini düzenleyin.\n\n"
+"        Bu kanalda oluşturulan iş parçacıkları için saniye cinsinden yeni varsayılan iş parçacığı yavaş modu gecikmesi. 0 ile 21600 (6 saat) saniye arasında olmalıdır.\n"
+"        "
+
+#: discordedit\edittextchannel.py:501
+#, docstring
+msgid "Edit text channel overwrites/permissions.\n\n"
+"        You may not specify `True` or `False` to reset the permission(s).\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Metin kanalı üzerine yazmaları/izinleri düzenleyin.\n\n"
+"        İzin(ler) i sıfırlamak için `True` veya `False` belirtemezsiniz.\n"
+"        Değiştirmek istediğiniz izinlere sahip olmanız gerekir.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+
+#: discordedit\edittextchannel.py:549 discordedit\editvoicechannel.py:449
+msgid "You need to provide a role or user you want to edit permissions for."
+msgstr "İzinlerini düzenlemek istediğiniz bir rol veya kullanıcı sağlamalısınız."
+
+#: discordedit\edittextchannel.py:570 discordedit\editvoicechannel.py:470
+msgid "You don't have the permission {permission_name} in this channel."
+msgstr "Bu kanalda {permission_name} iznine sahip değilsiniz."
+
+#: discordedit\edittextchannel.py:595 discordedit\editvoicechannel.py:495
+msgid "You cannot remove permissions from you in this channel."
+msgstr "Bu kanalda kendinizden izinleri kaldıramazsınız."
+
+#: discordedit\edittextchannel.py:605 discordedit\editvoicechannel.py:505
+msgid "You cannot remove permissions from the bot in this channel."
+msgstr "Bu kanalda bottan izinleri kaldıramazsınız."
+
+#: discordedit\edittextchannel.py:624
+#, docstring
+msgid "Delete a text channel."
+msgstr "Bir metin kanalını silin."
+
+#: discordedit\edittextchannel.py:634
+msgid "⚠️ - Delete text channel"
+msgstr "⚠️ - Metin kanalını sil"
+
+#: discordedit\edittextchannel.py:635 discordedit\edittextchannel.py:642
+msgid "Do you really want to delete the text channel {channel.mention} ({channel.id})?"
+msgstr "{channel.mention} ({channel.id}) metin kanalını gerçekten silmek istiyor musunuz?"
+
+#: discordedit\edittextchannel.py:661
+#, docstring
+msgid "View and edit text channel."
+msgstr "Metin kanalını görüntüleyin ve düzenleyin."
+
+#: discordedit\editthread.py:91
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Rol bir emoji ve ardından `;`, `,`, `|` veya `-` ile ayrılmış bir rol olmalıdır."
+
+#: discordedit\editthread.py:101
+#, docstring
+msgid "A cog to edit threads!"
+msgstr "Başlıkları düzenlemek için bir cog!"
+
+#: discordedit\editthread.py:122
+msgid "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission."
+msgstr "Başlık {thread.mention} ({thread.id}) düzenleyemem çünkü `manage_channel` iznine sahip değilsiniz."
+
+#: discordedit\editthread.py:146
+#, docstring
+msgid "Create a thread.\n\n"
+"        You'll join it automatically.\n"
+"        "
+msgstr "Bir konu oluşturun.\n\n"
+"        Otomatik olarak katılacaksın.\n"
+"        "
+
+#: discordedit\editthread.py:170
+#, docstring
+msgid "List all threads in the current guild."
+msgstr "Mevcut sunucudaki tüm başlıkları listeleyin."
+
+#: discordedit\editthread.py:178
+msgid "List of threads in {guild.name} ({guild.id})"
+msgstr "{guild.name} ({guild.id}) içindeki başlıkların listesi"
+
+#: discordedit\editthread.py:194
+#, docstring
+msgid "Edit thread name."
+msgstr "Başlık adını düzenleyin."
+
+#: discordedit\editthread.py:215
+#, docstring
+msgid "Edit thread archived."
+msgstr "Başlık arşivlendi."
+
+#: discordedit\editthread.py:237
+#, docstring
+msgid "Edit thread locked."
+msgstr "Başlık kilitlendi."
+
+#: discordedit\editthread.py:260
+#, docstring
+msgid "Edit thread pinned."
+msgstr "Başlık sabitlendi."
+
+#: discordedit\editthread.py:284
+#, docstring
+msgid "Edit thread invitable."
+msgstr "Başlık davet edilebilir."
+
+#: discordedit\editthread.py:310
+#, docstring
+msgid "Edit thread auto archive duration."
+msgstr "Başlık otomatik arşivleme süresini düzenleyin."
+
+#: discordedit\editthread.py:334
+#, docstring
+msgid "Edit thread slowmode delay."
+msgstr "Başlık yavaş mod gecikmesini düzenleyin."
+
+#: discordedit\editthread.py:358
+#, docstring
+msgid "Edit thread applied tags.\n\n"
+"        ```\n"
+"        [p]editthread appliedtags \"<name>|<emoji>|[moderated]\"\n"
+"        [p]editthread appliedtags \"Reporting|⚠️|True\" \"Bug|🐛\"\n"
+"        ```\n"
+"        "
+msgstr "Uygulanan etiketleri düzenleyin.\n\n"
+"        ```\n"
+"        [p]editthread appliedtags \"<name>|<emoji>|[moderated]\"\n"
+"        [p]editthread appliedtags \"Raporlama|⚠️|True\" \"Bug|🐛\"\n"
+"        ```\n"
+"        "
+
+#: discordedit\editthread.py:388
+#, docstring
+msgid "Add member to thread."
+msgstr "Başlığa üye ekleyin."
+
+#: discordedit\editthread.py:413
+#, docstring
+msgid "Remove member from thread."
+msgstr "Başlıktan üye çıkarın."
+
+#: discordedit\editthread.py:434
+#, docstring
+msgid "Delete a thread."
+msgstr "Bir başlığı silin."
+
+#: discordedit\editthread.py:444
+msgid "⚠️ - Delete thread"
+msgstr "⚠️ - Başlığı sil"
+
+#: discordedit\editthread.py:445 discordedit\editthread.py:452
+msgid "Do you really want to delete the thread {thread.mention} ({thread.id})?"
+msgstr "Başlık {thread.mention} ({thread.id}) gerçekten silmek istiyor musunuz?"
+
+#: discordedit\editthread.py:467
+#, docstring
+msgid "View and edit thread."
+msgstr "Başlığı görüntüleyin ve düzenleyin."
+
+#: discordedit\editvoicechannel.py:66 discordedit\editvoicechannel.py:70
+msgid "The video quality mode must be `1` or `2`."
+msgstr "Video kalitesi modu `1` veya `2` olmalıdır."
+
+#: discordedit\editvoicechannel.py:75
+#, docstring
+msgid "A cog to edit voice channels!"
+msgstr "Ses kanallarını düzenlemek için bir cog!"
+
+#: discordedit\editvoicechannel.py:95
+msgid "I can not edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
+msgstr "Ses kanalı {channel.mention} ({channel.id}) düzenleyemem çünkü `manage_channel` iznim yok."
+
+#: discordedit\editvoicechannel.py:117
+#, docstring
+msgid "Create a voice channel."
+msgstr "Bir ses kanalı oluşturun."
+
+#: discordedit\editvoicechannel.py:135
+#, docstring
+msgid "List all voice channels in the current guild."
+msgstr "Mevcut sunucudaki tüm ses kanallarını listeleyin."
+
+#: discordedit\editvoicechannel.py:141
+msgid "List of voice channels in {guild.name} ({guild.id})"
+msgstr "{guild.name} ({guild.id}) içindeki ses kanallarının listesi"
+
+#: discordedit\editvoicechannel.py:160
+#, docstring
+msgid "Clone a voice channel."
+msgstr "Bir ses kanalını klonlayın."
+
+#: discordedit\editvoicechannel.py:182
+#, docstring
+msgid "Create an invite for a voice channel.\n\n"
+"        `max_age`: How long the invite should last in days. If it's 0 then the invite doesn't expire.\n"
+"        `max_uses`: How many uses the invite could be used for. If it's 0 then there are unlimited uses.\n"
+"        `temporary`: Denotes that the invite grants temporary membership (i.e. they get kicked after they disconnect).\n"
+"        `unique`: Indicates if a unique invite URL should be created. Defaults to True. If this is set to False then it will return a previously created invite.\n"
+"        "
+msgstr "Bir ses kanalı için davet oluşturun.\n\n"
+"        `max_age`: Davetin gün olarak ne kadar sürmesi gerektiği. Eğer 0 ise davetin süresi dolmaz.\n"
+"        `max_uses`: Davetiyenin kaç kullanım için kullanılabileceği. Eğer 0 ise sınırsız kullanım vardır.\n"
+"        `temporary`: Davetin geçici üyelik verdiğini belirtir (yani bağlantı kesildikten sonra atılırlar).\n"
+"        `unique`: Benzersiz bir davet URL'si oluşturulup oluşturulmayacağını belirtir. Varsayılan değer True'dur. Bu False olarak ayarlanırsa, önceden oluşturulmuş bir davetiye döndürür.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:212
+#, docstring
+msgid "Edit voice channel name."
+msgstr "Ses kanalının adını düzenleyin."
+
+#: discordedit\editvoicechannel.py:228
+#, docstring
+msgid "Edit voice channel bitrate.\n\n"
+"        It must be a number between 8000 and\n"
+"        Level 1: 128000\n"
+"        Level 2: 256000\n"
+"        Level 3: 384000\n"
+"        "
+msgstr "Ses kanalı bit hızını düzenleyin.\n\n"
+"        8000 ve aşağıdaki sayılar arasında bir sayı olmalıdır.\n"
+"        Level 1: 128000\n"
+"        Level 2: 256000\n"
+"        Level 3: 384000\n"
+"        "
+
+#: discordedit\editvoicechannel.py:252
+#, docstring
+msgid "Edit voice channel nsfw."
+msgstr "Ses kanalının nsfw özelliğini düzenleyin."
+
+#: discordedit\editvoicechannel.py:273
+#, docstring
+msgid "Edit voice channel user limit.\n\n"
+"        It must be a number between 0 and 99.\n"
+"        "
+msgstr "Ses kanalı kullanıcı limitini düzenleyin.\n\n"
+"        Bu 0 ile 99 arasında bir sayı olmalıdır.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:292
+#, docstring
+msgid "Edit voice channel position.\n\n"
+"        Warning: Only voice channels are taken into account. Channel 1 is the highest positioned voice channel.\n"
+"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        "
+msgstr "Ses kanalı konumunu düzenleyin.\n\n"
+"        Uyarı: Sadece ses kanalları dikkate alınır. Kanal 1 en yüksek konumlu ses kanalıdır.\n"
+"        Kanallar, onları mevcut kategorilerinin dışına çıkaracak bir konuma taşınamaz.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:312
+#, docstring
+msgid "Edit voice channel sync permissions."
+msgstr "Ses kanalının izinlerini senkronize edin."
+
+#: discordedit\editvoicechannel.py:333
+#, docstring
+msgid "Edit voice channel category."
+msgstr "Ses kanalının kategorisini düzenleyin."
+
+#: discordedit\editvoicechannel.py:352
+#, docstring
+msgid "Edit voice channel slowmode delay.\n\n"
+"        Specifies the slowmode rate limit for user in this channel. A value of 0s disables slowmode. The maximum value possible is 21600s.\n"
+"        "
+msgstr "Ses kanalı yavaş mod gecikmesini düzenleyin.\n\n"
+"        Bu kanaldaki kullanıcı için yavaş mod hız sınırını belirtir. 0s değeri yavaş modu devre dışı bırakır. Mümkün olan maksimum değer 21600s'dir.\n"
+"        "
+
+#: discordedit\editvoicechannel.py:377
+#, docstring
+msgid "Edit voice channel video quality mode.\n\n"
+"        auto = 1\n"
+"        full = 2\n"
+"        "
+msgstr "Ses kanalı video kalitesi modunu düzenleyin.\n\n"
+"        auto = 1\n"
+"        full = 2\n"
+"        "
+
+#: discordedit\editvoicechannel.py:406
+#, docstring
+msgid "Edit voice channel overwrites/permissions.\n\n"
+"        You may not specify `True` or `False` to reset the overwrite(s).\n"
+"        You must possess the permissions you wish to modify.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+msgstr "Ses kanalı üzerine yazmaları/izinleri düzenleyin.\n\n"
+"        Üzerine yazmaları sıfırlamak için `True` veya `False` belirtemezsiniz.\n"
+"        Değiştirmek istediğiniz izinlere sahip olmanız gerekir.\n\n"
+"        • `create_instant_invite`\n"
+"        • `manage_channels`\n"
+"        • `add_reactions`\n"
+"        • `priority_speaker`\n"
+"        • `stream`\n"
+"        • `read_messages`\n"
+"        • `send_messages`\n"
+"        • `send_tts_messages`\n"
+"        • `manage_messages`\n"
+"        • `embed_links`\n"
+"        • `attach_files`\n"
+"        • `read_message_history`\n"
+"        • `mention_everyone`\n"
+"        • `external_emojis`\n"
+"        • `connect`\n"
+"        • `speak`\n"
+"        • `mute_members`\n"
+"        • `deafen_members`\n"
+"        • `move_members`\n"
+"        • `use_voice_activation`\n"
+"        • `manage_roles`\n"
+"        • `manage_webhooks`\n"
+"        • `use_application_commands`\n"
+"        • `request_to_speak`\n"
+"        • `manage_threads`\n"
+"        • `create_public_threads`\n"
+"        • `create_private_threads`\n"
+"        • `external_stickers`\n"
+"        • `send_messages_in_threads`\n"
+"        "
+
+#: discordedit\editvoicechannel.py:524
+#, docstring
+msgid "Delete voice channel."
+msgstr "Bir ses kanalını silin."
+
+#: discordedit\editvoicechannel.py:529
+msgid "⚠️ - Delete voice channel"
+msgstr "⚠️ - Ses kanalını sil"
+
+#: discordedit\editvoicechannel.py:530 discordedit\editvoicechannel.py:537
+msgid "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
+msgstr "Ses kanalı {channel.mention} ({channel.id}) gerçekten silmek istiyor musunuz?"
+
+#: discordedit\editvoicechannel.py:556
+#, docstring
+msgid "View and edit voice channel."
+msgstr "Ses kanalını görüntüleyin ve düzenleyin."
+
+#: discordedit\view.py:120
+msgid "You are not allowed to execute this command."
+msgstr "Bu komutu yürütme yetkiniz yok."
+

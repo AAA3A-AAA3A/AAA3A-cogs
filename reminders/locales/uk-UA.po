@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:40\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 15:15\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -21,130 +21,138 @@ msgstr ""
 msgid "Invalid timezone provided."
 msgstr "Вказано невірний часовий пояс."
 
-#: reminders\converters.py:535 reminders\reminders.py:886
-#: reminders\reminders.py:1084
+#: reminders\converters.py:539 reminders\reminders.py:908
+#: reminders\reminders.py:1108
 msgid "You haven't any reminders."
 msgstr "Ти не маєш жодних нагадувань."
 
-#: reminders\converters.py:544
+#: reminders\converters.py:548
 msgid "Reminder ID must be an integer."
 msgstr "Ідентифікатор нагадування має бути цілим числом."
 
-#: reminders\converters.py:548
+#: reminders\converters.py:552
 msgid "You haven't any reminder with this id."
 msgstr "Ви не маєте жодного нагадування з цим ідентифікатором."
 
-#: reminders\reminders.py:61
+#: reminders\reminders.py:62
 msgid "You're not allowed to execute the `[p]remindme` command in this channel."
 msgstr "У цьому каналі заборонено виконувати команду `[p]remindme`."
 
-#: reminders\reminders.py:69
+#: reminders\reminders.py:70
 #, docstring
 msgid "Don't forget anything anymore! Reminders in DMs, channels, FIFO commands scheduler, say scheduler... With 'Me Too', snooze and buttons."
 msgstr "Більше нічого не забувайте! Нагадування в DM, каналах, планувальнику команд FIFO, планувальнику речень... З функцією \"Я теж\", повтором і кнопками."
 
-#: reminders\reminders.py:303 reminders\reminders.py:433
-#: reminders\reminders.py:620 reminders\reminders.py:737
+#: reminders\reminders.py:302 reminders\reminders.py:443
+#: reminders\reminders.py:641 reminders\reminders.py:758
 msgid "You have reached the limit of {minimum_user_reminders} reminders per user."
 msgstr "Ви досягли ліміту нагадувань {minimum_user_reminders} на одного користувача."
 
-#: reminders\reminders.py:325 reminders\reminders.py:455
-#: reminders\reminders.py:637 reminders\reminders.py:750
-#: reminders\reminders.py:1053
+#: reminders\reminders.py:324 reminders\reminders.py:465
+msgid "You can't access this message."
+msgstr "Ви не можете отримати доступ до цього повідомлення."
+
+#: reminders\reminders.py:333 reminders\reminders.py:474
+#: reminders\reminders.py:658 reminders\reminders.py:771
+#: reminders\reminders.py:1076
 msgid "You are not allowed to create repeating reminders."
 msgstr "Ви не можете створювати повторювані нагадування."
 
-#: reminders\reminders.py:339 reminders\reminders.py:469
-#: reminders\reminders.py:651 reminders\reminders.py:764
-#: reminders\reminders.py:1068
+#: reminders\reminders.py:347 reminders\reminders.py:488
+#: reminders\reminders.py:672 reminders\reminders.py:785
+#: reminders\reminders.py:1091
 msgid "The repeat timedelta must be greater than {minimum_repeat} minutes."
 msgstr "Таймдельта повторення має бути більшою, ніж {minimum_repeat} хвилин."
 
-#: reminders\reminders.py:370 reminders\reminders.py:547
-#: reminders\reminders.py:980
+#: reminders\reminders.py:356 reminders\reminders.py:544
+msgid "You must provide a message or a text."
+msgstr "Ви повинні надіслати повідомлення або текст."
+
+#: reminders\reminders.py:380 reminders\reminders.py:568
+#: reminders\reminders.py:1003
 msgid "Your reminder text is too long."
 msgstr "Ваш текст нагадування занадто довгий."
 
-#: reminders\reminders.py:494
+#: reminders\reminders.py:513
 msgid "You can't create a reminder in {destination}."
 msgstr "Ви не можете створити нагадування в {destination}."
 
-#: reminders\reminders.py:500 reminders\reminders.py:772
+#: reminders\reminders.py:519 reminders\reminders.py:793
 msgid "I can't send messages in this channel."
 msgstr "Я не можу надсилати повідомлення в цьому каналі."
 
-#: reminders\reminders.py:502
+#: reminders\reminders.py:521
 msgid "I can't send embeds in this channel."
 msgstr "Я не можу надсилати вставки в цьому каналі."
 
-#: reminders\reminders.py:511
+#: reminders\reminders.py:530
 msgid "Since you don't have the `mention_everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."
 msgstr "Оскільки у вас немає дозволу `згадувати_всіх`, ви не можете створити нагадування, яке згадуватиме більше 3 осіб або роль(и)."
 
-#: reminders\reminders.py:517
+#: reminders\reminders.py:536
 msgid "Due to the message character limit, you can only mention a maximum of 10 users or roles."
 msgstr "Через обмеження на кількість символів у повідомленні, ви можете згадати максимум 10 користувачів або ролей."
 
-#: reminders\reminders.py:605
+#: reminders\reminders.py:626
 #, docstring
 msgid "Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
-"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        You don't have to put quotes around the `time` argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
 "        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
 "        Examples:\n"
 "        - `[p]reminder fifo #destination \"at 10h every day\" ping\n"
 "        "
 msgstr "Створіть нагадування FIFO/команди. Вибрана команда буде виконана, коли ви будете викликати її. Не вказуйте префікс.\n\n"
-"        Вказаний час може бути нечітко проаналізовано або використовуйте квариги `in`, `on` і `every`, щоб знайти правило повторення і ваш текст.\n"
-"        Не обов'язково брати аргумент часу в лапки. Для більш точного розбору ви можете взяти текст у лапки. Також візьміть в лапки час, якщо він містить пробіли.\n"
-"        Використовуйте `[p]reminder timetips` для відображення підказок для синтаксичного аналізу часу.\n\n"
+"        Вказаний час може бути нечітко проаналізовано або використано квариги `in`, `on` і `every` для пошуку правила повторення і вашого тексту.\n"
+"        Не обов'язково брати в лапки аргумент `time`. Для більш точного синтаксичного аналізу ви можете взяти текст у лапки. Також візьміть в лапки час, якщо він містить пробіли.\n"
+"        Використовуйте `[p]reminder timetips` для відображення підказок для розбору за часом.\n\n"
 "        Приклади:\n"
 "        - `[p]нагадування fifo #призначення \"о 10 годині щодня\" ping\n"
 "        "
 
-#: reminders\reminders.py:626
+#: reminders\reminders.py:647
 msgid "You're not allowed to create FIFO/commands reminders."
 msgstr "Ви не можете створювати нагадування за принципом FIFO/команди."
 
-#: reminders\reminders.py:668
+#: reminders\reminders.py:689
 msgid "This command doesn't exist."
 msgstr "Такої команди не існує."
 
-#: reminders\reminders.py:675
+#: reminders\reminders.py:696
 msgid "You can't execute this command, in this context."
 msgstr "Ви не можете виконати цю команду в цьому контексті."
 
-#: reminders\reminders.py:679
+#: reminders\reminders.py:700
 msgid "The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command."
 msgstr "Команда `{command.qualified_name}` не може бути запланована, тому що це підозріла команда."
 
-#: reminders\reminders.py:722
+#: reminders\reminders.py:743
 #, docstring
 msgid "Create a reminder who will say/send text.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
-"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        You don't have to put quotes around the `time` argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
 "        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
 "        Examples:\n"
 "        - `[p]reminder say #destination \"at 9h every day\" Hello everyone!\n"
 "        "
 msgstr "Створіть нагадування про те, хто буде говорити/відправляти текст.\n\n"
-"        Вказаний час може бути нечітко проаналізовано або використовуйте ключі `in`, `on` і `every`, щоб знайти правило повторення і ваш текст.\n"
-"        Не обов'язково брати аргумент часу в лапки. Для більш точного розбору ви можете взяти текст у лапки. Також візьміть в лапки час, якщо він містить пробіли.\n"
-"        Використовуйте `[p]reminder timetips` для відображення підказок для синтаксичного аналізу часу.\n\n"
+"        Вказаний час може бути нечітко проаналізовано або використовуйте квариги `in`, `on` і `every`, щоб знайти правило повторення і ваш текст.\n"
+"        Не обов'язково брати в лапки аргумент `time`. Для більш точного синтаксичного аналізу ви можете взяти текст у лапки. Також візьміть в лапки час, якщо він містить пробіли.\n"
+"        Використовуйте `[p]reminder timetips` для відображення підказок для розбору за часом.\n\n"
 "        Приклади:\n"
 "        - `[p]нагадування сказати #пункт призначення \"о 9 годині щодня\" Привіт усім!\n"
 "        "
 
-#: reminders\reminders.py:780
+#: reminders\reminders.py:801
 msgid "You can't or I can't send messages in this channel."
 msgstr "Ви не можете або я не можу надсилати повідомлення в цьому каналі."
 
-#: reminders\reminders.py:817
+#: reminders\reminders.py:838
 #, docstring
 msgid "Show time parsing tips."
 msgstr "Підказки щодо розбору часу показу."
 
-#: reminders\reminders.py:818
+#: reminders\reminders.py:839
 msgid "\n"
 "            Allowed **absolutes** are:\n"
 "            • `eoy` - Remind at end of year at 17:00.\n"
@@ -202,7 +210,7 @@ msgstr "\n"
 "            - Перевірте https://crontab.guru/.\n"
 "            "
 
-#: reminders\reminders.py:861
+#: reminders\reminders.py:882
 #, docstring
 msgid "Set your timezone for the time converter.\n\n"
 "        Timezone should be specified in the format: `Continent/City`.\n"
@@ -215,11 +223,11 @@ msgstr "Встановіть часовий пояс для конвертера
 "        Список допустимих часових поясів можна знайти за посиланням: https://timezonedb.com/time-zones.\n"
 "        "
 
-#: reminders\reminders.py:868
+#: reminders\reminders.py:889
 msgid "Your timezone has been set to `{timezone}`."
 msgstr "Ваш часовий пояс встановлено на `{timezone}`."
 
-#: reminders\reminders.py:878
+#: reminders\reminders.py:900
 #, docstring
 msgid "List your existing reminders.\n\n"
 "        Sort options:\n"
@@ -234,23 +242,23 @@ msgstr "Перелічіть наявні нагадування.\n\n"
 "        - `id`: Відображати їх у порядку їхніх ідентифікаторів.\n"
 "        "
 
-#: reminders\reminders.py:902
+#: reminders\reminders.py:924
 msgid "Your Reminders"
 msgstr "Ваші нагадування"
 
-#: reminders\reminders.py:904
+#: reminders\reminders.py:926
 msgid " (Content type `{content_type}`)"
 msgstr " (Тип вмісту `{content_type}`)"
 
-#: reminders\reminders.py:908
+#: reminders\reminders.py:930
 msgid "You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder."
 msgstr "У вас є {len_reminders} нагадування{of_this_content_type}. Використовуйте `{clean_prefix}нагадування редагувати #ID` для редагування нагадування."
 
-#: reminders\reminders.py:912
+#: reminders\reminders.py:934
 msgid " of this content type"
 msgstr " цього типу контенту"
 
-#: reminders\reminders.py:931
+#: reminders\reminders.py:953
 #, docstring
 msgid "Remove existing Reminder(s) from their IDs.\n\n"
 "        - Use `last` to remove your last created reminder.\n"
@@ -261,15 +269,15 @@ msgstr "Видалити існуючі нагадування з їхніх і�
 "        - Використовуйте `next`, щоб видалити наступне нагадування, що спрацювало.\n"
 "        "
 
-#: reminders\reminders.py:943
+#: reminders\reminders.py:965
 msgid "Your reminder {reminder_id} has been successfully removed."
 msgstr "Ваше нагадування {reminder_id} успішно видалено."
 
-#: reminders\reminders.py:949
+#: reminders\reminders.py:971
 msgid "Your reminders {reminders_ids} have been successfully removed."
 msgstr "Ваші нагадування {reminders_ids} успішно видалено."
 
-#: reminders\reminders.py:956
+#: reminders\reminders.py:979
 #, docstring
 msgid "Edit an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -280,7 +288,7 @@ msgstr "Редагування існуючого нагадування за й
 "        - Використовуйте `next`, щоб відредагувати наступне нагадування.\n"
 "        "
 
-#: reminders\reminders.py:974
+#: reminders\reminders.py:997
 #, docstring
 msgid "Edit the text of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -291,13 +299,13 @@ msgstr "Відредагуйте текст існуючого нагадува�
 "        - Використовуйте `next`, щоб відредагувати наступне нагадування.\n"
 "        "
 
-#: reminders\reminders.py:990 reminders\reminders.py:1014
-#: reminders\reminders.py:1075 reminders\views.py:154 reminders\views.py:378
+#: reminders\reminders.py:1013 reminders\reminders.py:1037
+#: reminders\reminders.py:1098 reminders\views.py:154 reminders\views.py:378
 #: reminders\views.py:439
 msgid "Your reminder **#{reminder_id}** has been successfully edited."
 msgstr "Ваше нагадування **#{reminder_id}** було успішно відредаговано."
 
-#: reminders\reminders.py:999
+#: reminders\reminders.py:1022
 #, docstring
 msgid "Edit the expires time of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -310,7 +318,7 @@ msgstr "Відредагуйте час закінчення терміну ді
 "        Це той самий конвертер, що і для створення, але без опції повторення.\n"
 "        "
 
-#: reminders\reminders.py:1023
+#: reminders\reminders.py:1046
 #, docstring
 msgid "Edit the repeat of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -339,68 +347,85 @@ msgstr "Відредагуйте повтор існуючого нагадув�
 "        - `1 рік 1 місяць 2 дні -5 годин`\n"
 "        "
 
-#: reminders\reminders.py:1082
+#: reminders\reminders.py:1106
 #, docstring
 msgid "Clear all your existing reminders."
 msgstr "Видаліть усі наявні нагадування."
 
-#: reminders\reminders.py:1087 reminders\reminders.py:1151
+#: reminders\reminders.py:1111 reminders\reminders.py:1242
 msgid "⚠️ - Reminders"
 msgstr "⚠️ - Нагадування"
 
-#: reminders\reminders.py:1088
+#: reminders\reminders.py:1112
 msgid "Do you really want to remove ALL your reminders?"
 msgstr "Ви дійсно хочете видалити ВСІ нагадування?"
 
-#: reminders\reminders.py:1100
+#: reminders\reminders.py:1124
 msgid "All your reminders have been successfully removed."
 msgstr "Всі ваші нагадування успішно видалено."
 
-#: reminders\reminders.py:1146
+#: reminders\reminders.py:1131
+#, docstring
+msgid "Get a list of Discord timestamps for a given time. You can provide a repeat.\n\n"
+"        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule.\n"
+"        You don't have to put quotes around the `time` argument.\n"
+"        Use `[p]reminder timetips` to display tips for time parsing.\n"
+"        "
+msgstr "Отримати список міток часу Discord за певний час. Ви можете вказати повторення.\n\n"
+"        Вказаний час може бути нечітко проаналізовано або використано кварги `in`, `on` і `every` для пошуку правила повторення.\n"
+"        Вам не потрібно брати в лапки аргумент `time`.\n"
+"        Використовуйте `[p]reminder timetips` для відображення підказок для парсингу за часом.\n"
+"        "
+
+#: reminders\reminders.py:1145
+msgid "Timestamps for {time}"
+msgstr "Мітки часу для {time}"
+
+#: reminders\reminders.py:1237
 #, docstring
 msgid "Clear all existing reminders for a user."
 msgstr "Очистити всі існуючі нагадування для користувача."
 
-#: reminders\reminders.py:1148
+#: reminders\reminders.py:1239
 msgid "This user haven't any reminders."
 msgstr "Цей користувач не має нагадувань."
 
-#: reminders\reminders.py:1152
+#: reminders\reminders.py:1243
 msgid "Do you really want to remove ALL {user.display_name}'s reminders?"
 msgstr "Ви дійсно хочете видалити ВСІ нагадування {user.display_name}?"
 
-#: reminders\reminders.py:1166
+#: reminders\reminders.py:1257
 msgid "All user's reminders have been successfully removed."
 msgstr "Всі нагадування користувача успішно видалено."
 
-#: reminders\reminders.py:1170
+#: reminders\reminders.py:1261
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Отримайте вбудовування для перевірки стану циклів."
 
-#: reminders\reminders.py:1176
+#: reminders\reminders.py:1267
 #, docstring
 msgid "Migrate Reminders from RemindMe by PhasecoreX."
 msgstr "Перенесіть нагадування з RemindMe від PhasecoreX."
 
-#: reminders\reminders.py:1183
+#: reminders\reminders.py:1274
 msgid "RemindMe by PhasecoreX has no data in this bot."
 msgstr "RemindMe від PhasecoreX не має даних у цьому боті."
 
-#: reminders\reminders.py:1187
+#: reminders\reminders.py:1278
 msgid "RemindMe by PhasecoreX use an old/new data schema version and isn't compatible with this cog actually."
 msgstr "RemindMe від PhasecoreX використовує стару/нову версію схеми даних і не сумісний з цим гвинтиком."
 
-#: reminders\reminders.py:1245
+#: reminders\reminders.py:1336
 msgid "Data successfully migrated from RemindMe by PhasecoreX."
 msgstr "Дані успішно перенесені з RemindMe від PhasecoreX."
 
-#: reminders\reminders.py:1249
+#: reminders\reminders.py:1340
 #, docstring
 msgid "Migrate Reminders from FIFO by Fox."
 msgstr "Перенесіть нагадування з FIFO від Fox."
 
-#: reminders\reminders.py:1329
+#: reminders\reminders.py:1420
 msgid "Data successfully migrated from FIFO by Fox."
 msgstr "Дані успішно перенесені з FIFO від Fox."
 
@@ -497,31 +522,31 @@ msgstr "Не передбачено."
 msgid "No content."
 msgstr "Ніякого змісту."
 
-#: reminders\types.py:524
+#: reminders\types.py:530
 msgid "No target(s)."
 msgstr "Без мети (цілей)."
 
-#: reminders\types.py:525
+#: reminders\types.py:531
 msgid "In DMs"
 msgstr "У ДМ"
 
-#: reminders\types.py:607
+#: reminders\types.py:613
 msgid "You asked me to remind you about {this}, {interval_string}.\n\n"
 msgstr "Ви просили нагадати вам про {this}, {interval_string}.\n\n"
 
-#: reminders\types.py:613
+#: reminders\types.py:619
 msgid "You asked me to remind you about [this message]({message_jump_url}) from {author_mention} ({author_id}), {interval_string}.\n\n"
 msgstr "Ви просили нагадати вам про [це повідомлення] ({message_jump_url}) з {author_mention} ({author_id}), {interval_string}.\n\n"
 
-#: reminders\types.py:629
+#: reminders\types.py:635
 msgid "This was supposed to send {interval_string} ago. I might be having network or server issues, or perhaps I just started up. Sorry about that!\n\n"
 msgstr "Це мало бути надіслано {interval_string} тому. Можливо, у мене проблеми з мережею або сервером, або, можливо, я щойно запустився. Вибачте за це!\n\n"
 
-#: reminders\types.py:633
+#: reminders\types.py:639
 msgid "Next trigger in {interval_string}."
 msgstr "Наступний тригер в {interval_string}."
 
-#: reminders\types.py:786 reminders\views.py:559
+#: reminders\types.py:792 reminders\views.py:559
 msgid "Jump to original message"
 msgstr "Перейти до оригінального повідомлення"
 

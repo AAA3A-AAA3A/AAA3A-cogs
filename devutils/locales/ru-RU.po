@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:42\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:16\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "Не указан действительный объект раздор
 msgid "Various development utilities!"
 msgstr "Различные утилиты для разработки!"
 
-#: devutils\devutils.py:136
+#: devutils\devutils.py:134
 #, docstring
 msgid "\n"
 "        Repeats a command a specified number of times.\n\n"
@@ -41,42 +41,42 @@ msgstr "\n"
 "        `--sleep <int>` - необязательный флаг, указывающий, сколько времени нужно ждать между вызовами команд.\n"
 "        "
 
-#: devutils\devutils.py:157 devutils\devutils.py:233 devutils\devutils.py:249
+#: devutils\devutils.py:155 devutils\devutils.py:235 devutils\devutils.py:251
 msgid "You have not specified a correct command."
 msgstr "Вы не указали правильную команду."
 
-#: devutils\devutils.py:159 devutils\devutils.py:251
+#: devutils\devutils.py:157 devutils\devutils.py:253
 msgid "You can't execute yourself this command."
 msgstr "Вы не можете выполнить эту команду самостоятельно."
 
-#: devutils\devutils.py:172
+#: devutils\devutils.py:174
 #, docstring
 msgid "Execute multiple commands at once. Split them using |."
 msgstr "Выполняйте несколько команд одновременно. Разделите их с помощью |."
 
-#: devutils\devutils.py:187 devutils\devutils.py:209
+#: devutils\devutils.py:189 devutils\devutils.py:211
 msgid "`{command}` isn't a valid command."
 msgstr "`{command}` не является допустимой командой."
 
-#: devutils\devutils.py:193 devutils\devutils.py:215
+#: devutils\devutils.py:195 devutils\devutils.py:217
 msgid "You can't execute yourself `{command}`."
 msgstr "Вы не можете казнить себя `{command}`."
 
-#: devutils\devutils.py:222
+#: devutils\devutils.py:224
 #, docstring
 msgid "Bypass a command's checks and cooldowns."
 msgstr "Обходите проверки и кулдауны команд."
 
-#: devutils\devutils.py:238
+#: devutils\devutils.py:240
 #, docstring
 msgid "Run a command timing execution and catching exceptions."
 msgstr "Запустите команду, засекая время ее выполнения и отлавливая исключения."
 
-#: devutils\devutils.py:257
+#: devutils\devutils.py:259
 msgid "Command `{command}` finished in `{timing}`s."
 msgstr "Команда `{command}` завершилась через `{timing}``."
 
-#: devutils\devutils.py:264
+#: devutils\devutils.py:266
 #, docstring
 msgid "Reinvoke a command message.\n\n"
 "        You may reply to a message to reinvoke it or pass a message ID/link.\n"
@@ -87,17 +87,17 @@ msgstr "Отмена командного сообщения.\n\n"
 "        Команда будет вызвана с указанием автора и канала указанного сообщения.\n"
 "        "
 
-#: devutils\devutils.py:285
+#: devutils\devutils.py:289
 msgid "The command isn't valid."
 msgstr "Команда недействительна."
 
-#: devutils\devutils.py:287
+#: devutils\devutils.py:291
 msgid "This command can't be executed."
 msgstr "Эта команда не может быть выполнена."
 
-#: devutils\devutils.py:293
+#: devutils\devutils.py:297
 #, docstring
-msgid "Change the logging level for a logger. if no name is provided, the root logger (red) is used.\n\n"
+msgid "Change the logging level for a logger. If no name is provided, the root logger (`red`) is used.\n\n"
 "        Levels are the following:\n"
 "        - `0`: `CRITICAL`\n"
 "        - `1`: `ERROR`\n"
@@ -107,7 +107,7 @@ msgid "Change the logging level for a logger. if no name is provided, the root l
 "        - `5`: `VERBOSE`\n"
 "        - `6`: `TRACE`\n"
 "        "
-msgstr "Если имя не указано, используется корневой регистратор (красный).\n\n"
+msgstr "Изменение уровня регистрации для регистратора. Если имя не указано, используется корневой логгер (`red`).\n\n"
 "        Уровни следующие:\n"
 "        - `0`: `КРИТИЧЕСКИЙ`\n"
 "        - `1`: `ОШИБКА`\n"
@@ -118,11 +118,11 @@ msgstr "Если имя не указано, используется корне
 "        - `6`: `ТРАССИРОВКА`\n"
 "        "
 
-#: devutils\devutils.py:307
+#: devutils\devutils.py:311
 msgid "Logger `{logger_name}` level set to `{level}`."
 msgstr "Уровень регистратора `{logger_name}` установлен на `{level}`."
 
-#: devutils\devutils.py:316
+#: devutils\devutils.py:320
 #, docstring
 msgid "Force reload a module (to use code changes without restarting your bot).\n\n"
 "        ⚠️ Please only use this if you know what you're doing.\n"
@@ -131,19 +131,19 @@ msgstr "Принудительная перезагрузка модуля (чт
 "        ⚠️ Пожалуйста, используйте это только в том случае, если вы знаете, что делаете.\n"
 "        "
 
-#: devutils\devutils.py:332
+#: devutils\devutils.py:336
 msgid "I couldn't find any module with this name."
 msgstr "Я не смог найти ни одного модуля с таким названием."
 
-#: devutils\devutils.py:336
+#: devutils\devutils.py:340
 msgid "Module(s) {modules} reloaded."
 msgstr "Модуль(ы) {modules} перезагружен(ы)."
 
-#: devutils\devutils.py:342
+#: devutils\devutils.py:346
 msgid "Modules [...] reloaded."
 msgstr "Модули [...] перезагружены."
 
-#: devutils\devutils.py:346
+#: devutils\devutils.py:350
 #, docstring
 msgid "Display the JSON of a Discord object with a raw request."
 msgstr "Отображение JSON объекта Discord при необработанном запросе."

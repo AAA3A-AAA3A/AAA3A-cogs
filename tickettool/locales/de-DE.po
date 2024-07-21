@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:37\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 15:13\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -18,8 +18,7 @@ msgstr ""
 "Language: de_DE\n"
 
 #: tickettool\settings.py:15 tickettool\settings.py:18
-#: tickettool\tickettool.py:776 tickettool\tickettool.py:779
-#: tickettool\tickettool.py:806
+#: tickettool\tickettool.py:759 tickettool\tickettool.py:762
 msgid "This profile does not exist."
 msgstr "Dieses Profil existiert nicht."
 
@@ -44,7 +43,7 @@ msgstr "Senden Sie eine Nachricht mit einer Schaltfläche zum Öffnen eines Tick
 msgid "I don't have sufficient permissions in this channel to view it and to send messages into."
 msgstr "Ich habe keine ausreichenden Berechtigungen in diesem Kanal, um ihn zu sehen und Nachrichten zu senden."
 
-#: tickettool\settings.py:97 tickettool\tickettool.py:356
+#: tickettool\settings.py:97 tickettool\tickettool.py:339
 msgid "Create ticket"
 msgstr "Ticket erstellen"
 
@@ -56,10 +55,6 @@ msgstr "Für jede Dropdown-Option muss ein anderer Wert angegeben werden."
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Ein von Ihnen ausgewähltes Emoji scheint ungültig zu sein. Prüfen Sie, ob es sich um ein Emoji handelt. Wenn Sie Nitro haben, haben Sie möglicherweise ein benutzerdefiniertes Emoji von einem anderen Server verwendet."
 
-#: tickettool\ticket.py:91
-msgid "No reason provided."
-msgstr "Kein Grund angegeben."
-
 #: tickettool\ticket.py:245
 msgid "Creating the ticket {ticket.id}."
 msgstr "Erstellen des Tickets {ticket.id}."
@@ -69,19 +64,19 @@ msgid "The dynamic channel name does not contain correct variable names and must
 msgstr "Der dynamische Kanalname enthält keine korrekten Variablennamen und muss mit \"[p]settickettool dynamicchannelname\" neu konfiguriert werden."
 
 #: tickettool\ticket.py:275 tickettool\ticket.py:528 tickettool\ticket.py:890
-#: tickettool\ticket.py:969 tickettool\tickettool.py:369
+#: tickettool\ticket.py:969 tickettool\tickettool.py:352
 msgid "Close"
 msgstr "Schließen"
 
 #: tickettool\ticket.py:282 tickettool\ticket.py:535 tickettool\ticket.py:615
 #: tickettool\ticket.py:897 tickettool\ticket.py:976
-#: tickettool\tickettool.py:383
+#: tickettool\tickettool.py:366
 msgid "Claim"
 msgstr "Beanspruchen"
 
 #: tickettool\ticket.py:289 tickettool\ticket.py:542 tickettool\ticket.py:622
 #: tickettool\ticket.py:904 tickettool\ticket.py:983
-#: tickettool\tickettool.py:390
+#: tickettool\tickettool.py:373
 msgid "Delete"
 msgstr "Löschen"
 
@@ -129,12 +124,12 @@ msgstr "Das Ticket wurde von {ticket.opened_by}eröffnet."
 msgid "Report on the close of the ticket {ticket.id}."
 msgstr "Bericht über den Abschluss des Tickets {ticket.id}."
 
-#: tickettool\ticket.py:608 tickettool\tickettool.py:376
+#: tickettool\ticket.py:608 tickettool\tickettool.py:359
 msgid "Re-open"
 msgstr "Wiedereröffnen"
 
 #: tickettool\ticket.py:675 tickettool\ticket.py:712
-#: tickettool\tickettool.py:1060 tickettool\tickettool.py:1102
+#: tickettool\tickettool.py:1100 tickettool\tickettool.py:1142
 msgid "Cannot execute action on a text channel."
 msgstr "Aktion kann nicht auf einem Textkanal ausgeführt werden."
 
@@ -263,7 +258,7 @@ msgstr "Dieses Mitglied ist nicht in der Liste der zum Zugriff auf das Ticket be
 msgid "A cog to manage a tickets system!"
 msgstr "Ein Rädchen zur Verwaltung eines Ticketsystems!"
 
-#: tickettool\tickettool.py:89
+#: tickettool\tickettool.py:74
 msgid "To get help on this server or to make an order for example, you can create a ticket.\n"
 "Just use the command `{prefix}ticket create` or click on the button below.\n"
 "You can then use the `{prefix}ticket` subcommands to manage your ticket."
@@ -271,67 +266,99 @@ msgstr "Um Hilfe auf diesem Server zu erhalten oder um eine Bestellung aufzugebe
 "Benutzen Sie dazu den Befehl `{prefix}ticket create` oder klicken Sie auf die Schaltfläche unten.\n"
 "Sie können dann die Unterbefehle `{prefix}ticket` verwenden, um Ihr Ticket zu verwalten."
 
-#: tickettool\tickettool.py:420
+#: tickettool\tickettool.py:403
 msgid "Choose the reason for open a ticket."
 msgstr "Wählen Sie den Grund für die Eröffnung eines Tickets."
 
-#: tickettool\tickettool.py:538
+#: tickettool\tickettool.py:521
 msgid "Action taken for the ticket system."
 msgstr "Maßnahmen für das Ticketsystem ergriffen."
 
-#: tickettool\tickettool.py:572
+#: tickettool\tickettool.py:555
 msgid "Ticket ID:"
 msgstr "Ticket-ID:"
 
-#: tickettool\tickettool.py:575
+#: tickettool\tickettool.py:558
 msgid "Owned by:"
 msgstr "Im Besitz von:"
 
-#: tickettool\tickettool.py:583
+#: tickettool\tickettool.py:566
 msgid "Channel:"
 msgstr "Kanal:"
 
-#: tickettool\tickettool.py:590
+#: tickettool\tickettool.py:573
 msgid "Closed by:"
 msgstr "Geschlossen von:"
 
-#: tickettool\tickettool.py:598
+#: tickettool\tickettool.py:581
 msgid "Deleted by:"
 msgstr "Gelöscht von:"
 
-#: tickettool\tickettool.py:606
+#: tickettool\tickettool.py:589
 msgid "Closed at:"
 msgstr "Geschlossen am:"
 
-#: tickettool\tickettool.py:613 tickettool\tickettool.py:639
+#: tickettool\tickettool.py:596 tickettool\tickettool.py:622
 msgid "Reason:"
 msgstr "Der Grund:"
 
-#: tickettool\tickettool.py:624
+#: tickettool\tickettool.py:607
 msgid "Ticket [{ticket.profile}] {ticket.id} - Action taken"
 msgstr "Ticket [{ticket.profile}] {ticket.id} - Maßnahme ergriffen"
 
-#: tickettool\tickettool.py:704
+#: tickettool\tickettool.py:687
 msgid "You're not in a ticket."
 msgstr "Sie haben keinen Strafzettel bekommen."
 
-#: tickettool\tickettool.py:708
+#: tickettool\tickettool.py:691
 msgid "This ticket isn't {status}ed."
 msgstr "Dieses Ticket ist nicht {status}."
 
-#: tickettool\tickettool.py:717
+#: tickettool\tickettool.py:700
 msgid "This ticket is {status}."
 msgstr "Dieses Ticket ist {status}."
 
-#: tickettool\tickettool.py:726
+#: tickettool\tickettool.py:709
 msgid "You're not allowed to lock this ticket."
 msgstr "Sie dürfen dieses Ticket nicht sperren."
 
-#: tickettool\tickettool.py:769
+#: tickettool\tickettool.py:752
 msgid "You're not allowed to view this ticket."
 msgstr "Sie sind nicht berechtigt, dieses Ticket zu sehen."
 
-#: tickettool\tickettool.py:798
+#: tickettool\tickettool.py:786
+msgid "Please provide a profile."
+msgstr "Bitte erstellen Sie ein Profil."
+
+#: tickettool\tickettool.py:789
+msgid "No profile has been created on this server."
+msgstr "Auf diesem Server wurde noch kein Profil erstellt."
+
+#: tickettool\tickettool.py:797
+msgid "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
+msgstr "Das Ticketsystem ist auf diesem Server nicht aktiviert. Bitten Sie einen Administrator dieses Servers, es mit den Unterbefehlen `{ctx.prefix}settickettool` zu konfigurieren."
+
+#: tickettool\tickettool.py:803
+msgid "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
+msgstr "Die Kategorie `open` oder die Kategorie `close` wurde nicht konfiguriert. Bitten Sie einen Administrator dieses Servers, die Unterbefehle \"{ctx.prefix}settickettool\" zu verwenden, um sie zu konfigurieren."
+
+#: tickettool\tickettool.py:810
+msgid "Sorry. You have already reached the limit of {limit} open tickets."
+msgstr "Entschuldigung. Sie haben bereits das Limit von {limit} offenen Tickets erreicht."
+
+#: tickettool\tickettool.py:821
+msgid "The bot does not have `manage_channels` permission on the `open` and `close` categories to allow the ticket system to function properly. Please notify an administrator of this server."
+msgstr "Der Bot hat nicht die Berechtigung `manage_channels` für die Kategorien `open` und `close`, damit das Ticketsystem richtig funktioniert. Bitte benachrichtigen Sie einen Administrator dieses Servers."
+
+#: tickettool\tickettool.py:830
+msgid "The bot does not have `manage_channel` permission in the forum channel to allow the ticket system to function properly. Please notify an administrator of this server."
+msgstr "Der Bot hat nicht die Berechtigung `manage_channel` im Forumskanal, damit das Ticketsystem richtig funktioniert. Bitte benachrichtigen Sie einen Administrator dieses Servers."
+
+#: tickettool\tickettool.py:875
+msgid "Please provide the required informations by clicking on the button below."
+msgstr "Bitte geben Sie die erforderlichen Informationen an, indem Sie auf die Schaltfläche unten klicken."
+
+#: tickettool\tickettool.py:926
 #, docstring
 msgid "Create a Ticket.\n\n"
 "        If only one profile has been created on this server, you don't need to specify its name.\n"
@@ -340,31 +367,24 @@ msgstr "Erstellen Sie ein Ticket.\n\n"
 "        Wenn auf diesem Server nur ein Profil erstellt wurde, müssen Sie dessen Namen nicht angeben.\n"
 "        "
 
-#: tickettool\tickettool.py:813
-msgid "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
-msgstr "Das Ticketsystem ist auf diesem Server nicht aktiviert. Bitten Sie einen Administrator dieses Servers, es mit den Unterbefehlen `{ctx.prefix}settickettool` zu konfigurieren."
+#: tickettool\tickettool.py:942
+#, docstring
+msgid "Create a Ticket for a member.\n\n"
+"        If only one profile has been created on this server, you don't need to specify its name.\n"
+"        "
+msgstr "Erstellen Sie ein Ticket für ein Mitglied.\n\n"
+"        Wenn auf diesem Server nur ein Profil erstellt wurde, müssen Sie den Namen nicht angeben.\n"
+"        "
 
-#: tickettool\tickettool.py:819
-msgid "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
-msgstr "Die Kategorie `open` oder die Kategorie `close` wurde nicht konfiguriert. Bitten Sie einen Administrator dieses Servers, die Unterbefehle \"{ctx.prefix}settickettool\" zu verwenden, um sie zu konfigurieren."
+#: tickettool\tickettool.py:947
+msgid "You cannot create a ticket for a bot."
+msgstr "Sie können kein Ticket für einen Bot erstellen."
 
-#: tickettool\tickettool.py:826
-msgid "Sorry. You have already reached the limit of {limit} open tickets."
-msgstr "Entschuldigung. Sie haben bereits das Limit von {limit} offenen Tickets erreicht."
+#: tickettool\tickettool.py:950
+msgid "You cannot create a ticket for a member with a higher or equal role."
+msgstr "Sie können kein Ticket für ein Mitglied mit einer höheren oder gleichen Rolle erstellen."
 
-#: tickettool\tickettool.py:837
-msgid "The bot does not have `manage_channels` permission on the `open` and `close` categories to allow the ticket system to function properly. Please notify an administrator of this server."
-msgstr "Der Bot hat nicht die Berechtigung `manage_channels` für die Kategorien `open` und `close`, damit das Ticketsystem richtig funktioniert. Bitte benachrichtigen Sie einen Administrator dieses Servers."
-
-#: tickettool\tickettool.py:846
-msgid "The bot does not have `manage_channel` permission in the forum channel to allow the ticket system to function properly. Please notify an administrator of this server."
-msgstr "Der Bot hat nicht die Berechtigung `manage_channel` im Forumskanal, damit das Ticketsystem richtig funktioniert. Bitte benachrichtigen Sie einen Administrator dieses Servers."
-
-#: tickettool\tickettool.py:877
-msgid "Please provide the required informations by clicking on the button below."
-msgstr "Bitte geben Sie die erforderlichen Informationen an, indem Sie auf die Schaltfläche unten klicken."
-
-#: tickettool\tickettool.py:930
+#: tickettool\tickettool.py:970
 #, docstring
 msgid "Export all the messages of an existing Ticket in html format.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
@@ -373,50 +393,50 @@ msgstr "Exportiert alle Nachrichten eines bestehenden Tickets im html-Format.\n"
 "        Bitte beachten Sie: Alle Anhänge und Benutzeravatare werden mit dem Discord-Link in dieser Datei gespeichert.\n"
 "        "
 
-#: tickettool\tickettool.py:947
+#: tickettool\tickettool.py:987
 msgid "Here is the html file of the transcript of all the messages in this ticket.\n"
 "Please note: all attachments and user avatars are saved with the Discord link in this file."
 msgstr "Hier ist die html-Datei der Abschrift aller Nachrichten in diesem Ticket.\n"
 "Bitte beachten Sie: Alle Anhänge und Benutzeravatare werden mit dem Discord-Link in dieser Datei gespeichert."
 
-#: tickettool\tickettool.py:979
+#: tickettool\tickettool.py:1019
 #, docstring
 msgid "Open an existing Ticket."
 msgstr "Öffnen Sie ein bestehendes Ticket."
 
-#: tickettool\tickettool.py:984
+#: tickettool\tickettool.py:1024
 msgid "The ticket system is not enabled on this server."
 msgstr "Das Ticketsystem ist auf diesem Server nicht aktiviert."
 
-#: tickettool\tickettool.py:1010
+#: tickettool\tickettool.py:1050
 #, docstring
 msgid "Close an existing Ticket."
 msgstr "Schließen Sie ein bestehendes Ticket."
 
-#: tickettool\tickettool.py:1021
+#: tickettool\tickettool.py:1061
 msgid "Do you really want to close the ticket {ticket.id}?"
 msgstr "Wollen Sie das Ticket {ticket.id}wirklich schließen?"
 
-#: tickettool\tickettool.py:1057
+#: tickettool\tickettool.py:1097
 #, docstring
 msgid "Lock an existing Ticket."
 msgstr "Ein bestehendes Ticket sperren."
 
-#: tickettool\tickettool.py:1064
+#: tickettool\tickettool.py:1104
 msgid "Do you really want to lock the ticket {ticket.id}?"
 msgstr "Wollen Sie das Ticket {ticket.id}wirklich sperren?"
 
-#: tickettool\tickettool.py:1099
+#: tickettool\tickettool.py:1139
 #, docstring
 msgid "Unlock an existing locked Ticket."
 msgstr "Entsperren Sie ein vorhandenes gesperrtes Ticket."
 
-#: tickettool\tickettool.py:1127
+#: tickettool\tickettool.py:1167
 #, docstring
 msgid "Rename an existing Ticket."
 msgstr "Ein bestehendes Ticket umbenennen."
 
-#: tickettool\tickettool.py:1153
+#: tickettool\tickettool.py:1193
 #, docstring
 msgid "Delete an existing Ticket.\n\n"
 "        If a logs channel is defined, an html file containing all the messages of this ticket will be generated.\n"
@@ -427,138 +447,138 @@ msgstr "Ein bestehendes Ticket löschen.\n\n"
 "        (Anhänge werden nicht unterstützt, da sie mit ihrem Discord-Link gespeichert werden)\n"
 "        "
 
-#: tickettool\tickettool.py:1162
+#: tickettool\tickettool.py:1202
 msgid "Do you really want to delete all the messages of the ticket {ticket.id}?"
 msgstr "Möchten Sie wirklich alle Nachrichten auf dem Ticket {ticket.id}löschen?"
 
-#: tickettool\tickettool.py:1166
+#: tickettool\tickettool.py:1206
 msgid "If a logs channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link.)"
 msgstr "Wenn ein Protokollkanal definiert ist, wird eine Html-Datei mit allen Nachrichten zu diesem Ticket erstellt. (Anhänge werden nicht unterstützt, da sie mit ihrem Discord-Link gespeichert werden.)"
 
-#: tickettool\tickettool.py:1202
+#: tickettool\tickettool.py:1242
 #, docstring
 msgid "Claim an existing Ticket."
 msgstr "Beanspruchen Sie ein bestehendes Ticket."
 
-#: tickettool\tickettool.py:1226
+#: tickettool\tickettool.py:1266
 #, docstring
 msgid "Unclaim an existing Ticket."
 msgstr "Beanspruchen Sie ein bestehendes Ticket zurück."
 
-#: tickettool\tickettool.py:1252
+#: tickettool\tickettool.py:1292
 #, docstring
 msgid "Change the owner of an existing Ticket."
 msgstr "Ändern Sie den Besitzer eines bestehenden Tickets."
 
-#: tickettool\tickettool.py:1278
+#: tickettool\tickettool.py:1318
 #, docstring
 msgid "Add a member to an existing Ticket."
 msgstr "Hinzufügen eines Mitglieds zu einem bestehenden Ticket."
 
-#: tickettool\tickettool.py:1303
+#: tickettool\tickettool.py:1343
 #, docstring
 msgid "Remove a member to an existing Ticket."
 msgstr "Entfernen Sie ein Mitglied aus einem bestehenden Ticket."
 
-#: tickettool\tickettool.py:1317
+#: tickettool\tickettool.py:1357
 #, docstring
 msgid "List the existing Tickets for a profile. You can provide a status and/or a ticket owner."
 msgstr "Listet die vorhandenen Tickets für ein Profil auf. Sie können einen Status und/oder einen Ticketbesitzer angeben."
 
-#: tickettool\tickettool.py:1338
+#: tickettool\tickettool.py:1378
 msgid "No tickets to show."
 msgstr "Keine Tickets zu zeigen."
 
-#: tickettool\tickettool.py:1379
+#: tickettool\tickettool.py:1419
 msgid "The profile for which this button was configured no longer exists."
 msgstr "Das Profil, für das diese Schaltfläche konfiguriert wurde, existiert nicht mehr."
 
-#: tickettool\tickettool.py:1442 tickettool\tickettool.py:1501
-#: tickettool\tickettool.py:1505 tickettool\tickettool.py:1523
-#: tickettool\tickettool.py:1527 tickettool\tickettool.py:1547
-#: tickettool\tickettool.py:1551 tickettool\tickettool.py:1621
-#: tickettool\tickettool.py:1625
+#: tickettool\tickettool.py:1482 tickettool\tickettool.py:1541
+#: tickettool\tickettool.py:1545 tickettool\tickettool.py:1563
+#: tickettool\tickettool.py:1567 tickettool\tickettool.py:1587
+#: tickettool\tickettool.py:1591 tickettool\tickettool.py:1661
+#: tickettool\tickettool.py:1665
 msgid "You are not allowed to execute this command."
 msgstr "Sie sind nicht berechtigt, diesen Befehl auszuführen."
 
-#: tickettool\tickettool.py:1446 tickettool\tickettool.py:1451
-#: tickettool\tickettool.py:1455
+#: tickettool\tickettool.py:1486 tickettool\tickettool.py:1491
+#: tickettool\tickettool.py:1495
 msgid "You have chosen to create a ticket."
 msgstr "Sie haben sich für die Erstellung eines Tickets entschieden."
 
-#: tickettool\tickettool.py:1477
+#: tickettool\tickettool.py:1517
 msgid "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
 msgstr "Sie haben sich entschieden, diese Anfrage zu schließen. Wenn dies nicht der Fall ist, verfügen Sie nicht über die erforderlichen Berechtigungen zur Ausführung dieses Befehls."
 
-#: tickettool\tickettool.py:1509
+#: tickettool\tickettool.py:1549
 msgid "You have chosen to re-open this ticket."
 msgstr "Sie haben sich entschieden, dieses Ticket erneut zu öffnen."
 
-#: tickettool\tickettool.py:1531
+#: tickettool\tickettool.py:1571
 msgid "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
 msgstr "Sie haben sich entschieden, dieses Ticket zu beanspruchen. Wenn dies nicht der Fall ist, verfügen Sie nicht über die erforderlichen Berechtigungen, um diesen Befehl auszuführen."
 
-#: tickettool\tickettool.py:1571
+#: tickettool\tickettool.py:1611
 msgid "This message is not in TicketTool config."
 msgstr "Diese Meldung ist nicht in der TicketTool-Konfiguration enthalten."
 
-#: tickettool\tickettool.py:1580
+#: tickettool\tickettool.py:1620
 msgid "The profile for which this dropdown was configured no longer exists."
 msgstr "Das Profil, für das dieses Dropdown konfiguriert wurde, existiert nicht mehr."
 
-#: tickettool\tickettool.py:1647 tickettool\tickettool.py:1654
+#: tickettool\tickettool.py:1687 tickettool\tickettool.py:1694
 msgid "You have chosen to create a ticket with the reason `{reason}`."
 msgstr "Sie haben sich entschieden, ein Ticket mit dem Grund `{reason}` zu erstellen."
 
-#: tickettool\tickettool.py:1800
+#: tickettool\tickettool.py:1840
 msgid "No open tickets by this user in this server."
 msgstr "Keine offenen Tickets von diesem Benutzer auf diesem Server."
 
-#: tickettool\utils.py:155
+#: tickettool\utils.py:143
 msgid "Emoji Label must be An emoji followed by a label, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
 msgstr "Emoji Label muss ein Emoji sein, gefolgt von einem Label und optional von einer Beschreibung und einem Wert (für rename ticket channel), getrennt durch `;`, `,`, `|`, oder `-`."
 
-#: tickettool\utils.py:172
+#: tickettool\utils.py:160
 msgid "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
 msgstr "Fehler beim Parsen von YAML. Bitte stellen Sie sicher, dass das Format gültig ist (ein YAML-Validator kann helfen)"
 
-#: tickettool\utils.py:186
+#: tickettool\utils.py:174
 msgid "You can only have 5 text inputs."
 msgstr "Sie können nur 5 Texteingaben haben."
 
-#: tickettool\utils.py:192
+#: tickettool\utils.py:180
 msgid "The argument `/{count}/{arg}` is required in the YAML."
 msgstr "Das Argument `/{count}/{arg}` ist in der YAML erforderlich."
 
-#: tickettool\utils.py:199
+#: tickettool\utils.py:187
 msgid "The argument `/{count}/{arg}` is invalid in the YAML. Check the spelling."
 msgstr "Das Argument `/{count}/{arg}` ist in der YAML ungültig. Überprüfen Sie die Schreibweise."
 
-#: tickettool\utils.py:205
+#: tickettool\utils.py:193
 msgid "The argument `/modal/{count}/label` must be less than 45 characters long."
 msgstr "Das Argument `/modal/{count}/label` muss weniger als 45 Zeichen lang sein."
 
-#: tickettool\utils.py:215 tickettool\utils.py:221
+#: tickettool\utils.py:203 tickettool\utils.py:209
 msgid "The argument `/{count}/style` must be a number between 1 and 2."
 msgstr "Das Argument `/{count}/style` muss eine Zahl zwischen 1 und 2 sein."
 
-#: tickettool\utils.py:244
+#: tickettool\utils.py:232
 msgid "The argument `/{count}/required` must be a boolean (True or False)."
 msgstr "Das Argument `/{count}/required` muss ein Boolean sein (True oder False)."
 
-#: tickettool\utils.py:254
+#: tickettool\utils.py:242
 msgid "The argument `/modal/{count}/default` must be less than 4000 characters long."
 msgstr "Das Argument `/modal/{count}/default` muss weniger als 4000 Zeichen lang sein."
 
-#: tickettool\utils.py:262
+#: tickettool\utils.py:250
 msgid "The argument `/modal/{count}/placeholder` must be less than 100 characters long."
 msgstr "Das Argument `/modal/{count}/placeholder` muss weniger als 100 Zeichen lang sein."
 
-#: tickettool\utils.py:270
+#: tickettool\utils.py:258
 msgid "The argument `/modal/{count}/min_length` must be between 0 and 4000."
 msgstr "Das Argument `/modal/{count}/min_length` muss zwischen 0 und 4000 liegen."
 
-#: tickettool\utils.py:278
+#: tickettool\utils.py:266
 msgid "The argument `/modal/{count}/max_length` must be between 0 and 4000."
 msgstr "Das Argument `/modal/{count}/max_length` muss zwischen 0 und 4000 liegen."
 

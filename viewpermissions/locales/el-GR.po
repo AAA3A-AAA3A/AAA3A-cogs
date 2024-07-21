@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:42\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:25\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -26,37 +26,37 @@ msgstr "`{argument}` δεν είναι έγκυρο όνομα δικαιώμα�
 msgid "A cog to display permissions for roles and members, at guild level or in a specified channel!"
 msgstr "Ένα γρανάζι για την εμφάνιση δικαιωμάτων για ρόλους και μέλη, σε επίπεδο συντεχνίας ή σε ένα συγκεκριμένο κανάλι!"
 
-#: viewpermissions\viewpermissions.py:202
+#: viewpermissions\viewpermissions.py:197
 msgid "Advanced "
 msgstr "Προχωρημένο "
 
-#: viewpermissions\viewpermissions.py:202
-#: viewpermissions\viewpermissions.py:256
+#: viewpermissions\viewpermissions.py:197
+#: viewpermissions\viewpermissions.py:251
 msgid "View Permissions"
 msgstr "Προβολή δικαιωμάτων"
 
-#: viewpermissions\viewpermissions.py:209
-#: viewpermissions\viewpermissions.py:261
+#: viewpermissions\viewpermissions.py:204
+#: viewpermissions\viewpermissions.py:256
 msgid "\n"
 "**Role(s):** {roles}"
 msgstr "\n"
 "**Ρόλος(-οι):** {roles}"
 
-#: viewpermissions\viewpermissions.py:213
-#: viewpermissions\viewpermissions.py:265
+#: viewpermissions\viewpermissions.py:208
+#: viewpermissions\viewpermissions.py:260
 msgid "\n"
 "**Member(s):** {members}"
 msgstr "\n"
 "**Μέλη:** {members}"
 
-#: viewpermissions\viewpermissions.py:219
+#: viewpermissions\viewpermissions.py:214
 msgid "\n"
 "**Channel:** {channel}"
 msgstr "\n"
 "**Κανάλι:** {channel}"
 
-#: viewpermissions\viewpermissions.py:223
-#: viewpermissions\viewpermissions.py:271
+#: viewpermissions\viewpermissions.py:218
+#: viewpermissions\viewpermissions.py:266
 msgid "\n"
 "**Permission(s) checked:** {permissions}"
 msgstr "\n"

@@ -1,0 +1,208 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/seen/locales/messages.pot\n"
+"X-Crowdin-File-ID: 150\n"
+"Language: tr_TR\n"
+
+#: seen\seen.py:24
+#, docstring
+msgid "A cog to check when a member/role/channel/category/user/guild was last active!"
+msgstr "Bir üyenin/rolün/kanalın/kategorinin/kullanıcının/sunucunun en son ne zaman aktif olduğunu kontrol etmek için bir cog!"
+
+#: seen\seen.py:931
+msgid "[This message]({message_link}) has been sent by {member_mention}."
+msgstr "[Bu mesaj]({message_link}) {member_mention} tarafından gönderildi."
+
+#: seen\seen.py:935
+msgid "[This message]({message_link}) has been edited by {member_mention}."
+msgstr "[Bu mesaj]({message_link}) {member_mention} tarafından düzenlendi."
+
+#: seen\seen.py:939
+msgid "The reaction {reaction} has been added to [this message]({message_link}) by {member_mention}."
+msgstr "{reaction} tepkisi [bu mesaja]({message_link}) {member_mention} tarafından eklendi."
+
+#: seen\seen.py:947
+msgid "The reaction {reaction} has been removed to the [this message]({message_link}) by {member_mention}."
+msgstr "{reaction} tepkisi [bu mesajdan]({message_link}) {member_mention} tarafından kaldırıldı."
+
+#: seen\seen.py:979
+msgid "This {object_type} is in the ignored users list (`{prefix}seen ignoreme`)."
+msgstr "Bu {object_type} görmezden gelinen kullanıcılar listesinde (`{prefix}seen ignoreme`)."
+
+#: seen\seen.py:1046
+msgid "**The user {_object.mention} was seen {seen}.**"
+msgstr "**Kullanıcı {_object.mention} en son {seen} görüldü.**"
+
+#: seen\seen.py:1054
+msgid "**The member {_object.mention} was seen {seen}.**"
+msgstr "**Üye {_object.mention} en son {seen} görüldü.**"
+
+#: seen\seen.py:1062
+msgid "**The role {_object.mention} was seen {seen}.**"
+msgstr "**Rol {_object.mention} en son {seen} görüldü.**"
+
+#: seen\seen.py:1070
+msgid "**The text channel {_object.mention} was seen {seen}.**"
+msgstr "**Metin kanalı {_object.mention} en son {seen} görüldü.**"
+
+#: seen\seen.py:1078
+msgid "**The category {_object.name} was seen {seen}.**"
+msgstr "**Kategori {_object.name} en son {seen} görüldü.**"
+
+#: seen\seen.py:1086
+msgid "**The guild {_object.name} was seen {seen}.**"
+msgstr "**Sunucu {_object.name} en son {seen} görüldü.**"
+
+#: seen\seen.py:1234
+#, docstring
+msgid "Check when a member was last active!"
+msgstr "Bir üyenin en son ne zaman aktif olduğunu kontrol edin!"
+
+#: seen\seen.py:1254
+#, docstring
+msgid "Check when a role was last active!"
+msgstr "Bir rolün en son ne zaman aktif olduğunu kontrol edin!"
+
+#: seen\seen.py:1273
+#, docstring
+msgid "Check when a channel was last active!"
+msgstr "Bir kanalın en son ne zaman aktif olduğunu kontrol edin!"
+
+#: seen\seen.py:1280
+msgid "You do not have permission to view this channel."
+msgstr "Bu kanalı görüntüleme izniniz yok."
+
+#: seen\seen.py:1296
+#, docstring
+msgid "Check when a category was last active!"
+msgstr "Bir kategorinin en son ne zaman aktif olduğunu kontrol edin!"
+
+#: seen\seen.py:1308
+msgid "You do not have permission to view any of the channels in this category."
+msgstr "Bu kategorideki kanallardan herhangi birini görüntüleme izniniz yok."
+
+#: seen\seen.py:1325
+#, docstring
+msgid "Check when a old member was last active!"
+msgstr "Eski bir üyenin en son ne zaman aktif olduğunu kontrol edin!"
+
+#: seen\seen.py:1353
+#, docstring
+msgid "Check when a guild was last active!"
+msgstr "Bir sunucunun en son ne zaman aktif olduğunu kontrol edin!"
+
+#: seen\seen.py:1373
+#, docstring
+msgid "Check when a user was last active!"
+msgstr "Bir kullanıcının en son ne zaman aktif olduğunu kontrol edin!"
+
+#: seen\seen.py:1392
+#, docstring
+msgid "Check when a old user was last active!"
+msgstr "Eski bir kullanıcının en son ne zaman aktif olduğunu kontrol edin!"
+
+#: seen\seen.py:1417
+#, docstring
+msgid "View a Seen Board for members/roles/channels/categories/guilds/users!\n\n"
+"        `bots` is a parameter for `members` and `users`. `include_role` and `exclude_role` are parameters for only `members`.\n"
+"        "
+msgstr "Üyeler/roller/kanallar/kategoriler/sunucular/kullanıcılar için bir Görüldü Panosu görüntüleyin!\n\n"
+"        `bots`, `üyeler` ve `kullanıcılar` için bir parametredir. `include_role` ve `exclude_role` yalnızca `üyeler` için parametrelerdir.\n"
+"        "
+
+#: seen\seen.py:1423
+msgid "You're not allowed to view the Seen board for guilds and users."
+msgstr "Sunucular ve kullanıcılar için Görüldü panosunu görüntüleme izniniz yok."
+
+#: seen\seen.py:1438
+#, docstring
+msgid "Get Config data stats."
+msgstr "Yapılandırma verileri istatistiklerini alın."
+
+#: seen\seen.py:1472
+#, docstring
+msgid "Enable or disable a listener."
+msgstr "Bir dinleyiciyi etkinleştirin veya devre dışı bırakın."
+
+#: seen\seen.py:1478
+msgid "Listener enabled for this/these type(s)."
+msgstr "Bu türler için dinleyici etkinleştirildi."
+
+#: seen\seen.py:1480
+msgid "Listener disabled for this/these type(s)."
+msgstr "Bu türler için dinleyici devre dışı bırakıldı."
+
+#: seen\seen.py:1484
+#, docstring
+msgid "Asking Seen to ignore your actions."
+msgstr "Görüldü'den eylemlerinizi görmezden gelmesini isteme."
+
+#: seen\seen.py:1492
+msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
+msgstr "Bu cog tarafından artık görülmeyeceksiniz ve sizinle ilgili veriler silindi."
+
+#: seen\seen.py:1499
+msgid "You'll be seen again by this cog."
+msgstr "Bu cog tarafından tekrar görüleceksiniz."
+
+#: seen\seen.py:1504
+#, docstring
+msgid "Ignore or unignore a specific user."
+msgstr "Belirli bir kullanıcıyı görmezden gel veya görmezden gelme."
+
+#: seen\seen.py:1511
+msgid "{user.mention} ({user.id}) will no longer be seen by this cog, and their data has been deleted."
+msgstr "{user.mention} ({user.id}) bu cog tarafından artık görülmeyecek ve verileri silindi."
+
+#: seen\seen.py:1520
+msgid "{user.mention} ({user.id}) will be seen again by this cog."
+msgstr "{user.mention} ({user.id}) bu cog tarafından tekrar görülecek."
+
+#: seen\seen.py:1528
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Döngü durumunu kontrol etmek için bir gömme alın."
+
+#: seen\seen.py:1539
+#, docstring
+msgid "Purge Config for a specified _type or all."
+msgstr "Belirtilen bir _type veya tümü için Yapılandırmayı temizleyin."
+
+#: seen\seen.py:1546
+msgid "All Seen data purged."
+msgstr "Tüm Görüldü verileri temizlendi."
+
+#: seen\seen.py:1558
+msgid "Seen data purged for this type."
+msgstr "Bu tür için Görüldü verileri temizlendi."
+
+#: seen\seen.py:1563
+#, docstring
+msgid "Migrate Seen from Seen by Aikaterna."
+msgstr "Görüldü'yu Aikaterna tarafından Görüldü'den taşıyın."
+
+#: seen\seen.py:1570
+msgid "Seen by Aikaterna has no data in this bot."
+msgstr "Aikaterna tarafından Görüldü bu botta veri içermiyor."
+
+#: seen\seen.py:1574
+msgid "Seen by Aikaterna use an old/new data schema version and isn't compatible with this cog actually."
+msgstr "Aikaterna tarafından Görüldü, eski/yeni bir veri şeması sürümü kullanıyor ve aslında bu cog ile uyumlu değil."
+
+#: seen\seen.py:1637
+msgid "Data successfully migrated from Seen by Aikaterna."
+msgstr "Veriler başarıyla Aikaterna tarafından Görüldü'den taşındı."
+

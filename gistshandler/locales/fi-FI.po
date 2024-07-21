@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:23\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:23\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Luetteloa ei löydy."
 msgid "A cog to create new Gists and edit/delete existing ones!"
 msgstr "Ohjain uusien Gistien luomiseen ja olemassa olevien muokkaamiseen/poistaamiseen!"
 
-#: gistshandler\gistshandler.py:85
+#: gistshandler\gistshandler.py:77
 msgid "You need to set up a GitHub token with `{ctx.prefix}set api github token,[TOKEN]` first!"
 msgstr "Sinun on ensin määritettävä GitHub-tunniste komennolla `{ctx.prefix}set api github token,[TOKEN]`!"
 

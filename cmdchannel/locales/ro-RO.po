@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-08-10 13:42+0200\n"
-"PO-Revision-Date: 2024-04-10 12:36\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:18\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "A cog to send the result of a command to another channel!"
 msgstr "O rotiță pentru a trimite rezultatul unei comenzi către un alt canal!"
 
-#: cmdchannel\cmdchannel.py:86
+#: cmdchannel\cmdchannel.py:75
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice.\n"
 "        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
@@ -33,11 +33,11 @@ msgstr "Acționați ca și cum comanda ar fi fost tastată pe canalul ales de du
 "        Utilizați `[p]cmdchannel`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:94 cmdchannel\cmdchannel.py:162
+#: cmdchannel\cmdchannel.py:83 cmdchannel\cmdchannel.py:151
 msgid "To send commands to another server, you must be there."
 msgstr "Pentru a trimite comenzi către un alt server, trebuie să fiți acolo."
 
-#: cmdchannel\cmdchannel.py:117
+#: cmdchannel\cmdchannel.py:106
 #, docstring
 msgid "Act as if the command had been typed by imitating the specified user.\n"
 "        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
@@ -48,11 +48,11 @@ msgstr "Acționează ca și cum comanda ar fi fost tastată, imitând utilizator
 "        Utilizați `[p]cmduser`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:126 cmdchannel\cmdchannel.py:167
+#: cmdchannel\cmdchannel.py:115 cmdchannel\cmdchannel.py:156
 msgid "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
 msgstr "Pentru a putea executa o comandă ca un alt utilizator, trebuie să fie încărcat Cog Dev, pentru a vă asigura că știți ce faceți."
 
-#: cmdchannel\cmdchannel.py:150
+#: cmdchannel\cmdchannel.py:139
 #, docstring
 msgid "Act as if the command had been typed in the channel of your choice by imitating the specified user.\n"
 "        The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.\n\n"
@@ -63,24 +63,24 @@ msgstr "Acționează ca și cum comanda ar fi fost tastată pe canalul ales de d
 "        Utilizați `[p]cmduserchannel`!\n"
 "        "
 
-#: cmdchannel\cmdchannel.py:184
+#: cmdchannel\cmdchannel.py:173
 #, docstring
 msgid "Test variables."
 msgstr "Variabile de testare."
 
-#: cmdchannel\cmdchannel.py:186
+#: cmdchannel\cmdchannel.py:175
 msgid "Testvar"
 msgstr "Testvar"
 
-#: cmdchannel\cmdchannel.py:187
+#: cmdchannel\cmdchannel.py:176
 msgid "Variables:"
 msgstr "Variabile:"
 
-#: cmdchannel\cmdchannel.py:188
+#: cmdchannel\cmdchannel.py:177
 msgid "Author:"
 msgstr "Autor:"
 
-#: cmdchannel\cmdchannel.py:189
+#: cmdchannel\cmdchannel.py:178
 msgid "Channel:"
 msgstr "Canal:"
 

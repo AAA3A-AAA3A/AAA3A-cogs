@@ -1,0 +1,45 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/calculator/locales/messages.pot\n"
+"X-Crowdin-File-ID: 76\n"
+"Language: tr_TR\n"
+
+#: calculator\calculator.py:29
+#, docstring
+msgid "A cog to do calculations from Discord with buttons!"
+msgstr "Düğmelerle Discord'da hesaplama yapmak için bir cog!"
+
+#: calculator\calculator.py:151 calculator\calculator.py:281
+#: calculator\view.py:207 calculator\view.py:214
+msgid "Error!"
+msgstr "Hata!"
+
+#: calculator\calculator.py:164
+msgid "{ctx.me.display_name}'s Calculator"
+msgstr "{ctx.me.display_name} Hesap Makinesi"
+
+#: calculator\view.py:17 calculator\view.py:84
+msgid "Exit"
+msgstr "Çıkış"
+
+#: calculator\view.py:37 calculator\view.py:104
+msgid "Clear"
+msgstr "Temizle"
+
+#: calculator\view.py:280
+msgid "Nothing in your history."
+msgstr "Geçmişinizde bir şey yok."
+

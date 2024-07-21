@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dev/locales/messages.pot\n"
+"X-Crowdin-File-ID: 263\n"
+"Language: tr_TR\n"
+
+#: dev\dev.py:468
+#, docstring
+msgid "Various development focused utilities!"
+msgstr "Çeşitli geliştirme odaklı araçlar!"
+
+#: dev\dev.py:745 dev\dev.py:807 dev\dev.py:1014
+msgid "Unreadable attachment with `utf-8`."
+msgstr "`utf-8` ile okunamayan ek."
+
+#: dev\dev.py:762
+msgid "This message isn't reachable."
+msgstr "Bu mesaja ulaşılamıyor."
+
+#: dev\dev.py:868
+msgid "Already running a REPL session in this channel. Exit it with `quit`."
+msgstr "Bu kanalda zaten bir REPL oturumu çalışıyor. `quit` ile çıkın."
+
+#: dev\dev.py:872
+msgid "Already running a REPL session in this channel. Resume the REPL with `{prefix}replresume`."
+msgstr "Bu kanalda zaten bir REPL oturumu çalışıyor. REPL'yi `{prefix}replresume` ile devam ettirin."
+
+#: dev\dev.py:884
+msgid "Enter code to execute or evaluate. `exit()` or `quit` to exit. `{prefix}replpause` to pause."
+msgstr "Yürütmek veya değerlendirmek için kod girin. Çıkmak için `exit()` veya `quit`. Duraklatmak için `{prefix}replpause`."
+
+#: dev\dev.py:929
+msgid "Exiting."
+msgstr "Çıkılıyor."
+
+#: dev\dev.py:937
+msgid "There is no currently running REPL session in this channel."
+msgstr "Bu kanalda şu anda çalışan bir REPL oturumu yok."
+
+#: dev\dev.py:943
+msgid "The REPL session in this channel has been resumed."
+msgstr "Bu kanaldaki REPL oturumu devam ettirildi."
+
+#: dev\dev.py:945
+msgid "The REPL session in this channel is now paused."
+msgstr "Bu kanaldaki REPL oturumu şimdi duraklatıldı."
+
+#: dev\dev.py:967
+msgid "Bot owners will now bypass all commands with cooldowns{optional_duration}."
+msgstr "Bot sahipleri artık bekleme süresi olan tüm komutları atlayacak{optional_duration}."
+
+#: dev\dev.py:977
+msgid "Bot owners will no longer bypass all commands with cooldowns{optional_duration}."
+msgstr "Bot sahipleri artık bekleme süresi olan tüm komutları atlamayacak{optional_duration}."
+
+#: dev\dev.py:1103
+#, docstring
+msgid "Display all Dev environment values."
+msgstr "Tüm Geliştirici ortamı değerlerini göster."
+
+#: dev\dev.py:1112
+#, docstring
+msgid "Reset its own locals in evals."
+msgstr "Değerlendirmelerde kendi yerel değişkenlerini sıfırla."
+
+#: dev\view.py:38
+msgid "Execute"
+msgstr "Yürüt"
+
+#: dev\view.py:40
+msgid "Code to Execute"
+msgstr "Yürütülecek Kod"
+
+#: dev\view.py:42
+msgid "Write your code here..."
+msgstr "Kodunuzu buraya yazın..."
+

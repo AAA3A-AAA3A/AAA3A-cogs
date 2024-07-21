@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/transferchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 104\n"
+"Language: tr_TR\n"
+
+#: transferchannel\transferchannel.py:24
+#: transferchannel\transferchannel.py:334
+#: transferchannel\transferchannel.py:368
+msgid "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+msgstr "{count_messages} mesaj {source.mention} kanalından {destination.mention} kanalına aktarıldı."
+
+#: transferchannel\transferchannel.py:46
+#, docstring
+msgid "A cog to transfer messages from a channel to another channel, with many options!"
+msgstr "Mesajları bir kanaldan başka bir kanala aktarmak için birçok seçeneğe sahip bir cog!"
+
+#: transferchannel\transferchannel.py:94
+msgid "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
+msgstr "Üzgünüm, {source.mention} ({source.id}) kanalındaki mesajların içeriğini okuyamıyorum."
+
+#: transferchannel\transferchannel.py:101
+msgid "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id})."
+msgstr "Mesajları gömmeli olarak gönderebilmek için {destination.guild.name} ({destination.guild.id}) sunucusunda tüm izinlere sahip olmam gerekiyor."
+
+#: transferchannel\transferchannel.py:107
+msgid "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id}). You can use embeds or text messages by adding `embeds`/`messages` to your command."
+msgstr "Webhook oluşturabilmek için {destination.guild.name} ({destination.guild.id}) sunucusunda tüm izinlere sahip olmam gerekiyor. Komutunuza `embeds`/`messages` ekleyerek gömülü mesajları veya metin mesajlarını kullanabilirsiniz."
+
+#: transferchannel\transferchannel.py:155
+msgid "Sorry. I could not find any messages."
+msgstr "Üzgünüm. Hiçbir mesaj bulamadım."
+
+#: transferchannel\transferchannel.py:236
+msgid "**Author:** {message.author.mention} ({message.author.id})"
+msgstr "**Yazar:** {message.author.mention} ({message.author.id})"
+
+#: transferchannel\transferchannel.py:239
+msgid "**Channel:** <#{message.channel.id}>"
+msgstr "**Kanal:** <#{message.channel.id}>"
+
+#: transferchannel\transferchannel.py:240
+msgid "**Time (UTC):** {iso_format}"
+msgstr "**Zaman (UTC):** {iso_format}"
+
+#: transferchannel\transferchannel.py:290
+#, docstring
+msgid "Transfer all messages from a channel to another channel. This might take a long time.\n\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Bir kanaldaki tüm mesajları başka bir kanala aktarın. Bu uzun sürebilir.\n\n"
+"        Diğer kullanıcıların mesajlarını aktarmanın Hizmet Koşullarına uymadığını unutmayın.\n"
+"        "
+
+#: transferchannel\transferchannel.py:318
+#, docstring
+msgid "Transfer a specific message to another channel. This might take a long time.\n\n"
+"        Specify the message to transfer, with its ID or its link.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Belirli bir mesajı başka bir kanala aktarın. Bu uzun sürebilir.\n\n"
+"        Aktarılacak mesajı, ID'si veya bağlantısı ile belirtin.\n"
+"        Diğer kullanıcıların mesajlarını aktarmanın Hizmet Koşullarına uymadığını unutmayın.\n"
+"        "
+
+#: transferchannel\transferchannel.py:351
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the number of messages since the end of the channel.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Bir kanaldaki mesajların bir kısmını başka bir kanala aktarın. Bu uzun sürebilir.\n\n"
+"        Kanalın sonundan itibaren mesaj sayısını belirtin.\n"
+"        Diğer kullanıcıların mesajlarını aktarmanın Hizmet Koşullarına uymadığını unutmayın.\n"
+"        "
+
+#: transferchannel\transferchannel.py:383
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the before message (id or link) or a valid Discord snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Bir kanaldaki mesajların bir kısmını başka bir kanala aktarın. Bu uzun sürebilir.\n\n"
+"        Önceki mesajı (ID veya bağlantı) veya geçerli bir Discord snowflake belirtin.\n"
+"        Diğer kullanıcıların mesajlarını aktarmanın Hizmet Koşullarına uymadığını unutmayın.\n"
+"        "
+
+#: transferchannel\transferchannel.py:415
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the after message (id or link) or a valid Discord snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Bir kanaldaki mesajların bir kısmını başka bir kanala aktarın. Bu uzun sürebilir.\n\n"
+"        Sonraki mesajı (ID veya bağlantı) veya geçerli bir Discord snowflake belirtin.\n"
+"        Diğer kullanıcıların mesajlarını aktarmanın Hizmet Koşullarına uymadığını unutmayın.\n"
+"        "
+
+#: transferchannel\transferchannel.py:448
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the between messages (id or link) or a valid snowflake.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Bir kanaldaki mesajların bir kısmını başka bir kanala aktarın. Bu uzun sürebilir.\n\n"
+"        Arasındaki mesajları (ID veya bağlantı) veya geçerli bir snowflake belirtin.\n"
+"        Diğer kullanıcıların mesajlarını aktarmanın Hizmet Koşullarına uymadığını unutmayın.\n"
+"        "
+
+#: transferchannel\transferchannel.py:481
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the user/member (id, name or mention).\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Bir kanaldaki mesajların bir kısmını başka bir kanala aktarın. Bu uzun sürebilir.\n\n"
+"        Kullanıcıyı/üyeyi belirtin (ID, isim veya bahsetme).\n"
+"        Diğer kullanıcıların mesajlarını aktarmanın Hizmet Koşullarına uymadığını unutmayın.\n"
+"        "
+
+#: transferchannel\transferchannel.py:514
+#, docstring
+msgid "Transfer a part of the messages from a channel to another channel. This might take a long time.\n\n"
+"        Specify the bool option.\n"
+"        Remember that transfering other users' messages does not respect the TOS.\n"
+"        "
+msgstr "Bir kanaldaki mesajların bir kısmını başka bir kanala aktarın. Bu uzun sürebilir.\n\n"
+"        Bool seçeneğini belirtin.\n"
+"        Diğer kullanıcıların mesajlarını aktarmanın Hizmet Koşullarına uymadığını unutmayın.\n"
+"        "
+

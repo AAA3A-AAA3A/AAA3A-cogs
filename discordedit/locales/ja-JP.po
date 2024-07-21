@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:38\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:21\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -865,20 +865,20 @@ msgstr "テキストチャンネル {channel.mention} ({channel.id}) を本当�
 msgid "View and edit text channel."
 msgstr "テキストチャンネルの表示と編集"
 
-#: discordedit\editthread.py:103
+#: discordedit\editthread.py:91
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "絵文字 役割は絵文字の後に `;`, `,`, `|`, `-` のいずれかで区切られた役割でなければなりません。"
 
-#: discordedit\editthread.py:113
+#: discordedit\editthread.py:101
 #, docstring
 msgid "A cog to edit threads!"
 msgstr "スレッドを編集するためのコグです！"
 
-#: discordedit\editthread.py:134
+#: discordedit\editthread.py:122
 msgid "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission."
 msgstr "スレッド {thread.mention} ({thread.id}) は `manage_channel` 権限がないため編集することができません。"
 
-#: discordedit\editthread.py:158
+#: discordedit\editthread.py:146
 #, docstring
 msgid "Create a thread.\n\n"
 "        You'll join it automatically.\n"
@@ -887,51 +887,51 @@ msgstr "スレッドを作成してください。\n\n"
 "        自動的に参加します。\n"
 "        "
 
-#: discordedit\editthread.py:182
+#: discordedit\editthread.py:170
 #, docstring
 msgid "List all threads in the current guild."
 msgstr "現在のギルドの全スレッドを一覧表示します。"
 
-#: discordedit\editthread.py:190
+#: discordedit\editthread.py:178
 msgid "List of threads in {guild.name} ({guild.id})"
 msgstr "{guild.name} のスレッド一覧 ({guild.id})"
 
-#: discordedit\editthread.py:206
+#: discordedit\editthread.py:194
 #, docstring
 msgid "Edit thread name."
 msgstr "スレッド名を編集する。"
 
-#: discordedit\editthread.py:227
+#: discordedit\editthread.py:215
 #, docstring
 msgid "Edit thread archived."
 msgstr "編集スレッドをアーカイブ化しました。"
 
-#: discordedit\editthread.py:249
+#: discordedit\editthread.py:237
 #, docstring
 msgid "Edit thread locked."
 msgstr "編集スレッドがロックされました。"
 
-#: discordedit\editthread.py:272
+#: discordedit\editthread.py:260
 #, docstring
 msgid "Edit thread pinned."
 msgstr "編集スレッドをピン留めしました。"
 
-#: discordedit\editthread.py:296
+#: discordedit\editthread.py:284
 #, docstring
 msgid "Edit thread invitable."
 msgstr "編集スレッド不可。"
 
-#: discordedit\editthread.py:322
+#: discordedit\editthread.py:310
 #, docstring
 msgid "Edit thread auto archive duration."
 msgstr "スレッド自動アーカイブの期間を編集する。"
 
-#: discordedit\editthread.py:346
+#: discordedit\editthread.py:334
 #, docstring
 msgid "Edit thread slowmode delay."
 msgstr "編集スレッドslowmodeの遅延。"
 
-#: discordedit\editthread.py:370
+#: discordedit\editthread.py:358
 #, docstring
 msgid "Edit thread applied tags.\n\n"
 "        ```\n"
@@ -946,30 +946,30 @@ msgstr "編集スレッド適用タグ\n\n"
 "        ```\n"
 "        "
 
-#: discordedit\editthread.py:400
+#: discordedit\editthread.py:388
 #, docstring
 msgid "Add member to thread."
 msgstr "スレッドにメンバーを追加"
 
-#: discordedit\editthread.py:425
+#: discordedit\editthread.py:413
 #, docstring
 msgid "Remove member from thread."
 msgstr "スレッドからメンバーを削除する。"
 
-#: discordedit\editthread.py:446
+#: discordedit\editthread.py:434
 #, docstring
 msgid "Delete a thread."
 msgstr "スレッドを削除する。"
 
-#: discordedit\editthread.py:456
+#: discordedit\editthread.py:444
 msgid "⚠️ - Delete thread"
 msgstr "⚠️ - スレッドを削除する"
 
-#: discordedit\editthread.py:457 discordedit\editthread.py:464
+#: discordedit\editthread.py:445 discordedit\editthread.py:452
 msgid "Do you really want to delete the thread {thread.mention} ({thread.id})?"
 msgstr "スレッド {thread.mention} ({thread.id}) を本当に削除したいのでしょうか？"
 
-#: discordedit\editthread.py:479
+#: discordedit\editthread.py:467
 #, docstring
 msgid "View and edit thread."
 msgstr "スレッドの表示と編集"

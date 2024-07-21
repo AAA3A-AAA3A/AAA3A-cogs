@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:42\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:18\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -21,8 +21,8 @@ msgstr ""
 msgid "No Discord object found."
 msgstr "Nie znaleziono obiektu Discord."
 
-#: ctxvar\ctxvar.py:81 ctxvar\ctxvar.py:214 ctxvar\ctxvar.py:265
-#: ctxvar\ctxvar.py:346
+#: ctxvar\ctxvar.py:81 ctxvar\ctxvar.py:203 ctxvar\ctxvar.py:254
+#: ctxvar\ctxvar.py:335
 msgid "I couldn't find any cog, command, or object named `{thing}`."
 msgstr "Nie mogłem znaleźć żadnego trybiku, polecenia ani obiektu o nazwie `{thing}`."
 
@@ -31,50 +31,50 @@ msgstr "Nie mogłem znaleźć żadnego trybiku, polecenia ani obiektu o nazwie `
 msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
 msgstr "Trybik do listowania i wyświetlania zawartości wszystkich podfunkcji `ctx`!"
 
-#: ctxvar\ctxvar.py:132
+#: ctxvar\ctxvar.py:121
 #, docstring
 msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
 msgstr "Wyświetl listę wszystkich atrybutów i ich wartości instancji klasy 'ctx' lub jej podatrybutów."
 
-#: ctxvar\ctxvar.py:136 ctxvar\ctxvar.py:197 ctxvar\ctxvar.py:248
-#: ctxvar\ctxvar.py:329
+#: ctxvar\ctxvar.py:125 ctxvar\ctxvar.py:186 ctxvar\ctxvar.py:237
+#: ctxvar\ctxvar.py:318
 msgid "The cog Dev must be loaded, to make sure you know what you are doing."
 msgstr "Cog Dev musi być załadowany, aby upewnić się, że wiesz, co robisz."
 
-#: ctxvar\ctxvar.py:147
+#: ctxvar\ctxvar.py:136
 msgid "The argument you specified is not a subclass of the instance."
 msgstr "Argument, który podałeś, nie jest podklasą instancji."
 
-#: ctxvar\ctxvar.py:154
+#: ctxvar\ctxvar.py:143
 msgid "Here are all the variables and their associated values that can be used in this instance class."
 msgstr "Oto wszystkie zmienne i ich powiązane wartości, które mogą być używane w tej klasie instancji."
 
-#: ctxvar\ctxvar.py:193
+#: ctxvar\ctxvar.py:182
 #, docstring
 msgid "Display a list of all attributes of the provided object (debug not async)."
 msgstr "Wyświetl listę wszystkich atrybutów podanego obiektu (debug nie async)."
 
-#: ctxvar\ctxvar.py:244
+#: ctxvar\ctxvar.py:233
 #, docstring
 msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
 msgstr "Wykonaj `rich.help(obj=obiekt, ...)` na podanym obiekcie (debug nie async)."
 
-#: ctxvar\ctxvar.py:325
+#: ctxvar\ctxvar.py:314
 #, docstring
 msgid "Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."
 msgstr "Wykonuje `ast.dump(ast.parse(<code content>))` na dostarczonym obiekcie (debugowanie nie asynchroniczne)."
 
-#: ctxvar\ctxvar.py:366
+#: ctxvar\ctxvar.py:355
 #, docstring
 msgid "List attributes of the provided object like dpy objects (debug not async)."
 msgstr "Wyświetla atrybuty dostarczonego obiektu jak obiekty dpy (debugowanie nie asynchroniczne)."
 
-#: ctxvar\ctxvar.py:451
+#: ctxvar\ctxvar.py:440
 #, docstring
 msgid "Parse the Markdown syntax for a specified message's content or a string."
 msgstr "Analizuje składnię Markdown dla określonej treści wiadomości lub ciągu znaków."
 
-#: ctxvar\ctxvar.py:465
+#: ctxvar\ctxvar.py:454
 msgid "Error in the module used for this command."
 msgstr "Błąd w module używanym dla tego polecenia."
 

@@ -1,0 +1,58 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/draw/locales/messages.pot\n"
+"X-Crowdin-File-ID: 231\n"
+"Language: tr_TR\n"
+
+#: draw\draw.py:40
+#, docstring
+msgid "A cog to make pixel arts on Discord!"
+msgstr "Discord'da piksel sanatı yapmak için bir cog!"
+
+#: draw\draw.py:165
+msgid "This message isn't in the cache."
+msgstr "Bu mesaj önbellekte değil."
+
+#: draw\start_view.py:94 draw\start_view.py:103
+msgid "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
+msgstr "`yükseklik = {height}`, `genişlik = {width}` ve `arka plan = {background}` ile yeni bir Çizim Tahtası oluşturun."
+
+#: draw\view.py:332
+msgid "Please type all the colors you want to add. They can be either or all of:\n"
+"• The hex codes (e.g. `ff64c4` or `ff64c4ff` to include alpha) **separated by space**,\n"
+"• The RGB(A) values separated by space or comma or both (e.g. `(255 100 196)` or `(255, 100, 196, 125)`) of each color **surrounded by brackets**\n"
+"• Any emoji whose main color you want to extract (e.g. 🐸 will give 77b255)\n"
+"• Any image file (first 5 abundant colors will be extracted)."
+msgstr "Eklemek istediğiniz tüm renkleri yazın. Bunlar şu şekilde olabilir:\n"
+"• Hex kodları (örneğin, `ff64c4` veya alfa dahil `ff64c4ff`) **boşlukla ayrılmış**,\n"
+"• Her rengin parantez içine alınmış, boşluk veya virgül veya her ikisiyle ayrılmış RGB(A) değerleri (örneğin `(255 100 196)` veya `(255, 100, 196, 125)`)\n"
+"• Ana rengini çıkarmak istediğiniz herhangi bir emoji (örneğin 🐸 size 77b255 verir)\n"
+"• Herhangi bir resim dosyası (ilk 5 bol renk çıkarılacaktır)."
+
+#: draw\view.py:402
+msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
+msgstr "Paletinize eklemek istediğiniz emojileri içeren bir mesaj gönderin. Örneğin `😎 Kaplumbağaları seviyorum 🐢`."
+
+#: draw\view.py:810
+msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
+msgstr "İmleci taşımak istediğiniz hücreyi yazın. Örneğin `A1`, `a1`, `A10`, `A`, `10`, vb."
+
+#: draw\view.py:939
+msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
+"B7-C9:green`."
+msgstr "Ana renklerin isimleriyle hücreleri yazın. Her satır için bir renk, hücreden \":\" ile ayrılmış. Örnek: `A1:red\n"
+"B7-C9:green`."
+

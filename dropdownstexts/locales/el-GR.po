@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:37\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:14\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,9 +17,9 @@ msgstr ""
 "X-Crowdin-File-ID: 158\n"
 "Language: el_GR\n"
 
-#: dropdownstexts\converters.py:80
-msgid "Dropdown Text must be an emoji, followed by a label and a text, separated by either `;`, `,`, `|`, or `-`."
-msgstr "Το αναπτυσσόμενο κείμενο πρέπει να είναι ένα emoji, ακολουθούμενο από μια ετικέτα και ένα κείμενο, χωρισμένα είτε με `;`, `,`, `|`, ή `-`."
+#: dropdownstexts\converters.py:64
+msgid "Dropdown Text must be an `emoji`, followed by a `label` and a `text_or_message`, separated by either `;`, `,`, `|`, or `-`."
+msgstr "Το αναπτυσσόμενο κείμενο πρέπει να είναι ένα `emoji`, ακολουθούμενο από μια `ετικέτα` και ένα `text_or_message`, διαχωρισμένο είτε με `;`, `,`, `|`, ή `-`."
 
 #: dropdownstexts\dropdownstexts.py:28
 msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
@@ -30,51 +30,51 @@ msgstr "Εγώ πρέπει να είμαι ο συντάκτης του μην�
 msgid "A cog to have dropdowns-texts!"
 msgstr "Ένα γρανάζι για να έχετε dropdowns - κείμενα!"
 
-#: dropdownstexts\dropdownstexts.py:135
+#: dropdownstexts\dropdownstexts.py:139
 msgid "This message is not in Config."
 msgstr "Αυτό το μήνυμα δεν είναι στο Config."
 
-#: dropdownstexts\dropdownstexts.py:139
+#: dropdownstexts\dropdownstexts.py:143
 msgid "This option is not in Config."
 msgstr "Αυτή η επιλογή δεν υπάρχει στο Config."
 
-#: dropdownstexts\dropdownstexts.py:186
+#: dropdownstexts\dropdownstexts.py:187
 #, docstring
 msgid "Add a dropdown-text for a message."
 msgstr "Προσθέστε ένα αναπτυσσόμενο κείμενο για ένα μήνυμα."
 
-#: dropdownstexts\dropdownstexts.py:194 dropdownstexts\dropdownstexts.py:249
+#: dropdownstexts\dropdownstexts.py:195 dropdownstexts\dropdownstexts.py:265
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to see the messages in that channel."
 msgstr "Δεν έχω επαρκή δικαιώματα στο κανάλι στο οποίο βρίσκεται το μήνυμα που προσδιορίσατε.\n"
 "Χρειάζομαι τα δικαιώματα για να δω τα μηνύματα σε αυτό το κανάλι."
 
-#: dropdownstexts\dropdownstexts.py:203
+#: dropdownstexts\dropdownstexts.py:204
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Το emoji που επιλέξατε φαίνεται άκυρο. Ελέγξτε ότι πρόκειται για emoji. Αν έχετε Nitro, μπορεί να έχετε χρησιμοποιήσει ένα προσαρμοσμένο emoji από άλλο διακομιστή."
 
-#: dropdownstexts\dropdownstexts.py:210 dropdownstexts\dropdownstexts.py:268
+#: dropdownstexts\dropdownstexts.py:211 dropdownstexts\dropdownstexts.py:284
 msgid "This message already has components."
 msgstr "Αυτό το μήνυμα έχει ήδη στοιχεία."
 
-#: dropdownstexts\dropdownstexts.py:214 dropdownstexts\dropdownstexts.py:272
+#: dropdownstexts\dropdownstexts.py:215 dropdownstexts\dropdownstexts.py:288
 msgid "I can't do more than 25 dropdown-texts for one message."
 msgstr "Δεν μπορώ να κάνω περισσότερα από 25 dropdown-texts για ένα μήνυμα."
 
-#: dropdownstexts\dropdownstexts.py:237
+#: dropdownstexts\dropdownstexts.py:253
 #, docstring
 msgid "Add dropdown-texts for a message."
 msgstr "Προσθήκη dropdown-κειμένων για ένα μήνυμα."
 
-#: dropdownstexts\dropdownstexts.py:240
+#: dropdownstexts\dropdownstexts.py:256
 msgid "You have not specified any valid dropdown-text."
 msgstr "Δεν έχετε καθορίσει κανένα έγκυρο dropdown-text."
 
-#: dropdownstexts\dropdownstexts.py:261
+#: dropdownstexts\dropdownstexts.py:277
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Ένα emoji που επιλέξατε φαίνεται άκυρο. Ελέγξτε ότι πρόκειται για emoji. Αν έχετε Nitro, μπορεί να έχετε χρησιμοποιήσει ένα προσαρμοσμένο emoji από άλλο διακομιστή."
 
-#: dropdownstexts\dropdownstexts.py:296
+#: dropdownstexts\dropdownstexts.py:327
 #, docstring
 msgid "Remove a dropdown-text for a message.\n\n"
 "        Use `[p]dropdownstexts list <message>` to find the config identifier.\n"
@@ -83,62 +83,62 @@ msgstr "Αφαίρεση ενός dropdown-text για ένα μήνυμα.\n\n"
 "        Χρησιμοποιήστε `[p]dropdownstexts list <message>` για να βρείτε το αναγνωριστικό παραμέτρων.\n"
 "        "
 
-#: dropdownstexts\dropdownstexts.py:303 dropdownstexts\dropdownstexts.py:329
+#: dropdownstexts\dropdownstexts.py:334 dropdownstexts\dropdownstexts.py:360
 msgid "No dropdown-texts is configured for this message."
 msgstr "Για αυτό το μήνυμα δεν έχει ρυθμιστεί κανένα dropdown-texts."
 
-#: dropdownstexts\dropdownstexts.py:307
+#: dropdownstexts\dropdownstexts.py:338
 msgid "I wasn't watching for this dropdown-text on this message."
 msgstr "Δεν πρόσεχα αυτό το dropdown-text σε αυτό το μήνυμα."
 
-#: dropdownstexts\dropdownstexts.py:321
+#: dropdownstexts\dropdownstexts.py:352
 msgid "Dropdowns-buttons cleared for this message."
 msgstr "Τα πτυσσόμενα κουμπιά καθαρίστηκαν για αυτό το μήνυμα."
 
-#: dropdownstexts\dropdownstexts.py:325
+#: dropdownstexts\dropdownstexts.py:356
 #, docstring
 msgid "Clear a dropdown-texts for a message."
 msgstr "Καθαρισμός ενός dropdown-κειμένου για ένα μήνυμα."
 
-#: dropdownstexts\dropdownstexts.py:337
+#: dropdownstexts\dropdownstexts.py:368
 msgid "Dropdown-texts cleared for this message."
 msgstr "Τα dropdown-texts εκκαθαρίστηκαν για αυτό το μήνυμα."
 
-#: dropdownstexts\dropdownstexts.py:342
+#: dropdownstexts\dropdownstexts.py:373
 #, docstring
 msgid "List all dropdowns-texts of this server or display the settings for a specific one."
 msgstr "Λίστα με όλα τα dropdown-κείμενα αυτού του διακομιστή ή εμφάνιση των ρυθμίσεων για ένα συγκεκριμένο."
 
-#: dropdownstexts\dropdownstexts.py:350
+#: dropdownstexts\dropdownstexts.py:381
 msgid "No dropdown-text is configured for this message."
 msgstr "Δεν έχει ρυθμιστεί dropdown-text για αυτό το μήνυμα."
 
-#: dropdownstexts\dropdownstexts.py:356
+#: dropdownstexts\dropdownstexts.py:387
 msgid "No dropdowns-texts in this server."
 msgstr "Δεν υπάρχουν dropdowns-texts σε αυτόν τον διακομιστή."
 
-#: dropdownstexts\dropdownstexts.py:358
+#: dropdownstexts\dropdownstexts.py:389
 msgid "Dropdowns Texts"
 msgstr "Κείμενα Dropdowns"
 
-#: dropdownstexts\dropdownstexts.py:359
+#: dropdownstexts\dropdownstexts.py:390
 msgid "There is {len_dropdowns_texts} dropdowns texts in this server."
 msgstr "Υπάρχει {len_dropdowns_texts} dropdowns κείμενα σε αυτόν τον διακομιστή."
 
-#: dropdownstexts\dropdownstexts.py:370
+#: dropdownstexts\dropdownstexts.py:401
 msgid "Message Jump Link: {message_jump_link}\n"
 msgstr "Σύνδεσμος άλματος μηνύματος: {message_jump_link}\n"
 
-#: dropdownstexts\dropdownstexts.py:391
+#: dropdownstexts\dropdownstexts.py:422
 #, docstring
 msgid "Clear all dropdowns-texts for a guild."
 msgstr "Καθαρίστε όλα τα dropdown-κείμενα για μια συντεχνία."
 
-#: dropdownstexts\dropdownstexts.py:393
+#: dropdownstexts\dropdownstexts.py:424
 msgid "All dropdowns-texts purged."
 msgstr "Όλα τα dropdown-κείμενα καθαρίζονται."
 
-#: dropdownstexts\dropdownstexts.py:425
+#: dropdownstexts\dropdownstexts.py:456
 msgid "Select an option."
 msgstr "Επιλέξτε μια επιλογή."
 

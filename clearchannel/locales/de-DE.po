@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:21\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:18\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -26,33 +26,33 @@ msgstr "Ein Zahnrad zum Löschen ALLER Nachrichten eines Kanals!\n\n"
 "    ⚠ Der Kanal wird geklont und dann **gelöscht**.\n"
 "    "
 
-#: clearchannel\clearchannel.py:101
+#: clearchannel\clearchannel.py:97
 msgid "⚠️ - ClearChannel"
 msgstr "⚠️ - ClearChannel"
 
-#: clearchannel\clearchannel.py:102
+#: clearchannel\clearchannel.py:98
 msgid "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n"
 "⚠ The channel will be cloned, and then **deleted**."
 msgstr "Wollen Sie wirklich ALLE Nachrichten aus dem Kanal {old_channel.mention} ({old_channel.id}) löschen?\n"
 "⚠ Der Kanal wird geklont und dann **gelöscht**."
 
-#: clearchannel\clearchannel.py:112
+#: clearchannel\clearchannel.py:130
 msgid "Clear Channel requested by {ctx.author} ({ctx.author.id})."
 msgstr "Clear Channel auf Anfrage von {ctx.author} ({ctx.author.id})."
 
-#: clearchannel\clearchannel.py:118
+#: clearchannel\clearchannel.py:136
 msgid "🗑️-Deleted-{old_channel.name}"
 msgstr "🗑️-gelöscht-{old_channel.name}"
 
-#: clearchannel\clearchannel.py:132
+#: clearchannel\clearchannel.py:150
 msgid "ClearChannel"
 msgstr "ClearChannel"
 
-#: clearchannel\clearchannel.py:133
+#: clearchannel\clearchannel.py:151
 msgid "ALL the messages in this channel have been deleted..."
 msgstr "ALLE Nachrichten in diesem Kanal wurden gelöscht..."
 
-#: clearchannel\clearchannel.py:151
+#: clearchannel\clearchannel.py:174
 msgid "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
 msgstr "Alle Nachrichten im Kanal #{old_channel.name} ({old_channel.id}) wurden gelöscht! Sie finden den neuen Kanal mit den gleichen Rechten: #{new_channel.name} ({new_channel.id})."
 

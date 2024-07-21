@@ -1,0 +1,176 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"PO-Revision-Date: 2024-07-21 15:17\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/disurlvotestracker/locales/messages.pot\n"
+"X-Crowdin-File-ID: 330\n"
+"Language: ja_JP\n"
+
+#: disurlvotestracker\converter.py:21
+msgid "The {role.mention} role is a bot integration role and cannot be assigned or removed."
+msgstr "{role.mention} ロールはボット統合ロールであり、割り当てまたは削除することはできません。"
+
+#: disurlvotestracker\converter.py:27
+msgid "The {role.mention} role is an integration role and cannot be assigned or removed."
+msgstr "{role.mention} ロールは統合ロールであり、割り当てまたは削除することはできません。"
+
+#: disurlvotestracker\converter.py:33
+msgid "The {role.mention} role is a premium subscriber role and can only be assigned or removed by Nitro boosting the server."
+msgstr "{role.mention} ロールはプレミアムサブスクライバーロールであり、Nitro boosting サーバーによってのみ割り当てまたは削除することができます。"
+
+#: disurlvotestracker\converter.py:39
+msgid "The {role.mention} role is higher than my highest role in the discord hierarchy."
+msgstr "{role.mention} の役割は、discord の階層で私の最も高い役割よりも高いです。"
+
+#: disurlvotestracker\converter.py:45
+msgid "The {role.mention} role is higher than your highest role in the discord hierarchy."
+msgstr "{role.mention} の役割は、ディスコードの階層で最も高い役割よりも高いです。"
+
+#: disurlvotestracker\dashboard_integration.py:38
+#: disurlvotestracker\dashboard_integration.py:72
+#: disurlvotestracker\disurlvotestracker.py:320
+#: disurlvotestracker\disurlvotestracker.py:352
+msgid "DisurlVotesTracker is not enabled in this server."
+msgstr "このサーバーでは DisurlVotesTracker が有効になっていません。"
+
+#: disurlvotestracker\dashboard_integration.py:46
+msgid "No votes found in this server."
+msgstr "このサーバーでは投票が見つかりませんでした。"
+
+#: disurlvotestracker\dashboard_integration.py:62
+#: disurlvotestracker\dashboard_integration.py:106
+msgid "Total: {total} vote{s}"
+msgstr "合計： {total} 票{s}"
+
+#: disurlvotestracker\dashboard_integration.py:90
+msgid "No monthly votes found in this server."
+msgstr "このサーバーでは月間投票が見つかりませんでした。"
+
+#: disurlvotestracker\disurlvotestracker.py:27
+#, docstring
+msgid "Track votes on Disurl, assign roles to voters and remind them to vote!"
+msgstr "Disurlで投票を追跡し、投票者に役割を割り当て、投票を促す！"
+
+#: disurlvotestracker\disurlvotestracker.py:181
+msgid "Voted on Disurl! (12 hours)"
+msgstr "Disurlに投票！(12時間)"
+
+#: disurlvotestracker\disurlvotestracker.py:196
+msgid "New vote for {guild.name}!"
+msgstr "{guild.name}！"
+
+#: disurlvotestracker\disurlvotestracker.py:199
+msgid "{member.mention} voted on Disurl!\n"
+"`{number_member_votes} vote{s_1} this month & {number_member_monthly_votes} lifetime vote{s_2}`"
+msgstr "{member.mention} Disurlに投票しました！\n"
+"{number_member_votes} 今月投票{s_1} & {number_member_monthly_votes} 生涯投票{s_2}`."
+
+#: disurlvotestracker\disurlvotestracker.py:208
+msgid "\n\n"
+"{member.display_name} received the role {voters_role.mention} for the next 12 hours."
+msgstr "\n\n"
+"{member.display_name} {voters_role.mention} 、その後12時間の役割を受けた。"
+
+#: disurlvotestracker\disurlvotestracker.py:209
+msgid "\n\n"
+"You could vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!"
+msgstr "\n\n"
+"Disurl](https://disurl.me/server/{guild.id}/vote)への投票は12時間以内にもう一度ここで行うことができます！"
+
+#: disurlvotestracker\disurlvotestracker.py:210
+msgid "Thanks for supporting the server! | User ID: {member.id}"
+msgstr "サーバーのサポートに感謝します！| ユーザーID: {member.id}"
+
+#: disurlvotestracker\disurlvotestracker.py:266
+msgid "Voters role expired! (12 hours)"
+msgstr "有権者の役割は終了した！(12時間)"
+
+#: disurlvotestracker\disurlvotestracker.py:275
+msgid "Vote on Disurl!"
+msgstr "ディスアールに投票"
+
+#: disurlvotestracker\disurlvotestracker.py:277
+msgid "{member.mention}, don't forget to vote on **[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again 12 hours after this vote. **Thanks for supporting the server!**"
+msgstr "{member.mention}Disurl](https://disurl.me/server/{guild.id}/vote)**に投票することを忘れないでください！この投票から12時間後に再度投票することができます。**サーバーのサポートに感謝します。"
+
+#: disurlvotestracker\disurlvotestracker.py:318
+#, docstring
+msgid "Show the lifetime leaderboard of voters."
+msgstr "投票者の生涯リーダーボードを表示する。"
+
+#: disurlvotestracker\disurlvotestracker.py:328
+#: disurlvotestracker\disurlvotestracker.py:370
+msgid "No voters found."
+msgstr "投票者は見つからなかった。"
+
+#: disurlvotestracker\disurlvotestracker.py:330
+msgid "Leaderboard"
+msgstr "リーダーボード"
+
+#: disurlvotestracker\disurlvotestracker.py:333
+msgid "{ctx.guild.name} | {total} Lifetime Vote{s}"
+msgstr "{ctx.guild.name} | {total} 生涯投票{s}"
+
+#: disurlvotestracker\disurlvotestracker.py:336
+msgid "You are at position {author_index} with {number_member_lifetime_votes} vote{s}."
+msgstr "あなたのポジションは {author_index} で {number_member_lifetime_votes} 票{s}。"
+
+#: disurlvotestracker\disurlvotestracker.py:350
+#, docstring
+msgid "Show the monthly leaderboard of voters."
+msgstr "投票者の月間リーダーボードを表示する。"
+
+#: disurlvotestracker\disurlvotestracker.py:372
+msgid "Monthly Leaderboard"
+msgstr "月間リーダーボード"
+
+#: disurlvotestracker\disurlvotestracker.py:375
+msgid "{ctx.guild.name} | {total} Monthly Vote{s}"
+msgstr "{ctx.guild.name} | {total} 月間投票{s}"
+
+#: disurlvotestracker\disurlvotestracker.py:378
+msgid "You are at position {author_index} with {number_member_monthly_votes} vote{s}."
+msgstr "あなたのポジションは {author_index} で {number_member_monthly_votes} 票{s}。"
+
+#: disurlvotestracker\disurlvotestracker.py:400
+#, docstring
+msgid "Instructions on how to set up DisurlVotesTracker."
+msgstr "DisurlVotesTrackerの設定方法を説明します。"
+
+#: disurlvotestracker\disurlvotestracker.py:403
+msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Dashboard がインストールされていません。<https://red-web-dashboard.readthedocs.io>を確認してください。"
+
+#: disurlvotestracker\disurlvotestracker.py:408
+msgid "You can't access the Dashboard."
+msgstr "ダッシュボードにアクセスできません。"
+
+#: disurlvotestracker\disurlvotestracker.py:410
+msgid "DisurlVotesTracker Instructions"
+msgstr "DisurlVotesTrackerの使い方"
+
+#: disurlvotestracker\disurlvotestracker.py:412
+msgid "1. Go to [Disurl Dashboard](https://disurl.me/dashboard/server/{guild_id}/webhooks) and set the webhook URL to `{webhook_url}`.\n"
+"2. Set the Disurl API authorization key with the key which you provided on Disurl.\n"
+"3. Set the votes channel where vote notifications will be sent.\n"
+"4. Set the optional the voters role that will be assigned to voters.\n"
+"5. Optionally, toggle the vote reminder.\n"
+"6. Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`.7. Enable the cog."
+msgstr "1.Disurl Dashboard](https://disurl.me/dashboard/server/{guild_id}/webhooks)にアクセスし、webhook URL を `{webhook_url}` に設定します。\n"
+"2.Disurl API認証キーをDisurlで設定したキーに設定します。\n"
+"3.投票通知を送信する投票チャンネルを設定します。\n"
+"4.投票者に割り当てられる投票者ロールをオプションで設定します。\n"
+"5.任意で投票リマインダーを切り替えます。\n"
+"6.オプションで `custom_vote_message` と `custom_vote_reminder_message` を設定します。7.歯車を有効にする。"
+

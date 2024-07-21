@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-07-15 19:20\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:21\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "MIME-Version: 1.0\n"
@@ -22,11 +22,11 @@ msgstr ""
 msgid "A cog to display information about a location based on its address or geographical coordinates!"
 msgstr "Uma engrenagem para mostrar informação sobre um local com base no seu endereço ou coordenadas geográficas!"
 
-#: getloc\getloc.py:162
+#: getloc\getloc.py:151
 msgid "An error has occurred. Please try again."
 msgstr "Ocorreu um erro. Por favor, tente novamente."
 
-#: getloc\getloc.py:165
+#: getloc\getloc.py:154
 msgid "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
 msgstr "O endereço ou detalhes de contacto que forneceu não conduzem a quaisquer resultados. Tem a certeza da sua contribuição?"
 

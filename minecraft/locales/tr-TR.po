@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/minecraft/locales/messages.pot\n"
+"X-Crowdin-File-ID: 235\n"
+"Language: tr_TR\n"
+
+#: minecraft\minecraft.py:48
+msgid "Unable to get data from Minecraft API: {e.message}."
+msgstr "Minecraft API'sinden veri alınamadı: {e.message}."
+
+#: minecraft\minecraft.py:52
+msgid "{argument} not found on Mojang servers."
+msgstr "{argument} Mojang sunucularında bulunamadı."
+
+#: minecraft\minecraft.py:60
+msgid "{argument} is found, but has incorrect UUID."
+msgstr "{argument} bulundu, ancak hatalı bir UUID'ye sahip."
+
+#: minecraft\minecraft.py:66
+#, docstring
+msgid "A cog to display informations about Minecraft Java users and servers, and notify for each change of a server!"
+msgstr "Minecraft Java kullanıcıları ve sunucuları hakkında bilgi görüntülemek ve her sunucu değişikliğinde bildirim yapmak için bir cog!"
+
+#: minecraft\minecraft.py:187
+msgid "Latency"
+msgstr "Gecikme"
+
+#: minecraft\minecraft.py:189
+msgid "Players"
+msgstr "Oyuncular"
+
+#: minecraft\minecraft.py:207
+msgid "Version"
+msgstr "Versiyon"
+
+#: minecraft\minecraft.py:247
+#, docstring
+msgid "Get Minecraft Java player skin by name."
+msgstr "Minecraft Java oyuncu görünümünü isme göre alın."
+
+#: minecraft\minecraft.py:270
+msgid "Unable to get data from Crafatar: {}"
+msgstr "Crafatar'dan veri alınamadı: {}"
+
+#: minecraft\minecraft.py:282
+msgid "Provided by Crafatar."
+msgstr "Crafatar tarafından sağlanmıştır."
+
+#: minecraft\minecraft.py:288
+#, docstring
+msgid "Get informations about a Minecraft Java server."
+msgstr "Bir Minecraft Java sunucusu hakkında bilgi alın."
+
+#: minecraft\minecraft.py:294 minecraft\minecraft.py:329
+msgid "No data found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable."
+msgstr "Bu Minecraft sunucusu için veri bulunamadı. Belki de mevcut değil veya verileri geçici olarak kullanılamıyor."
+
+#: minecraft\minecraft.py:306
+#, docstring
+msgid "Add a Minecraft Java server in Config to get automatically new status."
+msgstr "Yeni durumu otomatik olarak almak için Config'e bir Minecraft Java sunucusu ekleyin."
+
+#: minecraft\minecraft.py:317
+msgid "I don't have sufficient permissions in this channel to send messages with embeds."
+msgstr "Bu kanalda gömülü mesajlar göndermek için yeterli iznim yok."
+
+#: minecraft\minecraft.py:323
+msgid "This server has already been added."
+msgstr "Bu sunucu zaten eklenmiş."
+
+#: minecraft\minecraft.py:337
+msgid "Server added to this channel."
+msgstr "Sunucu bu kanala eklendi."
+
+#: minecraft\minecraft.py:344
+#, docstring
+msgid "Remove a Minecraft Java server in Config."
+msgstr "Config'deki bir Minecraft Java sunucusunu kaldırın."
+
+#: minecraft\minecraft.py:349
+msgid "This server isn't in the Config."
+msgstr "Bu sunucu Config'de değil."
+
+#: minecraft\minecraft.py:354
+msgid "Server removed from this channel."
+msgstr "Sunucu bu kanaldan kaldırıldı."
+
+#: minecraft\minecraft.py:361
+#, docstring
+msgid "Include players joining or leaving the server in notifications."
+msgstr "Bildirimlere sunucuya katılan veya sunucudan ayrılan oyuncuları dahil edin."
+
+#: minecraft\minecraft.py:368
+msgid "I will not check players for the notifications."
+msgstr "Bildirimler için oyuncuları kontrol etmeyeceğim."
+
+#: minecraft\minecraft.py:370
+msgid "I will check players for the notifications."
+msgstr "Bildirimler için oyuncuları kontrol edeceğim."
+
+#: minecraft\minecraft.py:377
+#, docstring
+msgid "Edit the last message sent for changes."
+msgstr "Değişiklikler için gönderilen son mesajı düzenleyin."
+
+#: minecraft\minecraft.py:382
+msgid "I will not edit my last message for the notifications."
+msgstr "Bildirimler için son mesajımı düzenlemeyeceğim."
+
+#: minecraft\minecraft.py:384
+msgid "I will edit my last message for the notifications."
+msgstr "Bildirimler için son mesajımı düzenleyeceğim."
+
+#: minecraft\minecraft.py:389
+#, docstring
+msgid "Force check Minecraft Java servers in Config."
+msgstr "Config'deki Minecraft Java sunucularını zorla kontrol edin."
+
+#: minecraft\minecraft.py:391
+msgid "Servers checked."
+msgstr "Sunucular kontrol edildi."
+
+#: minecraft\minecraft.py:397
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Döngü durumunu kontrol etmek için bir gömme alın."
+

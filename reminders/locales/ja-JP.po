@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:38\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 15:15\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -21,130 +21,138 @@ msgstr ""
 msgid "Invalid timezone provided."
 msgstr "指定されたタイムゾーンが無効です。"
 
-#: reminders\converters.py:535 reminders\reminders.py:886
-#: reminders\reminders.py:1084
+#: reminders\converters.py:539 reminders\reminders.py:908
+#: reminders\reminders.py:1108
 msgid "You haven't any reminders."
 msgstr "リマインダがないんですね。"
 
-#: reminders\converters.py:544
+#: reminders\converters.py:548
 msgid "Reminder ID must be an integer."
 msgstr "リマインダーIDは整数値である必要があります。"
 
-#: reminders\converters.py:548
+#: reminders\converters.py:552
 msgid "You haven't any reminder with this id."
 msgstr "このIDでリマインダはないでしょう。"
 
-#: reminders\reminders.py:61
+#: reminders\reminders.py:62
 msgid "You're not allowed to execute the `[p]remindme` command in this channel."
 msgstr "このチャンネルでは、`[p]remindme`コマンドを実行することはできません。"
 
-#: reminders\reminders.py:69
+#: reminders\reminders.py:70
 #, docstring
 msgid "Don't forget anything anymore! Reminders in DMs, channels, FIFO commands scheduler, say scheduler... With 'Me Too', snooze and buttons."
 msgstr "もう忘れ物はない！DM、チャンネル、FIFOコマンドスケジューラ、発言スケジューラ...でリマインダー。Me Too'、スヌーズ、ボタン付き。"
 
-#: reminders\reminders.py:303 reminders\reminders.py:433
-#: reminders\reminders.py:620 reminders\reminders.py:737
+#: reminders\reminders.py:302 reminders\reminders.py:443
+#: reminders\reminders.py:641 reminders\reminders.py:758
 msgid "You have reached the limit of {minimum_user_reminders} reminders per user."
 msgstr "1ユーザーあたり {minimum_user_reminders} のリマインダーの制限に達しました。"
 
-#: reminders\reminders.py:325 reminders\reminders.py:455
-#: reminders\reminders.py:637 reminders\reminders.py:750
-#: reminders\reminders.py:1053
+#: reminders\reminders.py:324 reminders\reminders.py:465
+msgid "You can't access this message."
+msgstr "このメッセージにはアクセスできません。"
+
+#: reminders\reminders.py:333 reminders\reminders.py:474
+#: reminders\reminders.py:658 reminders\reminders.py:771
+#: reminders\reminders.py:1076
 msgid "You are not allowed to create repeating reminders."
 msgstr "繰り返しのリマインダーを作成することはできません。"
 
-#: reminders\reminders.py:339 reminders\reminders.py:469
-#: reminders\reminders.py:651 reminders\reminders.py:764
-#: reminders\reminders.py:1068
+#: reminders\reminders.py:347 reminders\reminders.py:488
+#: reminders\reminders.py:672 reminders\reminders.py:785
+#: reminders\reminders.py:1091
 msgid "The repeat timedelta must be greater than {minimum_repeat} minutes."
 msgstr "リピートタイムデルタは、 {minimum_repeat} 分以上でなければならない。"
 
-#: reminders\reminders.py:370 reminders\reminders.py:547
-#: reminders\reminders.py:980
+#: reminders\reminders.py:356 reminders\reminders.py:544
+msgid "You must provide a message or a text."
+msgstr "メッセージまたはテキストを提供する必要があります。"
+
+#: reminders\reminders.py:380 reminders\reminders.py:568
+#: reminders\reminders.py:1003
 msgid "Your reminder text is too long."
 msgstr "リマインダーのテキストが長すぎる。"
 
-#: reminders\reminders.py:494
+#: reminders\reminders.py:513
 msgid "You can't create a reminder in {destination}."
 msgstr "{destination} でリマインダーを作成することはできません。"
 
-#: reminders\reminders.py:500 reminders\reminders.py:772
+#: reminders\reminders.py:519 reminders\reminders.py:793
 msgid "I can't send messages in this channel."
 msgstr "このチャンネルではメッセージを送信できません。"
 
-#: reminders\reminders.py:502
+#: reminders\reminders.py:521
 msgid "I can't send embeds in this channel."
 msgstr "このチャンネルではエンベッドを送信できません。"
 
-#: reminders\reminders.py:511
+#: reminders\reminders.py:530
 msgid "Since you don't have the `mention_everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."
 msgstr "mention_everyone`権限を持っていないので、3人以上のリマインダーを作成することはできません。"
 
-#: reminders\reminders.py:517
+#: reminders\reminders.py:536
 msgid "Due to the message character limit, you can only mention a maximum of 10 users or roles."
 msgstr "メッセージの文字数制限のため、最大10人のユーザーまたはロールしか言及できません。"
 
-#: reminders\reminders.py:605
+#: reminders\reminders.py:626
 #, docstring
 msgid "Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
-"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        You don't have to put quotes around the `time` argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
 "        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
 "        Examples:\n"
 "        - `[p]reminder fifo #destination \"at 10h every day\" ping\n"
 "        "
 msgstr "FIFO/コマンド・リマインダーを作成する。選択されたコマンドは、あなたを呼び出し元として実行される。プレフィックスは指定しない。\n\n"
-"        指定された時間はファジー解析されるか、kwargs `in`、`on`、`every` を使って繰り返しルールとテキストを見つけることができる。\n"
-"        引数timeを引用符で囲む必要はない。より正確に解析するには、テキストを引用符で囲んでください。空白が含まれる場合は、時刻も引用符で囲んでください。\n"
-"[p]reminder timetips`を使うと、時間解析のヒントが表示されます。\n\n"
+"        指定された時間はファジーパースされるか、kwargs `in`、`on`、`every` を使って繰り返しルールとテキストを見つけることができる。\n"
+"        引数 `time` を引用符で囲む必要はない。より正確に解析するには、テキストを引用符で囲んでください。timeにスペースが含まれている場合は、timeも引用符で囲んでください。\n"
+"        p]reminder timetips`を使用すると、時間解析のヒントが表示されます。\n\n"
 "        例\n"
-"        -[p]reminder fifo #destination \"at 10h every day\" ping\n"
+"        - `[p]reminder fifo #destination \"毎日10時に\" ping\n"
 "        "
 
-#: reminders\reminders.py:626
+#: reminders\reminders.py:647
 msgid "You're not allowed to create FIFO/commands reminders."
 msgstr "FIFO/コマンドのリマインダを作成するのは禁止されています。"
 
-#: reminders\reminders.py:668
+#: reminders\reminders.py:689
 msgid "This command doesn't exist."
 msgstr "このコマンドは存在しません。"
 
-#: reminders\reminders.py:675
+#: reminders\reminders.py:696
 msgid "You can't execute this command, in this context."
 msgstr "このコマンドを、この文脈で実行することはできない。"
 
-#: reminders\reminders.py:679
+#: reminders\reminders.py:700
 msgid "The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command."
 msgstr "{command.qualified_name}`というコマンドは、怪しいコマンドなので、スケジュールできません。"
 
-#: reminders\reminders.py:722
+#: reminders\reminders.py:743
 #, docstring
 msgid "Create a reminder who will say/send text.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
-"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        You don't have to put quotes around the `time` argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
 "        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
 "        Examples:\n"
 "        - `[p]reminder say #destination \"at 9h every day\" Hello everyone!\n"
 "        "
 msgstr "リマインダーを作成する。\n\n"
-"        指定された時間はファジー解析されるか、クワーグ `in`、`on`、`every` を使って繰り返しルールとテキストを見つけることができる。\n"
-"        time 引数の周りに引用符を付ける必要はない。より正確に解析するには、テキストを引用符で囲んでください。空白が含まれる場合は、時刻も引用符で囲んでください。\n"
-"[p]reminder timetips`を使うと、時間解析のヒントが表示されます。\n\n"
+"        指定された時刻はファジー解析されるか、クワーグ `in`、`on`、`every` を使って繰り返しのルールとテキストを見つけることができる。\n"
+"        引数 `time` を引用符で囲む必要はない。より正確に解析するために、テキストを引用符で囲むことができる。timeにスペースが含まれている場合は、timeも引用符で囲んでください。\n"
+"        p]reminder timetips`を使用すると、時間解析のヒントが表示されます。\n\n"
 "        例\n"
-"        -[p]reminder say #destination \"at 9h every day\" みなさんこんにちは！\n"
+"        - p]reminder say #destination \"at 9h every day\" みなさんこんにちは！\n"
 "        "
 
-#: reminders\reminders.py:780
+#: reminders\reminders.py:801
 msgid "You can't or I can't send messages in this channel."
 msgstr "このチャンネルでメッセージを送ることができない、または送れない。"
 
-#: reminders\reminders.py:817
+#: reminders\reminders.py:838
 #, docstring
 msgid "Show time parsing tips."
 msgstr "ショータイム・パーシングのヒント"
 
-#: reminders\reminders.py:818
+#: reminders\reminders.py:839
 msgid "\n"
 "            Allowed **absolutes** are:\n"
 "            • `eoy` - Remind at end of year at 17:00.\n"
@@ -202,7 +210,7 @@ msgstr "\n"
 "            - https://crontab.guru/ を確認してください。\n"
 "            "
 
-#: reminders\reminders.py:861
+#: reminders\reminders.py:882
 #, docstring
 msgid "Set your timezone for the time converter.\n\n"
 "        Timezone should be specified in the format: `Continent/City`.\n"
@@ -215,11 +223,11 @@ msgstr "タイムコンバーターのタイムゾーンを設定します。\n\
 "        有効なタイムゾーンのリストはhttps://timezonedb.com/time-zones。\n"
 "        "
 
-#: reminders\reminders.py:868
+#: reminders\reminders.py:889
 msgid "Your timezone has been set to `{timezone}`."
 msgstr "タイムゾーンが`{timezone}`に設定されました。"
 
-#: reminders\reminders.py:878
+#: reminders\reminders.py:900
 #, docstring
 msgid "List your existing reminders.\n\n"
 "        Sort options:\n"
@@ -234,23 +242,23 @@ msgstr "既存のリマインダーをリストアップします。\n\n"
 "        - `id`：ID順に表示する。\n"
 "        "
 
-#: reminders\reminders.py:902
+#: reminders\reminders.py:924
 msgid "Your Reminders"
 msgstr "あなたのリマインダ"
 
-#: reminders\reminders.py:904
+#: reminders\reminders.py:926
 msgid " (Content type `{content_type}`)"
 msgstr " (コンテンツタイプ `{content_type}`)"
 
-#: reminders\reminders.py:908
+#: reminders\reminders.py:930
 msgid "You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder."
 msgstr "あなたは {len_reminders} リマインダー{of_this_content_type}を持っています。リマインダーを編集するには、`{clean_prefix}リマインダー編集 #ID` を使用してください。"
 
-#: reminders\reminders.py:912
+#: reminders\reminders.py:934
 msgid " of this content type"
 msgstr " このコンテンツ・タイプの"
 
-#: reminders\reminders.py:931
+#: reminders\reminders.py:953
 #, docstring
 msgid "Remove existing Reminder(s) from their IDs.\n\n"
 "        - Use `last` to remove your last created reminder.\n"
@@ -261,15 +269,15 @@ msgstr "既存のリマインダーのIDを削除します。\n\n"
 "        - 次にトリガーされたリマインダーを削除するには `next` を使ってください。\n"
 "        "
 
-#: reminders\reminders.py:943
+#: reminders\reminders.py:965
 msgid "Your reminder {reminder_id} has been successfully removed."
 msgstr "リマインダー {reminder_id} は正常に削除されました。"
 
-#: reminders\reminders.py:949
+#: reminders\reminders.py:971
 msgid "Your reminders {reminders_ids} have been successfully removed."
 msgstr "リマインダー {reminders_ids} は正常に削除されました。"
 
-#: reminders\reminders.py:956
+#: reminders\reminders.py:979
 #, docstring
 msgid "Edit an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -280,7 +288,7 @@ msgstr "既存のリマインダーをそのIDから編集することができ�
 "        - 次に作成するリマインダーを編集するには、`next`を使用します。\n"
 "        "
 
-#: reminders\reminders.py:974
+#: reminders\reminders.py:997
 #, docstring
 msgid "Edit the text of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -291,13 +299,13 @@ msgstr "既存のリマインダーのテキストを、そのIDから編集し�
 "        - 次に作成するリマインダーを編集するには、`next`を使用します。\n"
 "        "
 
-#: reminders\reminders.py:990 reminders\reminders.py:1014
-#: reminders\reminders.py:1075 reminders\views.py:154 reminders\views.py:378
+#: reminders\reminders.py:1013 reminders\reminders.py:1037
+#: reminders\reminders.py:1098 reminders\views.py:154 reminders\views.py:378
 #: reminders\views.py:439
 msgid "Your reminder **#{reminder_id}** has been successfully edited."
 msgstr "あなたのリマインダー **#{reminder_id}** は編集に成功しました。"
 
-#: reminders\reminders.py:999
+#: reminders\reminders.py:1022
 #, docstring
 msgid "Edit the expires time of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -310,7 +318,7 @@ msgstr "既存のリマインダーの有効期限をIDから編集します。\
 "        作成時と同じコンバーターですが、繰り返しのオプションはありません。\n"
 "        "
 
-#: reminders\reminders.py:1023
+#: reminders\reminders.py:1046
 #, docstring
 msgid "Edit the repeat of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -339,68 +347,85 @@ msgstr "既存のリマインダーのIDから、そのリピートを編集し�
 "        - 1年 1ヶ月 2日 -5h`\n"
 "        "
 
-#: reminders\reminders.py:1082
+#: reminders\reminders.py:1106
 #, docstring
 msgid "Clear all your existing reminders."
 msgstr "既存のリマインダーをすべて消去します。"
 
-#: reminders\reminders.py:1087 reminders\reminders.py:1151
+#: reminders\reminders.py:1111 reminders\reminders.py:1242
 msgid "⚠️ - Reminders"
 msgstr "⚠️ - リマインダ"
 
-#: reminders\reminders.py:1088
+#: reminders\reminders.py:1112
 msgid "Do you really want to remove ALL your reminders?"
 msgstr "本当にすべてのリマインダーを削除したいのでしょうか？"
 
-#: reminders\reminders.py:1100
+#: reminders\reminders.py:1124
 msgid "All your reminders have been successfully removed."
 msgstr "お客様のリマインダーはすべて正常に削除されました。"
 
-#: reminders\reminders.py:1146
+#: reminders\reminders.py:1131
+#, docstring
+msgid "Get a list of Discord timestamps for a given time. You can provide a repeat.\n\n"
+"        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule.\n"
+"        You don't have to put quotes around the `time` argument.\n"
+"        Use `[p]reminder timetips` to display tips for time parsing.\n"
+"        "
+msgstr "指定した時間の Discord タイムスタンプのリストを取得します。繰り返しを指定することができる。\n\n"
+"        指定した時刻をファジー解析するか、クワーグ `in`、`on`、`every` を使用して繰り返しルールを見つけることができる。\n"
+"        引数 `time` を引用符で囲む必要はない。\n"
+"        p]reminder timetips` を使用すると、時間解析のヒントを表示することができる。\n"
+"        "
+
+#: reminders\reminders.py:1145
+msgid "Timestamps for {time}"
+msgstr "{time}のタイムスタンプ"
+
+#: reminders\reminders.py:1237
 #, docstring
 msgid "Clear all existing reminders for a user."
 msgstr "ユーザーの既存のリマインダーをすべて消去する。"
 
-#: reminders\reminders.py:1148
+#: reminders\reminders.py:1239
 msgid "This user haven't any reminders."
 msgstr "このユーザーはリマインダがないんです。"
 
-#: reminders\reminders.py:1152
+#: reminders\reminders.py:1243
 msgid "Do you really want to remove ALL {user.display_name}'s reminders?"
 msgstr "本当に {user.display_name}のリマインダーをすべて削除したいのでしょうか？"
 
-#: reminders\reminders.py:1166
+#: reminders\reminders.py:1257
 msgid "All user's reminders have been successfully removed."
 msgstr "すべてのユーザーのリマインダーが正常に削除されました。"
 
-#: reminders\reminders.py:1170
+#: reminders\reminders.py:1261
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "ループの状態を確認するためのエンベデッドを取得します。"
 
-#: reminders\reminders.py:1176
+#: reminders\reminders.py:1267
 #, docstring
 msgid "Migrate Reminders from RemindMe by PhasecoreX."
 msgstr "RemindMe by PhasecoreXからリマインダーを移行します。"
 
-#: reminders\reminders.py:1183
+#: reminders\reminders.py:1274
 msgid "RemindMe by PhasecoreX has no data in this bot."
 msgstr "RemindMe by PhasecoreXは、このbotにデータがありません。"
 
-#: reminders\reminders.py:1187
+#: reminders\reminders.py:1278
 msgid "RemindMe by PhasecoreX use an old/new data schema version and isn't compatible with this cog actually."
 msgstr "PhasecoreXのRemindMeは、古い/新しいデータスキーマのバージョンを使用しており、実際にはこの歯車と互換性がありません。"
 
-#: reminders\reminders.py:1245
+#: reminders\reminders.py:1336
 msgid "Data successfully migrated from RemindMe by PhasecoreX."
 msgstr "PhasecoreXによるRemindMeからのデータ移行に成功。"
 
-#: reminders\reminders.py:1249
+#: reminders\reminders.py:1340
 #, docstring
 msgid "Migrate Reminders from FIFO by Fox."
 msgstr "FIFO by Foxからリマインダーを移行。"
 
-#: reminders\reminders.py:1329
+#: reminders\reminders.py:1420
 msgid "Data successfully migrated from FIFO by Fox."
 msgstr "フォックスがFIFOからのデータ移行に成功。"
 
@@ -497,31 +522,31 @@ msgstr "提供されていない。"
 msgid "No content."
 msgstr "内容はありません。"
 
-#: reminders\types.py:524
+#: reminders\types.py:530
 msgid "No target(s)."
 msgstr "目標はない。"
 
-#: reminders\types.py:525
+#: reminders\types.py:531
 msgid "In DMs"
 msgstr "DMで"
 
-#: reminders\types.py:607
+#: reminders\types.py:613
 msgid "You asked me to remind you about {this}, {interval_string}.\n\n"
 msgstr "{this}, {interval_string} について思い出してくださいということですね。\n\n"
 
-#: reminders\types.py:613
+#: reminders\types.py:619
 msgid "You asked me to remind you about [this message]({message_jump_url}) from {author_mention} ({author_id}), {interval_string}.\n\n"
 msgstr "このメッセージ]({message_jump_url})について、 {author_mention} ({author_id})、 {interval_string}から思い出してほしいとのことですね。\n\n"
 
-#: reminders\types.py:629
+#: reminders\types.py:635
 msgid "This was supposed to send {interval_string} ago. I might be having network or server issues, or perhaps I just started up. Sorry about that!\n\n"
 msgstr "これは、 {interval_string} 前に送信するはずでした。ネットワークやサーバーに問題があるのか、あるいは起動したばかりなのかもしれません。申し訳ありません！\n\n"
 
-#: reminders\types.py:633
+#: reminders\types.py:639
 msgid "Next trigger in {interval_string}."
 msgstr "{interval_string} の次のトリガー."
 
-#: reminders\types.py:786 reminders\views.py:559
+#: reminders\types.py:792 reminders\views.py:559
 msgid "Jump to original message"
 msgstr "元のメッセージへジャンプ"
 

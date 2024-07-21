@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:39\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:21\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -865,20 +865,20 @@ msgstr "Czy naprawdę chcesz usunąć kanał tekstowy {channel.mention} ({channe
 msgid "View and edit text channel."
 msgstr "Wyświetlanie i edytowanie kanału tekstowego."
 
-#: discordedit\editthread.py:103
+#: discordedit\editthread.py:91
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "Emoji Rola musi być emoji, po którym następuje rola oddzielona przez `;`, `,`, `|` lub `-`."
 
-#: discordedit\editthread.py:113
+#: discordedit\editthread.py:101
 #, docstring
 msgid "A cog to edit threads!"
 msgstr "Trybik do edycji wątków!"
 
-#: discordedit\editthread.py:134
+#: discordedit\editthread.py:122
 msgid "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission."
 msgstr "Nie mogę edytować wątku {thread.mention} ({thread.id}), ponieważ nie masz uprawnień `manage_channel`."
 
-#: discordedit\editthread.py:158
+#: discordedit\editthread.py:146
 #, docstring
 msgid "Create a thread.\n\n"
 "        You'll join it automatically.\n"
@@ -887,51 +887,51 @@ msgstr "Utwórz wątek.\n\n"
 "        Dołączysz do niego automatycznie.\n"
 "        "
 
-#: discordedit\editthread.py:182
+#: discordedit\editthread.py:170
 #, docstring
 msgid "List all threads in the current guild."
 msgstr "Lista wszystkich wątków w bieżącej gildii."
 
-#: discordedit\editthread.py:190
+#: discordedit\editthread.py:178
 msgid "List of threads in {guild.name} ({guild.id})"
 msgstr "Lista wątków w {guild.name} ({guild.id})"
 
-#: discordedit\editthread.py:206
+#: discordedit\editthread.py:194
 #, docstring
 msgid "Edit thread name."
 msgstr "Edycja nazwy wątku."
 
-#: discordedit\editthread.py:227
+#: discordedit\editthread.py:215
 #, docstring
 msgid "Edit thread archived."
 msgstr "Edycja wątku zarchiwizowana."
 
-#: discordedit\editthread.py:249
+#: discordedit\editthread.py:237
 #, docstring
 msgid "Edit thread locked."
 msgstr "Edit Wątek zamknięty."
 
-#: discordedit\editthread.py:272
+#: discordedit\editthread.py:260
 #, docstring
 msgid "Edit thread pinned."
 msgstr "Edycja wątku przypięta."
 
-#: discordedit\editthread.py:296
+#: discordedit\editthread.py:284
 #, docstring
 msgid "Edit thread invitable."
 msgstr "Edycja wątku invitable."
 
-#: discordedit\editthread.py:322
+#: discordedit\editthread.py:310
 #, docstring
 msgid "Edit thread auto archive duration."
 msgstr "Edycja czasu trwania autoarchiwizacji wątku."
 
-#: discordedit\editthread.py:346
+#: discordedit\editthread.py:334
 #, docstring
 msgid "Edit thread slowmode delay."
 msgstr "Edit thread slowmode delay."
 
-#: discordedit\editthread.py:370
+#: discordedit\editthread.py:358
 #, docstring
 msgid "Edit thread applied tags.\n\n"
 "        ```\n"
@@ -946,30 +946,30 @@ msgstr "Edit thread applied tags.\n\n"
 "        ```\n"
 "        "
 
-#: discordedit\editthread.py:400
+#: discordedit\editthread.py:388
 #, docstring
 msgid "Add member to thread."
 msgstr "Dodaj członka do wątku."
 
-#: discordedit\editthread.py:425
+#: discordedit\editthread.py:413
 #, docstring
 msgid "Remove member from thread."
 msgstr "Usunięcie użytkownika z wątku."
 
-#: discordedit\editthread.py:446
+#: discordedit\editthread.py:434
 #, docstring
 msgid "Delete a thread."
 msgstr "Usuń wątek."
 
-#: discordedit\editthread.py:456
+#: discordedit\editthread.py:444
 msgid "⚠️ - Delete thread"
 msgstr "⚠️ - Usuń wątek"
 
-#: discordedit\editthread.py:457 discordedit\editthread.py:464
+#: discordedit\editthread.py:445 discordedit\editthread.py:452
 msgid "Do you really want to delete the thread {thread.mention} ({thread.id})?"
 msgstr "Czy naprawdę chcesz usunąć wątek {thread.mention} ({thread.id})?"
 
-#: discordedit\editthread.py:479
+#: discordedit\editthread.py:467
 #, docstring
 msgid "View and edit thread."
 msgstr "Wyświetl i edytuj wątek."

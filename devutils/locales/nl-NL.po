@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:42\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:16\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "Geen geldig discord object verstrekt."
 msgid "Various development utilities!"
 msgstr "Diverse hulpprogramma's voor ontwikkeling!"
 
-#: devutils\devutils.py:136
+#: devutils\devutils.py:134
 #, docstring
 msgid "\n"
 "        Repeats a command a specified number of times.\n\n"
@@ -41,42 +41,42 @@ msgstr "\n"
 "        `-sleep <int>` is een optionele vlag die aangeeft hoeveel tijd er moet worden gewacht tussen het uitvoeren van een commando.\n"
 "        "
 
-#: devutils\devutils.py:157 devutils\devutils.py:233 devutils\devutils.py:249
+#: devutils\devutils.py:155 devutils\devutils.py:235 devutils\devutils.py:251
 msgid "You have not specified a correct command."
 msgstr "U hebt geen correct commando opgegeven."
 
-#: devutils\devutils.py:159 devutils\devutils.py:251
+#: devutils\devutils.py:157 devutils\devutils.py:253
 msgid "You can't execute yourself this command."
 msgstr "Je kunt dit commando niet zelf uitvoeren."
 
-#: devutils\devutils.py:172
+#: devutils\devutils.py:174
 #, docstring
 msgid "Execute multiple commands at once. Split them using |."
 msgstr "Meerdere commando's tegelijk uitvoeren. Splits ze met |."
 
-#: devutils\devutils.py:187 devutils\devutils.py:209
+#: devutils\devutils.py:189 devutils\devutils.py:211
 msgid "`{command}` isn't a valid command."
 msgstr "`{command}` is geen geldig commando."
 
-#: devutils\devutils.py:193 devutils\devutils.py:215
+#: devutils\devutils.py:195 devutils\devutils.py:217
 msgid "You can't execute yourself `{command}`."
 msgstr "Je kunt jezelf niet uitvoeren `{command}`."
 
-#: devutils\devutils.py:222
+#: devutils\devutils.py:224
 #, docstring
 msgid "Bypass a command's checks and cooldowns."
 msgstr "De controles en cooldowns van een commando omzeilen."
 
-#: devutils\devutils.py:238
+#: devutils\devutils.py:240
 #, docstring
 msgid "Run a command timing execution and catching exceptions."
 msgstr "Een commando uitvoeren met timing van uitvoering en het opvangen van uitzonderingen."
 
-#: devutils\devutils.py:257
+#: devutils\devutils.py:259
 msgid "Command `{command}` finished in `{timing}`s."
 msgstr "Commando `{command}` voltooid in `{timing}`s."
 
-#: devutils\devutils.py:264
+#: devutils\devutils.py:266
 #, docstring
 msgid "Reinvoke a command message.\n\n"
 "        You may reply to a message to reinvoke it or pass a message ID/link.\n"
@@ -87,17 +87,17 @@ msgstr "Een opdrachtbericht herroepen.\n\n"
 "        Het commando wordt dan aangeroepen met de auteur en het kanaal van het opgegeven bericht.\n"
 "        "
 
-#: devutils\devutils.py:285
+#: devutils\devutils.py:289
 msgid "The command isn't valid."
 msgstr "Het commando is niet geldig."
 
-#: devutils\devutils.py:287
+#: devutils\devutils.py:291
 msgid "This command can't be executed."
 msgstr "Dit commando kan niet worden uitgevoerd."
 
-#: devutils\devutils.py:293
+#: devutils\devutils.py:297
 #, docstring
-msgid "Change the logging level for a logger. if no name is provided, the root logger (red) is used.\n\n"
+msgid "Change the logging level for a logger. If no name is provided, the root logger (`red`) is used.\n\n"
 "        Levels are the following:\n"
 "        - `0`: `CRITICAL`\n"
 "        - `1`: `ERROR`\n"
@@ -107,10 +107,10 @@ msgid "Change the logging level for a logger. if no name is provided, the root l
 "        - `5`: `VERBOSE`\n"
 "        - `6`: `TRACE`\n"
 "        "
-msgstr "Wijzig het logboekniveau voor een logger. Als er geen naam is opgegeven, wordt de rootlogger (rood) gebruikt.\n\n"
+msgstr "Wijzig het logboekniveau voor een logger. Als er geen naam is opgegeven, wordt de rootlogger (`red`) gebruikt.\n\n"
 "        De niveaus zijn de volgende:\n"
 "        - `0`: `KRITISCH`\n"
-"        - `1`: `ERROR`\n"
+"        - `1`: `FOUT`\n"
 "        - `2`: `WAARSCHUWING`\n"
 "        - `3`: `INFO`\n"
 "        - `4`: `DEBUG`\n"
@@ -118,11 +118,11 @@ msgstr "Wijzig het logboekniveau voor een logger. Als er geen naam is opgegeven,
 "        - `6`: `TRACE`\n"
 "        "
 
-#: devutils\devutils.py:307
+#: devutils\devutils.py:311
 msgid "Logger `{logger_name}` level set to `{level}`."
 msgstr "Logger `{logger_name}` niveau ingesteld op `{level}`."
 
-#: devutils\devutils.py:316
+#: devutils\devutils.py:320
 #, docstring
 msgid "Force reload a module (to use code changes without restarting your bot).\n\n"
 "        ⚠️ Please only use this if you know what you're doing.\n"
@@ -131,19 +131,19 @@ msgstr "Forceer het herladen van een module (om codewijzigingen te gebruiken zon
 "        ⚠️ Gebruik dit alleen als u weet wat u doet.\n"
 "        "
 
-#: devutils\devutils.py:332
+#: devutils\devutils.py:336
 msgid "I couldn't find any module with this name."
 msgstr "Ik kon geen module met deze naam vinden."
 
-#: devutils\devutils.py:336
+#: devutils\devutils.py:340
 msgid "Module(s) {modules} reloaded."
 msgstr "Module(s) {modules} opnieuw geladen."
 
-#: devutils\devutils.py:342
+#: devutils\devutils.py:346
 msgid "Modules [...] reloaded."
 msgstr "Modules [...] opnieuw geladen."
 
-#: devutils\devutils.py:346
+#: devutils\devutils.py:350
 #, docstring
 msgid "Display the JSON of a Discord object with a raw request."
 msgstr "Toon de JSON van een Discord object met een onbewerkt verzoek."

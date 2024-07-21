@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:41\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:25\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -45,28 +45,28 @@ msgstr "Ce serveur n'est pas autorisé à ce que ses messages soient cités dans
 msgid "You don't have permission to read messages in that channel."
 msgstr "Vous n'avez pas l'autorisation de lire les messages dans ce canal."
 
-#: linkquoter\linkquoter.py:55
+#: linkquoter\linkquoter.py:56
 #, docstring
 msgid "Quote any Discord message from its link!"
 msgstr "Citez n'importe quel message Discord à partir de son lien !"
 
-#: linkquoter\linkquoter.py:217
+#: linkquoter\linkquoter.py:218
 msgid "{author.display_name} said..."
 msgstr "{author.display_name} a dit..."
 
-#: linkquoter\linkquoter.py:241
+#: linkquoter\linkquoter.py:244
 msgid "Attachments:"
 msgstr "Pièces jointes :"
 
-#: linkquoter\linkquoter.py:252
+#: linkquoter\linkquoter.py:255
 msgid "Stickers:"
 msgstr "Autocollants :"
 
-#: linkquoter\linkquoter.py:266
+#: linkquoter\linkquoter.py:267
 msgid "Replying to:"
 msgstr "Réponse à :"
 
-#: linkquoter\linkquoter.py:267
+#: linkquoter\linkquoter.py:268
 msgid "Click to view attachments."
 msgstr "Cliquez pour voir les pièces jointes."
 

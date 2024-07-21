@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:36\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:19\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -266,73 +266,69 @@ msgstr "a funcționat pentru tine?"
 msgid "This cog will only work on x server and therefore cannot be used by the general public!"
 msgstr "Această rotiță va funcționa doar pe serverul x și, prin urmare, nu poate fi folosită de publicul larg!"
 
-#: medicat\medicat.py:453
+#: medicat\medicat.py:476
 msgid "This Ventoy version doesn't exists."
 msgstr "Această versiune Ventoy nu există."
 
-#: medicat\medicat.py:489
+#: medicat\medicat.py:512
 msgid "Ventoy v{ventoy_version_str} has been released!"
 msgstr "Ventoy v{ventoy_version_str} a fost lansat!"
 
-#: medicat\medicat.py:492
+#: medicat\medicat.py:515
 msgid "New features:"
 msgstr "Caracteristici noi:"
 
-#: medicat\medicat.py:497
+#: medicat\medicat.py:520
 msgid "Download this version:"
 msgstr "Descărcați această versiune:"
 
-#: medicat\medicat.py:505
+#: medicat\medicat.py:528
 msgid "View on Ventoy Official Website"
 msgstr "Vezi pe site-ul oficial Ventoy"
 
-#: medicat\medicat.py:589
+#: medicat\medicat.py:612
 msgid "{tool} now has a new version!"
 msgstr "{tool} are acum o nouă versiune!"
 
-#: medicat\medicat.py:603
+#: medicat\medicat.py:626
 msgid "View on FCportables Official Website"
 msgstr "Vezi pe site-ul oficial al FCportables"
 
-#: medicat\medicat.py:747
+#: medicat\medicat.py:770
 #, docstring
 msgid "Get the latest version of Ventoy."
 msgstr "Obțineți cea mai recentă versiune de Ventoy."
 
-#: medicat\medicat.py:751 medicat\medicat.py:761
-msgid "An error has occurred. Please try again."
-msgstr "S-a produs o eroare. Vă rugăm să încercați din nou."
-
-#: medicat\medicat.py:757
+#: medicat\medicat.py:777
 #, docstring
 msgid "Get a version of Ventoy."
 msgstr "Obțineți o versiune de Ventoy."
 
-#: medicat\medicat.py:767
+#: medicat\medicat.py:784
 #, docstring
 msgid "Get the latest versions of each Medicat USB bootable tool."
 msgstr "Obțineți cele mai recente versiuni ale fiecărui instrument de pornire Medicat USB."
 
-#: medicat\medicat.py:803 medicat\medicat.py:943
+#: medicat\medicat.py:820 medicat\medicat.py:957
 msgid "View FCportables Official Website"
 msgstr "Vezi site-ul oficial al FCportables"
 
-#: medicat\medicat.py:822
+#: medicat\medicat.py:839
 #, docstring
 msgid "Get the debug for a FCportables's tool."
 msgstr "Obține depanarea pentru un instrument FCportables."
 
-#: medicat\medicat.py:902
+#: medicat\medicat.py:916
 #, docstring
 msgid "Get the download link of each Medicat USB bootable tool."
 msgstr "Obțineți linkul de descărcare al fiecărui instrument de pornire Medicat USB."
 
-#: medicat\medicat.py:963
+#: medicat\medicat.py:977
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Obțineți o inserție pentru a verifica starea buclelor."
 
-#: medicat\medicat.py:970
+#: medicat\medicat.py:984
 #, docstring
 msgid "Update Medicat cog directly."
 msgstr "Actualizați direct cognatul Medicat."

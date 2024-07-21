@@ -1,0 +1,137 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/editfile/locales/messages.pot\n"
+"X-Crowdin-File-ID: 86\n"
+"Language: tr_TR\n"
+
+#: editfile\editfile.py:29
+#, docstring
+msgid "A cog to get a file and replace it from its path from Discord!\n\n"
+"    ⚠️ This cog can be very dangerous, since it allows direct read/write/delete of files on the bot’s machine, considering the fact that reading the wrong file can expose sensitive information like tokens and deleting the wrong file can corrupt the bot or the system entirely.\n"
+"    "
+msgstr "Discord üzerinden bir dosyayı almak ve yolundan değiştirmek için bir cog!\n\n"
+"    ⚠️ Bu cog çok tehlikeli olabilir, çünkü botun makinesindeki dosyaların doğrudan okunmasına/yazılmasına/silinmesine izin verir, yanlış dosyayı okumak tokenlar gibi hassas bilgileri açığa çıkarabilir ve yanlış dosyayı silmek botu veya sistemi tamamen bozabilir.\n"
+"    "
+
+#: editfile\editfile.py:49
+#, docstring
+msgid "Get a file on the bot's host machine from its path.\n"
+"        `#L10` or `#L10-L30` is supported.\n"
+"        "
+msgstr "Botun ana makinesindeki bir dosyayı yolundan alın.\n"
+"        `#L10` veya `#L10-L30` desteklenmektedir.\n"
+"        "
+
+#: editfile\editfile.py:54 editfile\editfile.py:130
+msgid "Couldn't parse this input."
+msgstr "Bu girdi ayrıştırılamadı."
+
+#: editfile\editfile.py:66
+msgid "Cowardly refusing to read a file with no size stat. (it may be empty, endless or inaccessible)."
+msgstr "Boyut bilgisi olmayan bir dosyayı okumayı korkakça reddediyorum. (boş, sonsuz veya erişilemez olabilir)."
+
+#: editfile\editfile.py:72
+msgid "Cowardly refusing to read a file >128MB."
+msgstr "128MB'den büyük bir dosyayı okumayı korkakça reddediyorum."
+
+#: editfile\editfile.py:90 editfile\editfile.py:282 editfile\editfile.py:292
+#: editfile\editfile.py:305 editfile\editfile.py:316
+msgid "This file cannot be found on the host machine."
+msgstr "Bu dosya ana makinede bulunamıyor."
+
+#: editfile\editfile.py:94 editfile\editfile.py:157 editfile\editfile.py:286
+#: editfile\editfile.py:296 editfile\editfile.py:309 editfile\editfile.py:320
+msgid "The path you specified refers to a directory, not a file."
+msgstr "Belirttiğiniz yol bir dosyaya değil, bir dizine atıfta bulunuyor."
+
+#: editfile\editfile.py:114 editfile\editfile.py:148
+msgid "There are only {len_lines} lines in this file."
+msgstr "Bu dosyada yalnızca {len_lines} satır var."
+
+#: editfile\editfile.py:119
+msgid "Here are the contents of the file `{path}`."
+msgstr "`{path}` dosyasının içeriği burada."
+
+#: editfile\editfile.py:124
+#, docstring
+msgid "Replace a file on the bot's host machine from its path.\n"
+"        `#L10` or `#L10-L30` is supported.\n"
+"        "
+msgstr "Botun ana makinesindeki bir dosyayı yolundan değiştirin.\n"
+"        `#L10` veya `#L10-L30` desteklenmektedir.\n"
+"        "
+
+#: editfile\editfile.py:153
+msgid "This original file cannot be found on the host machine."
+msgstr "Bu orijinal dosya ana makinede bulunamıyor."
+
+#: editfile\editfile.py:161
+msgid "You must send the command with an attachment that will be used to replace the original file."
+msgstr "Komutu, orijinal dosyayı değiştirmek için kullanılacak bir ek ile göndermelisiniz."
+
+#: editfile\editfile.py:186
+msgid "This is the original/old file available at path `{path}`. Normally, this file has been replaced correctly."
+msgstr "Bu, `{path}` yolunda bulunan orijinal/eski dosya. Normalde, bu dosya doğru bir şekilde değiştirilmiş olmalıdır."
+
+#: editfile\editfile.py:194
+#, docstring
+msgid "Get a cog directory on the bot's host machine from its name."
+msgstr "Botun ana makinesinde bir cog dizinini adından alın."
+
+#: editfile\editfile.py:197
+msgid "Could not find a cog with this name."
+msgstr "Bu ada sahip bir cog bulunamadı."
+
+#: editfile\editfile.py:203
+msgid "This cog has not yet stored any persistent data in its data folder."
+msgstr "Bu cog henüz veri klasöründe kalıcı bir veri saklamadı."
+
+#: editfile\editfile.py:223
+#, docstring
+msgid "List all files/directories of a directory from its path."
+msgstr "Bir dizinin tüm dosyalarını/dizinlerini yolundan listeleyin."
+
+#: editfile\editfile.py:227 editfile\editfile.py:251
+msgid "This directory cannot be found on the host machine."
+msgstr "Bu dizin ana makinede bulunamıyor."
+
+#: editfile\editfile.py:231 editfile\editfile.py:255
+msgid "The path you specified refers to a file, not a directory."
+msgstr "Belirttiğiniz yol bir dosyaya değil, bir dizine atıfta bulunuyor."
+
+#: editfile\editfile.py:247
+#, docstring
+msgid "Make a tree with all files/directories of a directory from its path."
+msgstr "Bir dizinin tüm dosyaları/dizinleri ile bir ağaç oluşturun."
+
+#: editfile\editfile.py:278
+#, docstring
+msgid "Rename a file."
+msgstr "Bir dosyayı yeniden adlandırın."
+
+#: editfile\editfile.py:298
+msgid "The `{path}` file has been renamed."
+msgstr "`{path}` dosyası yeniden adlandırıldı."
+
+#: editfile\editfile.py:302
+#, docstring
+msgid "Delete a file."
+msgstr "Bir dosyayı silin."
+
+#: editfile\editfile.py:322
+msgid "The `{path}` file has been deleted."
+msgstr "`{path}` dosyası silindi."
+

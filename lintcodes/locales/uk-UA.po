@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:23\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:25\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -22,32 +22,32 @@ msgstr ""
 msgid "A cog to lint a code from Discord, with Flake8, PyLint, MyPy, Bandit, Black, Isort, Yapf, AutoFlake8, PyRight and Ruff!"
 msgstr "Гвинтик для лінтування коду з Discord, з Flake8, PyLint, MyPy, Bandit, Black, Isort, Yapf, AutoFlake8, PyRight і Ruff!"
 
-#: lintcodes\lintcodes.py:65
+#: lintcodes\lintcodes.py:58
 msgid "File must be smaller than 20 kio."
 msgstr "Розмір файлу не повинен перевищувати 20 кілобайт."
 
-#: lintcodes\lintcodes.py:78
+#: lintcodes\lintcodes.py:71
 msgid "Incorrect Python file extension."
 msgstr "Неправильне розширення файлу Python."
 
-#: lintcodes\lintcodes.py:100
+#: lintcodes\lintcodes.py:93
 msgid "Please provide the code!"
 msgstr "Будь ласка, вкажіть код!"
 
-#: lintcodes\lintcodes.py:116
+#: lintcodes\lintcodes.py:109
 msgid "Incorrect syntax, please use Markdown's syntax for your code."
 msgstr "Неправильний синтаксис, будь ласка, використовуйте синтаксис Markdown для вашого коду."
 
-#: lintcodes\lintcodes.py:120
+#: lintcodes\lintcodes.py:113
 msgid "Incorrect language identifier for your code, use `python` for the code syntax."
 msgstr "Неправильний ідентифікатор мови для вашого коду, використовуйте `python` для синтаксису коду."
 
-#: lintcodes\lintcodes.py:140
+#: lintcodes\lintcodes.py:133
 #, docstring
 msgid "Format code with Flake8, without flags, just the code."
 msgstr "Відформатуйте код за допомогою Flake8, без прапорів, тільки код."
 
-#: lintcodes\lintcodes.py:147
+#: lintcodes\lintcodes.py:140
 #, docstring
 msgid "Format code with Flake8, with flags.\n\n"
 "        **Supported flags:**\n\n"
@@ -78,12 +78,12 @@ msgstr "Формат коду за допомогою Flake8, з прапора�
 "        - `--max_complexity <integer>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:172
+#: lintcodes\lintcodes.py:165
 #, docstring
 msgid "Format code with PyLint, without flags, just the code."
 msgstr "Форматуйте код за допомогою PyLint, без прапорів, тільки код."
 
-#: lintcodes\lintcodes.py:179
+#: lintcodes\lintcodes.py:172
 #, docstring
 msgid "Format code with PyLint, with flags.\n\n"
 "        **Supported flags:**\n"
@@ -100,12 +100,12 @@ msgstr "Формат коду за допомогою PyLint, з прапорц�
 "        - `--enable <enable_list>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:195
+#: lintcodes\lintcodes.py:188
 #, docstring
 msgid "Format code with MyPy, without flags, just the code."
 msgstr "Відформатуйте код за допомогою MyPy, без прапорів, тільки код."
 
-#: lintcodes\lintcodes.py:202
+#: lintcodes\lintcodes.py:195
 #, docstring
 msgid "Format code with MyPy, with flags.\n\n"
 "        **Supported flags:**\n"
@@ -244,12 +244,12 @@ msgstr "Форматуйте код за допомогою MyPy, за допо�
 "          - `--pretty <yes>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:284
+#: lintcodes\lintcodes.py:277
 #, docstring
 msgid "Format code with Bandit, without flags, just the code."
 msgstr "Відформатуйте код за допомогою Bandit, без прапорів, тільки код."
 
-#: lintcodes\lintcodes.py:291
+#: lintcodes\lintcodes.py:284
 #, docstring
 msgid "Format code with Bandit, with flags.\n\n"
 "        **Supported flags:**\n"
@@ -270,27 +270,27 @@ msgstr "Форматувати код за допомогою Bandit, з пра�
 "        - `--впевненість <low/medium/high>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:310
+#: lintcodes\lintcodes.py:303
 #, docstring
 msgid "Format code with Black, without flags, just the code."
 msgstr "Форматуйте код чорним кольором, без прапорів, тільки код."
 
-#: lintcodes\lintcodes.py:316
+#: lintcodes\lintcodes.py:309
 #, docstring
 msgid "Format code with Isort, without flags, just the code."
 msgstr "Відформатуйте код за допомогою Isort, без прапорів, просто код."
 
-#: lintcodes\lintcodes.py:322
+#: lintcodes\lintcodes.py:315
 #, docstring
 msgid "Format code with Yapf, without flags, just the code."
 msgstr "Відформатуйте код за допомогою Yapf, без прапорів, тільки код."
 
-#: lintcodes\lintcodes.py:328
+#: lintcodes\lintcodes.py:321
 #, docstring
 msgid "Format code with AutoPep8, without flags, just the code."
 msgstr "Відформатуйте код за допомогою AutoPep8, без прапорів, тільки код."
 
-#: lintcodes\lintcodes.py:334
+#: lintcodes\lintcodes.py:327
 #, docstring
 msgid "Format code with PyRight, without flags, just the code.\n\n"
 "        **Supported flags:**\n"
@@ -301,17 +301,17 @@ msgstr "Форматуйте код за допомогою PyRight, без пр
 "        - `--код <code>`\n"
 "        "
 
-#: lintcodes\lintcodes.py:345
+#: lintcodes\lintcodes.py:338
 #, docstring
 msgid "Format code with PyRight, with flags."
 msgstr "Форматувати код за допомогою PyRight, з прапорцями."
 
-#: lintcodes\lintcodes.py:352
+#: lintcodes\lintcodes.py:345
 #, docstring
 msgid "Format code with Ruff, without flags, just the code."
 msgstr "Відформатуйте код за допомогою Ruff, без прапорів, тільки код."
 
-#: lintcodes\lintcodes.py:359
+#: lintcodes\lintcodes.py:352
 #, docstring
 msgid "Format code with Ruff, with flags.\n\n"
 "        **Supported flags:**\n"

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:42\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:16\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "Kelvollista discord-objektia ei ole annettu."
 msgid "Various development utilities!"
 msgstr "Erilaisia kehitysapuohjelmia!"
 
-#: devutils\devutils.py:136
+#: devutils\devutils.py:134
 #, docstring
 msgid "\n"
 "        Repeats a command a specified number of times.\n\n"
@@ -41,42 +41,42 @@ msgstr "\n"
 "        `--sleep <int>` on valinnainen lippu, joka määrittää, kuinka kauan komentojen kutsujen välillä odotetaan.\n"
 "        "
 
-#: devutils\devutils.py:157 devutils\devutils.py:233 devutils\devutils.py:249
+#: devutils\devutils.py:155 devutils\devutils.py:235 devutils\devutils.py:251
 msgid "You have not specified a correct command."
 msgstr "Et ole antanut oikeaa komentoa."
 
-#: devutils\devutils.py:159 devutils\devutils.py:251
+#: devutils\devutils.py:157 devutils\devutils.py:253
 msgid "You can't execute yourself this command."
 msgstr "Et voi suorittaa tätä komentoa itse."
 
-#: devutils\devutils.py:172
+#: devutils\devutils.py:174
 #, docstring
 msgid "Execute multiple commands at once. Split them using |."
 msgstr "Suorita useita komentoja kerralla. Jaa ne käyttämällä |."
 
-#: devutils\devutils.py:187 devutils\devutils.py:209
+#: devutils\devutils.py:189 devutils\devutils.py:211
 msgid "`{command}` isn't a valid command."
 msgstr "`{command}` ei ole kelvollinen komento."
 
-#: devutils\devutils.py:193 devutils\devutils.py:215
+#: devutils\devutils.py:195 devutils\devutils.py:217
 msgid "You can't execute yourself `{command}`."
 msgstr "Et voi teloittaa itseäsi `{command}`."
 
-#: devutils\devutils.py:222
+#: devutils\devutils.py:224
 #, docstring
 msgid "Bypass a command's checks and cooldowns."
 msgstr "Ohita komennon tarkistukset ja jäähdytysajat."
 
-#: devutils\devutils.py:238
+#: devutils\devutils.py:240
 #, docstring
 msgid "Run a command timing execution and catching exceptions."
 msgstr "Suorita komento ajoittaen suoritus ja poimien poikkeuksia."
 
-#: devutils\devutils.py:257
+#: devutils\devutils.py:259
 msgid "Command `{command}` finished in `{timing}`s."
 msgstr "Komento `{command}` valmistui `{timing}`s:ssa."
 
-#: devutils\devutils.py:264
+#: devutils\devutils.py:266
 #, docstring
 msgid "Reinvoke a command message.\n\n"
 "        You may reply to a message to reinvoke it or pass a message ID/link.\n"
@@ -87,17 +87,17 @@ msgstr "Komentoviestin peruuttaminen uudelleen.\n\n"
 "        Komento käynnistetään määritetyn viestin kirjoittajalla ja kanavalla.\n"
 "        "
 
-#: devutils\devutils.py:285
+#: devutils\devutils.py:289
 msgid "The command isn't valid."
 msgstr "Komento ei ole voimassa."
 
-#: devutils\devutils.py:287
+#: devutils\devutils.py:291
 msgid "This command can't be executed."
 msgstr "Tätä komentoa ei voida suorittaa."
 
-#: devutils\devutils.py:293
+#: devutils\devutils.py:297
 #, docstring
-msgid "Change the logging level for a logger. if no name is provided, the root logger (red) is used.\n\n"
+msgid "Change the logging level for a logger. If no name is provided, the root logger (`red`) is used.\n\n"
 "        Levels are the following:\n"
 "        - `0`: `CRITICAL`\n"
 "        - `1`: `ERROR`\n"
@@ -107,22 +107,22 @@ msgid "Change the logging level for a logger. if no name is provided, the root l
 "        - `5`: `VERBOSE`\n"
 "        - `6`: `TRACE`\n"
 "        "
-msgstr "Vaihda lokin kirjaustasoa. jos nimeä ei anneta, käytetään pääkirjainta (punainen).\n\n"
+msgstr "Vaihda lokin kirjaustasoa. Jos nimeä ei anneta, käytetään juuriloggeria (`red`).\n\n"
 "        Tasot ovat seuraavat:\n"
-"        - `0`: `KRIITTINEN`\n"
-"        - `1`: `VIRHE`\n"
-"        - `2`: `VAROITUS`\n"
+"        - `0`: `CRITICAL`\n"
+"        - `1`: `ERROR`\n"
+"        - `2`: `WARNING`\n"
 "        - `3`: `INFO`\n"
 "        - `4`: `DEBUG`\n"
 "        - `5`: `VERBOSE`\n"
 "        - `6`: `TRACE`\n"
 "        "
 
-#: devutils\devutils.py:307
+#: devutils\devutils.py:311
 msgid "Logger `{logger_name}` level set to `{level}`."
 msgstr "Lokin \"{logger_name}\" taso on asetettu arvoon \"{level}\"."
 
-#: devutils\devutils.py:316
+#: devutils\devutils.py:320
 #, docstring
 msgid "Force reload a module (to use code changes without restarting your bot).\n\n"
 "        ⚠️ Please only use this if you know what you're doing.\n"
@@ -131,19 +131,19 @@ msgstr "Pakota lataamaan moduuli uudelleen (jotta voit käyttää koodimuutoksia
 "        ⚠️ Käytä tätä vain, jos tiedät, mitä olet tekemässä.\n"
 "        "
 
-#: devutils\devutils.py:332
+#: devutils\devutils.py:336
 msgid "I couldn't find any module with this name."
 msgstr "En löytänyt yhtään moduulia tällä nimellä."
 
-#: devutils\devutils.py:336
+#: devutils\devutils.py:340
 msgid "Module(s) {modules} reloaded."
 msgstr "Moduuli(t) {modules} ladattu uudelleen."
 
-#: devutils\devutils.py:342
+#: devutils\devutils.py:346
 msgid "Modules [...] reloaded."
 msgstr "Moduulit [...] ladattu uudelleen."
 
-#: devutils\devutils.py:346
+#: devutils\devutils.py:350
 #, docstring
 msgid "Display the JSON of a Discord object with a raw request."
 msgstr "Näyttää Discord-objektin JSON-tiedoston raa'alla pyynnöllä."

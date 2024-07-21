@@ -1,0 +1,171 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/webhook/locales/messages.pot\n"
+"X-Crowdin-File-ID: 324\n"
+"Language: tr_TR\n"
+
+#: webhook\webhook.py:50
+msgid "Webhook Session Initiated"
+msgstr "Webhook Oturumu Başlatıldı"
+
+#: webhook\webhook.py:51
+msgid "Session Created by {author.display_name} ({author.id})."
+msgstr "Oturum {author.display_name} ({author.id}) tarafından oluşturuldu."
+
+#: webhook\webhook.py:64
+msgid "Session initialization failed as provided webhook link was invalid."
+msgstr "Sağlanan webhook bağlantısı geçersiz olduğu için oturum başlatılamadı."
+
+#: webhook\webhook.py:69
+msgid "I will send all messages in this channel to the webhook until the session is closed with `{ctx.clean_prefix}webhook session close` or there are 2 minutes of inactivity."
+msgstr "Bu kanaldaki tüm mesajları `{ctx.clean_prefix}webhook session close` ile oturum kapatılana veya 2 dakika boyunca hiçbir etkinlik olmayana kadar webhook'a göndereceğim."
+
+#: webhook\webhook.py:97
+#, docstring
+msgid "Various webhook commands to create and send messages along webhooks!"
+msgstr "Webhook oluşturmak ve mesaj göndermek için çeşitli webhook komutları!"
+
+#: webhook\webhook.py:119
+msgid "That doesn't look like a webhook link."
+msgstr "Bu, bir webhook bağlantısına benzemiyor."
+
+#: webhook\webhook.py:136
+msgid "Use `{ctx.prefix}help {ctx.command.qualified_name}` to see an example."
+msgstr "Bir örnek görmek için `{ctx.prefix}help {ctx.command.qualified_name}` komutunu kullanın."
+
+#: webhook\webhook.py:159
+msgid "I can not do that because I don't have the `manage_webhooks` permission."
+msgstr "Bunu yapamam çünkü `manage_webhooks` iznim yok."
+
+#: webhook\webhook.py:181
+#, docstring
+msgid "Creates a webhook in the channel specified with the name specified.\n\n"
+"        If no channel is specified then it will default to the current channel.\n"
+"        "
+msgstr "Belirtilen isimle belirtilen kanalda bir webhook oluşturur.\n\n"
+"        Eğer kanal belirtilmezse varsayılan olarak mevcut kanal kullanılır.\n"
+"        "
+
+#: webhook\webhook.py:200
+#, docstring
+msgid "Sends a message to the specified webhook using your display name and you avatar."
+msgstr "Görünen adınızı ve avatarınızı kullanarak belirtilen webhook'a bir mesaj gönderir."
+
+#: webhook\webhook.py:220
+#, docstring
+msgid "Sends a message a channel as a webhook using your display name and your avatar.\n\n"
+"        You can attach files to the command.\n"
+"        "
+msgstr "Görünen adınızı ve avatarınızı kullanarak bir kanala webhook olarak mesaj gönderir.\n\n"
+"        Komuta dosyalar ekleyebilirsiniz.\n"
+"        "
+
+#: webhook\webhook.py:254
+#, docstring
+msgid "Sends a message a channel as a webhook using the display name and the avatar of a specified member.\n\n"
+"        You can attach files to the command.\n"
+"        "
+msgstr "Belirtilen bir üyenin görünen adı ve avatarını kullanarak bir kanala webhook olarak mesaj gönderir.\n\n"
+"        Komuta dosyalar ekleyebilirsiniz.\n"
+"        "
+
+#: webhook\webhook.py:289
+#, docstring
+msgid "Sends a message a channel as a webhook using a specified display name and a specified avatar url.\n\n"
+"        You can attach files to the command.\n"
+"        "
+msgstr "Belirtilen görünen ad ve avatar URL'si kullanılarak bir kanala webhook olarak mesaj gönderir.\n\n"
+"        Komuta dosyalar ekleyebilirsiniz.\n"
+"        "
+
+#: webhook\webhook.py:323
+#, docstring
+msgid "Sends a message a channel as a webhook using Clyde's display name and avatar.\n\n"
+"        You can attach files to the command.\n"
+"        "
+msgstr "Clyde'ın görünen adı ve avatarını kullanarak bir kanala webhook olarak mesaj gönderir.\n\n"
+"        Komuta dosyalar ekleyebilirsiniz.\n"
+"        "
+
+#: webhook\webhook.py:349
+#, docstring
+msgid "Show all members in the server that have the permission `manage_webhooks`."
+msgstr "Sunucudaki `manage_webhooks` iznine sahip tüm üyeleri göster."
+
+#: webhook\webhook.py:371
+msgid "No one here has the permission `manage_webhooks` other than the owner."
+msgstr "Burada sahibinden başka `manage_webhooks` iznine sahip kimse yok."
+
+#: webhook\webhook.py:375
+msgid "Members with the permission `manage_webhooks`"
+msgstr "`manage_webhooks` iznine sahip üyeler"
+
+#: webhook\webhook.py:391
+#, docstring
+msgid "Edit a message sent by a webhook.\n\n"
+"        You can attach files to the command.\n"
+"        "
+msgstr "Webhook tarafından gönderilen bir mesajı düzenle.\n\n"
+"        Komuta dosyalar ekleyebilirsiniz.\n"
+"        "
+
+#: webhook\webhook.py:411
+msgid "No webhook found for this message."
+msgstr "Bu mesaj için webhook bulunamadı."
+
+#: webhook\webhook.py:424
+#, docstring
+msgid "Delete all webhooks in this server."
+msgstr "Bu sunucudaki tüm webhook'ları sil."
+
+#: webhook\webhook.py:427
+msgid "There are no webhooks in this server."
+msgstr "Bu sunucuda webhook yok."
+
+#: webhook\webhook.py:431
+msgid "⚠️ - Webhooks Deletion"
+msgstr "⚠️ - Webhook'ların Silinmesi"
+
+#: webhook\webhook.py:432
+msgid "This will delete all webhooks in the server. Are you sure you want to do this?"
+msgstr "Bu, sunucudaki tüm webhook'ları silecek. Bunu yapmak istediğinizden emin misiniz?"
+
+#: webhook\webhook.py:442
+msgid "Deleting all webhooks..."
+msgstr "Tüm webhook'lar siliniyor..."
+
+#: webhook\webhook.py:454 webhook\webhook.py:456
+msgid "{count} webhooks deleted."
+msgstr "{count} webhook silindi."
+
+#: webhook\webhook.py:461
+#, docstring
+msgid "Initiate a session within this channel sending messages to a specified webhook link."
+msgstr "Belirtilen webhook bağlantısına mesaj gönderen bir oturumu bu kanalda başlatın."
+
+#: webhook\webhook.py:464
+msgid "This channel already has an ongoing session. Use `{ctx.clean_prefix}webhook session close` to close it."
+msgstr "Bu kanal zaten devam eden bir oturuma sahip. Kapatmak için `{ctx.clean_prefix}webhook session close` kullanın."
+
+#: webhook\webhook.py:475
+#, docstring
+msgid "Close an ongoing webhook session in a channel."
+msgstr "Bir kanaldaki devam eden webhook oturumunu kapatın."
+
+#: webhook\webhook.py:479
+msgid "This channel does not have an ongoing webhook session. Start one with `{ctx.clean_prefix}webhook session`."
+msgstr "Bu kanalda devam eden bir webhook oturumu yok. `{ctx.clean_prefix}webhook session` ile bir tane başlatın."
+

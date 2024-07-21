@@ -1,0 +1,176 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"PO-Revision-Date: 2024-07-21 15:17\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/disurlvotestracker/locales/messages.pot\n"
+"X-Crowdin-File-ID: 330\n"
+"Language: fi_FI\n"
+
+#: disurlvotestracker\converter.py:21
+msgid "The {role.mention} role is a bot integration role and cannot be assigned or removed."
+msgstr "{role.mention} -rooli on botin integrointirooli, eikä sitä voi määrittää tai poistaa."
+
+#: disurlvotestracker\converter.py:27
+msgid "The {role.mention} role is an integration role and cannot be assigned or removed."
+msgstr "{role.mention} -rooli on integrointirooli, eikä sitä voi määrittää tai poistaa."
+
+#: disurlvotestracker\converter.py:33
+msgid "The {role.mention} role is a premium subscriber role and can only be assigned or removed by Nitro boosting the server."
+msgstr "{role.mention} -rooli on premium-tilaajarooli, ja se voidaan määrittää tai poistaa vain Nitro boosting-palvelimen avulla."
+
+#: disurlvotestracker\converter.py:39
+msgid "The {role.mention} role is higher than my highest role in the discord hierarchy."
+msgstr "{role.mention} -rooli on korkeampi kuin korkein roolini discord-hierarkiassa."
+
+#: disurlvotestracker\converter.py:45
+msgid "The {role.mention} role is higher than your highest role in the discord hierarchy."
+msgstr "{role.mention} -rooli on korkeampi kuin korkein roolisi discord-hierarkiassa."
+
+#: disurlvotestracker\dashboard_integration.py:38
+#: disurlvotestracker\dashboard_integration.py:72
+#: disurlvotestracker\disurlvotestracker.py:320
+#: disurlvotestracker\disurlvotestracker.py:352
+msgid "DisurlVotesTracker is not enabled in this server."
+msgstr "DisurlVotesTracker ei ole käytössä tällä palvelimella."
+
+#: disurlvotestracker\dashboard_integration.py:46
+msgid "No votes found in this server."
+msgstr "Tällä palvelimella ei ole ääniä."
+
+#: disurlvotestracker\dashboard_integration.py:62
+#: disurlvotestracker\dashboard_integration.py:106
+msgid "Total: {total} vote{s}"
+msgstr "Yhteensä: {total} äänestys{s}"
+
+#: disurlvotestracker\dashboard_integration.py:90
+msgid "No monthly votes found in this server."
+msgstr "Tällä palvelimella ei ole kuukausittaisia ääniä."
+
+#: disurlvotestracker\disurlvotestracker.py:27
+#, docstring
+msgid "Track votes on Disurl, assign roles to voters and remind them to vote!"
+msgstr "Seuraa ääniä Disurlissa, määritä äänestäjille rooleja ja muistuta heitä äänestämään!"
+
+#: disurlvotestracker\disurlvotestracker.py:181
+msgid "Voted on Disurl! (12 hours)"
+msgstr "Äänestettiin Disurlissa! (12 tuntia)"
+
+#: disurlvotestracker\disurlvotestracker.py:196
+msgid "New vote for {guild.name}!"
+msgstr "Uusi ääni {guild.name}!"
+
+#: disurlvotestracker\disurlvotestracker.py:199
+msgid "{member.mention} voted on Disurl!\n"
+"`{number_member_votes} vote{s_1} this month & {number_member_monthly_votes} lifetime vote{s_2}`"
+msgstr "{member.mention} äänesti Disurl!\n"
+"`{number_member_votes} äänestä{s_1} tässä kuussa & {number_member_monthly_votes} elinikäinen ääni{s_2}`"
+
+#: disurlvotestracker\disurlvotestracker.py:208
+msgid "\n\n"
+"{member.display_name} received the role {voters_role.mention} for the next 12 hours."
+msgstr "\n\n"
+"{member.display_name} sai roolin {voters_role.mention} seuraavien 12 tunnin ajan."
+
+#: disurlvotestracker\disurlvotestracker.py:209
+msgid "\n\n"
+"You could vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!"
+msgstr "\n\n"
+"Voit äänestää [Disurl](https://disurl.me/server/{guild.id}/vote) täällä uudelleen 12 tunnin kuluttua!"
+
+#: disurlvotestracker\disurlvotestracker.py:210
+msgid "Thanks for supporting the server! | User ID: {member.id}"
+msgstr "Kiitos palvelimen tukemisesta! | Käyttäjätunnus: {member.id}"
+
+#: disurlvotestracker\disurlvotestracker.py:266
+msgid "Voters role expired! (12 hours)"
+msgstr "Äänestäjien rooli päättyi! (12 tuntia)"
+
+#: disurlvotestracker\disurlvotestracker.py:275
+msgid "Vote on Disurl!"
+msgstr "Äänestä Disurlia!"
+
+#: disurlvotestracker\disurlvotestracker.py:277
+msgid "{member.mention}, don't forget to vote on **[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again 12 hours after this vote. **Thanks for supporting the server!**"
+msgstr "{member.mention}, älä unohda äänestää **[Disurl](https://disurl.me/server/{guild.id}/vote)**! Voit äänestää uudelleen 12 tuntia tämän äänestyksen jälkeen. **Kiitos palvelimen tukemisesta!**"
+
+#: disurlvotestracker\disurlvotestracker.py:318
+#, docstring
+msgid "Show the lifetime leaderboard of voters."
+msgstr "Näytä äänestäjien elinikäinen pistetaulukko."
+
+#: disurlvotestracker\disurlvotestracker.py:328
+#: disurlvotestracker\disurlvotestracker.py:370
+msgid "No voters found."
+msgstr "Äänestäjiä ei löytynyt."
+
+#: disurlvotestracker\disurlvotestracker.py:330
+msgid "Leaderboard"
+msgstr "Tulostaulu"
+
+#: disurlvotestracker\disurlvotestracker.py:333
+msgid "{ctx.guild.name} | {total} Lifetime Vote{s}"
+msgstr "{ctx.guild.name} | {total} Elinikäinen äänestys{s}"
+
+#: disurlvotestracker\disurlvotestracker.py:336
+msgid "You are at position {author_index} with {number_member_lifetime_votes} vote{s}."
+msgstr "Olet kohdassa {author_index}, jossa on {number_member_lifetime_votes} ääni{s}."
+
+#: disurlvotestracker\disurlvotestracker.py:350
+#, docstring
+msgid "Show the monthly leaderboard of voters."
+msgstr "Näytä äänestäjien kuukausittainen pistetaulukko."
+
+#: disurlvotestracker\disurlvotestracker.py:372
+msgid "Monthly Leaderboard"
+msgstr "Kuukausittainen tulostaulu"
+
+#: disurlvotestracker\disurlvotestracker.py:375
+msgid "{ctx.guild.name} | {total} Monthly Vote{s}"
+msgstr "{ctx.guild.name} | {total} Kuukausittainen äänestys{s}"
+
+#: disurlvotestracker\disurlvotestracker.py:378
+msgid "You are at position {author_index} with {number_member_monthly_votes} vote{s}."
+msgstr "Olet kohdassa {author_index}, jossa on {number_member_monthly_votes} ääni{s}."
+
+#: disurlvotestracker\disurlvotestracker.py:400
+#, docstring
+msgid "Instructions on how to set up DisurlVotesTracker."
+msgstr "Ohjeet DisurlVotesTrackerin käyttöönotosta."
+
+#: disurlvotestracker\disurlvotestracker.py:403
+msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Dashboardia ei ole asennettu. Tarkista <https://red-web-dashboard.readthedocs.io>."
+
+#: disurlvotestracker\disurlvotestracker.py:408
+msgid "You can't access the Dashboard."
+msgstr "Et pääse kojelautaan."
+
+#: disurlvotestracker\disurlvotestracker.py:410
+msgid "DisurlVotesTracker Instructions"
+msgstr "DisurlVotesTracker Ohjeet"
+
+#: disurlvotestracker\disurlvotestracker.py:412
+msgid "1. Go to [Disurl Dashboard](https://disurl.me/dashboard/server/{guild_id}/webhooks) and set the webhook URL to `{webhook_url}`.\n"
+"2. Set the Disurl API authorization key with the key which you provided on Disurl.\n"
+"3. Set the votes channel where vote notifications will be sent.\n"
+"4. Set the optional the voters role that will be assigned to voters.\n"
+"5. Optionally, toggle the vote reminder.\n"
+"6. Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`.7. Enable the cog."
+msgstr "1. Mene [Disurl Dashboard](https://disurl.me/dashboard/server/{guild_id}/webhooks) ja aseta webhook URL-osoitteeksi `{webhook_url}`.\n"
+"2. Aseta Disurl API -valtuutusavain Disurlissa antamallasi avaimella.\n"
+"3. Aseta äänestyskanava, johon äänestysilmoitukset lähetetään.\n"
+"4. Aseta valinnainen äänestäjien rooli, joka annetaan äänestäjille.\n"
+"5. Vaihtoehtoisesti kytke äänestysmuistutus.\n"
+"6. Aseta valinnaisesti `custom_vote_message` ja `custom_vote_reminder_message`. 7. Aseta `custom_vote_vote_reminder_message`. Ota hammasratas käyttöön."
+

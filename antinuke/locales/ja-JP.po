@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:20\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:17\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -22,48 +22,48 @@ msgstr ""
 msgid "A cog to remove all permissions from a person who deletes a channel!"
 msgstr "チャンネルを削除した人からすべての権限を削除するためのコグです！"
 
-#: antinuke\antinuke.py:179
+#: antinuke\antinuke.py:177
 msgid "All your roles have been taken away because you have deleted channel #{old_channel}.\n"
 "Your previous roles: {rolelist_name}"
 msgstr "チャンネル #{old_channel} を削除したため、あなたのロールはすべて取り除かれました。\n"
 "あなたの以前の役割: {rolelist_name}"
 
-#: antinuke\antinuke.py:191
+#: antinuke\antinuke.py:189
 msgid "All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server."
 msgstr "{perp} ({perp.id}) のロールは、このサーバーでアンチヌークシステムが発動した結果、すべて削除されました。"
 
-#: antinuke\antinuke.py:200
+#: antinuke\antinuke.py:198
 msgid "The user {perp} has deleted the channel #{old_channel.name}!"
 msgstr "ユーザー {perp} は、チャンネル #{old_channel.name}を削除しました！"
 
-#: antinuke\antinuke.py:203
+#: antinuke\antinuke.py:201
 msgid "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\n"
 "User mention: {perp.mention} - User ID: {perp.id}"
 msgstr "それ以上のことをさせないために、現在の権限で可能な限りの役割を奪いました。\n"
 "ユーザー言及： {perp.mention} - ユーザーID： {perp.id}"
 
-#: antinuke\antinuke.py:214
+#: antinuke\antinuke.py:212
 msgid "Before I intervened, the user had the following roles:"
 msgstr "私が介入する前、そのユーザーは次のような役割を担っていました："
 
-#: antinuke\antinuke.py:250
+#: antinuke\antinuke.py:248
 #, docstring
 msgid "Reset number detected for a user."
 msgstr "ユーザーに対して検出されたリセット番号。"
 
-#: antinuke\antinuke.py:252
+#: antinuke\antinuke.py:250
 msgid "Only the owner of this server can access these commands!"
 msgstr "これらのコマンドにアクセスできるのは、このサーバーの所有者のみです！"
 
-#: antinuke\antinuke.py:266
+#: antinuke\antinuke.py:264
 msgid "All former roles of {user} ({user.id}) have been restored at the request of the server owner."
 msgstr "{user} ({user.id}) の以前の役割は、サーバー所有者の要請によりすべて復元されました。"
 
-#: antinuke\antinuke.py:270
+#: antinuke\antinuke.py:268
 msgid "Restored roles for {user.name} ({user.id})."
 msgstr "{user.name} ({user.id}) の役割を回復した。"
 
-#: antinuke\antinuke.py:274
+#: antinuke\antinuke.py:272
 msgid "Count reset for {user.name} ({user.id})."
 msgstr "{user.name} ({user.id}) のカウントをリセットしました。"
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-08-10 13:42+0200\n"
-"PO-Revision-Date: 2023-08-10 11:46\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:21\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -22,37 +22,37 @@ msgstr ""
 msgid "A cog to edit roles!"
 msgstr "役割を編集するためのコグです！"
 
-#: discordsearch\discordsearch.py:106
+#: discordsearch\discordsearch.py:98
 msgid "You must provide at least one parameter."
 msgstr "少なくとも1つのパラメータを指定する必要があります。"
 
-#: discordsearch\discordsearch.py:167
+#: discordsearch\discordsearch.py:159
 msgid "Your regex process took too long. Removing from memory."
 msgstr "正規表現処理に時間がかかりすぎました。メモリから削除します。"
 
-#: discordsearch\discordsearch.py:173
+#: discordsearch\discordsearch.py:165
 msgid "There is an error in your regex.\n"
 "{e}"
 msgstr "正規表現に誤りがあります。\n"
 "{e}"
 
-#: discordsearch\discordsearch.py:211
+#: discordsearch\discordsearch.py:203
 msgid "Look at the original message."
 msgstr "元のメッセージを見てください。"
 
-#: discordsearch\discordsearch.py:227
+#: discordsearch\discordsearch.py:219
 msgid "Search in #{channel.name} ({channel.id})"
 msgstr "#{channel.name} で検索 ({channel.id})"
 
-#: discordsearch\discordsearch.py:228
+#: discordsearch\discordsearch.py:220
 msgid "Sorry, I could not find any results."
 msgstr "申し訳ありませんが、結果は見つかりませんでした。"
 
-#: discordsearch\discordsearch.py:241
+#: discordsearch\discordsearch.py:233
 msgid "Search in #{channel.name} ({channel.id}) in {total}s"
 msgstr "#{channel.name} で検索 ({channel.id}) in {total}s"
 
-#: discordsearch\discordsearch.py:253
+#: discordsearch\discordsearch.py:245
 msgid "Unrecognized date/time."
 msgstr "認識できない日付/時刻。"
 

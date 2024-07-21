@@ -1,0 +1,339 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/embedutils/locales/messages.pot\n"
+"X-Crowdin-File-ID: 314\n"
+"Language: tr_TR\n"
+
+#: embedutils\converters.py:66 embedutils\converters.py:81
+msgid "This doesn't seem to be properly formatted embed {conversion_type}. Refer to the link on `{ctx.clean_prefix}help {ctx.command.qualified_name}`."
+msgstr "Bu, düzgün biçimlendirilmiş bir embed {conversion_type} gibi görünmüyor. `{ctx.clean_prefix}help {ctx.command.qualified_name}` bağlantısına bakın."
+
+#: embedutils\converters.py:93
+msgid "JSON Parse Error"
+msgstr "JSON Ayrıştırma Hatası"
+
+#: embedutils\converters.py:104
+msgid "YAML Parse Error"
+msgstr "YAML Ayrıştırma Hatası"
+
+#: embedutils\converters.py:114
+msgid "The `content` field is not supported for this command."
+msgstr "`content` alanı bu komut için desteklenmiyor."
+
+#: embedutils\converters.py:130
+msgid "Embed Parse Error"
+msgstr "Embed Ayrıştırma Hatası"
+
+#: embedutils\converters.py:135
+msgid "Embed size exceeds Discord limit of 6000 characters ({length})."
+msgstr "Embed boyutu, Discord'un 6000 karakter sınırını aşıyor ({length})."
+
+#: embedutils\converters.py:147 embedutils\embedutils.py:100
+#: embedutils\embedutils.py:133 embedutils\embedutils.py:165
+#: embedutils\embedutils.py:200 embedutils\embedutils.py:231
+#: embedutils\embedutils.py:262 embedutils\embedutils.py:314
+#: embedutils\embedutils.py:440 embedutils\embedutils.py:537
+#: embedutils\embedutils.py:708 embedutils\embedutils.py:762
+msgid "Embed Send Error"
+msgstr "Embed Gönderme Hatası"
+
+#: embedutils\converters.py:162
+msgid "Use `{ctx.prefix}help {ctx.command.qualified_name}` to see an example."
+msgstr "Bir örnek görmek için `{ctx.prefix}help {ctx.command.qualified_name}` komutunu kullanın."
+
+#: embedutils\converters.py:204
+msgid "Embed limit reached ({limit})."
+msgstr "Embed sınırına ulaşıldı ({limit})."
+
+#: embedutils\converters.py:209
+msgid "Failed to convert input into embeds."
+msgstr "Girdiyi embede dönüştürme başarısız oldu."
+
+#: embedutils\converters.py:228
+msgid "It's not a valid channel or thread."
+msgstr "Geçerli bir kanal veya konu değil."
+
+#: embedutils\converters.py:232
+msgid "I do not have permissions to send embeds in {channel.mention}."
+msgstr "{channel.mention} kanalında embed göndermek için iznim yok."
+
+#: embedutils\converters.py:241
+msgid "You do not have permissions to send embeds in {channel.mention}."
+msgstr "{channel.mention} kanalında embed göndermek için izniniz yok."
+
+#: embedutils\converters.py:253
+msgid "I have to be the author of the message. You can use the command without providing a message to send one."
+msgstr "Mesajın yazarı olmam gerekiyor. Mesaj göndermek için komutu mesaj vermeden kullanabilirsiniz."
+
+#: embedutils\converters.py:263
+msgid "You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`)."
+msgstr "Mevcut bir mesajın embedlerini düzenleme izniniz yok (bot sahibi, `[p]embed edit` komutuyla izinleri ayarlayabilir)."
+
+#: embedutils\dashboard_integration.py:53
+msgid "You don't have permissions to access this page."
+msgstr "Bu sayfaya erişim izniniz yok."
+
+#: embedutils\dashboard_integration.py:60
+msgid "I or you don't have permissions to send messages or embeds in any channel in this guild."
+msgstr "Benim veya sizin, bu sunucuda herhangi bir kanalda mesaj veya embed göndermek için izniniz yok."
+
+#: embedutils\dashboard_integration.py:76
+msgid "Username:"
+msgstr "Kullanıcı adı:"
+
+#: embedutils\dashboard_integration.py:80
+msgid "Avatar URL:"
+msgstr "Avatar URL'si:"
+
+#: embedutils\dashboard_integration.py:84
+msgid "Data"
+msgstr "Veri"
+
+#: embedutils\dashboard_integration.py:91
+msgid "Channels:"
+msgstr "Kanallar:"
+
+#: embedutils\dashboard_integration.py:100
+msgid "Send Message(s)"
+msgstr "Mesaj(lar) Gönder"
+
+#: embedutils\dashboard_integration.py:164
+msgid "Message(s) sent successfully!"
+msgstr "Mesaj(lar) başarıyla gönderildi!"
+
+#: embedutils\embedutils.py:47
+#, docstring
+msgid "Create, send, and store rich embeds, from Red-Dashboard too!"
+msgstr "Red-Dashboard'dan da zengin embedler oluşturun, gönderin ve saklayın!"
+
+#: embedutils\embedutils.py:110
+#, docstring
+msgid "Post embeds from valid JSON.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        You can use an [**embeds creator**](https://embedutils.com/) to get a JSON payload.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        You can use an attachment and the command `[p]embed yamlfile` will be invoked automatically.\n"
+"        "
+msgstr "Geçerli JSON'dan embedler gönderin.\n\n"
+"        Bu, [**bu Discord belgesi**](https://discord.com/developers/docs/resources/channel#embed-object) tarafından beklenen formatta olmalıdır.\n"
+"        İşte bir örnek: [**bu örnek**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        JSON yükü almak için bir [**embed oluşturucu**](https://embedutils.com/) kullanabilirsiniz.\n\n"
+"        Bir mesaj sağlarsanız, düzenlenecektir.\n"
+"        Bir ek kullanabilirsiniz ve `[p]embed yamlfile` komutu otomatik olarak çağrılacaktır.\n"
+"        "
+
+#: embedutils\embedutils.py:143
+#, docstring
+msgid "Post embeds from valid YAML.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        You can use an attachment and the command `[p]embed yamlfile` will be invoked automatically.\n"
+"        "
+msgstr "Geçerli YAML'den embedler gönderin.\n\n"
+"        Bu, [**bu Discord belgesi**](https://discord.com/developers/docs/resources/channel#embed-object) tarafından beklenen formatta olmalıdır.\n"
+"        İşte bir örnek: [**bu örnek**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        Bir mesaj sağlarsanız, düzenlenecektir.\n"
+"        Bir ek kullanabilirsiniz ve `[p]embed yamlfile` komutu otomatik olarak çağrılacaktır.\n"
+"        "
+
+#: embedutils\embedutils.py:171
+#, docstring
+msgid "Post an embed from a valid JSON file (upload it).\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        You can use an [**embeds creator**](https://embedutils.com/) to get a JSON payload.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Geçerli bir JSON dosyasından embed gönderin (yükleyin).\n\n"
+"        Bu, [**bu Discord belgesi**](https://discord.com/developers/docs/resources/channel#embed-object) tarafından beklenen formatta olmalıdır.\n"
+"        İşte bir örnek: [**bu örnek**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n"
+"        JSON yükü almak için bir [**embed oluşturucu**](https://embedutils.com/) kullanabilirsiniz.\n\n"
+"        Bir mesaj sağlarsanız, düzenlenecektir.\n"
+"        "
+
+#: embedutils\embedutils.py:186 embedutils\embedutils.py:217
+#: embedutils\embedutils.py:405 embedutils\embedutils.py:415
+#: embedutils\embedutils.py:505 embedutils\embedutils.py:515
+#: embedutils\embedutils.py:831 embedutils\embedutils.py:843
+msgid "Unreadable attachment with `utf-8`."
+msgstr "`utf-8` ile okunamayan ek."
+
+#: embedutils\embedutils.py:206
+#, docstring
+msgid "Post an embed from a valid YAML file (upload it).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Geçerli bir YAML dosyasından bir yerleştirme gönderin (yükleyin).\n\n"
+"        Bir mesaj verirseniz, bu mesaj düzenlenecektir.\n"
+"        "
+
+#: embedutils\embedutils.py:243
+#, docstring
+msgid "Post embeds from a GitHub/Gist/Pastebin/Hastebin link containing valid JSON.\n\n"
+"        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
+"        Here's an example: [**this example**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Geçerli JSON içeren bir GitHub/Gist/Pastebin/Hastebin bağlantısından yerleştirmeler gönderin.\n\n"
+"        Bu, [**bu Discord dokümantasyonu**] (https://discord.com/developers/docs/resources/channel#embed-object) tarafından beklenen formatta olmalıdır.\n"
+"        İşte bir örnek: [**bu örnek**](https://gist.github.com/AAA3A-AAA3A/3c9772b34a8ebc09b3b10018185f4cd4).\n\n"
+"        Bir mesaj verirseniz, bu mesaj düzenlenecektir.\n"
+"        "
+
+#: embedutils\embedutils.py:273
+#, docstring
+msgid "Post embed(s) from an existing message.\n\n"
+"        The message must have at least one embed.\n"
+"        You can specify an index (starting by 0) if you want to send only one of the embeds.\n"
+"        The content of the message already sent is included if no index is specified.\n\n"
+"        If you provide a message, it will be edited.\n"
+"        "
+msgstr "Mevcut bir mesajdan yerleştirme(ler) gönderin.\n\n"
+"        Mesajda en az bir katıştırma olmalıdır.\n"
+"        Yerleştirmelerden yalnızca birini göndermek istiyorsanız bir dizin (0 ile başlayan) belirtebilirsiniz.\n"
+"        Herhangi bir dizin belirtilmemişse, zaten gönderilmiş olan mesajın içeriği dahil edilir.\n\n"
+"        Bir mesaj verirseniz, bu mesaj düzenlenecektir.\n"
+"        "
+
+#: embedutils\embedutils.py:325
+#, docstring
+msgid "Download a JSON file for a message's embed(s).\n\n"
+"        The message must have at least one embed.\n"
+"        You can specify an index (starting by 0) if you want to include only one of the embeds.\n"
+"        The content of the message already sent is included if no index is specified.\n"
+"        "
+msgstr "Bir iletinin katıştırma(lar) ı için bir JSON dosyası indirin.\n\n"
+"        Mesajda en az bir katıştırma olmalıdır.\n"
+"        Yerleştirmelerden yalnızca birini dahil etmek istiyorsanız bir dizin (0 ile başlayan) belirtebilirsiniz.\n"
+"        Herhangi bir dizin belirtilmemişse, zaten gönderilmiş olan mesajın içeriği dahil edilir.\n"
+"        "
+
+#: embedutils\embedutils.py:385
+#, docstring
+msgid "Edit a message sent by [botname].\n\n"
+"        It would be better to use the `message` parameter of all the other commands.\n"
+"        "
+msgstr "[botname] tarafından gönderilen bir mesajı düzenleyin.\n\n"
+"        Diğer tüm komutların `message` parametresini kullanmak daha iyi olacaktır.\n"
+"        "
+
+#: embedutils\embedutils.py:477
+#, docstring
+msgid "Store an embed.\n\n"
+"        Put the name in quotes if it is multiple words.\n"
+"        The `locked` argument specifies whether the embed should be locked to mod and superior only (guild level) or bot owners only (global level).\n"
+"        "
+msgstr "Bir yerleştirmeyi saklayın.\n\n"
+"        Birden fazla sözcük varsa adı tırnak içine alın.\n"
+"        `locked` argümanı katıştırmanın sadece mod ve üstlerine mi (sunucu seviyesi) yoksa sadece bot sahiplerine mi (global seviye) kilitleneceğini belirtir.\n"
+"        "
+
+#: embedutils\embedutils.py:485 embedutils\embedutils.py:571
+#: embedutils\embedutils.py:586 embedutils\embedutils.py:618
+#: embedutils\embedutils.py:650
+msgid "You can't manage global stored embeds."
+msgstr "Küresel olarak saklanan embedleri yönetemezsiniz."
+
+#: embedutils\embedutils.py:548
+msgid "This server has reached the embed limit of {embed_limit}. You must remove an embed with `{ctx.clean_prefix}embed unstore` before you can add a new one."
+msgstr "Bu sunucu {embed_limit} embed sınırına ulaştı. Yeni bir tane ekleyebilmek için `{ctx.clean_prefix}embed unstore` ile bir embedi kaldırmanız gerekmektedir."
+
+#: embedutils\embedutils.py:567
+#, docstring
+msgid "Remove a stored embed."
+msgstr "Saklanan bir embedi kaldırın."
+
+#: embedutils\embedutils.py:577 embedutils\embedutils.py:623
+#: embedutils\embedutils.py:655
+msgid "This is not a stored embed at this level."
+msgstr "Bu düzeyde saklanan bir embed değil."
+
+#: embedutils\embedutils.py:584 embedutils\embedutils.py:614
+#, docstring
+msgid "Get info about a stored embed."
+msgstr "Saklanan bir embed hakkında bilgi alın."
+
+#: embedutils\embedutils.py:592
+msgid "No stored embeds is configured at this level."
+msgstr "Bu düzeyde yapılandırılmış saklanan embed yok."
+
+#: embedutils\embedutils.py:596
+msgid "Global "
+msgstr "Küresel"
+
+#: embedutils\embedutils.py:596
+msgid "Stored Embeds"
+msgstr "Saklanan Embedler"
+
+#: embedutils\embedutils.py:646
+#, docstring
+msgid "Download a JSON file for a stored embed."
+msgstr "Saklanan bir embed için bir JSON dosyası indirin."
+
+#: embedutils\embedutils.py:675
+#, docstring
+msgid "Post stored embeds."
+msgstr "Saklanan embedleri gönderin."
+
+#: embedutils\embedutils.py:697 embedutils\embedutils.py:748
+msgid "`{name}` is not a stored embed at this level."
+msgstr "`{name}` bu düzeyde saklanan bir embed değil."
+
+#: embedutils\embedutils.py:726
+#, docstring
+msgid "Post stored embeds with a webhook."
+msgstr "Webhook ile saklanan embedleri gönderin."
+
+#: embedutils\embedutils.py:793
+#, docstring
+msgid "Get the link to the Dashboard."
+msgstr "Kontrol Paneli bağlantısını alın."
+
+#: embedutils\embedutils.py:796
+msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Dashboard yüklü değil. <https://red-web-dashboard.readthedocs.io> adresini kontrol edin."
+
+#: embedutils\embedutils.py:801
+msgid "You can't access the Dashboard."
+msgstr "Dashboard'a erişemezsiniz."
+
+#: embedutils\embedutils.py:807
+msgid "This third party is disabled on the Dashboard."
+msgstr "Bu üçüncü parti Kontrol Panelinde devre dışı bırakıldı."
+
+#: embedutils\embedutils.py:872
+msgid "Dashboard - "
+msgstr "Kontrol Paneli -"
+
+#: embedutils\embedutils.py:876
+msgid "You can create and send rich embeds directly from the Dashboard!"
+msgstr "Kontrol Panelinden doğrudan zengin embedler oluşturabilir ve gönderebilirsiniz!"
+
+#: embedutils\embedutils.py:883
+msgid "The URL is too long to be displayed."
+msgstr "URL görüntülenemeyecek kadar uzun."
+
+#: embedutils\embedutils.py:889
+#, docstring
+msgid "Migrate stored embeds from EmbedUtils by Phen."
+msgstr "Phen tarafından EmbedUtils'ten saklanan embedleri taşıyın."
+
+#: embedutils\embedutils.py:933
+msgid "Data successfully migrated from EmbedUtils by Phen."
+msgstr "Phen tarafından EmbedUtils'ten veriler başarıyla taşındı."
+

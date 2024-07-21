@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:43\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:12\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -21,37 +21,51 @@ msgstr ""
 msgid "This is not a valid URL."
 msgstr "Ця URL-адреса не є дійсною."
 
-#: dashboard\dashboard.py:34
+#: dashboard\dashboard.py:35
 msgid "This is not a valid Dashboard redirect URI: it must end with `/callback`."
 msgstr "Це неправильний URI перенаправлення Dashboard: він повинен закінчуватися на `/callback`."
 
-#: dashboard\dashboard.py:42
+#: dashboard\dashboard.py:44
 msgid "This third party is not available."
 msgstr "Ця третя сторона недоступна."
 
-#: dashboard\dashboard.py:48
+#: dashboard\dashboard.py:50
 #, docstring
-msgid "Interact with your bot through a web dashboard!\n\n"
+msgid "Interact with your bot through a web Dashboard!\n\n"
+"    **Installation guide:** https://red-web-dashboard.readthedocs.io/en/latest\n"
 "    ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.\n"
 "    "
-msgstr "Взаємодійте зі своїм ботом через веб-панель!\n\n"
-"    ⚠️ Цей пакунок є форком роботи Neuro Assassin, і не схвалений організацією взагалі.\n"
+msgstr "Взаємодійте зі своїм ботом через веб-панель управління!\n\n"
+"    **Інструкція з встановлення:** https://red-web-dashboard.readthedocs.io/en/latest\n"
+"    ⚠️ Цей пакунок є форком роботи Neuro Assassin і не схвалюється організацією.\n"
 "    "
 
-#: dashboard\dashboard.py:306
+#: dashboard\dashboard.py:347
+msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Dashboard не встановлено. Перевірте <https://red-web-dashboard.readthedocs.io>."
+
+#: dashboard\dashboard.py:352
+msgid "You can't access the Dashboard."
+msgstr "Ви не маєте доступу до інформаційної панелі."
+
+#: dashboard\dashboard.py:354
+msgid "Red-Dashboard"
+msgstr "Червона панель приладів"
+
+#: dashboard\dashboard.py:374
 #, docstring
 msgid "Set the client secret needed for Discord OAuth."
 msgstr "Встановіть секрет клієнта, необхідний для Discord OAuth."
 
-#: dashboard\dashboard.py:315
+#: dashboard\dashboard.py:383
 msgid "Discord Secret"
 msgstr "Таємниця розбрату"
 
-#: dashboard\dashboard.py:323
+#: dashboard\dashboard.py:391
 msgid "Discord OAuth secret set."
 msgstr "Секретний набір Discord OAuth."
 
-#: dashboard\dashboard.py:359
+#: dashboard\dashboard.py:427
 msgid "Click on the button below to set a secret for Discord OAuth."
 msgstr "Натисніть кнопку нижче, щоб задати секрет для Discord OAuth."
 

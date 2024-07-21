@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:40\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:22\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "MIME-Version: 1.0\n"
@@ -26,23 +26,23 @@ msgstr "Eu preciso ser o autor da mensagem. Você pode usar o EmbedUtils by AAA3
 msgid "A cog to allow a user to execute a command by clicking on a button!"
 msgstr "Uma engrenagem para permitir a um utilizador executar um comando, clicando num botão!"
 
-#: commandsbuttons\commandsbuttons.py:135
+#: commandsbuttons\commandsbuttons.py:119
 msgid "This message is not in Config."
 msgstr "Esta mensagem não se encontra em Config."
 
-#: commandsbuttons\commandsbuttons.py:140
+#: commandsbuttons\commandsbuttons.py:124
 msgid "This button is not in Config."
 msgstr "Este botão não está em Config."
 
-#: commandsbuttons\commandsbuttons.py:189
+#: commandsbuttons\commandsbuttons.py:173
 msgid "This command doesn't exist."
 msgstr "Este comando não existe."
 
-#: commandsbuttons\commandsbuttons.py:194
+#: commandsbuttons\commandsbuttons.py:178
 msgid "You are not allowed to execute this command."
 msgstr "Não está autorizado a executar este comando."
 
-#: commandsbuttons\commandsbuttons.py:250
+#: commandsbuttons\commandsbuttons.py:234
 #, docstring
 msgid "Add a command-button for a message.\n\n"
 "        (Use the number for the color.)\n"
@@ -71,39 +71,39 @@ msgstr "Adicionar um botão de comando para uma mensagem.\n\n"
 "        - `red`: 4\n"
 "        "
 
-#: commandsbuttons\commandsbuttons.py:271
-#: commandsbuttons\commandsbuttons.py:348
+#: commandsbuttons\commandsbuttons.py:255
+#: commandsbuttons\commandsbuttons.py:332
 msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
 "I need the permissions to see the messages in that channel."
 msgstr "Não tenho permissões suficientes no canal onde se encontra a mensagem que especificou.\n"
 "Preciso das permissões para ver as mensagens nesse canal."
 
-#: commandsbuttons\commandsbuttons.py:286
+#: commandsbuttons\commandsbuttons.py:270
 msgid "You have not specified a correct command."
 msgstr "Não especificou um comando correcto."
 
-#: commandsbuttons\commandsbuttons.py:288
+#: commandsbuttons\commandsbuttons.py:272
 msgid "You can't execute yourself this command."
 msgstr "Não é possível executar este comando sozinho."
 
-#: commandsbuttons\commandsbuttons.py:291
+#: commandsbuttons\commandsbuttons.py:275
 msgid "You have to specify at least an emoji or a label."
 msgstr "Tem de especificar, pelo menos, um emoji ou uma etiqueta."
 
-#: commandsbuttons\commandsbuttons.py:298
+#: commandsbuttons\commandsbuttons.py:282
 msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "O emoji que seleccionou parece inválido. Verifique se se trata de um emoji. Se tiver Nitro, poderá ter utilizado um emoji personalizado de outro servidor."
 
-#: commandsbuttons\commandsbuttons.py:305
-#: commandsbuttons\commandsbuttons.py:375
+#: commandsbuttons\commandsbuttons.py:289
+#: commandsbuttons\commandsbuttons.py:359
 msgid "This message already has components."
 msgstr "Esta mensagem já tem componentes."
 
-#: commandsbuttons\commandsbuttons.py:309
+#: commandsbuttons\commandsbuttons.py:293
 msgid "I can't do more than 25 commands-buttons for one message."
 msgstr "Não posso fazer mais de 25 comandos-botões para uma mensagem."
 
-#: commandsbuttons\commandsbuttons.py:333
+#: commandsbuttons\commandsbuttons.py:317
 #, docstring
 msgid "Add commands-buttons for a message.\n\n"
 "        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
@@ -112,23 +112,23 @@ msgstr "Adicionar botões de comando a uma mensagem.\n\n"
 "        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
 "        "
 
-#: commandsbuttons\commandsbuttons.py:339
+#: commandsbuttons\commandsbuttons.py:323
 msgid "You have not specified any valid command-button."
 msgstr "Não especificou nenhum botão de comando válido."
 
-#: commandsbuttons\commandsbuttons.py:361
+#: commandsbuttons\commandsbuttons.py:345
 msgid "At least one of these commands is invalid."
 msgstr "Pelo menos um destes comandos é inválido."
 
-#: commandsbuttons\commandsbuttons.py:368
+#: commandsbuttons\commandsbuttons.py:352
 msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
 msgstr "Um emoji que seleccionou parece inválido. Verifique se se trata de um emoji. Se tiver Nitro, poderá ter utilizado um emoji personalizado de outro servidor."
 
-#: commandsbuttons\commandsbuttons.py:379
+#: commandsbuttons\commandsbuttons.py:363
 msgid "I can't do more than 25 roles-buttons for one message."
 msgstr "Não posso fazer mais de 25 papéis-botões para uma mensagem."
 
-#: commandsbuttons\commandsbuttons.py:401
+#: commandsbuttons\commandsbuttons.py:385
 #, docstring
 msgid "Remove a command-button for a message.\n\n"
 "        Use `[p]commandsbuttons list <message>` to find the config identifier.\n"
@@ -137,57 +137,57 @@ msgstr "Remover um botão de comando para uma mensagem.\n\n"
 "        Utilize `[p]commandsbuttons list <message>` para encontrar o identificador de configuração.\n"
 "        "
 
-#: commandsbuttons\commandsbuttons.py:408
-#: commandsbuttons\commandsbuttons.py:434
-#: commandsbuttons\commandsbuttons.py:455
+#: commandsbuttons\commandsbuttons.py:392
+#: commandsbuttons\commandsbuttons.py:418
+#: commandsbuttons\commandsbuttons.py:439
 msgid "No command-button is configured for this message."
 msgstr "Nenhum botão de comando está configurado para esta mensagem."
 
-#: commandsbuttons\commandsbuttons.py:412
+#: commandsbuttons\commandsbuttons.py:396
 msgid "I wasn't watching for this button on this message."
 msgstr "Eu não estava atento a este botão nesta mensagem."
 
+#: commandsbuttons\commandsbuttons.py:410
 #: commandsbuttons\commandsbuttons.py:426
-#: commandsbuttons\commandsbuttons.py:442
 msgid "Commands-buttons cleared for this message."
 msgstr "Comandos-botões desactivados para esta mensagem."
 
-#: commandsbuttons\commandsbuttons.py:430
+#: commandsbuttons\commandsbuttons.py:414
 #, docstring
 msgid "Clear all commands-buttons for a message."
 msgstr "Limpar todos os botões de comando de uma mensagem."
 
-#: commandsbuttons\commandsbuttons.py:447
+#: commandsbuttons\commandsbuttons.py:431
 #, docstring
 msgid "List all commands-buttons of this server or display the settings for a specific one."
 msgstr "Listar todos os botões de comando desse servidor ou exibir as configurações de um botão específico."
 
-#: commandsbuttons\commandsbuttons.py:461
+#: commandsbuttons\commandsbuttons.py:445
 msgid "No commands-buttons in this server."
 msgstr "Não há comandos-botões neste servidor."
 
-#: commandsbuttons\commandsbuttons.py:463
+#: commandsbuttons\commandsbuttons.py:447
 msgid "Commands Buttons"
 msgstr "Botões de comandos"
 
-#: commandsbuttons\commandsbuttons.py:464
+#: commandsbuttons\commandsbuttons.py:448
 msgid "There is {len_commands_buttons} commands buttons in this server."
 msgstr "Existe {len_commands_buttons} botões de comando neste servidor."
 
-#: commandsbuttons\commandsbuttons.py:474
+#: commandsbuttons\commandsbuttons.py:458
 msgid "Message Jump Link: {message_jump_link}\n"
 msgstr "Ligação de salto de mensagem: {message_jump_link}\n"
 
-#: commandsbuttons\commandsbuttons.py:495
+#: commandsbuttons\commandsbuttons.py:479
 #, docstring
 msgid "Clear all commands-buttons for a guild."
 msgstr "Limpa todos os botões de comando de uma guilda."
 
-#: commandsbuttons\commandsbuttons.py:497
+#: commandsbuttons\commandsbuttons.py:481
 msgid "All commands-buttons purged."
 msgstr "Todos os comandos-botões são eliminados."
 
-#: commandsbuttons\converters.py:78
+#: commandsbuttons\converters.py:64
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "Emoji Role deve ser um emoji seguido por um papel separado por `;`, `,`, ```, ``, `-`, ou `-`."
 

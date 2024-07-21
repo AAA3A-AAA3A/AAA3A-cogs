@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:23\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:23\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Gist non trovato."
 msgid "A cog to create new Gists and edit/delete existing ones!"
 msgstr "Un ingranaggio per creare nuove Gist e modificare/eliminare quelle esistenti!"
 
-#: gistshandler\gistshandler.py:85
+#: gistshandler\gistshandler.py:77
 msgid "You need to set up a GitHub token with `{ctx.prefix}set api github token,[TOKEN]` first!"
 msgstr "È necessario impostare un token GitHub con `{ctx.prefix}set api github token,[TOKEN]` prima!"
 

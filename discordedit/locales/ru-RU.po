@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:40\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:22\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -865,20 +865,20 @@ msgstr "Вы действительно хотите удалить тексто
 msgid "View and edit text channel."
 msgstr "Просмотр и редактирование текстового канала."
 
-#: discordedit\editthread.py:103
+#: discordedit\editthread.py:91
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "Роль эмодзи должна быть эмодзи, за которым следует роль, разделенная либо `;`, `,`, `|`, либо `-`."
 
-#: discordedit\editthread.py:113
+#: discordedit\editthread.py:101
 #, docstring
 msgid "A cog to edit threads!"
 msgstr "Коготь для редактирования потоков!"
 
-#: discordedit\editthread.py:134
+#: discordedit\editthread.py:122
 msgid "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission."
 msgstr "Я не могу редактировать поток {thread.mention} ({thread.id}), потому что у вас нет прав `manage_channel`."
 
-#: discordedit\editthread.py:158
+#: discordedit\editthread.py:146
 #, docstring
 msgid "Create a thread.\n\n"
 "        You'll join it automatically.\n"
@@ -887,51 +887,51 @@ msgstr "Создайте тему.\n\n"
 "        Вы присоединитесь к ней автоматически.\n"
 "        "
 
-#: discordedit\editthread.py:182
+#: discordedit\editthread.py:170
 #, docstring
 msgid "List all threads in the current guild."
 msgstr "Перечислить все темы в текущей гильдии."
 
-#: discordedit\editthread.py:190
+#: discordedit\editthread.py:178
 msgid "List of threads in {guild.name} ({guild.id})"
 msgstr "Список нитей в {guild.name} ({guild.id})"
 
-#: discordedit\editthread.py:206
+#: discordedit\editthread.py:194
 #, docstring
 msgid "Edit thread name."
 msgstr "Редактировать название темы."
 
-#: discordedit\editthread.py:227
+#: discordedit\editthread.py:215
 #, docstring
 msgid "Edit thread archived."
 msgstr "Редактировать тему архивировано."
 
-#: discordedit\editthread.py:249
+#: discordedit\editthread.py:237
 #, docstring
 msgid "Edit thread locked."
 msgstr "Редактирование темы закрыто."
 
-#: discordedit\editthread.py:272
+#: discordedit\editthread.py:260
 #, docstring
 msgid "Edit thread pinned."
 msgstr "Редактирование нити прикреплено."
 
-#: discordedit\editthread.py:296
+#: discordedit\editthread.py:284
 #, docstring
 msgid "Edit thread invitable."
 msgstr "Редактирование нити неизбежно."
 
-#: discordedit\editthread.py:322
+#: discordedit\editthread.py:310
 #, docstring
 msgid "Edit thread auto archive duration."
 msgstr "Редактирование длительности автоархива темы."
 
-#: discordedit\editthread.py:346
+#: discordedit\editthread.py:334
 #, docstring
 msgid "Edit thread slowmode delay."
 msgstr "Редактирование нити задержки медленного режима."
 
-#: discordedit\editthread.py:370
+#: discordedit\editthread.py:358
 #, docstring
 msgid "Edit thread applied tags.\n\n"
 "        ```\n"
@@ -946,30 +946,30 @@ msgstr "Редактировать тему примененные теги.\n\n
 "        ```\n"
 "        "
 
-#: discordedit\editthread.py:400
+#: discordedit\editthread.py:388
 #, docstring
 msgid "Add member to thread."
 msgstr "Добавить участника в тему."
 
-#: discordedit\editthread.py:425
+#: discordedit\editthread.py:413
 #, docstring
 msgid "Remove member from thread."
 msgstr "Удалите участника из темы."
 
-#: discordedit\editthread.py:446
+#: discordedit\editthread.py:434
 #, docstring
 msgid "Delete a thread."
 msgstr "Удалить тему."
 
-#: discordedit\editthread.py:456
+#: discordedit\editthread.py:444
 msgid "⚠️ - Delete thread"
 msgstr "⚠️ - Удалить нить"
 
-#: discordedit\editthread.py:457 discordedit\editthread.py:464
+#: discordedit\editthread.py:445 discordedit\editthread.py:452
 msgid "Do you really want to delete the thread {thread.mention} ({thread.id})?"
 msgstr "Вы действительно хотите удалить тему {thread.mention} ({thread.id})?"
 
-#: discordedit\editthread.py:479
+#: discordedit\editthread.py:467
 #, docstring
 msgid "View and edit thread."
 msgstr "Просмотр и редактирование темы."

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2023-08-06 17:11\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:23\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -34,106 +34,106 @@ msgstr "{argument} is gevonden, maar heeft een onjuiste UUID."
 msgid "A cog to display informations about Minecraft Java users and servers, and notify for each change of a server!"
 msgstr "Een tandwiel om informatie weer te geven over Minecraft Java gebruikers en servers, en te waarschuwen voor elke verandering van een server!"
 
-#: minecraft\minecraft.py:196
+#: minecraft\minecraft.py:187
 msgid "Latency"
 msgstr "Latency"
 
-#: minecraft\minecraft.py:198
+#: minecraft\minecraft.py:189
 msgid "Players"
 msgstr "Spelers"
 
-#: minecraft\minecraft.py:216
+#: minecraft\minecraft.py:207
 msgid "Version"
 msgstr "Versie"
 
-#: minecraft\minecraft.py:256
+#: minecraft\minecraft.py:247
 #, docstring
 msgid "Get Minecraft Java player skin by name."
 msgstr "Haal Minecraft Java speler skin op naam."
 
-#: minecraft\minecraft.py:279
+#: minecraft\minecraft.py:270
 msgid "Unable to get data from Crafatar: {}"
 msgstr "Kan geen gegevens ophalen uit Crafatar: {}"
 
-#: minecraft\minecraft.py:291
+#: minecraft\minecraft.py:282
 msgid "Provided by Crafatar."
 msgstr "Geleverd door Crafatar."
 
-#: minecraft\minecraft.py:297
+#: minecraft\minecraft.py:288
 #, docstring
 msgid "Get informations about a Minecraft Java server."
 msgstr "Krijg informatie over een Minecraft Java server."
 
-#: minecraft\minecraft.py:303 minecraft\minecraft.py:338
+#: minecraft\minecraft.py:294 minecraft\minecraft.py:329
 msgid "No data found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable."
 msgstr "Geen gegevens gevonden voor deze Minecraft server. Misschien bestaat hij niet of zijn de gegevens tijdelijk niet beschikbaar."
 
-#: minecraft\minecraft.py:315
+#: minecraft\minecraft.py:306
 #, docstring
 msgid "Add a Minecraft Java server in Config to get automatically new status."
 msgstr "Voeg een Minecraft Java-server toe in Config om automatisch een nieuwe status te krijgen."
 
-#: minecraft\minecraft.py:326
+#: minecraft\minecraft.py:317
 msgid "I don't have sufficient permissions in this channel to send messages with embeds."
 msgstr "Ik heb niet voldoende rechten in dit kanaal om berichten met embeds te versturen."
 
-#: minecraft\minecraft.py:332
+#: minecraft\minecraft.py:323
 msgid "This server has already been added."
 msgstr "Deze server is al toegevoegd."
 
-#: minecraft\minecraft.py:346
+#: minecraft\minecraft.py:337
 msgid "Server added to this channel."
 msgstr "Server toegevoegd aan dit kanaal."
 
-#: minecraft\minecraft.py:353
+#: minecraft\minecraft.py:344
 #, docstring
 msgid "Remove a Minecraft Java server in Config."
 msgstr "Verwijder een Minecraft Java-server in Config."
 
-#: minecraft\minecraft.py:358
+#: minecraft\minecraft.py:349
 msgid "This server isn't in the Config."
 msgstr "Deze server staat niet in de Config."
 
-#: minecraft\minecraft.py:363
+#: minecraft\minecraft.py:354
 msgid "Server removed from this channel."
 msgstr "Server verwijderd van dit kanaal."
 
-#: minecraft\minecraft.py:370
+#: minecraft\minecraft.py:361
 #, docstring
 msgid "Include players joining or leaving the server in notifications."
 msgstr "Neem spelers die de server betreden of verlaten op in meldingen."
 
-#: minecraft\minecraft.py:377
+#: minecraft\minecraft.py:368
 msgid "I will not check players for the notifications."
 msgstr "Ik zal spelers niet controleren op de meldingen."
 
-#: minecraft\minecraft.py:379
+#: minecraft\minecraft.py:370
 msgid "I will check players for the notifications."
 msgstr "Ik zal spelers controleren op de meldingen."
 
-#: minecraft\minecraft.py:386
+#: minecraft\minecraft.py:377
 #, docstring
 msgid "Edit the last message sent for changes."
 msgstr "Bewerk het laatst verzonden bericht voor wijzigingen."
 
-#: minecraft\minecraft.py:391
+#: minecraft\minecraft.py:382
 msgid "I will not edit my last message for the notifications."
 msgstr "Ik zal mijn laatste bericht niet bewerken voor de meldingen."
 
-#: minecraft\minecraft.py:393
+#: minecraft\minecraft.py:384
 msgid "I will edit my last message for the notifications."
 msgstr "Ik zal mijn laatste bericht bewerken voor de meldingen."
 
-#: minecraft\minecraft.py:398
+#: minecraft\minecraft.py:389
 #, docstring
 msgid "Force check Minecraft Java servers in Config."
 msgstr "Forceer het controleren van Minecraft Java-servers in Config."
 
-#: minecraft\minecraft.py:400
+#: minecraft\minecraft.py:391
 msgid "Servers checked."
 msgstr "Servers gecontroleerd."
 
-#: minecraft\minecraft.py:406
+#: minecraft\minecraft.py:397
 #, docstring
 msgid "Get an embed for check loop status."
 msgstr "Een insluiting krijgen om de lusstatus te controleren."

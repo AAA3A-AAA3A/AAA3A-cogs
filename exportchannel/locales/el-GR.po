@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:37\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:13\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,34 +17,34 @@ msgstr ""
 "X-Crowdin-File-ID: 146\n"
 "Language: el_GR\n"
 
-#: exportchannel\exportchannel.py:21
-msgid "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\n"
+#: exportchannel\exportchannel.py:22
+msgid "Here is the transcript's {mode} file of the messages in the channel {channel.mention} ({channel.id}).\n"
 "Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "There are {count_messages} exported messages.\n"
 "Remember that exporting other users' messages from Discord does not respect the TOS."
-msgstr "Ακολουθεί το αρχείο html της απομαγνητοφώνησης των μηνυμάτων στο κανάλι {channel.mention} ({channel.id}).\n"
-"Παρακαλώ σημειώστε: όλα τα συνημμένα και τα avatars των χρηστών αποθηκεύονται με το σύνδεσμο Discord σε αυτό το αρχείο.\n"
+msgstr "Ακολουθεί το αρχείο {mode} της μεταγραφής των μηνυμάτων στο κανάλι {channel.mention} ({channel.id}).\n"
+"Σημείωση: όλα τα συνημμένα αρχεία και τα avatars των χρηστών αποθηκεύονται με τον σύνδεσμο Discord σε αυτό το αρχείο.\n"
 "Υπάρχουν {count_messages} εξαγόμενα μηνύματα.\n"
 "Να θυμάστε ότι η εξαγωγή μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS."
 
-#: exportchannel\exportchannel.py:24
+#: exportchannel\exportchannel.py:25
 msgid "[Click here to view the transcript.]({url})"
 msgstr "[Κάντε κλικ εδώ για να δείτε την απομαγνητοφώνηση]({url})"
 
-#: exportchannel\exportchannel.py:44
+#: exportchannel\exportchannel.py:45
 #, docstring
 msgid "A cog to export all or a part of the messages of a channel in an html file!"
 msgstr "Μια επιλογή για την εξαγωγή όλων ή μέρους των μηνυμάτων ενός καναλιού σε ένα αρχείο html!"
 
-#: exportchannel\exportchannel.py:67
+#: exportchannel\exportchannel.py:57
 msgid "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
 msgstr "Συγγνώμη, δεν μπορώ να διαβάσω το περιεχόμενο των μηνυμάτων στο {channel.mention} ({channel.id})."
 
-#: exportchannel\exportchannel.py:108
+#: exportchannel\exportchannel.py:103
 msgid "Sorry. I could not find any messages."
 msgstr "Συγγνώμη. Δεν μπόρεσα να βρω κανένα μήνυμα."
 
-#: exportchannel\exportchannel.py:179
+#: exportchannel\exportchannel.py:192
 #, docstring
 msgid "Export all of a channel's messages to an html file.\n\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
@@ -55,20 +55,20 @@ msgstr "Εξαγωγή όλων των μηνυμάτων ενός καναλι�
 "        Να θυμάστε ότι η εξαγωγή των μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:205
+#: exportchannel\exportchannel.py:232
 #, docstring
-msgid "Export a specific file in an html file.\n\n"
+msgid "Export a specific message in an html file.\n\n"
 "        Specify the message to export, with its ID or its link.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "Εξαγωγή ενός συγκεκριμένου αρχείου σε αρχείο html.\n\n"
+msgstr "Εξαγωγή ενός συγκεκριμένου μηνύματος σε αρχείο html.\n\n"
 "        Καθορίστε το μήνυμα προς εξαγωγή, με το αναγνωριστικό του ή το σύνδεσμό του.\n"
 "        Σημείωση: όλα τα συνημμένα και τα avatars των χρηστών αποθηκεύονται με το σύνδεσμο Discord σε αυτό το αρχείο.\n"
 "        Να θυμάστε ότι η εξαγωγή μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:242
+#: exportchannel\exportchannel.py:275
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the number of messages since the end of the channel.\n"
@@ -81,7 +81,7 @@ msgstr "Εξαγωγή μέρους των μηνυμάτων ενός κανα�
 "        Να θυμάστε ότι η εξαγωγή μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:280
+#: exportchannel\exportchannel.py:321
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the before message (id or link) or a valid snowflake.\n"
@@ -94,7 +94,7 @@ msgstr "Εξαγωγή μέρους των μηνυμάτων ενός κανα�
 "        Να θυμάστε ότι η εξαγωγή μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:314
+#: exportchannel\exportchannel.py:367
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the after message (id or link) or a valid snowflake.\n"
@@ -107,7 +107,7 @@ msgstr "Εξαγωγή μέρους των μηνυμάτων ενός κανα�
 "        Να θυμάστε ότι η εξαγωγή μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:349
+#: exportchannel\exportchannel.py:414
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the before and after messages (id or link) or a valid snowflake.\n"
@@ -120,7 +120,7 @@ msgstr "Εξαγωγή μέρους των μηνυμάτων ενός κανα�
 "        Να θυμάστε ότι η εξαγωγή των μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:386
+#: exportchannel\exportchannel.py:461
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the user/member (id, name or mention).\n"
@@ -133,7 +133,7 @@ msgstr "Εξαγωγή μέρους των μηνυμάτων ενός κανα�
 "        Να θυμάστε ότι η εξαγωγή μηνυμάτων άλλων χρηστών από το Discord δεν σέβεται το TOS.\n"
 "        "
 
-#: exportchannel\exportchannel.py:426
+#: exportchannel\exportchannel.py:508
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the bool option.\n"

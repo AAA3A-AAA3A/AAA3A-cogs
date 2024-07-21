@@ -1,0 +1,584 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/tickettool/locales/messages.pot\n"
+"X-Crowdin-File-ID: 102\n"
+"Language: tr_TR\n"
+
+#: tickettool\settings.py:15 tickettool\settings.py:18
+#: tickettool\tickettool.py:759 tickettool\tickettool.py:762
+msgid "This profile does not exist."
+msgstr "Bu profil mevcut değil."
+
+#: tickettool\settings.py:27
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Mesajın yazarı ben olmalıyım. Bir tane göndermek için AAA3A tarafından sağlanan EmbedUtils'i kullanabilirsiniz."
+
+#: tickettool\settings.py:54
+#, docstring
+msgid "Send a message with a button to open a ticket or dropdown with possible reasons.\n\n"
+"        Examples:\n"
+"        - `[p]settickettool message <profile> #general \"🐛|Report a bug|If you find a bug, report it here.|bug\" \"⚠️|Report a user|If you find a malicious user, report it here.|user\"`\n"
+"        - `[p]settickettool <profile> 1234567890-0987654321`\n"
+"        "
+msgstr "Bir bilet açmak için bir buton veya olası nedenlerle bir açılır menü içeren bir mesaj gönderin.\n\n"
+"        Örnekler:\n"
+"        - `[p]settickettool message <profile> #general \"🐛|Bir hatayı bildir|Bir hata bulursanız, burada bildirin.|bug\" \"⚠️|Bir kullanıcıyı bildir|Kötü niyetli bir kullanıcı bulursanız, burada bildirin.|user\"`\n"
+"        - `[p]settickettool <profile> 1234567890-0987654321`\n"
+"        "
+
+#: tickettool\settings.py:70
+msgid "I don't have sufficient permissions in this channel to view it and to send messages into."
+msgstr "Bu kanalda mesajları görüntülemek ve göndermek için yeterli iznim yok."
+
+#: tickettool\settings.py:97 tickettool\tickettool.py:339
+msgid "Create ticket"
+msgstr "Bilet oluştur"
+
+#: tickettool\settings.py:116
+msgid "A different value must be provided for each dropdown option."
+msgstr "Her açılır menü seçeneği için farklı bir değer sağlanmalıdır."
+
+#: tickettool\settings.py:124
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Seçtiğin emojilerden biri geçersiz görünüyor. Bir emoji olduğundan emin olun. Eğer Nitron varsa başka bir sunucudan özel bir emoji kullanmış olabilirsiniz."
+
+#: tickettool\ticket.py:245
+msgid "Creating the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} oluşturuluyor."
+
+#: tickettool\ticket.py:266
+msgid "The dynamic channel name does not contain correct variable names and must be re-configured with `[p]settickettool dynamicchannelname`."
+msgstr "Dinamik kanal adı doğru değişken adları içermiyor ve `[p]settickettool dynamicchannelname` ile yeniden yapılandırılmalıdır."
+
+#: tickettool\ticket.py:275 tickettool\ticket.py:528 tickettool\ticket.py:890
+#: tickettool\ticket.py:969 tickettool\tickettool.py:352
+msgid "Close"
+msgstr "Kapat"
+
+#: tickettool\ticket.py:282 tickettool\ticket.py:535 tickettool\ticket.py:615
+#: tickettool\ticket.py:897 tickettool\ticket.py:976
+#: tickettool\tickettool.py:366
+msgid "Claim"
+msgstr "Sahiplen"
+
+#: tickettool\ticket.py:289 tickettool\ticket.py:542 tickettool\ticket.py:622
+#: tickettool\ticket.py:904 tickettool\ticket.py:983
+#: tickettool\tickettool.py:373
+msgid "Delete"
+msgstr "Sil"
+
+#: tickettool\ticket.py:303 tickettool\ticket.py:429
+msgid "Ticket Created"
+msgstr "Bilet Oluşturuldu"
+
+#: tickettool\ticket.py:304
+msgid "Thank you for creating a ticket on this server!"
+msgstr "Bu sunucuda bir bilet oluşturduğunuz için teşekkürler!"
+
+#: tickettool\ticket.py:315
+msgid "🎟️ Ticket ID: {ticket.id}\n"
+"🕵️ Ticket created by: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Ticket reason: {short_reason}\n"
+msgstr "🎟️ Bilet ID: {ticket.id}\n"
+"🕵️ Bileti oluşturan: @{ticket.created_by.display_name} ({ticket.created_by.id})\n"
+"☢️ Bilet nedeni: {short_reason}\n"
+
+#: tickettool\ticket.py:395
+msgid "⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. Maybe the user doesn't have access to the parent forum/text channel. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."
+msgstr "⚠ En az bir kullanıcı (bilet sahibi veya bir ekip üyesi) bilet konusuna eklenemedi. Belki de kullanıcı ana forum/mesaj kanalına erişim hakkına sahip değil. Sunucu, bir mesaj kanalında özel konuları kullanıyorsa, bot bu kanalda `manage_messages` iznine sahip değildir."
+
+#: tickettool\ticket.py:430
+msgid "The ticket was created by {ticket.created_by}."
+msgstr "Bilet {ticket.created_by} tarafından oluşturuldu."
+
+#: tickettool\ticket.py:436
+msgid "Report on the creation of the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} oluşturulmasına ilişkin rapor."
+
+#: tickettool\ticket.py:476
+msgid "Opening the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} açılıyor."
+
+#: tickettool\ticket.py:505 tickettool\ticket.py:513
+msgid "Ticket Opened"
+msgstr "Bilet Açıldı"
+
+#: tickettool\ticket.py:514
+msgid "The ticket was opened by {ticket.opened_by}."
+msgstr "Bilet {ticket.opened_by} tarafından açıldı."
+
+#: tickettool\ticket.py:520 tickettool\ticket.py:600
+msgid "Report on the close of the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} kapanmasına ilişkin rapor."
+
+#: tickettool\ticket.py:608 tickettool\tickettool.py:359
+msgid "Re-open"
+msgstr "Yeniden aç"
+
+#: tickettool\ticket.py:675 tickettool\ticket.py:712
+#: tickettool\tickettool.py:1100 tickettool\tickettool.py:1142
+msgid "Cannot execute action on a text channel."
+msgstr "Bir metin kanalında işlem gerçekleştirilemiyor."
+
+#: tickettool\ticket.py:701
+msgid "Report on the lock of the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} kilitlenmesine ilişkin rapor."
+
+#: tickettool\ticket.py:738
+msgid "Report on the unlock of the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} kilidinin açılmasına ilişkin rapor."
+
+#: tickettool\ticket.py:755
+msgid "Renaming the ticket {ticket.id}. (`{ticket.channel.name}` to `{new_name}`)"
+msgstr "Bilet {ticket.id} yeniden adlandırılıyor. (`{ticket.channel.name}` 'dan `{new_name}` 'ye)"
+
+#: tickettool\ticket.py:765
+msgid "Ticket Renamed."
+msgstr "Bilet Yeniden Adlandırıldı."
+
+#: tickettool\ticket.py:783
+msgid "Ticket Deleted"
+msgstr "Bilet Silindi"
+
+#: tickettool\ticket.py:784
+msgid "The ticket was deleted by {ticket.deleted_by}."
+msgstr "Bilet {ticket.deleted_by} tarafından silindi."
+
+#: tickettool\ticket.py:807
+msgid "Report on the deletion of the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} silinmesine ilişkin rapor."
+
+#: tickettool\ticket.py:824
+msgid "Deleting the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} siliniyor."
+
+#: tickettool\ticket.py:845
+msgid "A ticket cannot be claimed if it is closed."
+msgstr "Bir bilet kapalıysa sahiplenilemez."
+
+#: tickettool\ticket.py:849
+msgid "A bot cannot claim a ticket."
+msgstr "Bir bot bileti sahiplenemez."
+
+#: tickettool\ticket.py:863
+msgid "Claiming the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} sahipleniliyor."
+
+#: tickettool\ticket.py:918
+msgid "Ticket claimed."
+msgstr "Bilet sahiplenildi."
+
+#: tickettool\ticket.py:932
+msgid "A ticket cannot be unclaimed if it is closed."
+msgstr "Bir bilet kapalıysa sahiplenme geri alınamaz."
+
+#: tickettool\ticket.py:948
+msgid "Unclaiming the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} sahiplenmesi geri alınıyor."
+
+#: tickettool\ticket.py:997
+msgid "Ticket unclaimed."
+msgstr "Bilet sahiplenmesi geri alındı."
+
+#: tickettool\ticket.py:1011
+msgid "Cannot execute action in a thread channel."
+msgstr "Bir konu kanalında işlem gerçekleştirilemiyor."
+
+#: tickettool\ticket.py:1018
+msgid "Changing owner of the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} sahipliği değiştiriliyor."
+
+#: tickettool\ticket.py:1022
+msgid "You cannot transfer ownership of a ticket to a bot."
+msgstr "Bir bot'a bilet sahipliği devredemezsiniz."
+
+#: tickettool\ticket.py:1051
+msgid "Owner Modified."
+msgstr "Sahip Değiştirildi."
+
+#: tickettool\ticket.py:1070
+msgid "Adding a member to the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} 'e bir üye ekleniyor."
+
+#: tickettool\ticket.py:1077 tickettool\ticket.py:1114
+msgid "You cannot add a bot to a ticket. ({member})"
+msgstr "Bir bot'u bilete ekleyemezsiniz. ({member})"
+
+#: tickettool\ticket.py:1081 tickettool\ticket.py:1118
+msgid "This member is already the owner of this ticket. ({member})"
+msgstr "Bu üye zaten bu biletin sahibi. ({member})"
+
+#: tickettool\ticket.py:1087 tickettool\ticket.py:1124
+msgid "This member is an administrator for the tickets system. They will always have access to the ticket anyway. ({member})"
+msgstr "Bu üye bilet sistemi için bir yöneticidir. Her ne olursa olsun bilet erişimine her zaman sahip olacaklar. ({member})"
+
+#: tickettool\ticket.py:1093 tickettool\ticket.py:1130
+msgid "This member already has access to this ticket. ({member})"
+msgstr "Bu üye zaten bu bilete erişim hakkına sahip. ({member})"
+
+#: tickettool\ticket.py:1144
+msgid "⚠ At least one user (the ticket owner or a team member) could not be added to the ticket thread. Maybe the user the user doesn't have access to the parent forum/text channel. If the server uses private threads in a text channel, the bot does not have the `manage_messages` permission in this channel."
+msgstr "⚠ En az bir kullanıcı (bilet sahibi veya bir ekip üyesi) bilet konusuna eklenemedi. Belki de kullanıcı ana forum/metin kanalına erişim hakkına sahip değil. Sunucu, bir metin kanalında özel konuları kullanıyorsa, bot bu kanalda `manage_messages` iznine sahip değildir."
+
+#: tickettool\ticket.py:1168
+msgid "Removing a member to the ticket {ticket.id}."
+msgstr "Bilet {ticket.id} 'den bir üye çıkarılıyor."
+
+#: tickettool\ticket.py:1174 tickettool\ticket.py:1204
+msgid "You cannot remove a bot to a ticket ({member})."
+msgstr "Bir bot'u biletten çıkaramazsınız ({member})."
+
+#: tickettool\ticket.py:1180 tickettool\ticket.py:1210
+msgid "You cannot remove the owner of this ticket. ({member})"
+msgstr "Bu biletin sahibini çıkaramazsınız. ({member})"
+
+#: tickettool\ticket.py:1186 tickettool\ticket.py:1216
+msgid "This member is an administrator for the tickets system. They will always have access to the ticket. ({member})"
+msgstr "Bu üye bilet sistemi için bir yöneticidir. Her zaman bilete erişim hakkına sahip olacak. ({member})"
+
+#: tickettool\ticket.py:1192 tickettool\ticket.py:1222
+msgid "This member is not in the list of those authorised to access the ticket. ({member})"
+msgstr "Bu üye, bilete erişim izni olanlar listesinde değil. ({member})"
+
+#: tickettool\tickettool.py:32
+#, docstring
+msgid "A cog to manage a tickets system!"
+msgstr "Bir bilet sistemi yönetmek için bir cog!"
+
+#: tickettool\tickettool.py:74
+msgid "To get help on this server or to make an order for example, you can create a ticket.\n"
+"Just use the command `{prefix}ticket create` or click on the button below.\n"
+"You can then use the `{prefix}ticket` subcommands to manage your ticket."
+msgstr "Bu sunucuda yardım almak veya örneğin bir sipariş vermek için bir bilet oluşturabilirsiniz.\n"
+"Sadece `{prefix}ticket create` komutunu kullanın veya aşağıdaki düğmeye tıklayın.\n"
+"Ardından biletinizi yönetmek için `{prefix}ticket` alt komutlarını kullanabilirsiniz."
+
+#: tickettool\tickettool.py:403
+msgid "Choose the reason for open a ticket."
+msgstr "Bir bilet açma nedenini seçin."
+
+#: tickettool\tickettool.py:521
+msgid "Action taken for the ticket system."
+msgstr "Bilet sistemi için alınan eylem."
+
+#: tickettool\tickettool.py:555
+msgid "Ticket ID:"
+msgstr "Bilet ID:"
+
+#: tickettool\tickettool.py:558
+msgid "Owned by:"
+msgstr "Sahibi:"
+
+#: tickettool\tickettool.py:566
+msgid "Channel:"
+msgstr "Kanal:"
+
+#: tickettool\tickettool.py:573
+msgid "Closed by:"
+msgstr "Kapatan:"
+
+#: tickettool\tickettool.py:581
+msgid "Deleted by:"
+msgstr "Silen:"
+
+#: tickettool\tickettool.py:589
+msgid "Closed at:"
+msgstr "Kapatıldığı zaman:"
+
+#: tickettool\tickettool.py:596 tickettool\tickettool.py:622
+msgid "Reason:"
+msgstr "Neden:"
+
+#: tickettool\tickettool.py:607
+msgid "Ticket [{ticket.profile}] {ticket.id} - Action taken"
+msgstr "Bilet [{ticket.profile}] {ticket.id} - Alınan eylem"
+
+#: tickettool\tickettool.py:687
+msgid "You're not in a ticket."
+msgstr "Bir bilette değilsiniz."
+
+#: tickettool\tickettool.py:691
+msgid "This ticket isn't {status}ed."
+msgstr "Bu bilet {status}ed değil."
+
+#: tickettool\tickettool.py:700
+msgid "This ticket is {status}."
+msgstr "Bu bilet {status}."
+
+#: tickettool\tickettool.py:709
+msgid "You're not allowed to lock this ticket."
+msgstr "Bu bileti kilitlemeye yetkiniz yok."
+
+#: tickettool\tickettool.py:752
+msgid "You're not allowed to view this ticket."
+msgstr "Bu bileti görüntülemeye yetkiniz yok."
+
+#: tickettool\tickettool.py:786
+msgid "Please provide a profile."
+msgstr "Lütfen bir profil belirtin."
+
+#: tickettool\tickettool.py:789
+msgid "No profile has been created on this server."
+msgstr "Bu sunucuda profil oluşturulmamış."
+
+#: tickettool\tickettool.py:797
+msgid "The ticket system is not enabled on this server. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
+msgstr "Bilet sistemi bu sunucuda etkin değil. Lütfen bu sunucunun bir yöneticisinden `{ctx.prefix}settickettool` alt komutlarını kullanarak yapılandırmasını isteyin."
+
+#: tickettool\tickettool.py:803
+msgid "The category `open` or the category `close` have not been configured. Please ask an administrator of this server to use the `{ctx.prefix}settickettool` subcommands to configure it."
+msgstr "`open` kategorisi veya `close` kategorisi yapılandırılmamış. Lütfen bu sunucunun bir yöneticisinden `{ctx.prefix}settickettool` alt komutlarını kullanarak yapılandırmasını isteyin."
+
+#: tickettool\tickettool.py:810
+msgid "Sorry. You have already reached the limit of {limit} open tickets."
+msgstr "Üzgünüm. Zaten {limit} açık bilet sınırına ulaştınız."
+
+#: tickettool\tickettool.py:821
+msgid "The bot does not have `manage_channels` permission on the `open` and `close` categories to allow the ticket system to function properly. Please notify an administrator of this server."
+msgstr "Bot, bilet sisteminin düzgün çalışabilmesi için `open` ve `close` kategorilerinde `manage_channels` iznine sahip değil. Lütfen bu sunucunun bir yöneticisine bildirin."
+
+#: tickettool\tickettool.py:830
+msgid "The bot does not have `manage_channel` permission in the forum channel to allow the ticket system to function properly. Please notify an administrator of this server."
+msgstr "Bot, bilet sisteminin düzgün çalışabilmesi için forum kanalında `manage_channel` iznine sahip değil. Lütfen bu sunucunun bir yöneticisine bildirin."
+
+#: tickettool\tickettool.py:875
+msgid "Please provide the required informations by clicking on the button below."
+msgstr "Lütfen aşağıdaki düğmeye tıklayarak gerekli bilgileri sağlayın."
+
+#: tickettool\tickettool.py:926
+#, docstring
+msgid "Create a Ticket.\n\n"
+"        If only one profile has been created on this server, you don't need to specify its name.\n"
+"        "
+msgstr "Bir Bilet oluşturun.\n\n"
+"        Bu sunucuda yalnızca bir profil oluşturulmuşsa, adını belirtmenize gerek yoktur.\n"
+"        "
+
+#: tickettool\tickettool.py:942
+#, docstring
+msgid "Create a Ticket for a member.\n\n"
+"        If only one profile has been created on this server, you don't need to specify its name.\n"
+"        "
+msgstr "Bir üye için bir Bilet oluşturun.\n\n"
+"        Bu sunucuda yalnızca bir profil oluşturulmuşsa, adını belirtmenize gerek yoktur.\n"
+"        "
+
+#: tickettool\tickettool.py:947
+msgid "You cannot create a ticket for a bot."
+msgstr "Bir bot için bilet oluşturamazsınız."
+
+#: tickettool\tickettool.py:950
+msgid "You cannot create a ticket for a member with a higher or equal role."
+msgstr "Daha yüksek veya eşit role sahip bir üye için bilet oluşturamazsınız."
+
+#: tickettool\tickettool.py:970
+#, docstring
+msgid "Export all the messages of an existing Ticket in html format.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        "
+msgstr "Mevcut bir Biletin tüm mesajlarını html formatında dışa aktarın.\n"
+"        Lütfen unutmayın: tüm ekler ve kullanıcı avatarları bu dosyada Discord bağlantısıyla kaydedilir.\n"
+"        "
+
+#: tickettool\tickettool.py:987
+msgid "Here is the html file of the transcript of all the messages in this ticket.\n"
+"Please note: all attachments and user avatars are saved with the Discord link in this file."
+msgstr "Bu bilete ait tüm mesajların transkriptinin html dosyası burada.\n"
+"Lütfen unutmayın: tüm ekler ve kullanıcı avatarları bu dosyada Discord bağlantısıyla kaydedilir."
+
+#: tickettool\tickettool.py:1019
+#, docstring
+msgid "Open an existing Ticket."
+msgstr "Mevcut bir Bileti açın."
+
+#: tickettool\tickettool.py:1024
+msgid "The ticket system is not enabled on this server."
+msgstr "Bilet sistemi bu sunucuda etkin değil."
+
+#: tickettool\tickettool.py:1050
+#, docstring
+msgid "Close an existing Ticket."
+msgstr "Mevcut bir Bileti kapatın."
+
+#: tickettool\tickettool.py:1061
+msgid "Do you really want to close the ticket {ticket.id}?"
+msgstr "Bileti {ticket.id} gerçekten kapatmak istiyor musunuz?"
+
+#: tickettool\tickettool.py:1097
+#, docstring
+msgid "Lock an existing Ticket."
+msgstr "Mevcut bir Bileti kilitleyin."
+
+#: tickettool\tickettool.py:1104
+msgid "Do you really want to lock the ticket {ticket.id}?"
+msgstr "Bileti {ticket.id} gerçekten kilitlemek istiyor musunuz?"
+
+#: tickettool\tickettool.py:1139
+#, docstring
+msgid "Unlock an existing locked Ticket."
+msgstr "Mevcut kilitli bir Bileti kilidini açın."
+
+#: tickettool\tickettool.py:1167
+#, docstring
+msgid "Rename an existing Ticket."
+msgstr "Mevcut bir Bileti yeniden adlandırın."
+
+#: tickettool\tickettool.py:1193
+#, docstring
+msgid "Delete an existing Ticket.\n\n"
+"        If a logs channel is defined, an html file containing all the messages of this ticket will be generated.\n"
+"        (Attachments are not supported, as they are saved with their Discord link)\n"
+"        "
+msgstr "Mevcut bir Bileti silin.\n\n"
+"        Bir kayıt kanalı tanımlanmışsa, bu biletin tüm mesajlarını içeren bir html dosyası oluşturulacaktır.\n"
+"        (Ekler desteklenmez, çünkü Discord bağlantısıyla kaydedilirler)\n"
+"        "
+
+#: tickettool\tickettool.py:1202
+msgid "Do you really want to delete all the messages of the ticket {ticket.id}?"
+msgstr "Bilet {ticket.id} 'nin tüm mesajlarını gerçekten silmek istiyor musunuz?"
+
+#: tickettool\tickettool.py:1206
+msgid "If a logs channel is defined, an html file containing all the messages of this ticket will be generated. (Attachments are not supported, as they are saved with their Discord link.)"
+msgstr "Bir kayıt kanalı tanımlanmışsa, bu biletin tüm mesajlarını içeren bir html dosyası oluşturulacaktır. (Ekler desteklenmez, çünkü Discord bağlantısıyla kaydedilirler.)"
+
+#: tickettool\tickettool.py:1242
+#, docstring
+msgid "Claim an existing Ticket."
+msgstr "Mevcut bir Bileti sahiplenin."
+
+#: tickettool\tickettool.py:1266
+#, docstring
+msgid "Unclaim an existing Ticket."
+msgstr "Mevcut bir Bileti sahiplenmekten vazgeçin."
+
+#: tickettool\tickettool.py:1292
+#, docstring
+msgid "Change the owner of an existing Ticket."
+msgstr "Mevcut bir Biletin sahibini değiştirin."
+
+#: tickettool\tickettool.py:1318
+#, docstring
+msgid "Add a member to an existing Ticket."
+msgstr "Mevcut bir Bilete bir üye ekleyin."
+
+#: tickettool\tickettool.py:1343
+#, docstring
+msgid "Remove a member to an existing Ticket."
+msgstr "Mevcut bir Biletten bir üye çıkarın."
+
+#: tickettool\tickettool.py:1357
+#, docstring
+msgid "List the existing Tickets for a profile. You can provide a status and/or a ticket owner."
+msgstr "Bir profil için mevcut Biletleri listeleyin. Bir durum ve/veya bir bilet sahibi belirtebilirsiniz."
+
+#: tickettool\tickettool.py:1378
+msgid "No tickets to show."
+msgstr "Gösterilecek bilet yok."
+
+#: tickettool\tickettool.py:1419
+msgid "The profile for which this button was configured no longer exists."
+msgstr "Bu düğmenin yapılandırıldığı profil artık mevcut değil."
+
+#: tickettool\tickettool.py:1482 tickettool\tickettool.py:1541
+#: tickettool\tickettool.py:1545 tickettool\tickettool.py:1563
+#: tickettool\tickettool.py:1567 tickettool\tickettool.py:1587
+#: tickettool\tickettool.py:1591 tickettool\tickettool.py:1661
+#: tickettool\tickettool.py:1665
+msgid "You are not allowed to execute this command."
+msgstr "Bu komutu yürütme yetkiniz yok."
+
+#: tickettool\tickettool.py:1486 tickettool\tickettool.py:1491
+#: tickettool\tickettool.py:1495
+msgid "You have chosen to create a ticket."
+msgstr "Bir bilet oluşturmayı seçtiniz."
+
+#: tickettool\tickettool.py:1517
+msgid "You have chosen to close this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "Bu bileti kapatmayı seçtiniz. Bu yapılmazsa, bu komutu yürütmek için gerekli izinlere sahip değilsiniz."
+
+#: tickettool\tickettool.py:1549
+msgid "You have chosen to re-open this ticket."
+msgstr "Bu bileti yeniden açmayı seçtiniz."
+
+#: tickettool\tickettool.py:1571
+msgid "You have chosen to claim this ticket. If this is not done, you do not have the necessary permissions to execute this command."
+msgstr "Bu bileti sahiplenmeyi seçtiniz. Bu yapılmazsa, bu komutu yürütmek için gerekli izinlere sahip değilsiniz."
+
+#: tickettool\tickettool.py:1611
+msgid "This message is not in TicketTool config."
+msgstr "Bu mesaj TicketTool yapılandırmasında değil."
+
+#: tickettool\tickettool.py:1620
+msgid "The profile for which this dropdown was configured no longer exists."
+msgstr "Bu açılır menünün yapılandırıldığı profil artık mevcut değil."
+
+#: tickettool\tickettool.py:1687 tickettool\tickettool.py:1694
+msgid "You have chosen to create a ticket with the reason `{reason}`."
+msgstr "{reason}` nedeni ile bir bilet oluşturmayı seçtiniz."
+
+#: tickettool\tickettool.py:1840
+msgid "No open tickets by this user in this server."
+msgstr "Bu sunucuda bu kullanıcı tarafından açık bilet yok."
+
+#: tickettool\utils.py:143
+msgid "Emoji Label must be An emoji followed by a label, and optionnaly by a description and a value (for rename ticket channel), separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Etiketi bir emoji ve ardından bir etiket ve isteğe bağlı olarak bir açıklama ve bir değer (bilet kanalını yeniden adlandırmak için) içermelidir, bunlar `;`, `,`, `|` veya `-` ile ayrılmalıdır."
+
+#: tickettool\utils.py:160
+msgid "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
+msgstr "YAML ayrıştırma hatası. Lütfen formatın geçerli olduğundan emin olun (bir YAML doğrulayıcı yardımcı olabilir)"
+
+#: tickettool\utils.py:174
+msgid "You can only have 5 text inputs."
+msgstr "Yalnızca 5 metin girişi yapabilirsiniz."
+
+#: tickettool\utils.py:180
+msgid "The argument `/{count}/{arg}` is required in the YAML."
+msgstr "YAML'de `/{count}/{arg}` argümanı gereklidir."
+
+#: tickettool\utils.py:187
+msgid "The argument `/{count}/{arg}` is invalid in the YAML. Check the spelling."
+msgstr "YAML'de `/{count}/{arg}` argümanı geçersiz. Yazımı kontrol edin."
+
+#: tickettool\utils.py:193
+msgid "The argument `/modal/{count}/label` must be less than 45 characters long."
+msgstr "`/modal/{count}/label` argümanı 45 karakterden kısa olmalıdır."
+
+#: tickettool\utils.py:203 tickettool\utils.py:209
+msgid "The argument `/{count}/style` must be a number between 1 and 2."
+msgstr "`/{count}/style` argümanı 1 ile 2 arasında bir sayı olmalıdır."
+
+#: tickettool\utils.py:232
+msgid "The argument `/{count}/required` must be a boolean (True or False)."
+msgstr "`/{count}/required` argümanı bir boolean (Doğru veya Yanlış) olmalıdır."
+
+#: tickettool\utils.py:242
+msgid "The argument `/modal/{count}/default` must be less than 4000 characters long."
+msgstr "`/modal/{count}/default` argümanı 4000 karakterden kısa olmalıdır."
+
+#: tickettool\utils.py:250
+msgid "The argument `/modal/{count}/placeholder` must be less than 100 characters long."
+msgstr "`/modal/{count}/placeholder` argümanı 100 karakterden kısa olmalıdır."
+
+#: tickettool\utils.py:258
+msgid "The argument `/modal/{count}/min_length` must be between 0 and 4000."
+msgstr "`/modal/{count}/min_length` argümanı 0 ile 4000 arasında olmalıdır."
+
+#: tickettool\utils.py:266
+msgid "The argument `/modal/{count}/max_length` must be between 0 and 4000."
+msgstr "`/modal/{count}/max_length` argümanı 0 ile 4000 arasında olmalıdır."
+

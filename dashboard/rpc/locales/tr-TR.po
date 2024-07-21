@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/dashboard/rpc/locales/messages.pot\n"
+"X-Crowdin-File-ID: 310\n"
+"Language: tr_TR\n"
+
+#: dashboard\rpc\__init__.py:105
+msgid "{name} Dashboard"
+msgstr "{name} Kontrol Paneli"
+
+#: dashboard\rpc\__init__.py:113
+msgid "Hello, welcome to the **Red-DiscordBot Dashboard** for {name}! {name} is based off the popular bot **Red-DiscordBot**, an open source, multifunctional bot. It has *tons of features* including moderation, audio, economy, fun and more! Here, you can control and interact with {name}'s settings. **So what are you waiting for? Invite it now!**"
+msgstr "Merhaba, {name} için **Red-DiscordBot Kontrol Paneli**'ne hoş geldiniz! {name}, popüler bot **Red-DiscordBot**'a dayanmaktadır; bu açık kaynaklı, çok işlevli bir bottur. Moderasyon, ses, ekonomi, eğlence ve daha birçok özelliğe sahiptir! Burada, {name}'ın ayarlarını kontrol edebilir ve onunla etkileşimde bulunabilirsiniz. **Peki, ne bekliyorsunuz? Onu şimdi davet edin!**"
+
+#: dashboard\rpc\__init__.py:125
+msgid "Interactive Dashboard to control and interact with {name}."
+msgstr "{name} ile kontrol ve etkileşim için interaktif kontrol paneli."
+
+#: dashboard\rpc\default_cogs.py:101
+msgid "You attempted to create a new alias with the name {name}, but that name is already a command on this bot."
+msgstr "Yeni bir takma ad oluşturmayı denediniz, ancak {name} adı bu botta zaten bir komut olarak mevcut."
+
+#: dashboard\rpc\default_cogs.py:108
+msgid "You attempted to create a new alias with the name {name}, but the command {command} does not exist."
+msgstr "Yeni bir takma ad oluşturmayı denediniz, ancak {command} komutu mevcut değil."
+
+#: dashboard\rpc\default_cogs.py:182
+msgid "`{command}`: "
+msgstr "`{command}`: "
+

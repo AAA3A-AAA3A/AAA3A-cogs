@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:41\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:18\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -21,8 +21,8 @@ msgstr ""
 msgid "No Discord object found."
 msgstr "Δεν βρέθηκε αντικείμενο Discord."
 
-#: ctxvar\ctxvar.py:81 ctxvar\ctxvar.py:214 ctxvar\ctxvar.py:265
-#: ctxvar\ctxvar.py:346
+#: ctxvar\ctxvar.py:81 ctxvar\ctxvar.py:203 ctxvar\ctxvar.py:254
+#: ctxvar\ctxvar.py:335
 msgid "I couldn't find any cog, command, or object named `{thing}`."
 msgstr "Δεν μπόρεσα να βρω κανένα γρανάζι, εντολή ή αντικείμενο με το όνομα `{thing}`."
 
@@ -31,50 +31,50 @@ msgstr "Δεν μπόρεσα να βρω κανένα γρανάζι, εντο�
 msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
 msgstr "Ένα γρανάζι για τη λίστα και την εμφάνιση των περιεχομένων όλων των υπολειτουργιών της `ctx`!"
 
-#: ctxvar\ctxvar.py:132
+#: ctxvar\ctxvar.py:121
 #, docstring
 msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
 msgstr "Εμφάνιση μιας λίστας όλων των χαρακτηριστικών και των τιμών τους της περίπτωσης της κλάσης 'ctx' ή των υπο-χαρακτηριστικών της."
 
-#: ctxvar\ctxvar.py:136 ctxvar\ctxvar.py:197 ctxvar\ctxvar.py:248
-#: ctxvar\ctxvar.py:329
+#: ctxvar\ctxvar.py:125 ctxvar\ctxvar.py:186 ctxvar\ctxvar.py:237
+#: ctxvar\ctxvar.py:318
 msgid "The cog Dev must be loaded, to make sure you know what you are doing."
 msgstr "Το γρανάζι Dev πρέπει να φορτωθεί, για να βεβαιωθείτε ότι ξέρετε τι κάνετε."
 
-#: ctxvar\ctxvar.py:147
+#: ctxvar\ctxvar.py:136
 msgid "The argument you specified is not a subclass of the instance."
 msgstr "Το όρισμα που καθορίσατε δεν είναι υποκλάση της περίπτωσης."
 
-#: ctxvar\ctxvar.py:154
+#: ctxvar\ctxvar.py:143
 msgid "Here are all the variables and their associated values that can be used in this instance class."
 msgstr "Ακολουθούν όλες οι μεταβλητές και οι σχετικές τιμές τους που μπορούν να χρησιμοποιηθούν σε αυτή την κλάση παραδείγματος."
 
-#: ctxvar\ctxvar.py:193
+#: ctxvar\ctxvar.py:182
 #, docstring
 msgid "Display a list of all attributes of the provided object (debug not async)."
 msgstr "Εμφάνιση μιας λίστας όλων των χαρακτηριστικών του παρεχόμενου αντικειμένου (debug not async)."
 
-#: ctxvar\ctxvar.py:244
+#: ctxvar\ctxvar.py:233
 #, docstring
 msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
 msgstr "Εκτέλεση της εντολής `rich.help(obj=object, ...)` στο αντικείμενο που παρέχεται (debug not async)."
 
-#: ctxvar\ctxvar.py:325
+#: ctxvar\ctxvar.py:314
 #, docstring
 msgid "Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."
 msgstr "Εκτέλεση του `ast.dump(ast.parse(<code content>))` στο παρεχόμενο αντικείμενο (debug όχι ασύγχρονη)."
 
-#: ctxvar\ctxvar.py:366
+#: ctxvar\ctxvar.py:355
 #, docstring
 msgid "List attributes of the provided object like dpy objects (debug not async)."
 msgstr "Λίστα χαρακτηριστικών του παρεχόμενου αντικειμένου όπως τα αντικείμενα dpy (debug όχι ασύγχρονη)."
 
-#: ctxvar\ctxvar.py:451
+#: ctxvar\ctxvar.py:440
 #, docstring
 msgid "Parse the Markdown syntax for a specified message's content or a string."
 msgstr "Ανάλυση της σύνταξης Markdown για το περιεχόμενο ενός καθορισμένου μηνύματος ή μιας συμβολοσειράς."
 
-#: ctxvar\ctxvar.py:465
+#: ctxvar\ctxvar.py:454
 msgid "Error in the module used for this command."
 msgstr "Σφάλμα στη μονάδα που χρησιμοποιείται για αυτή την εντολή."
 

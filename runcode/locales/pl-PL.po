@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2023-07-15 21:14+0200\n"
-"PO-Revision-Date: 2024-04-10 12:39\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:22\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "The cog is not fully charged."
 msgstr "Trybik nie jest w pełni naładowany."
 
-#: runcode\runcode.py:47 runcode\runcode.py:314
+#: runcode\runcode.py:47 runcode\runcode.py:306
 msgid "Incorrect language identifier for your code.\n"
 "To list all the supported languages identifiers, please use `{ctx.prefix}setruncode listidentifiers`."
 msgstr "Nieprawidłowy identyfikator języka dla twojego kodu.\n"
@@ -36,41 +36,41 @@ msgstr "Brak flag w argumentacji."
 msgid "A cog to compile and run codes in some languages! Use `[p]setruncode listlanguages` to get a list of all the available languages."
 msgstr "Tryb do kompilowania i uruchamiania kodów w niektórych językach! Użyj `[p]setruncode listlanguages`, aby uzyskać listę wszystkich dostępnych języków."
 
-#: runcode\runcode.py:255
+#: runcode\runcode.py:247
 msgid "File must be smaller than 20 kio."
 msgstr "Plik musi być mniejszy niż 20 kio."
 
-#: runcode\runcode.py:289
+#: runcode\runcode.py:281
 msgid "Please provide the code!"
 msgstr "Proszę podać kod!"
 
-#: runcode\runcode.py:305
+#: runcode\runcode.py:297
 msgid "Incorrect syntax, please use Markdown's syntax for your code."
 msgstr "Nieprawidłowa składnia, proszę użyć składni Markdown dla swojego kodu."
 
-#: runcode\runcode.py:395
+#: runcode\runcode.py:387
 msgid "The language of your code could not be found. Specify it with the `language` parameter."
 msgstr "Język twojego kodu nie mógł zostać znaleziony. Określ go za pomocą parametru `language`."
 
-#: runcode\runcode.py:424
+#: runcode\runcode.py:416
 msgid "`{engine}` is not a correct engine for {code_language}\n"
 "To list all the available engine for it, please use `{ctx.prefix}setruncode listengines {code_language}`."
 msgstr "`{engine}` nie jest prawidłowym silnikiem dla {code_language}\n"
 "Aby wymienić wszystkie dostępne dla niego silniki, proszę użyć `{ctx.prefix}setruncode listengines {code_language}`."
 
-#: runcode\runcode.py:437
+#: runcode\runcode.py:429
 msgid "There is no options available for compilation using `{engine}`.\n"
 "Ignoring this option."
 msgstr "Nie ma żadnych opcji dostępnych dla kompilacji przy użyciu `{engine}`.\n"
 "Ignorowanie tej opcji."
 
-#: runcode\runcode.py:450
+#: runcode\runcode.py:442
 msgid "There is no options available for runtime execution `{engine}`.\n"
 "Ignoring this option."
 msgstr "Nie ma opcji dostępnych dla wykonania runtime `{engine}`.\n"
 "Ignorowanie tej opcji."
 
-#: runcode\runcode.py:586
+#: runcode\runcode.py:578
 #, docstring
 msgid "\n"
 "        Shows a list of all the available languages, or Wandbox or Tio API.\n"
@@ -79,7 +79,7 @@ msgstr "\n"
 "        Pokazuje listę wszystkich dostępnych języków lub Wandbox lub Tio API.\n"
 "        "
 
-#: runcode\runcode.py:607
+#: runcode\runcode.py:599
 #, docstring
 msgid "\n"
 "        Shows a list of all the available engines for a specified language, only for Wandbox API.\n\n"
@@ -92,7 +92,7 @@ msgstr "\n"
 "        - `language`: Nazwa języka.\n"
 "        "
 
-#: runcode\runcode.py:635
+#: runcode\runcode.py:627
 #, docstring
 msgid "\n"
 "        Lists all the languages identifiers recognized by the bot, only for Wandbox API.\n"
@@ -101,7 +101,7 @@ msgstr "\n"
 "        Lista wszystkich identyfikatorów języków rozpoznawanych przez bota, tylko dla Wandbox API.\n"
 "        "
 
-#: runcode\runcode.py:652
+#: runcode\runcode.py:644
 #, docstring
 msgid "\n"
 "        Lists all the languages extensions.\n"

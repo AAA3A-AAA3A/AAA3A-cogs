@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:38\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-20 20:24\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File-ID: 261\n"
 "Language: el_GR\n"
 
-#: consolelogs\consolelogs.py:94
+#: consolelogs\consolelogs.py:102
 #, docstring
 msgid "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"
 msgstr "Ένα γρανάζι για την εμφάνιση των αρχείων καταγραφής της κονσόλας, με κουμπιά και επιλογές φίλτρου, και για την αποστολή εντολών σφαλμάτων σε διαμορφωμένα κανάλια!"

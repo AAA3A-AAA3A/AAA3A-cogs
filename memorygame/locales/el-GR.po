@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 11:22\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-20 20:22\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -22,11 +22,11 @@ msgstr ""
 msgid "A cog to play to Memory game, with buttons, leaderboard and Red bank!"
 msgstr "Ένα γρανάζι για να παίξει στο παιχνίδι μνήμης, με κουμπιά, πίνακα κατάταξης και κόκκινη τράπεζα!"
 
-#: memorygame\memorygame.py:169
+#: memorygame\memorygame.py:167
 msgid "No one has played this game yet."
 msgstr "Κανείς δεν έχει παίξει ακόμη αυτό το παιχνίδι."
 
-#: memorygame\memorygame.py:212
+#: memorygame\memorygame.py:210
 #, docstring
 msgid "Reset leaderboard in the guild."
 msgstr "Επαναφορά του πίνακα κατάταξης στη συντεχνία."

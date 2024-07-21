@@ -1,0 +1,176 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"PO-Revision-Date: 2024-07-21 15:17\n"
+"Last-Translator: \n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/disurlvotestracker/locales/messages.pot\n"
+"X-Crowdin-File-ID: 330\n"
+"Language: pl_PL\n"
+
+#: disurlvotestracker\converter.py:21
+msgid "The {role.mention} role is a bot integration role and cannot be assigned or removed."
+msgstr "Rola {role.mention} jest rolą integracyjną bota i nie można jej przypisać ani usunąć."
+
+#: disurlvotestracker\converter.py:27
+msgid "The {role.mention} role is an integration role and cannot be assigned or removed."
+msgstr "Rola {role.mention} jest rolą integracyjną i nie może być przypisana ani usunięta."
+
+#: disurlvotestracker\converter.py:33
+msgid "The {role.mention} role is a premium subscriber role and can only be assigned or removed by Nitro boosting the server."
+msgstr "Rola {role.mention} jest rolą abonenta premium i może być przypisana lub usunięta tylko przez Nitro boosting serwera."
+
+#: disurlvotestracker\converter.py:39
+msgid "The {role.mention} role is higher than my highest role in the discord hierarchy."
+msgstr "Rola {role.mention} jest wyższa od mojej najwyższej roli w hierarchii discorda."
+
+#: disurlvotestracker\converter.py:45
+msgid "The {role.mention} role is higher than your highest role in the discord hierarchy."
+msgstr "Rola {role.mention} jest wyższa od Twojej najwyższej roli w hierarchii discorda."
+
+#: disurlvotestracker\dashboard_integration.py:38
+#: disurlvotestracker\dashboard_integration.py:72
+#: disurlvotestracker\disurlvotestracker.py:320
+#: disurlvotestracker\disurlvotestracker.py:352
+msgid "DisurlVotesTracker is not enabled in this server."
+msgstr "DisurlVotesTracker nie jest włączony na tym serwerze."
+
+#: disurlvotestracker\dashboard_integration.py:46
+msgid "No votes found in this server."
+msgstr "Nie znaleziono głosów na tym serwerze."
+
+#: disurlvotestracker\dashboard_integration.py:62
+#: disurlvotestracker\dashboard_integration.py:106
+msgid "Total: {total} vote{s}"
+msgstr "Łącznie: {total} głosowanie{s}"
+
+#: disurlvotestracker\dashboard_integration.py:90
+msgid "No monthly votes found in this server."
+msgstr "Na tym serwerze nie znaleziono żadnych głosów miesięcznych."
+
+#: disurlvotestracker\disurlvotestracker.py:27
+#, docstring
+msgid "Track votes on Disurl, assign roles to voters and remind them to vote!"
+msgstr "Śledź głosy na Disurl, przypisuj role głosującym i przypominaj im o głosowaniu!"
+
+#: disurlvotestracker\disurlvotestracker.py:181
+msgid "Voted on Disurl! (12 hours)"
+msgstr "Zagłosowano na Disurl! (12 godzin)"
+
+#: disurlvotestracker\disurlvotestracker.py:196
+msgid "New vote for {guild.name}!"
+msgstr "Nowy głos na {guild.name}!"
+
+#: disurlvotestracker\disurlvotestracker.py:199
+msgid "{member.mention} voted on Disurl!\n"
+"`{number_member_votes} vote{s_1} this month & {number_member_monthly_votes} lifetime vote{s_2}`"
+msgstr "{member.mention} głosowałem na Disurl!\n"
+"`{number_member_votes} głosowanie{s_1} w tym miesiącu & {number_member_monthly_votes} dożywotnie głosowanie{s_2}`"
+
+#: disurlvotestracker\disurlvotestracker.py:208
+msgid "\n\n"
+"{member.display_name} received the role {voters_role.mention} for the next 12 hours."
+msgstr "\n\n"
+"{member.display_name} otrzymał rolę {voters_role.mention} na następne 12 godzin."
+
+#: disurlvotestracker\disurlvotestracker.py:209
+msgid "\n\n"
+"You could vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!"
+msgstr "\n\n"
+"Możesz zagłosować na [Disurl](https://disurl.me/server/{guild.id}/vote) tutaj ponownie za 12 godzin!"
+
+#: disurlvotestracker\disurlvotestracker.py:210
+msgid "Thanks for supporting the server! | User ID: {member.id}"
+msgstr "Dziękujemy za wsparcie serwera! | ID użytkownika: {member.id}"
+
+#: disurlvotestracker\disurlvotestracker.py:266
+msgid "Voters role expired! (12 hours)"
+msgstr "Rola głosującego wygasła! (12 godzin)"
+
+#: disurlvotestracker\disurlvotestracker.py:275
+msgid "Vote on Disurl!"
+msgstr "Głosuj na Disurl!"
+
+#: disurlvotestracker\disurlvotestracker.py:277
+msgid "{member.mention}, don't forget to vote on **[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again 12 hours after this vote. **Thanks for supporting the server!**"
+msgstr "{member.mention}nie zapomnij zagłosować na **[Disurl](https://disurl.me/server/{guild.id}/vote)**! Możesz zagłosować ponownie 12 godzin po tym głosowaniu. **Dziękujemy za wsparcie serwera!**"
+
+#: disurlvotestracker\disurlvotestracker.py:318
+#, docstring
+msgid "Show the lifetime leaderboard of voters."
+msgstr "Wyświetlanie tabeli liderów głosujących w całym okresie gry."
+
+#: disurlvotestracker\disurlvotestracker.py:328
+#: disurlvotestracker\disurlvotestracker.py:370
+msgid "No voters found."
+msgstr "Nie znaleziono wyborców."
+
+#: disurlvotestracker\disurlvotestracker.py:330
+msgid "Leaderboard"
+msgstr "Tabela liderów"
+
+#: disurlvotestracker\disurlvotestracker.py:333
+msgid "{ctx.guild.name} | {total} Lifetime Vote{s}"
+msgstr "{ctx.guild.name} | {total} Dożywotnie głosowanie{s}"
+
+#: disurlvotestracker\disurlvotestracker.py:336
+msgid "You are at position {author_index} with {number_member_lifetime_votes} vote{s}."
+msgstr "Znajdujesz się na pozycji {author_index} z głosem {number_member_lifetime_votes}{s}."
+
+#: disurlvotestracker\disurlvotestracker.py:350
+#, docstring
+msgid "Show the monthly leaderboard of voters."
+msgstr "Pokaż miesięczną tabelę liderów głosujących."
+
+#: disurlvotestracker\disurlvotestracker.py:372
+msgid "Monthly Leaderboard"
+msgstr "Miesięczna tabela liderów"
+
+#: disurlvotestracker\disurlvotestracker.py:375
+msgid "{ctx.guild.name} | {total} Monthly Vote{s}"
+msgstr "{ctx.guild.name} | {total} Głosowanie miesięczne{s}"
+
+#: disurlvotestracker\disurlvotestracker.py:378
+msgid "You are at position {author_index} with {number_member_monthly_votes} vote{s}."
+msgstr "Znajdujesz się na pozycji {author_index} z głosem {number_member_monthly_votes}{s}."
+
+#: disurlvotestracker\disurlvotestracker.py:400
+#, docstring
+msgid "Instructions on how to set up DisurlVotesTracker."
+msgstr "Instrukcje dotyczące konfiguracji DisurlVotesTracker."
+
+#: disurlvotestracker\disurlvotestracker.py:403
+msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Dashboard nie jest zainstalowany. Sprawdź <https://red-web-dashboard.readthedocs.io>."
+
+#: disurlvotestracker\disurlvotestracker.py:408
+msgid "You can't access the Dashboard."
+msgstr "Nie można uzyskać dostępu do pulpitu nawigacyjnego."
+
+#: disurlvotestracker\disurlvotestracker.py:410
+msgid "DisurlVotesTracker Instructions"
+msgstr "Instrukcje dotyczące DisurlVotesTracker"
+
+#: disurlvotestracker\disurlvotestracker.py:412
+msgid "1. Go to [Disurl Dashboard](https://disurl.me/dashboard/server/{guild_id}/webhooks) and set the webhook URL to `{webhook_url}`.\n"
+"2. Set the Disurl API authorization key with the key which you provided on Disurl.\n"
+"3. Set the votes channel where vote notifications will be sent.\n"
+"4. Set the optional the voters role that will be assigned to voters.\n"
+"5. Optionally, toggle the vote reminder.\n"
+"6. Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`.7. Enable the cog."
+msgstr "1. Przejdź do [Disurl Dashboard](https://disurl.me/dashboard/server/{guild_id}/webhooks) i ustaw adres URL webhooka na `{webhook_url}`.\n"
+"2. Ustaw klucz autoryzacji Disurl API za pomocą klucza podanego w Disurl.\n"
+"3. Ustaw kanał głosowania, na który będą wysyłane powiadomienia o głosowaniu.\n"
+"4. Ustaw opcjonalną rolę głosującego, która zostanie przypisana do głosujących.\n"
+"5. Opcjonalnie przełącz przypomnienie o głosowaniu.\n"
+"6. Opcjonalnie, ustaw `custom_vote_message` i `custom_vote_reminder_message`.7. Włącz tryb."
+

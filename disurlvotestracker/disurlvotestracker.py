@@ -171,6 +171,7 @@ class DisurlVotesTracker(Cog):
         if (
             (voters_role_id := await self.config.guild(guild).voters_role()) is not None
             and (voters_role := guild.get_role(voters_role_id)) is not None
+            and voters_role not in member.roles
         ):
             try:
                 await member.add_roles(voters_role, reason=_("Voted on Disurl! (12 hours)"))
@@ -200,7 +201,7 @@ class DisurlVotesTracker(Cog):
                 number_member_monthly_votes=number_member_monthly_votes, s_2=s_2,
             )
             if voters_role is not None:
-                embed.description += _("\n\n{member.display_name} received the role {voters_role.mention} for the next 12 hours.").format(voters_role=voters_role)
+                embed.description += _("\n\n{member.display_name} received the role {voters_role.mention} for the next 12 hours.").format(member=member, voters_role=voters_role)
             embed.description += _("\n\nYou could vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!").format(guild=guild)
             embed.set_footer(text=_("Thanks for supporting the server! | User ID: {member.id}").format(member=member), icon_url=guild.icon)
             await votes_channel.send(embed=embed)

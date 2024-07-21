@@ -1,0 +1,409 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/guildstats/locales/messages.pot\n"
+"X-Crowdin-File-ID: 271\n"
+"Language: tr_TR\n"
+
+#: guildstats\guildstats.py:68
+msgid "No member/category/text channel/voice channel found."
+msgstr "Üye/kategori/yazı kanalı/ses kanalı bulunamadı."
+
+#: guildstats\guildstats.py:74
+#, docstring
+msgid "A cog to generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities!"
+msgstr "Üyeler, roller, sunucular, kategoriler, yazı kanalları, ses kanalları ve aktiviteler için mesaj ve ses istatistikleri içeren görüntüler oluşturmak için bir cog!"
+
+#: guildstats\guildstats.py:2944
+msgid "Role {_object.name}"
+msgstr "Rol {_object.name}"
+
+#: guildstats\guildstats.py:2951
+msgid "Guild Stats"
+msgstr "Sunucu İstatistikleri"
+
+#: guildstats\guildstats.py:2966
+msgid "Messages Stats"
+msgstr "Mesaj İstatistikleri"
+
+#: guildstats\guildstats.py:2973
+msgid "Voice Stats"
+msgstr "Ses İstatistikleri"
+
+#: guildstats\guildstats.py:2979
+msgid "Activities Stats"
+msgstr "Aktivite İstatistikleri"
+
+#: guildstats\guildstats.py:2988
+msgid "Top Stats"
+msgstr "En İyi İstatistikler"
+
+#: guildstats\guildstats.py:2996
+msgid "Activity - {activity_name}"
+msgstr "Aktivite - {activity_name}"
+
+#: guildstats\guildstats.py:3008
+msgid "Category - {_object.name}"
+msgstr "Kategori - {_object.name}"
+
+#: guildstats\guildstats.py:3094 guildstats\guildstats.py:3128
+msgid "Created On"
+msgstr "Oluşturulma Tarihi"
+
+#: guildstats\guildstats.py:3109
+msgid "Joined On"
+msgstr "Katılım Tarihi"
+
+#: guildstats\guildstats.py:3226 guildstats\guildstats.py:3904
+#: guildstats\guildstats.py:4746 guildstats\guildstats.py:4806
+#: guildstats\guildstats.py:4857 guildstats\guildstats.py:4874
+#: guildstats\guildstats.py:5337 guildstats\guildstats.py:5556
+msgid "Graphic"
+msgstr "Grafik"
+
+#: guildstats\guildstats.py:3291 guildstats\guildstats.py:4264
+#: guildstats\guildstats.py:4526 guildstats\guildstats.py:5205
+#: guildstats\guildstats.py:5424
+msgid "Contributors"
+msgstr "Katkıda Bulunanlar"
+
+#: guildstats\guildstats.py:3499 guildstats\guildstats.py:5592
+#: guildstats\guildstats.py:5634
+msgid "Tracking data in this server for {interval_string}."
+msgstr "Bu sunucuda {interval_string} süresince veri izleme."
+
+#: guildstats\guildstats.py:3508 guildstats\guildstats.py:5601
+#: guildstats\guildstats.py:5643
+msgid "Only {members_type} are taken into account."
+msgstr "Sadece {members_type} dikkate alınır."
+
+#: guildstats\guildstats.py:3640 guildstats\guildstats.py:3922
+#: guildstats\guildstats.py:4185 guildstats\guildstats.py:4447
+#: guildstats\guildstats.py:4891 guildstats\guildstats.py:5135
+#: guildstats\guildstats.py:5354
+msgid "Server Lookback"
+msgstr "Sunucu Geriye Dönük İnceleme"
+
+#: guildstats\guildstats.py:3650 guildstats\guildstats.py:3933
+#: guildstats\guildstats.py:4901
+msgid "Text"
+msgstr "Yazı"
+
+#: guildstats\guildstats.py:3661 guildstats\guildstats.py:3805
+#: guildstats\guildstats.py:3947 guildstats\guildstats.py:4765
+#: guildstats\guildstats.py:4912
+msgid "Voice"
+msgstr "Ses"
+
+#: guildstats\guildstats.py:3674 guildstats\guildstats.py:3962
+#: guildstats\guildstats.py:4210 guildstats\guildstats.py:4765
+#: guildstats\guildstats.py:4925 guildstats\guildstats.py:5160
+msgid "Messages"
+msgstr "Mesajlar"
+
+#: guildstats\guildstats.py:3684 guildstats\guildstats.py:3729
+#: guildstats\guildstats.py:3973 guildstats\guildstats.py:4027
+#: guildstats\guildstats.py:4221 guildstats\guildstats.py:4275
+#: guildstats\guildstats.py:4483 guildstats\guildstats.py:4537
+#: guildstats\guildstats.py:4935 guildstats\guildstats.py:4980
+#: guildstats\guildstats.py:5170 guildstats\guildstats.py:5215
+#: guildstats\guildstats.py:5389 guildstats\guildstats.py:5434
+msgid "1d"
+msgstr "1g"
+
+#: guildstats\guildstats.py:3695 guildstats\guildstats.py:3740
+#: guildstats\guildstats.py:3987 guildstats\guildstats.py:4041
+#: guildstats\guildstats.py:4235 guildstats\guildstats.py:4289
+#: guildstats\guildstats.py:4497 guildstats\guildstats.py:4551
+#: guildstats\guildstats.py:4946 guildstats\guildstats.py:4991
+#: guildstats\guildstats.py:5181 guildstats\guildstats.py:5226
+#: guildstats\guildstats.py:5400 guildstats\guildstats.py:5445
+msgid "7d"
+msgstr "7g"
+
+#: guildstats\guildstats.py:3706 guildstats\guildstats.py:3752
+#: guildstats\guildstats.py:4001 guildstats\guildstats.py:4055
+#: guildstats\guildstats.py:4249 guildstats\guildstats.py:4303
+#: guildstats\guildstats.py:4511 guildstats\guildstats.py:4565
+#: guildstats\guildstats.py:4957 guildstats\guildstats.py:5003
+#: guildstats\guildstats.py:5192 guildstats\guildstats.py:5238
+#: guildstats\guildstats.py:5411 guildstats\guildstats.py:5457
+msgid "30d"
+msgstr "30g"
+
+#: guildstats\guildstats.py:3719 guildstats\guildstats.py:4016
+#: guildstats\guildstats.py:4472 guildstats\guildstats.py:4970
+#: guildstats\guildstats.py:5379
+msgid "Voice Activity"
+msgstr "Ses Aktivitesi"
+
+#: guildstats\guildstats.py:3782
+msgid "Server Ranks"
+msgstr "Sunucu Sıralamaları"
+
+#: guildstats\guildstats.py:3798 guildstats\guildstats.py:3811
+msgid "No data."
+msgstr "Veri yok."
+
+#: guildstats\guildstats.py:3820
+msgid "Top Channels & Activity"
+msgstr "En İyi Kanallar ve Aktivite"
+
+#: guildstats\guildstats.py:4070 guildstats\guildstats.py:4822
+#: guildstats\guildstats.py:5018
+msgid "Top Members"
+msgstr "En İyi Üyeler"
+
+#: guildstats\guildstats.py:4128 guildstats\guildstats.py:5076
+msgid "Top Channels"
+msgstr "En İyi Kanallar"
+
+#: guildstats\guildstats.py:4318 guildstats\guildstats.py:5272
+msgid "Top Messages Members"
+msgstr "En İyi Mesaj Gönderen Üyeler"
+
+#: guildstats\guildstats.py:4382
+msgid "Top Messages Channels"
+msgstr "En İyi Mesaj Kanalları"
+
+#: guildstats\guildstats.py:4580 guildstats\guildstats.py:5491
+msgid "Top Voice Members"
+msgstr "En İyi Sesli Üyeler"
+
+#: guildstats\guildstats.py:4644
+msgid "Top Voice Channels"
+msgstr "En İyi Ses Kanalları"
+
+#: guildstats\guildstats.py:4709
+msgid "Top Activities (Applications)"
+msgstr "En İyi Aktiviteler (Uygulamalar)"
+
+#: guildstats\guildstats.py:4764
+msgid "Tope"
+msgstr "Tope"
+
+#: guildstats\guildstats.py:4765
+msgid "Members"
+msgstr "Üyeler"
+
+#: guildstats\guildstats.py:4765
+msgid "Channels"
+msgstr "Kanallar"
+
+#: guildstats\guildstats.py:5253 guildstats\guildstats.py:5472
+msgid "Server Rank"
+msgstr "Sunucu Sıralaması"
+
+#: guildstats\guildstats.py:5764 guildstats\guildstats.py:5804
+#: guildstats\guildstats.py:5840 guildstats\guildstats.py:5866
+#: guildstats\guildstats.py:5892 guildstats\guildstats.py:5918
+#: guildstats\guildstats.py:5947 guildstats\guildstats.py:5980
+#: guildstats\guildstats.py:6010 guildstats\guildstats.py:6041
+#: guildstats\guildstats.py:6072 guildstats\guildstats.py:6105
+msgid "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
+msgstr "Bu cog bu sunucuda devre dışı bırakıldı. Yöneticiler `{prefix}guildstats enable` komutuyla etkinleştirebilir."
+
+#: guildstats\guildstats.py:5771 guildstats\guildstats.py:5811
+#: guildstats\guildstats.py:6112
+msgid "This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
+msgstr "Bu kullanıcı göz ardı edilen kullanıcılar listesinde (`{prefix}guildstats ignoreme`)."
+
+#: guildstats\guildstats.py:5795
+#, docstring
+msgid "Display stats for a specified member."
+msgstr "Belirtilen bir üyenin istatistiklerini göster."
+
+#: guildstats\guildstats.py:5831
+#, docstring
+msgid "Display stats for a specified role."
+msgstr "Belirtilen bir rolün istatistiklerini göster."
+
+#: guildstats\guildstats.py:5859
+#, docstring
+msgid "Display stats for this guild."
+msgstr "Bu sunucunun istatistiklerini göster."
+
+#: guildstats\guildstats.py:5885
+#, docstring
+msgid "Display stats for the messages in this guild."
+msgstr "Bu sunucudaki mesajların istatistiklerini göster."
+
+#: guildstats\guildstats.py:5911
+#, docstring
+msgid "Display stats for the voice in this guild."
+msgstr "Bu sunucudaki sesin istatistiklerini göster."
+
+#: guildstats\guildstats.py:5936
+#, docstring
+msgid "Display stats for activities in this guild."
+msgstr "Bu sunucudaki aktivitelerin istatistiklerini göster."
+
+#: guildstats\guildstats.py:5939 guildstats\guildstats.py:6064
+#: guildstats\guildstats.py:6097
+msgid "Activities stats are disabled on this bot."
+msgstr "Aktivite istatistikleri bu botta devre dışı bırakıldı."
+
+#: guildstats\guildstats.py:5968
+#, docstring
+msgid "Display stats for a specified category."
+msgstr "Belirtilen bir kategorinin istatistiklerini göster."
+
+#: guildstats\guildstats.py:6001
+#, docstring
+msgid "Display stats for a specified channel."
+msgstr "Belirtilen bir kanalın istatistiklerini göster."
+
+#: guildstats\guildstats.py:6015
+msgid "Threads aren't supported by this cog."
+msgstr "Bu cog dizileri desteklemiyor."
+
+#: guildstats\guildstats.py:6032
+#, docstring
+msgid "Display top stats for voice/messages members/channels."
+msgstr "Ses/mesaj üyeleri/kanalları için en iyi istatistikleri göster."
+
+#: guildstats\guildstats.py:6061
+#, docstring
+msgid "Display stats for a specific activity in this guild."
+msgstr "Bu sunucudaki belirli bir aktivitenin istatistiklerini göster."
+
+#: guildstats\guildstats.py:6092
+#, docstring
+msgid "Display graphic for members, roles guilds, text channels, voice channels and activities."
+msgstr "Üyeler, roller, sunucular, yazı kanalları, ses kanalları ve aktiviteler için grafik göster."
+
+#: guildstats\guildstats.py:6128
+#, docstring
+msgid "Asking GuildStats to ignore your actions."
+msgstr "GuildStats'tan eylemlerinizi görmezden gelmesini isteme."
+
+#: guildstats\guildstats.py:6136
+msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
+msgstr "Bu cog tarafından artık görülmeyeceksiniz ve sizinle ilgili veriler silindi."
+
+#: guildstats\guildstats.py:6143
+msgid "You'll be seen again by this cog."
+msgstr "Bu cog tarafından tekrar görüleceksiniz."
+
+#: guildstats\guildstats.py:6148
+#, docstring
+msgid "Ignore or unignore a specific user."
+msgstr "Belirli bir kullanıcıyı görmezden gel veya görmezden gelme."
+
+#: guildstats\guildstats.py:6155
+msgid "{user.mention} ({user.id}) will no longer be seen by this cog, and their data has been deleted."
+msgstr "{user.mention} ({user.id}) bu cog tarafından artık görülmeyecek ve verileri silindi."
+
+#: guildstats\guildstats.py:6164
+msgid "{user.mention} ({user.id}) will be seen again by this cog."
+msgstr "{user.mention} ({user.id}) bu cog tarafından tekrar görülecek."
+
+#: guildstats\guildstats.py:6171
+#, docstring
+msgid "Ignore or unignore a specific category."
+msgstr "Belirli bir kategoriyi görmezden gel veya görmezden gelme."
+
+#: guildstats\guildstats.py:6179
+msgid "`{category.name}` ({category.id}) will now be ignored in stats (except for the specific category one)."
+msgstr "`{category.name}` ({category.id}) istatistiklerde artık görmezden gelinecek (belirli kategori hariç)."
+
+#: guildstats\guildstats.py:6187
+msgid "`{category.name}` ({category.id}) will no longer be ignored in stats."
+msgstr "`{category.name}` ({category.id}) artık istatistiklerde görmezden gelinmeyecek."
+
+#: guildstats\guildstats.py:6200
+#, docstring
+msgid "Ignore or unignore a specific channel."
+msgstr "Belirli bir kanalı görmezden gel veya görmezden gelme."
+
+#: guildstats\guildstats.py:6206
+msgid "{channel.mention} ({channel.id}) will now be ignored in stats (except for the specific channel one)."
+msgstr "{channel.mention} ({channel.id}) istatistiklerde artık görmezden gelinecek (belirli kanal hariç)."
+
+#: guildstats\guildstats.py:6214
+msgid "{channel.mention} ({channel.id}) will no longer be ignored in stats."
+msgstr "{channel.mention} ({channel.id}) artık istatistiklerde görmezden gelinmeyecek."
+
+#: guildstats\guildstats.py:6222
+#, docstring
+msgid "Ignore or unignore a specific activity."
+msgstr "Belirli bir aktiviteyi görmezden gel veya görmezden gelme."
+
+#: guildstats\guildstats.py:6230
+msgid "The activity `{activity_name}` will now be ignored in stats (except for the specific activity one)."
+msgstr "Aktivite `{activity_name}` istatistiklerde artık görmezden gelinecek (belirli aktivite hariç)."
+
+#: guildstats\guildstats.py:6238
+msgid "The activity `{activity_name}` will no longer be ignored in stats."
+msgstr "Aktivite `{activity_name}` artık istatistiklerde görmezden gelinmeyecek."
+
+#: guildstats\guildstats.py:6246
+#, docstring
+msgid "Enable or disable activities stats."
+msgstr "Aktivite istatistiklerini etkinleştir veya devre dışı bırak."
+
+#: guildstats\guildstats.py:6252
+#, docstring
+msgid "Enable or disable by default the cog in the bot guilds."
+msgstr "Cog'u bot sunucularında varsayılan olarak etkinleştir veya devre dışı bırak."
+
+#: guildstats\guildstats.py:6258
+#, docstring
+msgid "Enable the cog in this guild/server."
+msgstr "Cog'u bu sunucuda etkinleştir."
+
+#: guildstats\guildstats.py:6262
+msgid "GuildStats already enabled in this guild/server."
+msgstr "GuildStats bu sunucuda zaten etkinleştirilmiş."
+
+#: guildstats\guildstats.py:6265
+msgid "GuildStats enabled in this guild/server."
+msgstr "GuildStats bu sunucuda etkinleştirildi."
+
+#: guildstats\guildstats.py:6270
+#, docstring
+msgid "Disable the cog in this guild/server."
+msgstr "Cog'u bu sunucuda devre dışı bırak."
+
+#: guildstats\guildstats.py:6274
+msgid "GuildStats already disabled in this guild/server."
+msgstr "GuildStats bu sunucuda zaten devre dışı bırakılmış."
+
+#: guildstats\guildstats.py:6277
+msgid "GuildStats disabled in this guild/server."
+msgstr "GuildStats bu sunucuda devre dışı bırakıldı."
+
+#: guildstats\guildstats.py:6283
+#, docstring
+msgid "Get an embed for check loop status."
+msgstr "Döngü durumunu kontrol etmek için bir gömme alın."
+
+#: guildstats\guildstats.py:6294
+#, docstring
+msgid "Purge Config for the current guild."
+msgstr "Mevcut sunucu için konfigürasyonu temizle."
+
+#: guildstats\guildstats.py:6299
+msgid "All GuildStats data purged for this guild."
+msgstr "Bu sunucu için tüm GuildStats verileri temizlendi."
+
+#: guildstats\guildstats.py:6302
+msgid "All GuildStats activities data purged for this guild."
+msgstr "Bu sunucu için tüm GuildStats aktiviteleri verileri temizlendi."
+
+#: guildstats\guildstats.py:6321
+msgid "All GuildStats {_type} data purged for this guild."
+msgstr "Bu sunucu için tüm GuildStats {_type} verileri temizlendi."
+

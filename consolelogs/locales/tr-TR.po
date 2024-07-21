@@ -1,0 +1,94 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/consolelogs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 261\n"
+"Language: tr_TR\n"
+
+#: consolelogs\consolelogs.py:102
+#, docstring
+msgid "A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"
+msgstr "Düğmeler ve filtre seçenekleri ile konsol günlüklerini görüntülemek ve yapılandırılmış kanallara komut hatalarını göndermek için bir cog!"
+
+#: consolelogs\consolelogs.py:264
+msgid "No logs to display."
+msgstr "Görüntülenecek günlük yok."
+
+#: consolelogs\consolelogs.py:415
+#, docstring
+msgid "Scroll the console logs, for all levels/loggers or provided level/logger name."
+msgstr "Tüm seviyeler/günlükçüler veya belirtilen seviye/günlükçü adı için konsol günlüklerini kaydırın."
+
+#: consolelogs\consolelogs.py:451
+#, docstring
+msgid "View the console logs one by one, for all levels/loggers or provided level/logger name."
+msgstr "Tüm seviyeler/günlükçüler veya belirtilen seviye/günlükçü adı için konsol günlüklerini tek tek görüntüleyin."
+
+#: consolelogs\consolelogs.py:462
+#, docstring
+msgid "Display the stats for the bot logs since the bot start."
+msgstr "Bot başlatıldığından beri bot günlüklerinin istatistiklerini görüntüleyin."
+
+#: consolelogs\consolelogs.py:495
+#, docstring
+msgid "Enable errors logging in a channel.\n\n"
+"        **Parameters:**\n"
+"        - `channel`: The channel where the commands errors will be sent.\n"
+"        - `global_errors`: Log errors for the entire bot, not just the channel server.\n"
+"        - `prefixed_commands_errors`: Log prefixed commands errors.\n"
+"        - `slash_commands_errors`: Log slash commands errors.\n"
+"        - `dpy_ignored_exceptions`: Log dpy ignored exceptions (events listeners and Views errors).\n"
+"        - `full_console`: Log all the console logs.\n"
+"        - `guild_invite`: Add a button \"Guild Invite\" in commands errors logs, only for community servers.\n"
+"        - `ignored_cogs`: Ignore some cogs for `prefixed_commands_errors` and `slash_commands_errors`. You have to use the cog qualified_name like `ConsoleLogs` for this cog.\n"
+"        "
+msgstr "Bir kanalda hata günlüğünü etkinleştirin.\n\n"
+"        **Parametreler:**\n"
+"        - `channel`: Komut hatalarının gönderileceği kanal.\n"
+"        - `global_errors`: Hataları sadece kanal sunucusu için değil, tüm bot için günlüğe kaydedin.\n"
+"        - `prefixed_commands_errors`: Ön ekli komut hatalarını günlüğe kaydedin.\n"
+"        - `slash_commands_errors`: Eğik çizgi komutları hatalarını günlüğe kaydedin.\n"
+"        - `dpy_ignored_exceptions`: Dpy yok sayılan istisnaları günlüğe kaydedin (olay dinleyicileri ve Görünüm hataları).\n"
+"        - `full_console`: Tüm konsol günlüklerini günlüğe kaydedin.\n"
+"        - `guild_invite`: Sadece topluluk sunucuları için komut hataları günlüklerine bir \"Sunucu Daveti\" düğmesi ekleyin.\n"
+"        - `ignored_cogs`: Bazı `prefixed_commands_errors` ve `slash_commands_errors` çarklarını göz ardı edin. Bu cog için `ConsoleLogs` gibi cog qualified_name kullanmanız gerekir.\n"
+"        "
+
+#: consolelogs\consolelogs.py:516
+msgid "I don't have the permissions to send embeds in this channel."
+msgstr "Bu kanalda gömme mesaj göndermek için izinlerim yok."
+
+#: consolelogs\consolelogs.py:532
+msgid "Errors logging enabled in {channel.mention}."
+msgstr "{channel.mention} kanalında hata günlükleme etkinleştirildi."
+
+#: consolelogs\consolelogs.py:540
+#, docstring
+msgid "Disable errors logging in a channel."
+msgstr "Bir kanalda hata günlüklemeyi devre dışı bırakın."
+
+#: consolelogs\consolelogs.py:543
+msgid "Errors logging isn't enabled in this channel."
+msgstr "Bu kanalda hata günlükleme etkinleştirilmemiş."
+
+#: consolelogs\consolelogs.py:546
+msgid "Errors logging disabled in {channel.mention}."
+msgstr "{channel.mention} kanalında hata günlükleme devre dışı bırakıldı."
+
+#: consolelogs\consolelogs.py:550
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Döngü durumunu kontrol etmek için bir gömme alın."
+

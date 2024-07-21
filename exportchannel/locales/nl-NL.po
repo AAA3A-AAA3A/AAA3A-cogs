@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:39\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:14\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -17,34 +17,34 @@ msgstr ""
 "X-Crowdin-File-ID: 146\n"
 "Language: nl_NL\n"
 
-#: exportchannel\exportchannel.py:21
-msgid "Here is the transcript's html file of the messages in the channel {channel.mention} ({channel.id}).\n"
+#: exportchannel\exportchannel.py:22
+msgid "Here is the transcript's {mode} file of the messages in the channel {channel.mention} ({channel.id}).\n"
 "Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "There are {count_messages} exported messages.\n"
 "Remember that exporting other users' messages from Discord does not respect the TOS."
-msgstr "Hier is het transcript html bestand van de berichten in het kanaal {channel.mention} ({channel.id}).\n"
+msgstr "Hier is het transcript's {mode} bestand van de berichten in het kanaal {channel.mention} ({channel.id}).\n"
 "Let op: alle bijlagen en gebruikersavatars worden opgeslagen met de Discord link in dit bestand.\n"
 "Er zijn {count_messages} geëxporteerde berichten.\n"
 "Onthoud dat het exporteren van berichten van andere gebruikers uit Discord de TOS niet respecteert."
 
-#: exportchannel\exportchannel.py:24
+#: exportchannel\exportchannel.py:25
 msgid "[Click here to view the transcript.]({url})"
 msgstr "[Klik hier om het transcript te bekijken]({url})"
 
-#: exportchannel\exportchannel.py:44
+#: exportchannel\exportchannel.py:45
 #, docstring
 msgid "A cog to export all or a part of the messages of a channel in an html file!"
 msgstr "Een tandwiel om alle of een deel van de berichten van een kanaal te exporteren in een html-bestand!"
 
-#: exportchannel\exportchannel.py:67
+#: exportchannel\exportchannel.py:57
 msgid "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
 msgstr "Sorry, ik kan de inhoud van de berichten in {channel.mention} ({channel.id}) niet lezen."
 
-#: exportchannel\exportchannel.py:108
+#: exportchannel\exportchannel.py:103
 msgid "Sorry. I could not find any messages."
 msgstr "Sorry. Ik kon geen berichten vinden."
 
-#: exportchannel\exportchannel.py:179
+#: exportchannel\exportchannel.py:192
 #, docstring
 msgid "Export all of a channel's messages to an html file.\n\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
@@ -55,20 +55,20 @@ msgstr "Exporteer alle berichten van een kanaal naar een html-bestand.\n\n"
 "        Onthoud dat het exporteren van berichten van andere gebruikers vanuit Discord de TOS niet respecteert.\n"
 "        "
 
-#: exportchannel\exportchannel.py:205
+#: exportchannel\exportchannel.py:232
 #, docstring
-msgid "Export a specific file in an html file.\n\n"
+msgid "Export a specific message in an html file.\n\n"
 "        Specify the message to export, with its ID or its link.\n"
 "        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
 "        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
 "        "
-msgstr "Exporteer een specifiek bestand in een html-bestand.\n\n"
+msgstr "Exporteer een specifiek bericht in een html-bestand.\n\n"
 "        Specificeer het bericht dat je wilt exporteren, met zijn ID of zijn link.\n"
 "        Let op: alle bijlagen en gebruikersavatars worden opgeslagen met de Discord-link in dit bestand.\n"
-"        Onthoud dat het exporteren van berichten van andere gebruikers vanuit Discord de TOS niet respecteert.\n"
+"        Onthoud dat het exporteren van berichten van andere gebruikers van Discord de TOS niet respecteert.\n"
 "        "
 
-#: exportchannel\exportchannel.py:242
+#: exportchannel\exportchannel.py:275
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the number of messages since the end of the channel.\n"
@@ -81,7 +81,7 @@ msgstr "Exporteer een deel van de berichten van een chatroom in een html-bestand
 "        Onthoud dat het exporteren van berichten van andere gebruikers van Discord de TOS niet respecteert.\n"
 "        "
 
-#: exportchannel\exportchannel.py:280
+#: exportchannel\exportchannel.py:321
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the before message (id or link) or a valid snowflake.\n"
@@ -94,7 +94,7 @@ msgstr "Exporteer een deel van de berichten van een kanaal in een html-bestand.\
 "        Onthoud dat het exporteren van berichten van andere gebruikers uit Discord de TOS niet respecteert.\n"
 "        "
 
-#: exportchannel\exportchannel.py:314
+#: exportchannel\exportchannel.py:367
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the after message (id or link) or a valid snowflake.\n"
@@ -107,7 +107,7 @@ msgstr "Exporteer een deel van de berichten van een kanaal in een html-bestand.\
 "        Onthoud dat het exporteren van berichten van andere gebruikers uit Discord de TOS niet respecteert.\n"
 "        "
 
-#: exportchannel\exportchannel.py:349
+#: exportchannel\exportchannel.py:414
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the before and after messages (id or link) or a valid snowflake.\n"
@@ -120,7 +120,7 @@ msgstr "Exporteer een deel van de berichten van een kanaal in een html-bestand.\
 "        Onthoud dat het exporteren van berichten van andere gebruikers uit Discord de TOS niet respecteert.\n"
 "        "
 
-#: exportchannel\exportchannel.py:386
+#: exportchannel\exportchannel.py:461
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the user/member (id, name or mention).\n"
@@ -133,7 +133,7 @@ msgstr "Exporteer een deel van de berichten van een chatroom in een html-bestand
 "        Onthoud dat het exporteren van berichten van andere gebruikers van Discord de TOS niet respecteert.\n"
 "        "
 
-#: exportchannel\exportchannel.py:426
+#: exportchannel\exportchannel.py:508
 #, docstring
 msgid "Export a part of the messages of a channel in an html file.\n\n"
 "        Specify the bool option.\n"

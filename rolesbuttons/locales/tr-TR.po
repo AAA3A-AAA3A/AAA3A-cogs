@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:15+0200\n"
-"PO-Revision-Date: 2024-07-21 13:27\n"
+"POT-Creation-Date: 2024-07-21 15:28+0200\n"
+"PO-Revision-Date: 2024-07-21 13:35\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -17,27 +17,27 @@ msgstr ""
 "X-Crowdin-File-ID: 96\n"
 "Language: tr_TR\n"
 
-#: rolesbuttons\converters.py:70
+#: rolesbuttons\converters.py:68
 msgid "The {role.mention} role is a bot integration role and cannot be assigned or removed."
 msgstr "{role.mention} rolü bir bot entegrasyon rolüdür ve atanamaz veya kaldırılamaz."
 
-#: rolesbuttons\converters.py:76
+#: rolesbuttons\converters.py:74
 msgid "The {role.mention} role is an integration role and cannot be assigned or removed."
 msgstr "{role.mention} rolü bir entegrasyon rolüdür ve atanamaz veya kaldırılamaz."
 
-#: rolesbuttons\converters.py:82
+#: rolesbuttons\converters.py:80
 msgid "The {role.mention} role is a premium subscriber role and can only be assigned or removed by Nitro boosting the server."
 msgstr "{role.mention} rolü bir premium abone rolüdür ve yalnızca Nitro sunucuyu boostlayarak atanabilir veya kaldırılabilir."
 
-#: rolesbuttons\converters.py:88
+#: rolesbuttons\converters.py:86
 msgid "The {role.mention} role is higher than my highest role in the discord hierarchy."
 msgstr "{role.mention} rolü benim rolümden daha yüksek."
 
-#: rolesbuttons\converters.py:94
+#: rolesbuttons\converters.py:92
 msgid "The {role.mention} role is higher than your highest role in the discord hierarchy."
 msgstr "{role.mention} rolü, senin rolünden daha yüksek."
 
-#: rolesbuttons\converters.py:110
+#: rolesbuttons\converters.py:108
 msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
 msgstr "Emoji Rol bir emoji ve ardından `;`, `,`, `|` veya `-` ile ayrılmış bir rol olmalıdır."
 

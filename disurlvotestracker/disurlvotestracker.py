@@ -245,9 +245,8 @@ class DisurlVotesTracker(Cog):
                     continue
                 if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(votes[-1], tz=datetime.timezone.utc) < datetime.timedelta(hours=12):
                     continue
-                await self.config.member(member).last_reminder_sent.set(True)
-                member: discord.Member = guild.get_member(member_id)
-                if member is None:
+                await self.config.member_from_ids(guild_id, member_id).last_reminder_sent.set(True)
+                if (member := guild.get_member(member_id)) is None:
                     continue
 
                 if (voters_role := guild_data["voters_role"]) is not None and voters_role in member.roles:

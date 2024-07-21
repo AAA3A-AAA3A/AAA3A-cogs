@@ -142,74 +142,6 @@ class DisurlVotesTracker(Cog):
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
 
-    async def check_12h_after_votes(self) -> None:
-        for guild_id in await self.config.all_guilds():
-            if (
-                (guild := self.bot.get_guild(guild_id))
-                or await self.bot.cog_disabled_in_guild(cog=self, guild=guild)
-                or not await self.config.guild(guild).enabled()
-                or (votes_channel_id := await self.config.guild(guild).votes_channel()) is None
-                or (votes_channel := guild.get_channel_or_thread(votes_channel_id)) is None
-            ):
-                continue
-            for member_id, member_data in (await self.config.all_members(guild)).items():
-                if member_data["last_reminder_sent"] or not (
-                    votes := member_data["votes"]
-                ):
-                    continue
-                if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(votes[-1], tz=datetime.timezone.utc) < datetime.timedelta(hours=12):
-                    continue
-                member: discord.Member = guild.get_member(int(member_id))
-                if member is None:
-                    continue
-
-                if (voters_role := await self.config.guild(guild).voters_role()) is not None and voters_role in member.roles:
-                    try:
-                        await member.remove_roles(voters_role, reason=_("Voters role expired! (12 hours)"))
-                    except discord.HTTPException as e:
-                        self.logger.error(
-                            f"Failed to remove the voters role from {member} ({member.id}) in {guild} ({guild.id}): {e}"
-                        )
-
-                if await self.config.guild(guild).vote_reminder():
-                    if (custom_vote_reminder_message := await self.config.guild(guild).custom_vote_reminder_message()) is None:
-                        view = discord.ui.View()
-                        view.add_item(discord.ui.Button(label=_("Vote on Disurl!"), url=f"https://disurl.me/server/{guild.id}/vote"))
-                        await votes_channel.send(
-                            _(
-                                "{member.mention}, don't forget to vote on **[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again 12 hours after this vote. **Thanks for supporting the server!**"
-                            ).format(member=member, guild=guild),
-                            view=view,
-                        )
-                    else:
-                        number_member_votes = len(member_data["votes"])
-                        number_member_monthly_votes = len(
-                            [vote for vote in member_data["votes"] if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc) < datetime.timedelta(days=30)]
-                        )
-                        s_1 = "" if number_member_votes == 1 else "s"
-                        s_2 = "" if number_member_monthly_votes == 1 else "s"
-                        env = {
-                            "member_name": member.display_name,
-                            "member_avatar_url": member.display_avatar.url,
-                            "member_mention": member.mention,
-                            "member_id": member.id,
-                            "guild_name": guild.name,
-                            "guild_icon_url": guild.icon.url,
-                            "guild_id": guild.id,
-                            "votes_channel_name": votes_channel.name,
-                            "votes_channel_mention": votes_channel.mention,
-                            "votes_channel_id": votes_channel.id,
-                            "voters_role_name": voters_role.name if voters_role is not None else None,
-                            "voters_role_mention": voters_role.mention if voters_role is not None else None,
-                            "voters_role_id": voters_role.id if voters_role is not None else None,
-                            "number_member_votes": number_member_votes, "s_1": s_1,
-                            "number_member_monthly_votes": number_member_monthly_votes, "s_2": s_2,
-                        }
-                        await CustomMessageConverter(**custom_vote_reminder_message).send_message(
-                            None, channel=votes_channel, env=env
-                        )
-                await self.config.member(member).last_reminder_sent.set(True)
-
     @commands.Cog.listener()
     async def on_webhook_receive(self, payload: typing.Dict[str, typing.Any]) -> None:
         if payload.get("type") not in ("vote", "testVote"):
@@ -292,9 +224,77 @@ class DisurlVotesTracker(Cog):
             )
 
         votes = await self.config.member(member).votes()
-        votes.append(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        votes.append(int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp()))
         await self.config.member(member).votes.set(votes)
         await self.config.member(member).last_reminder_sent.set(False)
+
+    async def check_12h_after_votes(self) -> None:
+        for guild_id, guild_data in (await self.config.all_guilds()).items():
+            if (
+                (guild := self.bot.get_guild(guild_id)) is None
+                or await self.bot.cog_disabled_in_guild(cog=self, guild=guild)
+                or not guild_data["enabled"]
+                or (votes_channel_id := guild_data["votes_channel"]) is None
+                or (votes_channel := guild.get_channel_or_thread(votes_channel_id)) is None
+            ):
+                continue
+            for member_id, member_data in (await self.config.all_members(guild)).items():
+                if member_data["last_reminder_sent"] or not (
+                    votes := member_data["votes"]
+                ):
+                    continue
+                if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(votes[-1], tz=datetime.timezone.utc) < datetime.timedelta(hours=12):
+                    continue
+                await self.config.member(member).last_reminder_sent.set(True)
+                member: discord.Member = guild.get_member(member_id)
+                if member is None:
+                    continue
+
+                if (voters_role := guild_data["voters_role"]) is not None and voters_role in member.roles:
+                    try:
+                        await member.remove_roles(voters_role, reason=_("Voters role expired! (12 hours)"))
+                    except discord.HTTPException as e:
+                        self.logger.error(
+                            f"Failed to remove the voters role from {member} ({member.id}) in {guild} ({guild.id}): {e}"
+                        )
+
+                if await self.config.guild(guild).vote_reminder():
+                    if (custom_vote_reminder_message := guild_data["custom_vote_reminder_message"]) is None:
+                        view = discord.ui.View()
+                        view.add_item(discord.ui.Button(label=_("Vote on Disurl!"), url=f"https://disurl.me/server/{guild.id}/vote"))
+                        await votes_channel.send(
+                            _(
+                                "{member.mention}, don't forget to vote on **[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again 12 hours after this vote. **Thanks for supporting the server!**"
+                            ).format(member=member, guild=guild),
+                            view=view,
+                        )
+                    else:
+                        number_member_votes = len(member_data["votes"])
+                        number_member_monthly_votes = len(
+                            [vote for vote in member_data["votes"] if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc) < datetime.timedelta(days=30)]
+                        )
+                        s_1 = "" if number_member_votes == 1 else "s"
+                        s_2 = "" if number_member_monthly_votes == 1 else "s"
+                        env = {
+                            "member_name": member.display_name,
+                            "member_avatar_url": member.display_avatar.url,
+                            "member_mention": member.mention,
+                            "member_id": member.id,
+                            "guild_name": guild.name,
+                            "guild_icon_url": guild.icon.url,
+                            "guild_id": guild.id,
+                            "votes_channel_name": votes_channel.name,
+                            "votes_channel_mention": votes_channel.mention,
+                            "votes_channel_id": votes_channel.id,
+                            "voters_role_name": voters_role.name if voters_role is not None else None,
+                            "voters_role_mention": voters_role.mention if voters_role is not None else None,
+                            "voters_role_id": voters_role.id if voters_role is not None else None,
+                            "number_member_votes": number_member_votes, "s_1": s_1,
+                            "number_member_monthly_votes": number_member_monthly_votes, "s_2": s_2,
+                        }
+                        await CustomMessageConverter(**custom_vote_reminder_message).send_message(
+                            None, channel=votes_channel, env=env
+                        )
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)

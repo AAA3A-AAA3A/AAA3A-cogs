@@ -1,0 +1,150 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/devutils/locales/messages.pot\n"
+"X-Crowdin-File-ID: 312\n"
+"Language: tr_TR\n"
+
+#: devutils\devutils.py:51
+msgid "No valid log level provided."
+msgstr "Geçerli bir günlük seviyesi sağlanmadı."
+
+#: devutils\devutils.py:80
+msgid "No valid discord object provided."
+msgstr "Geçerli bir discord nesnesi sağlanmadı."
+
+#: devutils\devutils.py:85
+#, docstring
+msgid "Various development utilities!"
+msgstr "Çeşitli geliştirme araçları!"
+
+#: devutils\devutils.py:134
+#, docstring
+msgid "\n"
+"        Repeats a command a specified number of times.\n\n"
+"        `--sleep <int>` is an optional flag specifying how much time to wait between command invocations.\n"
+"        "
+msgstr "\n"
+"        Bir komutu belirtilen sayıda tekrar eder.\n\n"
+"        `--sleep <int>` komut çağrıları arasında ne kadar bekleyeceğini belirten isteğe bağlı bir bayraktır.\n"
+"        "
+
+#: devutils\devutils.py:155 devutils\devutils.py:235 devutils\devutils.py:251
+msgid "You have not specified a correct command."
+msgstr "Doğru bir komut belirtmediniz."
+
+#: devutils\devutils.py:157 devutils\devutils.py:253
+msgid "You can't execute yourself this command."
+msgstr "Bu komutu kendiniz yürütemezsiniz."
+
+#: devutils\devutils.py:174
+#, docstring
+msgid "Execute multiple commands at once. Split them using |."
+msgstr "Birden fazla komutu aynı anda çalıştırın. Onları | kullanarak ayırın."
+
+#: devutils\devutils.py:189 devutils\devutils.py:211
+msgid "`{command}` isn't a valid command."
+msgstr "`{command}` geçerli bir komut değil."
+
+#: devutils\devutils.py:195 devutils\devutils.py:217
+msgid "You can't execute yourself `{command}`."
+msgstr "`{command}` komutunu kendiniz çalıştıramazsınız."
+
+#: devutils\devutils.py:224
+#, docstring
+msgid "Bypass a command's checks and cooldowns."
+msgstr "Bir komutun kontrollerini ve bekleme sürelerini atlayın."
+
+#: devutils\devutils.py:240
+#, docstring
+msgid "Run a command timing execution and catching exceptions."
+msgstr "Bir komutu zamanlama yürütmesi ve istisnaları yakalama ile çalıştırın."
+
+#: devutils\devutils.py:259
+msgid "Command `{command}` finished in `{timing}`s."
+msgstr "`{command}` komutu `{timing}` saniyede tamamlandı."
+
+#: devutils\devutils.py:266
+#, docstring
+msgid "Reinvoke a command message.\n\n"
+"        You may reply to a message to reinvoke it or pass a message ID/link.\n"
+"        The command will be invoked with the author and the channel of the specified message.\n"
+"        "
+msgstr "Bir komut mesajını yeniden çağırın.\n\n"
+"        Bir mesaja yanıt vererek yeniden çağırabilir veya bir mesaj kimliği/bağlantısı geçebilirsiniz.\n"
+"        Komut, belirtilen mesajın yazarı ve kanalı ile çağrılacaktır.\n"
+"        "
+
+#: devutils\devutils.py:289
+msgid "The command isn't valid."
+msgstr "Komut geçerli değil."
+
+#: devutils\devutils.py:291
+msgid "This command can't be executed."
+msgstr "Bu komut çalıştırılamaz."
+
+#: devutils\devutils.py:297
+#, docstring
+msgid "Change the logging level for a logger. If no name is provided, the root logger (`red`) is used.\n\n"
+"        Levels are the following:\n"
+"        - `0`: `CRITICAL`\n"
+"        - `1`: `ERROR`\n"
+"        - `2`: `WARNING`\n"
+"        - `3`: `INFO`\n"
+"        - `4`: `DEBUG`\n"
+"        - `5`: `VERBOSE`\n"
+"        - `6`: `TRACE`\n"
+"        "
+msgstr "Bir kaydedici için günlük seviyesini değiştirin. Hiçbir ad belirtilmezse, kök kaydedici (`red`) kullanılır.\n\n"
+"        Seviyeler şunlardır:\n"
+"        - `0`: `KRİTİK`\n"
+"        - `1`: `HATA`\n"
+"        - `2`: `UYARI`\n"
+"        - `3`: `BİLGİ`\n"
+"        - `4`: `HATA AYIKLAMA`\n"
+"        - `5`: `AYRINTILI`\n"
+"        - `6`: `İZLEME`\n"
+"        "
+
+#: devutils\devutils.py:311
+msgid "Logger `{logger_name}` level set to `{level}`."
+msgstr "`{logger_name}` kaydedicisi seviyesi `{level}` olarak ayarlandı."
+
+#: devutils\devutils.py:320
+#, docstring
+msgid "Force reload a module (to use code changes without restarting your bot).\n\n"
+"        ⚠️ Please only use this if you know what you're doing.\n"
+"        "
+msgstr "Bir modülü zorla yeniden yükleyin (botunuzu yeniden başlatmadan kod değişikliklerini kullanmak için).\n\n"
+"        ⚠️ Lütfen bunu yalnızca ne yaptığınızı biliyorsanız kullanın.\n"
+"        "
+
+#: devutils\devutils.py:336
+msgid "I couldn't find any module with this name."
+msgstr "Bu isimde bir modül bulamadım."
+
+#: devutils\devutils.py:340
+msgid "Module(s) {modules} reloaded."
+msgstr "Modül(ler) {modules} yeniden yüklendi."
+
+#: devutils\devutils.py:346
+msgid "Modules [...] reloaded."
+msgstr "Modüller [...] yeniden yüklendi."
+
+#: devutils\devutils.py:350
+#, docstring
+msgid "Display the JSON of a Discord object with a raw request."
+msgstr "Ham bir istek ile bir Discord nesnesinin JSON'unu görüntüleyin."
+

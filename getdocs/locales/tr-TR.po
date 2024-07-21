@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/getdocs/locales/messages.pot\n"
+"X-Crowdin-File-ID: 183\n"
+"Language: tr_TR\n"
+
+#: getdocs\getdocs.py:226 getdocs\getdocs.py:347 getdocs\getdocs.py:410
+msgid "Please provide a valid documentations source."
+msgstr "Lütfen geçerli bir dökümantasyon kaynağı sağlayın."
+
+#: getdocs\getdocs.py:237
+#, docstring
+msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
+msgstr "Discord'da bazı dökümantasyonları almak ve görüntülemek için bir cog! Mevcut tüm kaynakların listesini almak için `[p]listsources` komutunu kullanın."
+
+#: getdocs\getdocs.py:366 getdocs\getdocs.py:1724
+msgid "RTFM caching isn't finished."
+msgstr "RTFM önbellekleme tamamlanmadı."
+
+#: getdocs\getdocs.py:421
+msgid "No results found."
+msgstr "Sonuç bulunamadı."
+
+#: getdocs\getdocs.py:573
+#, docstring
+msgid "\n"
+"        Enable Documentations source(s).\n"
+"        "
+msgstr "\n"
+"        Dökümantasyon kaynağını/kaynaklarını etkinleştir.\n"
+"        "
+
+#: getdocs\getdocs.py:580
+msgid "The source `{source}` is already enabled."
+msgstr "Kaynak `{source}` zaten etkin."
+
+#: getdocs\getdocs.py:584 getdocs\getdocs.py:614
+msgid "The source `{source}` doesn't exist."
+msgstr "Kaynak `{source}` mevcut değil."
+
+#: getdocs\getdocs.py:603
+#, docstring
+msgid "\n"
+"        Disable Documentations source(s).\n"
+"        "
+msgstr "\n"
+"        Dökümantasyon kaynağını/kaynaklarını devre dışı bırak.\n"
+"        "
+
+#: getdocs\getdocs.py:610
+msgid "The source `{source}` is already disabled."
+msgstr "Kaynak `{source}` zaten devre dışı."
+
+#: getdocs\getdocs.py:621
+#, docstring
+msgid "\n"
+"        Show stats about all documentations sources.\n"
+"        "
+msgstr "\n"
+"        Tüm dökümantasyon kaynakları hakkında istatistikleri göster.\n"
+"        "
+
+#: getdocs\getdocs.py:655
+#, docstring
+msgid "Get an embed to check loops status."
+msgstr "Döngü durumunu kontrol etmek için bir gömme alın."
+

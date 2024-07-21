@@ -1,0 +1,193 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/commandsbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 181\n"
+"Language: tr_TR\n"
+
+#: commandsbuttons\commandsbuttons.py:30
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Mesajın yazarı ben olmalıyım. Bir tane göndermek için AAA3A tarafından sağlanan EmbedUtils'i kullanabilirsiniz."
+
+#: commandsbuttons\commandsbuttons.py:39
+#, docstring
+msgid "A cog to allow a user to execute a command by clicking on a button!"
+msgstr "Düğmelere basarak komut yürütmenizi sağlayan bir cog!"
+
+#: commandsbuttons\commandsbuttons.py:119
+msgid "This message is not in Config."
+msgstr "Bu mesaj Konfigürasyonda bulunmuyor."
+
+#: commandsbuttons\commandsbuttons.py:124
+msgid "This button is not in Config."
+msgstr "Bu düğme Konfigürasyonda bulunmuyor."
+
+#: commandsbuttons\commandsbuttons.py:173
+msgid "This command doesn't exist."
+msgstr "Bu komut mevcut değil."
+
+#: commandsbuttons\commandsbuttons.py:178
+msgid "You are not allowed to execute this command."
+msgstr "Bu komutu yürütme yetkiniz yok."
+
+#: commandsbuttons\commandsbuttons.py:234
+#, docstring
+msgid "Add a command-button for a message.\n\n"
+"        (Use the number for the color.)\n"
+"        • `primary`: 1\n"
+"        • `secondary`: 2\n"
+"        • `success`: 3\n"
+"        • `danger`: 4\n"
+"        # Aliases\n"
+"        • `blurple`: 1\n"
+"        • `grey`: 2\n"
+"        • `gray`: 2\n"
+"        • `green`: 3\n"
+"        • `red`: 4\n"
+"        "
+msgstr "Mesaj için bir komut düğmesi ekleyin.\n\n"
+"        (Renk için numarayı kullanın.)\n"
+"        • `primary`: 1\n"
+"        • `secondary`: 2\n"
+"        • `success`: 3\n"
+"        • `danger`: 4\n"
+"        # Takma Adlar\n"
+"        • `blurple`: 1\n"
+"        • `grey`: 2\n"
+"        • `gray`: 2\n"
+"        • `green`: 3\n"
+"        • `red`: 4\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:255
+#: commandsbuttons\commandsbuttons.py:332
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Belirttiğiniz mesajın bulunduğu kanalda yeterli izne sahip değilim.\n"
+"O kanaldaki mesajları görmek için izinlere ihtiyacım var."
+
+#: commandsbuttons\commandsbuttons.py:270
+msgid "You have not specified a correct command."
+msgstr "Doğru bir komut belirtmediniz."
+
+#: commandsbuttons\commandsbuttons.py:272
+msgid "You can't execute yourself this command."
+msgstr "Bu komutu kendiniz yürütemezsiniz."
+
+#: commandsbuttons\commandsbuttons.py:275
+msgid "You have to specify at least an emoji or a label."
+msgstr "En az bir emoji veya etiket belirtmelisiniz."
+
+#: commandsbuttons\commandsbuttons.py:282
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Seçtiğin emoji geçersiz. Onun bir emoji olduğunu kontrol edin. Eğer Nitron varsa başka bir sunucudan custom emoji kullanmış olabilirsiniz."
+
+#: commandsbuttons\commandsbuttons.py:289
+#: commandsbuttons\commandsbuttons.py:359
+msgid "This message already has components."
+msgstr "Bu mesajda zaten bileşenler var."
+
+#: commandsbuttons\commandsbuttons.py:293
+msgid "I can't do more than 25 commands-buttons for one message."
+msgstr "Bir mesajda en fazla 25 tane komut-butonu ekleyebilirim."
+
+#: commandsbuttons\commandsbuttons.py:317
+#, docstring
+msgid "Add commands-buttons for a message.\n\n"
+"        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
+"        "
+msgstr "Bir mesaja komut buttonu ekleyin \n\n"
+"        ```[p]commandsbuttons bulk <message> \":reaction1:|ping\" \":reaction2:|ping\" :reaction3:|ping\"```\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:323
+msgid "You have not specified any valid command-button."
+msgstr "Geçerli bir komut düğmesi belirtmediniz."
+
+#: commandsbuttons\commandsbuttons.py:345
+msgid "At least one of these commands is invalid."
+msgstr "Bu komutlardan en az biri geçersiz."
+
+#: commandsbuttons\commandsbuttons.py:352
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Seçtiğin emojilerden biri geçersiz görünüyor. Bir emoji olduğundan emin olun. Eğer Nitron varsa başka bir sunucudan özel bir emoji kullanmış olabilirsiniz."
+
+#: commandsbuttons\commandsbuttons.py:363
+msgid "I can't do more than 25 roles-buttons for one message."
+msgstr "Bir mesajda en fazla 25 tane rol-butonu ekleyebilirim."
+
+#: commandsbuttons\commandsbuttons.py:385
+#, docstring
+msgid "Remove a command-button for a message.\n\n"
+"        Use `[p]commandsbuttons list <message>` to find the config identifier.\n"
+"        "
+msgstr "Bir mesaj için komut düğmesini kaldırın.\n\n"
+"        Yapılandırma tanımlayıcısını bulmak için `[p]commandsbuttons list <message>` kullanın.\n"
+"        "
+
+#: commandsbuttons\commandsbuttons.py:392
+#: commandsbuttons\commandsbuttons.py:418
+#: commandsbuttons\commandsbuttons.py:439
+msgid "No command-button is configured for this message."
+msgstr "Bu mesaj için bir komut-butonu ayarlanmamış."
+
+#: commandsbuttons\commandsbuttons.py:396
+msgid "I wasn't watching for this button on this message."
+msgstr "Bu mesajdaki butonları ben kontrol etmiyorum."
+
+#: commandsbuttons\commandsbuttons.py:410
+#: commandsbuttons\commandsbuttons.py:426
+msgid "Commands-buttons cleared for this message."
+msgstr "Bu mesaj için komut-düğmeleri temizlendi."
+
+#: commandsbuttons\commandsbuttons.py:414
+#, docstring
+msgid "Clear all commands-buttons for a message."
+msgstr "Mesajdan tüm komut butonlarını kaldırın."
+
+#: commandsbuttons\commandsbuttons.py:431
+#, docstring
+msgid "List all commands-buttons of this server or display the settings for a specific one."
+msgstr "Bu sunucudaki tüm komut-düğmelerini listeleyin veya belirli birinin ayarlarını görüntüleyin."
+
+#: commandsbuttons\commandsbuttons.py:445
+msgid "No commands-buttons in this server."
+msgstr "Bu sunucuda komut-düğmesi yok."
+
+#: commandsbuttons\commandsbuttons.py:447
+msgid "Commands Buttons"
+msgstr "Komut Düğmeleri"
+
+#: commandsbuttons\commandsbuttons.py:448
+msgid "There is {len_commands_buttons} commands buttons in this server."
+msgstr "Bu sunucuda {len_commands_buttons} komut düğmesi var."
+
+#: commandsbuttons\commandsbuttons.py:458
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "Mesaj Atlama Bağlantısı: {message_jump_link}\n"
+
+#: commandsbuttons\commandsbuttons.py:479
+#, docstring
+msgid "Clear all commands-buttons for a guild."
+msgstr "Serverdan tüm komut butonlarını kaldırın."
+
+#: commandsbuttons\commandsbuttons.py:481
+msgid "All commands-buttons purged."
+msgstr "Tüm komut-düğmeleri temizlendi."
+
+#: commandsbuttons\converters.py:64
+msgid "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Rol bir emoji ve ardından `;`, `,`, `|` veya `-` ile ayrılmış bir rol olmalıdır."
+

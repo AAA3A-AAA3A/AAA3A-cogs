@@ -1,0 +1,112 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/runcode/locales/messages.pot\n"
+"X-Crowdin-File-ID: 187\n"
+"Language: tr_TR\n"
+
+#: runcode\runcode.py:44
+msgid "The cog is not fully charged."
+msgstr "Cog tam olarak şarj edilmedi."
+
+#: runcode\runcode.py:47 runcode\runcode.py:306
+msgid "Incorrect language identifier for your code.\n"
+"To list all the supported languages identifiers, please use `{ctx.prefix}setruncode listidentifiers`."
+msgstr "Kodunuz için yanlış dil tanımlayıcısı.\n"
+"Desteklenen tüm dil tanımlayıcılarını listelemek için lütfen `{ctx.prefix}setruncode listidentifiers` komutunu kullanın."
+
+#: runcode\runcode.py:90 runcode\runcode.py:106
+msgid "No flags in argument."
+msgstr "Argümanda bayrak yok."
+
+#: runcode\runcode.py:112
+#, docstring
+msgid "A cog to compile and run codes in some languages! Use `[p]setruncode listlanguages` to get a list of all the available languages."
+msgstr "Bazı dillerde kodları derlemek ve çalıştırmak için bir cog! Mevcut tüm dillerin listesini almak için `[p]setruncode listlanguages` komutunu kullanın."
+
+#: runcode\runcode.py:247
+msgid "File must be smaller than 20 kio."
+msgstr "Dosya 20 kio'dan küçük olmalıdır."
+
+#: runcode\runcode.py:281
+msgid "Please provide the code!"
+msgstr "Lütfen kodu sağlayın!"
+
+#: runcode\runcode.py:297
+msgid "Incorrect syntax, please use Markdown's syntax for your code."
+msgstr "Yanlış sözdizimi, lütfen kodunuz için Markdown sözdizimini kullanın."
+
+#: runcode\runcode.py:387
+msgid "The language of your code could not be found. Specify it with the `language` parameter."
+msgstr "Kodunuzun dili bulunamadı. `language` parametresi ile belirtin."
+
+#: runcode\runcode.py:416
+msgid "`{engine}` is not a correct engine for {code_language}\n"
+"To list all the available engine for it, please use `{ctx.prefix}setruncode listengines {code_language}`."
+msgstr "`{engine}`, {code_language} için doğru bir motor değil\n"
+"Mevcut tüm motorları listelemek için lütfen `{ctx.prefix}setruncode listengines {code_language}` komutunu kullanın."
+
+#: runcode\runcode.py:429
+msgid "There is no options available for compilation using `{engine}`.\n"
+"Ignoring this option."
+msgstr "`{engine}` kullanarak derleme için mevcut seçenek yok.\n"
+"Bu seçenek yoksayılıyor."
+
+#: runcode\runcode.py:442
+msgid "There is no options available for runtime execution `{engine}`.\n"
+"Ignoring this option."
+msgstr "`{engine}` çalıştırma süresi için mevcut seçenek yok.\n"
+"Bu seçenek yoksayılıyor."
+
+#: runcode\runcode.py:578
+#, docstring
+msgid "\n"
+"        Shows a list of all the available languages, or Wandbox or Tio API.\n"
+"        "
+msgstr "\n"
+"        Mevcut tüm dillerin listesini veya Wandbox ya da Tio API'yi gösterir.\n"
+"        "
+
+#: runcode\runcode.py:599
+#, docstring
+msgid "\n"
+"        Shows a list of all the available engines for a specified language, only for Wandbox API.\n\n"
+"        Arguments:\n"
+"        - `language`: The language name.\n"
+"        "
+msgstr "\n"
+"        Belirtilen bir dil için mevcut tüm motorların listesini gösterir, yalnızca Wandbox API için.\n\n"
+"        Argümanlar:\n"
+"        - `language`: Dilin adı.\n"
+"        "
+
+#: runcode\runcode.py:627
+#, docstring
+msgid "\n"
+"        Lists all the languages identifiers recognized by the bot, only for Wandbox API.\n"
+"        "
+msgstr "\n"
+"        Bot tarafından tanınan tüm dil tanımlayıcılarını listeler, yalnızca Wandbox API için.\n"
+"        "
+
+#: runcode\runcode.py:644
+#, docstring
+msgid "\n"
+"        Lists all the languages extensions.\n"
+"        "
+msgstr "\n"
+"        Tüm dil uzantılarını listeler.\n"
+"        "
+

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:42\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:12\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -21,37 +21,51 @@ msgstr ""
 msgid "This is not a valid URL."
 msgstr "Tämä ei ole kelvollinen URL-osoite."
 
-#: dashboard\dashboard.py:34
+#: dashboard\dashboard.py:35
 msgid "This is not a valid Dashboard redirect URI: it must end with `/callback`."
 msgstr "Tämä ei ole kelvollinen Dashboardin uudelleenohjaus-URI: sen on päätyttävä `/callback`."
 
-#: dashboard\dashboard.py:42
+#: dashboard\dashboard.py:44
 msgid "This third party is not available."
 msgstr "Tämä kolmas osapuoli ei ole käytettävissä."
 
-#: dashboard\dashboard.py:48
+#: dashboard\dashboard.py:50
 #, docstring
-msgid "Interact with your bot through a web dashboard!\n\n"
+msgid "Interact with your bot through a web Dashboard!\n\n"
+"    **Installation guide:** https://red-web-dashboard.readthedocs.io/en/latest\n"
 "    ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.\n"
 "    "
-msgstr "Vuorovaikuta botin kanssa web-kojelaudan kautta!\n\n"
+msgstr "Vuorovaikuta botin kanssa web Dashboardin kautta!\n\n"
+"    **Asennusopas:** https://red-web-dashboard.readthedocs.io/en/latest\n"
 "    ⚠️ Tämä paketti on haara Neuro Assassinin työstä, eikä Org ole lainkaan sen hyväksymä.\n"
 "    "
 
-#: dashboard\dashboard.py:306
+#: dashboard\dashboard.py:347
+msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Dashboardia ei ole asennettu. Tarkista <https://red-web-dashboard.readthedocs.io>."
+
+#: dashboard\dashboard.py:352
+msgid "You can't access the Dashboard."
+msgstr "Et pääse kojelautaan."
+
+#: dashboard\dashboard.py:354
+msgid "Red-Dashboard"
+msgstr "Red-Dashboard"
+
+#: dashboard\dashboard.py:374
 #, docstring
 msgid "Set the client secret needed for Discord OAuth."
 msgstr "Aseta asiakassalaisuus, jota tarvitaan Discord OAuthia varten."
 
-#: dashboard\dashboard.py:315
+#: dashboard\dashboard.py:383
 msgid "Discord Secret"
 msgstr "Epäsopu salaisuus"
 
-#: dashboard\dashboard.py:323
+#: dashboard\dashboard.py:391
 msgid "Discord OAuth secret set."
 msgstr "Discordin OAuth-salaisuus."
 
-#: dashboard\dashboard.py:359
+#: dashboard\dashboard.py:427
 msgid "Click on the button below to set a secret for Discord OAuth."
 msgstr "Napsauta alla olevaa painiketta asettaaksesi salaisuuden Discord OAuthia varten."
 

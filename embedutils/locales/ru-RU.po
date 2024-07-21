@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:42\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:17\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -17,77 +17,109 @@ msgstr ""
 "X-Crowdin-File-ID: 314\n"
 "Language: ru_RU\n"
 
-#: embedutils\converters.py:63 embedutils\converters.py:78
+#: embedutils\converters.py:66 embedutils\converters.py:81
 msgid "This doesn't seem to be properly formatted embed {conversion_type}. Refer to the link on `{ctx.clean_prefix}help {ctx.command.qualified_name}`."
 msgstr "Похоже, это неправильно отформатированное вложение {conversion_type}. Обратитесь к ссылке на `{ctx.clean_prefix}help {ctx.command.qualified_name}`."
 
-#: embedutils\converters.py:90
+#: embedutils\converters.py:93
 msgid "JSON Parse Error"
 msgstr "Ошибка разбора JSON"
 
-#: embedutils\converters.py:101
+#: embedutils\converters.py:104
 msgid "YAML Parse Error"
 msgstr "Ошибка разбора YAML"
 
-#: embedutils\converters.py:111
+#: embedutils\converters.py:114
 msgid "The `content` field is not supported for this command."
 msgstr "Поле `content` для этой команды не поддерживается."
 
-#: embedutils\converters.py:125
+#: embedutils\converters.py:130
 msgid "Embed Parse Error"
 msgstr "Ошибка разбора эмбеда"
 
-#: embedutils\converters.py:130
+#: embedutils\converters.py:135
 msgid "Embed size exceeds Discord limit of 6000 characters ({length})."
 msgstr "Размер вставки превышает ограничение Discord в 6000 символов ({length})."
 
-#: embedutils\converters.py:142 embedutils\embedutils.py:102
-#: embedutils\embedutils.py:135 embedutils\embedutils.py:167
-#: embedutils\embedutils.py:202 embedutils\embedutils.py:233
-#: embedutils\embedutils.py:264 embedutils\embedutils.py:307
-#: embedutils\embedutils.py:414 embedutils\embedutils.py:505
-#: embedutils\embedutils.py:682 embedutils\embedutils.py:738
+#: embedutils\converters.py:147 embedutils\embedutils.py:100
+#: embedutils\embedutils.py:133 embedutils\embedutils.py:165
+#: embedutils\embedutils.py:200 embedutils\embedutils.py:231
+#: embedutils\embedutils.py:262 embedutils\embedutils.py:314
+#: embedutils\embedutils.py:440 embedutils\embedutils.py:537
+#: embedutils\embedutils.py:708 embedutils\embedutils.py:762
 msgid "Embed Send Error"
 msgstr "Ошибка отправки эмбеда"
 
-#: embedutils\converters.py:155
+#: embedutils\converters.py:162
 msgid "Use `{ctx.prefix}help {ctx.command.qualified_name}` to see an example."
 msgstr "Используйте `{ctx.prefix}help {ctx.command.qualified_name}`, чтобы посмотреть пример."
 
-#: embedutils\converters.py:195
+#: embedutils\converters.py:204
 msgid "Embed limit reached ({limit})."
 msgstr "Достигнут предел вложения ({limit})."
 
-#: embedutils\converters.py:200
+#: embedutils\converters.py:209
 msgid "Failed to convert input into embeds."
 msgstr "Не удалось преобразовать вводимые данные в эмбеды."
 
-#: embedutils\converters.py:219
+#: embedutils\converters.py:228
 msgid "It's not a valid channel or thread."
 msgstr "Это не правильный канал или поток."
 
-#: embedutils\converters.py:223
+#: embedutils\converters.py:232
 msgid "I do not have permissions to send embeds in {channel.mention}."
 msgstr "У меня нет прав на отправку вложений в {channel.mention}."
 
-#: embedutils\converters.py:230
+#: embedutils\converters.py:241
 msgid "You do not have permissions to send embeds in {channel.mention}."
 msgstr "У вас нет прав для отправки вложений в {channel.mention}."
 
-#: embedutils\converters.py:242
+#: embedutils\converters.py:253
 msgid "I have to be the author of the message. You can use the command without providing a message to send one."
 msgstr "Я должен быть автором сообщения. Для отправки сообщения можно использовать команду без указания сообщения."
 
-#: embedutils\converters.py:252
+#: embedutils\converters.py:263
 msgid "You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`)."
 msgstr "Вам не разрешено редактировать вставки в существующее сообщение (владелец бота может установить права с помощью пункта Разрешения в команде `[p]embed edit`)."
 
-#: embedutils\embedutils.py:44
-#, docstring
-msgid "Create, send, and store embeds!"
-msgstr "Создавайте, отправляйте и храните эмбеды!"
+#: embedutils\dashboard_integration.py:53
+msgid "You don't have permissions to access this page."
+msgstr "У вас нет прав для доступа к этой странице."
 
-#: embedutils\embedutils.py:112
+#: embedutils\dashboard_integration.py:60
+msgid "I or you don't have permissions to send messages or embeds in any channel in this guild."
+msgstr "У меня или у вас нет прав на отправку сообщений или вложений в любом канале в этой гильдии."
+
+#: embedutils\dashboard_integration.py:76
+msgid "Username:"
+msgstr "Имя пользователя:"
+
+#: embedutils\dashboard_integration.py:80
+msgid "Avatar URL:"
+msgstr "Аватар URL:"
+
+#: embedutils\dashboard_integration.py:84
+msgid "Data"
+msgstr "Данные"
+
+#: embedutils\dashboard_integration.py:91
+msgid "Channels:"
+msgstr "Каналы:"
+
+#: embedutils\dashboard_integration.py:100
+msgid "Send Message(s)"
+msgstr "Отправить сообщение(я)"
+
+#: embedutils\dashboard_integration.py:164
+msgid "Message(s) sent successfully!"
+msgstr "Сообщение(я) отправлено успешно!"
+
+#: embedutils\embedutils.py:47
+#, docstring
+msgid "Create, send, and store rich embeds, from Red-Dashboard too!"
+msgstr "Создавайте, отправляйте и храните богатые вставки, в том числе из Red-Dashboard!"
+
+#: embedutils\embedutils.py:110
 #, docstring
 msgid "Post embeds from valid JSON.\n\n"
 "        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
@@ -104,7 +136,7 @@ msgstr "Публикуйте вставки из корректного JSON.\n\
 "        Вы можете использовать вложение, и команда `[p]embed yamlfile` будет вызвана автоматически.\n"
 "        "
 
-#: embedutils\embedutils.py:145
+#: embedutils\embedutils.py:143
 #, docstring
 msgid "Post embeds from valid YAML.\n\n"
 "        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
@@ -119,7 +151,7 @@ msgstr "Опубликуйте вставки из корректного YAML.\
 "        Вы можете использовать вложение, и команда `[p]embed yamlfile` будет вызвана автоматически.\n"
 "        "
 
-#: embedutils\embedutils.py:173
+#: embedutils\embedutils.py:171
 #, docstring
 msgid "Post an embed from a valid JSON file (upload it).\n\n"
 "        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
@@ -134,13 +166,14 @@ msgstr "Опубликуйте вставку из корректного JSON-�
 "        Если вы предоставите сообщение, оно будет отредактировано.\n"
 "        "
 
-#: embedutils\embedutils.py:188 embedutils\embedutils.py:219
-#: embedutils\embedutils.py:388 embedutils\embedutils.py:398
-#: embedutils\embedutils.py:478 embedutils\embedutils.py:488
+#: embedutils\embedutils.py:186 embedutils\embedutils.py:217
+#: embedutils\embedutils.py:405 embedutils\embedutils.py:415
+#: embedutils\embedutils.py:505 embedutils\embedutils.py:515
+#: embedutils\embedutils.py:831 embedutils\embedutils.py:843
 msgid "Unreadable attachment with `utf-8`."
 msgstr "Нечитаемое вложение с `utf-8`."
 
-#: embedutils\embedutils.py:208
+#: embedutils\embedutils.py:206
 #, docstring
 msgid "Post an embed from a valid YAML file (upload it).\n\n"
 "        If you provide a message, it will be edited.\n"
@@ -149,7 +182,7 @@ msgstr "Опубликуйте вставку из корректного YAML-�
 "        Если вы укажете сообщение, оно будет отредактировано.\n"
 "        "
 
-#: embedutils\embedutils.py:245
+#: embedutils\embedutils.py:243
 #, docstring
 msgid "Post embeds from a GitHub/Gist/Pastebin/Hastebin link containing valid JSON.\n\n"
 "        This must be in the format expected by [**this Discord documentation**](https://discord.com/developers/docs/resources/channel#embed-object).\n"
@@ -162,35 +195,35 @@ msgstr "Опубликуйте вложения из ссылки GitHub/Gist/Pa
 "        Если вы предоставите сообщение, оно будет отредактировано.\n"
 "        "
 
-#: embedutils\embedutils.py:275
+#: embedutils\embedutils.py:273
 #, docstring
 msgid "Post embed(s) from an existing message.\n\n"
 "        The message must have at least one embed.\n"
 "        You can specify an index (starting by 0) if you want to send only one of the embeds.\n"
-"        You can include the content of the message already sent.\n\n"
+"        The content of the message already sent is included if no index is specified.\n\n"
 "        If you provide a message, it will be edited.\n"
 "        "
 msgstr "Опубликовать вставку(и) из существующего сообщения.\n\n"
 "        Сообщение должно содержать хотя бы одну вставку.\n"
 "        Вы можете указать индекс (начиная с 0), если хотите отправить только один из вкраплений.\n"
-"        Вы можете включить содержимое уже отправленного сообщения.\n\n"
-"        Если вы укажете сообщение, оно будет отредактировано.\n"
+"        Если индекс не указан, в сообщение будет включено содержимое уже отправленного сообщения.\n\n"
+"        Если вы указали сообщение, оно будет отредактировано.\n"
 "        "
 
-#: embedutils\embedutils.py:318
+#: embedutils\embedutils.py:325
 #, docstring
 msgid "Download a JSON file for a message's embed(s).\n\n"
 "        The message must have at least one embed.\n"
 "        You can specify an index (starting by 0) if you want to include only one of the embeds.\n"
-"        You can include the content of the message already sent.\n"
+"        The content of the message already sent is included if no index is specified.\n"
 "        "
 msgstr "Загрузите JSON-файл для вставки(ей) сообщения.\n\n"
 "        Сообщение должно содержать хотя бы одну вставку.\n"
-"        Вы можете указать индекс (начиная с 0), если хотите включить только одну вставку.\n"
-"        Можно включить содержимое уже отправленного сообщения.\n"
+"        Вы можете указать индекс (начиная с 0), если хотите включить только одну из вложений.\n"
+"        Если индекс не указан, в файл включается содержимое уже отправленного сообщения.\n"
 "        "
 
-#: embedutils\embedutils.py:368
+#: embedutils\embedutils.py:385
 #, docstring
 msgid "Edit a message sent by [botname].\n\n"
 "        It would be better to use the `message` parameter of all the other commands.\n"
@@ -199,7 +232,7 @@ msgstr "Редактирование сообщения, отправленно�
 "        Лучше использовать параметр `message` во всех остальных командах.\n"
 "        "
 
-#: embedutils\embedutils.py:450
+#: embedutils\embedutils.py:477
 #, docstring
 msgid "Store an embed.\n\n"
 "        Put the name in quotes if it is multiple words.\n"
@@ -210,69 +243,97 @@ msgstr "Сохраните вставку.\n\n"
 "        Аргумент `locked` указывает, должна ли вставка быть заблокирована только для модов и начальников (уровень гильдии) или только для владельцев ботов (глобальный уровень).\n"
 "        "
 
-#: embedutils\embedutils.py:458 embedutils\embedutils.py:539
-#: embedutils\embedutils.py:558 embedutils\embedutils.py:590
-#: embedutils\embedutils.py:622 embedutils\embedutils.py:651
-#: embedutils\embedutils.py:704
+#: embedutils\embedutils.py:485 embedutils\embedutils.py:571
+#: embedutils\embedutils.py:586 embedutils\embedutils.py:618
+#: embedutils\embedutils.py:650
 msgid "You can't manage global stored embeds."
 msgstr "Вы не можете управлять глобальными сохраненными вставками."
 
-#: embedutils\embedutils.py:516
+#: embedutils\embedutils.py:548
 msgid "This server has reached the embed limit of {embed_limit}. You must remove an embed with `{ctx.clean_prefix}embed unstore` before you can add a new one."
 msgstr "Этот сервер достиг лимита встраивания {embed_limit}. Вы должны удалить вставку с помощью `{ctx.clean_prefix}embed unstore`, прежде чем сможете добавить новую."
 
-#: embedutils\embedutils.py:535
+#: embedutils\embedutils.py:567
 #, docstring
 msgid "Remove a stored embed."
 msgstr "Удалить сохраненную вставку."
 
-#: embedutils\embedutils.py:545 embedutils\embedutils.py:595
-#: embedutils\embedutils.py:627
+#: embedutils\embedutils.py:577 embedutils\embedutils.py:623
+#: embedutils\embedutils.py:655
 msgid "This is not a stored embed at this level."
 msgstr "На этом уровне не хранится в памяти."
 
-#: embedutils\embedutils.py:554 embedutils\embedutils.py:586
+#: embedutils\embedutils.py:584 embedutils\embedutils.py:614
 #, docstring
 msgid "Get info about a stored embed."
 msgstr "Получите информацию о хранимой вставке."
 
-#: embedutils\embedutils.py:564
+#: embedutils\embedutils.py:592
 msgid "No stored embeds is configured at this level."
 msgstr "На этом уровне не настраиваются хранимые эмбеды."
 
-#: embedutils\embedutils.py:568
+#: embedutils\embedutils.py:596
 msgid "Global "
 msgstr "Глобальная "
 
-#: embedutils\embedutils.py:568
+#: embedutils\embedutils.py:596
 msgid "Stored Embeds"
 msgstr "Сохраненные эмбеды"
 
-#: embedutils\embedutils.py:618
+#: embedutils\embedutils.py:646
 #, docstring
 msgid "Download a JSON file for a stored embed."
 msgstr "Загрузите JSON-файл для хранимой вставки."
 
-#: embedutils\embedutils.py:647
+#: embedutils\embedutils.py:675
 #, docstring
 msgid "Post stored embeds."
 msgstr "Разместите сохраненные вставки."
 
-#: embedutils\embedutils.py:671 embedutils\embedutils.py:724
+#: embedutils\embedutils.py:697 embedutils\embedutils.py:748
 msgid "`{name}` is not a stored embed at this level."
 msgstr "`{name}` не является хранимой вставкой на этом уровне."
 
-#: embedutils\embedutils.py:700
+#: embedutils\embedutils.py:726
 #, docstring
 msgid "Post stored embeds with a webhook."
 msgstr "Публикуйте сохраненные эмбеды с помощью веб-хука."
 
-#: embedutils\embedutils.py:743
+#: embedutils\embedutils.py:793
+#, docstring
+msgid "Get the link to the Dashboard."
+msgstr "Получите ссылку на приборную панель."
+
+#: embedutils\embedutils.py:796
+msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Dashboard не установлен. Проверьте <https://red-web-dashboard.readthedocs.io>."
+
+#: embedutils\embedutils.py:801
+msgid "You can't access the Dashboard."
+msgstr "Вы не можете получить доступ к панели управления."
+
+#: embedutils\embedutils.py:807
+msgid "This third party is disabled on the Dashboard."
+msgstr "Эта третья сторона отключена на панели управления."
+
+#: embedutils\embedutils.py:872
+msgid "Dashboard - "
+msgstr "Приборная панель - "
+
+#: embedutils\embedutils.py:876
+msgid "You can create and send rich embeds directly from the Dashboard!"
+msgstr "Вы можете создавать и отправлять насыщенные вставки прямо из панели управления!"
+
+#: embedutils\embedutils.py:883
+msgid "The URL is too long to be displayed."
+msgstr "URL-адрес слишком длинный для отображения."
+
+#: embedutils\embedutils.py:889
 #, docstring
 msgid "Migrate stored embeds from EmbedUtils by Phen."
 msgstr "Перенесите сохраненные эмбеды из EmbedUtils с помощью Phen."
 
-#: embedutils\embedutils.py:787
+#: embedutils\embedutils.py:933
 msgid "Data successfully migrated from EmbedUtils by Phen."
 msgstr "Данные успешно перенесены из EmbedUtils с помощью Phen."
 

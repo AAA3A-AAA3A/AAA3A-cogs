@@ -420,3 +420,12 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             ).format(guild_id=ctx.guild.id, webhook_url=f"{dashboard_url[0]}/api/webhook"),
         )
         await ctx.send(embed=embed)
+
+    @setdisurlvotestracker.command()
+    async def resetleaderboards(self, ctx: commands.Context, confirmation: bool = False) -> None:
+        """Reset the leaderboards."""
+        if not await self.config.guild(ctx.guild).enabled():
+            raise commands.UserFeedbackCheckFailure(_("DisurlVotesTracker is not enabled in this server."))
+        if not confirmation:
+            raise commands.UserInputError()
+        await self.config.clear_all_members(ctx.guild)

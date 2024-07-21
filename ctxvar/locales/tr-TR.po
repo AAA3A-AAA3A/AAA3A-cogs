@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/ctxvar/locales/messages.pot\n"
+"X-Crowdin-File-ID: 82\n"
+"Language: tr_TR\n"
+
+#: ctxvar\ctxvar.py:65
+msgid "No Discord object found."
+msgstr "Hiçbir Discord nesnesi bulunamadı."
+
+#: ctxvar\ctxvar.py:81 ctxvar\ctxvar.py:203 ctxvar\ctxvar.py:254
+#: ctxvar\ctxvar.py:335
+msgid "I couldn't find any cog, command, or object named `{thing}`."
+msgstr "Adı `{thing}` olan hiçbir cog, komut veya nesne bulamadım."
+
+#: ctxvar\ctxvar.py:104
+#, docstring
+msgid "A cog to list and display the contents of all sub-functions of `ctx`!"
+msgstr "`ctx` alt işlevlerinin tüm içeriklerini listelemek ve görüntülemek için bir cog!"
+
+#: ctxvar\ctxvar.py:121
+#, docstring
+msgid "Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."
+msgstr "'ctx' sınıfı örneği veya alt özniteliklerinin tüm özniteliklerini ve değerlerini görüntüleyin."
+
+#: ctxvar\ctxvar.py:125 ctxvar\ctxvar.py:186 ctxvar\ctxvar.py:237
+#: ctxvar\ctxvar.py:318
+msgid "The cog Dev must be loaded, to make sure you know what you are doing."
+msgstr "Ne yaptığınızdan emin olmak için Dev cog'unun yüklenmiş olması gerekir."
+
+#: ctxvar\ctxvar.py:136
+msgid "The argument you specified is not a subclass of the instance."
+msgstr "Belirttiğiniz argüman, örneğin bir alt sınıfı değil."
+
+#: ctxvar\ctxvar.py:143
+msgid "Here are all the variables and their associated values that can be used in this instance class."
+msgstr "İşte bu örnek sınıfta kullanılabilecek tüm değişkenler ve bunlarla ilişkili değerler."
+
+#: ctxvar\ctxvar.py:182
+#, docstring
+msgid "Display a list of all attributes of the provided object (debug not async)."
+msgstr "Sağlanan nesnenin tüm özniteliklerinin listesini görüntüleyin (hata ayıklama async değil)."
+
+#: ctxvar\ctxvar.py:233
+#, docstring
+msgid "Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."
+msgstr "Sağlanan nesne üzerinde `rich.help(obj=object, ...)` komutunu yürütün (hata ayıklama async değil)."
+
+#: ctxvar\ctxvar.py:314
+#, docstring
+msgid "Execute `ast.dump(ast.parse(<code content>))` on the provided object (debug not async)."
+msgstr "Sağlanan nesne üzerinde `ast.dump(ast.parse(<code content>))` komutunu yürütün (hata ayıklama async değil)."
+
+#: ctxvar\ctxvar.py:355
+#, docstring
+msgid "List attributes of the provided object like dpy objects (debug not async)."
+msgstr "Sağlanan nesnenin özniteliklerini dpy nesneleri gibi listeleyin (hata ayıklama async değil)."
+
+#: ctxvar\ctxvar.py:440
+#, docstring
+msgid "Parse the Markdown syntax for a specified message's content or a string."
+msgstr "Belirtilen bir mesajın içeriği veya bir dize için Markdown sözdizimini ayrıştırın."
+
+#: ctxvar\ctxvar.py:454
+msgid "Error in the module used for this command."
+msgstr "Bu komut için kullanılan modülde hata."
+

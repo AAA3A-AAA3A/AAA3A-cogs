@@ -169,9 +169,9 @@ class DisurlVotesTracker(Cog):
             return
 
         if (
-            voters_role_id := await self.config.guild(guild).voters_role()
+            (voters_role_id := await self.config.guild(guild).voters_role()) is not None
             and (voters_role := guild.get_role(voters_role_id)) is not None
-        ) is not None:
+        ):
             try:
                 await member.add_roles(voters_role, reason=_("Voted on Disurl! (12 hours)"))
             except discord.HTTPException as e:

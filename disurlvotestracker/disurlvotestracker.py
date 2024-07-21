@@ -330,7 +330,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             title=_("Leaderboard"),
             color=await ctx.embed_color(),
         )
-        embed.set_author(name=_("{ctx.guild.name} | {total} Lifetime Votes").format(ctx=ctx, total=counter.total()), icon_url=ctx.guild.icon.url)
+        embed.set_author(name=_("{ctx.guild.name} | {total} Lifetime Vote{s}").format(ctx=ctx, total=counter.total(), s="" if counter.total() == 1 else "s"), icon_url=ctx.guild.icon.url)
         if ctx.author in counter:
             author_index = list(counter.keys()).index(ctx.author) + 1
             embed.set_footer(text=_("You are at position {author_index} with {number_member_lifetime_votes} vote{s}.").format(author_index=author_index, s="" if counter[ctx.author] == 1 else "s", number_member_lifetime_votes=counter[ctx.author]))
@@ -372,7 +372,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             title=_("Monthly Leaderboard"),
             color=await ctx.embed_color(),
         )
-        embed.set_author(name=_("{ctx.guild.name} | {total} Monthly Votes").format(ctx=ctx, total=counter.total()), icon_url=ctx.guild.icon.url)
+        embed.set_author(name=_("{ctx.guild.name} | {total} Monthly Vote{s}").format(ctx=ctx, total=counter.total(), s="" if counter.total() == 1 else "s"), icon_url=ctx.guild.icon.url)
         if ctx.author in counter:
             author_index = list(counter.keys()).index(ctx.author) + 1
             embed.set_footer(text=_("You are at position {author_index} with {number_member_monthly_votes} vote{s}.").format(author_index=author_index, s="" if counter[ctx.author] == 1 else "s", number_member_monthly_votes=counter[ctx.author]))

@@ -45,8 +45,9 @@ class DashboardIntegration:
         if not counter:
             return {"status": 1, "error_title": "No votes found", "error_message": _("No votes found in this server.")}
         members = [
-            {"position": i, "display_name": member.display_name, "votes": votes, "id": member.id}
+            {"position": i, "display_name": member.display_name, "id": member.id, "votes": votes}
             for i, (member, votes) in enumerate(counter.most_common(), start=1)
+            if query is None or query.lower() in member.display_name.lower() or query == str(member.id) or query.lstrip("#") == str(i)
         ]
         return {
             "status": 0,
@@ -58,7 +59,7 @@ class DashboardIntegration:
                     page=kwargs["extra_kwargs"].get("page"),
                     default_per_page=100,
                 ),
-                "total": _("Total votes: {total}").format(total=counter.total()),
+                "total": _("Total: {total} vote{s}").format(total=counter.total(), s="" if counter.total() == 1 else "s"),
                 "query": query,
             },
         }
@@ -88,8 +89,9 @@ class DashboardIntegration:
         if not counter:
             return {"status": 1, "error_title": "No votes found", "error_message": _("No monthly votes found in this server.")}
         members = [
-            {"position": i, "display_name": member.display_name, "votes": votes, "id": member.id}
+            {"position": i, "display_name": member.display_name, "id": member.id, "votes": votes}
             for i, (member, votes) in enumerate(counter.most_common(), start=1)
+            if query is None or query.lower() in member.display_name.lower() or query == str(member.id) or query.lstrip("#") == str(i)
         ]
         return {
             "status": 0,
@@ -101,7 +103,7 @@ class DashboardIntegration:
                     page=kwargs["extra_kwargs"].get("page"),
                     default_per_page=100,
                 ),
-                "total": _("Total votes: {total}").format(total=counter.total()),
+                "total": _("Total: {total} vote{s}").format(total=counter.total(), s="" if counter.total() == 1 else "s"),
                 "query": query,
             },
         }

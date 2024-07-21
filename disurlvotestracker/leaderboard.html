@@ -24,7 +24,7 @@
             {% for member in members %}
                 <tr {% if member.id == current_user.id %} class="text-{{ variables['meta']['color'] }}"{% endif %}>
                     <td class="medium">{{ member.position }}</td>
-                    <td class="large" title="{{ user.id }}">{{ member.display_name }}</td>
+                    <td class="large" title="{{ member.id }}">{{ member.display_name }}</td>
                     <td class="medium">{{ member.votes }}</td>
                 </tr>
             {% endfor %}

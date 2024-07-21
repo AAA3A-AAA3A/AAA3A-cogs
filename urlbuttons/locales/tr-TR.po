@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/urlbuttons/locales/messages.pot\n"
+"X-Crowdin-File-ID: 152\n"
+"Language: tr_TR\n"
+
+#: urlbuttons\converters.py:25
+msgid "It's not a valid public URL."
+msgstr "Bu geçerli bir kamu URL'si değil."
+
+#: urlbuttons\converters.py:77
+msgid "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
+msgstr "Emoji Url'si bir emoji ve ardından `;`, `,`, `|` veya `-` ile ayrılmış bir Url olmalıdır."
+
+#: urlbuttons\urlbuttons.py:24
+msgid "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
+msgstr "Mesajın yazarı ben olmalıyım. Bir tane göndermek için AAA3A tarafından sağlanan EmbedUtils'i kullanabilirsiniz."
+
+#: urlbuttons\urlbuttons.py:33
+#, docstring
+msgid "A cog to have url-buttons!"
+msgstr "Url-Buton kullanmak için bir cog!"
+
+#: urlbuttons\urlbuttons.py:108
+#, docstring
+msgid "Add a url-button for a message."
+msgstr "Bir mesaj için URL butonu ekleyin."
+
+#: urlbuttons\urlbuttons.py:116
+msgid "I don't have sufficient permissions on the channel where the message you specified is located.\n"
+"I need the permissions to see the messages in that channel."
+msgstr "Belirttiğiniz mesajın bulunduğu kanalda yeterli izne sahip değilim.\n"
+"O kanaldaki mesajları görmek için izinlere ihtiyacım var."
+
+#: urlbuttons\urlbuttons.py:121
+msgid "Url must start with `https` or `http`."
+msgstr "Linklerin `https` veya `http` ile başlaması gerekiyor."
+
+#: urlbuttons\urlbuttons.py:124
+msgid "You have to specify at least an emoji or a label."
+msgstr "En az bir emoji veya etiket belirtmelisiniz."
+
+#: urlbuttons\urlbuttons.py:131
+msgid "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Seçtiğin emoji geçersiz. Onun bir emoji olduğunu kontrol edin. Eğer Nitron varsa başka bir sunucudan custom emoji kullanmış olabilirsiniz."
+
+#: urlbuttons\urlbuttons.py:138 urlbuttons\urlbuttons.py:187
+msgid "This message already has components."
+msgstr "Bu mesajda zaten bileşenler var."
+
+#: urlbuttons\urlbuttons.py:142 urlbuttons\urlbuttons.py:191
+msgid "I can't do more than 25 url-buttons for one message."
+msgstr "Bir mesajda en fazla 25 tane url-butonu ekleyebilirim."
+
+#: urlbuttons\urlbuttons.py:164
+#, docstring
+msgid "Add a url-button for a message.\n\n"
+"        ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```\n"
+"        "
+msgstr "Bir mesaj için URL butonu ekleyin.\n\n"
+"        ```[p]urlbuttons bulk <message> :red_circle:|<https://github.com/Cog-Creators/Red-DiscordBot> :smiley:|<https://github.com/Cog-Creators/Red-SmileyBot> :green_circle:|<https://github.com/Cog-Creators/Green-DiscordBot>```\n"
+"        "
+
+#: urlbuttons\urlbuttons.py:170
+msgid "You have not specified any valid url-button."
+msgstr "Geçerli bir url düğmesi belirtmediniz."
+
+#: urlbuttons\urlbuttons.py:180
+msgid "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
+msgstr "Seçtiğin emojilerden biri geçersiz görünüyor. Bir emoji olduğundan emin olun. Eğer Nitron varsa başka bir sunucudan özel bir emoji kullanmış olabilirsiniz."
+
+#: urlbuttons\urlbuttons.py:211
+#, docstring
+msgid "Remove a url-button for a message.\n\n"
+"        Use `[p]urlbuttons list <message>` to find the config identifier.\n"
+"        "
+msgstr "Bir mesaj için URL butonunu kaldırın.\n\n"
+"        Yapılandırma tanımlayıcısını bulmak için `[p]urlbuttons list <message>` kullanın.\n"
+"        "
+
+#: urlbuttons\urlbuttons.py:218 urlbuttons\urlbuttons.py:264
+msgid "No url-button is configured for this message."
+msgstr "Bu mesaj için bir url-butonu ayarlanmamış."
+
+#: urlbuttons\urlbuttons.py:222
+msgid "I wasn't watching for this button on this message."
+msgstr "Bu mesajdaki butonları ben kontrol etmiyorum."
+
+#: urlbuttons\urlbuttons.py:235 urlbuttons\urlbuttons.py:251
+msgid "Url-buttons cleared for this message."
+msgstr "Bu mesaj için URL butonları temizlendi."
+
+#: urlbuttons\urlbuttons.py:239
+#, docstring
+msgid "Clear all url-buttons for a message."
+msgstr "Bir mesaj için tüm URL butonlarını temizleyin."
+
+#: urlbuttons\urlbuttons.py:243
+msgid "No role-button is configured for this message."
+msgstr "Bu mesaj için bir rol-butonu ayarlanmamış."
+
+#: urlbuttons\urlbuttons.py:256
+#, docstring
+msgid "List all url-buttons of this server or display the settings for a specific one."
+msgstr "Bu sunucunun tüm URL butonlarını listeleyin veya belirli bir tanesinin ayarlarını gösterin."
+
+#: urlbuttons\urlbuttons.py:270
+msgid "No url-buttons in this server."
+msgstr "Bu sunucuda URL butonu yok."
+
+#: urlbuttons\urlbuttons.py:272
+msgid "URL Buttons"
+msgstr "URL Butonları"
+
+#: urlbuttons\urlbuttons.py:273
+msgid "There is {len_url_buttons} url buttons in this server."
+msgstr "Bu sunucuda {len_url_buttons} URL butonu var."
+
+#: urlbuttons\urlbuttons.py:283
+msgid "Message Jump Link: {message_jump_link}\n"
+msgstr "Mesaj Atlama Bağlantısı: {message_jump_link}\n"
+
+#: urlbuttons\urlbuttons.py:304
+#, docstring
+msgid "Clear all url-buttons for a guild."
+msgstr "Bir sunucu için tüm URL butonlarını temizleyin."
+
+#: urlbuttons\urlbuttons.py:306
+msgid "All url-buttons purged."
+msgstr "Tüm URL butonları temizlendi."
+

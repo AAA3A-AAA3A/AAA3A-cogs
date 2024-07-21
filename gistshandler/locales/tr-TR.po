@@ -1,0 +1,60 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/gistshandler/locales/messages.pot\n"
+"X-Crowdin-File-ID: 233\n"
+"Language: tr_TR\n"
+
+#: gistshandler\gistshandler.py:29
+msgid "Gist not found."
+msgstr "Gist bulunamadı."
+
+#: gistshandler\gistshandler.py:35
+#, docstring
+msgid "A cog to create new Gists and edit/delete existing ones!"
+msgstr "Yeni Gist'ler oluşturmak ve mevcut olanları düzenlemek/silmek için bir cog!"
+
+#: gistshandler\gistshandler.py:77
+msgid "You need to set up a GitHub token with `{ctx.prefix}set api github token,[TOKEN]` first!"
+msgstr "Öncelikle `{ctx.prefix}set api github token,[TOKEN]` ile bir GitHub belirteci ayarlamanız gerekiyor!"
+
+#: gistshandler\view.py:92
+msgid "{public.value} is not a recognised boolean option."
+msgstr "{public.value} tanınan bir boolean seçeneği değil."
+
+#: gistshandler\view.py:101 gistshandler\view.py:199 gistshandler\view.py:381
+msgid "GitHub token is invalid or expired."
+msgstr "GitHub belirteci geçersiz veya süresi dolmuş."
+
+#: gistshandler\view.py:109
+msgid "Gist `{gist.id}` created."
+msgstr "Gist `{gist.id}` oluşturuldu."
+
+#: gistshandler\view.py:203
+msgid "You're not allowed to edit this gist."
+msgstr "Bu gist'i düzenleme izniniz yok."
+
+#: gistshandler\view.py:209
+msgid "Gist `{gist.id}` updated."
+msgstr "Gist `{gist.id}` güncellendi."
+
+#: gistshandler\view.py:385
+msgid "You're not allowed to delete this gist."
+msgstr "Bu gist'i silme izniniz yok."
+
+#: gistshandler\view.py:391
+msgid "Gist `{gist.id}` deleted."
+msgstr "Gist `{gist.id}` silindi."
+

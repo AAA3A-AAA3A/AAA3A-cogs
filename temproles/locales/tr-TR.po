@@ -1,0 +1,225 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/temproles/locales/messages.pot\n"
+"X-Crowdin-File-ID: 247\n"
+"Language: tr_TR\n"
+
+#: temproles\temproles.py:39
+#, docstring
+msgid "A cog to assign temporary roles to users, expiring after a set time!"
+msgstr "Belirli bir süre sonra sona eren geçici roller atamak için bir cog!"
+
+#: temproles\temproles.py:158 temproles\temproles.py:244
+#: temproles\temproles.py:302 temproles\temproles.py:347
+#: temproles\temproles.py:431
+msgid "Temp Roles"
+msgstr "Geçici Roller"
+
+#: temproles\temproles.py:159
+msgid "Temp Role {temp_role.mention} ({temp_role.id}) has been automatically unassigned from {member.mention} ({member.id})."
+msgstr "Geçici Rol {temp_role.mention} ({temp_role.id}), {member.mention} ({member.id})'den otomatik olarak kaldırıldı."
+
+#: temproles\temproles.py:189
+#, docstring
+msgid "Assign/Add a TempRole to a member, for a specified duration."
+msgstr "Belirli bir süre için bir üyeye Geçici Rol atayın/ekleyin."
+
+#: temproles\temproles.py:198
+msgid "This role is already a TempRole of this member. Do you want to edit the duration?\n"
+"Currently, this Temp Role expires {timestamp}."
+msgstr "Bu rol zaten bu üyenin Geçici Rolü. Süreyi düzenlemek ister misiniz?\n"
+"Şu anda bu Geçici Rol {timestamp} tarihinde sona eriyor."
+
+#: temproles\temproles.py:206
+msgid "This member already has {role.mention} ({role.id})."
+msgstr "Bu üye zaten {role.mention} ({role.id}) rolüne sahip."
+
+#: temproles\temproles.py:212
+msgid "This role cannot be assigned due to the Discord role hierarchy."
+msgstr "Discord rol hiyerarşisi nedeniyle bu rol atanamaz."
+
+#: temproles\temproles.py:220
+msgid "You can't assign this role to this member, due to the Discord role hierarchy."
+msgstr "Discord rol hiyerarşisi nedeniyle bu rolü bu üyeye atayamazsınız."
+
+#: temproles\temproles.py:226 temproles\temproles.py:285
+msgid "The time set is way too high, consider setting something reasonable."
+msgstr "Belirlenen süre çok yüksek, daha makul bir şey ayarlamayı düşünün."
+
+#: temproles\temproles.py:245 temproles\temproles.py:253
+msgid "Self "
+msgstr "Kendi Kendine "
+
+#: temproles\temproles.py:246
+msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
+msgstr "Geçici Rol {role.mention} ({role.id}), {author.mention} ({author.id}) tarafından {member.mention} ({member.id})'ye atandı. {time_string} içinde sona erecek."
+
+#: temproles\temproles.py:254
+msgid "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
+msgstr "Geçici Rol {role.mention} ({role.id}), {member.mention} ({member.id})'ye atandı. **{time_string}** ({timestamp}) içinde sona eriyor."
+
+#: temproles\temproles.py:275
+#, docstring
+msgid "Edit a TempRole for a member, for a specified duration."
+msgstr "Belirli bir süre için bir üyenin Geçici Rolünü düzenleyin."
+
+#: temproles\temproles.py:279
+msgid "This role isn't a TempRole of this member."
+msgstr "Bu rol, bu üyenin Geçici Rolü değil."
+
+#: temproles\temproles.py:303
+msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {time_string}."
+msgstr "Geçici Rol {role.mention} ({role.id}), {author.mention} ({author.id}) tarafından {member.mention} ({member.id}) için düzenlendi. {time_string} içinde sona eriyor."
+
+#: temproles\temproles.py:310
+msgid "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}). Expires **in {time_string}** ({timestamp})."
+msgstr "Geçici Rol {role.mention} ({role.id}), {member.mention} ({member.id}) için düzenlendi. **{time_string}** ({timestamp}) içinde sona eriyor."
+
+#: temproles\temproles.py:326
+#, docstring
+msgid "Unassign/Remove a TempRole from a member."
+msgstr "Bir üyeden bir Geçici Rolü kaldırın."
+
+#: temproles\temproles.py:330
+msgid "This role isn't a temprole of this member."
+msgstr "Bu rol, bu üyenin geçici rolü değil."
+
+#: temproles\temproles.py:348
+msgid "TempRole {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id}) by {author.mention} ({author.id})."
+msgstr "Geçici Rol {role.mention} ({role.id}), {author.mention} ({author.id}) tarafından {member.mention} ({member.id})'den kaldırıldı."
+
+#: temproles\temproles.py:355
+msgid "Temp Role {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id})."
+msgstr "Geçici Rol {role.mention} ({role.id}), {member.mention} ({member.id})'den kaldırıldı."
+
+#: temproles\temproles.py:370
+#, docstring
+msgid "List active Temp Roles on this server, for optional specified member and/or role."
+msgstr "Bu sunucuda aktif Geçici Rolleri listeleyin, isteğe bağlı olarak belirtilen üye ve/veya rol için."
+
+#: temproles\temproles.py:373
+msgid "This member has this Temp Role."
+msgstr "Bu üyenin bu Geçici Rolü var."
+
+#: temproles\temproles.py:375
+msgid "This member hasn't this Temp Role."
+msgstr "Bu üyenin bu Geçici Rolü yok."
+
+#: temproles\temproles.py:378
+msgid "This member hasn't any Temp Roles."
+msgstr "Bu üyenin hiçbir Geçici Rolü yok."
+
+#: temproles\temproles.py:380
+msgid "This member has these Temp Roles: {temp_roles}."
+msgstr "Bu üyenin şu Geçici Rolleri var: {temp_roles}."
+
+#: temproles\temproles.py:399
+msgid "No members have this Temp Role."
+msgstr "Hiçbir üyenin bu Geçici Rolü yok."
+
+#: temproles\temproles.py:401
+msgid "These members have this Temp Role: {temp_roles_members}."
+msgstr "Bu üyelerin bu Geçici Rolü var: {temp_roles_members}."
+
+#: temproles\temproles.py:426
+msgid "No active Temp Roles on this server."
+msgstr "Bu sunucuda aktif Geçici Rol yok."
+
+#: temproles\temproles.py:442
+#, docstring
+msgid "Set the logs channel for Temp Roles."
+msgstr "Geçici Roller için günlük kanalını ayarlayın."
+
+#: temproles\temproles.py:445
+msgid "Logs channel unset."
+msgstr "Günlük kanalı kaldırıldı."
+
+#: temproles\temproles.py:449
+msgid "I need of the `embed_links` permission in the logs channel."
+msgstr "Günlük kanalında `embed_links` iznine ihtiyacım var."
+
+#: temproles\temproles.py:452
+msgid "Logs channel set."
+msgstr "Günlük kanalı ayarlandı."
+
+#: temproles\temproles.py:463
+#, docstring
+msgid "Add an allowed self Temp Role.\n\n"
+"        **Parameters:**\n"
+"        - `min_time`: The minimum time for the self temp role. `none` to disable. Defaults is 1 day.\n"
+"        - `max_time`: The minimum time for the self temp role. `none` to disable. Defaults is 365 days.\n"
+"        "
+msgstr "İzin verilen bir kendi kendine Geçici Rol ekleyin.\n\n"
+"        **Parametreler:**\n"
+"        - `min_time`: Kendi kendine geçici rol için minimum süre. Devre dışı bırakmak için `none`. Varsayılan 1 gündür.\n"
+"        - `max_time`: Kendi kendine geçici rol için minimum süre. Devre dışı bırakmak için `none`. Varsayılan 365 gündür.\n"
+"        "
+
+#: temproles\temproles.py:473
+msgid "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy."
+msgstr "Discord rol hiyerarşisi nedeniyle {role.mention} ({role.id}) rolü atanamaz."
+
+#: temproles\temproles.py:480
+msgid "This role is already an allowed self temp role."
+msgstr "Bu rol zaten izin verilen bir kendi kendine geçici roldür."
+
+#: temproles\temproles.py:487
+msgid "Allowed self Temp Role added."
+msgstr "İzin verilen kendi kendine Geçici Rol eklendi."
+
+#: temproles\temproles.py:492
+#, docstring
+msgid "Remove an allowed self Temp Role."
+msgstr "İzin verilen bir kendi kendine Geçici Rolü kaldırın."
+
+#: temproles\temproles.py:496
+msgid "This role isn't an allowed self temp role."
+msgstr "Bu rol izin verilen bir kendi kendine geçici rol değil."
+
+#: temproles\temproles.py:500
+msgid "Allowed self Temp Role removed."
+msgstr "İzin verilen kendi kendine Geçici Rol kaldırıldı."
+
+#: temproles\temproles.py:506
+#, docstring
+msgid "Assign/Add an allowed self Temp Role to yourself, for a specified duration."
+msgstr "Belirli bir süre için kendinize izin verilen bir kendi kendine Geçici Rol atayın/ekleyin."
+
+#: temproles\temproles.py:511
+msgid "This role isn't an allowed self Temp Role on this server."
+msgstr "Bu rol bu sunucuda izin verilen bir kendi kendine Geçici Rol değil."
+
+#: temproles\temproles.py:519
+msgid "The time for this role must be greater than {min_time_string}."
+msgstr "Bu rol için süre {min_time_string}'den uzun olmalıdır."
+
+#: temproles\temproles.py:529
+msgid "The time for this role must be less than {max_time_string}."
+msgstr "Bu rol için süre {max_time_string}'den kısa olmalıdır."
+
+#: temproles\temproles.py:537 temproles\temproles.py:544
+#, docstring
+msgid "Unassign/Remove an allowed self Temp Role from yourself."
+msgstr "Kendinizden izin verilen bir kendi kendine Geçici Rolü kaldırın."
+
+#: temproles\temproles.py:539
+msgid "You can't remove this role from yourself."
+msgstr "Bu rolü kendinizden kaldıramazsınız."
+
+#: temproles\temproles.py:567
+msgid "Self Temp Roles"
+msgstr "Kendi Kendine Geçici Roller"
+

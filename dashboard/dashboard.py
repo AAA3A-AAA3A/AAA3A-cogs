@@ -53,7 +53,7 @@ class Dashboard(Cog):
     ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.
     """
 
-    __authors__: typing.List[str] = ["Neuro Assassin", "AAA3A"]
+    __authors__: typing.List[str] = ["AAA3A", "Neuro Assassin"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)

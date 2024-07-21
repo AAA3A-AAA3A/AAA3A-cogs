@@ -173,10 +173,13 @@ class DisurlVotesTracker(Cog):
 
                 if await self.config.guild(guild).vote_reminder():
                     if (custom_vote_reminder_message := await self.config.guild(guild).custom_vote_reminder_message()) is None:
+                        view = discord.ui.View()
+                        view.add_item(discord.ui.Button(label=_("Vote on Disurl!"), url=f"https://disurl.me/server/{guild.id}/vote"))
                         await votes_channel.send(
                             _(
-                                "{member.mention}, don't forget to vote on [Disurl](https://disurl.me/server/{guild.id}/vote)! You can vote again in 12 hours!\n*Thanks for supporting the server!*"
-                            ).format(member=member, guild=guild)
+                                "{member.mention}, don't forget to vote on **[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again 12 hours after this vote. **Thanks for supporting the server!**"
+                            ).format(member=member, guild=guild),
+                            view=view,
                         )
                     else:
                         number_member_votes = len(member_data["votes"])
@@ -263,7 +266,7 @@ class DisurlVotesTracker(Cog):
             )
             if voters_role is not None:
                 embed.description += _("\n\n{member.display_name} received the role {voters_role.mention} for the next 12 hours.").format(voters_role=voters_role)
-            embed.description += _("You can vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!").format(guild=guild)
+            embed.description += _("\n\nYou could vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!").format(guild=guild)
             embed.set_footer(text=_("Thanks for supporting the server! | User ID: {member.id}").format(member=member), icon_url=guild.icon)
             await votes_channel.send(embed=embed)
         else:

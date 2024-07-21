@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:38\n"
+"POT-Creation-Date: 2024-07-20 22:15+0200\n"
+"PO-Revision-Date: 2024-07-21 15:15\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -21,130 +21,138 @@ msgstr ""
 msgid "Invalid timezone provided."
 msgstr "Παρέχεται μη έγκυρη ζώνη ώρας."
 
-#: reminders\converters.py:535 reminders\reminders.py:886
-#: reminders\reminders.py:1084
+#: reminders\converters.py:539 reminders\reminders.py:908
+#: reminders\reminders.py:1108
 msgid "You haven't any reminders."
 msgstr "Δεν έχετε καμία υπενθύμιση."
 
-#: reminders\converters.py:544
+#: reminders\converters.py:548
 msgid "Reminder ID must be an integer."
 msgstr "Το αναγνωριστικό υπενθύμισης πρέπει να είναι ακέραιος αριθμός."
 
-#: reminders\converters.py:548
+#: reminders\converters.py:552
 msgid "You haven't any reminder with this id."
 msgstr "Δεν έχετε καμία υπενθύμιση με αυτό το αναγνωριστικό."
 
-#: reminders\reminders.py:61
+#: reminders\reminders.py:62
 msgid "You're not allowed to execute the `[p]remindme` command in this channel."
 msgstr "Δεν επιτρέπεται η εκτέλεση της εντολής `[p]remindme` σε αυτό το κανάλι."
 
-#: reminders\reminders.py:69
+#: reminders\reminders.py:70
 #, docstring
 msgid "Don't forget anything anymore! Reminders in DMs, channels, FIFO commands scheduler, say scheduler... With 'Me Too', snooze and buttons."
 msgstr "Μην ξεχνάτε τίποτα πια! Υπενθυμίσεις σε DMs, κανάλια, χρονοπρογραμματιστή εντολών FIFO, χρονοπρογραμματιστή say... Με 'Me Too', snooze και κουμπιά."
 
-#: reminders\reminders.py:303 reminders\reminders.py:433
-#: reminders\reminders.py:620 reminders\reminders.py:737
+#: reminders\reminders.py:302 reminders\reminders.py:443
+#: reminders\reminders.py:641 reminders\reminders.py:758
 msgid "You have reached the limit of {minimum_user_reminders} reminders per user."
 msgstr "Έχετε φτάσει στο όριο των υπενθυμίσεων {minimum_user_reminders} ανά χρήστη."
 
-#: reminders\reminders.py:325 reminders\reminders.py:455
-#: reminders\reminders.py:637 reminders\reminders.py:750
-#: reminders\reminders.py:1053
+#: reminders\reminders.py:324 reminders\reminders.py:465
+msgid "You can't access this message."
+msgstr "Δεν μπορείτε να έχετε πρόσβαση σε αυτό το μήνυμα."
+
+#: reminders\reminders.py:333 reminders\reminders.py:474
+#: reminders\reminders.py:658 reminders\reminders.py:771
+#: reminders\reminders.py:1076
 msgid "You are not allowed to create repeating reminders."
 msgstr "Δεν επιτρέπεται η δημιουργία επαναλαμβανόμενων υπενθυμίσεων."
 
-#: reminders\reminders.py:339 reminders\reminders.py:469
-#: reminders\reminders.py:651 reminders\reminders.py:764
-#: reminders\reminders.py:1068
+#: reminders\reminders.py:347 reminders\reminders.py:488
+#: reminders\reminders.py:672 reminders\reminders.py:785
+#: reminders\reminders.py:1091
 msgid "The repeat timedelta must be greater than {minimum_repeat} minutes."
 msgstr "Το timedelta επανάληψης πρέπει να είναι μεγαλύτερο από {minimum_repeat} λεπτά."
 
-#: reminders\reminders.py:370 reminders\reminders.py:547
-#: reminders\reminders.py:980
+#: reminders\reminders.py:356 reminders\reminders.py:544
+msgid "You must provide a message or a text."
+msgstr "Πρέπει να δώσετε ένα μήνυμα ή ένα κείμενο."
+
+#: reminders\reminders.py:380 reminders\reminders.py:568
+#: reminders\reminders.py:1003
 msgid "Your reminder text is too long."
 msgstr "Το κείμενο υπενθύμισης είναι πολύ μεγάλο."
 
-#: reminders\reminders.py:494
+#: reminders\reminders.py:513
 msgid "You can't create a reminder in {destination}."
 msgstr "Δεν μπορείτε να δημιουργήσετε μια υπενθύμιση στο {destination}."
 
-#: reminders\reminders.py:500 reminders\reminders.py:772
+#: reminders\reminders.py:519 reminders\reminders.py:793
 msgid "I can't send messages in this channel."
 msgstr "Δεν μπορώ να στείλω μηνύματα σε αυτό το κανάλι."
 
-#: reminders\reminders.py:502
+#: reminders\reminders.py:521
 msgid "I can't send embeds in this channel."
 msgstr "Δεν μπορώ να στείλω ενσωματώσεις σε αυτό το κανάλι."
 
-#: reminders\reminders.py:511
+#: reminders\reminders.py:530
 msgid "Since you don't have the `mention_everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."
 msgstr "Εφόσον δεν έχετε το δικαίωμα `mention_everyone`, δεν μπορείτε να δημιουργήσετε μια υπενθύμιση που θα αναφέρει περισσότερα από 3 άτομα ή θα αναφέρει ρόλο(-ους)."
 
-#: reminders\reminders.py:517
+#: reminders\reminders.py:536
 msgid "Due to the message character limit, you can only mention a maximum of 10 users or roles."
 msgstr "Λόγω του περιορισμού των χαρακτήρων του μηνύματος, μπορείτε να αναφέρετε το πολύ 10 χρήστες ή ρόλους."
 
-#: reminders\reminders.py:605
+#: reminders\reminders.py:626
 #, docstring
 msgid "Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
-"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        You don't have to put quotes around the `time` argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
 "        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
 "        Examples:\n"
 "        - `[p]reminder fifo #destination \"at 10h every day\" ping\n"
 "        "
 msgstr "Δημιουργήστε μια υπενθύμιση FIFO/εντολής. Η επιλεγμένη εντολή θα εκτελεστεί με εσάς ως προσκαλούντα. Μην δώσετε το πρόθεμα.\n\n"
 "        Ο καθορισμένος χρόνος μπορεί να γίνει ασαφής ανάλυση ή να χρησιμοποιήσετε τα kwargs `in`, `on` και `every` για να βρείτε έναν κανόνα επανάληψης και το κείμενό σας.\n"
-"        Δεν χρειάζεται να βάλετε εισαγωγικά γύρω από το όρισμα time. Για πιο ακριβή ανάλυση, μπορείτε να τοποθετήσετε εισαγωγικά γύρω από το κείμενο. Βάλτε επίσης εισαγωγικά γύρω από το time, αν περιέχει κενά.\n"
-"        Χρησιμοποιήστε `[p]reminder timetips` για να εμφανίσετε συμβουλές για την ανάλυση του χρόνου.\n\n"
+"        Δεν χρειάζεται να βάλετε εισαγωγικά γύρω από το όρισμα `time`. Για πιο ακριβή ανάλυση, μπορείτε να τοποθετήσετε εισαγωγικά γύρω από το κείμενο. Βάλτε επίσης εισαγωγικά γύρω από το time, αν περιέχει κενά.\n"
+"        Χρησιμοποιήστε το `[p]reminder timetips` για να εμφανίσετε συμβουλές για την ανάλυση της ώρας.\n\n"
 "        Παραδείγματα:\n"
-"        - `[p]υπενθύμιση fifo #προορισμός \"στις 10h κάθε μέρα\" ping\n"
+"        - `[p]reminder fifo #προορισμός \"στις 10h κάθε μέρα\" ping\n"
 "        "
 
-#: reminders\reminders.py:626
+#: reminders\reminders.py:647
 msgid "You're not allowed to create FIFO/commands reminders."
 msgstr "Δεν επιτρέπεται η δημιουργία υπενθυμίσεων FIFO/εντολών."
 
-#: reminders\reminders.py:668
+#: reminders\reminders.py:689
 msgid "This command doesn't exist."
 msgstr "Αυτή η εντολή δεν υπάρχει."
 
-#: reminders\reminders.py:675
+#: reminders\reminders.py:696
 msgid "You can't execute this command, in this context."
 msgstr "Δεν μπορείτε να εκτελέσετε αυτή την εντολή, σε αυτό το πλαίσιο."
 
-#: reminders\reminders.py:679
+#: reminders\reminders.py:700
 msgid "The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command."
 msgstr "Η εντολή `{command.qualified_name}` δεν μπορεί να προγραμματιστεί, επειδή είναι μια ύποπτη εντολή."
 
-#: reminders\reminders.py:722
+#: reminders\reminders.py:743
 #, docstring
 msgid "Create a reminder who will say/send text.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
-"        You don't have to put quotes around the time argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
+"        You don't have to put quotes around the `time` argument. For more precise parsing, you can place quotation marks around the text. Put quotation marks around the time too, if it contains spaces.\n"
 "        Use `[p]reminder timetips` to display tips for time parsing.\n\n"
 "        Examples:\n"
 "        - `[p]reminder say #destination \"at 9h every day\" Hello everyone!\n"
 "        "
 msgstr "Δημιουργήστε μια υπενθύμιση που θα λέει/αποστέλλει κείμενο.\n\n"
 "        Ο καθορισμένος χρόνος μπορεί να αναλυθεί ασαφώς ή να χρησιμοποιήσετε τα kwargs `in`, `on` και `every` για να βρείτε έναν κανόνα επανάληψης και το κείμενό σας.\n"
-"        Δεν χρειάζεται να βάλετε εισαγωγικά γύρω από το όρισμα time. Για πιο ακριβή ανάλυση, μπορείτε να τοποθετήσετε εισαγωγικά γύρω από το κείμενο. Βάλτε επίσης εισαγωγικά γύρω από το time, αν περιέχει κενά.\n"
-"        Χρησιμοποιήστε `[p]reminder timetips` για να εμφανίσετε συμβουλές για την ανάλυση του χρόνου.\n\n"
+"        Δεν χρειάζεται να βάλετε εισαγωγικά γύρω από το όρισμα `time`. Για πιο ακριβή ανάλυση, μπορείτε να τοποθετήσετε εισαγωγικά γύρω από το κείμενο. Βάλτε επίσης εισαγωγικά γύρω από το time, αν περιέχει κενά.\n"
+"        Χρησιμοποιήστε το `[p]reminder timetips` για να εμφανίσετε συμβουλές για την ανάλυση της ώρας.\n\n"
 "        Παραδείγματα:\n"
 "        - `[p]reminder say #destination \"at 9h every day\" Hello everyone!\n"
 "        "
 
-#: reminders\reminders.py:780
+#: reminders\reminders.py:801
 msgid "You can't or I can't send messages in this channel."
 msgstr "Δεν μπορείτε ή δεν μπορώ να στείλω μηνύματα σε αυτό το κανάλι."
 
-#: reminders\reminders.py:817
+#: reminders\reminders.py:838
 #, docstring
 msgid "Show time parsing tips."
 msgstr "Εμφάνιση συμβουλών ανάλυσης χρόνου."
 
-#: reminders\reminders.py:818
+#: reminders\reminders.py:839
 msgid "\n"
 "            Allowed **absolutes** are:\n"
 "            • `eoy` - Remind at end of year at 17:00.\n"
@@ -202,7 +210,7 @@ msgstr "\n"
 "            - Ελέγξτε το https://crontab.guru/.\n"
 "            "
 
-#: reminders\reminders.py:861
+#: reminders\reminders.py:882
 #, docstring
 msgid "Set your timezone for the time converter.\n\n"
 "        Timezone should be specified in the format: `Continent/City`.\n"
@@ -215,11 +223,11 @@ msgstr "Ορίστε τη ζώνη ώρας για τον μετατροπέα �
 "        Μπορείτε να βρείτε μια λίστα με τις έγκυρες ζώνες ώρας στη διεύθυνση: https://timezonedb.com/time-zones.\n"
 "        "
 
-#: reminders\reminders.py:868
+#: reminders\reminders.py:889
 msgid "Your timezone has been set to `{timezone}`."
 msgstr "Η ζώνη ώρας σας έχει οριστεί σε `{timezone}`."
 
-#: reminders\reminders.py:878
+#: reminders\reminders.py:900
 #, docstring
 msgid "List your existing reminders.\n\n"
 "        Sort options:\n"
@@ -234,23 +242,23 @@ msgstr "Καταγράψτε τις υπάρχουσες υπενθυμίσει�
 "        - `id`: Εμφάνιση με τη σειρά του αναγνωριστικού τους.\n"
 "        "
 
-#: reminders\reminders.py:902
+#: reminders\reminders.py:924
 msgid "Your Reminders"
 msgstr "Οι υπενθυμίσεις σας"
 
-#: reminders\reminders.py:904
+#: reminders\reminders.py:926
 msgid " (Content type `{content_type}`)"
 msgstr " (Τύπος περιεχομένου `{content_type}`)"
 
-#: reminders\reminders.py:908
+#: reminders\reminders.py:930
 msgid "You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder."
 msgstr "Έχετε {len_reminders} υπενθυμίσεις{of_this_content_type}. Χρησιμοποιήστε `{clean_prefix}reminder edit #ID` για να επεξεργαστείτε μια υπενθύμιση."
 
-#: reminders\reminders.py:912
+#: reminders\reminders.py:934
 msgid " of this content type"
 msgstr " αυτού του τύπου περιεχομένου"
 
-#: reminders\reminders.py:931
+#: reminders\reminders.py:953
 #, docstring
 msgid "Remove existing Reminder(s) from their IDs.\n\n"
 "        - Use `last` to remove your last created reminder.\n"
@@ -261,15 +269,15 @@ msgstr "Αφαίρεση των υφιστάμενων υπενθυμίσεων 
 "        - Χρησιμοποιήστε το `next` για να αφαιρέσετε την επόμενη υπενθύμιση που ενεργοποιήθηκε.\n"
 "        "
 
-#: reminders\reminders.py:943
+#: reminders\reminders.py:965
 msgid "Your reminder {reminder_id} has been successfully removed."
 msgstr "Η υπενθύμιση {reminder_id} έχει αφαιρεθεί επιτυχώς."
 
-#: reminders\reminders.py:949
+#: reminders\reminders.py:971
 msgid "Your reminders {reminders_ids} have been successfully removed."
 msgstr "Οι υπενθυμίσεις σας {reminders_ids} έχουν αφαιρεθεί επιτυχώς."
 
-#: reminders\reminders.py:956
+#: reminders\reminders.py:979
 #, docstring
 msgid "Edit an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -280,7 +288,7 @@ msgstr "Επεξεργαστείτε μια υπάρχουσα υπενθύμι�
 "        - Χρησιμοποιήστε το `next` για να επεξεργαστείτε την επόμενη υπενθύμιση που θα ενεργοποιηθεί.\n"
 "        "
 
-#: reminders\reminders.py:974
+#: reminders\reminders.py:997
 #, docstring
 msgid "Edit the text of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -291,13 +299,13 @@ msgstr "Επεξεργαστείτε το κείμενο μιας υπάρχου
 "        - Χρησιμοποιήστε το `next` για να επεξεργαστείτε την επόμενη υπενθύμιση που θα ενεργοποιηθεί.\n"
 "        "
 
-#: reminders\reminders.py:990 reminders\reminders.py:1014
-#: reminders\reminders.py:1075 reminders\views.py:154 reminders\views.py:378
+#: reminders\reminders.py:1013 reminders\reminders.py:1037
+#: reminders\reminders.py:1098 reminders\views.py:154 reminders\views.py:378
 #: reminders\views.py:439
 msgid "Your reminder **#{reminder_id}** has been successfully edited."
 msgstr "Η υπενθύμισή σας **#{reminder_id}** έχει επεξεργαστεί επιτυχώς."
 
-#: reminders\reminders.py:999
+#: reminders\reminders.py:1022
 #, docstring
 msgid "Edit the expires time of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -310,7 +318,7 @@ msgstr "Επεξεργαστείτε την ώρα λήξης μιας υπάρ�
 "        Είναι ο ίδιος μετατροπέας όπως και για τη δημιουργία, αλλά χωρίς την επιλογή της επανάληψης.\n"
 "        "
 
-#: reminders\reminders.py:1023
+#: reminders\reminders.py:1046
 #, docstring
 msgid "Edit the repeat of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -339,68 +347,85 @@ msgstr "Επεξεργαστείτε την επανάληψη μιας υπάρ
 "        - `1y 1mo 2 days -5h`\n"
 "        "
 
-#: reminders\reminders.py:1082
+#: reminders\reminders.py:1106
 #, docstring
 msgid "Clear all your existing reminders."
 msgstr "Διαγράψτε όλες τις υπάρχουσες υπενθυμίσεις."
 
-#: reminders\reminders.py:1087 reminders\reminders.py:1151
+#: reminders\reminders.py:1111 reminders\reminders.py:1242
 msgid "⚠️ - Reminders"
 msgstr "⚠️ - Υπενθυμίσεις"
 
-#: reminders\reminders.py:1088
+#: reminders\reminders.py:1112
 msgid "Do you really want to remove ALL your reminders?"
 msgstr "Θέλετε πραγματικά να αφαιρέσετε ΟΛΕΣ τις υπενθυμίσεις σας;"
 
-#: reminders\reminders.py:1100
+#: reminders\reminders.py:1124
 msgid "All your reminders have been successfully removed."
 msgstr "Όλες οι υπενθυμίσεις σας έχουν αφαιρεθεί επιτυχώς."
 
-#: reminders\reminders.py:1146
+#: reminders\reminders.py:1131
+#, docstring
+msgid "Get a list of Discord timestamps for a given time. You can provide a repeat.\n\n"
+"        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule.\n"
+"        You don't have to put quotes around the `time` argument.\n"
+"        Use `[p]reminder timetips` to display tips for time parsing.\n"
+"        "
+msgstr "Λήψη μιας λίστας χρονοσφραγίδων Discord για μια δεδομένη χρονική στιγμή. Μπορείτε να δώσετε μια επανάληψη.\n\n"
+"        Ο καθορισμένος χρόνος μπορεί να αναλυθεί ασαφώς ή να χρησιμοποιήσετε τα kwargs `in`, `on` και `every` για να βρείτε έναν κανόνα επανάληψης.\n"
+"        Δεν χρειάζεται να βάλετε εισαγωγικά γύρω από το όρισμα `time`.\n"
+"        Χρησιμοποιήστε το `[p]reminder timetips` για να εμφανίσετε συμβουλές για την ανάλυση του χρόνου.\n"
+"        "
+
+#: reminders\reminders.py:1145
+msgid "Timestamps for {time}"
+msgstr "Χρονοσφραγίδες για το {time}"
+
+#: reminders\reminders.py:1237
 #, docstring
 msgid "Clear all existing reminders for a user."
 msgstr "Διαγραφή όλων των υφιστάμενων υπενθυμίσεων για έναν χρήστη."
 
-#: reminders\reminders.py:1148
+#: reminders\reminders.py:1239
 msgid "This user haven't any reminders."
 msgstr "Αυτός ο χρήστης δεν έχει καμία υπενθύμιση."
 
-#: reminders\reminders.py:1152
+#: reminders\reminders.py:1243
 msgid "Do you really want to remove ALL {user.display_name}'s reminders?"
 msgstr "Θέλετε πραγματικά να καταργήσετε ΟΛΕΣ τις υπενθυμίσεις του {user.display_name};"
 
-#: reminders\reminders.py:1166
+#: reminders\reminders.py:1257
 msgid "All user's reminders have been successfully removed."
 msgstr "Όλες οι υπενθυμίσεις του χρήστη έχουν αφαιρεθεί επιτυχώς."
 
-#: reminders\reminders.py:1170
+#: reminders\reminders.py:1261
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Πάρτε μια ενσωμάτωση για να ελέγξετε την κατάσταση των βρόχων."
 
-#: reminders\reminders.py:1176
+#: reminders\reminders.py:1267
 #, docstring
 msgid "Migrate Reminders from RemindMe by PhasecoreX."
 msgstr "Μεταφορά υπενθυμίσεων από το RemindMe by PhasecoreX."
 
-#: reminders\reminders.py:1183
+#: reminders\reminders.py:1274
 msgid "RemindMe by PhasecoreX has no data in this bot."
 msgstr "RemindMe από PhasecoreX δεν έχει δεδομένα σε αυτό το bot."
 
-#: reminders\reminders.py:1187
+#: reminders\reminders.py:1278
 msgid "RemindMe by PhasecoreX use an old/new data schema version and isn't compatible with this cog actually."
 msgstr "Το RemindMe της PhasecoreX χρησιμοποιεί μια παλιά/νέα έκδοση σχήματος δεδομένων και δεν είναι συμβατό με αυτό το γρανάζι."
 
-#: reminders\reminders.py:1245
+#: reminders\reminders.py:1336
 msgid "Data successfully migrated from RemindMe by PhasecoreX."
 msgstr "Τα δεδομένα μεταφέρθηκαν επιτυχώς από το RemindMe από την PhasecoreX."
 
-#: reminders\reminders.py:1249
+#: reminders\reminders.py:1340
 #, docstring
 msgid "Migrate Reminders from FIFO by Fox."
 msgstr "Μεταφορά των υπενθυμίσεων από τη FIFO by Fox."
 
-#: reminders\reminders.py:1329
+#: reminders\reminders.py:1420
 msgid "Data successfully migrated from FIFO by Fox."
 msgstr "Τα δεδομένα μεταφέρθηκαν επιτυχώς από τη FIFO από την Fox."
 
@@ -497,31 +522,31 @@ msgstr "Δεν παρέχεται."
 msgid "No content."
 msgstr "Δεν υπάρχει περιεχόμενο."
 
-#: reminders\types.py:524
+#: reminders\types.py:530
 msgid "No target(s)."
 msgstr "Δεν υπάρχουν στόχοι."
 
-#: reminders\types.py:525
+#: reminders\types.py:531
 msgid "In DMs"
 msgstr "Σε DMs"
 
-#: reminders\types.py:607
+#: reminders\types.py:613
 msgid "You asked me to remind you about {this}, {interval_string}.\n\n"
 msgstr "Μου ζητήσατε να σας υπενθυμίσω το {this}, {interval_string}.\n\n"
 
-#: reminders\types.py:613
+#: reminders\types.py:619
 msgid "You asked me to remind you about [this message]({message_jump_url}) from {author_mention} ({author_id}), {interval_string}.\n\n"
 msgstr "Μου ζητήσατε να σας υπενθυμίσω [αυτό το μήνυμα]({message_jump_url}) από το {author_mention} ({author_id}), {interval_string}.\n\n"
 
-#: reminders\types.py:629
+#: reminders\types.py:635
 msgid "This was supposed to send {interval_string} ago. I might be having network or server issues, or perhaps I just started up. Sorry about that!\n\n"
 msgstr "Αυτό υποτίθεται ότι θα έστελνε το {interval_string} πριν. Μπορεί να έχω προβλήματα με το δίκτυο ή τον διακομιστή, ή ίσως μόλις ξεκίνησα. Συγγνώμη γι' αυτό!\n\n"
 
-#: reminders\types.py:633
+#: reminders\types.py:639
 msgid "Next trigger in {interval_string}."
 msgstr "Επόμενη σκανδάλη στο {interval_string}."
 
-#: reminders\types.py:786 reminders\views.py:559
+#: reminders\types.py:792 reminders\views.py:559
 msgid "Jump to original message"
 msgstr "Μετάβαση στο αρχικό μήνυμα"
 

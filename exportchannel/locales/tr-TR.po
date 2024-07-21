@@ -1,0 +1,148 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: aaa3a-cogs\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 13:27\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: aaa3a-cogs\n"
+"X-Crowdin-Project-ID: 531090\n"
+"X-Crowdin-Language: tr\n"
+"X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/exportchannel/locales/messages.pot\n"
+"X-Crowdin-File-ID: 146\n"
+"Language: tr_TR\n"
+
+#: exportchannel\exportchannel.py:22
+msgid "Here is the transcript's {mode} file of the messages in the channel {channel.mention} ({channel.id}).\n"
+"Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"There are {count_messages} exported messages.\n"
+"Remember that exporting other users' messages from Discord does not respect the TOS."
+msgstr "İşte {channel.mention} ({channel.id}) kanalındaki mesajların transkriptinin {mode} dosyası.\n"
+"Lütfen unutmayın: Tüm ekler ve kullanıcı avatarları bu dosyada Discord bağlantısıyla birlikte kaydedilir.\n"
+"Toplam {count_messages} mesaj dışa aktarıldı.\n"
+"Unutmayın, başka kullanıcıların mesajlarını Discord'dan dışa aktarmak Hizmet Koşullarına aykırıdır."
+
+#: exportchannel\exportchannel.py:25
+msgid "[Click here to view the transcript.]({url})"
+msgstr "[Transkripti görüntülemek için buraya tıklayın.]({url})"
+
+#: exportchannel\exportchannel.py:45
+#, docstring
+msgid "A cog to export all or a part of the messages of a channel in an html file!"
+msgstr "Bir kanalın tüm veya bir kısmının mesajlarını HTML dosyasına aktarmak için bir cog!"
+
+#: exportchannel\exportchannel.py:57
+msgid "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
+msgstr "Üzgünüm, {channel.mention} ({channel.id}) kanalındaki mesajların içeriğini okuyamıyorum."
+
+#: exportchannel\exportchannel.py:103
+msgid "Sorry. I could not find any messages."
+msgstr "Üzgünüm. Hiçbir mesaj bulamadım."
+
+#: exportchannel\exportchannel.py:192
+#, docstring
+msgid "Export all of a channel's messages to an html file.\n\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Bir kanalın tüm mesajlarını HTML dosyasına aktarın.\n\n"
+"        Lütfen unutmayın: Tüm ekler ve kullanıcı avatarları bu dosyada Discord bağlantısıyla birlikte kaydedilir.\n"
+"        Unutmayın, başka kullanıcıların mesajlarını Discord'dan dışa aktarmak Hizmet Koşullarına aykırıdır.\n"
+"        "
+
+#: exportchannel\exportchannel.py:232
+#, docstring
+msgid "Export a specific message in an html file.\n\n"
+"        Specify the message to export, with its ID or its link.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Belirli bir mesajı HTML dosyasına aktarın.\n\n"
+"        Dışa aktarılacak mesajı, ID'si veya bağlantısıyla belirtin.\n"
+"        Lütfen unutmayın: Tüm ekler ve kullanıcı avatarları bu dosyada Discord bağlantısıyla birlikte kaydedilir.\n"
+"        Unutmayın, başka kullanıcıların mesajlarını Discord'dan dışa aktarmak Hizmet Koşullarına aykırıdır.\n"
+"        "
+
+#: exportchannel\exportchannel.py:275
+#, docstring
+msgid "Export a part of the messages of a channel in an html file.\n\n"
+"        Specify the number of messages since the end of the channel.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Bir kanalın mesajlarının bir kısmını HTML dosyasına aktarın.\n\n"
+"        Kanalın sonundan itibaren mesaj sayısını belirtin.\n"
+"        Lütfen unutmayın: Tüm ekler ve kullanıcı avatarları bu dosyada Discord bağlantısıyla birlikte kaydedilir.\n"
+"        Unutmayın, başka kullanıcıların mesajlarını Discord'dan dışa aktarmak Hizmet Koşullarına aykırıdır.\n"
+"        "
+
+#: exportchannel\exportchannel.py:321
+#, docstring
+msgid "Export a part of the messages of a channel in an html file.\n\n"
+"        Specify the before message (id or link) or a valid snowflake.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Bir kanalın mesajlarının bir kısmını HTML dosyasına aktarın.\n\n"
+"        Önceki mesajı (id veya bağlantı) veya geçerli bir snowflake belirtin.\n"
+"        Lütfen unutmayın: Tüm ekler ve kullanıcı avatarları bu dosyada Discord bağlantısıyla birlikte kaydedilir.\n"
+"        Unutmayın, başka kullanıcıların mesajlarını Discord'dan dışa aktarmak Hizmet Koşullarına aykırıdır.\n"
+"        "
+
+#: exportchannel\exportchannel.py:367
+#, docstring
+msgid "Export a part of the messages of a channel in an html file.\n\n"
+"        Specify the after message (id or link) or a valid snowflake.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Bir kanalın mesajlarının bir kısmını HTML dosyasına aktarın.\n\n"
+"        Sonraki mesajı (id veya bağlantı) veya geçerli bir snowflake belirtin.\n"
+"        Lütfen unutmayın: Tüm ekler ve kullanıcı avatarları bu dosyada Discord bağlantısıyla birlikte kaydedilir.\n"
+"        Unutmayın, başka kullanıcıların mesajlarını Discord'dan dışa aktarmak Hizmet Koşullarına aykırıdır.\n"
+"        "
+
+#: exportchannel\exportchannel.py:414
+#, docstring
+msgid "Export a part of the messages of a channel in an html file.\n\n"
+"        Specify the before and after messages (id or link) or a valid snowflake.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Bir kanalın mesajlarının bir kısmını HTML dosyasına aktarın.\n\n"
+"        Önceki ve sonraki mesajları (id veya bağlantı) veya geçerli bir snowflake belirtin.\n"
+"        Lütfen unutmayın: Tüm ekler ve kullanıcı avatarları bu dosyada Discord bağlantısıyla birlikte kaydedilir.\n"
+"        Unutmayın, başka kullanıcıların mesajlarını Discord'dan dışa aktarmak Hizmet Koşullarına aykırıdır.\n"
+"        "
+
+#: exportchannel\exportchannel.py:461
+#, docstring
+msgid "Export a part of the messages of a channel in an html file.\n\n"
+"        Specify the user/member (id, name or mention).\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Bir kanalın mesajlarının bir kısmını HTML dosyasına aktarın.\n\n"
+"        Kullanıcıyı/üyeyi (id, isim veya etiket) belirtin.\n"
+"        Lütfen unutmayın: Tüm ekler ve kullanıcı avatarları bu dosyada Discord bağlantısıyla birlikte kaydedilir.\n"
+"        Unutmayın, başka kullanıcıların mesajlarını Discord'dan dışa aktarmak Hizmet Koşullarına aykırıdır.\n"
+"        "
+
+#: exportchannel\exportchannel.py:508
+#, docstring
+msgid "Export a part of the messages of a channel in an html file.\n\n"
+"        Specify the bool option.\n"
+"        Please note: all attachments and user avatars are saved with the Discord link in this file.\n"
+"        Remember that exporting other users' messages from Discord does not respect the TOS.\n"
+"        "
+msgstr "Bir kanalın mesajlarının bir kısmını HTML dosyasına aktarın.\n\n"
+"        Boole seçeneğini belirtin.\n"
+"        Lütfen unutmayın: Tüm ekler ve kullanıcı avatarları bu dosyada Discord bağlantısıyla birlikte kaydedilir.\n"
+"        Unutmayın, başka kullanıcıların mesajlarını Discord'dan dışa aktarmak Hizmet Koşullarına aykırıdır.\n"
+"        "
+

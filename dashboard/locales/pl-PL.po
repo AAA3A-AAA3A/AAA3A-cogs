@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-04-10 12:16+0200\n"
-"PO-Revision-Date: 2024-04-10 12:42\n"
+"POT-Creation-Date: 2024-07-20 22:14+0200\n"
+"PO-Revision-Date: 2024-07-21 15:12\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -21,37 +21,51 @@ msgstr ""
 msgid "This is not a valid URL."
 msgstr "To nie jest prawidłowy adres URL."
 
-#: dashboard\dashboard.py:34
+#: dashboard\dashboard.py:35
 msgid "This is not a valid Dashboard redirect URI: it must end with `/callback`."
 msgstr "To nie jest prawidłowy identyfikator URI przekierowania Dashboard: musi kończyć się na `/callback`."
 
-#: dashboard\dashboard.py:42
+#: dashboard\dashboard.py:44
 msgid "This third party is not available."
 msgstr "Ta strona trzecia nie jest dostępna."
 
-#: dashboard\dashboard.py:48
+#: dashboard\dashboard.py:50
 #, docstring
-msgid "Interact with your bot through a web dashboard!\n\n"
+msgid "Interact with your bot through a web Dashboard!\n\n"
+"    **Installation guide:** https://red-web-dashboard.readthedocs.io/en/latest\n"
 "    ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.\n"
 "    "
 msgstr "Interakcja z botem za pośrednictwem pulpitu nawigacyjnego!\n\n"
+"    **Podręcznik instalacji:** https://red-web-dashboard.readthedocs.io/en/latest\n"
 "    ⚠️ Ten pakiet jest rozwidleniem pracy Neuro Assassina i nie jest w ogóle wspierany przez organizację.\n"
 "    "
 
-#: dashboard\dashboard.py:306
+#: dashboard\dashboard.py:347
+msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Dashboard nie jest zainstalowany. Sprawdź <https://red-web-dashboard.readthedocs.io>."
+
+#: dashboard\dashboard.py:352
+msgid "You can't access the Dashboard."
+msgstr "Nie można uzyskać dostępu do pulpitu nawigacyjnego."
+
+#: dashboard\dashboard.py:354
+msgid "Red-Dashboard"
+msgstr "Red-Dashboard"
+
+#: dashboard\dashboard.py:374
 #, docstring
 msgid "Set the client secret needed for Discord OAuth."
 msgstr "Ustaw sekret klienta wymagany dla Discord OAuth."
 
-#: dashboard\dashboard.py:315
+#: dashboard\dashboard.py:383
 msgid "Discord Secret"
 msgstr "Sekret Discorda"
 
-#: dashboard\dashboard.py:323
+#: dashboard\dashboard.py:391
 msgid "Discord OAuth secret set."
 msgstr "Zestaw sekretów Discord OAuth."
 
-#: dashboard\dashboard.py:359
+#: dashboard\dashboard.py:427
 msgid "Click on the button below to set a secret for Discord OAuth."
 msgstr "Kliknij poniższy przycisk, aby ustawić sekret Discord OAuth."
 

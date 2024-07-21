@@ -330,13 +330,13 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             title=_("Leaderboard"),
             color=await ctx.embed_color(),
         )
-        embed.set_author(name=f"{ctx.guild.name} | {counter.total()} Lifetime Votes", icon_url=ctx.guild.icon.url)
+        embed.set_author(name=_("{ctx.guild.name} | {total} Lifetime Votes").format(ctx=ctx, total=counter.total()), icon_url=ctx.guild.icon.url)
         if ctx.author in counter:
             author_index = list(counter.keys()).index(ctx.author) + 1
             embed.set_footer(text=_("You are at position {author_index} with {number_member_lifetime_votes} vote{s}.").format(author_index=author_index, s="" if counter[ctx.author] == 1 else "s", number_member_lifetime_votes=counter[ctx.author]))
         description = [
             f"{i}. **{member.display_name}**: {number_member_lifetime_votes} vote{'' if number_member_lifetime_votes == 1 else 's'}"
-            for i, (member, number_member_lifetime_votes) in enumerate(counter.items(), start=1)
+            for i, (member, number_member_lifetime_votes) in enumerate(counter.most_common(), start=1)
         ]
         embeds = []
         for page in discord.utils.as_chunks(description, 10):
@@ -372,13 +372,13 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             title=_("Monthly Leaderboard"),
             color=await ctx.embed_color(),
         )
-        embed.set_author(name=f"{ctx.guild.name} | {counter.total()} Monthly Votes", icon_url=ctx.guild.icon.url)
+        embed.set_author(name=_("{ctx.guild.name} | {total} Monthly Votes").format(ctx=ctx, total=counter.total()), icon_url=ctx.guild.icon.url)
         if ctx.author in counter:
             author_index = list(counter.keys()).index(ctx.author) + 1
             embed.set_footer(text=_("You are at position {author_index} with {number_member_monthly_votes} vote{s}.").format(author_index=author_index, s="" if counter[ctx.author] == 1 else "s", number_member_monthly_votes=counter[ctx.author]))
         description = [
             f"{i}. **{member.display_name}**: {number_member_monthly_votes} vote{'' if number_member_monthly_votes == 1 else 's'}"
-            for i, (member, number_member_monthly_votes) in enumerate(counter.items(), start=1)
+            for i, (member, number_member_monthly_votes) in enumerate(counter.most_common(), start=1)
         ]
         embeds = []
         for page in discord.utils.as_chunks(description, 10):

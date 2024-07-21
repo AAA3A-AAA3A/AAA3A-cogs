@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Loop, Settings  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings  # isort:skip
 from AAA3A_utils.settings import CustomMessageConverter  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -6,11 +6,15 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from redbot.core.utils.chat_formatting import pagify
+
 import datetime
 import io
 from copy import deepcopy
+from collections import Counter
 
 from .converter import RoleHierarchyConverter
+from .dashboard_integration import DashboardIntegration
 
 # Credits:
 # General repo credits.
@@ -19,7 +23,7 @@ _ = Translator("DisurlVotesTracker", __file__)
 
 
 @cog_i18n(_)
-class DisurlVotesTracker(Cog):
+class DisurlVotesTracker(DashboardIntegration, Cog):
     """Track votes on Disurl, assign roles to voters and remind them to vote!"""
 
     __authors__: typing.List[str] = ["AAA3A"]
@@ -303,9 +307,89 @@ class DisurlVotesTracker(Cog):
                             None, channel=votes_channel, env=env
                         )
 
+    @commands.bot_has_permissions(embed_links=True)
+    @commands.hybrid_group(aliases=["dvt"])
+    async def disurlvotestracker(self, ctx: commands.Context) -> None:
+        """Commands to interact with DisurlVotesTracker."""
+        pass
+
+    @disurlvotestracker.command()
+    async def leaderboard(self, ctx: commands.Context) -> None:
+        """Show the lifetime leaderboard of voters."""
+        if not await self.config.guild(ctx.guild).enabled():
+            raise commands.UserFeedbackCheckFailure(_("DisurlVotesTracker is not enabled in this server."))
+        members_data = await self.config.all_members(ctx.guild)
+        counter = Counter({
+            member: len(member_data["votes"])
+            for member_id, member_data in members_data.items()
+            if member_data["votes"] and (member := ctx.guild.get_member(member_id)) is not None
+        })
+        if not counter:
+            raise commands.UserFeedbackCheckFailure(_("No voters found."))
+        embed: discord.Embed = discord.Embed(
+            title=_("Leaderboard"),
+            color=await ctx.embed_color(),
+        )
+        embed.set_author(name=f"{ctx.guild.name} | {counter.total()} Lifetime Votes", icon_url=ctx.guild.icon.url)
+        if ctx.author in counter:
+            author_index = list(counter.keys()).index(ctx.author) + 1
+            embed.set_footer(text=_("You are at position {author_index}.").format(author_index=author_index))
+        description = [
+            f"{i}. **{member.display_name}**: {number_member_lifetime_votes} vote{'' if number_member_lifetime_votes == 1 else 's'}"
+            for i, (member, number_member_lifetime_votes) in enumerate(counter.items(), start=1)
+        ]
+        embeds = []
+        for page in discord.utils.as_chunks(description, 10):
+            e = embed.copy()
+            e.description = "\n".join(page)
+            embeds.append(e)
+        await Menu(pages=embeds).start(ctx)
+
+    @disurlvotestracker.command()
+    async def monthlyleaderboard(self, ctx: commands.Context) -> None:
+        """Show the monthly leaderboard of voters."""
+        if not await self.config.guild(ctx.guild).enabled():
+            raise commands.UserFeedbackCheckFailure(_("DisurlVotesTracker is not enabled in this server."))
+        members_data = await self.config.all_members(ctx.guild)
+        counter = Counter({
+            member: len(
+                [
+                    vote
+                    for vote in member_data["votes"]
+                    if datetime.datetime.now(tz=datetime.timezone.utc)
+                    - datetime.datetime.fromtimestamp(
+                        vote, tz=datetime.timezone.utc
+                    )
+                    < datetime.timedelta(days=30)
+                ]
+            )
+            for member_id, member_data in members_data.items()
+            if member_data["votes"] and (member := ctx.guild.get_member(member_id)) is not None
+        })
+        if not counter:
+            raise commands.UserFeedbackCheckFailure(_("No voters found."))
+        embed: discord.Embed = discord.Embed(
+            title=_("Monthly Leaderboard"),
+            color=await ctx.embed_color(),
+        )
+        embed.set_author(name=f"{ctx.guild.name} | {counter.total()} Monthly Votes", icon_url=ctx.guild.icon.url)
+        if ctx.author in counter:
+            author_index = list(counter.keys()).index(ctx.author) + 1
+            embed.set_footer(text=_("You are at position {author_index}.").format(author_index=author_index))
+        description = [
+            f"{i}. **{member.display_name}**: {number_member_monthly_votes} vote{'' if number_member_monthly_votes == 1 else 's'}"
+            for i, (member, number_member_monthly_votes) in enumerate(counter.items(), start=1)
+        ]
+        embeds = []
+        for page in discord.utils.as_chunks(description, 10):
+            e = embed.copy()
+            e.description = "\n".join(page)
+            embeds.append(e)
+        await Menu(pages=embeds).start(ctx)
+
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)
-    @commands.hybrid_group()
+    @commands.hybrid_group(aliases=["setdvt"])
     async def setdisurlvotestracker(self, ctx: commands.Context) -> None:
         """Commands to configure DisurlVotesTracker."""
         pass

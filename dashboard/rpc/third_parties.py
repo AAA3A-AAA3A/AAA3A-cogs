@@ -150,28 +150,25 @@ class DashboardRPC_ThirdParties:
             raise RuntimeError(f"`{name}` is already an existing third party.")
         _pages = {}
         for attr in dir(cog):
-            try:
-                if hasattr((func := getattr(cog, attr)), "__dashboard_decorator_params__"):
-                    setattr(
-                        cog,
-                        attr,
-                        types.MethodType(
-                            dashboard_page(
-                                *func.__dashboard_decorator_params__[0],
-                                **func.__dashboard_decorator_params__[1],
-                            )(func.__func__),
-                            func.__self__,
-                        ),
+            if hasattr((func := getattr(cog, attr)), "__dashboard_decorator_params__"):
+                setattr(
+                    cog,
+                    attr,
+                    types.MethodType(
+                        dashboard_page(
+                            *func.__dashboard_decorator_params__[0],
+                            **func.__dashboard_decorator_params__[1],
+                        )(func.__func__),
+                        func.__self__,
+                    ),
+                )
+            if hasattr((func := getattr(cog, attr)), "__dashboard_params__"):
+                page = func.__dashboard_params__["name"]
+                if page in _pages:
+                    raise RuntimeError(
+                        f"The page {page} is already an existing page for this third party."
                     )
-                if hasattr((func := getattr(cog, attr)), "__dashboard_params__"):
-                    page = func.__dashboard_params__["name"]
-                    if page in _pages:
-                        raise RuntimeError(
-                            f"The page {page} is already an existing page for this third party."
-                        )
-                    _pages[page] = (func, func.__dashboard_params__)
-            except TypeError:
-                continue
+                _pages[page] = (func, func.__dashboard_params__)
         if not _pages:
             raise RuntimeError("No page found.")
         self.third_parties[name] = _pages

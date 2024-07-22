@@ -529,7 +529,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                 raise commands.UserInputError()
             if not message.embeds:
                 raise commands.UserInputError()
-            data = {"embed": message.embeds[0].to_dict()}
+            data = {"embed": message.embeds[0]}
         embed = data["embed"]
         try:
             await ctx.channel.send(embed=embed)

@@ -199,7 +199,7 @@ class KoFiTracker(Cog):
     @commands.admin_or_permissions(administrator=True)
     @commands.hybrid_group()
     async def setkofitracker(self, ctx: commands.Context) -> None:
-        """Commands to configure KoFiVotesTracker."""
+        """Commands to configure KoFiTracker."""
         pass
 
     @setkofitracker.command(aliases=["+"])
@@ -267,7 +267,7 @@ class KoFiTracker(Cog):
     @commands.bot_has_permissions(embed_links=True)
     @setkofitracker.command()
     async def instructions(self, ctx: commands.Context) -> None:
-        """Instructions on how to set up KoFiVotesTracker."""
+        """Instructions on how to set up KoFiTracker."""
         if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
@@ -277,7 +277,7 @@ class KoFiTracker(Cog):
         if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(_("You can't access the Dashboard."))
         embed: discord.Embed = discord.Embed(
-            title=_("DisurlVotesTracker Instructions"),
+            title=_("KoFiTracker Instructions"),
             color=await ctx.embed_color(),
             description=_(
                 # kofi
@@ -286,6 +286,6 @@ class KoFiTracker(Cog):
                 "3. Go to the `Webhooks` section in `More`.\n"
                 "4. Set the webhook URL to {webhook_url} and click on `Update`.\n"
                 "5. Copy the `Verification Token` and use it with the command `{prefix}setkofitracker add <kofi_page_url> <verification_token>`."
-            ).format(webhook_url=f"{dashboard_url[0]}/api/webhook"),
+            ).format(webhook_url=f"{dashboard_url[0]}/api/webhook", prefix=ctx.prefix),
         )
         await ctx.send(embed=embed)

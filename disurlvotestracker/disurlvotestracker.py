@@ -1,12 +1,10 @@
-from AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings  # isort:skip
+from AAA3A_utils import Cog, Loop, Menu, Settings  # isort:skip
 from AAA3A_utils.settings import CustomMessageConverter  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
-
-from redbot.core.utils.chat_formatting import pagify
 
 import datetime
 import io
@@ -25,8 +23,6 @@ _ = Translator("DisurlVotesTracker", __file__)
 @cog_i18n(_)
 class DisurlVotesTracker(DashboardIntegration, Cog):
     """Track votes on Disurl, assign roles to voters and remind them to vote!"""
-
-    __authors__: typing.List[str] = ["AAA3A"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -191,45 +187,48 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         ) + 1
         s_1 = "" if number_member_votes == 1 else "s"
         s_2 = "" if number_member_monthly_votes == 1 else "s"
-        if (custom_vote_message := await self.config.guild(guild).custom_vote_message()) is None:
-            embed: discord.Embed = discord.Embed(color=discord.Color.green())
-            embed.title = _("New vote for {guild.name}!").format(guild=guild)
-            embed.set_author(name=member.display_name, icon_url=member.display_avatar)
-            embed.set_thumbnail(url=member.display_avatar)
-            embed.description = _(
-                "{member.mention} voted on Disurl!\n"
-                "`{number_member_votes} vote{s_1} this month & {number_member_monthly_votes} lifetime vote{s_2}`"
-            ).format(
-                member=member,
-                number_member_votes=number_member_votes, s_1=s_1,
-                number_member_monthly_votes=number_member_monthly_votes, s_2=s_2,
-            )
-            if voters_role is not None:
-                embed.description += _("\n\n{member.display_name} received the role {voters_role.mention} for the next 12 hours.").format(member=member, voters_role=voters_role)
-            embed.description += _("\n\nYou could vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!").format(guild=guild)
-            embed.set_footer(text=_("Thanks for supporting this server! | User ID: {member.id}").format(member=member), icon_url=guild.icon)
-            await votes_channel.send(embed=embed)
-        else:
-            env = {
-                "member_name": member.display_name,
-                "member_avatar_url": member.display_avatar.url,
-                "member_mention": member.mention,
-                "member_id": member.id,
-                "guild_name": guild.name,
-                "guild_icon_url": guild.icon.url,
-                "guild_id": guild.id,
-                "votes_channel_name": votes_channel.name,
-                "votes_channel_mention": votes_channel.mention,
-                "votes_channel_id": votes_channel.id,
-                "voters_role_name": voters_role.name if voters_role is not None else None,
-                "voters_role_mention": voters_role.mention if voters_role is not None else None,
-                "voters_role_id": voters_role.id if voters_role is not None else None,
-                "number_member_votes": number_member_votes, "s_1": s_1,
-                "number_member_monthly_votes": number_member_monthly_votes, "s_2": s_2,
-            }
-            await CustomMessageConverter(**custom_vote_message).send_message(
-                None, channel=votes_channel, env=env
-            )
+        try:
+            if (custom_vote_message := await self.config.guild(guild).custom_vote_message()) is None:
+                embed: discord.Embed = discord.Embed(color=discord.Color.green())
+                embed.title = _("New vote for {guild.name}!").format(guild=guild)
+                embed.set_author(name=member.display_name, icon_url=member.display_avatar)
+                embed.set_thumbnail(url=member.display_avatar)
+                embed.description = _(
+                    "{member.mention} voted on Disurl!\n"
+                    "`{number_member_votes} vote{s_1} this month & {number_member_monthly_votes} lifetime vote{s_2}`"
+                ).format(
+                    member=member,
+                    number_member_votes=number_member_votes, s_1=s_1,
+                    number_member_monthly_votes=number_member_monthly_votes, s_2=s_2,
+                )
+                if voters_role is not None:
+                    embed.description += _("\n\n{member.display_name} received the role {voters_role.mention} for the next 12 hours.").format(member=member, voters_role=voters_role)
+                embed.description += _("\n\nYou could vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!").format(guild=guild)
+                embed.set_footer(text=_("Thanks for supporting this server! | User ID: {member.id}").format(member=member), icon_url=guild.icon)
+                await votes_channel.send(embed=embed)
+            else:
+                env = {
+                    "member_name": member.display_name,
+                    "member_avatar_url": member.display_avatar.url,
+                    "member_mention": member.mention,
+                    "member_id": member.id,
+                    "guild_name": guild.name,
+                    "guild_icon_url": guild.icon.url,
+                    "guild_id": guild.id,
+                    "votes_channel_name": votes_channel.name,
+                    "votes_channel_mention": votes_channel.mention,
+                    "votes_channel_id": votes_channel.id,
+                    "voters_role_name": voters_role.name if voters_role is not None else None,
+                    "voters_role_mention": voters_role.mention if voters_role is not None else None,
+                    "voters_role_id": voters_role.id if voters_role is not None else None,
+                    "number_member_votes": number_member_votes, "s_1": s_1,
+                    "number_member_monthly_votes": number_member_monthly_votes, "s_2": s_2,
+                }
+                await CustomMessageConverter(**custom_vote_message).send_message(
+                    None, channel=votes_channel, env=env
+                )
+        except discord.HTTPException as e:
+            self.logger.error(f"Error when sending Disurl vote reminder in `{votes_channel.name}` ({votes_channel.id}).", exc_info=e)
 
         votes = await self.config.member(member).votes()
         votes.append(int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp()))
@@ -269,43 +268,46 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                             f"Failed to remove the voters role from {member} ({member.id}) in {guild} ({guild.id}): {e}"
                         )
 
-                if await self.config.guild(guild).vote_reminder():
-                    if (custom_vote_reminder_message := guild_data["custom_vote_reminder_message"]) is None:
-                        view = discord.ui.View()
-                        view.add_item(discord.ui.Button(label=_("Vote on Disurl!"), url=f"https://disurl.me/server/{guild.id}/vote"))
-                        await votes_channel.send(
-                            _(
-                                "{member.mention}, don't forget to vote on **[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again 12 hours after this vote. **Thanks for supporting this server!**"
-                            ).format(member=member, guild=guild),
-                            view=view,
-                        )
-                    else:
-                        number_member_votes = len(member_data["votes"])
-                        number_member_monthly_votes = len(
-                            [vote for vote in member_data["votes"] if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc) < datetime.timedelta(days=30)]
-                        )
-                        s_1 = "" if number_member_votes == 1 else "s"
-                        s_2 = "" if number_member_monthly_votes == 1 else "s"
-                        env = {
-                            "member_name": member.display_name,
-                            "member_avatar_url": member.display_avatar.url,
-                            "member_mention": member.mention,
-                            "member_id": member.id,
-                            "guild_name": guild.name,
-                            "guild_icon_url": guild.icon.url,
-                            "guild_id": guild.id,
-                            "votes_channel_name": votes_channel.name,
-                            "votes_channel_mention": votes_channel.mention,
-                            "votes_channel_id": votes_channel.id,
-                            "voters_role_name": voters_role.name if voters_role is not None else None,
-                            "voters_role_mention": voters_role.mention if voters_role is not None else None,
-                            "voters_role_id": voters_role.id if voters_role is not None else None,
-                            "number_member_votes": number_member_votes, "s_1": s_1,
-                            "number_member_monthly_votes": number_member_monthly_votes, "s_2": s_2,
-                        }
-                        await CustomMessageConverter(**custom_vote_reminder_message).send_message(
-                            None, channel=votes_channel, env=env
-                        )
+                try:
+                    if await self.config.guild(guild).vote_reminder():
+                        if (custom_vote_reminder_message := guild_data["custom_vote_reminder_message"]) is None:
+                            view = discord.ui.View()
+                            view.add_item(discord.ui.Button(label=_("Vote on Disurl!"), url=f"https://disurl.me/server/{guild.id}/vote"))
+                            await votes_channel.send(
+                                _(
+                                    "{member.mention}, don't forget to vote on **[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again 12 hours after this vote. **Thanks for supporting this server!**"
+                                ).format(member=member, guild=guild),
+                                view=view,
+                            )
+                        else:
+                            number_member_votes = len(member_data["votes"])
+                            number_member_monthly_votes = len(
+                                [vote for vote in member_data["votes"] if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc) < datetime.timedelta(days=30)]
+                            )
+                            s_1 = "" if number_member_votes == 1 else "s"
+                            s_2 = "" if number_member_monthly_votes == 1 else "s"
+                            env = {
+                                "member_name": member.display_name,
+                                "member_avatar_url": member.display_avatar.url,
+                                "member_mention": member.mention,
+                                "member_id": member.id,
+                                "guild_name": guild.name,
+                                "guild_icon_url": guild.icon.url,
+                                "guild_id": guild.id,
+                                "votes_channel_name": votes_channel.name,
+                                "votes_channel_mention": votes_channel.mention,
+                                "votes_channel_id": votes_channel.id,
+                                "voters_role_name": voters_role.name if voters_role is not None else None,
+                                "voters_role_mention": voters_role.mention if voters_role is not None else None,
+                                "voters_role_id": voters_role.id if voters_role is not None else None,
+                                "number_member_votes": number_member_votes, "s_1": s_1,
+                                "number_member_monthly_votes": number_member_monthly_votes, "s_2": s_2,
+                            }
+                            await CustomMessageConverter(**custom_vote_reminder_message).send_message(
+                                None, channel=votes_channel, env=env
+                            )
+                except discord.HTTPException as e:
+                    self.logger.error(f"Error when sending Disurl notification in `{votes_channel.name}` ({votes_channel.id}).", exc_info=e)
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_group(aliases=["dvt"])

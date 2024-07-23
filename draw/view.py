@@ -520,7 +520,7 @@ class DrawView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                "You are not allowed to use this interaction.", ephemeral=True
+                _("You are not allowed to use this interaction."), ephemeral=True
             )
             return False
         return True

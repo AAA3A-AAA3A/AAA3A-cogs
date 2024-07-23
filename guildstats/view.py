@@ -1,9 +1,12 @@
 from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
 import asyncio
+
+_ = Translator("GuildStats", __file__)
 
 
 class GuildStatsView(discord.ui.View):
@@ -86,7 +89,7 @@ class GuildStatsView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                "You are not allowed to use this interaction.", ephemeral=True
+                _("You are not allowed to use this interaction."), ephemeral=True
             )
             return False
         return True

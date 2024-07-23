@@ -189,8 +189,11 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         s_2 = "" if number_member_monthly_votes == 1 else "s"
         try:
             if (custom_vote_message := await self.config.guild(guild).custom_vote_message()) is None:
-                embed: discord.Embed = discord.Embed(color=discord.Color.green())
-                embed.title = _("New vote for {guild.name}!").format(guild=guild)
+                embed: discord.Embed = discord.Embed(
+                    _("New vote for {guild.name}!").format(guild=guild),
+                    color=discord.Color.green(),
+                    timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                )
                 embed.set_author(name=member.display_name, icon_url=member.display_avatar)
                 embed.set_thumbnail(url=member.display_avatar)
                 embed.description = _(

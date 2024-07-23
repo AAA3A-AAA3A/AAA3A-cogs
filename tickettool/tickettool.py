@@ -853,7 +853,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                         [member.id] if member is not None else []
                     ) + list(ctx.bot.owner_ids):
                         await interaction.response.send_message(
-                            "You are not allowed to use this interaction.", ephemeral=True
+                            _("You are not allowed to use this interaction."), ephemeral=True
                         )
                         return False
                     return True

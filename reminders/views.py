@@ -186,7 +186,7 @@ class ReminderView(discord.ui.View):
             return True
         if interaction.user.id not in [self.reminder.user_id] + list(self.cog.bot.owner_ids):
             await interaction.response.send_message(
-                "You are not allowed to use this interaction.", ephemeral=True
+                _("You are not allowed to use this interaction."), ephemeral=True
             )
             return False
         return True
@@ -460,7 +460,7 @@ class RepeatView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.reminder.user_id] + list(self.cog.bot.owner_ids):
             await interaction.response.send_message(
-                "You are not allowed to use this interaction.", ephemeral=True
+                _("You are not allowed to use this interaction."), ephemeral=True
             )
             return False
         if (
@@ -568,7 +568,7 @@ class SnoozeView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.reminder.user_id] + list(self.cog.bot.owner_ids):
             await interaction.response.send_message(
-                "You are not allowed to use this interaction.", ephemeral=True
+                _("You are not allowed to use this interaction."), ephemeral=True
             )
             return False
         return True

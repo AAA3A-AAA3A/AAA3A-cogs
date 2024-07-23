@@ -411,7 +411,7 @@ class Dashboard(Cog):
             async def interaction_check(_self, interaction: discord.Interaction) -> bool:
                 if interaction.user.id not in [ctx.author.id] + list(ctx.bot.owner_ids):
                     await interaction.response.send_message(
-                        "You are not allowed to use this interaction.", ephemeral=True
+                        _("You are not allowed to use this interaction."), ephemeral=True
                     )
                     return False
                 return True

@@ -454,7 +454,7 @@ class DiscordModals(Cog):
     async def send_modal(self, interaction: discord.Interaction) -> None:
         if await self.bot.cog_disabled_in_guild(cog=self, guild=interaction.guild):
             await interaction.response.send_message(
-                "You are not allowed to use this interaction.", ephemeral=True
+                _("You are not allowed to use this interaction."), ephemeral=True
             )
             return
         config = await self.config.guild(interaction.message.guild).modals()
@@ -475,7 +475,7 @@ class DiscordModals(Cog):
             )
         ):
             await interaction.response.send_message(
-                "You are not allowed to use this interaction.", ephemeral=True
+                _("You are not allowed to use this interaction."), ephemeral=True
             )
             return
         if config["unique_answer"] and interaction.user.id in config["existing_answers"]:

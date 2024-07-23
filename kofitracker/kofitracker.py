@@ -109,6 +109,7 @@ class KoFiTracker(Cog):
                     title=_("New {type} on {display_name}'s KoFi").format(type=payload["type"], display_name=kofi_page_details['display_name']),
                     url=payload["url"],
                     color=discord.Color.red(),
+                    timestamp=discord.utils.parse_time(payload["timestamp"]),
                 )
                 embed.set_thumbnail(url=kofi_page_details["avatar_url"])
                 # embed.set_image(url=kofi_page_details["banner_url"])
@@ -143,7 +144,6 @@ class KoFiTracker(Cog):
                     embed.add_field(name=_("Email:"), value=f"[{payload['email']}](mailto:{payload['email']})", inline=False)
                 embed.add_field(name="\u200b", value=f"||Transaction ID: `{payload['kofi_transaction_id']}`||", inline=False)
 
-                embed.timestamp = discord.utils.parse_time(payload["timestamp"])
                 embed.set_footer(text=_("Received from KoFi."), icon_url="https://storage.ko-fi.com/cdn/nav-logo-stroke.png")
                 view: discord.ui.View = discord.ui.View()
                 view.add_item(

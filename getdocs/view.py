@@ -1,5 +1,6 @@
 from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -7,7 +8,9 @@ import asyncio
 
 from redbot.core.utils.chat_formatting import pagify
 
-from .types import Documentation, SearchResults
+from .types import Documentation
+
+_ = Translator("GetDocs", __file__)
 
 
 class DocsSelect(discord.ui.Select):
@@ -15,7 +18,7 @@ class DocsSelect(discord.ui.Select):
         self._parent: discord.ui.View = parent
         self._options = [discord.SelectOption(label=name, value=name) for name in results]
         super().__init__(
-            placeholder="Select an option.",
+            placeholder=_("Select an option."),
             options=self._options,
             row=0,
         )
@@ -48,7 +51,7 @@ class GetDocsView(discord.ui.View):
             self.query, limit=25, exclude_std=True, with_raw_search=True
         )
         if not self.results:
-            raise RuntimeError("No results found.")
+            raise RuntimeError(_("No results found."))
         if self.source.name == "discordapi":
             self.show_parameters.label = "Show fields"
         if self.query != "random" and len(self.results) > 1:
@@ -61,7 +64,7 @@ class GetDocsView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                "You are not allowed to use this interaction.", ephemeral=True
+                _("You are not allowed to use this interaction."), ephemeral=True
             )
             return False
         return True
@@ -87,7 +90,7 @@ class GetDocsView(discord.ui.View):
                 break
             i += 1
         if documentation is None:
-            raise RuntimeError("No results found.")
+            raise RuntimeError(_("No results found."))
 
         self.show_parameters.label = "Show Parameters"
         self.show_examples.label = "Show Examples"

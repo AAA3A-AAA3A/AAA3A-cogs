@@ -111,7 +111,7 @@ class SplitOrStealGameView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if self._mode == "play" and interaction.user not in self.players:
             await interaction.response.send_message(
-                "You are not allowed to use this interaction.", ephemeral=True
+                _("You are not allowed to use this interaction."), ephemeral=True
             )
             return False
         return True

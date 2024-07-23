@@ -312,6 +312,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                 except discord.HTTPException as e:
                     self.logger.error(f"Error when sending Disurl notification in `{votes_channel.name}` ({votes_channel.id}).", exc_info=e)
 
+    @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_group(aliases=["dvt"])
     async def disurlvotestracker(self, ctx: commands.Context) -> None:

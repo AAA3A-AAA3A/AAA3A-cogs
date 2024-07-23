@@ -15,7 +15,7 @@ from redbot.core.utils.chat_formatting import humanize_list, pagify
 # General repo credits.
 # Thanks to Obi-Wan3 for the cog idea and the strings of some messages (https://github.com/Obi-Wan3/OB13-Cogs/tree/main/temprole)!
 
-_ = Translator("TempRoles", __file__)
+_: Translator = Translator("TempRoles", __file__)
 
 TimeConverter: commands.converter.TimedeltaConverter = commands.converter.TimedeltaConverter(
     minimum=datetime.timedelta(minutes=1),

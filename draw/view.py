@@ -33,7 +33,7 @@ from .tools import (
     Tool,
 )  # NOQA
 
-_ = Translator("Draw", __file__)
+_: Translator = Translator("Draw", __file__)
 
 ADD_COLORS_EMOJI = "🏳️‍🌈"
 ADD_EMOJIS_EMOJI = discord.PartialEmoji(name="emojismiley", id=1056857231125123152)  # "😃"

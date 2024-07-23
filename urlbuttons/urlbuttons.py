@@ -13,7 +13,7 @@ from .converters import Emoji, EmojiUrlConverter, UrlConverter
 # General repo credits.# Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
 # Thanks to Kuro for the emoji converter (https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)!
 
-_ = Translator("UrlButtons", __file__)
+_: Translator = Translator("UrlButtons", __file__)
 
 
 class MyMessageConverter(commands.MessageConverter):

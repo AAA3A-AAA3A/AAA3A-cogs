@@ -21,7 +21,7 @@ from redbot.core.utils.chat_formatting import box, pagify
 
 # I made this cog to be able to update files on my bot's host machine easily and quickly, without having to update cogs from GitHub for all my tests.
 
-_ = Translator("EditFile", __file__)
+_: Translator = Translator("EditFile", __file__)
 
 
 @cog_i18n(_)

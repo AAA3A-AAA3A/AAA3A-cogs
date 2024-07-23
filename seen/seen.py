@@ -16,7 +16,7 @@ from redbot.core.utils.chat_formatting import box, pagify
 # General repo credits.
 # Thanks to @aikaterna on Discord for the cog idea and a part of the code (https://github.com/aikaterna/aikaterna-cogs/blob/v3/seen/seen.py)!
 
-_ = Translator("Seen", __file__)
+_: Translator = Translator("Seen", __file__)
 
 
 @cog_i18n(_)

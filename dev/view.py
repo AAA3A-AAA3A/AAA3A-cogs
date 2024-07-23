@@ -10,7 +10,7 @@ import textwrap
 
 from redbot.core import dev_commands
 
-_ = Translator("Dev", __file__)
+_: Translator = Translator("Dev", __file__)
 
 
 def cleanup_code(code: str) -> str:

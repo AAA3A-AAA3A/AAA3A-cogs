@@ -14,7 +14,7 @@ from .view import PermissionsView
 # Credits:
 # General repo credits.
 
-_ = Translator("ViewPermissions", __file__)
+_: Translator = Translator("ViewPermissions", __file__)
 
 
 class PermissionConverter(commands.Converter):

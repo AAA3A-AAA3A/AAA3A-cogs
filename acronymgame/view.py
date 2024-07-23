@@ -12,7 +12,7 @@ from collections import Counter
 from prettytable import PrettyTable
 from redbot.core.utils.chat_formatting import box, humanize_list
 
-_ = Translator("AcronymGame", __file__)
+_: Translator = Translator("AcronymGame", __file__)
 
 
 class JoinGameModal(discord.ui.Modal):

@@ -12,7 +12,7 @@ from copy import deepcopy
 # General repo credits.
 # The idea for this cog came from @OnlyEli on Red cogs support (https://discord.com/channels/240154543684321280/430582201113903114/944075297127538730)!
 
-_ = Translator("MemberPrefix", __file__)
+_: Translator = Translator("MemberPrefix", __file__)
 
 
 @cog_i18n(_)

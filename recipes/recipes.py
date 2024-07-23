@@ -21,7 +21,7 @@ from .view import RecipesView
 # General repo credits.
 # Thanks to Max for the cog idea!
 
-_ = Translator("Recipes", __file__)
+_: Translator = Translator("Recipes", __file__)
 
 
 def unquote(string: str):

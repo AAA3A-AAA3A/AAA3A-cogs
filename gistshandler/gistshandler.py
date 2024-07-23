@@ -13,7 +13,7 @@ from .view import GistsHandlerView
 # General repo credits.
 # Thanks to WitherredAway for the cog's idea and a part of the code (https://github.com/WitherredAway/Yeet/blob/master/cogs/gist.py)!
 
-_ = Translator("GistsHandler", __file__)
+_: Translator = Translator("GistsHandler", __file__)
 
 
 class GistConverter(commands.Converter):

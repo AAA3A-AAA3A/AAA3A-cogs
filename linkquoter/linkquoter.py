@@ -16,7 +16,7 @@ from .dashboard_integration import DashboardIntegration
 # General repo credits.
 # Thanks to Phen for the original code (https://github.com/phenom4n4n/phen-cogs/tree/master/linkquoter)!
 
-_ = Translator("LinkQuoter", __file__)
+_: Translator = Translator("LinkQuoter", __file__)
 
 
 class LinkQuoterView(discord.ui.View):

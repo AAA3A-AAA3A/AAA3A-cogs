@@ -30,7 +30,7 @@ from .views import ReminderView
 # Thanks to PhasecoreX for the Reminder design and several ideas with his RemindMe cog (not the code)!
 # Thanks to PhasecoreX for the code to parse relative durations (https://github.com/PhasecoreX/PCXCogs/blob/master/remindme/reminder_parse.py)! I added myself `òn` kwarg, allow the converter to parse `ìn` and `every` in the same time, and did many improvents.
 
-_ = Translator("Reminders", __file__)
+_: Translator = Translator("Reminders", __file__)
 
 MAX_REMINDER_LENGTH = 1500
 

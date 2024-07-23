@@ -11,7 +11,7 @@ from redbot.core.commands.converter import parse_timedelta
 from .constants import ACTIONS_DICT
 from .types import Action
 
-_ = Translator("SimpleSanction", __file__)
+_: Translator = Translator("SimpleSanction", __file__)
 
 
 class SimpleSanctionView(discord.ui.View):

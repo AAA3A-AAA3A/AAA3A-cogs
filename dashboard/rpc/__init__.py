@@ -23,7 +23,7 @@ from .webhooks import DashboardRPC_Webhooks
 # Credits:
 # Thank you to NeuroAssassin for the original code.
 
-_ = Translator("Dashboard", __file__)
+_: Translator = Translator("Dashboard", __file__)
 
 
 class DashboardRPC:

@@ -29,7 +29,7 @@ from copy import copy
 # General repo credits.
 # The idea for this cog came from Jack and Draper! This PR will take time, so I'm making it. If one day this one is integrated into Red, this cog may make it easier to manage. (https://github.com/Cog-Creators/Red-DiscordBot/pull/5419)
 
-_ = Translator("Sudo", __file__)
+_: Translator = Translator("Sudo", __file__)
 
 TimeDeltaConverter: commands.converter.timedelta = commands.TimedeltaConverter(
     minimum=datetime.timedelta(seconds=10), maximum=datetime.timedelta(days=1), default_unit="m"

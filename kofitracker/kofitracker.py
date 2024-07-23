@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 # Credits:
 # General repo credits.
 
-_ = Translator("KoFiTracker", __file__)
+_: Translator = Translator("KoFiTracker", __file__)
 
 HEADERS: typing.Dict[str, str] = {"User-Agent": "Mozilla/5.0"}
 

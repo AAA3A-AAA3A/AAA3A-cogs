@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw
 # Credits:
 # General repo credits.
 
-_ = Translator("PresenceChart", __file__)
+_: Translator = Translator("PresenceChart", __file__)
 
 
 @cog_i18n(_)

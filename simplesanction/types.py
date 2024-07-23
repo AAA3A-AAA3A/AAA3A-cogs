@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from redbot.core.commands.converter import parse_timedelta
 from redbot.core.utils.predicates import MessagePredicate
 
-_ = Translator("SimpleSanction", __file__)
+_: Translator = Translator("SimpleSanction", __file__)
 
 
 @dataclass(frozen=True)

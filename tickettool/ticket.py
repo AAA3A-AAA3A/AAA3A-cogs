@@ -11,7 +11,7 @@ import chat_exporter
 
 from .utils import utils
 
-_ = Translator("TicketTool", __file__)
+_: Translator = Translator("TicketTool", __file__)
 
 
 class Ticket:

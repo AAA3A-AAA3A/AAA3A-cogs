@@ -59,7 +59,7 @@ GITEA_RE = re.compile(
 
 GITHUB_HEADERS = {"Accept": "application/vnd.github.v3.raw"}
 
-_ = Translator("CodeSnippets", __file__)
+_: Translator = Translator("CodeSnippets", __file__)
 
 
 @cog_i18n(_)

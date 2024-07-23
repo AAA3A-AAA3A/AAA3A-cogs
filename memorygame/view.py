@@ -14,7 +14,7 @@ from redbot.core.errors import BalanceTooHigh
 # GAME_EMOJIS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"]
 GAME_EMOJIS = ["🏆", "🎯", "🎲", "⚽", "🏀", "🏓", "🥁", "🎮", "🎳", "🎻", "🎖️", "🏹"]
 
-_ = Translator("MemoryGame", __file__)
+_: Translator = Translator("MemoryGame", __file__)
 
 
 class MemoryGameView(discord.ui.View):

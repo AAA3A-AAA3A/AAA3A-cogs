@@ -6,7 +6,7 @@ import typing  # isort:skip
 
 import asyncio
 
-_ = Translator("GuildStats", __file__)
+_: Translator = Translator("GuildStats", __file__)
 
 
 class GuildStatsView(discord.ui.View):

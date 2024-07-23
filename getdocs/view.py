@@ -10,7 +10,7 @@ from redbot.core.utils.chat_formatting import pagify
 
 from .types import Documentation
 
-_ = Translator("GetDocs", __file__)
+_: Translator = Translator("GetDocs", __file__)
 
 
 class DocsSelect(discord.ui.Select):

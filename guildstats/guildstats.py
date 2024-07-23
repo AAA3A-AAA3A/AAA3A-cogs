@@ -23,7 +23,7 @@ from .view import GuildStatsView
 # Credits:
 # General repo credits.
 
-_ = Translator("GuildStats", __file__)
+_: Translator = Translator("GuildStats", __file__)
 
 
 class ObjectConverter(commands.Converter):

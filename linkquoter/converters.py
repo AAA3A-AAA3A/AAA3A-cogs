@@ -4,7 +4,7 @@ import discord  # isort:skip
 
 import re
 
-_ = Translator("LinkQuoter", __file__)
+_: Translator = Translator("LinkQuoter", __file__)
 
 MESSAGE_LINK_REGEX = re.compile(
     r"https?:\/\/(?:(?:ptb|canary)\.)?discord(?:app)?\.com"

@@ -21,7 +21,7 @@ from .view import CalculatorView  # isort:skip
 # Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
 # Thanks to Flame for fixing an RCE in the cog!
 
-_ = Translator("Calculator", __file__)
+_: Translator = Translator("Calculator", __file__)
 
 
 @cog_i18n(_)

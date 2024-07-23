@@ -19,7 +19,7 @@ except ImportError:
 # The idea for this cog came from @fulksayyan on the cogboard! (https://cogboard.discord.red/t/hired-will-pay-custom-reaction-commands/782)
 # Thanks to Kuro for the emoji converter (https://canary.discord.com/channels/133049272517001216/133251234164375552/1014520590239019048)!
 
-_ = Translator("ReactToCommand", __file__)
+_: Translator = Translator("ReactToCommand", __file__)
 
 
 class Emoji(commands.EmojiConverter):

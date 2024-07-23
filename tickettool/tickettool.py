@@ -24,7 +24,7 @@ from .utils import CustomModalConverter
 # General repo credits.
 # Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
 
-_ = Translator("TicketTool", __file__)
+_: Translator = Translator("TicketTool", __file__)
 
 
 @cog_i18n(_)

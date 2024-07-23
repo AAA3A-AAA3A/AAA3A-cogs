@@ -16,7 +16,7 @@ def dashboard_page(*args, **kwargs):
 
     return decorator
 
-_ = Translator("DisurlVotesTracker", __file__)
+_: Translator = Translator("DisurlVotesTracker", __file__)
 
 LEADERBOARD_SOURCE_PATH: Path = Path(__file__).parent / "leaderboard.html"
 

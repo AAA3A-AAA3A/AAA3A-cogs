@@ -29,7 +29,7 @@ from .dashboard_integration import DashboardIntegration
 # Thanks to Phen for the original code (https://github.com/phenom4n4n/phen-cogs/tree/master/embedutils)!
 # Thanks to Max for hosting an embeds creator (https://embedutils.com/)!
 
-_ = Translator("EmbedUtils", __file__)
+_: Translator = Translator("EmbedUtils", __file__)
 
 JSON_CONVERTER = StringToEmbed(allow_content=False)
 JSON_CONTENT_CONVERTER = StringToEmbed()

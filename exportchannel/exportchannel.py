@@ -24,7 +24,7 @@ RESULT_MESSAGE = _(
 )
 LINK_MESSAGE = _("[Click here to view the transcript.]({url})")
 
-_ = Translator("ExportChannel", __file__)
+_: Translator = Translator("ExportChannel", __file__)
 
 
 class MessageOrObjectConverter(commands.Converter):

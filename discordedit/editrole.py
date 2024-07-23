@@ -26,7 +26,7 @@ ERROR_MESSAGE = _(
     "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
 )
 
-_ = Translator("DiscordEdit", __file__)
+_: Translator = Translator("DiscordEdit", __file__)
 
 
 class EmojiOrUrlConverter(commands.Converter):

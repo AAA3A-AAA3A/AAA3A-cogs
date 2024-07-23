@@ -6,7 +6,7 @@ import typing  # isort:skip
 
 import asyncio
 
-_ = Translator("ViewPermissions", __file__)
+_: Translator = Translator("ViewPermissions", __file__)
 
 
 class PermissionsView(discord.ui.View):

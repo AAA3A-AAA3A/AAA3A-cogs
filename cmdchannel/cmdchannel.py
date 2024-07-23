@@ -9,7 +9,7 @@ import typing  # isort:skip
 # General repo credits.
 # Removed, but: Thanks to TrustyJAID for the code (a bit modified to work here and to improve as needed) for the log messages sent (https://github.com/TrustyJAID/Trusty-cogs/tree/master/extendedmodlog)!
 
-_ = Translator("CmdChannel", __file__)
+_: Translator = Translator("CmdChannel", __file__)
 
 
 @cog_i18n(_)

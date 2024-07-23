@@ -15,7 +15,7 @@ from .constants import (
 )  # NOQA
 from .view import DrawView
 
-_ = Translator("Draw", __file__)
+_: Translator = Translator("Draw", __file__)
 
 
 class StartDrawView(discord.ui.View):

@@ -5,7 +5,7 @@ import typing  # isort:skip
 
 from redbot.core.utils.chat_formatting import box
 
-_ = Translator("Calculator", __file__)
+_: Translator = Translator("Calculator", __file__)
 
 NORMAL_BUTTONS = [
     {"style": 2, "label": "1", "emoji": None, "custom_id": "1"},

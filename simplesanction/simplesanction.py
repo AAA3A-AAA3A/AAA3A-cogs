@@ -21,7 +21,7 @@ from .view import SimpleSanctionView
 # Thanks to Yami for the technique in the init file of some cogs to load the interaction client only if it is not already loaded! Before this fix, when a user clicked a button, the actions would be run about 10 times, causing a huge spam and loop in the channel.
 # Thanks to @Aikaterna on the Red support server for help on displaying the main command help menu and other commands!
 
-_ = Translator("SimpleSanction", __file__)
+_: Translator = Translator("SimpleSanction", __file__)
 
 
 class TimeDeltaConverter(commands.Converter):

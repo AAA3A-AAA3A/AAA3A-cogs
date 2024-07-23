@@ -10,7 +10,7 @@ import aiohttp
 
 from .types import Word
 
-_ = Translator("Dictionary", __file__)
+_: Translator = Translator("Dictionary", __file__)
 
 
 class DictionaryView(discord.ui.View):

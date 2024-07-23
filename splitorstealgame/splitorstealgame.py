@@ -11,7 +11,7 @@ from .view import SplitOrStealGameView
 # General repo credits.
 # Thanks to Lemon for the cog idea!
 
-_ = Translator("SplitOrStealGame", __file__)
+_: Translator = Translator("SplitOrStealGame", __file__)
 
 
 @cog_i18n(_)

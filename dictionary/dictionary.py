@@ -15,7 +15,7 @@ from .view import DictionaryView
 # Credits:
 # General repo credits.
 
-_ = Translator("Dictionary", __file__)
+_: Translator = Translator("Dictionary", __file__)
 
 
 @cog_i18n(_)

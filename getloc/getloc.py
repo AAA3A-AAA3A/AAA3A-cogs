@@ -26,7 +26,7 @@ except ImportError:
 # General repo credits.
 # Thanks to this tutorial (https://makersportal.com/blog/2018/8/16/rotating-globe-in-python-using-basemap-toolkit) to generate the map!
 
-_ = Translator("GetLoc", __file__)
+_: Translator = Translator("GetLoc", __file__)
 
 
 CT = typing.TypeVar(

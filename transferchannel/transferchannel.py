@@ -25,7 +25,7 @@ RESULT_MESSAGE = _(
     "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
 )
 
-_ = Translator("TransferChannel", __file__)
+_: Translator = Translator("TransferChannel", __file__)
 
 
 class MessageOrObjectConverter(commands.Converter):

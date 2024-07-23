@@ -14,7 +14,7 @@ import yaml
 from redbot.core import dev_commands
 from redbot.core.utils.chat_formatting import box
 
-_ = Translator("EmbedUtils", __file__)
+_: Translator = Translator("EmbedUtils", __file__)
 
 
 def cleanup_code(code: str) -> str:

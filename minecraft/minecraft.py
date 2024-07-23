@@ -20,7 +20,7 @@ from redbot.core.utils.chat_formatting import box, pagify
 # General repo credits.
 # Thanks to Fixator for the code to get informations about Minecraft servers (https://github.com/fixator10/Fixator10-Cogs/blob/V3/minecraftdata/minecraftdata.py)!
 
-_ = Translator("Minecraft", __file__)
+_: Translator = Translator("Minecraft", __file__)
 
 
 class MCPlayer:

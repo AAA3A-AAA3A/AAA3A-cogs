@@ -36,7 +36,7 @@ from pyparsing import (
 )  # NOQA
 from recurrent.event_parser import RecurringEvent
 
-_ = Translator("Reminders", __file__)
+_: Translator = Translator("Reminders", __file__)
 
 
 CT = typing.TypeVar(

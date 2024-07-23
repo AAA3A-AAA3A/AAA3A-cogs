@@ -19,7 +19,7 @@ from .view import MemoryGameView
 # Thanks to Flame for his tests which allowed to discover several errors!
 # Thanks to Vertyco for ideas, and leaderboard code (https://github.com/vertyco/vrt-cogs/blob/main/pixl/pixl.py)!
 
-_ = Translator("MemoryGame", __file__)
+_: Translator = Translator("MemoryGame", __file__)
 
 
 @cog_i18n(_)

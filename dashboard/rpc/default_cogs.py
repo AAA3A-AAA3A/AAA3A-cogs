@@ -9,7 +9,7 @@ from redbot.cogs.customcom.customcom import ArgParseError
 
 from .utils import rpc_check
 
-_ = Translator("Dashboard", __file__)
+_: Translator = Translator("Dashboard", __file__)
 
 
 class DashboardRPC_DefaultCogs:

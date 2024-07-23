@@ -12,7 +12,7 @@ try:
 except ImportError:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 
-_ = Translator("UrlButtons", __file__)
+_: Translator = Translator("UrlButtons", __file__)
 
 
 class UrlConverter(commands.Converter):

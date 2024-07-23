@@ -32,7 +32,7 @@ from .view import DrawView
 # Changes: Use Pillow images instead of custom emojis for the board itself, adaptation to Red bot, download images from Discord or Internet, add "Display Cursor" and "Raw Paint" buttons, allow to do a pixels selection with "ABCD" button...
 # Thanks to Karlo in Red main server for his ideas and testing the cog!
 
-_ = Translator("Draw", __file__)
+_: Translator = Translator("Draw", __file__)
 
 
 @cog_i18n(_)

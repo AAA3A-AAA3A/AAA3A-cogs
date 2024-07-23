@@ -10,7 +10,7 @@ import datetime
 import gists
 from redbot.core.utils.chat_formatting import box
 
-_ = Translator("GistsHandler", __file__)
+_: Translator = Translator("GistsHandler", __file__)
 
 
 class FilesSelect(discord.ui.Select):

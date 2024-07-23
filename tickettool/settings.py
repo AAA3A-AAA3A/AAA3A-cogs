@@ -6,7 +6,7 @@ import typing  # isort:skip
 
 from .utils import Emoji, EmojiLabelDescriptionValueConverter
 
-_ = Translator("TicketTool", __file__)
+_: Translator = Translator("TicketTool", __file__)
 
 
 class ProfileConverter(commands.Converter):

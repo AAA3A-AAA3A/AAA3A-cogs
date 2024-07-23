@@ -7,7 +7,7 @@ import asyncio
 import datetime
 import random
 
-_ = Translator("SplitOrSteal", __file__)
+_: Translator = Translator("SplitOrSteal", __file__)
 
 
 class SplitOrStealGameView(discord.ui.View):

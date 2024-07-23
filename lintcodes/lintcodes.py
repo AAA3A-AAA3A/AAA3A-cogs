@@ -24,7 +24,7 @@ from .linter import Linter
 # General repo credits.
 # Thanks to rtk-rnjn for a part of the code (https://github.com/rtk-rnjn/Parrot/tree/main/cogs/rtfm)!
 
-_ = Translator("LintCodes", __file__)
+_: Translator = Translator("LintCodes", __file__)
 
 
 @cog_i18n(_)

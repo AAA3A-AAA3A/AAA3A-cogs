@@ -21,7 +21,7 @@ from redbot.core.utils.common_filters import URL_RE
 # General repo credits.
 # Thanks to Trusty for the secure way to manage user Regexes (https://github.com/TrustyJAID/Trusty-cogs/blob/master/retrigger/triggerhandler.py#L542-L606)!
 
-_ = Translator("DiscordSearch", __file__)
+_: Translator = Translator("DiscordSearch", __file__)
 
 
 class StrConverter(commands.Converter):

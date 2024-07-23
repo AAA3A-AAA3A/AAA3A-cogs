@@ -23,7 +23,7 @@ import yapf
 from colorama import Fore
 from redbot.core.utils.chat_formatting import box
 
-_ = Translator("LintCodes", __file__)
+_: Translator = Translator("LintCodes", __file__)
 
 
 def cleanup_ansi(text: str) -> str:

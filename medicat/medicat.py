@@ -272,7 +272,7 @@ BOOTABLES_TOOLS = {
     },
 }
 
-_ = Translator("Medicat", __file__)
+_: Translator = Translator("Medicat", __file__)
 
 
 @cog_i18n(_)

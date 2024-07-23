@@ -23,7 +23,7 @@ from redbot.core.utils.chat_formatting import humanize_list
 
 from .views import ReminderView, RepeatView, SnoozeView
 
-_ = Translator("Reminders", __file__)
+_: Translator = Translator("Reminders", __file__)
 
 try:
     from typing import TypeAlias

@@ -10,7 +10,7 @@ try:
 except ImportError:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 
-_ = Translator("RolesButtons", __file__)
+_: Translator = Translator("RolesButtons", __file__)
 
 
 class Emoji(commands.EmojiConverter):

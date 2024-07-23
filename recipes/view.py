@@ -7,7 +7,7 @@ import asyncio
 
 from .types import Recipe
 
-_ = Translator("Recipes", __file__)
+_: Translator = Translator("Recipes", __file__)
 
 
 class InstructionsSectionsSelect(discord.ui.Select):

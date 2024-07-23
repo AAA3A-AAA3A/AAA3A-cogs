@@ -18,7 +18,7 @@ from .rpc import DashboardRPC
 # General repo credits.
 # Thank you very much to Neuro Assassin for the original code (https://github.com/NeuroAssassin/Toxic-Cogs/tree/master/dashboard)!
 
-_ = Translator("Dashboard", __file__)
+_: Translator = Translator("Dashboard", __file__)
 
 
 class StrConverter(commands.Converter):

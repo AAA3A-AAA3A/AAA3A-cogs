@@ -41,7 +41,7 @@ from .view import GetDocsView
 # Thanks to Lemon for the idea of this code (showed me @Lambda bot in the dpy server), for the documentations links, and for many ideas and suggestions!
 # Thanks to Danny for fuzzy search function (https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/utils/fuzzy.py#L325-L350)!
 
-_ = Translator("GetDocs", __file__)
+_: Translator = Translator("GetDocs", __file__)
 
 
 CT = typing.TypeVar(

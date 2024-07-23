@@ -24,7 +24,7 @@ from redbot.core.utils.chat_formatting import bold, box
 # Credits:
 # General repo credits.
 
-_ = Translator("CtxVar", __file__)
+_: Translator = Translator("CtxVar", __file__)
 
 
 def cleanup_code(code: str) -> str:

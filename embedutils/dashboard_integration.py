@@ -9,7 +9,7 @@ import os
 
 from .converters import ListStringToEmbed
 
-_ = Translator("EmbedUtils", __file__)
+_: Translator = Translator("EmbedUtils", __file__)
 
 
 def dashboard_page(*args, **kwargs):

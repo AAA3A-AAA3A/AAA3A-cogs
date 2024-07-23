@@ -12,7 +12,7 @@ from .dashboard_integration import DashboardIntegration
 # Credits:
 # General repo credits.
 
-_ = Translator("ClearChannel", __file__)
+_: Translator = Translator("ClearChannel", __file__)
 
 
 @cog_i18n(_)

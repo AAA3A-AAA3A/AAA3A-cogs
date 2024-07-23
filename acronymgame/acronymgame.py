@@ -13,7 +13,7 @@ from .view import AcronymGameView
 # Thanks to Flame for his tests which allowed to discover several errors!
 # Thanks to Vertyco for ideas, and leaderboard code (https://github.com/vertyco/vrt-cogs/blob/main/pixl/pixl.py)!
 
-_ = Translator("AcronymGame", __file__)
+_: Translator = Translator("AcronymGame", __file__)
 
 
 @cog_i18n(_)

@@ -13,7 +13,7 @@ import validators
 
 from .converters import TimeConverter
 
-_ = Translator("Reminders", __file__)
+_: Translator = Translator("Reminders", __file__)
 
 MAX_REMINDER_LENGTH = 1500
 

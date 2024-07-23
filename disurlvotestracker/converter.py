@@ -2,7 +2,7 @@ from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 
-_ = Translator("DisurlVotesTracker", __file__)
+_: Translator = Translator("DisurlVotesTracker", __file__)
 
 
 class RoleHierarchyConverter(commands.RoleConverter):

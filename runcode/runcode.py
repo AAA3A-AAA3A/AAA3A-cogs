@@ -27,7 +27,7 @@ from .types import (
 # Credits:
 # General repo credits.
 
-_ = Translator("RunCode", __file__)
+_: Translator = Translator("RunCode", __file__)
 
 
 class WandboxLanguageConverter(commands.Converter):

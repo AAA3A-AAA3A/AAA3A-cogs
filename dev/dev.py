@@ -32,7 +32,7 @@ from .view import ExecuteView, cleanup_code
 # Thanks to Cogs-Creators for the original Dev cog!
 # Thanks to Zeph for many ideas and a big part of the code (code removed from public)!
 
-_ = Translator("Dev", __file__)
+_: Translator = Translator("Dev", __file__)
 
 TimeConverter: commands.converter.TimedeltaConverter = commands.converter.TimedeltaConverter(
     minimum=None,

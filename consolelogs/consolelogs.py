@@ -34,7 +34,7 @@ from .dashboard_integration import DashboardIntegration
 # Thanks to Tobotimus for the part to get logs files lines (https://github.com/Tobotimus/Tobo-Cogs/blob/V3/errorlogs/errorlogs.py)!
 # Thanks to Trusty for the part to get the "message" content for slash commands (https://github.com/TrustyJAID/Trusty-cogs/blob/master/extendedmodlog/eventmixin.py#L222-L249!
 
-_ = Translator("ConsoleLogs", __file__)
+_: Translator = Translator("ConsoleLogs", __file__)
 
 LATEST_LOG_RE = re.compile(r"latest(?:-part(?P<part>\d+))?\.log")
 CONSOLE_LOG_RE = re.compile(

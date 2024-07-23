@@ -18,7 +18,7 @@ from .dashboard_integration import DashboardIntegration
 # General repo credits.
 # Thanks to Epic for the original code (https://github.com/npc203/npc-cogs/tree/dpy2/snipe)!
 
-_ = Translator("Snipe", __file__)
+_: Translator = Translator("Snipe", __file__)
 
 
 # https://stackoverflow.com/questions/1094841/get-human-readable-version-of-file-size

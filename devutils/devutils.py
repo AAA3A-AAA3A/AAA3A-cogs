@@ -21,7 +21,7 @@ from redbot.core.utils.chat_formatting import humanize_list
 # General repo credits.
 # Thanks to Phen for the original code (https://github.com/phenom4n4n/phen-cogs/tree/master/phenutils)!
 
-_ = Translator("Devutils", __file__)
+_: Translator = Translator("Devutils", __file__)
 
 SLEEP_FLAG = re.compile(r"(?:--|—)sleep (\d+)$")
 

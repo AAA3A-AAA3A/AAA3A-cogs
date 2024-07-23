@@ -13,7 +13,7 @@ from .editvoicechannel import EditVoiceChannel
 # Credits:
 # General repo credits.
 
-_ = Translator("DiscordEdit", __file__)
+_: Translator = Translator("DiscordEdit", __file__)
 
 BASES = [EditGuild, EditRole, EditTextChannel, EditThread, EditVoiceChannel]  # EditAutoMod
 

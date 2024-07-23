@@ -23,7 +23,7 @@ from redbot.core.utils.chat_formatting import box, humanize_list
 # Credits:
 # General repo credits.
 
-_ = Translator("DiscordModals", __file__)
+_: Translator = Translator("DiscordModals", __file__)
 
 
 class MyMessageConverter(commands.MessageConverter):

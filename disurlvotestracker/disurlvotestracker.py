@@ -179,6 +179,8 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                 self.logger.error(
                     f"Failed to assign the voters role to {member} ({member.id}) in {guild} ({guild.id}): {e}"
                 )
+        else:
+            voters_role = None
 
         member_data = await self.config.member(member).all()
         number_member_votes = len(member_data["votes"]) + 1
@@ -233,9 +235,10 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         except discord.HTTPException as e:
             self.logger.error(f"Error when sending Disurl vote reminder in `{votes_channel.name}` ({votes_channel.id}).", exc_info=e)
 
-        votes = await self.config.member(member).votes()
-        votes.append(int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp()))
-        await self.config.member(member).votes.set(votes)
+        if payload["type"] == "vote":
+            votes = await self.config.member(member).votes()
+            votes.append(int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp()))
+            await self.config.member(member).votes.set(votes)
         await self.config.member(member).last_reminder_sent.set(False)
 
     async def check_12h_after_votes(self) -> None:

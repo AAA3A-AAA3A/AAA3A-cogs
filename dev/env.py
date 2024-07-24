@@ -353,7 +353,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
             name = name.replace("-", "_")
             spec = importlib.util.find_spec(name)
             if not spec:
-                return "Module '{name}' not found".format(name=name)
+                return "Module `{name}` not found".format(name=name)
             return spec.submodule_search_locations[0]
 
         async def _rtfs(ctx: commands.Context, object):

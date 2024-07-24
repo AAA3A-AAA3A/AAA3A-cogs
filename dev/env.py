@@ -352,7 +352,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
         def where(name_or_module: typing.Union[str, types.MethodType]) -> str:
             name = (
-                name_or_module if isinstance(name_or_module, str) else (getattr(name_or_module, "module", None) or name_or_module.__name__)
+                name_or_module if isinstance(name_or_module, str) else (getattr(name_or_module, "__module__", None) or name_or_module.__name__)
             ).replace("-", "_")
             spec = importlib.util.find_spec(name)
             if spec is None:
@@ -629,7 +629,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 # Search attributes
                 "search_attrs": lambda ctx: search_attribute,
                 # search python library
-                "where": lambda ctx: where(,
+                "where": lambda ctx: where,
                 # `reference`
                 "reference": reference,
                 # No color (Dev cog from fluffy-cogs in mobile).

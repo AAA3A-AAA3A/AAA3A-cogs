@@ -190,7 +190,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         try:
             if (custom_vote_message := await self.config.guild(guild).custom_vote_message()) is None:
                 embed: discord.Embed = discord.Embed(
-                    _("New vote for {guild.name}!").format(guild=guild),
+                    title=_("New vote for {guild.name}!").format(guild=guild),
                     color=discord.Color.green(),
                     timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                 )

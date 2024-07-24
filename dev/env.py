@@ -12,6 +12,7 @@ import sys
 import textwrap
 import time
 import traceback
+import types
 from contextvars import ContextVar
 from functools import partial
 from io import BytesIO, StringIO
@@ -349,6 +350,15 @@ class DevEnv(typing.Dict[str, typing.Any]):
     ) -> typing.Dict[str, typing.Any]:
         logger = CogsUtils.get_logger(name="Test")
 
+        def where(name_or_module: typing.Union[str, types.MethodType]) -> str:
+            name = (
+                name_or_module if isinstance(name_or_module, str) else (getattr(name_or_module, "module", None) or name_or_module.__name__)
+            ).replace("-", "_")
+            spec = importlib.util.find_spec(name)
+            if spec is None:
+                raise RuntimeError("Module `{name}` not found.".format(name=name))
+            return spec.origin
+
         async def _rtfs(ctx: commands.Context, object):
             code = inspect.getsource(object)
             await Menu(pages=code, lang="py").start(ctx)
@@ -618,6 +628,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "textwrap": lambda ctx: textwrap,
                 # Search attributes
                 "search_attrs": lambda ctx: search_attribute,
+                # search python library
+                "where": lambda ctx: where(,
                 # `reference`
                 "reference": reference,
                 # No color (Dev cog from fluffy-cogs in mobile).

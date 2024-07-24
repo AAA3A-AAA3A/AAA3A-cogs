@@ -349,6 +349,13 @@ class DevEnv(typing.Dict[str, typing.Any]):
     ) -> typing.Dict[str, typing.Any]:
         logger = CogsUtils.get_logger(name="Test")
 
+        def where(name: str) -> str:
+            name = name.replace("-", "_")
+            spec = importlib.util.find_spec(name)
+            if not spec:
+                return "Module '{name}' not found".format(name=name)
+            return spec.submodule_search_locations[0]
+
         async def _rtfs(ctx: commands.Context, object):
             code = inspect.getsource(object)
             await Menu(pages=code, lang="py").start(ctx)
@@ -618,6 +625,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "textwrap": lambda ctx: textwrap,
                 # Search attributes
                 "search_attrs": lambda ctx: search_attribute,
+                # search python library
+                "where": lambda ctx: where,
                 # `reference`
                 "reference": reference,
                 # No color (Dev cog from fluffy-cogs in mobile).

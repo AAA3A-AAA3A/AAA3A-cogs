@@ -18,13 +18,13 @@ Next, let's add my repository to your system.
 
 .. code-block:: ini
 
-    [p]repo add AAA3A https://github.com/AAA3A-AAA3A/AAA3A-cogs
+    [p]repo add AAA3A-cogs https://github.com/AAA3A-AAA3A/AAA3A-cogs
 
 To install a cog, use this command, replacing <cog> with the name of the cog you wish to install:
 
 .. code-block:: ini
 
-    [p]cog install AAA3A <cog>
+    [p]cog install AAA3A-cogs <cog>
 
 -------------------
 Available cogs list

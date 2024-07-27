@@ -34,7 +34,7 @@ class DashboardIntegration:
     @dashboard_page(name=None, description="Create rich Embeds!")
     async def dashboard_editor(self, **kwargs) -> None:
         file_path = os.path.join(os.path.dirname(__file__), "editor.html")
-        with open(file_path, "rt") as f:
+        with open(file_path, "rt", encoding="utf-8") as f:
             source = f.read()
         return {"status": 0, "web_content": {"source": source, "standalone": True}}
 
@@ -63,7 +63,7 @@ class DashboardIntegration:
             }
 
         file_path = os.path.join(os.path.dirname(__file__), "editor.html")
-        with open(file_path, "rt") as f:
+        with open(file_path, "rt", encoding="utf-8") as f:
             source = f.read()
 
         import wtforms

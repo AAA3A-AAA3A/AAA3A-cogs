@@ -222,7 +222,11 @@ class Calculator(Cog):
             self.history[ctx.author].append(
                 (calculation.replace("|", ""), result.replace("|", ""))
             )
-            await ctx.send(embed=await self.get_embed(ctx, calculation, result))
+            await ctx.send(
+                embed=await self.get_embed(ctx, calculation, result),
+                reference=ctx.message.to_reference(fail_if_not_exists=False),
+                allowed_mentions=discord.AllowedMentions.none(),
+            )
             return
         await CalculatorView(cog=self).start(ctx)
 

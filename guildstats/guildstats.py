@@ -6299,6 +6299,8 @@ class GuildStats(Cog):
                     del channels_data[channel]["total_messages_members"][user_id]
                     channels_data[channel]["messages"].pop(user_id, None)
                 for user_id in list(channels_data[channel]["total_voice_members"]):
+                    if ctx.guild.get_member(int(user_id)) is not None:
+                        continue
                     del channels_data[channel]["total_voice_members"][user_id]
                     channels_data[channel]["voice"].pop(user_id, None)
         # Members.

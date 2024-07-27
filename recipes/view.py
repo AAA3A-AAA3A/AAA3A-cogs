@@ -92,7 +92,7 @@ class RecipesView(discord.ui.View):
     async def _callback(self, interaction: discord.Interaction, option: discord.SelectOption):
         await interaction.response.defer()
         embed: discord.Embed = discord.Embed(
-            title=f"Instructions {option.value}", color=await self.ctx.embed_color()
+            title="Instructions" + (f" {option.value}" if option.value != "Instructions" else ""), color=await self.ctx.embed_color()
         )
         embed.description = "\n\n".join(
             [

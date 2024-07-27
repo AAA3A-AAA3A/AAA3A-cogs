@@ -115,7 +115,8 @@ class Recipes(Cog):
                         unquote(instruction["text"]) for instruction in section["itemListElement"]
                     ]
                     for section in json_content["recipeInstructions"]
-                }
+                } if json_content["recipeInstructions"] and "itemListElement" in json_content["recipeInstructions"][0] else
+                {"Instructions": [unquote(instruction["text"]) for instruction in json_content["recipeInstructions"]]}
             )
             if not json_content["recipeInstructions"]
             or isinstance(json_content["recipeInstructions"][0], typing.Dict)

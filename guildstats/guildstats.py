@@ -6297,9 +6297,10 @@ class GuildStats(Cog):
                     if ctx.guild.get_member(int(user_id)) is not None:
                         continue
                     del channels_data[channel]["total_messages_members"][user_id]
-                    del channels_data[channel]["messages"][user_id]
+                    channels_data[channel]["messages"].pop(user_id, None)
+                for user_id in list(channels_data[channel]["total_voice_members"]):
                     del channels_data[channel]["total_voice_members"][user_id]
-                    del channels_data[channel]["voice"][user_id]
+                    channels_data[channel]["voice"].pop(user_id, None)
         # Members.
         member_group = self.config._get_base_group(self.config.MEMBER)
         async with member_group.all() as members_data:

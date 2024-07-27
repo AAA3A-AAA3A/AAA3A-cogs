@@ -6286,6 +6286,33 @@ class GuildStats(Cog):
 
     @commands.admin_or_permissions(administrator=True)
     @guildstats.command(hidden=True)
+    async def purgeoldmembers(self, ctx: commands.Context) -> None:
+        """Purge old members data."""
+        await self.save_to_config()
+        # Channels.
+        channel_group = self.config._get_base_group(self.config.CHANNEL)
+        async with channel_group.all() as channels_data:
+            for channel in channels_data:
+                for user_id in list(channels_data[channel]["total_messages_members"]):
+                    if ctx.guild.get_member(int(user_id)) is not None:
+                        continue
+                    del channels_data[channel]["total_messages_members"][user_id]
+                    del channels_data[channel]["messages"][user_id]
+                    del channels_data[channel]["total_voice_members"][user_id]
+                    del channels_data[channel]["voice"][user_id]
+        # Members.
+        member_group = self.config._get_base_group(self.config.MEMBER)
+        async with member_group.all() as members_data:
+            for guild in members_data.copy():
+                for user_id in list(members_data[guild]):
+                    if ctx.guild.get_member(int(user_id)) is not None:
+                        continue
+                    del members_data[guild][user_id]
+                if not members_data[guild]:
+                    del members_data[guild]
+
+    @commands.admin_or_permissions(administrator=True)
+    @guildstats.command(hidden=True)
     async def purge(
         self,
         ctx: commands.Context,

@@ -18,7 +18,7 @@ _: Translator = Translator("AcronymGame", __file__)
 
 @cog_i18n(_)
 class AcronymGame(Cog):
-    """A cog to play a random match of Acrononym game, with Modals!"""
+    """Play a random match of Acrononym game, with Modals!"""
 
     @property
     def games(self) -> typing.Dict[discord.Message, AcronymGameView]:
@@ -26,9 +26,7 @@ class AcronymGame(Cog):
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.hybrid_command(aliases=["acro", "acronym"])
+    @commands.hybrid_command(aliases=["acronym", "acro"])
     async def acronymgame(self, ctx: commands.Context) -> None:
-        """
-        Play a random match of Acronym game.
-        """
+        """Play a random match of Acronym game."""
         await AcronymGameView(cog=self).start(ctx)

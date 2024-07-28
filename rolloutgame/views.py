@@ -21,7 +21,7 @@ class JoinGameView(discord.ui.View):
         self.hoster: discord.Member = None
         self.players: typing.List[discord.Member] = []
 
-        self.cancelled: bool = False
+        self.cancelled: bool = True
 
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
@@ -129,6 +129,7 @@ class JoinGameView(discord.ui.View):
                 "You need at least 2 players to start the game!", ephemeral=True
             )
             return
+        self.cancelled: bool = False
         await self.on_timeout()
         await interaction.response.defer()
         self.stop()
@@ -144,7 +145,6 @@ class JoinGameView(discord.ui.View):
             return
         await interaction.response.send_message("The game has been cancelled!", ephemeral=True)
         await self.on_timeout()
-        self.cancelled: bool = True
         self.stop()
 
 

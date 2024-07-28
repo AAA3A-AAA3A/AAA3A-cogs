@@ -1,13 +1,12 @@
-from AAA3A_utils import Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import pagify, humanize_list
+from redbot.core.utils.chat_formatting import humanize_list
 
 import datetime
-from random import randint, choice
+from random import choice
 
 _: Translator = Translator("RolloutGame", __file__)
 
@@ -36,7 +35,7 @@ class JoinGameView(discord.ui.View):
             value=_(
                 "**•** Click the **Join Game** button to join the game. Limited to 25 players.\n"
                 "**•** Wait for the host to start the game.\n"
-                "**•** At each round, select a number between 1 and 25. Choose is limited to 30 seconds.\n"
+                "**•** At each round, select a number between 1 and 25 within 30 seconds.\n"
                 "**•** If the bot rolls the number you selected, you lose.\n"
                 "**•** The last player standing wins the game!"
             )
@@ -111,18 +110,8 @@ class JoinGameView(discord.ui.View):
         )
         embed.set_author(name=_("Hosted by {hoster.display_name}").format(hoster=self.hoster), icon_url=self.hoster.display_avatar)
         embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
-        players = "\n".join(f"**•** **{player.display_name}** ({player.id})" for player in self.players)
-        embeds = []
-        for page in pagify(players, page_length=3000):
-            e = embed.copy()
-            e.description = page
-            embeds.append(e)
-        await Menu(
-            pages=embeds,
-            ephemeral=True,
-        ).start(
-            await self.ctx.bot.get_context(interaction),
-        )
+        embed.description = "\n".join(f"**•** **{player.display_name}** ({player.id})" for player in self.players)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="Start Game!", style=discord.ButtonStyle.primary)
     async def start_button(
@@ -155,6 +144,7 @@ class RolloutGameView(discord.ui.View):
         self.round: int = 1
         self.disabled_numbers: typing.List[int] = []
         self._choices: typing.Dict[discord.Member, int] = {}
+        self._number: int = None
 
     async def start(
         self,
@@ -186,6 +176,7 @@ class RolloutGameView(discord.ui.View):
             )
             button.callback = self.callback
             self.add_item(button)
+        self._number = choice([i for i in range(1, 25+1) if i not in self.disabled_numbers])
         embed.add_field(
             name="Time Left:",
             value=f"<t:{int((datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=30)).timestamp())}:R>",
@@ -199,6 +190,8 @@ class RolloutGameView(discord.ui.View):
         return self._message
 
     async def on_timeout(self) -> None:
+        embed = self._message.embeds[0]
+        embed.clear_fields()
         for child in self.children:
             child: discord.ui.Item
             if hasattr(child, "disabled") and not (
@@ -206,11 +199,16 @@ class RolloutGameView(discord.ui.View):
             ):
                 child.disabled = True
         try:
-            await self._message.edit(view=self)
+            await self._message.edit(embed=embed, view=self)
         except discord.HTTPException:
             pass
 
     async def callback(self, interaction: discord.Interaction) -> None:
+        if interaction.user not in self.players:
+            await interaction.response.send_message(
+                "You are not in the game!", ephemeral=True
+            )
+            return
         number = int(interaction.data["custom_id"])
         self._choices[interaction.user] = number
         try:
@@ -220,7 +218,7 @@ class RolloutGameView(discord.ui.View):
         await interaction.response.send_message(f"You have selected the number {number}!", ephemeral=True)
 
     async def choose_number(self) -> int:
-        number = randint(1, 25)
+        number = self._number
         self.disabled_numbers.append(number)
         discord.utils.get(self.children, label=str(number)).style = discord.ButtonStyle.danger
         try:

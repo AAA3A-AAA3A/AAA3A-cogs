@@ -90,7 +90,10 @@ class RolloutGame(Cog):
             await view.start(
                 ctx, players=players, round=round, disabled_numbers=disabled_numbers,
             )
-            await asyncio.sleep(30)
+            for __ in range(30):
+                if len(view._choices) == len(view.players):
+                    break
+                await asyncio.sleep(1)
             await view.on_timeout()
             view.stop()
             try:
@@ -115,8 +118,7 @@ class RolloutGame(Cog):
                 await bank.set_balance(winner, e.max_balance)
 
         embed = discord.Embed(
-            title=_("Winner"),
-            description=_("Congratulations {winner}! You won the game!").format(winner=winner),
+            title=_("Congratulations {winner}! You won the game!").format(winner=winner),
             color=await ctx.embed_color(),
             timestamp=ctx.message.created_at,
         )

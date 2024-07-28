@@ -128,6 +128,11 @@ class JoinGameView(discord.ui.View):
     async def start_button(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
+        if interaction.user != self.hoster:
+            await interaction.response.send_message(
+                "Only the host can start the game!", ephemeral=True
+            )
+            return
         if len(self.players) < 2:
             await interaction.response.send_message(
                 "You need at least 2 players to start the game!", ephemeral=True

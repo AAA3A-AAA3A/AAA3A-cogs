@@ -36,7 +36,7 @@ class JoinGameView(discord.ui.View):
             name=_("Instructions:"),
             value=_(
                 "**•** Click the **Join Game** button to join the game. Limited to 25 players.\n"
-                "**•** Wait for the host to start the game.\n"
+                "**•** Wait for the hoster to start the game.\n"
                 "**•** At each round, select a number between 1 and 25 within 30 seconds.\n"
                 "**•** If the bot rolls the number you selected, you lose.\n"
                 "**•** The last player standing wins the game!"
@@ -121,7 +121,7 @@ class JoinGameView(discord.ui.View):
     ) -> None:
         if interaction.user != self.hoster:
             await interaction.response.send_message(
-                "Only the host can start the game!", ephemeral=True
+                "Only the hoster can start the game!", ephemeral=True
             )
             return
         if len(self.players) < 2:
@@ -133,13 +133,13 @@ class JoinGameView(discord.ui.View):
         await interaction.response.defer()
         self.stop()
 
-    @discord.ui.button(emoji="❌", style=discord.ButtonStyle.danger)
+    @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger)
     async def cancel_button(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if interaction.user != self.hoster:
             await interaction.response.send_message(
-                "Only the host can cancel the game!", ephemeral=True
+                "Only the hosterer can cancel the game!", ephemeral=True
             )
             return
         await interaction.response.send_message("The game has been cancelled!", ephemeral=True)

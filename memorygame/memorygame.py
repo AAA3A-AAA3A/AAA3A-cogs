@@ -1,4 +1,4 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Menu, Settings  # isort:skip
+﻿from AAA3A_utils import Cog, Menu, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -80,7 +80,7 @@ class MemoryGame(DashboardIntegration, Cog):
             global_path=[],
             use_profiles_system=False,
             can_edit=True,
-            commands_group=self.configuration,
+            commands_group=self.setmemorygame,
         )
 
     async def cog_load(self) -> None:
@@ -147,16 +147,18 @@ class MemoryGame(DashboardIntegration, Cog):
             max_wrong_matches = await self.config.guild(ctx.guild).max_wrong_matches()
         else:
             max_wrong_matches = None
+        if ctx.guild is not None:
+            member_config = await self.config.member(ctx.author).all()
+            member_config["games"] += 1
+            await self.config.member(ctx.author).set(member_config)
         await MemoryGameView(
             cog=self, difficulty=difficulty, max_wrong_matches=max_wrong_matches
         ).start(ctx)
 
     @commands.bot_has_permissions(embed_links=True)
-    @commands.hybrid_command()
+    @commands.hybrid_command(aliases=["memorygamelb"])
     async def memorygameleaderboard(self, ctx: commands.Context) -> None:
-        """
-        Show MemoryGame leaderboard.
-        """
+        """Show MemoryGame leaderboard."""
         all_members = await self.config.all_members(ctx.guild)
         all_members = {
             ctx.guild.get_member(member): data
@@ -199,13 +201,13 @@ class MemoryGame(DashboardIntegration, Cog):
         await Menu(pages=embeds).start(ctx)
 
     @commands.guild_only()
-    @commands.admin_or_permissions(administrator=True)
-    @commands.hybrid_group(name="setmemorygame")
-    async def configuration(self, ctx: commands.Context) -> None:
+    @commands.admin_or_permissions(manage_guild=True)
+    @commands.hybrid_group()
+    async def setmemorygame(self, ctx: commands.Context) -> None:
         """Group of commands to set MemoryGame."""
         pass
 
-    @configuration.command()
+    @setmemorygame.command()
     async def resetleaderboard(self, ctx: commands.Context) -> None:
         """Reset leaderboard in the guild."""
         await self.config.clear_all_members(ctx.guild)

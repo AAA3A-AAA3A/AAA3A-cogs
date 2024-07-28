@@ -214,9 +214,8 @@ class MemoryGameView(discord.ui.View):
             )
             member_config["score"] += final_prize
             member_config["wins"] += 1
-            member_config["games"] += 1
             await self.cog.config.member(self.ctx.author).set(member_config)
-            if self.cog.config.guild(self.ctx.guild).red_economy():
+            if config["red_economy"]:
                 # https://canary.discord.com/channels/133049272517001216/133251234164375552/1089212578279997521
                 try:
                     await bank.deposit_credits(self.ctx.author, final_prize)

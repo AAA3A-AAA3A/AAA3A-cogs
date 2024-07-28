@@ -77,9 +77,9 @@ class RolloutGame(Cog):
         join_view: JoinGameView = JoinGameView(self)
         await join_view.start(ctx)
         await join_view.wait()
-        if join_view.cancelled:
-            return
         players = join_view.players
+        if join_view.cancelled or not players:
+            return
         for player in players:
             member_config = await self.config.member(player).all()
             member_config["games"] += 1

@@ -18,6 +18,7 @@ from wtforms import (
     SelectFieldBase,
     SelectMultipleField,
     SubmitField,
+    BooleanField,
 )  # NOQA
 from wtforms.csrf.core import CSRF
 from wtforms.fields.core import UnboundField
@@ -168,14 +169,22 @@ async def get_form_class(
             for field in self:
                 if isinstance(field, (HiddenField, SubmitField)):
                     continue
-                html_form.extend(['    <div class="mb-3">', '        <div class="form-group">'])
+                html_form.append('    <div class="mb-3">')
+                # if not isinstance(field, BooleanField):
+                html_form.append('        <div class="form-group">')
                 html_form.append(
                     f'            <label class="form-group-label">{field.label}</label>'
                 )
                 html_form.append(
                     f'            {field(class_="form-control form-control-default")}'
                 )
-                html_form.extend(["        </div>", "    </div>"])
+                html_form.append("        </div>")
+                # else:
+                #     html_form.append('        <div class="form-check form-switch ps-0">')
+                #     html_form.append(f'            {field(class_="form-check-input")}')
+                #     html_form.append(f'            <label class="form-check-label">{field.label}</label>')
+                #     html_form.append("        </div>")
+                html_form.append("    </div>")
             html_form.append('    <div class="text-center">')
             for field in self:
                 if isinstance(field, SubmitField):

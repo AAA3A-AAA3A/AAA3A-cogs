@@ -15,6 +15,7 @@ class GuildStatsView(discord.ui.View):
         cog: commands.Cog,
         _object: typing.Union[
             discord.Member,
+            typing.Tuple[discord.Member, typing.Literal["activities"]],
             discord.Role,
             discord.Guild,
             typing.Tuple[
@@ -43,6 +44,7 @@ class GuildStatsView(discord.ui.View):
 
         self._object: typing.Union[
             discord.Member,
+            typing.Tuple[discord.Member, typing.Literal["activities"]],
             discord.Role,
             discord.Guild,
             typing.Tuple[

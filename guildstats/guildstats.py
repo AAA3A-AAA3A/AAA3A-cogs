@@ -709,6 +709,7 @@ class GuildStats(Cog):
         self,
         _object: typing.Union[
             discord.Member,
+            typing.Tuple[discord.Member, typing.Literal["activities"]],
             discord.Role,
             discord.Guild,
             typing.Tuple[
@@ -881,206 +882,107 @@ class GuildStats(Cog):
         members_type_key = "" if members_type == "both" else f"{members_type}_"
 
         if isinstance(_object, discord.Member):
-            members_messages_counter: Counter = Counter(
-                [
-                    member_id
-                    for channel_id in all_channels_data
-                    for member_id, count_messages in all_channels_data[channel_id][
-                        "total_messages_members"
-                    ].items()
-                    for __ in range(count_messages)
-                    if (member := _object.guild.get_member(int(member_id))) is not None
-                    and member.bot == _object.bot
-                ]
-            )
-            members_messages_sorted: typing.List[int] = sorted(
-                members_messages_counter,
-                key=lambda x: (members_messages_counter[x], 1 if int(x) == _object.id else 0),
-                reverse=True,
-            )
-            members_voice_counter: Counter = Counter(
-                [
-                    member_id
-                    for channel_id in all_channels_data
-                    for member_id, count_voice in all_channels_data[channel_id][
-                        "total_voice_members"
-                    ].items()
-                    for __ in range(count_voice)
-                    if (member := _object.guild.get_member(int(member_id))) is not None
-                    and member.bot == _object.bot
-                ]
-            )
-            members_voice_sorted: typing.List[int] = sorted(
-                members_voice_counter,
-                key=lambda x: (members_voice_counter[x], 1 if int(x) == _object.id else 0),
-                reverse=True,
-            )
-            top_messages_channels = Counter(
-                {
-                    channel_id: all_channels_data[channel_id]["total_messages_members"].get(
-                        str(_object.id), 0
-                    )
-                    for channel_id in all_channels_data
-                    if _object.guild.get_channel(int(channel_id)) is not None
-                }
-            )
-            top_voice_channels = Counter(
-                {
-                    channel_id: all_channels_data[channel_id]["total_voice_members"].get(
-                        str(_object.id), 0
-                    )
-                    for channel_id in all_channels_data
-                    if _object.guild.get_channel(int(channel_id)) is not None
-                }
-            )
-            top_activities = Counter(
-                {
-                    activity_name: total_time
-                    for activity_name, total_time in all_members_data.get(
-                        _object.id, {"total_activities_times": {}}
-                    )["total_activities_times"].items()
-                    if activity_name not in ignored_activities
-                }
-            )
-            return {
-                "server_lookback": {  # type: messages/hours
-                    "text": sum(
-                        all_channels_data[channel_id]["total_messages_members"].get(
+            if _type is None:
+                members_messages_counter: Counter = Counter(
+                    [
+                        member_id
+                        for channel_id in all_channels_data
+                        for member_id, count_messages in all_channels_data[channel_id][
+                            "total_messages_members"
+                        ].items()
+                        for __ in range(count_messages)
+                        if (member := _object.guild.get_member(int(member_id))) is not None
+                        and member.bot == _object.bot
+                    ]
+                )
+                members_messages_sorted: typing.List[int] = sorted(
+                    members_messages_counter,
+                    key=lambda x: (members_messages_counter[x], 1 if int(x) == _object.id else 0),
+                    reverse=True,
+                )
+                members_voice_counter: Counter = Counter(
+                    [
+                        member_id
+                        for channel_id in all_channels_data
+                        for member_id, count_voice in all_channels_data[channel_id][
+                            "total_voice_members"
+                        ].items()
+                        for __ in range(count_voice)
+                        if (member := _object.guild.get_member(int(member_id))) is not None
+                        and member.bot == _object.bot
+                    ]
+                )
+                members_voice_sorted: typing.List[int] = sorted(
+                    members_voice_counter,
+                    key=lambda x: (members_voice_counter[x], 1 if int(x) == _object.id else 0),
+                    reverse=True,
+                )
+                top_messages_channels = Counter(
+                    {
+                        channel_id: all_channels_data[channel_id]["total_messages_members"].get(
                             str(_object.id), 0
                         )
                         for channel_id in all_channels_data
-                    ),
-                    "voice": roundest_value
-                    if (
-                        roundest_value := round(
-                            sum(
-                                all_channels_data[channel_id]["total_voice_members"].get(
-                                    str(_object.id), 0
-                                )
-                                for channel_id in all_channels_data
-                            )
-                            / 3600,
-                            ndigits=2,
+                        if _object.guild.get_channel(int(channel_id)) is not None
+                    }
+                )
+                top_voice_channels = Counter(
+                    {
+                        channel_id: all_channels_data[channel_id]["total_voice_members"].get(
+                            str(_object.id), 0
                         )
-                    )
-                    != 0
-                    else 0,
-                },
-                "messages": {  # days: messages
-                    delta: len(
-                        [
-                            time
+                        for channel_id in all_channels_data
+                        if _object.guild.get_channel(int(channel_id)) is not None
+                    }
+                )
+                top_activities = Counter(
+                    {
+                        activity_name: total_time
+                        for activity_name, total_time in all_members_data.get(
+                            _object.id, {"total_activities_times": {}}
+                        )["total_activities_times"].items()
+                        if activity_name not in ignored_activities
+                    }
+                )
+                return {
+                    "server_lookback": {  # type: messages/hours
+                        "text": sum(
+                            all_channels_data[channel_id]["total_messages_members"].get(
+                                str(_object.id), 0
+                            )
                             for channel_id in all_channels_data
-                            for time in all_channels_data[channel_id]["messages"].get(
-                                str(_object.id), []
-                            )
-                            if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
-                        ]
-                    )
-                    for delta in (1, 7, 30)
-                },
-                "voice_activity": {  # days: hours
-                    delta: roundest_value
-                    if (
-                        roundest_value := round(
-                            sum(
-                                int(times[1] - times[0])
-                                - int(
-                                    to_remove
-                                    if (
-                                        to_remove := (
-                                            utc_now - datetime.timedelta(days=delta)
-                                        ).timestamp()
-                                        - times[0]
+                        ),
+                        "voice": roundest_value
+                        if (
+                            roundest_value := round(
+                                sum(
+                                    all_channels_data[channel_id]["total_voice_members"].get(
+                                        str(_object.id), 0
                                     )
-                                    > 0
-                                    else 0
+                                    for channel_id in all_channels_data
                                 )
-                                for channel_id in all_channels_data
-                                for times in all_channels_data[channel_id]["voice"].get(
-                                    str(_object.id), []
-                                )
-                                if times[1]
-                                >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                / 3600,
+                                ndigits=2,
                             )
-                            / 3600,
-                            ndigits=2,
                         )
-                    )
-                    != 0
-                    else 0
-                    for delta in (1, 7, 30)
-                },
-                "server_ranks": {  # type: rank #
-                    "text": (members_messages_sorted.index(str(_object.id)) + 1)
-                    if str(_object.id) in members_messages_sorted
-                    else None,
-                    "voice": (members_voice_sorted.index(str(_object.id)) + 1)
-                    if str(_object.id) in members_voice_sorted
-                    else None,
-                },
-                "top_channels_and_activity": {
-                    "text": {  # type: {channel, messages}
-                        "channel": top_messages_channels.most_common(1)[0][0]
-                        if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0
-                        else None,
-                        "value": top_messages_channels.most_common(1)[0][1]
-                        if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0
-                        else None,
+                        != 0
+                        else 0,
                     },
-                    "voice": {  # type: {channel, hours}
-                        "channel": top_voice_channels.most_common(1)[0][0]
-                        if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
-                        else None,
-                        "value": (
-                            roundest_value
-                            if (
-                                roundest_value := round(
-                                    top_voice_channels.most_common(1)[0][1] / 3600, ndigits=2
-                                )
-                            )
-                            != int(roundest_value)
-                            else int(roundest_value)
-                        )
-                        if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
-                        else None,
-                    },
-                    "activity": {  # type: {activity, hours}
-                        "activity": top_activities.most_common(1)[0][0]
-                        if top_activities and top_activities.most_common(1)[0][1] > 0
-                        else None,
-                        "value": (
-                            roundest_value
-                            if (
-                                roundest_value := round(
-                                    top_activities.most_common(1)[0][1] / 3600, ndigits=2
-                                )
-                            )
-                            != int(roundest_value)
-                            else int(roundest_value)
-                        )
-                        if top_activities and top_activities.most_common(1)[0][1] > 0
-                        else None,
-                    },
-                },
-                "graphic": {
-                    "messages": {  # day: messages
-                        day: len(
+                    "messages": {  # days: messages
+                        delta: len(
                             [
                                 time
                                 for channel_id in all_channels_data
                                 for time in all_channels_data[channel_id]["messages"].get(
                                     str(_object.id), []
                                 )
-                                if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
-                                >= time
-                                >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                             ]
                         )
-                        for day in range(-30, 0)
+                        for delta in (1, 7, 30)
                     },
-                    "voice": {  # day: hours
-                        day: roundest_value
+                    "voice_activity": {  # days: hours
+                        delta: roundest_value
                         if (
                             roundest_value := round(
                                 sum(
@@ -1089,20 +991,9 @@ class GuildStats(Cog):
                                         to_remove
                                         if (
                                             to_remove := (
-                                                utc_now - datetime.timedelta(days=-day)
+                                                utc_now - datetime.timedelta(days=delta)
                                             ).timestamp()
                                             - times[0]
-                                        )
-                                        - int(
-                                            to_remove
-                                            if (
-                                                to_remove := (
-                                                    utc_now - datetime.timedelta(days=-day - 1)
-                                                ).timestamp()
-                                                - (utc_now.timestamp() - times[1])
-                                            )
-                                            > 0
-                                            else 0
                                         )
                                         > 0
                                         else 0
@@ -1111,14 +1002,8 @@ class GuildStats(Cog):
                                     for times in all_channels_data[channel_id]["voice"].get(
                                         str(_object.id), []
                                     )
-                                    if (
-                                        (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
-                                        >= times[0]
-                                        >= (utc_now - datetime.timedelta(days=-day)).timestamp()
-                                    )
-                                    or ((utc_now - datetime.timedelta(days=-day)).timestamp())
-                                    <= times[1]
-                                    <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    if times[1]
+                                    >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                                 )
                                 / 3600,
                                 ndigits=2,
@@ -1126,10 +1011,158 @@ class GuildStats(Cog):
                         )
                         != 0
                         else 0
-                        for day in range(-30, 0)
+                        for delta in (1, 7, 30)
                     },
-                },
-            }
+                    "server_ranks": {  # type: rank #
+                        "text": (members_messages_sorted.index(str(_object.id)) + 1)
+                        if str(_object.id) in members_messages_sorted
+                        else None,
+                        "voice": (members_voice_sorted.index(str(_object.id)) + 1)
+                        if str(_object.id) in members_voice_sorted
+                        else None,
+                    },
+                    "top_channels_and_activity": {
+                        "text": {  # type: {channel, messages}
+                            "channel": top_messages_channels.most_common(1)[0][0]
+                            if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0
+                            else None,
+                            "value": top_messages_channels.most_common(1)[0][1]
+                            if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0
+                            else None,
+                        },
+                        "voice": {  # type: {channel, hours}
+                            "channel": top_voice_channels.most_common(1)[0][0]
+                            if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
+                            else None,
+                            "value": (
+                                roundest_value
+                                if (
+                                    roundest_value := round(
+                                        top_voice_channels.most_common(1)[0][1] / 3600, ndigits=2
+                                    )
+                                )
+                                != int(roundest_value)
+                                else int(roundest_value)
+                            )
+                            if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
+                            else None,
+                        },
+                        "activity": {  # type: {activity, hours}
+                            "activity": top_activities.most_common(1)[0][0]
+                            if top_activities and top_activities.most_common(1)[0][1] > 0
+                            else None,
+                            "value": (
+                                roundest_value
+                                if (
+                                    roundest_value := round(
+                                        top_activities.most_common(1)[0][1] / 3600, ndigits=2
+                                    )
+                                )
+                                != int(roundest_value)
+                                else int(roundest_value)
+                            )
+                            if top_activities and top_activities.most_common(1)[0][1] > 0
+                            else None,
+                        },
+                    },
+                    "graphic": {
+                        "messages": {  # day: messages
+                            day: len(
+                                [
+                                    time
+                                    for channel_id in all_channels_data
+                                    for time in all_channels_data[channel_id]["messages"].get(
+                                        str(_object.id), []
+                                    )
+                                    if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    >= time
+                                    >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                ]
+                            )
+                            for day in range(-30, 0)
+                        },
+                        "voice": {  # day: hours
+                            day: roundest_value
+                            if (
+                                roundest_value := round(
+                                    sum(
+                                        int(times[1] - times[0])
+                                        - int(
+                                            to_remove
+                                            if (
+                                                to_remove := (
+                                                    utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp()
+                                                - times[0]
+                                            )
+                                            - int(
+                                                to_remove
+                                                if (
+                                                    to_remove := (
+                                                        utc_now - datetime.timedelta(days=-day - 1)
+                                                    ).timestamp()
+                                                    - (utc_now.timestamp() - times[1])
+                                                )
+                                                > 0
+                                                else 0
+                                            )
+                                            > 0
+                                            else 0
+                                        )
+                                        for channel_id in all_channels_data
+                                        for times in all_channels_data[channel_id]["voice"].get(
+                                            str(_object.id), []
+                                        )
+                                        if (
+                                            (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                            >= times[0]
+                                            >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                        )
+                                        or ((utc_now - datetime.timedelta(days=-day)).timestamp())
+                                        <= times[1]
+                                        <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    )
+                                    / 3600,
+                                    ndigits=2,
+                                )
+                            )
+                            != 0
+                            else 0
+                            for day in range(-30, 0)
+                        },
+                    },
+                }
+            elif _type == "activities":
+                activities_counter: Counter = Counter(
+                    [
+                        activity_name
+                        for activity_name, count_time in all_members_data.get(_object.id, {}).get("total_activities_times", {}).items()
+                        for __ in range(count_time)
+                        if activity_name not in ignored_activities
+                    ]
+                )
+                return {
+                    "top_activities": {  # activity_name: hours
+                        activity_name: (
+                            roundest_value
+                            if (roundest_value := round(count_time / 3600, ndigits=2)) != 0
+                            else 0
+                        )
+                        for (activity_name, count_time) in activities_counter.most_common(10)
+                        if count_time > 0
+                    },
+                    "graphic": {
+                        "activities": {  # activity_name: hours
+                            activity_name: (
+                                roundest_value
+                                if (roundest_value := round(count_time / 3600, ndigits=2)) != 0
+                                else 0
+                            )
+                            for (activity_name, count_time) in activities_counter.most_common(10)
+                            if count_time > 0
+                        },
+                    },
+                }
 
         elif isinstance(_object, discord.Role):
             roles_messages_counter: Counter = Counter(
@@ -2651,6 +2684,7 @@ class GuildStats(Cog):
         self,
         _object: typing.Union[
             discord.Member,
+            typing.Tuple[discord.Member, typing.Literal["activities"]],
             discord.Role,
             discord.Guild,
             typing.Tuple[
@@ -2814,6 +2848,7 @@ class GuildStats(Cog):
         self,
         _object: typing.Union[
             discord.Member,
+            typing.Tuple[discord.Member, typing.Literal["activities"]],
             discord.Role,
             discord.Guild,
             typing.Tuple[
@@ -3191,6 +3226,7 @@ class GuildStats(Cog):
         self,
         _object: typing.Union[
             discord.Member,
+            typing.Tuple[discord.Member, typing.Literal["activities"]],
             discord.Role,
             discord.Guild,
             typing.Tuple[
@@ -3543,6 +3579,7 @@ class GuildStats(Cog):
         self,
         _object: typing.Union[
             discord.Member,
+            typing.Tuple[discord.Member, typing.Literal["activities"]],
             discord.Role,
             discord.Guild,
             typing.Tuple[
@@ -3633,285 +3670,340 @@ class GuildStats(Cog):
 
         # Data.
         if isinstance(_object, (discord.Member, discord.Role)):
-            # Server Lookback. box = 606 / empty = 30 | 2 cases / box = 117 / empty = 30
-            draw.rounded_rectangle((30, 204, 636, 585), radius=15, fill=(47, 49, 54))
-            align_text_center(
-                (50, 214, 50, 284),
-                text=_("Server Lookback"),
-                fill=(255, 255, 255),
-                font=self.bold_font[40],
-            )
-            image = Image.open(self.icons["history"])
-            image = image.resize((70, 70))
-            img.paste(image, (546, 214, 616, 284), mask=image.split()[3])
-            draw.rounded_rectangle((50, 301, 616, 418), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((50, 301, 325, 418), radius=15, fill=(24, 26, 27))
-            align_text_center(
-                (50, 301, 325, 418), text=_("Text"), fill=(255, 255, 255), font=self.bold_font[36]
-            )
-            align_text_center(
-                (325, 301, 616, 418),
-                text=f"{self.number_to_text_with_suffix(data['server_lookback']['text'])} message{'' if 0 < data['server_lookback']['text'] <= 1 else 's'}",
-                fill=(255, 255, 255),
-                font=self.font[36],
-            )
-            draw.rounded_rectangle((50, 448, 616, 565), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((50, 448, 325, 565), radius=15, fill=(24, 26, 27))
-            align_text_center(
-                (50, 448, 325, 565), text=_("Voice"), fill=(255, 255, 255), font=self.bold_font[36]
-            )
-            align_text_center(
-                (325, 448, 616, 565),
-                text=f"{self.number_to_text_with_suffix(data['server_lookback']['voice'])} hour{'' if 0 < data['server_lookback']['voice'] <= 1 else 's'}",
-                fill=(255, 255, 255),
-                font=self.font[36],
-            )
-
-            # Messages. box = 606 / empty = 30 | 3 cases / box = 76 / empty = 16
-            draw.rounded_rectangle((668, 204, 1274, 585), radius=15, fill=(47, 49, 54))
-            align_text_center(
-                (688, 214, 688, 284),
-                text=_("Messages"),
-                fill=(255, 255, 255),
-                font=self.bold_font[40],
-            )
-            image = Image.open(self.icons["#"])
-            image = image.resize((70, 70))
-            img.paste(image, (1184, 214, 1254, 284), mask=image.split()[3])
-            draw.rounded_rectangle((688, 301, 1254, 377), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((688, 301, 910, 377), radius=15, fill=(24, 26, 27))
-            align_text_center(
-                (688, 301, 910, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
-            )
-            align_text_center(
-                (910, 301, 1254, 377),
-                text=f"{self.number_to_text_with_suffix(data['messages'][1])} message{'' if 0 < data['messages'][1] <= 1 else 's'}",
-                fill=(255, 255, 255),
-                font=self.font[36],
-            )
-            draw.rounded_rectangle((688, 395, 1254, 471), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((688, 395, 910, 471), radius=15, fill=(24, 26, 27))
-            align_text_center(
-                (688, 395, 910, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
-            )
-            align_text_center(
-                (910, 395, 1254, 471),
-                text=f"{self.number_to_text_with_suffix(data['messages'][7])} message{'' if 0 < data['messages'][7] <= 1 else 's'}",
-                fill=(255, 255, 255),
-                font=self.font[36],
-            )
-            draw.rounded_rectangle((688, 489, 1254, 565), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((688, 489, 910, 565), radius=15, fill=(24, 26, 27))
-            align_text_center(
-                (688, 489, 910, 565), text=_("30d"), fill=(255, 255, 255), font=self.bold_font[36]
-            )
-            align_text_center(
-                (910, 489, 1254, 565),
-                text=f"{self.number_to_text_with_suffix(data['messages'][30])} message{'' if 0 < data['messages'][30] <= 1 else 's'}",
-                fill=(255, 255, 255),
-                font=self.font[36],
-            )
-
-            # Voice Activity. + 52 / box = 606 / empty = 30 | 3 cases / box = 76 / empty = 16
-            draw.rounded_rectangle((1306, 204, 1912, 585), radius=15, fill=(47, 49, 54))
-            align_text_center(
-                (1326, 214, 1326, 284),
-                text=_("Voice Activity"),
-                fill=(255, 255, 255),
-                font=self.bold_font[40],
-            )
-            image = Image.open(self.icons["sound"])
-            image = image.resize((70, 70))
-            img.paste(image, (1822, 214, 1892, 284), mask=image.split()[3])
-            draw.rounded_rectangle((1326, 301, 1892, 377), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((1326, 301, 1548, 377), radius=15, fill=(24, 26, 27))
-            align_text_center(
-                (1326, 301, 1548, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
-            )
-            align_text_center(
-                (1548, 301, 1892, 377),
-                text=f"{self.number_to_text_with_suffix(data['voice_activity'][1])} hour{'' if 0 < data['voice_activity'][1] <= 1 else 's'}",
-                fill=(255, 255, 255),
-                font=self.font[36],
-            )
-            draw.rounded_rectangle((1326, 395, 1892, 471), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((1326, 395, 1548, 471), radius=15, fill=(24, 26, 27))
-            align_text_center(
-                (1326, 395, 1548, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
-            )
-            align_text_center(
-                (1548, 395, 1892, 471),
-                text=f"{self.number_to_text_with_suffix(data['voice_activity'][7])} hour{'' if 0 < data['voice_activity'][7] <= 1 else 's'}",
-                fill=(255, 255, 255),
-                font=self.font[36],
-            )
-            draw.rounded_rectangle((1326, 489, 1892, 565), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((1326, 489, 1548, 565), radius=15, fill=(24, 26, 27))
-            align_text_center(
-                (1326, 489, 1548, 565),
-                text=_("30d"),
-                fill=(255, 255, 255),
-                font=self.bold_font[36],
-            )
-            align_text_center(
-                (1548, 489, 1892, 565),
-                text=f"{self.number_to_text_with_suffix(data['voice_activity'][30])} hour{'' if 0 < data['voice_activity'][30] <= 1 else 's'}",
-                fill=(255, 255, 255),
-                font=self.font[36],
-            )
-
-            # # Server Ranks. box = 606 / empty = 30 | 2 cases / box = 117 / empty = 30
-            # draw.rounded_rectangle((1942, 204, 2548, 585), radius=15, fill=(47, 49, 54))
-            # align_text_center((1962, 214, 1962, 284), text="Server Ranks", fill=(255, 255, 255), font=self.bold_font[40])
-            # image = Image.open(self.icons["trophy"])
-            # image = image.resize((70, 70))
-            # img.paste(image, (2458, 214, 2528, 284), mask=image.split()[3])
-            # draw.rounded_rectangle((1962, 301, 2528, 418), radius=15, fill=(32, 34, 37))
-            # draw.rounded_rectangle((1962, 301, 2237, 418), radius=15, fill=(24, 26, 27))
-            # align_text_center((1962, 301, 2237, 418), text="Text", fill=(255, 255, 255), font=self.bold_font[36])
-            # align_text_center((2237, 301, 2528, 418), text=f"#{data['server_ranks']['text']}" if data['server_ranks']['text'] is not None else "No data.", fill=(255, 255, 255), font=self.font[36])
-            # draw.rounded_rectangle((1962, 448, 2528, 565), radius=15, fill=(32, 34, 37))
-            # draw.rounded_rectangle((1962, 448, 2237, 565), radius=15, fill=(24, 26, 27))
-            # align_text_center((1962, 448, 2237, 565), text="Voice", fill=(255, 255, 255), font=self.bold_font[36])
-            # align_text_center((2237, 448, 2528, 565), text=f"#{data['server_ranks']['voice']}" if data['server_ranks']['voice'] is not None else "No data.", fill=(255, 255, 255), font=self.font[36])
-
-            # Server Ranks. box = 606 / empty = 30 | 2 cases / box = 117 / empty = 30
-            draw.rounded_rectangle((30, 615, 636, 996), radius=15, fill=(47, 49, 54))
-            align_text_center(
-                (50, 625, 50, 695),
-                text=_("Server Ranks"),
-                fill=(255, 255, 255),
-                font=self.bold_font[40],
-            )
-            image = Image.open(self.icons["trophy"])
-            image = image.resize((70, 70))
-            img.paste(image, (546, 625, 616, 695), mask=image.split()[3])
-            draw.rounded_rectangle((50, 712, 616, 829), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((50, 712, 325, 829), radius=15, fill=(24, 26, 27))
-            align_text_center(
-                (50, 712, 325, 829), text="Text", fill=(255, 255, 255), font=self.bold_font[36]
-            )
-            align_text_center(
-                (325, 712, 616, 829),
-                text=f"#{data['server_ranks']['text']}"
-                if data["server_ranks"]["text"] is not None
-                else _("No data."),
-                fill=(255, 255, 255),
-                font=self.font[36],
-            )
-            draw.rounded_rectangle((50, 859, 616, 976), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((50, 859, 325, 976), radius=15, fill=(24, 26, 27))
-            align_text_center(
-                (50, 859, 325, 976), text=_("Voice"), fill=(255, 255, 255), font=self.bold_font[36]
-            )
-            align_text_center(
-                (325, 859, 616, 976),
-                text=f"#{data['server_ranks']['voice']}"
-                if data["server_ranks"]["voice"] is not None
-                else _("No data."),
-                fill=(255, 255, 255),
-                font=self.font[36],
-            )
-
-            # Top Channels & Activity. box = 925 / empty = 30 | 3 cases / box = 76 / empty = 16
-            draw.rounded_rectangle((668, 615, 1593, 996), radius=15, fill=(47, 49, 54))
-            align_text_center(
-                (688, 625, 688, 695),
-                text=_("Top Channels & Activity"),
-                fill=(255, 255, 255),
-                font=self.bold_font[40],
-            )
-            image = Image.open(self.icons["query_stats"])
-            image = image.resize((70, 70))
-            img.paste(image, (1503, 625, 1573, 695), mask=image.split()[3])
-            image = Image.open(self.icons["#"])
-            image = image.resize((70, 70))
-            img.paste(image, (688, 715, 758, 785), mask=image.split()[3])
-            draw.rounded_rectangle((768, 712, 1573, 788), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((768, 712, 1218, 788), radius=15, fill=(24, 26, 27))
-            if (
-                data["top_channels_and_activity"]["text"]["channel"] is not None
-                and data["top_channels_and_activity"]["text"]["value"] is not None
-            ):
+            if _type is None:
+                # Server Lookback. box = 606 / empty = 30 | 2 cases / box = 117 / empty = 30
+                draw.rounded_rectangle((30, 204, 636, 585), radius=15, fill=(47, 49, 54))
                 align_text_center(
-                    (768, 712, 1218, 788),
-                    text=self.remove_unprintable_characters(
-                        _object.guild.get_channel(
-                            data["top_channels_and_activity"]["text"]["channel"]
-                        ).name
-                    ),
+                    (50, 214, 50, 284),
+                    text=_("Server Lookback"),
                     fill=(255, 255, 255),
-                    font=self.bold_font[36],
+                    font=self.bold_font[40],
+                )
+                image = Image.open(self.icons["history"])
+                image = image.resize((70, 70))
+                img.paste(image, (546, 214, 616, 284), mask=image.split()[3])
+                draw.rounded_rectangle((50, 301, 616, 418), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((50, 301, 325, 418), radius=15, fill=(24, 26, 27))
+                align_text_center(
+                    (50, 301, 325, 418), text=_("Text"), fill=(255, 255, 255), font=self.bold_font[36]
                 )
                 align_text_center(
-                    (1218, 712, 1573, 788),
-                    text=f"{self.number_to_text_with_suffix(data['top_channels_and_activity']['text']['value'])} message{'' if 0 < data['top_channels_and_activity']['text']['value'] <= 1 else 's'}",
+                    (325, 301, 616, 418),
+                    text=f"{self.number_to_text_with_suffix(data['server_lookback']['text'])} message{'' if 0 < data['server_lookback']['text'] <= 1 else 's'}",
                     fill=(255, 255, 255),
                     font=self.font[36],
                 )
-            image = Image.open(self.icons["sound"])
-            image = image.resize((70, 70))
-            img.paste(image, (688, 807, 758, 877), mask=image.split()[3])
-            draw.rounded_rectangle((768, 804, 1573, 880), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((768, 804, 1218, 880), radius=15, fill=(24, 26, 27))
-            if (
-                data["top_channels_and_activity"]["voice"]["channel"] is not None
-                and data["top_channels_and_activity"]["voice"]["value"] is not None
-            ):
+                draw.rounded_rectangle((50, 448, 616, 565), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((50, 448, 325, 565), radius=15, fill=(24, 26, 27))
                 align_text_center(
-                    (768, 804, 1218, 880),
-                    text=self.remove_unprintable_characters(
-                        _object.guild.get_channel(
-                            data["top_channels_and_activity"]["voice"]["channel"]
-                        ).name
-                    ),
-                    fill=(255, 255, 255),
-                    font=self.bold_font[36],
+                    (50, 448, 325, 565), text=_("Voice"), fill=(255, 255, 255), font=self.bold_font[36]
                 )
                 align_text_center(
-                    (1218, 804, 1573, 880),
-                    text=f"{self.number_to_text_with_suffix(data['top_channels_and_activity']['voice']['value'])} hour{'' if 0 < data['top_channels_and_activity']['voice']['value'] <= 1 else 's'}",
-                    fill=(255, 255, 255),
-                    font=self.font[36],
-                )
-            image = Image.open(self.icons["game"])
-            image = image.resize((70, 70))
-            img.paste(image, (688, 899, 758, 969), mask=image.split()[3])
-            draw.rounded_rectangle((768, 896, 1573, 972), radius=15, fill=(32, 34, 37))
-            draw.rounded_rectangle((768, 896, 1218, 972), radius=15, fill=(24, 26, 27))
-            if (
-                data["top_channels_and_activity"]["activity"]["activity"] is not None
-                and data["top_channels_and_activity"]["activity"]["value"] is not None
-            ):
-                align_text_center(
-                    (768, 896, 1218, 972),
-                    text=data["top_channels_and_activity"]["activity"]["activity"],
-                    fill=(255, 255, 255),
-                    font=self.bold_font[36],
-                )
-                align_text_center(
-                    (1218, 896, 1573, 972),
-                    text=f"{self.number_to_text_with_suffix(data['top_channels_and_activity']['activity']['value'])} hour{'' if 0 < data['top_channels_and_activity']['activity']['value'] <= 1 else 's'}",
+                    (325, 448, 616, 565),
+                    text=f"{self.number_to_text_with_suffix(data['server_lookback']['voice'])} hour{'' if 0 < data['server_lookback']['voice'] <= 1 else 's'}",
                     fill=(255, 255, 255),
                     font=self.font[36],
                 )
 
-            if show_graphic:
-                # Graphic. box = 940 / empty = 0 | + 411 (381 + 30) / 1 case / box = 264 / empty = 0
-                draw.rounded_rectangle((30, 1026, 1910, 1407 + 200), radius=15, fill=(47, 49, 54))
+                # Messages. box = 606 / empty = 30 | 3 cases / box = 76 / empty = 16
+                draw.rounded_rectangle((668, 204, 1274, 585), radius=15, fill=(47, 49, 54))
                 align_text_center(
-                    (50, 1036, 50, 1106),
+                    (688, 214, 688, 284),
+                    text=_("Messages"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[40],
+                )
+                image = Image.open(self.icons["#"])
+                image = image.resize((70, 70))
+                img.paste(image, (1184, 214, 1254, 284), mask=image.split()[3])
+                draw.rounded_rectangle((688, 301, 1254, 377), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((688, 301, 910, 377), radius=15, fill=(24, 26, 27))
+                align_text_center(
+                    (688, 301, 910, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
+                )
+                align_text_center(
+                    (910, 301, 1254, 377),
+                    text=f"{self.number_to_text_with_suffix(data['messages'][1])} message{'' if 0 < data['messages'][1] <= 1 else 's'}",
+                    fill=(255, 255, 255),
+                    font=self.font[36],
+                )
+                draw.rounded_rectangle((688, 395, 1254, 471), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((688, 395, 910, 471), radius=15, fill=(24, 26, 27))
+                align_text_center(
+                    (688, 395, 910, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
+                )
+                align_text_center(
+                    (910, 395, 1254, 471),
+                    text=f"{self.number_to_text_with_suffix(data['messages'][7])} message{'' if 0 < data['messages'][7] <= 1 else 's'}",
+                    fill=(255, 255, 255),
+                    font=self.font[36],
+                )
+                draw.rounded_rectangle((688, 489, 1254, 565), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((688, 489, 910, 565), radius=15, fill=(24, 26, 27))
+                align_text_center(
+                    (688, 489, 910, 565), text=_("30d"), fill=(255, 255, 255), font=self.bold_font[36]
+                )
+                align_text_center(
+                    (910, 489, 1254, 565),
+                    text=f"{self.number_to_text_with_suffix(data['messages'][30])} message{'' if 0 < data['messages'][30] <= 1 else 's'}",
+                    fill=(255, 255, 255),
+                    font=self.font[36],
+                )
+
+                # Voice Activity. + 52 / box = 606 / empty = 30 | 3 cases / box = 76 / empty = 16
+                draw.rounded_rectangle((1306, 204, 1912, 585), radius=15, fill=(47, 49, 54))
+                align_text_center(
+                    (1326, 214, 1326, 284),
+                    text=_("Voice Activity"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[40],
+                )
+                image = Image.open(self.icons["sound"])
+                image = image.resize((70, 70))
+                img.paste(image, (1822, 214, 1892, 284), mask=image.split()[3])
+                draw.rounded_rectangle((1326, 301, 1892, 377), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((1326, 301, 1548, 377), radius=15, fill=(24, 26, 27))
+                align_text_center(
+                    (1326, 301, 1548, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
+                )
+                align_text_center(
+                    (1548, 301, 1892, 377),
+                    text=f"{self.number_to_text_with_suffix(data['voice_activity'][1])} hour{'' if 0 < data['voice_activity'][1] <= 1 else 's'}",
+                    fill=(255, 255, 255),
+                    font=self.font[36],
+                )
+                draw.rounded_rectangle((1326, 395, 1892, 471), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((1326, 395, 1548, 471), radius=15, fill=(24, 26, 27))
+                align_text_center(
+                    (1326, 395, 1548, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
+                )
+                align_text_center(
+                    (1548, 395, 1892, 471),
+                    text=f"{self.number_to_text_with_suffix(data['voice_activity'][7])} hour{'' if 0 < data['voice_activity'][7] <= 1 else 's'}",
+                    fill=(255, 255, 255),
+                    font=self.font[36],
+                )
+                draw.rounded_rectangle((1326, 489, 1892, 565), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((1326, 489, 1548, 565), radius=15, fill=(24, 26, 27))
+                align_text_center(
+                    (1326, 489, 1548, 565),
+                    text=_("30d"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[36],
+                )
+                align_text_center(
+                    (1548, 489, 1892, 565),
+                    text=f"{self.number_to_text_with_suffix(data['voice_activity'][30])} hour{'' if 0 < data['voice_activity'][30] <= 1 else 's'}",
+                    fill=(255, 255, 255),
+                    font=self.font[36],
+                )
+
+                # # Server Ranks. box = 606 / empty = 30 | 2 cases / box = 117 / empty = 30
+                # draw.rounded_rectangle((1942, 204, 2548, 585), radius=15, fill=(47, 49, 54))
+                # align_text_center((1962, 214, 1962, 284), text="Server Ranks", fill=(255, 255, 255), font=self.bold_font[40])
+                # image = Image.open(self.icons["trophy"])
+                # image = image.resize((70, 70))
+                # img.paste(image, (2458, 214, 2528, 284), mask=image.split()[3])
+                # draw.rounded_rectangle((1962, 301, 2528, 418), radius=15, fill=(32, 34, 37))
+                # draw.rounded_rectangle((1962, 301, 2237, 418), radius=15, fill=(24, 26, 27))
+                # align_text_center((1962, 301, 2237, 418), text="Text", fill=(255, 255, 255), font=self.bold_font[36])
+                # align_text_center((2237, 301, 2528, 418), text=f"#{data['server_ranks']['text']}" if data['server_ranks']['text'] is not None else "No data.", fill=(255, 255, 255), font=self.font[36])
+                # draw.rounded_rectangle((1962, 448, 2528, 565), radius=15, fill=(32, 34, 37))
+                # draw.rounded_rectangle((1962, 448, 2237, 565), radius=15, fill=(24, 26, 27))
+                # align_text_center((1962, 448, 2237, 565), text="Voice", fill=(255, 255, 255), font=self.bold_font[36])
+                # align_text_center((2237, 448, 2528, 565), text=f"#{data['server_ranks']['voice']}" if data['server_ranks']['voice'] is not None else "No data.", fill=(255, 255, 255), font=self.font[36])
+
+                # Server Ranks. box = 606 / empty = 30 | 2 cases / box = 117 / empty = 30
+                draw.rounded_rectangle((30, 615, 636, 996), radius=15, fill=(47, 49, 54))
+                align_text_center(
+                    (50, 625, 50, 695),
+                    text=_("Server Ranks"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[40],
+                )
+                image = Image.open(self.icons["trophy"])
+                image = image.resize((70, 70))
+                img.paste(image, (546, 625, 616, 695), mask=image.split()[3])
+                draw.rounded_rectangle((50, 712, 616, 829), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((50, 712, 325, 829), radius=15, fill=(24, 26, 27))
+                align_text_center(
+                    (50, 712, 325, 829), text="Text", fill=(255, 255, 255), font=self.bold_font[36]
+                )
+                align_text_center(
+                    (325, 712, 616, 829),
+                    text=f"#{data['server_ranks']['text']}"
+                    if data["server_ranks"]["text"] is not None
+                    else _("No data."),
+                    fill=(255, 255, 255),
+                    font=self.font[36],
+                )
+                draw.rounded_rectangle((50, 859, 616, 976), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((50, 859, 325, 976), radius=15, fill=(24, 26, 27))
+                align_text_center(
+                    (50, 859, 325, 976), text=_("Voice"), fill=(255, 255, 255), font=self.bold_font[36]
+                )
+                align_text_center(
+                    (325, 859, 616, 976),
+                    text=f"#{data['server_ranks']['voice']}"
+                    if data["server_ranks"]["voice"] is not None
+                    else _("No data."),
+                    fill=(255, 255, 255),
+                    font=self.font[36],
+                )
+
+                # Top Channels & Activity. box = 925 / empty = 30 | 3 cases / box = 76 / empty = 16
+                draw.rounded_rectangle((668, 615, 1593, 996), radius=15, fill=(47, 49, 54))
+                align_text_center(
+                    (688, 625, 688, 695),
+                    text=_("Top Channels & Activity"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[40],
+                )
+                image = Image.open(self.icons["query_stats"])
+                image = image.resize((70, 70))
+                img.paste(image, (1503, 625, 1573, 695), mask=image.split()[3])
+                image = Image.open(self.icons["#"])
+                image = image.resize((70, 70))
+                img.paste(image, (688, 715, 758, 785), mask=image.split()[3])
+                draw.rounded_rectangle((768, 712, 1573, 788), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((768, 712, 1218, 788), radius=15, fill=(24, 26, 27))
+                if (
+                    data["top_channels_and_activity"]["text"]["channel"] is not None
+                    and data["top_channels_and_activity"]["text"]["value"] is not None
+                ):
+                    align_text_center(
+                        (768, 712, 1218, 788),
+                        text=self.remove_unprintable_characters(
+                            _object.guild.get_channel(
+                                data["top_channels_and_activity"]["text"]["channel"]
+                            ).name
+                        ),
+                        fill=(255, 255, 255),
+                        font=self.bold_font[36],
+                    )
+                    align_text_center(
+                        (1218, 712, 1573, 788),
+                        text=f"{self.number_to_text_with_suffix(data['top_channels_and_activity']['text']['value'])} message{'' if 0 < data['top_channels_and_activity']['text']['value'] <= 1 else 's'}",
+                        fill=(255, 255, 255),
+                        font=self.font[36],
+                    )
+                image = Image.open(self.icons["sound"])
+                image = image.resize((70, 70))
+                img.paste(image, (688, 807, 758, 877), mask=image.split()[3])
+                draw.rounded_rectangle((768, 804, 1573, 880), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((768, 804, 1218, 880), radius=15, fill=(24, 26, 27))
+                if (
+                    data["top_channels_and_activity"]["voice"]["channel"] is not None
+                    and data["top_channels_and_activity"]["voice"]["value"] is not None
+                ):
+                    align_text_center(
+                        (768, 804, 1218, 880),
+                        text=self.remove_unprintable_characters(
+                            _object.guild.get_channel(
+                                data["top_channels_and_activity"]["voice"]["channel"]
+                            ).name
+                        ),
+                        fill=(255, 255, 255),
+                        font=self.bold_font[36],
+                    )
+                    align_text_center(
+                        (1218, 804, 1573, 880),
+                        text=f"{self.number_to_text_with_suffix(data['top_channels_and_activity']['voice']['value'])} hour{'' if 0 < data['top_channels_and_activity']['voice']['value'] <= 1 else 's'}",
+                        fill=(255, 255, 255),
+                        font=self.font[36],
+                    )
+                image = Image.open(self.icons["game"])
+                image = image.resize((70, 70))
+                img.paste(image, (688, 899, 758, 969), mask=image.split()[3])
+                draw.rounded_rectangle((768, 896, 1573, 972), radius=15, fill=(32, 34, 37))
+                draw.rounded_rectangle((768, 896, 1218, 972), radius=15, fill=(24, 26, 27))
+                if (
+                    data["top_channels_and_activity"]["activity"]["activity"] is not None
+                    and data["top_channels_and_activity"]["activity"]["value"] is not None
+                ):
+                    align_text_center(
+                        (768, 896, 1218, 972),
+                        text=data["top_channels_and_activity"]["activity"]["activity"],
+                        fill=(255, 255, 255),
+                        font=self.bold_font[36],
+                    )
+                    align_text_center(
+                        (1218, 896, 1573, 972),
+                        text=f"{self.number_to_text_with_suffix(data['top_channels_and_activity']['activity']['value'])} hour{'' if 0 < data['top_channels_and_activity']['activity']['value'] <= 1 else 's'}",
+                        fill=(255, 255, 255),
+                        font=self.font[36],
+                    )
+
+                if show_graphic:
+                    # Graphic. box = 940 / empty = 0 | + 411 (381 + 30) / 1 case / box = 264 / empty = 0
+                    draw.rounded_rectangle((30, 1026, 1910, 1407 + 200), radius=15, fill=(47, 49, 54))
+                    align_text_center(
+                        (50, 1036, 50, 1106),
+                        text=_("Graphic"),
+                        fill=(255, 255, 255),
+                        font=self.bold_font[40],
+                    )
+                    image = Image.open(self.icons["query_stats"])
+                    image = image.resize((70, 70))
+                    img.paste(image, (1830, 1036, 1900, 1106), mask=image.split()[3])
+                    draw.rounded_rectangle((50, 1123, 1890, 1387 + 200), radius=15, fill=(32, 34, 37))
+                    image: Image.Image = graphic
+                    image = image.resize((1840, 464))
+                    img.paste(image, (50, 1123, 1890, 1387 + 200))
+
+            elif _type == "activities":
+                # Top Activities (Applications). box = 925 / empty = 30 | 30 cases / box = 76 / empty = 16
+                draw.rounded_rectangle((30, 204, 955, 996), radius=15, fill=(47, 49, 54))
+                align_text_center(
+                    (50, 214, 50, 284),
+                    text=_("Top Activities (Applications)"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[40],
+                )
+                image = Image.open(self.icons["game"])
+                image = image.resize((70, 70))
+                img.paste(image, (865, 214, 935, 284), mask=image.split()[3])
+                top_activities = list(data["top_activities"])
+                current_y = 301
+                for i in range(10):
+                    draw.rounded_rectangle(
+                        (50, current_y, 935, current_y + 58), radius=15, fill=(32, 34, 37)
+                    )
+                    draw.rounded_rectangle(
+                        (50, current_y, 580, current_y + 58), radius=15, fill=(24, 26, 27)
+                    )
+                    if len(top_activities) >= i + 1:
+                        # align_text_center((50, current_y, 100, current_y + 50), text=str(i), fill=(255, 255, 255), font=self.bold_font[36])
+                        # align_text_center((100, current_y, 935, current_y + 50), text=top_activities[i - 1], fill=(255, 255, 255), font=self.font[36])
+                        align_text_center(
+                            (50, current_y, 580, current_y + 58),
+                            text=self.remove_unprintable_characters(top_activities[i][:25]),
+                            fill=(255, 255, 255),
+                            font=self.bold_font[36],
+                        )
+                        align_text_center(
+                            (580, current_y, 935, current_y + 58),
+                            text=f"{self.number_to_text_with_suffix(data['top_activities'][top_activities[i]])} hour{'' if 0 < data['top_activities'][top_activities[i]] <= 1 else 's'}",
+                            fill=(255, 255, 255),
+                            font=self.font[36],
+                        )
+                    current_y += 58 + 10
+
+                # Graphic. box = 925 / empty = 30 | 1 case / box = 76 / empty = 16
+                draw.rounded_rectangle((985, 204, 1910, 996), radius=15, fill=(47, 49, 54))
+                align_text_center(
+                    (1005, 214, 1005, 284),
                     text=_("Graphic"),
                     fill=(255, 255, 255),
                     font=self.bold_font[40],
                 )
                 image = Image.open(self.icons["query_stats"])
                 image = image.resize((70, 70))
-                img.paste(image, (1830, 1036, 1900, 1106), mask=image.split()[3])
-                draw.rounded_rectangle((50, 1123, 1890, 1387 + 200), radius=15, fill=(32, 34, 37))
+                img.paste(image, (1820, 214, 1890, 284), mask=image.split()[3])
+                draw.rounded_rectangle((1005, 301, 1890, 976), radius=15, fill=(32, 34, 37))
                 image: Image.Image = graphic
-                image = image.resize((1840, 464))
-                img.paste(image, (50, 1123, 1890, 1387 + 200))
+                image = image.resize((885, 675))
+                img.paste(image, (1005, 301, 1890, 976))
 
         elif isinstance(_object, discord.Guild):
             if _type is None:
@@ -5678,6 +5770,7 @@ class GuildStats(Cog):
         self,
         _object: typing.Union[
             discord.Member,
+            typing.Tuple[discord.Member, typing.Literal["activities"]],
             discord.Role,
             discord.Guild,
             typing.Tuple[
@@ -5790,11 +5883,9 @@ class GuildStats(Cog):
         ctx: commands.Context,
         show_graphic: typing.Optional[bool] = False,
         *,
-        member: discord.Member = None,
+        member: discord.Member = commands.Author,
     ) -> None:
         """Display stats for a specified member."""
-        if member is None:
-            member = ctx.author
         if not (
             enabled_state
             if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None
@@ -5996,11 +6087,9 @@ class GuildStats(Cog):
         members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
         show_graphic: typing.Optional[bool] = False,
         *,
-        channel: typing.Union[discord.TextChannel, discord.VoiceChannel] = None,
+        channel: typing.Union[discord.TextChannel, discord.VoiceChannel] = commands.CurrentChannel,
     ) -> None:
         """Display stats for a specified channel."""
-        if channel is None:
-            channel = ctx.channel
         if not (
             enabled_state
             if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None
@@ -6077,6 +6166,43 @@ class GuildStats(Cog):
             cog=self,
             _object=(ctx.guild, ("activity", activity_name)),
             members_type=members_type,
+            show_graphic_in_main=False,
+            graphic_mode=False,
+        ).start(ctx)
+
+    @guildstats.command(aliases=["mactivites", "mact"])
+    async def memberactivities(
+        self,
+        ctx: commands.Context,
+        *,
+        member: discord.Member = commands.Author,
+    ) -> None:
+        """Display stats for the activities of a specified member."""
+        if not await self.config.toggle_activities_stats():
+            raise commands.UserFeedbackCheckFailure(
+                _("Activities stats are disabled on this bot.")
+            )
+        if not (
+            enabled_state
+            if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None
+            else await self.config.default_state()
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
+                ).format(prefix=ctx.prefix)
+            )
+        ignored_users = await self.config.ignored_users()
+        if member.id in ignored_users:
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
+                ).format(prefix=ctx.prefix)
+            )
+        await GuildStatsView(
+            cog=self,
+            _object=(member, "activities"),
+            members_type="both",
             show_graphic_in_main=False,
             graphic_mode=False,
         ).start(ctx)

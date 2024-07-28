@@ -162,6 +162,7 @@ class RolloutGameView(discord.ui.View):
         self.hoster: discord.Member = ctx.author
         self.players: typing.List[discord.Member] = players
         self.round: int = round
+        self.disabled_numbers: typing.List[int] = disabled_numbers
         embed: discord.Embed = discord.Embed(
             title=_("Rollout Game - Round {round}").format(round=round),
             description=_(
@@ -175,8 +176,8 @@ class RolloutGameView(discord.ui.View):
             button: discord.ui.Button = discord.ui.Button(
                 label=str(i),
                 custom_id=str(i),
-                disabled=i in disabled_numbers,
-                style=discord.ButtonStyle.primary if i not in disabled_numbers else discord.ButtonStyle.secondary,
+                disabled=i in self.disabled_numbers,
+                style=discord.ButtonStyle.primary if i not in self.disabled_numbers else discord.ButtonStyle.secondary,
             )
             button.callback = self.callback
             self.add_item(button)

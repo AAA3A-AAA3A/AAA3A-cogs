@@ -103,10 +103,10 @@ class RolloutGame(Cog):
 
         config = await self.config.guild(ctx.guild).all()
         prize = config["prize"]
-        member_config = await self.cog.config.member(winner).all()
+        member_config = await self.config.member(winner).all()
         member_config["score"] += prize
         member_config["wins"] += 1
-        await self.cog.config.member(winner).set(member_config)
+        await self.config.member(winner).set(member_config)
         if config["red_economy"]:
             # https://canary.discord.com/channels/133049272517001216/133251234164375552/1089212578279997521
             try:

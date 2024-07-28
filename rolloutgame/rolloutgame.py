@@ -120,7 +120,7 @@ class RolloutGame(Cog):
                 await bank.set_balance(winner, e.max_balance)
 
         embed = discord.Embed(
-            title=_("Congratulations {winner}! You won the game!").format(winner=winner),
+            title=_("Congratulations **{winner.display_name}**! You won the game!").format(winner=winner),
             color=await ctx.embed_color(),
             timestamp=ctx.message.created_at,
         )

@@ -7,6 +7,8 @@ import typing  # isort:skip
 
 import os
 
+from redbot.core.utils.chat_formatting import humanize_list
+
 from .converters import ListStringToEmbed
 
 _: Translator = Translator("EmbedUtils", __file__)
@@ -156,12 +158,13 @@ class DashboardIntegration:
                                 "category": "danger",
                             }
                         )
+            s = "s" if len(send_form.channels.data) > 1 else ""
+            self.logger.trace(
+                f"{len(send_form.channels.data)} message{s} sent in {humanize_list([f'`#{channel.name}` ({channel.id})' for channel in send_form.channels.data])} in `{guild.name}` ({guild.id}), from the Dashboard by `{user.display_name}` ({user.id})."
+            )
             if not notifications:
-                self.logger.trace(
-                    f"{len(send_form.channels.data)} message(s) sent successfully in `{channel.name}` ({channel.id}) in `{guild.name}` ({guild.id}), from the Dashboard by `{user.display_name}` ({user.id})."
-                )
                 notifications.append(
-                    {"message": _("Message(s) sent successfully!"), "category": "success"}
+                    {"message": _("Message{s} sent successfully!").format(s=s), "category": "success"}
                 )
             return {
                 "status": 0,

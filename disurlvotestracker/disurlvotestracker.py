@@ -341,7 +341,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         )
         embed.set_author(name=_("{ctx.guild.name} | {total} Lifetime Vote{s}").format(ctx=ctx, total=counter.total(), s="" if counter.total() == 1 else "s"), icon_url=ctx.guild.icon.url)
         if ctx.author in counter:
-            author_index = list(counter.keys()).index(ctx.author) + 1
+            author_index = list(k for k, __ in counter.most_common()).index(ctx.author) + 1
             embed.set_footer(text=_("You are at position {author_index} with {number_member_lifetime_votes} vote{s}.").format(author_index=author_index, s="" if counter[ctx.author] == 1 else "s", number_member_lifetime_votes=counter[ctx.author]))
         description = [
             f"{i}. **{member.display_name}**: {number_member_lifetime_votes} vote{'' if number_member_lifetime_votes == 1 else 's'}"
@@ -383,7 +383,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         )
         embed.set_author(name=_("{ctx.guild.name} | {total} Monthly Vote{s}").format(ctx=ctx, total=counter.total(), s="" if counter.total() == 1 else "s"), icon_url=ctx.guild.icon.url)
         if ctx.author in counter:
-            author_index = list(counter.keys()).index(ctx.author) + 1
+            author_index = list(k for k, __ in counter.most_common()).index(ctx.author) + 1
             embed.set_footer(text=_("You are at position {author_index} with {number_member_monthly_votes} vote{s}.").format(author_index=author_index, s="" if counter[ctx.author] == 1 else "s", number_member_monthly_votes=counter[ctx.author]))
         description = [
             f"{i}. **{member.display_name}**: {number_member_monthly_votes} vote{'' if number_member_monthly_votes == 1 else 's'}"

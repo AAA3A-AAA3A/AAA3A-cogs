@@ -79,7 +79,7 @@ class SnipedMessage:
         ]
 
     def to_embed(self, embed_color: discord.Color = discord.Color.green()) -> discord.Embed:
-        embed: discord.Embed = None
+        embed: typing.Optional[discord.Embed] = None
         image = None
 
         if self.embeds:

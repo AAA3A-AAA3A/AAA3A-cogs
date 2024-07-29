@@ -7741,7 +7741,7 @@
 
         <script>
             options = {
-                username: '{{ variables["bot"]["name"] }}',
+                username: '{{ (guild["settings"]["bot_nickname"] if guild else None) or variables["bot"]["name"] }}',
                 avatar: '{{ variables["bot"]["avatar"] }}',
                 verified: {{ "true" if variables["bot"]["is_verified"] else "false"}},
                 noUser: false,

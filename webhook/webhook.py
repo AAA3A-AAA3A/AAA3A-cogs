@@ -195,12 +195,12 @@ class Webhook(Cog):
 
     @webhook.command(name="send")
     async def webhook_send(
-        self, ctx: commands.Context, webhook_link: WebhookLinkConverter, *, message: str
+        self, ctx: commands.Context, webhook_link: WebhookLinkConverter, *, content: commands.Range[str, 1, 2000]
     ) -> None:
         """Sends a message to the specified webhook using your display name and you avatar."""
         try:
             await webhook_link.send(
-                content=message,
+                content=content,
                 username=ctx.author.display_name,
                 avatar_url=ctx.author.display_avatar,
             )
@@ -215,23 +215,23 @@ class Webhook(Cog):
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
         *,
-        message: commands.Range[str, 1, 2000] = None,
+        content: commands.Range[str, 1, 2000] = None,
     ) -> None:
-        """Sends a message a channel as a webhook using your display name and your avatar.
+        """Sends a message in a channel as a webhook using your display name and your avatar.
 
         You can attach files to the command.
         """
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
         files = await Tunnel.files_from_attatch(ctx.message)
-        if not message and not files:
+        if not content and not files:
             raise commands.UserInputError()
         try:
             hook = await CogsUtils.get_hook(
                 bot=ctx.bot, channel=getattr(channel, "parent", channel)
             )
             await hook.send(
-                content=message,
+                content=content,
                 files=files,
                 username=ctx.author.display_name,
                 avatar_url=ctx.author.display_avatar,
@@ -249,26 +249,83 @@ class Webhook(Cog):
         ],
         member: discord.Member,
         *,
-        message: commands.Range[str, 1, 2000] = None,
+        content: commands.Range[str, 1, 2000] = None,
     ) -> None:
-        """Sends a message a channel as a webhook using the display name and the avatar of a specified member.
+        """Sends a message in a channel as a webhook using the display name and the avatar of a specified member.
 
         You can attach files to the command.
         """
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
         files = await Tunnel.files_from_attatch(ctx.message)
-        if not message and not files:
+        if not content and not files:
             raise commands.UserInputError()
         try:
             hook = await CogsUtils.get_hook(
                 bot=ctx.bot, channel=getattr(channel, "parent", channel)
             )
             await hook.send(
-                content=message,
+                content=content,
                 files=files,
                 username=member.display_name,
                 avatar_url=member.display_avatar,
+                thread=channel if isinstance(channel, discord.Thread) else discord.utils.MISSING,
+            )
+        except discord.HTTPException as error:
+            await self.webhook_error(ctx, "Webhook Sending Error", error)
+
+    @webhook.command(name="reverse")
+    async def webhook_reverse(
+        self,
+        ctx: commands.Context,
+        channel: typing.Optional[
+            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+        ],
+        member: discord.Member,
+        *,
+        content: commands.Range[str, 1, 2000] = None,
+    ) -> None:
+        channel = channel or ctx.channel
+        await self.check_channel(ctx, channel=channel)
+        files = await Tunnel.files_from_attatch(ctx.message)
+        if not content and not files:
+            raise commands.UserInputError()
+        try:
+            hook = await CogsUtils.get_hook(
+                bot=ctx.bot, channel=getattr(channel, "parent", channel)
+            )
+            await hook.send(
+                content=content,
+                files=files,
+                username=member.display_name[::-1],
+                avatar_url=member.display_avatar,
+                thread=channel if isinstance(channel, discord.Thread) else discord.utils.MISSING,
+            )
+        except discord.HTTPException as error:
+            await self.webhook_error(ctx, "Webhook Sending Error", error)
+
+    @webhook.command(name="reversed")
+    async def webhook_reversed(
+        self,
+        ctx: commands.Context,
+        channel: typing.Optional[
+            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+        ],
+        *,
+        message: discord.Message,
+    ) -> None:
+        channel = channel or ctx.channel
+        await self.check_channel(ctx, channel=channel)
+        files = await Tunnel.files_from_attatch(message)
+        try:
+            hook = await CogsUtils.get_hook(
+                bot=ctx.bot, channel=getattr(channel, "parent", channel)
+            )
+            await hook.send(
+                content=message.content[::-1],
+                files=files,
+                username=message.author.display_name[::-1],
+                avatar_url=message.author.display_avatar,
                 thread=channel if isinstance(channel, discord.Thread) else discord.utils.MISSING,
             )
         except discord.HTTPException as error:
@@ -284,7 +341,7 @@ class Webhook(Cog):
         username: commands.Range[str, 1, 80],
         avatar_url: str,
         *,
-        message: commands.Range[str, 1, 2000] = None,
+        content: commands.Range[str, 1, 2000] = None,
     ) -> None:
         """Sends a message a channel as a webhook using a specified display name and a specified avatar url.
 
@@ -293,14 +350,14 @@ class Webhook(Cog):
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
         files = await Tunnel.files_from_attatch(ctx.message)
-        if not message and not files:
+        if not content and not files:
             raise commands.UserInputError()
         try:
             hook = await CogsUtils.get_hook(
                 bot=ctx.bot, channel=getattr(channel, "parent", channel)
             )
             await hook.send(
-                content=message,
+                content=content,
                 files=files,
                 username=username,
                 avatar_url=avatar_url,
@@ -318,7 +375,7 @@ class Webhook(Cog):
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
         *,
-        message: commands.Range[str, 1, 2000] = None,
+        content: commands.Range[str, 1, 2000] = None,
     ) -> None:
         """Sends a message a channel as a webhook using Clyde's display name and avatar.
 
@@ -327,14 +384,14 @@ class Webhook(Cog):
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
         files = await Tunnel.files_from_attatch(ctx.message)
-        if not message and not files:
+        if not content and not files:
             raise commands.UserInputError()
         try:
             hook = await CogsUtils.get_hook(
                 bot=ctx.bot, channel=getattr(channel, "parent", channel)
             )
             await hook.send(
-                content=message,
+                content=content,
                 files=files,
                 username="CIyde",
                 avatar_url="https://discordapp.com/assets/f78426a064bc9dd24847519259bc42af.png",

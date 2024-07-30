@@ -106,6 +106,10 @@ class Calculator(Cog):
             commands_group=self.setcalculator,
         )
 
+    async def cog_load(self) -> None:
+        await super().cog_load()
+        await self.settings.add_commands()
+
     async def calculate(self, expression: str) -> str:
         lst = list(expression)
         try:

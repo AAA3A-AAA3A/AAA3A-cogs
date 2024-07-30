@@ -60,12 +60,16 @@ class Calculator(Cog):
             force_registration=True,
         )
         self.config.register_guild(
-            auto_calculations=False,
+            auto_calculations=None,
             auto_calculations_ignored_channels=[],
-            react_calculations=True,
+            react_calculations=None,
             react_calculations_ignored_channels=[],
             simple_embed=False,
             result_codeblock=True,
+        )
+        self.config.register_global(
+            default_react_calculations=True,
+            default_auto_calculations=False,
         )
 
         _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
@@ -214,7 +218,7 @@ class Calculator(Cog):
                     box(f"> {expression}", lang="fix") + box(f"= {result}", lang="fix")
                 )
             else:
-                embed.description = f"> `{expression}`\n= **{result}**"
+                embed.description = f"`> {expression}`\n= **{result}**"
         if not await self.config.guild(ctx.guild).simple_embed():
             embed.set_thumbnail(url="https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png")
             embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -285,7 +289,11 @@ class Calculator(Cog):
         if message.webhook_id is not None or message.author.bot:
             return
         auto_calculations = await self.config.guild(message.guild).auto_calculations()
+        if auto_calculations is None:
+            auto_calculations = await self.config.default_auto_calculations()
         react_calculations = await self.config.guild(message.guild).react_calculations()
+        if react_calculations is None:
+            react_calculations = await self.config.default_react_calculations()
         if not auto_calculations and not react_calculations:
             return
 
@@ -409,3 +417,9 @@ class Calculator(Cog):
     async def setcalculator(self, ctx: commands.Context) -> None:
         """Commands to configure Calculator."""
         pass
+
+    @commands.is_owner()
+    @setcalculator.command()
+    async def defaultreactcalculations(self, ctx: commands.Context, default_react_calculations: bool) -> None:
+        """Set the default state of the react calculations."""
+        await self.config.default_react_calculations.set(default_react_calculations)

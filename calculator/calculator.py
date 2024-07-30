@@ -64,12 +64,14 @@ class Calculator(Cog):
             auto_calculations_ignored_channels=[],
             react_calculations=None,
             react_calculations_ignored_channels=[],
-            simple_embed=False,
-            result_codeblock=True,
+            simple_embed=None,
+            result_codeblock=None,
         )
         self.config.register_global(
             default_react_calculations=True,
             default_auto_calculations=False,
+            default_simple_embed=False,
+            default_result_codeblock=True,
         )
 
         _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
@@ -208,7 +210,9 @@ class Calculator(Cog):
             title=_("{ctx.me.display_name}'s Calculator").format(ctx=ctx),
             color=await ctx.embed_color(),
         )
-        result_codeblock = await self.config.guild(ctx.guild).result_codeblock()
+        result_codeblock = await self.config.guild(ctx.guild).result_codeblock() if ctx.guild is not None else None
+        if result_codeblock is None:
+            result_codeblock = await self.config.default_result_codeblock()
         if result is None:
             embed.description = box(f"{str(expression)}", lang="fix") if result_codeblock else f"`{str(expression)}`"
         else:
@@ -219,7 +223,10 @@ class Calculator(Cog):
                 )
             else:
                 embed.description = f"`> {expression}`\n= **{result}**"
-        if not await self.config.guild(ctx.guild).simple_embed():
+        simple_embed = await self.config.guild(ctx.guild).simple_embed() if ctx.guild is not None else None
+        if simple_embed is None:
+            simple_embed = await self.config.default_simple_embed()
+        if not simple_embed:
             embed.set_thumbnail(url="https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png")
             embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             if ctx.guild:
@@ -423,3 +430,21 @@ class Calculator(Cog):
     async def defaultreactcalculations(self, ctx: commands.Context, default_react_calculations: bool) -> None:
         """Set the default state of the react calculations."""
         await self.config.default_react_calculations.set(default_react_calculations)
+
+    @commands.is_owner()
+    @setcalculator.command()
+    async def defaultautocalculations(self, ctx: commands.Context, default_auto_calculations: bool) -> None:
+        """Set the default state of the auto calculations."""
+        await self.config.default_auto_calculations.set(default_auto_calculations)
+
+    @commands.is_owner()
+    @setcalculator.command()
+    async def defaultsimpleembed(self, ctx: commands.Context, default_simple_embed: bool) -> None:
+        """Set the default state of the simple embed mode."""
+        await self.config.default_simple_embed.set(default_simple_embed)
+
+    @commands.is_owner()
+    @setcalculator.command()
+    async def defaultresultcodeblock(self, ctx: commands.Context, default_result_codeblock: bool) -> None:
+        """Set the default state of the result codeblock mode."""
+        await self.config.default_result_codeblock.set(default_result_codeblock)

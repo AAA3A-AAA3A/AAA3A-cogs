@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -31,19 +31,6 @@ class Calculator(Cog):
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self.config: Config = Config.get_conf(
-            self,
-            identifier=205192943327321000143939875896557571750,  # 905683670375
-            force_registration=True,
-        )
-        self.config.register_global(
-            settings={
-                "time_max": 180,
-                "color": 0x01D758,
-                "thumbnail": "https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png",
-            }
-        )
-
         # blocks: typing.List[block.Block] = [
         #     block.MathBlock(),
         #     block.RandomBlock(),
@@ -66,6 +53,58 @@ class Calculator(Cog):
         ] = {}
 
         self.cache: typing.List[discord.Message] = []
+
+        self.config: Config = Config.get_conf(
+            self,
+            identifier=205192943327321000143939875896557571750,  # 905683670375
+            force_registration=True,
+        )
+        self.config.register_guild(
+            auto_calculations=False,
+            auto_calculations_ignored_channels=[],
+            react_calculations=True,
+            react_calculations_ignored_channels=[],
+            simple_embed=False,
+            result_codeblock=True,
+        )
+
+        _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
+            "auto_calculations": {
+                "converter": bool,
+                "description": "Toggle the auto calculations.",
+            },
+            "auto_calculations_ignored_channels": {
+                "converter": commands.Greedy[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread, discord.CategoryChannel]],
+                "description": "The channels to ignore for the auto calculations.",
+            },
+            "react_calculations": {
+                "converter": bool,
+                "description": "Toggle the reaction calculations.",
+            },
+            "react_calculations_ignored_channels": {
+                "converter": commands.Greedy[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread, discord.CategoryChannel]],
+                "description": "The channels to ignore for the reaction calculations.",
+            },
+            "simple_embed": {
+                "converter": bool,
+                "description": "Toggle the simple embed mode.",
+            },
+            "result_codeblock": {
+                "converter": bool,
+                "description": "Toggle the codeblock mode.",
+            },
+        }
+        self.settings: Settings = Settings(
+            bot=self.bot,
+            cog=self,
+            config=self.config,
+            group=self.config.GUILD,
+            settings=_settings,
+            global_path=[],
+            use_profiles_system=False,
+            can_edit=True,
+            commands_group=self.setcalculator,
+        )
 
     async def calculate(self, expression: str) -> str:
         lst = list(expression)
@@ -151,31 +190,34 @@ class Calculator(Cog):
         return f"{result}".replace(",", " ") if result is not None else _("Error!")
 
     async def get_embed(
-        self, ctx: commands.Context, expression: str, result: str
+        self, ctx: commands.Context, expression: typing.Optional[str], result: typing.Optional[str]
     ) -> discord.Embed:
         if not expression:
             expression = None
         if expression is None:
             expression = "|"
-        config = await self.config.settings.all()
-        actual_color = config["color"]
-        actual_thumbnail = config["thumbnail"]
-        embed: discord.Embed = discord.Embed()
-        embed.title = _("{ctx.me.display_name}'s Calculator").format(ctx=ctx)
+        embed: discord.Embed = discord.Embed(
+            title=_("{ctx.me.display_name}'s Calculator").format(ctx=ctx),
+            color=await ctx.embed_color(),
+        )
+        result_codeblock = await self.config.guild(ctx.guild).result_codeblock()
         if result is None:
-            embed.description = box(f"{str(expression)}", lang="fix")
+            embed.description = box(f"{str(expression)}", lang="fix") if result_codeblock else f"`{str(expression)}`"
         else:
             expression = str(expression).replace("|", "")
-            embed.description = (
-                box(f"> {expression}", lang="fix") + box(f"= {result}", lang="fix")
-            ) + "\n"
-        embed.set_thumbnail(url=actual_thumbnail)
-        embed.color = actual_color
-        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
-        if ctx.guild:
-            embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
-        else:
-            embed.set_footer(text=ctx.author.name, icon_url=ctx.author.display_avatar)
+            if result_codeblock:
+                embed.description = (
+                    box(f"> {expression}", lang="fix") + box(f"= {result}", lang="fix")
+                )
+            else:
+                embed.description = f"> `{expression}`\n= **{result}**"
+        if not await self.config.guild(ctx.guild).simple_embed():
+            embed.set_thumbnail(url="https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png")
+            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            if ctx.guild:
+                embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
+            else:
+                embed.set_footer(text=ctx.author.name, icon_url=ctx.author.display_avatar)
         return embed
 
     async def input_formatter(self, expression: str, new: str) -> str:
@@ -238,6 +280,11 @@ class Calculator(Cog):
             return
         if message.webhook_id is not None or message.author.bot:
             return
+        auto_calculations = await self.config.guild(message.guild).auto_calculations()
+        react_calculations = await self.config.guild(message.guild).react_calculations()
+        if not auto_calculations and not react_calculations:
+            return
+
         content_to_check = message.content.split("#")[0].replace(" ", "").lstrip("+-").strip()
         if (
             not content_to_check
@@ -286,16 +333,37 @@ class Calculator(Cog):
             "Error!"
         ) or result == message.content:
             return
-        if message.guild is not None:
-            channel_permissions = message.channel.permissions_for(message.guild.me)
-            if not channel_permissions.add_reactions or not channel_permissions.send_messages:
-                return
-        try:
-            await message.add_reaction("🔢")
-        except discord.HTTPException:
-            pass
-        finally:
-            self.cache.append(message)
+
+        auto_calculations_ignored_channels = await self.config.guild(message.guild).auto_calculations_ignored_channels()
+        react_calculations_ignored_channels = await self.config.guild(message.guild).react_calculations_ignored_channels()
+        if (
+            auto_calculations
+            and message.channel.id not in auto_calculations_ignored_channels
+            and message.channel.category_id not in auto_calculations_ignored_channels
+        ):
+            await CogsUtils.invoke_command(
+                bot=self.bot,
+                author=message.author,
+                channel=message.channel,
+                command=f"calculate {message.content}",
+                message=message,
+            )
+            return
+        elif (
+            react_calculations
+            and message.channel.id not in react_calculations_ignored_channels
+            and message.channel.category_id not in react_calculations_ignored_channels
+        ):
+            if message.guild is not None:
+                channel_permissions = message.channel.permissions_for(message.guild.me)
+                if not channel_permissions.add_reactions or not channel_permissions.send_messages:
+                    return
+            try:
+                await message.add_reaction("🔢")
+            except discord.HTTPException:
+                pass
+            else:
+                self.cache.append(message)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
@@ -330,3 +398,10 @@ class Calculator(Cog):
             command=f"calculate {message.content}",
             message=message,
         )
+
+    @commands.guild_only()
+    @commands.admin_or_permissions(manage_guild=True)
+    @commands.hybrid_group()
+    async def setcalculator(self, ctx: commands.Context) -> None:
+        """Commands to configure Calculator."""
+        pass

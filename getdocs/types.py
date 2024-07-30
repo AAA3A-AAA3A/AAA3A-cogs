@@ -156,6 +156,7 @@ class Attribute:
     name: str
     role: typing.Optional[str]
     url: str
+    type: typing.Optional[str]
     description: str
 
 
@@ -173,15 +174,16 @@ class Attributes:
     ) -> typing.List[discord.Embed]:
         def format_attribute(
             name: str,
-            role: str,
+            role: typing.Optional[str],
             url: str,
-            description: str,
+            type: typing.Optional[str],
+            description: typing.Optional[str],
             show_description: typing.Optional[bool] = True,
         ):
             formatted_attribute = "**•** "
             if role is not None:
                 formatted_attribute += f"{role} "
-            formatted_attribute += f"[**{name}**]({url})"
+            formatted_attribute += f"[**{name}**]({url})" + (f" ({type})" if type else "")
             if description is not None and show_description:
                 formatted_attribute += f"\n> {description}"
             return formatted_attribute
@@ -195,10 +197,11 @@ class Attributes:
             for attribute in attributes:
                 formatted_attributes.append(
                     format_attribute(
-                        attribute,
-                        attributes[attribute].role,
-                        attributes[attribute].url,
-                        attributes[attribute].description,
+                        name=attribute,
+                        role=attributes[attribute].role,
+                        url=attributes[attribute].url,
+                        type=attributes[attribute].type,
+                        description=attributes[attribute].description,
                     )
                 )
             description = "\n".join(formatted_attributes)

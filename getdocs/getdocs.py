@@ -1438,7 +1438,7 @@ class Source:
         _signature = parse_method_role(signature)
         signature = (f"{_signature[0]} " if _signature[0] is not None else "") + _signature[1]
 
-        # Description & Examples
+        # Description & Examples.
         description: typing.List[str] = []
         examples = Examples()
         for child in documentation.children:
@@ -1495,7 +1495,7 @@ class Source:
         #         continue
         #     examples.append(example)
 
-        # Fields
+        # Fields.
         fields = {}
         if supported_operations := documentation.find("div", class_="operations", recursive=False):
             items: typing.List[typing.Set] = []  # typing.List[set[str, str]]
@@ -1549,7 +1549,7 @@ class Source:
                     for element in elements
                 )
 
-        # Parameters
+        # Parameters.
         parameters = Parameters()
         if "Parameters" in fields:
             _parameters: str = fields.pop("Parameters")
@@ -1563,7 +1563,7 @@ class Source:
                     value = "".join(_parameter.split(": ")[1:]).strip()
                 parameters[key] = value
 
-        # Versions changes
+        # Versions changes.
         versions_changes = []
         children = documentation.children
         for child in children:
@@ -1607,7 +1607,7 @@ class Source:
             versions_changes = "\n".join(versions_changes)
             fields["Versions Changes"] = versions_changes
 
-        # Attributes
+        # Attributes.
         def format_attributes(items: Tag) -> typing.List[Attribute]:
             results: typing.Dict[str, typing.Dict[str, str]] = {}
             for item in items:
@@ -1620,6 +1620,20 @@ class Source:
                     role, name = parse_method_role(name)
                 else:
                     role = None
+                if item.find("a", class_="headerlink") is not None:
+                    href = item.find("a", class_="headerlink").get("href")
+                else:
+                    href = ""
+                url = urljoin(full_url, href)
+                field_odd = item.find_all(class_="field-odd")
+                if field_odd and field_odd[0].text == "Type":
+                    elements = []
+                    for element in list(field_odd[1].children)[0].contents:
+                        text = self._get_text(element, parsed_url)
+                        elements.append(text)
+                    type = "".join(elements)
+                else:
+                    type = None
                 if (
                     item.attrs.get("class") == ["py", "attribute"]
                     or item.attrs.get("class") == ["py", "property"]
@@ -1627,12 +1641,13 @@ class Source:
                     description = [x.strip() for x in infos][1]
                 else:
                     description = None
-                if item.find("a", class_="headerlink") is not None:
-                    href = item.find("a", class_="headerlink").get("href")
-                else:
-                    href = ""
-                url = urljoin(full_url, href)
-                results[name] = Attribute(name=name, role=role, url=url, description=description)
+                results[name] = Attribute(
+                    name=name,
+                    role=role,
+                    url=url,
+                    type=type,
+                    description=description,
+                )
             return results
 
         attributes: typing.Dict[str, typing.List[Attribute]] = {}

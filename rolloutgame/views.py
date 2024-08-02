@@ -18,14 +18,14 @@ class JoinGameView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self._message: discord.Message = None
-        self.hoster: discord.Member = None
+        self.host: discord.Member = None
         self.players: typing.List[discord.Member] = []
 
         self.cancelled: bool = True
 
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
-        self.hoster = ctx.author
+        self.host = ctx.author
         self.players.append(ctx.author)
         embed: discord.Embed = discord.Embed(
             title=_("Rollout Game"),
@@ -36,13 +36,13 @@ class JoinGameView(discord.ui.View):
             name=_("Instructions:"),
             value=_(
                 "**•** Click the **Join Game** button to join the game. Limited to 25 players.\n"
-                "**•** Wait for the hoster to start the game.\n"
+                "**•** Wait for the host to start the game.\n"
                 "**•** At each round, select a number between 1 and 25 within 30 seconds.\n"
                 "**•** If the bot rolls the number you selected, you lose.\n"
                 "**•** The last player standing wins the game!"
             )
         )
-        embed.set_author(name=_("Hosted by {hoster.display_name}").format(hoster=self.hoster), icon_url=self.hoster.display_avatar)
+        embed.set_author(name=_("Hosted by {host.display_name}").format(host=self.host), icon_url=self.host.display_avatar)
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
         self._message: discord.Message = await ctx.send(embed=embed, view=self)
         self.cog.views[self._message] = self
@@ -110,7 +110,7 @@ class JoinGameView(discord.ui.View):
             title="Rollout Game - Game Players",
             color=await self.ctx.embed_color(),
         )
-        embed.set_author(name=_("Hosted by {hoster.display_name}").format(hoster=self.hoster), icon_url=self.hoster.display_avatar)
+        embed.set_author(name=_("Hosted by {host.display_name}").format(host=self.host), icon_url=self.host.display_avatar)
         embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
         embed.description = "\n".join(f"**•** **{player.display_name}** ({player.id})" for player in self.players)
         await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -119,9 +119,9 @@ class JoinGameView(discord.ui.View):
     async def start_button(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        if interaction.user != self.hoster:
+        if interaction.user != self.host:
             await interaction.response.send_message(
-                "Only the hoster can start the game!", ephemeral=True
+                "Only the host can start the game!", ephemeral=True
             )
             return
         if len(self.players) < 2:
@@ -138,9 +138,9 @@ class JoinGameView(discord.ui.View):
     async def cancel_button(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        if interaction.user != self.hoster:
+        if interaction.user != self.host:
             await interaction.response.send_message(
-                "Only the hosterer can cancel the game!", ephemeral=True
+                "Only the hoster can cancel the game!", ephemeral=True
             )
             return
         await interaction.response.send_message("The game has been cancelled!", ephemeral=True)
@@ -155,7 +155,7 @@ class RolloutGameView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self._message: discord.Message = None
-        self.hoster: discord.Member = None
+        self.host: discord.Member = None
         self.players: typing.List[discord.Member] = []
         self.round: int = 1
         self.disabled_numbers: typing.List[int] = []
@@ -170,7 +170,7 @@ class RolloutGameView(discord.ui.View):
         disabled_numbers: typing.List[int] = [],
     ) -> None:
         self.ctx: commands.Context = ctx
-        self.hoster: discord.Member = ctx.author
+        self.host: discord.Member = ctx.author
         self.players: typing.List[discord.Member] = players
         self.round: int = round
         self.disabled_numbers: typing.List[int] = disabled_numbers

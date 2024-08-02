@@ -438,3 +438,11 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         if not confirmation:
             raise commands.UserInputError()
         await self.config.clear_all_members(ctx.guild)
+
+    @commands.is_owner()
+    @commands.bot_has_permissions(embed_links=True)
+    @setdisurlvotestracker.command(hidden=True)
+    async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
+        """Get an embed for check loop status."""
+        embeds = [loop.get_debug_embed() for loop in self.loops]
+        await Menu(pages=embeds).start(ctx)

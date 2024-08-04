@@ -24,7 +24,7 @@ _: Translator = Translator("MemoryGame", __file__)
 
 @cog_i18n(_)
 class MemoryGame(DashboardIntegration, Cog):
-    """A cog to play to Memory game, with buttons, leaderboard and Red bank!"""
+    """Play to Memory game, with buttons, leaderboard and Red bank!"""
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -140,9 +140,7 @@ class MemoryGame(DashboardIntegration, Cog):
     async def memorygame(
         self, ctx: commands.Context, difficulty: typing.Literal["3x3", "4x4", "5x5"] = "5x5"
     ) -> None:
-        """
-        Play to Memory game. Choose between `3x3`, `4x4` and `5x5` versions.
-        """
+        """Play to Memory game. Choose between `3x3`, `4x4` and `5x5` versions."""
         if ctx.guild is not None:
             max_wrong_matches = await self.config.guild(ctx.guild).max_wrong_matches()
         else:

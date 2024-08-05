@@ -180,7 +180,7 @@ class FastClickGame(DashboardIntegration, Cog):
                 ]
             )
         for page in pagify(str(table), page_length=2000):
-            embed = discord.Embed(title="MemoryGame Leaderboard")
+            embed = discord.Embed(title="Fast Click Game - Leaderboard")
             embed.description = box(page, lang="py")
             if you:
                 embed.set_footer(text=you)

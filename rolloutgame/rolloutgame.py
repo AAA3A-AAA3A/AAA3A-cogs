@@ -33,7 +33,7 @@ class RolloutGame(Cog):
         )
         self.config.register_guild(
             red_economy=False,
-            prize=5000,
+            prize=2500,
         )
         self.config.register_member(
             score=0,

@@ -86,7 +86,6 @@ class FastClickGameView(discord.ui.View):
                 await self._message.reply(_("No one clicked the button in time."))
                 return
             winner = self.winners[-1]
-            self.times.append(round(time.time() - self.start_time, 2))
             embed.description = (
                 _("🏆 {winner.mention} has won this round!\n")
                 + _("🖱️ They clicked the button in **{click_time}s**.\n")
@@ -120,7 +119,7 @@ class FastClickGameView(discord.ui.View):
         embed.add_field(
             name=_("🖱️ Clicks"),
             value="\n".join(
-                f"**•** {winner.mention}: {counter[winner]} {_('click')}{'s' if counter[winner] > 1 else ''} ({humanize_list([f'`{self.times[i]}`' for i, w in enumerate(self.winners) if w == winner])}s)"
+                f"**•** {winner.mention}: {counter[winner]} {_('click')}{'s' if counter[winner] > 1 else ''} ({humanize_list([f'`{self.times[i]}s`' for i, w in enumerate(self.winners) if w == winner])}s)"
                 for winner in counter
             ),
         )
@@ -171,8 +170,11 @@ class FastClickGameView(discord.ui.View):
 
     async def callback(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
+        if button.style != discord.ButtonStyle.success:
+            return
         async with self.lock:
-            if button.style != discord.ButtonStyle.success:
+            if self.event.is_set():
                 return
+            self.times.append(round(time.time() - self.start_time, 2))
             self.winners.append(interaction.user)
             self.event.set()

@@ -69,7 +69,7 @@ class EmojiUrlConverter(commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Tuple[str, typing.Union[discord.PartialEmoji, str]]:
-        arg_split = re.split(r";|\||-", argument)
+        arg_split = re.split(r"[;,|\-]", argument)
         try:
             emoji, url = arg_split
         except ValueError:

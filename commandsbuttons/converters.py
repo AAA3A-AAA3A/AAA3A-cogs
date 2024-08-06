@@ -56,7 +56,7 @@ class EmojiCommandConverter(commands.Converter):
     async def convert(
         self, ctx: commands.Context, argument: str
     ) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
-        arg_split = re.split(r";|\||-", argument)
+        arg_split = re.split(r"[;,|\-]", argument)
         try:
             emoji, command = arg_split
         except ValueError:

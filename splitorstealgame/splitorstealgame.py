@@ -16,7 +16,7 @@ _: Translator = Translator("SplitOrStealGame", __file__)
 
 @cog_i18n(_)
 class SplitOrStealGame(Cog):
-    """A cog to play a match of SplitOrSteal game!"""
+    """A cog to play a match of Split Or Steal game!"""
 
     @property
     def games(self) -> typing.Dict[discord.Message, SplitOrStealGameView]:
@@ -26,7 +26,7 @@ class SplitOrStealGame(Cog):
     @commands.hybrid_command(aliases=["splitorsteal", "sosg", "sos"])
     async def splitorstealgame(self, ctx: commands.Context) -> None:
         """
-        Play a match of SplitOrSteal game.
+        Play a match of Split Or Steal game.
 
         Two player will have to click the button that they choose (`split` or `steal`).
         • If both choose `split` both of them win.

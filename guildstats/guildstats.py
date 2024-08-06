@@ -15,7 +15,7 @@ from pathlib import Path
 
 import plotly.graph_objects as go
 from fontTools.ttLib import TTFont
-from PIL import Image, ImageChops, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageChops
 from redbot.core.data_manager import bundled_data_path
 
 from .view import GuildStatsView

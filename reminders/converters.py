@@ -469,7 +469,7 @@ class TimeConverter(commands.Converter):
                 expires_at.replace(second=0)
             else:
                 expires_at.replace(second=30)
-            if ctx.command.qualified_name != "reminder timestamps":
+            if ctx.command is None or ctx.command.qualified_name != "reminder timestamps":
                 if expires_at < utc_now.replace(
                     second=0, microsecond=0
                 ):  # Negative intervals are not allowed.

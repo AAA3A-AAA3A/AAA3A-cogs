@@ -14,7 +14,7 @@ _: Translator = Translator("Dev", __file__)
 
 
 def cleanup_code(code: str) -> str:
-    code = dev_commands.cleanup_code(textwrap.dedent(code)).strip()
+    code = textwrap.dedent(dev_commands.cleanup_code(code))
     with io.StringIO(code) as codeio:
         for line in codeio:
             line = line.strip()

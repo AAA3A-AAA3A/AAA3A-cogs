@@ -139,7 +139,7 @@ class TransferChannel(Cog):
             if bot is not None and message.author.bot != bot:
                 continue
             if message.author in exclude_users_and_roles or any(
-                role in exclude_users_and_roles for role in message.author.roles
+                role in exclude_users_and_roles for role in getattr(message.author, "roles", [])
             ):
                 continue
             messages.append(message)

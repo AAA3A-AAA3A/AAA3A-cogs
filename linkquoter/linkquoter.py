@@ -21,9 +21,10 @@ _: Translator = Translator("LinkQuoter", __file__)
 
 class LinkQuoterView(discord.ui.View):
     def __init__(
-        self, quoted_message: discord.Message, delete_message_button: bool = True
+        self, invoker: discord.Member, quoted_message: discord.Message, delete_message_button: bool = True
     ) -> None:
         super().__init__(timeout=60)
+        self.invoker: discord.Member = invoker
         self.quoted_message: discord.Message = quoted_message
         self.add_item(
             discord.ui.Button(
@@ -35,6 +36,14 @@ class LinkQuoterView(discord.ui.View):
         self._message: discord.Message = None
         if not delete_message_button:
             self.remove_item(self.delete_message)
+
+    async def interaction_check(self, interaction: discord.Interaction[discord.Client]) -> bool:
+        if interaction.user.id not in [self.invoker.id] + list(interaction.client.owner_ids):
+            await interaction.response.send_message(
+                _("You are not allowed to use this interaction."), ephemeral=True
+            )
+            return False
+        return True
 
     async def on_timeout(self) -> None:
         self.remove_item(self.delete_message)
@@ -294,6 +303,7 @@ class LinkQuoter(DashboardIntegration, Cog):
             ):
                 raise commands.UserInputError()
         view = LinkQuoterView(
+            invoker=ctx.author,
             quoted_message=message,
             delete_message_button=await self.config.guild(ctx.guild).delete_message_button(),
         )

@@ -65,6 +65,10 @@ class RolloutGame(Cog):
             commands_group=self.setrolloutgame,
         )
 
+    async def cog_load(self) -> None:
+        await super().cog_load()
+        await self.settings.add_commands()
+
     @property
     def games(self) -> typing.Dict[discord.Message, JoinGameView]:
         return self.views

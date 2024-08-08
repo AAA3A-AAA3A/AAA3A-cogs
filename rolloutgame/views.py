@@ -188,7 +188,7 @@ class RolloutGameView(discord.ui.View):
                 label=str(i),
                 custom_id=str(i),
                 disabled=i in self.disabled_numbers,
-                style=discord.ButtonStyle.primary if i not in self.disabled_numbers else discord.ButtonStyle.secondary,
+                style=discord.ButtonStyle.secondary,
             )
             button.callback = self.callback
             self.add_item(button)
@@ -227,8 +227,19 @@ class RolloutGameView(discord.ui.View):
             return
         number = int(interaction.data["custom_id"])
         self._choices[interaction.user] = number
+        for button in self.children:
+            players = [player for player in self._choices if self._choices[player] == int(button.custom_id)]
+            if players:
+                button.style = discord.ButtonStyle.primary
+                button.label = f"{button.custom_id} ({len(players)})" if len(players) > 1 else button.custom_id
+            else:
+                button.style = discord.ButtonStyle.secondary
+                button.label = button.custom_id
         try:
-            await self._message.edit(content=humanize_list([player.mention for player in self.players if player not in self._choices]))
+            await self._message.edit(
+                content=humanize_list([player.mention for player in self.players if player not in self._choices]),
+                view=self,
+            )
         except discord.HTTPException:
             pass
         await interaction.response.send_message(f"You have selected the number {number}!", ephemeral=True)

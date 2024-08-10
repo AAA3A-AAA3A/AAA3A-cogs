@@ -304,7 +304,7 @@ class Calculator(Cog):
         if not auto_calculations and not react_calculations:
             return
 
-        content_to_check = message.content.split("#")[0].replace(" ", "").lstrip("+-").strip()
+        content_to_check = message.content.split("#")[0].replace(" ", "").lstrip("+-").strip().removesuffix(".")
         if (
             not content_to_check
             or content_to_check.isdecimal()

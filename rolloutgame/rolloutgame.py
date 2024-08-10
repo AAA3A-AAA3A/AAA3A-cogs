@@ -91,6 +91,8 @@ class RolloutGame(Cog):
         disabled_numbers = []
         round = 0
         while len(players) > 1:
+            if len(disabled_numbers) == 24:
+                break
             round += 1
             view: RolloutGameView = RolloutGameView(self)
             await view.start(
@@ -108,7 +110,7 @@ class RolloutGame(Cog):
                 round -= 1
             except TimeoutError:
                 return
-        winner = players[0]
+        winner = players[0] if len(players) == 1 else None
 
         config = await self.config.guild(ctx.guild).all()
         prize = config["prize"]
@@ -123,12 +125,20 @@ class RolloutGame(Cog):
             except BalanceTooHigh as e:
                 await bank.set_balance(winner, e.max_balance)
 
-        embed = discord.Embed(
-            title=_("Congratulations **{winner.display_name}**! You won the game!").format(winner=winner),
-            color=await ctx.embed_color(),
-            timestamp=ctx.message.created_at,
-        )
-        await ctx.send(content=winner.mention, embed=embed)
+        if winner is not None:
+            embed = discord.Embed(
+                title=_("Congratulations **{winner.display_name}**! You won the game!").format(winner=winner),
+                color=await ctx.embed_color(),
+                timestamp=ctx.message.created_at,
+            )
+            await ctx.send(content=winner.mention, embed=embed)
+        else:
+            embed = discord.Embed(
+                title=_("It's a tie! No one won the game."),
+                color=await ctx.embed_color(),
+                timestamp=ctx.message.created_at,
+            )
+            await ctx.send(embed=embed)
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["rolloutlb"])

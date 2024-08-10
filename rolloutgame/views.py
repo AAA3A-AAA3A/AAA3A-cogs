@@ -222,9 +222,10 @@ class RolloutGameView(discord.ui.View):
     async def callback(self, interaction: discord.Interaction) -> None:
         if interaction.user not in self.players:
             await interaction.response.send_message(
-                "You are not in the game!", ephemeral=True
+                _("You are not in this game!"), ephemeral=True
             )
             return
+        await interaction.response.defer(ephemeral=True)
         number = int(interaction.data["custom_id"])
         self._choices[interaction.user] = number
         for button in self.children:
@@ -242,11 +243,10 @@ class RolloutGameView(discord.ui.View):
             )
         except discord.HTTPException:
             pass
-        await interaction.response.send_message(f"You have selected the number {number}!", ephemeral=True)
+        await interaction.followup.send(_("You have selected the number {number}!").format(number=number), ephemeral=True)
 
     async def choose_number(self) -> int:
         number = self._number
-        self.disabled_numbers.append(number)
         discord.utils.get(self.children, label=str(number)).style = discord.ButtonStyle.danger
         try:
             await self._message.edit(view=self)
@@ -284,7 +284,8 @@ class RolloutGameView(discord.ui.View):
                 embed=embed,
                 reference=self._message.to_reference(fail_if_not_exists=False),
             )
-            raise RuntimeError("No players left in the game.")
+            raise RuntimeError(_("No player left in the game."))
+        self.disabled_numbers.append(number)
 
         embed.description = _("The bot has rolled the number {number}!").format(number=number)
         if not eleminated_players:

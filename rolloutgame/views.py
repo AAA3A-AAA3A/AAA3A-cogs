@@ -225,6 +225,11 @@ class RolloutGameView(discord.ui.View):
                 _("You are not in this game!"), ephemeral=True
             )
             return
+        if interaction.user in self._choices:
+            await interaction.response.send_message(
+                _("You have already selected a number!"), ephemeral=True
+            )
+            return
         await interaction.response.defer(ephemeral=True)
         number = int(interaction.data["custom_id"])
         self._choices[interaction.user] = number

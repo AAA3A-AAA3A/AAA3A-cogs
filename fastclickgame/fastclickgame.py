@@ -133,6 +133,8 @@ class FastClickGame(DashboardIntegration, Cog):
     @fastclickgame.command(aliases=["single"])
     async def duel(self, ctx: commands.Context, *, player: discord.Member) -> None:
         """Play Fast Click Game with another player."""
+        if player == ctx.author:
+            raise commands.UserFeedbackCheckFailure(_("You can't play with yourself."))
         embed = discord.Embed(
             title=_("Fast Click Game"),
             color=await ctx.embed_color(),

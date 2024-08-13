@@ -60,7 +60,9 @@ class MemoryGameView(discord.ui.View):
                 button.callback = self.callback
                 self.add_item(button)
         embed: discord.Embed = discord.Embed(
-            title="Memory Game", color=await self.ctx.embed_color()
+            title=_("Memory Game"),
+            description=_("Find all the pairs of emojis!"),
+            color=await self.ctx.embed_color(),
         )
         embed.set_author(
             name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar

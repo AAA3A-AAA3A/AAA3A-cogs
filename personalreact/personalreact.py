@@ -33,7 +33,6 @@ class PersonalReact(DashboardIntegration, Cog):
         self.config.register_guild(
             max_reactions_per_member=5,
             min_custom_trigger_length=3,
-            cooldown=None,
             blacklisted_channels=[],
             base_roles_requirements={},
             custom_trigger_roles_requirements={},
@@ -55,10 +54,6 @@ class PersonalReact(DashboardIntegration, Cog):
             "min_custom_trigger_length": {
                 "converter": commands.Range[int, 3, 8],
                 "description": "The minimum length of a custom trigger.",
-            },
-            "cooldown": {
-                "converter": commands.Range[int, 1, 300],
-                "description": "The cooldown in seconds between each message from the same person to react.",
             },
             "blacklisted_channels": {
                 "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel, discord.Thread],

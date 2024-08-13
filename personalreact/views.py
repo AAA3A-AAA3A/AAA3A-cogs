@@ -59,9 +59,9 @@ class PersonalReactView(discord.ui.View):
         else:
             self.toggle.label = _("Disable")
             self.toggle.style = discord.ButtonStyle.danger
-        self.replies.style = discord.ButtonStyle.success if not data["replies"] else discord.ButtonStyle.danger
-        self.ignore_myself.style = discord.ButtonStyle.success if data["ignore_myself"] else discord.ButtonStyle.danger
-        self.ignore_bots.style = discord.ButtonStyle.success if data["ignore_bots"] else discord.ButtonStyle.danger
+        self.replies.style = discord.ButtonStyle.success if data["replies"] else discord.ButtonStyle.secondary
+        self.ignore_myself.style = discord.ButtonStyle.success if data["ignore_myself"] else discord.ButtonStyle.secondary
+        self.ignore_bots.style = discord.ButtonStyle.success if data["ignore_bots"] else discord.ButtonStyle.secondary
         __, base_total_amount, __, base_is_staff, base_roles_requirements = await self.cog.get_reactions(
             self.ctx.author, "base"
         )
@@ -273,7 +273,6 @@ class AddReactionModal(discord.ui.Modal):
         self.add_item(self.reaction)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        await interaction.response.defer()
         reaction = self.reaction.value
         try:
             reaction = await Emoji().convert(self.ctx, reaction)
@@ -330,13 +329,16 @@ class ReactionsView(discord.ui.View):
         if len(reactions) == 25:
             self.add.disabled = True
         if reactions:
-            self.remove.options = [
-                discord.SelectOption(
-                    label=reaction,
-                    value=reaction,
+            self.remove.options = []
+            for r in reactions:
+                reaction = r if isinstance(r, str) else self.ctx.bot.get_emoji(r)
+                self.remove.options.append(
+                    discord.SelectOption(
+                        emoji=reaction if reaction is not None else None,
+                        label=getattr(reaction, "name", "\u200b") if reaction is not None else r,
+                        value=r,
+                    )
                 )
-                for reaction in reactions
-            ]
             self.add_item(self.remove)
 
     async def on_timeout(self) -> None:

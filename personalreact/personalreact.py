@@ -42,7 +42,7 @@ class PersonalReact(DashboardIntegration, Cog):
             reactions=[],
             replies=False,
             custom_trigger=None,
-            ignore_myself=False,
+            ignore_myself=True,
             ignore_bots=True,
         )
 

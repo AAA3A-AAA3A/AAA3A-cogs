@@ -264,33 +264,24 @@ class PersonalReact(DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(_("You can't have more than {max_reactions_per_member} reactions.").format(max_reactions_per_member=max_reactions_per_member))
         await self.config.member(ctx.author).reactions.set([getattr(reaction, "id", reaction) for reaction in reactions])
 
-    @personalreact.command(aliases=["addreact"])
-    async def addreaction(self, ctx: commands.Context, reaction: Emoji) -> None:
-        """Add a reaction."""
+    @personalreact.command(aliases=["addreacts"])
+    async def addreactions(self, ctx: commands.Context, reactions: commands.Greedy[Emoji]) -> None:
+        """Add reaction(s)."""
         if (await self.get_reactions(ctx.author, "base"))[1] == 0 and (await self.get_reactions(ctx.author, "custom_trigger"))[1] == 0:
             raise commands.UserFeedbackCheckFailure(_("You aren't elligible for using PersonalReact."))
-        reactions = await self.config.member(ctx.author).reactions()
-        reaction = getattr(reaction, "id", reaction)
-        if reaction in reactions:
-            raise commands.UserFeedbackCheckFailure(_("You already have this reaction set."))
-        reactions.append(reaction)
-        if len(reactions) > (max_reactions_per_member := (await self.config.guild(ctx.guild).max_reactions_per_member())):
+        _reactions = await self.config.member(ctx.author).reactions()
+        _reactions.extend([getattr(reaction, "id", reaction) for reaction in reactions])
+        if len(_reactions) > (max_reactions_per_member := (await self.config.guild(ctx.guild).max_reactions_per_member())):
             raise commands.UserFeedbackCheckFailure(_("You can't have more than {max_reactions_per_member} reactions.").format(max_reactions_per_member=max_reactions_per_member))
-        await self.config.member(ctx.author).reactions.set(reactions)
+        await self.config.member(ctx.author).reactions.set(_reactions)
 
-    @personalreact.command(aliases=["removereact"])
-    async def removereaction(self, ctx: commands.Context, reaction: Emoji) -> None:
-        """Remove a reaction."""
-        reactions = await self.config.member(ctx.author).reactions()
-        reaction = getattr(reaction, "id", reaction)
-        if reaction not in reactions:
-            raise commands.UserFeedbackCheckFailure(_("This reaction isn't set."))
-        reactions.remove(reaction)
-        if not reactions:
-            await self.config.member(ctx.author).reactions.clear()
-            await self.config.member(ctx.author).enabled.set(False)
-            return
-        await self.config.member(ctx.author).reactions.set(reactions)
+    @personalreact.command(aliases=["removereacts"])
+    async def removereactions(self, ctx: commands.Context, reactions: commands.Greedy[Emoji]) -> None:
+        """Remove reaction(s)."""
+        _reactions = await self.config.member(ctx.author).reactions()
+        for reaction in reactions:
+            _reactions.remove(reaction)
+        await self.config.member(ctx.author).reactions.set(_reactions)
 
     @personalreact.command()
     async def ignoremyself(self, ctx: commands.Context, toggle: bool) -> None:

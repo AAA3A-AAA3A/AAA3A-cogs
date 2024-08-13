@@ -255,47 +255,40 @@ class CustomTriggerModal(discord.ui.Modal):
             pass
 
 
-class AddReactionModal(discord.ui.Modal):
+class AddReactionsModal(discord.ui.Modal):
     def __init__(self, cog: commands.Cog, ctx: commands.Context, parent_view: discord.ui.View, view: discord.ui.View) -> None:
         self.ctx: commands.Context = ctx
         self.cog: commands.Cog = cog
         self.parent_view: discord.ui.View = parent_view
         self.view: discord.ui.View = view
 
-        super().__init__(title=_("Add Reaction"))
-        self.reaction: discord.ui.TextInput = discord.ui.TextInput(
-            label=_("Reaction"),
-            placeholder=_("Type the reaction..."),
+        super().__init__(title=_("Add Reaction(s)"))
+        self.reactions: discord.ui.TextInput = discord.ui.TextInput(
+            label=_("Reaction(s)"),
+            placeholder=_("Type the reaction(s)..."),
             min_length=1,
             max_length=50,
             required=True,
         )
-        self.add_item(self.reaction)
+        self.add_item(self.reactions)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        reaction = self.reaction.value
+        reactions = []
         try:
-            reaction = await Emoji().convert(self.ctx, reaction)
+            for r in self.reactions.value.split(" "):
+                reaction = await Emoji().convert(self.ctx, r)
+                reactions.append(getattr(reaction, "id", reaction))
         except commands.BadArgument as e:
             await interaction.response.send_message(str(e), ephemeral=True)
-            return
-        else:
-            reaction = getattr(reaction, "id", reaction)
-        reactions = await self.cog.config.member(self.ctx.author).reactions()
-        if reaction in reactions:
-            await interaction.response.send_message(
-                _("You already have this reaction set."),
-                ephemeral=True,
-            )
-            return
-        reactions.append(reaction)
-        if len(reactions) > (max_reactions_per_member := (await self.cog.config.guild(self.ctx.guild).max_reactions_per_member())):
+        _reactions = await self.cog.config.member(self.ctx.author).reactions()
+        _reactions.extend(reactions)
+        if len(_reactions) > (max_reactions_per_member := (await self.cog.config.guild(self.ctx.guild).max_reactions_per_member())):
             await interaction.response.send_message(
                 _("You can't have more than {max_reactions_per_member} reactions.").format(max_reactions_per_member=max_reactions_per_member),
                 ephemeral=True,
             )
             return
-        await self.cog.config.member(self.ctx.author).reactions.set(reactions)
+        await self.cog.config.member(self.ctx.author).reactions.set(_reactions)
         try:
             await self.parent_view._message.edit(embed=await self.parent_view.get_embed())
         except discord.HTTPException:
@@ -319,7 +312,7 @@ class ReactionsView(discord.ui.View):
         self.parent_view: discord.ui.View = parent_view
         self._message: discord.Message = None
 
-        self.add.label = _("Add Reaction")
+        self.add.label = _("Add Reaction(s)")
         self.remove.placeholder = _("Select reaction(s) to remove...")
 
     async def _update(self) -> None:
@@ -348,10 +341,10 @@ class ReactionsView(discord.ui.View):
             except discord.HTTPException:
                 pass
 
-    @discord.ui.button(label=_("Add Reaction"))
+    @discord.ui.button(label=_("Add Reaction(s)"))
     async def add(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.send_modal(
-            AddReactionModal(self.cog, self.ctx, self.parent_view, self),
+            AddReactionsModal(self.cog, self.ctx, self.parent_view, self),
         )
 
     @discord.ui.select(min_values=1, placeholder=_("Select reaction(s) to remove..."))

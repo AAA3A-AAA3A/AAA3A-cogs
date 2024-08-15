@@ -193,6 +193,7 @@ class PersonalReactView(discord.ui.View):
             ephemeral=True,
         )
         view._message = await interaction.original_response()
+        self.cog.views[view._message] = view
 
     @discord.ui.button(label="Ignore Myself", row=1)
     async def ignore_myself(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
@@ -444,6 +445,7 @@ class SettingsView(discord.ui.View):
             ephemeral=True,
         )
         view._message = await interaction.original_response()
+        self.cog.views[view._message] = view
 
     @discord.ui.button(label="Custom Trigger Roles")
     async def custom_trigger_roles(
@@ -460,6 +462,7 @@ class SettingsView(discord.ui.View):
             ephemeral=True,
         )
         view._message = await interaction.original_response()
+        self.cog.views[view._message] = view
 
     @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger)
     async def close(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:

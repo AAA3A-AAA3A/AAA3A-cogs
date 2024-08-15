@@ -139,7 +139,7 @@ class PersonalReactView(discord.ui.View):
 
         return embed
 
-    @discord.ui.button(label=_("Toggle"))
+    @discord.ui.button(label="Toggle")
     async def toggle(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         enabled = await self.cog.config.member(self.ctx.author).enabled()
         enabled = not enabled
@@ -159,14 +159,14 @@ class PersonalReactView(discord.ui.View):
         await self.cog.config.member(self.ctx.author).enabled.set(enabled)
         await interaction.response.edit_message(embed=await self.get_embed(), view=self)
 
-    @discord.ui.button(label=_("Replies"))
+    @discord.ui.button(label="Replies")
     async def replies(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         replies = await self.cog.config.member(self.ctx.author).replies()
         replies = not replies
         await self.cog.config.member(self.ctx.author).replies.set(replies)
         await interaction.response.edit_message(embed=await self.get_embed(), view=self)
 
-    @discord.ui.button(label=_("Custom Trigger"))
+    @discord.ui.button(label="Custom Trigger")
     async def custom_trigger(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if (await self.cog.get_reactions(self.ctx.author, "custom_trigger"))[1] == 0:
             await interaction.response.send_message(
@@ -184,7 +184,7 @@ class PersonalReactView(discord.ui.View):
             )
         )
 
-    @discord.ui.button(label=_("Reactions"))
+    @discord.ui.button(label="Reactions")
     async def reactions(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         view: ReactionsView = ReactionsView(self.cog, self.ctx, self)
         await view._update()
@@ -194,14 +194,14 @@ class PersonalReactView(discord.ui.View):
         )
         view._message = await interaction.original_response()
 
-    @discord.ui.button(label=_("Ignore Myself"), row=1)
+    @discord.ui.button(label="Ignore Myself", row=1)
     async def ignore_myself(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         ignore_myself = await self.cog.config.member(self.ctx.author).ignore_myself()
         ignore_myself = not ignore_myself
         await self.cog.config.member(self.ctx.author).ignore_myself.set(ignore_myself)
         await interaction.response.edit_message(embed=await self.get_embed(), view=self)
 
-    @discord.ui.button(label=_("Ignore Bots"), row=1)
+    @discord.ui.button(label="Ignore Bots", row=1)
     async def ignore_bots(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         ignore_bots = await self.cog.config.member(self.ctx.author).ignore_bots()
         ignore_bots = not ignore_bots
@@ -341,13 +341,13 @@ class ReactionsView(discord.ui.View):
             except discord.HTTPException:
                 pass
 
-    @discord.ui.button(label=_("Add Reaction(s)"))
+    @discord.ui.button(label="Add Reaction(s)")
     async def add(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.send_modal(
             AddReactionsModal(self.cog, self.ctx, self.parent_view, self),
         )
 
-    @discord.ui.select(min_values=1, placeholder=_("Select reaction(s) to remove..."))
+    @discord.ui.select(min_values=1, placeholder="Select reaction(s) to remove...")
     async def remove(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         reactions = await self.cog.config.member(self.ctx.author).reactions()
         for reaction in select.values:
@@ -431,7 +431,7 @@ class SettingsView(discord.ui.View):
         )
         return embed
 
-    @discord.ui.button(label=_("Base Roles"))
+    @discord.ui.button(label="Base Roles")
     async def base_roles(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         view: RolesView = RolesView(self.cog, self.ctx, self, "base")
         await view._update()
@@ -445,7 +445,7 @@ class SettingsView(discord.ui.View):
         )
         view._message = await interaction.original_response()
 
-    @discord.ui.button(label=_("Custom Trigger Roles"))
+    @discord.ui.button(label="Custom Trigger Roles")
     async def custom_trigger_roles(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
@@ -521,11 +521,11 @@ class RolesView(discord.ui.View):
             except discord.HTTPException:
                 pass
 
-    @discord.ui.select(min_values=1, placeholder=_("Select the allowed amount..."))
+    @discord.ui.select(min_values=1, placeholder="Select the allowed amount...")
     async def amount(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         await interaction.response.defer()
 
-    @discord.ui.select(cls=discord.ui.RoleSelect, min_values=1, placeholder=_("Select role(s) to add..."))
+    @discord.ui.select(cls=discord.ui.RoleSelect, min_values=1, placeholder="Select role(s) to add...")
     async def add(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         roles_requirements = (
             await self.cog.config.guild(self.ctx.guild).base_roles_requirements()
@@ -554,7 +554,7 @@ class RolesView(discord.ui.View):
             ephemeral=True,
         )
 
-    @discord.ui.select(min_values=1, placeholder=_("Select role(s) to remove..."))
+    @discord.ui.select(min_values=1, placeholder="Select role(s) to remove...")
     async def remove(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         roles_requirements = (
             await self.cog.config.guild(self.ctx.guild).base_roles_requirements()

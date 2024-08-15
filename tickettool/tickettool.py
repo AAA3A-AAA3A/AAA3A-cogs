@@ -29,7 +29,7 @@ _: Translator = Translator("TicketTool", __file__)
 
 @cog_i18n(_)
 class TicketTool(settings, DashboardIntegration, Cog):
-    """A cog to manage a tickets system!"""
+    """A cog to manage a Tickets system!"""
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -70,7 +70,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 "last_nb": 0000,
                 "custom_message": None,
                 "embed_button": {
-                    "title": "Create a Ticket",
+                    "title": "Create Ticket",
                     "description": _(
                         "To get help on this server or to make an order for example, you can create a ticket.\n"
                         "Just use the command `{prefix}ticket create` or click on the button below.\n"

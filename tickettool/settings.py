@@ -94,7 +94,7 @@ class settings(Cog):
                 buttons=[
                     {
                         "style": discord.ButtonStyle(2),
-                        "label": label or _("Create ticket"),
+                        "label": label or _("Create Ticket"),
                         "emoji": f"{getattr(emoji, 'id', emoji)}",
                         "custom_id": "create_ticket_button",
                         "disabled": False,

@@ -108,6 +108,7 @@ class DevUtils(Cog):
             "timing",
             "reinvoke",
             "loglevel",
+            "stoptyping",
             "reloadmodule",
             "rawrequest",
         ):
@@ -312,6 +313,20 @@ class DevUtils(Cog):
                 level=logging.getLevelName(logger.level), logger_name=logger_name
             )
         )
+
+    @devutils.command()
+    async def stoptyping(self, ctx: commands.Context) -> None:
+        """Stop all bot typing tasks."""
+        tasks = []
+        was_typing = False
+        for task in asyncio.all_tasks():
+            if task.get_stack(limit=1)[0].f_code.co_name == "do_typing":
+                tasks.append(task)
+                was_typing = True
+        if not was_typing:
+            raise commands.UserFeedbackCheckFailure("Hmm, it doesn't look like I'm typing...")
+        for task in tasks:
+            task.cancel()
 
     @devutils.command()
     async def reloadmodule(

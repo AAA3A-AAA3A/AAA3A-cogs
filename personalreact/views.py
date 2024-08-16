@@ -81,11 +81,12 @@ class PersonalReactView(discord.ui.View):
             name=_("Base Roles Requirements:"),
             value=(
                 (_("**+ ∞** Staff") if base_is_staff else "")
+                + ("\n" if base_roles_requirements else "")
                 + "\n".join(
                     f"**+ {amount}** — {role.mention}"
                     for role, amount in base_roles_requirements.items()
                 )
-                + "\n" + _("✅ Elligible") if base_total_amount > 0 else _("❌ Not elligible") + _(" ({amount} reactions)").format(amount=base_total_amount)
+                + "\n\n" + (_("✅ Elligible") + _(" ({amount} reactions)").format(amount=base_total_amount) if base_total_amount > 0 else _("❌ Not elligible"))
             ),
         )
         embed.add_field(

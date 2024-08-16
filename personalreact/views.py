@@ -258,11 +258,14 @@ class CustomTriggerModal(discord.ui.Modal):
         self.add_item(self.custom_trigger)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        await interaction.response.defer()
         custom_trigger = self.custom_trigger.value
         if custom_trigger:
+            if " " in custom_trigger:
+                await interaction.response.send_message(_("The custom trigger can't have spaces."), ephemeral=True)
+                return
             await self.cog.config.member(self.ctx.author).custom_trigger.set(custom_trigger)
         else:
+            await interaction.response.defer()
             await self.cog.config.member(self.ctx.author).custom_trigger.clear()
         try:
             await self.parent_view._message.edit(embed=await self.parent_view.get_embed())

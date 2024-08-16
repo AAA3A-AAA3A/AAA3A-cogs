@@ -270,6 +270,8 @@ class PersonalReact(DashboardIntegration, Cog):
         """Add reaction(s)."""
         if (await self.get_reactions(ctx.author, "base"))[1] == 0 and (await self.get_reactions(ctx.author, "custom_trigger"))[1] == 0:
             raise commands.UserFeedbackCheckFailure(_("You aren't elligible for using PersonalReact."))
+        if not reactions:
+            raise commands.UserFeedbackCheckFailure(_("You need to provide at least one reaction."))
         _reactions = await self.config.member(ctx.author).reactions()
         _reactions.extend([getattr(reaction, "id", reaction) for reaction in reactions])
         if len(_reactions) > (max_reactions_per_member := (await self.config.guild(ctx.guild).max_reactions_per_member())):
@@ -279,6 +281,8 @@ class PersonalReact(DashboardIntegration, Cog):
     @personalreact.command(aliases=["removereacts"])
     async def removereactions(self, ctx: commands.Context, reactions: commands.Greedy[Emoji]) -> None:
         """Remove reaction(s)."""
+        if not reactions:
+            raise commands.UserFeedbackCheckFailure(_("You need to provide at least one reaction."))
         _reactions = await self.config.member(ctx.author).reactions()
         for reaction in reactions:
             _reactions.remove(reaction)
@@ -312,9 +316,11 @@ class PersonalReact(DashboardIntegration, Cog):
         self,
         ctx: commands.Context,
         roles: commands.Greedy[discord.Role],
-        amount: int,
+        amount: commands.Range[int, 1, 8],
     ) -> None:
         """Add base roles requirements."""
+        if not roles:
+            raise commands.UserFeedbackCheckFailure(_("You need to provide at least one role."))
         base_roles_requirements = await self.config.guild(ctx.guild).base_roles_requirements()
         for role in roles:
             base_roles_requirements[str(role.id)] = amount
@@ -329,6 +335,8 @@ class PersonalReact(DashboardIntegration, Cog):
         roles: commands.Greedy[discord.Role],
     ) -> None:
         """Remove base roles requirements."""
+        if not roles:
+            raise commands.UserFeedbackCheckFailure(_("You need to provide at least one role."))
         base_roles_requirements = await self.config.guild(ctx.guild).base_roles_requirements()
         for role in roles:
             if str(role.id) in base_roles_requirements:
@@ -340,9 +348,11 @@ class PersonalReact(DashboardIntegration, Cog):
         self,
         ctx: commands.Context,
         roles: commands.Greedy[discord.Role],
-        amount: int,
+        amount: commands.Range[int, 1, 8],
     ) -> None:
         """Add custom trigger roles requirements."""
+        if not roles:
+            raise commands.UserFeedbackCheckFailure(_("You need to provide at least one role."))
         custom_trigger_roles_requirements = await self.config.guild(ctx.guild).custom_trigger_roles_requirements()
         for role in roles:
             custom_trigger_roles_requirements[str(role.id)] = amount
@@ -357,8 +367,21 @@ class PersonalReact(DashboardIntegration, Cog):
         roles: commands.Greedy[discord.Role],
     ) -> None:
         """Remove custom trigger roles requirements."""
+        if not roles:
+            raise commands.UserFeedbackCheckFailure(_("You need to provide at least one role."))
         custom_trigger_roles_requirements = await self.config.guild(ctx.guild).custom_trigger_roles_requirements()
         for role in roles:
             if str(role.id) in custom_trigger_roles_requirements:
                 del custom_trigger_roles_requirements[str(role.id)]
         await self.config.guild(ctx.guild).custom_trigger_roles_requirements.set(custom_trigger_roles_requirements)
+
+    @setpersonalreact.command()
+    async def clearmember(self, ctx: commands.Context, *, member: discord.Member) -> None:
+        await self.config.member(member).clear()
+
+    @setpersonalreact.command(hidden=True)
+    async def purge(self, ctx: commands.Context, confirmation: bool = False) -> None:
+        if not confirmation:
+            raise commands.UserInputError()
+        await self.config.guild(ctx.guild).clear()
+        await self.config.clear_all_members(guild=ctx.guild)

@@ -96,7 +96,7 @@ class PersonalReactView(discord.ui.View):
             name=_("Custom Trigger Roles Requirements:"),
             value=(
                 (_("**+ ∞** Staff") if custom_trigger_is_staff else "")
-                + (_("\n**+ {base_total_amount}** Always Allow").format(base_total_amount=base_total_amount) if always_allow_custom_trigger and base_total_amount > 0 else "")
+                + (_("\n**{action} {base_total_amount}** Always Allow").format(action="+" if base_use_amounts_sum else "•", base_total_amount=base_total_amount) if always_allow_custom_trigger and base_total_amount > 0 else "")
                 + ("\n" if custom_trigger_roles_requirements else "")
                 + "\n".join(
                     f"**{'+' if custom_trigger_use_amounts_sum else '•'} {amount}** — {role.mention}"

@@ -122,10 +122,11 @@ class PersonalReact(DashboardIntegration, Cog):
         reactions = await self.config.member(member).reactions()
         max_reactions_per_member = await self.config.guild(member.guild).max_reactions_per_member()
         if _type == "base":
-            roles_requirements = await self.config.guild(member.guild).base_roles_requirements()
+            _roles_requirements = await self.config.guild(member.guild).base_roles_requirements()
         else:
-            roles_requirements = await self.config.guild(member.guild).custom_trigger_roles_requirements()
-        for role_id, amount in roles_requirements.items():
+            _roles_requirements = await self.config.guild(member.guild).custom_trigger_roles_requirements()
+        roles_requirements = {}
+        for role_id, amount in sorted(_roles_requirements.items(), key=lambda x: x[1]):
             if (role := member.guild.get_role(int(role_id))) is not None:
                 roles_requirements[role] = amount
         total_amount = sum(roles_requirements.values())
@@ -306,52 +307,58 @@ class PersonalReact(DashboardIntegration, Cog):
         """Set the roles requirements."""
         await SettingsView(cog=self).start(ctx)
 
-    @setpersonalreact.command(aliases=["addbaserolereq"])
-    async def addbaserolerequirement(
+    @setpersonalreact.command(aliases=["addbaserolerequirement", "addbaserolesreq", "addbaserolereq"])
+    async def addbaserolesrequirements(
         self,
         ctx: commands.Context,
-        role: discord.Role,
+        roles: commands.Greedy[discord.Role],
         amount: int,
     ) -> None:
-        """Add a base role requirement."""
-        async with self.config.guild(ctx.guild).base_roles_requirements() as base_roles_requirements:
-            if len(base_roles_requirements) == 25:
-                raise commands.UserFeedbackCheckFailure(_("You can't have more than 25 base roles requirements."))
+        """Add base roles requirements."""
+        base_roles_requirements = await self.config.guild(ctx.guild).base_roles_requirements()
+        for role in roles:
             base_roles_requirements[str(role.id)] = amount
+        if len(base_roles_requirements) > 25:
+            raise commands.UserFeedbackCheckFailure(_("You can't have more than 25 base roles requirements."))
+        await self.config.guild(ctx.guild).base_roles_requirements.set(base_roles_requirements)
 
-    @setpersonalreact.command(aliases=["removebaserolereq"])
-    async def removebaserolerequirement(
+    @setpersonalreact.command(aliases=["removebaserolerequirement", "removebaserolesreq", "removebaserolereq"])
+    async def removebaserolesrequirements(
         self,
         ctx: commands.Context,
-        role: discord.Role,
+        roles: commands.Greedy[discord.Role],
     ) -> None:
-        """Remove a base role requirement."""
-        async with self.config.guild(ctx.guild).base_roles_requirements() as base_roles_requirements:
-            if str(role.id) not in base_roles_requirements:
-                raise commands.UserFeedbackCheckFailure(_("This role isn't a base requirement."))
-            del base_roles_requirements[str(role.id)]
+        """Remove base roles requirements."""
+        base_roles_requirements = await self.config.guild(ctx.guild).base_roles_requirements()
+        for role in roles:
+            if str(role.id) in base_roles_requirements:
+                del base_roles_requirements[str(role.id)]
+        await self.config.guild(ctx.guild).base_roles_requirements.set(base_roles_requirements)
 
-    @setpersonalreact.command(aliases=["addcustomtriggerrolereq"])
-    async def addcustomtriggerrolerequirement(
+    @setpersonalreact.command(aliases=["addctrolerequirement", "addctrolesreq", "addctrolereq"])
+    async def addctrolesrequirements(
         self,
         ctx: commands.Context,
-        role: discord.Role,
+        roles: commands.Greedy[discord.Role],
         amount: int,
     ) -> None:
-        """Add a custom trigger role requirement."""
-        async with self.config.guild(ctx.guild).custom_trigger_roles_requirements() as custom_trigger_roles_requirements:
-            if len(custom_trigger_roles_requirements) == 25:
-                raise commands.UserFeedbackCheckFailure(_("You can't have more than 25 custom trigger roles requirements."))
+        """Add custom trigger roles requirements."""
+        custom_trigger_roles_requirements = await self.config.guild(ctx.guild).custom_trigger_roles_requirements()
+        for role in roles:
             custom_trigger_roles_requirements[str(role.id)] = amount
+        if len(custom_trigger_roles_requirements) > 25:
+            raise commands.UserFeedbackCheckFailure(_("You can't have more than 25 custom trigger roles requirements."))
+        await self.config.guild(ctx.guild).custom_trigger_roles_requirements.set(custom_trigger_roles_requirements)
 
-    @setpersonalreact.command(aliases=["removectrolereq"])
-    async def removectrolerequirement(
+    @setpersonalreact.command(aliases=["removectrolerequirement", "removectrolesreq", "removectrolereq"])
+    async def removectrolesrequirements(
         self,
         ctx: commands.Context,
-        role: discord.Role,
+        roles: commands.Greedy[discord.Role],
     ) -> None:
-        """Remove a custom trigger role requirement."""
-        async with self.config.guild(ctx.guild).custom_trigger_roles_requirements() as custom_trigger_roles_requirements:
-            if str(role.id) not in custom_trigger_roles_requirements:
-                raise commands.UserFeedbackCheckFailure(_("This role isn't a custom trigger requirement."))
-            del custom_trigger_roles_requirements[str(role.id)]
+        """Remove custom trigger roles requirements."""
+        custom_trigger_roles_requirements = await self.config.guild(ctx.guild).custom_trigger_roles_requirements()
+        for role in roles:
+            if str(role.id) in custom_trigger_roles_requirements:
+                del custom_trigger_roles_requirements[str(role.id)]
+        await self.config.guild(ctx.guild).custom_trigger_roles_requirements.set(custom_trigger_roles_requirements)

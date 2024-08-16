@@ -536,7 +536,7 @@ class RolesView(discord.ui.View):
             else await self.cog.config.guild(self.ctx.guild).custom_trigger_roles_requirements()
         )
         for role in select.values:
-            roles_requirements[role.id] = int(self.amount.values[0])
+            roles_requirements[role.id] = int((self.amount.values or [1])[0])
         if len(roles_requirements) == 25:
             raise commands.UserFeedbackCheckFailure(_("You can't have more than 25 {_type} roles requirements.").format(_type=self._type))
         if self._type == "base":

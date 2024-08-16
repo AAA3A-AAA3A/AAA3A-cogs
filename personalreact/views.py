@@ -62,10 +62,10 @@ class PersonalReactView(discord.ui.View):
         self.replies.style = discord.ButtonStyle.success if data["replies"] else discord.ButtonStyle.secondary
         self.ignore_myself.style = discord.ButtonStyle.success if data["ignore_myself"] else discord.ButtonStyle.secondary
         self.ignore_bots.style = discord.ButtonStyle.success if data["ignore_bots"] else discord.ButtonStyle.secondary
-        __, base_total_amount, __, base_is_staff, base_roles_requirements = await self.cog.get_reactions(
+        __, base_total_amount, __, base_is_staff, __, base_roles_requirements = await self.cog.get_reactions(
             self.ctx.author, "base"
         )
-        __, custom_trigger_total_amount, __, custom_trigger_is_staff, custom_trigger_roles_requirements = await self.cog.get_reactions(
+        __, custom_trigger_total_amount, __, custom_trigger_is_staff, always_allow_custom_trigger, custom_trigger_roles_requirements = await self.cog.get_reactions(
             self.ctx.author, "custom_trigger"
         )
 
@@ -93,6 +93,7 @@ class PersonalReactView(discord.ui.View):
             name=_("Custom Trigger Roles Requirements:"),
             value=(
                 (_("**+ ∞** Staff") if custom_trigger_is_staff else "")
+                + (_("**+ {base_total_amount}** Always Allow").format(base_total_amount=base_total_amount) if always_allow_custom_trigger else "")
                 + ("\n" if custom_trigger_roles_requirements else "")
                 + "\n".join(
                     f"**+ {amount}** — {role.mention}"

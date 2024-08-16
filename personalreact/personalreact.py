@@ -129,12 +129,7 @@ class PersonalReact(DashboardIntegration, Cog):
         if _type == "base":
             _roles_requirements = await self.config.guild(member.guild).base_roles_requirements()
         else:
-            _roles_requirements = (
-                await self.config.guild(member.guild).base_roles_requirements()
-                if await self.config.guild(member.guild).always_allow_custom_trigger()
-                else {}
-            )
-            _roles_requirements.update(await self.config.guild(member.guild).custom_trigger_roles_requirements())
+            _roles_requirements = await self.config.guild(member.guild).custom_trigger_roles_requirements()
         roles_requirements = {}
         for role_id, amount in sorted(_roles_requirements.items(), key=lambda x: x[1]):
             if (role := member.guild.get_role(int(role_id))) is not None:
@@ -145,12 +140,14 @@ class PersonalReact(DashboardIntegration, Cog):
         is_staff = member.id in self.bot.owner_ids or await self.bot.is_admin(member) or member.guild.get_member(member.id).guild_permissions.administrator
         if is_staff:
             total_amount = max_reactions_per_member
+        if await self.config.guild(member.guild).always_allow_custom_trigger():
+            total_amount += (await self.get_reactions(member, "base"))[1]
         reactions = [
             reaction
             for r in reactions
             if (reaction := (r if isinstance(r, str) else self.bot.get_emoji(r))) is not None
         ]
-        return reactions[:total_amount], total_amount, max_reactions_per_member, is_staff, roles_requirements
+        return reactions[:total_amount], total_amount, max_reactions_per_member, is_staff, always_allow_custom_trigger, roles_requirements
         
 
     @commands.Cog.listener()
@@ -201,8 +198,7 @@ class PersonalReact(DashboardIntegration, Cog):
                 and (m := message.guild.get_member(int(m_id))) is not None
                 and await self.bot.allowed_by_whitelist_blacklist(who=m)
             ):
-                reactions, __, __, __, __ = await self.get_reactions(m, _type)
-                if not reactions:
+                if not (reactions := (await self.get_reactions(m, _type))[0]):
                     continue
                 if member is not None:
                     return

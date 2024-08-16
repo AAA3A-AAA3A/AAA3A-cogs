@@ -20,7 +20,7 @@ _: Translator = Translator("PersonalReact", __file__)
 
 @cog_i18n(_)
 class PersonalReact(DashboardIntegration, Cog):
-    """Make the bot react to messages with your mention, reply or your custom trigger, based on roles perks!"""
+    """Make the bot react to messages with your mention, reply, your user ID or a custom trigger, based on roles perks!"""
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -42,6 +42,7 @@ class PersonalReact(DashboardIntegration, Cog):
             enabled=False,
             reactions=[],
             replies=False,
+            user_id=False,
             custom_trigger=None,
             ignore_myself=True,
             ignore_bots=True,
@@ -183,11 +184,14 @@ class PersonalReact(DashboardIntegration, Cog):
                 and (
                     (
                         discord.utils.get(message.mentions, id=m_id) is not None
-                        and m_id in message.raw_mentions
+                        and (
+                            m_id in message.raw_mentions
+                            or data.get("replies", False)
+                        )
                     )
                     or (
-                        data.get("replies", False)
-                        and m_id in message.raw_mentions
+                        data.get("user_id", False)
+                        and str(m_id) in message.content.split(" ")
                     )
                     or (
                         (custom_trigger := data.get("custom_trigger")) is not None
@@ -222,7 +226,7 @@ class PersonalReact(DashboardIntegration, Cog):
     @commands.guild_only()
     @commands.hybrid_group(aliases=["pr"])
     async def personalreact(self, ctx: commands.Context) -> None:
-        """Make the bot react to messages with your mention, reply or your custom trigger!"""
+        """Make the bot react to messages with your mention, reply, your user ID or a custom trigger!"""
         pass
 
     @personalreact.command()
@@ -248,6 +252,11 @@ class PersonalReact(DashboardIntegration, Cog):
     async def replies(self, ctx: commands.Context, toggle: bool) -> None:
         """Allow the bot to react on the messages which ping you in replies."""
         await self.config.member(ctx.author).replies.set(toggle)
+
+    @personalreact.command()
+    async def userid(self, ctx: commands.Context, toggle: bool) -> None:
+        """Allow the bot to react on the messages which contain your user ID."""
+        await self.config.member(ctx.author).user_id.set(toggle)
 
     @personalreact.command()
     async def customtrigger(self, ctx: commands.Context, custom_trigger: str) -> None:

@@ -17,6 +17,8 @@ class PersonalReactView(discord.ui.View):
         self.cog: commands.Cog = cog
         self._message: discord.Message = None
 
+        self.replies.label = _("Replies")
+        self.user_id.label = _("User ID")
         self.custom_trigger.label = _("Custom Trigger")
         self.reactions.label = _("Reactions")
         self.ignore_myself.label = _("Ignore Myself")
@@ -60,6 +62,7 @@ class PersonalReactView(discord.ui.View):
             self.toggle.label = _("Disable")
             self.toggle.style = discord.ButtonStyle.danger
         self.replies.style = discord.ButtonStyle.success if data["replies"] else discord.ButtonStyle.secondary
+        self.user_id.style = discord.ButtonStyle.success if data["user_id"] else discord.ButtonStyle.secondary
         self.ignore_myself.style = discord.ButtonStyle.success if data["ignore_myself"] else discord.ButtonStyle.secondary
         self.ignore_bots.style = discord.ButtonStyle.success if data["ignore_bots"] else discord.ButtonStyle.secondary
         __, base_total_amount, __, base_is_staff, __, base_roles_requirements = await self.cog.get_reactions(
@@ -108,6 +111,7 @@ class PersonalReactView(discord.ui.View):
             value=(
                 _("**•** Your mention")
                 + (_("\n**•** Replies (with @)") if data["replies"] else "")
+                + (_("\n**•** Your User ID") if data["user_id"] else "")
                 + (_("\n**•** {emoji}Custom Trigger").format(emoji="❌ " if custom_trigger_total_amount == 0 else "") if data["custom_trigger"] is not None else "")
             ),
             inline=False,
@@ -167,6 +171,13 @@ class PersonalReactView(discord.ui.View):
         replies = await self.cog.config.member(self.ctx.author).replies()
         replies = not replies
         await self.cog.config.member(self.ctx.author).replies.set(replies)
+        await interaction.response.edit_message(embed=await self.get_embed(), view=self)
+
+    @discord.ui.button(label="User ID")
+    async def user_id(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        user_id = await self.cog.config.member(self.ctx.author).user_id()
+        user_id = not user_id
+        await self.cog.config.member(self.ctx.author).user_id.set(user_id)
         await interaction.response.edit_message(embed=await self.get_embed(), view=self)
 
     @discord.ui.button(label="Custom Trigger")

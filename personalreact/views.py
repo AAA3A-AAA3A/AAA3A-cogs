@@ -93,11 +93,12 @@ class PersonalReactView(discord.ui.View):
             name=_("Custom Trigger Roles Requirements:"),
             value=(
                 (_("**+ ∞** Staff") if custom_trigger_is_staff else "")
+                + ("\n" if custom_trigger_roles_requirements else "")
                 + "\n".join(
                     f"**+ {amount}** — {role.mention}"
                     for role, amount in custom_trigger_roles_requirements.items()
                 )
-                + "\n" + _("✅ Elligible") if custom_trigger_total_amount > 0 else _("❌ Not elligible") + _(" ({amount} reactions)").format(amount=custom_trigger_total_amount)
+                + "\n\n" + (_("✅ Elligible") + _(" ({amount} reactions)").format(amount=custom_trigger_total_amount) if custom_trigger_total_amount > 0 else _("❌ Not elligible"))
             ),
         )
 

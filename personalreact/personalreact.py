@@ -34,6 +34,7 @@ class PersonalReact(DashboardIntegration, Cog):
             max_reactions_per_member=5,
             min_custom_trigger_length=3,
             blacklisted_channels=[],
+            always_allow_custom_trigger=False,
             base_roles_requirements={},
             custom_trigger_roles_requirements={},
         )
@@ -58,6 +59,10 @@ class PersonalReact(DashboardIntegration, Cog):
             "blacklisted_channels": {
                 "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel, discord.Thread],
                 "description": "The channels where the bot won't react.",
+            },
+            "always_allow_custom_trigger": {
+                "converter": bool,
+                "description": "Whether to always allow the custom trigger feature.",
             },
         }
         self.settings: Settings = Settings(
@@ -124,10 +129,17 @@ class PersonalReact(DashboardIntegration, Cog):
         if _type == "base":
             _roles_requirements = await self.config.guild(member.guild).base_roles_requirements()
         else:
-            _roles_requirements = await self.config.guild(member.guild).custom_trigger_roles_requirements()
+            _roles_requirements = (
+                await self.config.guild(member.guild).base_roles_requirements()
+                if await self.config.guild(member.guild).always_allow_custom_trigger()
+                else {}
+            )
+            _roles_requirements.update(await self.config.guild(member.guild).custom_trigger_roles_requirements())
         roles_requirements = {}
         for role_id, amount in sorted(_roles_requirements.items(), key=lambda x: x[1]):
             if (role := member.guild.get_role(int(role_id))) is not None:
+                if role in roles_requirements:
+                    continue
                 roles_requirements[role] = amount
         total_amount = sum(roles_requirements.values())
         is_staff = member.id in self.bot.owner_ids or await self.bot.is_admin(member) or member.guild.get_member(member.id).guild_permissions.administrator

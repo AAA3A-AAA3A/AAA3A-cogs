@@ -35,6 +35,7 @@ class PersonalReact(DashboardIntegration, Cog):
             min_custom_trigger_length=3,
             blacklisted_channels=[],
             always_allow_custom_trigger=False,
+            use_amounts_sum=True,
             base_roles_requirements={},
             custom_trigger_roles_requirements={},
         )
@@ -64,6 +65,10 @@ class PersonalReact(DashboardIntegration, Cog):
             "always_allow_custom_trigger": {
                 "converter": bool,
                 "description": "Whether to always allow the custom trigger feature.",
+            },
+            "use_amounts_sum": {
+                "converter": bool,
+                "description": "Whether to use the sum of the roles requirements or the maximum amount.",
             },
         }
         self.settings: Settings = Settings(
@@ -137,19 +142,26 @@ class PersonalReact(DashboardIntegration, Cog):
                 if role in roles_requirements:
                     continue
                 roles_requirements[role] = amount
-        total_amount = sum(roles_requirements.values())
+        total_amount = (
+            sum(roles_requirements.values())
+            if (use_amounts_sum := await self.config.guild(member.guild).use_amounts_sum())
+            else max(roles_requirements.values())
+        )
         is_staff = member.id in self.bot.owner_ids or await self.bot.is_admin(member) or member.guild.get_member(member.id).guild_permissions.administrator
         if is_staff:
             total_amount = max_reactions_per_member
         if (always_allow_custom_trigger := await self.config.guild(member.guild).always_allow_custom_trigger()) and _type == "custom_trigger":
-            total_amount += (await self.get_reactions(member, "base"))[1]
+            if use_amounts_sum:
+                total_amount += (await self.get_reactions(member, "base"))[1]
+            else:
+                total_amount = max(total_amount, (await self.get_reactions(member, "base"))[1])
         total_amount = min(total_amount, max_reactions_per_member)
         reactions = [
             reaction
             for r in reactions
             if (reaction := (r if isinstance(r, str) else self.bot.get_emoji(r))) is not None
         ]
-        return reactions[:total_amount], total_amount, max_reactions_per_member, is_staff, always_allow_custom_trigger, roles_requirements
+        return reactions[:total_amount], total_amount, max_reactions_per_member, use_amounts_sum, is_staff, always_allow_custom_trigger, roles_requirements
         
 
     @commands.Cog.listener()

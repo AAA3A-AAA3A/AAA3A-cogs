@@ -65,10 +65,10 @@ class PersonalReactView(discord.ui.View):
         self.user_id.style = discord.ButtonStyle.success if data["user_id"] else discord.ButtonStyle.secondary
         self.ignore_myself.style = discord.ButtonStyle.success if data["ignore_myself"] else discord.ButtonStyle.secondary
         self.ignore_bots.style = discord.ButtonStyle.success if data["ignore_bots"] else discord.ButtonStyle.secondary
-        __, base_total_amount, __, base_is_staff, __, base_roles_requirements = await self.cog.get_reactions(
+        __, base_total_amount, __, base_use_amounts_sum, base_is_staff, __, base_roles_requirements = await self.cog.get_reactions(
             self.ctx.author, "base"
         )
-        __, custom_trigger_total_amount, __, custom_trigger_is_staff, always_allow_custom_trigger, custom_trigger_roles_requirements = await self.cog.get_reactions(
+        __, custom_trigger_total_amount, __, custom_trigger_use_amounts_sum, custom_trigger_is_staff, always_allow_custom_trigger, custom_trigger_roles_requirements = await self.cog.get_reactions(
             self.ctx.author, "custom_trigger"
         )
 
@@ -86,7 +86,7 @@ class PersonalReactView(discord.ui.View):
                 (_("**+ ∞** Staff") if base_is_staff else "")
                 + ("\n" if base_roles_requirements else "")
                 + "\n".join(
-                    f"**+ {amount}** — {role.mention}"
+                    f"**{'+' if base_use_amounts_sum else '•'} {amount}** — {role.mention}"
                     for role, amount in base_roles_requirements.items()
                 )
                 + "\n\n" + (_("✅ Elligible") + _(" ({amount} reactions)").format(amount=base_total_amount) if base_total_amount > 0 else _("❌ Not elligible"))
@@ -99,7 +99,7 @@ class PersonalReactView(discord.ui.View):
                 + (_("\n**+ {base_total_amount}** Always Allow").format(base_total_amount=base_total_amount) if always_allow_custom_trigger and base_total_amount > 0 else "")
                 + ("\n" if custom_trigger_roles_requirements else "")
                 + "\n".join(
-                    f"**+ {amount}** — {role.mention}"
+                    f"**{'+' if custom_trigger_use_amounts_sum else '•'} {amount}** — {role.mention}"
                     for role, amount in custom_trigger_roles_requirements.items()
                 )
                 + "\n\n" + (_("✅ Elligible") + _(" ({amount} reactions)").format(amount=custom_trigger_total_amount) if custom_trigger_total_amount > 0 else _("❌ Not elligible"))

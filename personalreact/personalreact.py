@@ -133,7 +133,7 @@ class PersonalReact(DashboardIntegration, Cog):
             _roles_requirements = await self.config.guild(member.guild).custom_trigger_roles_requirements()
         roles_requirements = {}
         for role_id, amount in sorted(_roles_requirements.items(), key=lambda x: x[1]):
-            if (role := member.guild.get_role(int(role_id))) is not None:
+            if (role := member.get_role(int(role_id))) is not None:
                 if role in roles_requirements:
                     continue
                 roles_requirements[role] = amount

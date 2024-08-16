@@ -291,7 +291,10 @@ class PersonalReact(DashboardIntegration, Cog):
         if not reactions:
             raise commands.UserFeedbackCheckFailure(_("You need to provide at least one reaction."))
         _reactions = await self.config.member(ctx.author).reactions()
-        _reactions.extend([getattr(reaction, "id", reaction) for reaction in reactions])
+        for reaction in reactions:
+            reaction = getattr(reaction, "id", reaction)
+            if reaction not in _reactions:
+                _reactions.append(reaction)
         if len(_reactions) > (max_reactions_per_member := (await self.config.guild(ctx.guild).max_reactions_per_member())):
             raise commands.UserFeedbackCheckFailure(_("You can't have more than {max_reactions_per_member} reactions.").format(max_reactions_per_member=max_reactions_per_member))
         await self.config.member(ctx.author).reactions.set(_reactions)
@@ -303,7 +306,9 @@ class PersonalReact(DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(_("You need to provide at least one reaction."))
         _reactions = await self.config.member(ctx.author).reactions()
         for reaction in reactions:
-            _reactions.remove(reaction)
+            reaction = getattr(reaction, "id", reaction)
+            if reaction in _reactions:
+                _reactions.remove(reaction)
         await self.config.member(ctx.author).reactions.set(_reactions)
 
     @personalreact.command()

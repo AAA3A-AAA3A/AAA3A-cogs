@@ -140,7 +140,7 @@ class PersonalReact(DashboardIntegration, Cog):
         is_staff = member.id in self.bot.owner_ids or await self.bot.is_admin(member) or member.guild.get_member(member.id).guild_permissions.administrator
         if is_staff:
             total_amount = max_reactions_per_member
-        if _type == "custom_trigger" and await self.config.guild(member.guild).always_allow_custom_trigger():
+        if _type == "custom_trigger" and (always_allow_custom_trigger := await self.config.guild(member.guild).always_allow_custom_trigger()):
             total_amount += (await self.get_reactions(member, "base"))[1]
         reactions = [
             reaction

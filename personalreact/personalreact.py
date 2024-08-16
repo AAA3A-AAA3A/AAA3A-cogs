@@ -283,7 +283,7 @@ class PersonalReact(DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(_("You can't have more than {max_reactions_per_member} reactions.").format(max_reactions_per_member=max_reactions_per_member))
         await self.config.member(ctx.author).reactions.set([getattr(reaction, "id", reaction) for reaction in reactions])
 
-    @personalreact.command(aliases=["addreacts"])
+    @personalreact.command(aliases=["addreaction", "addreacts", "addreact"])
     async def addreactions(self, ctx: commands.Context, reactions: commands.Greedy[Emoji]) -> None:
         """Add reaction(s)."""
         if (await self.get_reactions(ctx.author, "base"))[1] == 0 and (await self.get_reactions(ctx.author, "custom_trigger"))[1] == 0:
@@ -296,7 +296,7 @@ class PersonalReact(DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(_("You can't have more than {max_reactions_per_member} reactions.").format(max_reactions_per_member=max_reactions_per_member))
         await self.config.member(ctx.author).reactions.set(_reactions)
 
-    @personalreact.command(aliases=["removereacts"])
+    @personalreact.command(aliases=["removereaction", "removereacts", "removereact"])
     async def removereactions(self, ctx: commands.Context, reactions: commands.Greedy[Emoji]) -> None:
         """Remove reaction(s)."""
         if not reactions:

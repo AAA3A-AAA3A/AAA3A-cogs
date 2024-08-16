@@ -180,7 +180,7 @@ class PersonalReactView(discord.ui.View):
         await self.cog.config.member(self.ctx.author).user_id.set(user_id)
         await interaction.response.edit_message(embed=await self.get_embed(), view=self)
 
-    @discord.ui.button(label="Custom Trigger")
+    @discord.ui.button(label="Custom Trigger", row=1)
     async def custom_trigger(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if (await self.cog.get_reactions(self.ctx.author, "custom_trigger"))[1] == 0:
             await interaction.response.send_message(
@@ -198,7 +198,7 @@ class PersonalReactView(discord.ui.View):
             )
         )
 
-    @discord.ui.button(label="Reactions")
+    @discord.ui.button(label="Reactions", row=1)
     async def reactions(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         view: ReactionsView = ReactionsView(self.cog, self.ctx, self)
         await view._update()
@@ -209,14 +209,14 @@ class PersonalReactView(discord.ui.View):
         view._message = await interaction.original_response()
         self.cog.views[view._message] = view
 
-    @discord.ui.button(label="Ignore Myself", row=1)
+    @discord.ui.button(label="Ignore Myself", row=2)
     async def ignore_myself(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         ignore_myself = await self.cog.config.member(self.ctx.author).ignore_myself()
         ignore_myself = not ignore_myself
         await self.cog.config.member(self.ctx.author).ignore_myself.set(ignore_myself)
         await interaction.response.edit_message(embed=await self.get_embed(), view=self)
 
-    @discord.ui.button(label="Ignore Bots", row=1)
+    @discord.ui.button(label="Ignore Bots", row=2)
     async def ignore_bots(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         ignore_bots = await self.cog.config.member(self.ctx.author).ignore_bots()
         ignore_bots = not ignore_bots

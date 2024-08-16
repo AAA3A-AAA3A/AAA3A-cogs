@@ -143,6 +143,7 @@ class PersonalReact(DashboardIntegration, Cog):
             total_amount = max_reactions_per_member
         if (always_allow_custom_trigger := await self.config.guild(member.guild).always_allow_custom_trigger()) and _type == "custom_trigger":
             total_amount += (await self.get_reactions(member, "base"))[1]
+        total_amount = min(total_amount, max_reactions_per_member)
         reactions = [
             reaction
             for r in reactions

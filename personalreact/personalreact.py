@@ -145,7 +145,7 @@ class PersonalReact(DashboardIntegration, Cog):
         total_amount = (
             sum(roles_requirements.values())
             if (use_amounts_sum := await self.config.guild(member.guild).use_amounts_sum())
-            else max(roles_requirements.values())
+            else max(roles_requirements.values() or [0])
         )
         is_staff = member.id in self.bot.owner_ids or await self.bot.is_admin(member) or member.guild.get_member(member.id).guild_permissions.administrator
         if is_staff:

@@ -34,8 +34,9 @@ class PersonalReact(DashboardIntegration, Cog):
             max_reactions_per_member=5,
             min_custom_trigger_length=3,
             blacklisted_channels=[],
-            always_allow_custom_trigger=False,
             use_amounts_sum=True,
+            allow_replies_trigger=True,
+            always_allow_custom_trigger=False,
             base_roles_requirements={},
             custom_trigger_roles_requirements={},
         )
@@ -62,13 +63,17 @@ class PersonalReact(DashboardIntegration, Cog):
                 "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel, discord.Thread],
                 "description": "The channels where the bot won't react.",
             },
-            "always_allow_custom_trigger": {
-                "converter": bool,
-                "description": "Whether to always allow the custom trigger feature.",
-            },
             "use_amounts_sum": {
                 "converter": bool,
                 "description": "Whether to use the sum of the roles requirements or the maximum amount.",
+            },
+            "allow_replies_trigger": {
+                "converter": bool,
+                "description": "Whether to allow the replies trigger.",
+            },
+            "always_allow_custom_trigger": {
+                "converter": bool,
+                "description": "Whether to always allow the custom trigger feature.",
             },
         }
         self.settings: Settings = Settings(
@@ -199,7 +204,10 @@ class PersonalReact(DashboardIntegration, Cog):
                         discord.utils.get(message.mentions, id=m_id) is not None
                         and (
                             m_id in message.raw_mentions
-                            or data.get("replies", False)
+                            or (
+                                data.get("replies", False)
+                                and await self.config.guild(message.guild).allow_replies_trigger()
+                            )
                         )
                     )
                     or (
@@ -264,6 +272,8 @@ class PersonalReact(DashboardIntegration, Cog):
     @personalreact.command()
     async def replies(self, ctx: commands.Context, toggle: bool) -> None:
         """Allow the bot to react on the messages which ping you in replies."""
+        if toggle and not await self.config.guild(ctx.guild).allow_replies_trigger():
+            raise commands.UserFeedbackCheckFailure(_("This server doesn't allow the replies trigger."))
         await self.config.member(ctx.author).replies.set(toggle)
 
     @personalreact.command()

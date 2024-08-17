@@ -110,7 +110,7 @@ class PersonalReactView(discord.ui.View):
             name=_("Triggers:"),
             value=(
                 _("**•** Your mention")
-                + (_("\n**•** Replies (with @)") if data["replies"] else "")
+                + (_("\n**•** {emoji}Replies (with @)").format(emoji="❌ " if not await self.cog.config.guild(self.ctx.guild).allow_replies_trigger() else "") if data["replies"] else "")
                 + (_("\n**•** Your User ID") if data["user_id"] else "")
                 + (_("\n**•** {emoji}Custom Trigger").format(emoji="❌ " if custom_trigger_total_amount == 0 else "") if data["custom_trigger"] is not None else "")
             ),
@@ -170,6 +170,12 @@ class PersonalReactView(discord.ui.View):
     async def replies(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         replies = await self.cog.config.member(self.ctx.author).replies()
         replies = not replies
+        if replies and not await self.cog.config.guild(self.ctx.guild).allow_replies_trigger():
+            await interaction.response.send_message(
+                _("The server doesn't allow the replies trigger."),
+                ephemeral=True,
+            )
+            return
         await self.cog.config.member(self.ctx.author).replies.set(replies)
         await interaction.response.edit_message(embed=await self.get_embed(), view=self)
 

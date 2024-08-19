@@ -120,13 +120,13 @@ class StringToEmbed(commands.Converter):
         content = self.get_content(data, content=content)
 
         if data.get("color") is None:
-            del data["color"]
+            data.pop("color", None)
         if (timestamp := data.get("timestamp")) is not None:
             data["timestamp"] = (
                 timestamp.strip("Z") if isinstance(timestamp, str) else str(timestamp)
             )
         else:
-            del data["timestamp"]
+            data.pop("timestamp", None)
         try:
             embed = discord.Embed.from_dict(data)
             length = len(embed)

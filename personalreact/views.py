@@ -300,12 +300,14 @@ class AddReactionsModal(discord.ui.Modal):
         reactions = []
         try:
             for r in self.reactions.value.split(" "):
-                reaction = await Emoji().convert(self.ctx, r)
-                reactions.append(getattr(reaction, "id", reaction))
+                reactions.append(await Emoji().convert(self.ctx, r))
         except commands.BadArgument as e:
             await interaction.response.send_message(str(e), ephemeral=True)
         _reactions = await self.cog.config.member(self.ctx.author).reactions()
-        _reactions.extend(reactions)
+        for reaction in reactions:
+            reaction = getattr(reaction, "id", reaction)
+            if reaction not in _reactions:
+                _reactions.append(reaction)
         if len(_reactions) > (max_reactions_per_member := (await self.cog.config.guild(self.ctx.guild).max_reactions_per_member())):
             await interaction.response.send_message(
                 _("You can't have more than {max_reactions_per_member} reactions.").format(max_reactions_per_member=max_reactions_per_member),

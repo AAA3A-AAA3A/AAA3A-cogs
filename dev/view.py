@@ -8,13 +8,17 @@ import asyncio
 import io
 import textwrap
 
-from redbot.core import dev_commands
+from redbot.core.dev_commands import START_CODE_BLOCK_RE
 
 _: Translator = Translator("Dev", __file__)
 
 
 def cleanup_code(code: str) -> str:
-    code = textwrap.dedent(dev_commands.cleanup_code(code))
+    if code.startswith("```") and code.endswith("```"):
+        code = START_CODE_BLOCK_RE.sub("", code)[:-3].rstrip("\n")
+    else:
+        code = code.strip("\n`")
+    code = textwrap.dedent(code)
     with io.StringIO(code) as codeio:
         for line in codeio:
             line = line.strip()

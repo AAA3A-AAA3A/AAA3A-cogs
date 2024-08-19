@@ -269,7 +269,6 @@ class DevUtils(Cog):
         You may reply to a message to reinvoke it or pass a message ID/link.
         The command will be invoked with the author and the channel of the specified message.
         """
-        await ctx.send(ctx.message.reference)
         if message is None:
             if not (
                 ctx.message.reference is not None

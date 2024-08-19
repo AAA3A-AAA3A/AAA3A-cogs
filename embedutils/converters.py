@@ -119,10 +119,14 @@ class StringToEmbed(commands.Converter):
     ) -> typing.Dict[typing.Literal["content", "embed"], typing.Union[discord.Embed, str]]:
         content = self.get_content(data, content=content)
 
-        if timestamp := data.get("timestamp"):
+        if data.get("color") is None:
+            del data["color"]
+        if (timestamp := data.get("timestamp")) is not None:
             data["timestamp"] = (
                 timestamp.strip("Z") if isinstance(timestamp, str) else str(timestamp)
             )
+        else:
+            del data["timestamp"]
         try:
             embed = discord.Embed.from_dict(data)
             length = len(embed)

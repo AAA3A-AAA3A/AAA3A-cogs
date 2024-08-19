@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, Settings  # isort:skip
+from AAA3A_utils import Cog, Settings, CogsUtils  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -298,6 +298,10 @@ class PersonalReact(DashboardIntegration, Cog):
         if (await self.get_reactions(ctx.author, "base"))[1] == 0 and (await self.get_reactions(ctx.author, "custom_trigger"))[1] == 0:
             raise commands.UserFeedbackCheckFailure(_("You aren't elligible for using PersonalReact."))
         if not reactions:
+            if not await CogsUtils.ConfirmationAsk(
+                ctx, content=_("You didn't provide any reaction. Do you want to clear your reactions?"),
+            ):
+                return
             await self.config.member(ctx.author).reactions.clear()
             await self.config.member(ctx.author).enabled.set(False)
             return

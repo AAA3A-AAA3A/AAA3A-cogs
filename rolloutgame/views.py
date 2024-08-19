@@ -252,7 +252,7 @@ class RolloutGameView(discord.ui.View):
 
     async def choose_number(self) -> int:
         number = self._number
-        discord.utils.get(self.children, label=str(number)).style = discord.ButtonStyle.danger
+        discord.utils.get(self.children, custom_id=str(number)).style = discord.ButtonStyle.danger
         try:
             await self._message.edit(view=self)
         except discord.HTTPException:

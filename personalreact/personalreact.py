@@ -183,7 +183,7 @@ class PersonalReact(DashboardIntegration, Cog):
         ):
             return
         blacklisted_channels = await self.config.guild(message.guild).blacklisted_channels()
-        if message.channel.id in await self.config.guild(message.guild).blacklisted_channels() or message.channel.category_id in blacklisted_channels:
+        if message.channel.id in blacklisted_channels or message.channel.category_id in blacklisted_channels:
             return
         member = None
         members_data = await self.config.all_members(guild=message.guild)

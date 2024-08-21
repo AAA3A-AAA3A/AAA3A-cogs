@@ -60,7 +60,7 @@ class PersonalReact(DashboardIntegration, Cog):
                 "description": "The minimum length of a custom trigger.",
             },
             "blacklisted_channels": {
-                "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel, discord.Thread],
+                "converter": commands.Greedy[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel, discord.Thread]],
                 "description": "The channels where the bot won't react.",
             },
             "use_amounts_sum": {

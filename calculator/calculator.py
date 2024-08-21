@@ -295,10 +295,10 @@ class Calculator(Cog):
             return
         if message.webhook_id is not None or message.author.bot:
             return
-        auto_calculations = await self.config.guild(message.guild).auto_calculations()
+        auto_calculations = await self.config.guild(message.guild).auto_calculations() if message.guild is not None else None
         if auto_calculations is None:
             auto_calculations = await self.config.default_auto_calculations()
-        react_calculations = await self.config.guild(message.guild).react_calculations()
+        react_calculations = await self.config.guild(message.guild).react_calculations() if message.guild is not None else None
         if react_calculations is None:
             react_calculations = await self.config.default_react_calculations()
         if not auto_calculations and not react_calculations:
@@ -353,8 +353,8 @@ class Calculator(Cog):
         ) or result == message.content:
             return
 
-        auto_calculations_ignored_channels = await self.config.guild(message.guild).auto_calculations_ignored_channels()
-        react_calculations_ignored_channels = await self.config.guild(message.guild).react_calculations_ignored_channels()
+        auto_calculations_ignored_channels = await self.config.guild(message.guild).auto_calculations_ignored_channels() if message.guild is not None else []
+        react_calculations_ignored_channels = await self.config.guild(message.guild).react_calculations_ignored_channels() if message.guild is not None else []
         if (
             auto_calculations
             and message.channel.id not in auto_calculations_ignored_channels

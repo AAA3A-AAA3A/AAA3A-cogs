@@ -35,6 +35,7 @@ class ClearChannel(DashboardIntegration, Cog):
             first_message=True,
             author_dm=False,
             custom_message={},
+            prompt_message={},
         )
 
         _settings: typing.Dict[

@@ -355,7 +355,7 @@ class ReactionsView(discord.ui.View):
                     discord.SelectOption(
                         emoji=reaction if reaction is not None else None,
                         label=getattr(reaction, "name", "\u200b") if reaction is not None else r,
-                        value=r,
+                        value=str(r),
                     )
                 )
             self.add_item(self.remove)
@@ -378,7 +378,7 @@ class ReactionsView(discord.ui.View):
         reactions = await self.cog.config.member(self.ctx.author).reactions()
         for reaction in select.values:
             try:
-                reactions.remove(reaction)
+                reactions.remove(int(reaction) if reaction.isdigit() else reaction)
             except ValueError:
                 pass
         await self.cog.config.member(self.ctx.author).reactions.set(reactions)

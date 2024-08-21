@@ -377,7 +377,10 @@ class ReactionsView(discord.ui.View):
     async def remove(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         reactions = await self.cog.config.member(self.ctx.author).reactions()
         for reaction in select.values:
-            reactions.remove(reaction)
+            try:
+                reactions.remove(reaction)
+            except ValueError:
+                pass
         await self.cog.config.member(self.ctx.author).reactions.set(reactions)
         await interaction.response.send_message(
             _("Reactions removed successfully."),

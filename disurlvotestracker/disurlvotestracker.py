@@ -163,9 +163,9 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         if payload["headers"].get("Authorization") != ("Basic " + await self.config.guild(guild).disurl_authaurization_key()):
             return
         if (
-            member := guild.get_member(int(payload["userId"]))
+            (member := guild.get_member(int(payload["userId"]))) is None
             or not await self.bot.allowed_by_whitelist_blacklist(who=member)
-        ) is None:
+        ):
             return
 
         if (

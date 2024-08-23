@@ -265,13 +265,13 @@ class CustomTriggerModal(discord.ui.Modal):
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
         custom_trigger = self.custom_trigger.value
+        if custom_trigger and " " in custom_trigger:
+            await interaction.response.send_message(_("The custom trigger can't have spaces."), ephemeral=True)
+            return
+        await interaction.response.defer()
         if custom_trigger:
-            if " " in custom_trigger:
-                await interaction.response.send_message(_("The custom trigger can't have spaces."), ephemeral=True)
-                return
             await self.cog.config.member(self.ctx.author).custom_trigger.set(custom_trigger)
         else:
-            await interaction.response.defer()
             await self.cog.config.member(self.ctx.author).custom_trigger.clear()
         try:
             await self.parent_view._message.edit(embed=await self.parent_view.get_embed())
@@ -375,6 +375,7 @@ class ReactionsView(discord.ui.View):
 
     @discord.ui.select(min_values=1, placeholder="Select reaction(s) to remove...")
     async def remove(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
+        await interaction.response.defer(ephemeral=True, thinking=True)
         reactions = await self.cog.config.member(self.ctx.author).reactions()
         for reaction in select.values:
             try:
@@ -382,7 +383,7 @@ class ReactionsView(discord.ui.View):
             except ValueError:
                 pass
         await self.cog.config.member(self.ctx.author).reactions.set(reactions)
-        await interaction.response.send_message(
+        await interaction.followup.send(
             _("Reactions removed successfully."),
             ephemeral=True,
         )

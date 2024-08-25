@@ -200,11 +200,11 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                 embed.set_thumbnail(url=member.display_avatar)
                 embed.description = _(
                     "{member.mention} voted on Disurl!\n"
-                    "`{number_member_votes} vote{s_1} this month & {number_member_monthly_votes} lifetime vote{s_2}`"
+                    "`{number_member_monthly_votes} vote{s_1} this month & {number_member_votes} lifetime vote{s_2}`"
                 ).format(
                     member=member,
-                    number_member_votes=number_member_votes, s_1=s_1,
-                    number_member_monthly_votes=number_member_monthly_votes, s_2=s_2,
+                    number_member_monthly_votes=number_member_monthly_votes, s_1=s_1,
+                    number_member_votes=number_member_votes, s_2=s_2,
                 )
                 if voters_role is not None:
                     embed.description += _("\n\n{member.display_name} received the role {voters_role.mention} for the next 12 hours.").format(member=member, voters_role=voters_role)

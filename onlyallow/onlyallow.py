@@ -182,16 +182,25 @@ class OnlyAllow(Cog):
         if data is None:
             await ctx.send(_("All cogs and commands are allowed in this server."))
             return
-        embeds = []
+        embeds = [
+            discord.Embed(
+                title=_("Only Allow"),
+                color=await ctx.embed_color(),
+            ).set_author(
+                name=ctx.guild.name,
+                icon_url=ctx.guild.icon.url,
+            ),
+        ]
         for title, items in [
             (_("Allowed Cogs"), data["allowed_cogs"]),
             (_("Allowed Commands"), data["allowed_commands"]),
         ]:
             if items:
-                embed = discord.Embed(
-                    title=title,
-                    description=humanize_list([f"`{item}`" for item in items]),
-                    color=await ctx.embed_color(),
+                embeds.append(
+                    discord.Embed(
+                        title=f"{title} ({len(items)}):",
+                        description=humanize_list([f"`{item}`" for item in items]),
+                        color=await ctx.embed_color(),
+                    )
                 )
-                embeds.append(embed)
         await Menu(pages=[{"embeds": embeds}]).start(ctx=ctx)

@@ -3,28 +3,32 @@
 Dashboard
 =========
 
-This is the cog guide for the 'Dashboard' cog. This guide contains the collection of commands which you can use in the cog.
+This is the cog guide for the ``Dashboard`` cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
 .. note::
 
     Ensure that you are up to date by running ``[p]cog update dashboard``.
     If there is something missing, or something that needs improving in this documentation, feel free to create an issue `here <https://github.com/AAA3A-AAA3A/AAA3A-cogs/issues>`_.
-    This documentation is auto-generated everytime this cog receives an update.
+    This documentation is generated everytime this cog receives an update.
 
---------------
-About this cog
---------------
+---------------
+About this cog:
+---------------
 
-Interact with your bot through a web dashboard!
+Interact with your bot through a web Dashboard!
 
+**Installation guide:** https://red-web-dashboard.readthedocs.io/en/latest
 ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.
 
---------
-Commands
---------
+---------
+Commands:
+---------
 
-Here are all the commands included in this cog (17):
+Here are all the commands included in this cog (19):
+
+* ``[p]dashboard``
+ Get the link to the Dashboard.
 
 * ``[p]setdashboard``
  Configure Dashboard.
@@ -32,14 +36,17 @@ Here are all the commands included in this cog (17):
 * ``[p]setdashboard allinone <all_in_one>``
  Run the Dashboard in the bot process, without having to open another window. You have to install Red-Dashboard in your bot venv with Pip and reload the cog.
 
+* ``[p]setdashboard allowunsecurehttprequests <allow_unsecure_http_requests>``
+ Allow unsecure http requests. This is not recommended for production, but required if you can't set up a SSL certificate.
+
 * ``[p]setdashboard defaultbackgroundtheme <default_background_theme>``
- Set the default background theme of the dashboard.
+ Set the default Background theme of the dashboard.
 
 * ``[p]setdashboard defaultcolor <default_color>``
- Set the default color of the dashboard.
+ Set the default Color of the dashboard.
 
 * ``[p]setdashboard defaultsidenavtheme <default_sidenav_theme>``
- Set the default sidenav theme of the dashboard.
+ Set the default Sidenav theme of the dashboard.
 
 * ``[p]setdashboard disabledthirdparties <disabled_third_parties>``
  The third parties to disable.
@@ -48,16 +55,16 @@ Here are all the commands included in this cog (17):
  The flags used to setting the webserver if `all_in_one` is enabled. They are the cli flags of `reddash` without `--rpc-port`.
 
 * ``[p]setdashboard metadescription <meta_description>``
- The website description to use.
+ The website long description to use.
 
 * ``[p]setdashboard metaicon <meta_icon>``
- The website description to use.
+ The website icon to use.
 
 * ``[p]setdashboard metatitle <meta_title>``
  The website title to use.
 
 * ``[p]setdashboard metawebsitedescription <meta_website_description>``
- The website description to use.
+ The website short description to use.
 
 * ``[p]setdashboard modalconfig [confirmation=False]``
  Set all settings for the cog with a Discord Modal.
@@ -81,8 +88,7 @@ Here are all the commands included in this cog (17):
 Installation
 ------------
 
-If you haven't added my repo before, lets add it first. We'll call it
-"AAA3A-cogs" here.
+If you haven't added my repo before, lets add it first. We'll call it "AAA3A-cogs" here.
 
 .. code-block:: ini
 
@@ -100,16 +106,16 @@ Once it's installed, it is not loaded by default. Load it by running the followi
 
     [p]load dashboard
 
----------------
-Further Support
----------------
+----------------
+Further Support:
+----------------
 
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
 
-------
-Credit
-------
+--------
+Credits:
+--------
 
 Thanks to Kreusada for the Python code to automatically generate this documentation!

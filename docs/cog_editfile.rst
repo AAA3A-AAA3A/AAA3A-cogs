@@ -3,26 +3,26 @@
 EditFile
 ========
 
-This is the cog guide for the 'EditFile' cog. This guide contains the collection of commands which you can use in the cog.
+This is the cog guide for the ``EditFile`` cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
 .. note::
 
     Ensure that you are up to date by running ``[p]cog update editfile``.
     If there is something missing, or something that needs improving in this documentation, feel free to create an issue `here <https://github.com/AAA3A-AAA3A/AAA3A-cogs/issues>`_.
-    This documentation is auto-generated everytime this cog receives an update.
+    This documentation is generated everytime this cog receives an update.
 
---------------
-About this cog
---------------
+---------------
+About this cog:
+---------------
 
 A cog to get a file and replace it from its path from Discord!
 
 ⚠️ This cog can be very dangerous, since it allows direct read/write/delete of files on the bot’s machine, considering the fact that reading the wrong file can expose sensitive information like tokens and deleting the wrong file can corrupt the bot or the system entirely.
 
---------
-Commands
---------
+---------
+Commands:
+---------
 
 Here are all the commands included in this cog (8):
 
@@ -54,8 +54,7 @@ Here are all the commands included in this cog (8):
 Installation
 ------------
 
-If you haven't added my repo before, lets add it first. We'll call it
-"AAA3A-cogs" here.
+If you haven't added my repo before, lets add it first. We'll call it "AAA3A-cogs" here.
 
 .. code-block:: ini
 
@@ -73,16 +72,16 @@ Once it's installed, it is not loaded by default. Load it by running the followi
 
     [p]load editfile
 
----------------
-Further Support
----------------
+----------------
+Further Support:
+----------------
 
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
 
-------
-Credit
-------
+--------
+Credits:
+--------
 
 Thanks to Kreusada for the Python code to automatically generate this documentation!

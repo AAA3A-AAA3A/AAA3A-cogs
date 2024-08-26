@@ -3,31 +3,34 @@
 EmbedUtils
 ==========
 
-This is the cog guide for the 'EmbedUtils' cog. This guide contains the collection of commands which you can use in the cog.
+This is the cog guide for the ``EmbedUtils`` cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
 .. note::
 
     Ensure that you are up to date by running ``[p]cog update embedutils``.
     If there is something missing, or something that needs improving in this documentation, feel free to create an issue `here <https://github.com/AAA3A-AAA3A/AAA3A-cogs/issues>`_.
-    This documentation is auto-generated everytime this cog receives an update.
+    This documentation is generated everytime this cog receives an update.
 
---------------
-About this cog
---------------
+---------------
+About this cog:
+---------------
 
-Create, send, and store embeds!
+Create, send, and store rich embeds, from Red-Dashboard too!
 
---------
-Commands
---------
+---------
+Commands:
+---------
 
-Here are all the commands included in this cog (17):
+Here are all the commands included in this cog (18):
 
 * ``[p]embed [channel_or_message] [color] <title> <description>``
  Post a simple embed with a color, a title and a description.
 
-* ``[p]embed download <message> [index] [include_content=False]``
+* ``[p]embed dashboard ["json"|"fromjson"|"fromdata"|"yaml"|"fromyaml"|"fromfile"|"jsonfile"|"fromjsonfile"|"fromdatafile"|"yamlfile"|"fromyamlfile"|"gist"|"pastebin"|"hastebin"|"message"|"frommessage"|"msg"|"frommsg"] [data]``
+ Get the link to the Dashboard.
+
+* ``[p]embed download [message] [index] [include_content]``
  Download a JSON file for a message's embed(s).
 
 * ``[p]embed downloadstored [global_level=False] <name>``
@@ -48,7 +51,7 @@ Here are all the commands included in this cog (17):
 * ``[p]embed list [global_level=False]``
  Get info about a stored embed.
 
-* ``[p]embed message [channel_or_message] <message> [index] [include_content=False]``
+* ``[p]embed message [channel_or_message] [message] [index] [include_content]``
  Post embed(s) from an existing message.
 
 * ``[p]embed migratefromphen``
@@ -79,8 +82,7 @@ Here are all the commands included in this cog (17):
 Installation
 ------------
 
-If you haven't added my repo before, lets add it first. We'll call it
-"AAA3A-cogs" here.
+If you haven't added my repo before, lets add it first. We'll call it "AAA3A-cogs" here.
 
 .. code-block:: ini
 
@@ -98,16 +100,16 @@ Once it's installed, it is not loaded by default. Load it by running the followi
 
     [p]load embedutils
 
----------------
-Further Support
----------------
+----------------
+Further Support:
+----------------
 
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
 
-------
-Credit
-------
+--------
+Credits:
+--------
 
 Thanks to Kreusada for the Python code to automatically generate this documentation!

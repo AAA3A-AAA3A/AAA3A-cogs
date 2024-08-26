@@ -3,26 +3,26 @@
 GuildStats
 ==========
 
-This is the cog guide for the 'GuildStats' cog. This guide contains the collection of commands which you can use in the cog.
+This is the cog guide for the ``GuildStats`` cog. This guide contains the collection of commands which you can use in the cog.
 Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` with your own prefix when you use these commands in Discord.
 
 .. note::
 
     Ensure that you are up to date by running ``[p]cog update guildstats``.
     If there is something missing, or something that needs improving in this documentation, feel free to create an issue `here <https://github.com/AAA3A-AAA3A/AAA3A-cogs/issues>`_.
-    This documentation is auto-generated everytime this cog receives an update.
+    This documentation is generated everytime this cog receives an update.
 
---------------
-About this cog
---------------
+---------------
+About this cog:
+---------------
 
 A cog to generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities!
 
---------
-Commands
---------
+---------
+Commands:
+---------
 
-Here are all the commands included in this cog (23):
+Here are all the commands included in this cog (25):
 
 * ``[p]guildstats ["humans"|"bots"|"both"=humans] [show_graphic=False] <_object>``
  Generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities.
@@ -36,7 +36,7 @@ Here are all the commands included in this cog (23):
 * ``[p]guildstats category ["humans"|"bots"|"both"=humans] [show_graphic=False] [category]``
  Display stats for a specified category.
 
-* ``[p]guildstats channel ["humans"|"bots"|"both"=humans] [show_graphic=False] [channel]``
+* ``[p]guildstats channel ["humans"|"bots"|"both"=humans] [show_graphic=False] [channel=<this channel>]``
  Display stats for a specified channel.
 
 * ``[p]guildstats disable``
@@ -69,14 +69,20 @@ Here are all the commands included in this cog (23):
 * ``[p]guildstats ignoreuser <user>``
  Ignore or unignore a specific user.
 
-* ``[p]guildstats member [show_graphic=False] [member]``
+* ``[p]guildstats member [show_graphic=False] [member=<you>]``
  Display stats for a specified member.
+
+* ``[p]guildstats memberactivities [member=<you>]``
+ Display stats for the activities of a specified member.
 
 * ``[p]guildstats messages ["humans"|"bots"|"both"=humans] [show_graphic=False]``
  Display stats for the messages in this guild.
 
 * ``[p]guildstats purge <"all"|"messages"|"voice"|"activities">``
  Purge Config for the current guild.
+
+* ``[p]guildstats purgeoldmembers``
+ Purge old members data.
 
 * ``[p]guildstats role [show_graphic=False] [role]``
  Display stats for a specified role.
@@ -97,8 +103,7 @@ Here are all the commands included in this cog (23):
 Installation
 ------------
 
-If you haven't added my repo before, lets add it first. We'll call it
-"AAA3A-cogs" here.
+If you haven't added my repo before, lets add it first. We'll call it "AAA3A-cogs" here.
 
 .. code-block:: ini
 
@@ -116,16 +121,16 @@ Once it's installed, it is not loaded by default. Load it by running the followi
 
     [p]load guildstats
 
----------------
-Further Support
----------------
+----------------
+Further Support:
+----------------
 
 Check out my docs `here <https://aaa3a-cogs.readthedocs.io/en/latest/>`_.
 Mention me in the #support_other-cogs in the `cog support server <https://discord.gg/GET4DVk>`_ if you need any help.
 Additionally, feel free to open an issue or pull request to this repo.
 
-------
-Credit
-------
+--------
+Credits:
+--------
 
 Thanks to Kreusada for the Python code to automatically generate this documentation!

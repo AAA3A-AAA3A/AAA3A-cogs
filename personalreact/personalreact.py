@@ -426,6 +426,7 @@ class PersonalReact(DashboardIntegration, Cog):
 
     @setpersonalreact.command()
     async def clearmember(self, ctx: commands.Context, *, member: discord.Member) -> None:
+        """Clear a member's PersonalReact settings."""
         await self.config.member(member).clear()
 
     @setpersonalreact.command(hidden=True)

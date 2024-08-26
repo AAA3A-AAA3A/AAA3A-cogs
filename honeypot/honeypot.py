@@ -15,6 +15,7 @@ import os
 
 _: Translator = Translator("Honeypot", __file__)
 
+
 @cog_i18n(_)
 class Honeypot(Cog):
     """Create a channel at the top of the server to attract self bots/scammers and notify/mute/kick/ban them immediately!"""

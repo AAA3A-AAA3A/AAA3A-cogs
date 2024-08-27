@@ -152,7 +152,7 @@ class PersonalReact(DashboardIntegration, Cog):
             if (use_amounts_sum := await self.config.guild(member.guild).use_amounts_sum())
             else max(roles_requirements.values() or [0])
         )
-        is_staff = member.id in self.bot.owner_ids or await self.bot.is_admin(member) or member.guild.get_member(member.id).guild_permissions.administrator
+        is_staff = member.id in self.bot.owner_ids or await self.bot.is_admin(member) or member.guild_permissions.manage_guild
         if is_staff:
             total_amount = max_reactions_per_member
         if (always_allow_custom_trigger := await self.config.guild(member.guild).always_allow_custom_trigger()) and _type == "custom_trigger":

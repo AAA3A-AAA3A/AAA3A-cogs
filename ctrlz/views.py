@@ -318,6 +318,7 @@ class CtrlZMassView(BaseView):
             value=_("No errors yet."),
         )
         progression_message = await self.ctx.send(embed=embed)
+        audit_logs_actions = await self.cog.get_audit_logs_actions()
         errors = []
         for i, audit_log in enumerate(reversed(audit_logs), start=1):
             if audit_log.id in reverted_audit_logs:
@@ -325,11 +326,19 @@ class CtrlZMassView(BaseView):
             try:
                 await self.cog.revert_audit_log(audit_log)
             except RuntimeError as e:
+                action = next(
+                    (
+                        action
+                        for action, action_actions in audit_logs_actions.items()
+                        if audit_log.action in action_actions
+                    ),
+                    None,
+                )
                 errors.append(
                     (
-                        f"{getattr(audit_log.target, 'mention', getattr(audit_log.target, 'name', repr(audit_log.target)))} ({audit_log.target.id})"
+                        f"**•** **{audit_logs_actions[action][audit_log.action]}** — {getattr(audit_log.target, 'mention', getattr(audit_log.target, 'name', repr(audit_log.target)))} ({audit_log.target.id})"
                         if not isinstance(audit_log.target, discord.Object)
-                        else f"Unknown ({audit_log.target.id})" + (f" - Type {audit_log.target.type.__name__}" if audit_log.target.type != discord.Object else "")
+                        else f"Unknown ({audit_log.target.id})" + (f" (`{audit_log.target.type.__name__}`)" if audit_log.target.type != discord.Object else "")
                     ) + f" — {e}"
                 )
             try:

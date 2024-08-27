@@ -15,6 +15,7 @@ from .views import CtrlZView, CtrlZMassView
 
 # Credits:
 # General repo credits.
+# Thanks to one of my friends for the idea of this cog's name!
 
 _: Translator = Translator("CtrlZ", __file__)
 
@@ -241,13 +242,12 @@ class CtrlZ(Cog):
         )
 
     async def get_audit_log_embed(self, audit_log: discord.AuditLogEntry) -> discord.Embed:
-        audit_log_action = audit_log.action
         audit_logs_actions = await self.get_audit_logs_actions()
         if (label := next(
             (
-                action_actions[audit_log_action]
+                action_actions[audit_log.action]
                 for action_actions in audit_logs_actions.values()
-                if audit_log_action in action_actions
+                if audit_log.action in action_actions
             ),
             None,
         )) is None:
@@ -267,7 +267,7 @@ class CtrlZ(Cog):
                 value=(
                     f"{getattr(audit_log.target, 'mention', getattr(audit_log.target, 'name', repr(audit_log.target)))} ({audit_log.target.id})"
                     if not isinstance(audit_log.target, discord.Object)
-                    else f"Unknown ({audit_log.target.id})" + (f" - Type {audit_log.target.type.__name__}" if audit_log.target.type != discord.Object else "")
+                    else f"Unknown ({audit_log.target.id})" + (f" (`{audit_log.target.type.__name__}`)" if audit_log.target.type != discord.Object else "")
                 ),
             )
         if audit_log.reason is not None:
@@ -321,13 +321,12 @@ class CtrlZ(Cog):
         return embed
 
     async def revert_audit_log(self, audit_log: discord.AuditLogEntry) -> None:
-        audit_log_action = audit_log.action
         audit_logs_actions = await self.get_audit_logs_actions()
         if (action := next(
             (
                 action
                 for action, action_actions in audit_logs_actions.items()
-                if audit_log_action in action_actions
+                if audit_log.action in action_actions
             ),
             None,
         )) is None:
@@ -335,7 +334,7 @@ class CtrlZ(Cog):
         if audit_log.id in await self.config.guild(audit_log.guild).reverted_audit_logs():
             raise RuntimeError(_("The audit log has already been reverted."))
         try:
-            await REVERT_METHODS[action][audit_log_action](audit_log)
+            await REVERT_METHODS[action][audit_log.action](audit_log)
         # except discord.NotFound:
         #     raise RuntimeError(_("The target of the audit log was not found."))
         except discord.Forbidden:

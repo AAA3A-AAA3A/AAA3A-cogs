@@ -1,0 +1,17 @@
+{
+    "author": ["AAA3A"],
+    "name": "CtrlZ",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!",
+    "short": "Revert some actions in servers, from the audit logs!",
+    "description": "Revert some actions in servers, from the audit logs!",
+    "tags": [
+        "revert",
+        "action",
+        "audit",
+        "log",
+        "nuke"
+    ],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git"],
+    "min_bot_version": "3.5.0",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

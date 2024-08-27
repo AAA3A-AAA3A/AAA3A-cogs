@@ -19,7 +19,7 @@ from .views import CtrlZView, CtrlZMassView
 
 _: Translator = Translator("CtrlZ", __file__)
 
-REASON = "Reverted by CtrlZ."
+REASON = "Reverted with CtrlZ."
 def default_delete_method(audit_log: discord.AuditLogEntry) -> None:
     if isinstance(audit_log.target, discord.Object):
         raise RuntimeError(_("The target of the audit log was not found."))

@@ -5,24 +5,24 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import datetime
-import logging
-import re
-import traceback
-from collections import Counter
-from dataclasses import dataclass
-
-from colorama import Fore
 from redbot import __version__ as red_version
 from redbot.core import data_manager
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify
-
 try:
     from redbot.core._events import INTRO
 except ModuleNotFoundError:  # Lemon's fork.
     INTRO = ""
 
-from rich import box as rich_box
+import datetime
+import logging
+import re
+import traceback
+from collections import Counter
+from colorama import Fore
+from dataclasses import dataclass
+from io import BytesIO, TextIOWrapper
+
+from rich import box as rich_box, print as rich_print
 from rich.columns import Columns
 from rich.panel import Panel
 from rich.table import Table
@@ -147,13 +147,18 @@ class ConsoleLogs(DashboardIntegration, Cog):
         table_counts.add_row("Servers", str(guilds))
         if self.bot.intents.members:
             table_counts.add_row("Unique Users", str(users))
-        self.RED_INTRO += str(
-            Columns(
-                [Panel(table_general_info, title=self.bot.user.display_name), Panel(table_counts)],
-                equal=True,
-                align="center",
+        io_file = BytesIO()
+        with TextIOWrapper(io_file, encoding="utf-8") as text_wrapper:
+            rich_print(
+                Columns(
+                    [Panel(table_general_info, title=self.bot.user.display_name), Panel(table_counts)],
+                    equal=True,
+                    align="center",
+                ),
+                file=text_wrapper,
             )
-        )
+            io_file.seek(0)
+            self.RED_INTRO += io_file.read().decode("utf-8")
         self.RED_INTRO += (
             f"\nLoaded {len(self.bot.cogs)} cogs with {len(self.bot.commands)} commands"
         )
@@ -173,11 +178,14 @@ class ConsoleLogs(DashboardIntegration, Cog):
     @property
     def console_logs(self) -> typing.List[ConsoleLog]:
         # Thanks to Tobotimus for this part!
-        console_logs_files = [
-            path
-            for path in (data_manager.core_data_path() / "logs").iterdir()
-            if LATEST_LOG_RE.match(path.name) is not None
-        ][::-1]
+        console_logs_files = sorted(
+            [
+                path
+                for path in (data_manager.core_data_path() / "logs").iterdir()
+                if LATEST_LOG_RE.match(path.name) is not None
+            ],
+            key=lambda x: x.name,
+        )
         if not console_logs_files:
             return []
         console_logs_lines = []

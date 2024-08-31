@@ -210,13 +210,13 @@ class ExportChannel(Cog):
         if mode == "html":
             url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
             embed = discord.Embed(
-                title="Transcript Link",
+                title=_("Transcript Link"),
                 description=_(LINK_MESSAGE).format(url=url),
                 color=await ctx.embed_color(),
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
             )
         else:
             embed, view = None, None
@@ -249,13 +249,13 @@ class ExportChannel(Cog):
         if mode == "html":
             url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
             embed = discord.Embed(
-                title="Transcript Link",
+                title=_("Transcript Link"),
                 description=_(LINK_MESSAGE).format(url=url),
                 color=await ctx.embed_color(),
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
             )
         else:
             embed, view = None, None
@@ -295,13 +295,13 @@ class ExportChannel(Cog):
         if mode == "html":
             url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
             embed = discord.Embed(
-                title="Transcript Link",
+                title=_("Transcript Link"),
                 description=_(LINK_MESSAGE).format(url=url),
                 color=await ctx.embed_color(),
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
             )
         else:
             embed, view = None, None
@@ -341,13 +341,13 @@ class ExportChannel(Cog):
         if mode == "html":
             url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
             embed = discord.Embed(
-                title="Transcript Link",
+                title=_("Transcript Link"),
                 description=_(LINK_MESSAGE).format(url=url),
                 color=await ctx.embed_color(),
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
             )
         else:
             embed, view = None, None
@@ -387,13 +387,13 @@ class ExportChannel(Cog):
         if mode == "html":
             url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
             embed = discord.Embed(
-                title="Transcript Link",
+                title=_("Transcript Link"),
                 description=_(LINK_MESSAGE).format(url=url),
                 color=await ctx.embed_color(),
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
             )
         else:
             embed, view = None, None
@@ -435,13 +435,13 @@ class ExportChannel(Cog):
         if mode == "html":
             url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
             embed = discord.Embed(
-                title="Transcript Link",
+                title=_("Transcript Link"),
                 description=_(LINK_MESSAGE).format(url=url),
                 color=await ctx.embed_color(),
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
             )
         else:
             embed, view = None, None
@@ -481,13 +481,13 @@ class ExportChannel(Cog):
         if mode == "html":
             url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
             embed = discord.Embed(
-                title="Transcript Link",
+                title=_("Transcript Link"),
                 description=_(LINK_MESSAGE).format(url=url),
                 color=await ctx.embed_color(),
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
             )
         else:
             embed, view = None, None
@@ -529,13 +529,13 @@ class ExportChannel(Cog):
         if mode == "html":
             url = f"https://mahto.id/chat-exporter?url={message.attachments[0].url}"
             embed = discord.Embed(
-                title="Transcript Link",
+                title=_("Transcript Link"),
                 description=_(LINK_MESSAGE).format(url=url),
                 color=await ctx.embed_color(),
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label="View transcript", url=url)
+                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
             )
         else:
             embed, view = None, None

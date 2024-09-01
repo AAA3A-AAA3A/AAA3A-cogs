@@ -12,7 +12,7 @@ _: Translator = Translator("RolloutGame", __file__)
 
 
 class JoinGameView(discord.ui.View):
-    def __init__(self, cog: commands.Cog):
+    def __init__(self, cog: commands.Cog) -> None:
         super().__init__(timeout=None)
         self.ctx: commands.Context = None
         self.cog: commands.Cog = cog
@@ -23,24 +23,28 @@ class JoinGameView(discord.ui.View):
 
         self.cancelled: bool = True
 
+        self.join.label = _("Join Game")
+        self.leave.label = _("Leave")
+        self.view_players.label = _("View Players (1)")
+        self.start.label = _("Start Game!")
+
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
-        self.host = ctx.author
+        self.host: discord.Member = ctx.author
         self.players.append(ctx.author)
         embed: discord.Embed = discord.Embed(
             title=_("Rollout Game"),
+            description=_("Click the button below to join the party! Please note that the maximum amount of players is 25."),
             color=await self.ctx.embed_color(),
             timestamp=ctx.message.created_at,
         )
         embed.add_field(
             name=_("Instructions:"),
             value=_(
-                "**•** Click the **Join Game** button to join the game. Limited to 25 players.\n"
-                "**•** Wait for the host to start the game.\n"
                 "**•** At each round, select a number between 1 and 25 within 30 seconds.\n"
                 "**•** If the bot rolls the number you selected, you lose.\n"
                 "**•** The last player standing wins the game!"
-            )
+            ),
         )
         embed.set_author(name=_("Hosted by {host.display_name}").format(host=self.host), icon_url=self.host.display_avatar)
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
@@ -61,53 +65,53 @@ class JoinGameView(discord.ui.View):
             pass
 
     @discord.ui.button(label="Join Game", emoji="🎮", style=discord.ButtonStyle.success)
-    async def join_button(
+    async def join(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if interaction.user in self.players:
             await interaction.response.send_message(
-                "You have already joined the game!", ephemeral=True
+                _("You have already joined the game!"), ephemeral=True
             )
             return
         if len(self.players) >= 25:
             await interaction.response.send_message(
-                "The game is full, you can't join!", ephemeral=True
+                _("The game is full, you can't join!"), ephemeral=True
             )
             return
         self.players.append(interaction.user)
-        self.view_players.label = f"View Players ({len(self.players)})"
+        self.view_players.label = _("View Players ({len_players})").format(len_players=len(self.players))
         try:
             await self._message.edit(view=self)
         except discord.HTTPException:
             pass
-        await interaction.response.send_message("You have joined the game!", ephemeral=True)
+        await interaction.response.send_message(_("You have joined the game!"), ephemeral=True)
 
     @discord.ui.button(label="Leave", style=discord.ButtonStyle.danger)
-    async def leave_button(
+    async def leave(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if interaction.user not in self.players:
             await interaction.response.send_message(
-                "You have not joined the game!", ephemeral=True
+                _("You have not joined the game!"), ephemeral=True
             )
             return
         self.players.remove(interaction.user)
-        self.view_players.label = f"View Players ({len(self.players)})"
+        self.view_players.label = _("View Players ({len_players})").format(len_players=len(self.players))
         try:
             await self._message.edit(view=self)
         except discord.HTTPException:
             pass
-        await interaction.response.send_message("You have left the game!", ephemeral=True)
+        await interaction.response.send_message(_("You have left the game!"), ephemeral=True)
 
     @discord.ui.button(label="View Players (1)", style=discord.ButtonStyle.secondary)
     async def view_players(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if not self.players:
-            await interaction.response.send_message("No one has joined the game yet!", ephemeral=True)
+            await interaction.response.send_message(_("No one has joined the game yet!"), ephemeral=True)
             return
         embed = discord.Embed(
-            title="Rollout Game - Game Players",
+            title=_("Mafia Game - Players"),
             color=await self.ctx.embed_color(),
         )
         embed.set_author(name=_("Hosted by {host.display_name}").format(host=self.host), icon_url=self.host.display_avatar)
@@ -116,17 +120,17 @@ class JoinGameView(discord.ui.View):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="Start Game!", style=discord.ButtonStyle.primary)
-    async def start_button(
+    async def start(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if interaction.user != self.host:
             await interaction.response.send_message(
-                "Only the host can start the game!", ephemeral=True
+                _("Only the host can start the game!"), ephemeral=True
             )
             return
         if len(self.players) < 2:
             await interaction.response.send_message(
-                "You need at least 2 players to start the game!", ephemeral=True
+                _("You need at least 2 players to start the game!"), ephemeral=True
             )
             return
         self.cancelled: bool = False
@@ -135,18 +139,18 @@ class JoinGameView(discord.ui.View):
         self.stop()
 
     @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger)
-    async def cancel_button(
+    async def cancel(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if interaction.user != self.host:
             await interaction.response.send_message(
-                "Only the hoster can cancel the game!", ephemeral=True
+                _("Only the host can cancel the game!"), ephemeral=True
             )
             return
-        await interaction.response.send_message("The game has been cancelled!", ephemeral=True)
-        await self.on_timeout()
-        self.stop()
-
+        try:
+            await self._message.delete()
+        except discord.HTTPException:
+            pass
 
 class RolloutGameView(discord.ui.View):
     def __init__(self, cog: commands.Cog):

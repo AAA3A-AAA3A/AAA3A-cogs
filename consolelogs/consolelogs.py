@@ -13,6 +13,7 @@ try:
 except ModuleNotFoundError:  # Lemon's fork.
     INTRO = ""
 
+import asyncio
 import datetime
 import logging
 import re
@@ -127,7 +128,10 @@ class ConsoleLogs(DashboardIntegration, Cog):
 
     async def cog_load(self) -> None:
         await super().cog_load()
+        asyncio.create_task(self.load())
 
+    async def load(self) -> None:
+        await self.bot.wait_until_red_ready()
         self.RED_INTRO: str = INTRO
         guilds = len(self.bot.guilds)
         users = len(set(list(self.bot.get_all_members())))

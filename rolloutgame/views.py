@@ -26,7 +26,7 @@ class JoinGameView(discord.ui.View):
         self.join.label = _("Join Game")
         self.leave.label = _("Leave")
         self.view_players.label = _("View Players (1)")
-        self.start.label = _("Start Game!")
+        self.start_button.label = _("Start Game!")
 
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
@@ -120,7 +120,7 @@ class JoinGameView(discord.ui.View):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="Start Game!", style=discord.ButtonStyle.primary)
-    async def start(
+    async def start_button(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         if interaction.user != self.host:

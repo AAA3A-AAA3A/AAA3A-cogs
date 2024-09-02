@@ -2,7 +2,7 @@
     "author": ["AAA3A"],
     "name": "Ip",
     "install_msg": "This cog allows you to obtain the ip of the bot's host machine with the command `[p]ip`.",
-    "short": "A cog to get the ip adress of the bot's host machine!",
+    "short": "A cog to get the ip address of the bot's host machine!",
     "description": "A cog to get the ip address of the bot's host machine!",
     "tags": [
         "ip",

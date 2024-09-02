@@ -182,10 +182,12 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         else:
             voters_role = None
 
+        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+        start_month = datetime.datetime(utc_now.year, utc_now.month, 1, tzinfo=datetime.timezone.utc)
         member_data = await self.config.member(member).all()
         number_member_votes = len(member_data["votes"]) + 1
         number_member_monthly_votes = len(
-            [vote for vote in member_data["votes"] if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc) < datetime.timedelta(days=30)]
+            [vote for vote in member_data["votes"] if datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc) >= start_month]
         ) + 1
         s_1 = "" if number_member_votes == 1 else "s"
         s_2 = "" if number_member_monthly_votes == 1 else "s"
@@ -237,7 +239,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
 
         if payload["type"] == "vote":
             votes = await self.config.member(member).votes()
-            votes.append(int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp()))
+            votes.append(int(utc_now.timestamp()))
             await self.config.member(member).votes.set(votes)
         await self.config.member(member).last_reminder_sent.set(False)
 
@@ -359,17 +361,18 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         """Show the monthly leaderboard of voters."""
         if not await self.config.guild(ctx.guild).enabled():
             raise commands.UserFeedbackCheckFailure(_("DisurlVotesTracker is not enabled in this server."))
+        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+        start_month = datetime.datetime(utc_now.year, utc_now.month, 1, tzinfo=datetime.timezone.utc)
         members_data = await self.config.all_members(ctx.guild)
         counter = Counter({
             member: len(
                 [
                     vote
                     for vote in member_data["votes"]
-                    if datetime.datetime.now(tz=datetime.timezone.utc)
-                    - datetime.datetime.fromtimestamp(
+                    if datetime.datetime.fromtimestamp(
                         vote, tz=datetime.timezone.utc
                     )
-                    < datetime.timedelta(days=30)
+                    >= start_month
                 ]
             )
             for member_id, member_data in members_data.items()

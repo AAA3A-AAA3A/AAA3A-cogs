@@ -435,6 +435,7 @@ class SettingsView(discord.ui.View):
     async def get_embed(self) -> discord.Embed:
         base_roles_requirements = await self.cog.config.guild(self.ctx.guild).base_roles_requirements()
         custom_trigger_roles_requirements = await self.cog.config.guild(self.ctx.guild).custom_trigger_roles_requirements()
+        use_amounts_sum = await self.cog.config.guild(self.ctx.guild).use_amounts_sum()
         embed = discord.Embed(
             title=_("PersonalReact - Roles Requirements"),
             color=await self.ctx.embed_color(),
@@ -443,7 +444,7 @@ class SettingsView(discord.ui.View):
         embed.add_field(
             name=_("Base:"),
             value="\n".join(
-                f"**•** **+ {amount}** — {role.mention}"
+                f"**•** **{'+' if use_amounts_sum else '•'} {amount}** — {role.mention}"
                 for role_id, amount in base_roles_requirements.items()
                 if (role := self.ctx.guild.get_role(int(role_id)))
             )
@@ -452,7 +453,7 @@ class SettingsView(discord.ui.View):
         embed.add_field(
             name=_("Custom Trigger:"),
             value="\n".join(
-                f"**•** **+ {amount}** — {role.mention}"
+                f"**•** **{'+' if use_amounts_sum else '•'} {amount}** — {role.mention}"
                 for role_id, amount in custom_trigger_roles_requirements.items()
                 if (role := self.ctx.guild.get_role(int(role_id)))
             )

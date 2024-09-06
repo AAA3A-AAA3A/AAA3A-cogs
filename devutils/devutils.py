@@ -5,6 +5,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import random
 import asyncio
 import importlib
 import json
@@ -137,7 +138,7 @@ class DevUtils(Cog):
 
         `--sleep <int>` is an optional flag specifying how much time to wait between command invocations.
         """
-        if match := SLEEP_FLAG.search(command):  # too lazy to use argparse
+        if (match := SLEEP_FLAG.search(command)) is not None:
             sleep = int(match.group(1))
             command = command[: -len(match.group(0))]
         else:

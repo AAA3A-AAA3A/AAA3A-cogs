@@ -116,14 +116,14 @@ class JoinGameView(discord.ui.View):
         )
         embed.set_author(name=_("Hosted by {host.display_name}").format(host=self.host), icon_url=self.host.display_avatar)
         embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
-        embed.description = "\n".join(f"**•** **{player.display_name}** ({player.id})" for player in self.players)
+        embed.description = "\n".join(f"**•** {player.mention} ({player.id})" for player in self.players)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="Start Game!", style=discord.ButtonStyle.primary)
     async def start_button(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        if interaction.user != self.host:
+        if interaction.user != self.host and interaction.user.id not in self.cog.bot.owner_ids:
             await interaction.response.send_message(
                 _("Only the host can start the game!"), ephemeral=True
             )

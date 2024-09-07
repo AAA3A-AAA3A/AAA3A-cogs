@@ -5,6 +5,8 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
+
 from .views import RumbleNotifierView
 
 # Credits:
@@ -87,15 +89,6 @@ class RumbleNotifier(Cog):
         if not (
             message.author.bot
             and message.author.id == 693167035068317736
-            and message.embeds
-            and (
-                message.embeds[0].title is not None
-                and "Rumble Royale" in message.embeds[0].title
-            )
-            and (
-                message.embeds[0].description is not None
-                and "Click the emoji below to join" in message.embeds[0].description
-            )
         ):
             return
         config = await self.config.guild(message.guild).all()
@@ -108,6 +101,20 @@ class RumbleNotifier(Cog):
             or (message.channel.id not in channels_ids and message.channel.category_id not in channels_ids)
             or (role_id := config["role"]) is None
             or (role := message.guild.get_role(role_id)) is None
+        ):
+            return
+        await asyncio.sleep(2)
+        message = await message.channel.fetch_message(message.id)
+        if not (
+            message.embeds
+            and (
+                message.embeds[0].title is not None
+                and "Rumble Royale" in message.embeds[0].title
+            )
+            and (
+                message.embeds[0].description is not None
+                and "Click the emoji below to join" in message.embeds[0].description
+            )
         ):
             return
         suscribing = (

@@ -304,6 +304,36 @@ class Webhook(Cog):
         except discord.HTTPException as error:
             await self.webhook_error(ctx, "Webhook Sending Error", error)
 
+    @webhook.command(name="freverse")
+    async def webhook_freverse(
+        self,
+        ctx: commands.Context,
+        channel: typing.Optional[
+            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+        ],
+        member: discord.Member,
+        *,
+        content: commands.Range[str, 1, 2000] = None,
+    ) -> None:
+        channel = channel or ctx.channel
+        await self.check_channel(ctx, channel=channel)
+        files = await Tunnel.files_from_attatch(ctx.message)
+        if not content and not files:
+            raise commands.UserInputError()
+        try:
+            hook = await CogsUtils.get_hook(
+                bot=ctx.bot, channel=getattr(channel, "parent", channel)
+            )
+            await hook.send(
+                content=content[::-1],
+                files=files,
+                username=member.display_name[::-1],
+                avatar_url=member.display_avatar,
+                thread=channel if isinstance(channel, discord.Thread) else discord.utils.MISSING,
+            )
+        except discord.HTTPException as error:
+            await self.webhook_error(ctx, "Webhook Sending Error", error)
+
     @webhook.command(name="reversed")
     async def webhook_reversed(
         self,

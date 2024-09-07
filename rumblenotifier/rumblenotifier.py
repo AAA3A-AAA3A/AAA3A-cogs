@@ -88,8 +88,14 @@ class RumbleNotifier(Cog):
             message.author.bot
             and message.author.id == 693167035068317736
             and message.embeds
-            and message.embeds[0].title is not None
-            and "Rumble Royale hosted" in message.embeds[0].title
+            and (
+                message.embeds[0].title is not None
+                and "Rumble Royale" in message.embeds[0].title
+            )
+            and (
+                message.embeds[0].description is not None
+                and "Click the emoji below to join" in message.embeds[0].description
+            )
         ):
             return
         config = await self.config.guild(message.guild).all()

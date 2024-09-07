@@ -61,6 +61,7 @@ class RumbleNotifierView(discord.ui.View):
 
     @discord.ui.button(emoji="⚔️", label="Suscribe", style=discord.ButtonStyle.success, custom_id="RumbleNotifier_suscribe")
     async def suscribe(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        await interaction.response.defer(ephemeral=True, thinking=True)
         role_id = await self.cog.config.guild(interaction.guild).role()
         role = interaction.guild.get_role(role_id)
         if role in interaction.user.roles:

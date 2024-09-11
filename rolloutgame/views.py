@@ -134,9 +134,9 @@ class JoinGameView(discord.ui.View):
             )
             return
         self.cancelled: bool = False
-        await self.on_timeout()
-        await interaction.response.defer()
         self.stop()
+        await interaction.response.defer()
+        await self.on_timeout()
 
     @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger)
     async def cancel(

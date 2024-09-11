@@ -51,7 +51,7 @@ class BaseView(discord.ui.View):
     ) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.audit_logs: typing.List[discord.AuditLogEntry] = audit_logs
-        self.displayed_actions: typing.List[discord.AuditLogAction] = [action for action in displayed_actions if any(audit_log.action == action for audit_log in self.audit_logs)]
+        self.displayed_actions: typing.List[discord.AuditLogAction] = [action for action in displayed_actions or [] if any(audit_log.action == action for audit_log in self.audit_logs)]
         self.displayed_actions = self.displayed_actions or list(
             set(
                 [

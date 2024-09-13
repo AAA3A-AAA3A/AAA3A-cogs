@@ -289,13 +289,11 @@ class CtrlZ(Cog):
                 return element
             return repr(element)
         if audit_log.changes.before:
+            diff = json.dumps(display_diff(audit_log.changes.before), indent=4)
             embed.add_field(
                 name=_("Before:"),
                 value=box(
-                    json.dumps(
-                        display_diff(audit_log.changes.before),
-                        indent=4,
-                    ),
+                    diff if len(diff) <= 1024-10 else diff[:1024-10],
                     lang="py",
                 ),
                 # value="\n".join(
@@ -307,13 +305,11 @@ class CtrlZ(Cog):
                 inline=False,
             )
         if audit_log.changes.after:
+            diff = json.dumps(display_diff(audit_log.changes.after), indent=4)
             embed.add_field(
                 name=_("After:"),
                 value=box(
-                    json.dumps(
-                        display_diff(audit_log.changes.after),
-                        indent=4,
-                    ),
+                    diff if len(diff) <= 1024-10 else diff[:1024-10],
                     lang="py",
                 ),
             )

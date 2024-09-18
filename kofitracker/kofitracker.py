@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 
 _: Translator = Translator("KoFiTracker", __file__)
 
-HEADERS: typing.Dict[str, str] = {"User-Agent": "Mozilla/5.0"}
+HEADERS: typing.Dict[str, str] = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"}
 
 
 def cache_results(duration=60):
@@ -66,10 +66,8 @@ class KoFiTracker(Cog):
     @cache_results()
     async def get_kofi_page_details(self, kofi_page_url: str) -> typing.Dict[str, str]:
         kofi_page_url = kofi_page_url.removeprefix("https://ko-fi.com/").lower()
-        async with self._session.get(f"https://ko-fi.com/{kofi_page_url}", headers=HEADERS) as response:
-            if response.status != 200:
-                return {}
-            data = await response.text()
+        async with self._session.get(f"https://ko-fi.com/{kofi_page_url}", headers=HEADERS) as r:
+            data = await r.text()
         soup = BeautifulSoup(data, "lxml")
         data = {
             "url": f"https://ko-fi.com/{kofi_page_url}",
@@ -106,7 +104,7 @@ class KoFiTracker(Cog):
 
                 kofi_page_details = await self.get_kofi_page_details(kofi_page_url)
                 embed: discord.Embed = discord.Embed(
-                    title=_("New {type} on {display_name}'s KoFi").format(type=payload["type"], display_name=kofi_page_details['display_name']),
+                    title=_("New {type} on {display_name}'s KoFi").format(type=payload["type"], display_name=kofi_page_details["display_name"]),
                     url=payload["url"],
                     color=discord.Color.red(),
                     timestamp=discord.utils.parse_time(payload["timestamp"]),
@@ -280,12 +278,11 @@ class KoFiTracker(Cog):
             title=_("KoFiTracker Instructions"),
             color=await ctx.embed_color(),
             description=_(
-                # kofi
-                "1. Go to [KoFi](https://ko-fi.com) and log in.\n"
-                "2. Go to your page and click on the `Settings` button.\n"
-                "3. Go to the `Webhooks` section in `More`.\n"
-                "4. Set the webhook URL to {webhook_url} and click on `Update`.\n"
-                "5. Copy the `Verification Token` and use it with the command `{prefix}setkofitracker add <kofi_page_url> <verification_token>`."
+                "**1.** Go to [KoFi](https://ko-fi.com) and log in.\n"
+                "**2.** Go to your page and click on the `Settings` button.\n"
+                "**3.** Go to the `Webhooks` section in `More`.\n"
+                "**4.** Set the webhook URL to {webhook_url} and click on `Update`.\n"
+                "**5.** Copy the `Verification Token` and use it with the command `{prefix}setkofitracker add <kofi_page_url> <verification_token>`."
             ).format(webhook_url=f"{dashboard_url[0]}/api/webhook", prefix=ctx.prefix),
         )
         await ctx.send(embed=embed)

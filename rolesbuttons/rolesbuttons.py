@@ -364,14 +364,14 @@ class RolesButtons(Cog):
     ) -> None:
         """Choose a mode for the roles-buttons of a message.
 
-        Type `add_or_remove`:
+        Mode `add_or_remove`:
         - Users get the role if they do not already have it, or lose it.
-        Type `add_only`:
+        Mode `add_only`:
         - Users can only get the role, but only manual action will remove it.
-        Type `remove_only`:
+        Mode `remove_only`:
         - Users can only lose a role, and will not be able to get it again without a manual action.
-        Type `replace`:
-        - Same as add_or_remove, but the roles from this message will be mutually exclusive, and getting one will remove the previous.
+        Mode `replace`:
+        - Same as `add_or_remove`, but the roles from this message will be mutually exclusive, and getting one will remove the previous.
         """
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:

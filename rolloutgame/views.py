@@ -123,9 +123,14 @@ class JoinGameView(discord.ui.View):
     async def start_button(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        if interaction.user != self.host and interaction.user.id not in self.cog.bot.owner_ids:
+        if not (
+            interaction.user == self.host
+            or await self.ctx.bot.is_admin(interaction.user)
+            or interaction.user.guild_permissions.manage_guild
+            or interaction.user.id in interaction.client.owner_ids
+        ):
             await interaction.response.send_message(
-                _("Only the host can start the game!"), ephemeral=True
+                _("You can't start the game!"), ephemeral=True
             )
             return
         if len(self.players) < 2:

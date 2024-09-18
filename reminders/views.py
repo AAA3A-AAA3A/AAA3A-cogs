@@ -205,7 +205,7 @@ class ReminderView(discord.ui.View):
         self._ready.set()
 
     @discord.ui.button(
-        label="Edit Reminder",
+        label="Edit",
         emoji="🛠️",
         style=discord.ButtonStyle.secondary,
         custom_id="edit_reminder",
@@ -219,7 +219,7 @@ class ReminderView(discord.ui.View):
         await interaction.response.send_modal(EditReminderModal(self, timezone=timezone))
 
     @discord.ui.button(
-        label="Add/Edit Repeat Rule(s)",
+        label="Repeat Rules",
         emoji="🛠️",
         style=discord.ButtonStyle.secondary,
         custom_id="add_edit_repeat_rules",
@@ -285,7 +285,7 @@ class ReminderView(discord.ui.View):
         )
 
     @discord.ui.button(
-        label="Delete Reminder",
+        label="Delete",
         emoji="🗑️",
         style=discord.ButtonStyle.danger,
         custom_id="delete_reminder",

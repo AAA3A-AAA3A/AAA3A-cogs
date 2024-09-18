@@ -346,7 +346,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             author_index = list(k for k, __ in counter.most_common()).index(ctx.author) + 1
             embed.set_footer(text=_("You are at position {author_index} with {number_member_lifetime_votes} vote{s}.").format(author_index=author_index, s="" if counter[ctx.author] == 1 else "s", number_member_lifetime_votes=counter[ctx.author]))
         description = [
-            f"{i}. **{member.display_name}**: {number_member_lifetime_votes} vote{'' if number_member_lifetime_votes == 1 else 's'}"
+            f"**{i}.** **{member.display_name}**: {number_member_lifetime_votes} vote{'' if number_member_lifetime_votes == 1 else 's'}"
             for i, (member, number_member_lifetime_votes) in enumerate(counter.most_common(), start=1)
         ]
         embeds = []
@@ -389,7 +389,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             author_index = list(k for k, __ in counter.most_common()).index(ctx.author) + 1
             embed.set_footer(text=_("You are at position {author_index} with {number_member_monthly_votes} vote{s}.").format(author_index=author_index, s="" if counter[ctx.author] == 1 else "s", number_member_monthly_votes=counter[ctx.author]))
         description = [
-            f"{i}. **{member.display_name}**: {number_member_monthly_votes} vote{'' if number_member_monthly_votes == 1 else 's'}"
+            f"**{i}.** **{member.display_name}**: {number_member_monthly_votes} vote{'' if number_member_monthly_votes == 1 else 's'}"
             for i, (member, number_member_monthly_votes) in enumerate(counter.most_common(), start=1)
         ]
         embeds = []
@@ -422,13 +422,13 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             title=_("DisurlVotesTracker Instructions"),
             color=await ctx.embed_color(),
             description=_(
-                "1. Go to [Disurl Dashboard](https://disurl.me/dashboard/server/{guild_id}/webhooks) and set the webhook URL to `{webhook_url}`.\n"
-                "2. Set the Disurl API authorization key with the key which you provided on Disurl.\n"
-                "3. Set the votes channel where vote notifications will be sent.\n"
-                "4. Set the optional the voters role that will be assigned to voters.\n"
-                "5. Optionally, toggle the vote reminder.\n"
-                "6. Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`."
-                "7. Enable the cog."
+                "**1.** Go to [Disurl Dashboard](https://disurl.me/dashboard/server/{guild_id}/webhooks) and set the webhook URL to `{webhook_url}`.\n"
+                "**2.** Set the Disurl API authorization key with the key which you provided on Disurl.\n"
+                "**3.** Set the votes channel where vote notifications will be sent.\n"
+                "**4.** Set the optional the voters role that will be assigned to voters.\n"
+                "**5.** Optionally, toggle the vote reminder.\n"
+                "**6.** Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`."
+                "**7.** Enable the cog."
             ).format(guild_id=ctx.guild.id, webhook_url=f"{dashboard_url[0]}/api/webhook"),
         )
         await ctx.send(embed=embed)

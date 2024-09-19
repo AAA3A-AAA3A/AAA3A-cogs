@@ -309,6 +309,11 @@ class Calculator(Cog):
         if not auto_calculations and not react_calculations:
             return
 
+        # Add this check
+        calculate_reaction_enabled = await self.config.guild(message.guild).calculate_reaction_enabled() if message.guild is not None else True
+        if not calculate_reaction_enabled:
+            return
+
         content_to_check = message.content.split("#")[0].replace(" ", "").lstrip("+-").strip().removesuffix(".")
         if (
             not content_to_check
@@ -377,6 +382,7 @@ class Calculator(Cog):
             react_calculations
             and message.channel.id not in react_calculations_ignored_channels
             and message.channel.category_id not in react_calculations_ignored_channels
+            and calculate_reaction_enabled  # Add this condition
         ):
             if message.guild is not None:
                 channel_permissions = message.channel.permissions_for(message.guild.me)

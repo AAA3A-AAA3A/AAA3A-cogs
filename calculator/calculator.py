@@ -66,6 +66,7 @@ class Calculator(Cog):
             react_calculations_ignored_channels=[],
             simple_embed=None,
             result_codeblock=None,
+            calculate_reaction_enabled=True,  # calculate reaction default state
         )
         self.config.register_global(
             default_react_calculations=True,
@@ -98,6 +99,10 @@ class Calculator(Cog):
             "result_codeblock": {
                 "converter": bool,
                 "description": "Toggle the codeblock mode.",
+            },
+            "calculate_reaction_enabled": {
+                "converter": bool,
+                "description": "Toggle the calculate reaction feature.",
             },
         }
         self.settings: Settings = Settings(
@@ -388,6 +393,11 @@ class Calculator(Cog):
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         if str(payload.emoji).strip("\N{VARIATION SELECTOR-16}") != "🔢":
             return
+        guild = self.bot.get_guild(payload.guild_id)
+        if guild:
+            calculate_reaction_enabled = await self.config.guild(guild).calculate_reaction_enabled()
+            if not calculate_reaction_enabled:
+                return
         if (
             message := discord.utils.get(
                 self.cache, channel__id=payload.channel_id, id=payload.message_id
@@ -448,3 +458,13 @@ class Calculator(Cog):
     async def defaultresultcodeblock(self, ctx: commands.Context, default_result_codeblock: bool) -> None:
         """Set the default state of the result codeblock mode."""
         await self.config.default_result_codeblock.set(default_result_codeblock)
+
+    @commands.admin_or_permissions(manage_guild=True)
+    @setcalculator.command()
+    async def togglecalculatereaction(self, ctx: commands.Context):
+        """Toggle the calculate reaction feature on or off."""
+        current_state = await self.config.guild(ctx.guild).calculate_reaction_enabled()
+        new_state = not current_state
+        await self.config.guild(ctx.guild).calculate_reaction_enabled.set(new_state)
+        state_str = "enabled" if new_state else "disabled"
+        await ctx.send(f"The calculate reaction feature has been {state_str}.")

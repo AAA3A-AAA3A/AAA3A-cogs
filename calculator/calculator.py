@@ -66,7 +66,7 @@ class Calculator(Cog):
             react_calculations_ignored_channels=[],
             simple_embed=None,
             result_codeblock=None,
-            calculate_reaction_enabled=False,  
+            calculate_reaction_enabled=True,  
         )
         self.config.register_global(
             default_react_calculations=True,

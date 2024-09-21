@@ -5,8 +5,10 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import aiohttp
+# import aiohttp
+import asyncio
 import functools
+import requests
 import time
 
 from bs4 import BeautifulSoup
@@ -16,7 +18,7 @@ from bs4 import BeautifulSoup
 
 _: Translator = Translator("KoFiTracker", __file__)
 
-HEADERS: typing.Dict[str, str] = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"}
+HEADERS: typing.Dict[str, str] = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36"}
 
 
 def cache_results(duration=60):
@@ -52,11 +54,11 @@ class KoFiTracker(Cog):
             kofi_pages={},
         )
 
-        self._session: aiohttp.ClientSession = None
+        # self._session: aiohttp.ClientSession = None
 
     async def cog_load(self) -> None:
         await super().cog_load()
-        self._session: aiohttp.ClientSession = aiohttp.ClientSession(raise_for_status=True)
+        # self._session: aiohttp.ClientSession = aiohttp.ClientSession(headers=HEADERS, raise_for_status=True)
 
     async def cog_unload(self) -> None:
         if self._session is not None:
@@ -66,8 +68,10 @@ class KoFiTracker(Cog):
     @cache_results()
     async def get_kofi_page_details(self, kofi_page_url: str) -> typing.Dict[str, str]:
         kofi_page_url = kofi_page_url.removeprefix("https://ko-fi.com/").lower()
-        async with self._session.get(f"https://ko-fi.com/{kofi_page_url}", headers=HEADERS) as r:
-            data = await r.text()
+        # async with self._session.get(f"https://ko-fi.com/{kofi_page_url}") as r:
+        #     data = await r.text()
+        r = await asyncio.to_thread(requests.get, url=f"https://ko-fi.com/{kofi_page_url}", headers=HEADERS)
+        data = r.text
         soup = BeautifulSoup(data, "lxml")
         data = {
             "url": f"https://ko-fi.com/{kofi_page_url}",

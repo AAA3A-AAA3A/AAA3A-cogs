@@ -671,13 +671,19 @@ class Reminder:
             )
         if self.destination is None:
             destination: discord.abc.Messageable = await user.create_dm()
-        elif (destination := self.cog.bot.get_channel(self.destination)) is None:
-            if not testing:
-                await self.delete()
-            raise RuntimeError(
-                f"Destination {self.destination} not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
-            )
         else:
+            try:
+                destination = await self.cog.bot.fetch_channel(self.destination)
+            except (discord.NotFound, discord.Forbidden):
+                if not testing:
+                    await self.delete()
+                raise RuntimeError(
+                    f"Destination {self.destination} not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
+                )
+            except discord.HTTPException:
+                raise RuntimeError(
+                    f"An error occurred while fetching the destination channel for the reminder {self.user_id}#{self.id}@{self.content['type']}."
+                )
             if destination.guild is not None and destination.guild.get_member(user.id) is None:
                 raise RuntimeError(
                     f"Member {self.user_id} not found in the guild {destination.guild.id} for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."

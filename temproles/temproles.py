@@ -420,25 +420,30 @@ class TempRoles(Cog):
         role: typing.Optional[discord.Role] = None,
     ) -> None:
         """List active Temp Roles on this server, for optional specified member and/or role."""
+        embed: discord.Embed = discord.Embed(
+            title=_("Temp Roles"),
+            color=await ctx.embed_color(),
+        )
+        embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
         if member is not None and role is not None:
             if str(role.id) in await self.config.member(member).temp_roles():
                 description = _("This member has this Temp Role.")
             else:
                 description = _("This member hasn't this Temp Role.")
         elif member is not None:
+            embed.set_author(name=f"{member.display_name} ({member.id})", icon_url=member.display_avatar)
             if not (temp_roles := await self.config.member(member).temp_roles()):
                 description = _("This member hasn't any Temp Roles.")
             else:
-                description = _("This member has these Temp Roles: {temp_roles}.").format(
-                    temp_roles=humanize_list(
-                        [
-                            f"{temp_role.mention} ({temp_role_id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)"
-                            for temp_role_id, end_time in temp_roles.items()
-                            if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None
-                        ]
-                    )
+                description = "\n".join(
+                    [
+                        f"**•** {temp_role.mention} ({temp_role_id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)"
+                        for temp_role_id, end_time in temp_roles.items()
+                        if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None
+                    ]
                 )
         elif role is not None:
+            embed.set_author(text=f"{role.name} ({role.id})", icon_url=role.icon)
             members_data = await self.config.all_members(guild=ctx.guild)
             temp_roles_members = {}
             for member_id, data in members_data.items():
@@ -450,13 +455,11 @@ class TempRoles(Cog):
             if not temp_roles_members:
                 description = _("No members have this Temp Role.")
             else:
-                description = _("These members have this Temp Role: {temp_roles_members}.").format(
-                    temp_roles_members=humanize_list(
-                        [
-                            f"{member.mention} ({member.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)"
-                            for member, end_time in temp_roles_members.items()
-                        ]
-                    )
+                description = "\n".join(
+                    [
+                        f"**•** {member.mention} ({member.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)"
+                        for member, end_time in temp_roles_members.items()
+                    ]
                 )
         else:
             description = []
@@ -470,7 +473,7 @@ class TempRoles(Cog):
                     if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None
                 }:
                     description.append(
-                        f"• {member.mention} ({member.id}): {humanize_list([f'{temp_role.mention} ({temp_role.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)' for temp_role, end_time in member_temp_roles.items()])}."
+                        f"**•** {member.mention} ({member.id}): {humanize_list([f'{temp_role.mention} ({temp_role.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)' for temp_role, end_time in member_temp_roles.items()])}."
                     )
             if description:
                 description = "\n".join(description)
@@ -479,12 +482,16 @@ class TempRoles(Cog):
         embeds = []
         pages = list(pagify(description, page_length=3000))
         for page in pages:
-            embed: discord.Embed = discord.Embed(
-                title=_("Temp Roles"), color=await ctx.embed_color()
-            )
-            embed.description = page
-            embeds.append(embed)
+            e = embed.copy()
+            e.description = page
+            embeds.append(e)
         await Menu(pages=embeds).start(ctx)
+
+    @commands.bot_has_permissions(embed_links=True)
+    @temproles.command()
+    async def mylist(self, ctx: commands.Context) -> None:
+        """List active Temp Roles for yourself."""
+        await self.list.callback(self, ctx, member=ctx.author)
 
     @commands.admin_or_permissions(administrator=True)
     @temproles.command()

@@ -1,5 +1,5 @@
 {
-    "author": ["Obi-Wan3", "AAA3A"],
+    "author": ["AAA3A", "Obi-Wan3"],
     "name": "TempRoles",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!",
     "short": "A cog to assign temporary roles to users, expiring after a set time!",

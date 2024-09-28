@@ -38,7 +38,7 @@ class OptionalTimeConverter(commands.Converter):
 class TempRoles(Cog):
     """A cog to assign temporary roles to users, expiring after a set time!"""
 
-    __authors__: typing.List[str] = ["Obi-Wan3", "AAA3A"]
+    __authors__: typing.List[str] = ["AAA3A", "Obi-Wan3"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -52,6 +52,7 @@ class TempRoles(Cog):
         self.config.register_guild(
             logs_channel=None,
             allowed_self_temp_roles={},
+            joining_temp_roles={},
         )
 
     async def cog_load(self) -> None:
@@ -168,6 +169,57 @@ class TempRoles(Cog):
                 if not members_data[guild_id]:
                     del members_data[guild_id]
         return executed
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member: discord.Member) -> None:
+        if member.bot:
+            return
+        joining_temp_roles = {
+            role: duration
+            for role_id, duration in (await self.config.guild(member.guild).joining_temp_roles()).items()
+            if (role := member.guild.get_role(int(role_id))) is not None
+        }
+        for role, duration in joining_temp_roles.items():
+            try:
+                end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(
+                    seconds=duration
+                )
+            except OverflowError:
+                continue
+            end_time = end_time.replace(second=0 if end_time.second < 30 else 30)
+            time_string = CogsUtils.get_interval_string(duration)
+            try:
+                await member.add_roles(
+                    role, reason=f"Joining Temp Role assigned to new member, expires in {time_string}."
+                )
+            except discord.HTTPException as e:
+                self.logger.error(
+                    f"Error when assigning the Joining Temp Role {role.name} ({role.id}) to {member} ({member.id}) in {member.guild.name} ({member.guild.id}).",
+                    exc_info=e,
+                )
+            else:
+                member_temp_roles = await self.config.member(member).temp_roles()
+                end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(
+                    seconds=duration
+                )
+                member_temp_roles[str(role.id)] = int(end_time.replace(microsecond=0).timestamp())
+                await self.config.member(member).temp_roles.set(member_temp_roles)
+                if (
+                    (logs_channel_id := await self.config.guild(member.guild).logs_channel())
+                    is not None
+                    and (logs_channel := member.guild.get_channel(logs_channel_id))
+                    is not None
+                    and logs_channel.permissions_for(member.guild.me).embed_links
+                ):
+                    await logs_channel.send(
+                        embed=discord.Embed(
+                            title=_("Joining Temp Roles"),
+                            description=_(
+                                "Joining Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires in {time_string}."
+                            ).format(role=role, member=member, time_string=time_string),
+                            color=await self.bot.get_embed_color(logs_channel),
+                        )
+                    )
 
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
@@ -551,7 +603,7 @@ class TempRoles(Cog):
             ).items()
             if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None
         }:
-            description += f"**Your current Temp Roles:**\n{BREAK_LINE.join([f'• {temp_role.mention} ({temp_role.id}) - Expires <t:{int(end_time)}:R>.' for temp_role, end_time in member_temp_roles.items()])}\n\n"
+            description += f"**Your current Temp Roles:**\n{BREAK_LINE.join([f'**•** {temp_role.mention} ({temp_role.id}) - Expires <t:{int(end_time)}:R>.' for temp_role, end_time in member_temp_roles.items()])}\n\n"
         if allowed_self_temp_roles := {
             role: (data["min_time"], data["max_time"])
             for role_id, data in (
@@ -559,12 +611,77 @@ class TempRoles(Cog):
             ).items()
             if (role := ctx.guild.get_role(int(role_id))) is not None
         }:
-            description += f"**Allowed self Temp Roles on this server:**\n{BREAK_LINE.join([f'• {role.mention} ({role.id}) - Min time `{CogsUtils.get_interval_string(min_time) if min_time is not None else None}`. - Max time `{CogsUtils.get_interval_string(max_time) if max_time is not None else None}`.' for role, (min_time, max_time) in allowed_self_temp_roles.items()])}"
+            description += f"**Allowed self Temp Roles on this server:**\n{BREAK_LINE.join([f'**•** {role.mention} ({role.id}) - Min time `{CogsUtils.get_interval_string(min_time) if min_time is not None else None}`. - Max time `{CogsUtils.get_interval_string(max_time) if max_time is not None else None}`.' for role, (min_time, max_time) in allowed_self_temp_roles.items()])}"
         embeds = []
         pages = list(pagify(description, page_length=3000))
         for page in pages:
             embed: discord.Embed = discord.Embed(
                 title=_("Self Temp Roles"), color=await ctx.embed_color()
+            )
+            embed.description = page
+            embeds.append(embed)
+        await Menu(pages=embeds).start(ctx)
+
+    @commands.admin_or_permissions(manage_roles=True)
+    @temproles.command()
+    async def addjoiningtemprole(
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+        duration: TimeConverter,
+    ) -> None:
+        """Add a joining Temp Role.
+
+        **Parameters:**
+        - `role`: The role to assign to new members.
+        - `duration`: The duration of the role.
+        """
+        if role >= ctx.guild.me.top_role or (
+            role >= ctx.author.top_role and ctx.author != ctx.guild.owner
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy."
+                ).format(role=role)
+            )
+        joining_temp_roles = await self.config.guild(ctx.guild).joining_temp_roles()
+        if str(role.id) in joining_temp_roles:
+            raise commands.UserFeedbackCheckFailure(_("This role is already a joining Temp Role."))
+        joining_temp_roles[str(role.id)] = int(duration.total_seconds())
+        await self.config.guild(ctx.guild).joining_temp_roles.set(joining_temp_roles)
+        await ctx.send(_("Joining Temp Role added."))
+
+    @commands.admin_or_permissions(manage_roles=True)
+    @temproles.command()
+    async def removejoiningtemprole(self, ctx: commands.Context, role: discord.Role) -> None:
+        """Remove a joining Temp Role."""
+        joining_temp_roles = await self.config.guild(ctx.guild).joining_temp_roles()
+        if str(role.id) not in joining_temp_roles:
+            raise commands.UserFeedbackCheckFailure(_("This role isn't a joining Temp Role."))
+        del joining_temp_roles[str(role.id)]
+        await self.config.guild(ctx.guild).joining_temp_roles.set(joining_temp_roles)
+        await ctx.send(_("Joining Temp Role removed."))
+
+    @commands.admin_or_permissions(manage_roles=True)
+    @temproles.command()
+    async def joiningtemproles(self, ctx: commands.Context) -> None:
+        """List the joining Temp Roles."""
+        joining_temp_roles = await self.config.guild(ctx.guild).joining_temp_roles()
+        if not joining_temp_roles:
+            await ctx.send(_("No joining Temp Roles."))
+            return
+        description = "\n".join(
+            [
+                f"**•** {role.mention} ({role.id}) - {CogsUtils.get_interval_string(duration)}."
+                for role_id, duration in joining_temp_roles.items()
+                if (role := ctx.guild.get_role(int(role_id))) is not None
+            ]
+        )
+        embeds = []
+        pages = list(pagify(description, page_length=3000))
+        for page in pages:
+            embed: discord.Embed = discord.Embed(
+                title=_("Joining Temp Roles"), color=await ctx.embed_color()
             )
             embed.description = page
             embeds.append(embed)

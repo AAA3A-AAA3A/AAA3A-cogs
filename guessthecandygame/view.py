@@ -32,7 +32,7 @@ class GuessTheCandyGameView(discord.ui.View):
         self.candies = random.sample(list(self.cog.candies.keys()), k=self.difficulty)
         self.candy = random.choice(self.candies)
         embed: discord.Embed = discord.Embed(
-            title=_("Guess The Candy"),
+            title=_("🎃 Guess The Candy 🎃"),
             description=_("Recognise the correct candy as fast as you can, from the displayed shadow!"),
             color=await self.ctx.embed_color(),
         )
@@ -81,7 +81,7 @@ class GuessTheCandyGameView(discord.ui.View):
             self.is_ended = True
             await self.on_timeout()
             embed: discord.Embed = discord.Embed(
-                title=_("Guess The Candy"),
+                title=_("🎃 Guess The Candy 🎃"),
                 description=_("**Congratulations!** You guessed the correct candy in {time} seconds!").format(
                     time=(datetime.datetime.now(tz=datetime.timezone.utc) - self.start_time).total_seconds()
                 ),

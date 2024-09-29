@@ -28,7 +28,8 @@ class SplitOrStealGameView(discord.ui.View):
     async def start(self, ctx: commands.Context) -> None:
         self.ctx: commands.Context = ctx
         embed: discord.Embed = discord.Embed(
-            title="Split Or Steal Game", color=await self.ctx.embed_color()
+            title=_("Split Or Steal Game"),
+            color=await self.ctx.embed_color(),
         )
         embed.description = _(
             "Join the game by clicking on the button below. 2 players will be selected randomly."

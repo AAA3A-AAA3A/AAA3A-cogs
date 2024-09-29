@@ -161,6 +161,12 @@ class GuildStats(Cog):
             )
         )
 
+    async def cog_unload(self) -> None:
+        self.font_to_remove_unprintable_characters.close()
+        for icon in self.icons.values():
+            icon.close()
+        await super().cog_unload()
+
     @commands.Cog.listener(name="on_guild_join")
     async def load_data(self, guild: typing.Optional[discord.Guild] = None) -> None:
         if guild is not None:
@@ -4853,7 +4859,7 @@ class GuildStats(Cog):
                     draw.rounded_rectangle((30, 204, 955, 996), radius=15, fill=(47, 49, 54))
                     align_text_center(
                         (50, 214, 50, 284),
-                        text=_("Tope")
+                        text=_("Top")
                         + f"{_('Messages') if _type[1] == 'messages' else _('Voice')} {_('Members') if _type[2] == 'members' else _('Channels')}",
                         fill=(255, 255, 255),
                         font=self.bold_font[40],
@@ -5865,8 +5871,6 @@ class GuildStats(Cog):
                     "This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
                 ).format(prefix=ctx.prefix)
             )
-        # embed: discord.Embed = discord.Embed()
-        # embed.set_image(url="attachment://image.png")
         await GuildStatsView(
             cog=self,
             _object=_object,

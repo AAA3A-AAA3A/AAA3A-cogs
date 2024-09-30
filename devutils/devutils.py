@@ -198,7 +198,7 @@ class DevUtils(Cog):
                     )
         else:
             todo = []
-            for command in commands:
+            for command in commands_list:
                 new_ctx = await CogsUtils.invoke_command(
                     bot=ctx.bot,
                     author=ctx.author,

@@ -61,8 +61,8 @@ class KoFiTracker(Cog):
         # self._session: aiohttp.ClientSession = aiohttp.ClientSession(headers=HEADERS, raise_for_status=True)
 
     async def cog_unload(self) -> None:
-        if self._session is not None:
-            await self._session.close()
+        # if self._session is not None:
+        #     await self._session.close()
         await super().cog_unload()
 
     @cache_results()

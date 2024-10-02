@@ -49,7 +49,7 @@ class GuessTheCandyGameView(discord.ui.View):
         self._message: discord.Message = await self.ctx.send(
             embed=embed,
             view=self,
-            file=self.cog.shadows[self.candy],
+            file=discord.File(self.cog.shadows[self.candy], filename="shadow.png"),
         )
         self.cog.views[self._message] = self
         self.start_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -91,6 +91,6 @@ class GuessTheCandyGameView(discord.ui.View):
             await self._message.reply(
                 content=interaction.user.mention,
                 embed=embed,
-                file=self.cog.candies[self.candy],
+                file=discord.File(self.cog.candies[self.candy], filename="candy.png"),
             )
         

@@ -34,20 +34,13 @@ class GuessTheCandyGame(Cog):
             for f in (cog_path / "candies").iterdir() if f.is_file() and f.suffix == ".png"
         }
         self.candies = {
-            name: discord.File(cog_path / "candies" / file_name, filename="candy.png")
+            name: cog_path / "candies" / file_name
             for name, file_name in candies_names.items()
         }
         self.shadows = {
-            name: discord.File(cog_path / "shadows" / file_name, filename="shadow.png")
+            name: cog_path / "shadows" / file_name
             for name, file_name in candies_names.items()
         }
-
-    async def cog_unload(self) -> None:
-        await super().cog_unload()
-        for file in self.candies.values():
-            file.fp.close()
-        for file in self.shadows.values():
-            file.fp.close()
 
     @property
     def games(self) -> typing.Dict[discord.Message, GuessTheCandyGameView]:

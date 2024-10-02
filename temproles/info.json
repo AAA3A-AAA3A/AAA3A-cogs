@@ -2,12 +2,13 @@
     "author": ["AAA3A", "Obi-Wan3"],
     "name": "TempRoles",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!",
-    "short": "A cog to assign temporary roles to users, expiring after a set time!",
-    "description": "A cog to assign temporary roles to users, expiring after a set time!",
+    "short": "A cog to assign temporary roles to users, expiring after a set duration!",
+    "description": "A cog to assign temporary roles to users, expiring after a set duration!",
     "tags": [
         "roles",
         "temporary",
-        "expires"
+        "expires",
+        "duration"
     ],
     "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git"],
     "min_bot_version": "3.5.0",

@@ -257,11 +257,9 @@ class TempRoles(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("This member already has {role.mention} ({role.id}).").format(role=role)
             )
-        if role >= ctx.guild.me.top_role or (
-            role >= ctx.author.top_role and ctx.author != ctx.guild.owner
-        ):
+        if not role.is_assignable():
             raise commands.UserFeedbackCheckFailure(
-                _("This role cannot be assigned due to the Discord role hierarchy.")
+                _("This role can't be assigned.")
             )
         if (
             ctx.command.name != "selfassign"

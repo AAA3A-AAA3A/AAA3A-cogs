@@ -34,7 +34,7 @@ class JoinGameView(discord.ui.View):
         self.players.append(ctx.author)
         embed: discord.Embed = discord.Embed(
             title=_("Rollout Game"),
-            description=_("Click the button below to join the party! Please note that the maximum amount of players is 25."),
+            description=_("Click the button below to join the party! Please note that the maximum amount of players is 50."),
             color=await self.ctx.embed_color(),
             timestamp=ctx.message.created_at,
         )
@@ -73,7 +73,7 @@ class JoinGameView(discord.ui.View):
                 _("You have already joined the game!"), ephemeral=True
             )
             return
-        if len(self.players) >= 25:
+        if len(self.players) >= 50:
             await interaction.response.send_message(
                 _("The game is full, you can't join!"), ephemeral=True
             )

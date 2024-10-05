@@ -2884,8 +2884,12 @@ class GuildStats(Cog):
             _type = None
         img: Image.Image = Image.new("RGBA", size, (0, 0, 0, 0))
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
+        draw.rounded_rectangle(
+            (0, 0, img.width, img.height),
+            radius=50,
+            fill=(32, 34, 37),
+        )
         align_text_center = functools.partial(self.align_text_center, draw)
-        draw.rounded_rectangle((0, 0, img.width, img.height), radius=50, fill=(32, 34, 37))
 
         # Member/Channel name & Member avatar.
         if isinstance(_object, discord.Member):

@@ -111,7 +111,7 @@ class JoinGameView(discord.ui.View):
             await interaction.response.send_message(_("No one has joined the game yet!"), ephemeral=True)
             return
         embed = discord.Embed(
-            title=_("Mafia Game - Players"),
+            title=_("Rollout Game — Players"),
             color=await self.ctx.embed_color(),
         )
         embed.set_author(name=_("Hosted by {host.display_name}").format(host=self.host), icon_url=self.host.display_avatar)
@@ -184,7 +184,7 @@ class RolloutGameView(discord.ui.View):
         self.round: int = round
         self.disabled_numbers: typing.List[int] = disabled_numbers
         embed: discord.Embed = discord.Embed(
-            title=_("Rollout Game - Round {round}").format(round=round),
+            title=_("Rollout Game — Round {round}").format(round=round),
             description=_(
                 "Select a number between 1 and 25. Choose is limited to 30 seconds."
             ),
@@ -268,7 +268,7 @@ class RolloutGameView(discord.ui.View):
             pass
 
         embed: discord.Embed = discord.Embed(
-            title=_("Round {round} - Results").format(round=self.round),
+            title=_("Round {round} — Results").format(round=self.round),
             color=await self.ctx.embed_color(),
             timestamp=self.ctx.message.created_at,
         )

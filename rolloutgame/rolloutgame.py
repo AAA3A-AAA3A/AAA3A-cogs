@@ -131,6 +131,8 @@ class RolloutGame(Cog):
                 color=await ctx.embed_color(),
                 timestamp=ctx.message.created_at,
             )
+            embed.set_thumbnail(url=winner.display_avatar)
+            embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
             await ctx.send(content=winner.mention, embed=embed)
         else:
             embed = discord.Embed(

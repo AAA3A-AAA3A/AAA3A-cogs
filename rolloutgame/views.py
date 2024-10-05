@@ -293,7 +293,7 @@ class RolloutGameView(discord.ui.View):
                     reference=self._message.to_reference(fail_if_not_exists=False),
                 )
                 raise TimeoutError()
-            embed.description = _("The bot has rolled the number {number}! However, since all remaining  players have been eliminated, the round will be restarted.").format(number=number)
+            embed.description = _("The bot has rolled the number {number}! However, since all remaining players have been eliminated, the round will be restarted.").format(number=number)
             await self.ctx.send(
                 embed=embed,
                 reference=self._message.to_reference(fail_if_not_exists=False),
@@ -305,7 +305,11 @@ class RolloutGameView(discord.ui.View):
         if not eleminated_players:
             embed.description += _("\n\n**No one has been eliminated this round.**")
         else:
-            embed.description += _("\n\n**{number} players have been eliminated this round:**").format(number=len(eleminated_players))
+            embed.description += (
+                _("\n\n**{number} players have been eliminated this round:**").format(number=len(eleminated_players))
+                if len(eleminated_players) > 1
+                else _("\n\n**1 player has been eliminated this round:**")
+            )
             for eleminated in eleminated_players_wrong_number:
                 embed.description += _(
                     _("\n**•** **{eleminated.display_name}** - Selected the number {number}.").format(eleminated=eleminated, number=number)

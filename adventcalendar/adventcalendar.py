@@ -39,7 +39,7 @@ class AdventCalendar(Cog):
             enabled=False,
             whitelist_roles=[],
             blacklist_roles=[],
-            rewards={str(day) if day is not None else None: [] for day in list(range(1, 25)) + [None]},
+            rewards={str(day) if day is not None else "null": [] for day in list(range(1, 25)) + [None]},
             custom_rewards_logs_channel=None,
             custom_rewards_ping_role=None,
             priority_multiplier_roles=[],
@@ -270,7 +270,7 @@ class AdventCalendar(Cog):
         )
 
     async def get_reward(self, member: discord.Member, day: typing.Optional[int]) -> typing.Tuple[typing.Optional[typing.Dict[str, typing.Union[str, int]]], typing.Optional[typing.Dict[typing.Literal["embed", "file"], typing.Union[discord.Embed, discord.File]]]]:
-        day_rewards = await self.config.guild(member.guild).rewards.get_raw(str(day) if day is not None else None)
+        day_rewards = await self.config.guild(member.guild).rewards.get_raw(str(day) if day is not None else "null")
         if not day_rewards:
             return None, None
         reward = random.sample(

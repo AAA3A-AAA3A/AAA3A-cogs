@@ -64,7 +64,7 @@ class SetRewardsView(discord.ui.View):
             color=await self.ctx.embed_color(),
         )
         embed.set_thumbnail(url="attachment://christmas_tree.png")
-        day_rewards = await self.cog.config.guild(self.ctx.guild).rewards.get_raw(self.current_day)
+        day_rewards = await self.cog.config.guild(self.ctx.guild).rewards.get_raw(str(self.current_day) if self.current_day is not None else None)
         for reward in sorted(day_rewards, key=lambda r: (r["priority"], ("role", "temp_role", "bank_credits", "levelup_xp", "custom", "message", None).index(r["type"]))):
             if reward["type"] == "role":
                 role = self.ctx.guild.get_role(reward["role_id"])
@@ -197,7 +197,7 @@ class SetRewardsView(discord.ui.View):
             (custom_rewards_logs_channel_id := await self.cog.config.guild(self.ctx.guild).custom_rewards_logs_channel()) is None
             or self.ctx.guild.get_channel(custom_rewards_logs_channel_id) is None
         )
-        day_rewards = await self.cog.config.guild(self.ctx.guild).rewards.get_raw(self.current_day)
+        day_rewards = await self.cog.config.guild(self.ctx.guild).rewards.get_raw(str(self.current_day) if self.current_day is not None else None)
         if len(day_rewards) >= 5:
             for button in [self.role, self.temp_role, self.bank_credits, self.levelup_xp, self.custom_reward, self.message, self.nothing]:
                 button.disabled = True
@@ -311,7 +311,7 @@ class SetRewardsView(discord.ui.View):
             ephemeral=True, timeout_message=None,
         ):
             return
-        await self.cog.config.guild(self.ctx.guild).rewards.clear_raw(self.current_day)
+        await self.cog.config.guild(self.ctx.guild).rewards.clear_raw(str(self.current_day) if self.current_day is not None else None)
         await self._update()
 
     @discord.ui.button(label="Clear All", style=discord.ButtonStyle.danger, row=2)
@@ -399,7 +399,7 @@ class RoleRewardModal(PriorityModal):
             await interaction.response.send_message(str(e), ephemeral=True)
             return
         await interaction.response.defer()
-        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(self.day)
+        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(str(self.day) if self.day is not None else None)
         day_rewards.append(
             {
                 "type": "role",
@@ -408,7 +408,7 @@ class RoleRewardModal(PriorityModal):
                 "role_id": role.id,
             }
         )
-        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(self.day, value=day_rewards)
+        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(str(self.day) if self.day is not None else None, value=day_rewards)
         await self.view._update()
 
 
@@ -456,7 +456,7 @@ class TempRoleRewardModal(RoleRewardModal):
             await interaction.response.send_message(str(e), ephemeral=True)
             return
         await interaction.response.defer()
-        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(self.day)
+        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(str(self.day) if self.day is not None else None)
         day_rewards.append(
             {
                 "type": "temp_role",
@@ -466,7 +466,7 @@ class TempRoleRewardModal(RoleRewardModal):
                 "duration": duration.total_seconds(),
             }
         )
-        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(self.day, value=day_rewards)
+        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(str(self.day) if self.day is not None else None, value=day_rewards)
         await self.view._update()
 
 
@@ -502,7 +502,7 @@ class BankCreditsRewardModal(PriorityModal):
             await interaction.response.send_message(_("The bank credits amount must be a positive number."), ephemeral=True)
             return
         await interaction.response.defer()
-        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(self.day)
+        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(str(self.day) if self.day is not None else None)
         day_rewards.append(
             {
                 "type": "bank_credits",
@@ -511,7 +511,7 @@ class BankCreditsRewardModal(PriorityModal):
                 "amount": amount,
             }
         )
-        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(self.day, value=day_rewards)
+        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(str(self.day) if self.day is not None else None, value=day_rewards)
         await self.view._update()
 
 
@@ -547,7 +547,7 @@ class LevelUpXPRewardModal(PriorityModal):
             await interaction.response.send_message(_("The XP amount must be a positive number."), ephemeral=True)
             return
         await interaction.response.defer()
-        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(self.day)
+        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(str(self.day) if self.day is not None else None)
         day_rewards.append(
             {
                 "type": "levelup_xp",
@@ -556,7 +556,7 @@ class LevelUpXPRewardModal(PriorityModal):
                 "amount": amount,
             }
         )
-        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(self.day, value=day_rewards)
+        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(str(self.day) if self.day is not None else None, value=day_rewards)
         await self.view._update()
 
 
@@ -585,7 +585,7 @@ class CustomRewardModal(PriorityModal):
         except ValueError:
             priority_multiplier = None
         await interaction.response.defer()
-        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(self.day)
+        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(str(self.day) if self.day is not None else None)
         day_rewards.append(
             {
                 "type": "custom",
@@ -594,7 +594,7 @@ class CustomRewardModal(PriorityModal):
                 "label": self.label.value,
             }
         )
-        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(self.day, value=day_rewards)
+        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(str(self.day) if self.day is not None else None, value=day_rewards)
         await self.view._update()
 
 
@@ -623,7 +623,7 @@ class MessageModal(PriorityModal):
         except ValueError:
             priority_multiplier = None
         await interaction.response.defer()
-        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(self.day)
+        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(str(self.day) if self.day is not None else None)
         day_rewards.append(
             {
                 "type": "message",
@@ -632,7 +632,7 @@ class MessageModal(PriorityModal):
                 "message": self.message.value,
             }
         )
-        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(self.day, value=day_rewards)
+        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(str(self.day) if self.day is not None else None, value=day_rewards)
         await self.view._update()
 
 
@@ -652,7 +652,7 @@ class NothingModal(PriorityModal):
         except ValueError:
             priority_multiplier = None
         await interaction.response.defer()
-        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(self.day)
+        day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(str(self.day) if self.day is not None else None)
         day_rewards.append(
             {
                 "type": None,
@@ -660,5 +660,5 @@ class NothingModal(PriorityModal):
                 "priority_multiplier": priority_multiplier,
             }
         )
-        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(self.day, value=day_rewards)
+        await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(str(self.day) if self.day is not None else None, value=day_rewards)
         await self.view._update()

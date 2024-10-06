@@ -978,7 +978,7 @@ class Seen(Cog):
                 embed.color = discord.Color.red()
                 embed.title = _(
                     "This {object_type} is in the ignored users list (`{prefix}seen ignoreme`)."
-                ).format(object_type={_object.__class__.__name__.lower()}, prefix=ctx.prefix)
+                ).format(object_type=_object.__class__.__name__.lower(), prefix=ctx.prefix)
                 await ctx.send(embed=embed)
                 return
         data = await self.get_data_for(

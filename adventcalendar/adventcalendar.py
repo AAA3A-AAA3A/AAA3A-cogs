@@ -86,19 +86,19 @@ class AdventCalendar(Cog):
             commands_group=self.setadventcalendar,
         )
 
-        self.font_path: Path = bundled_data_path(self) / "arial.ttf"
         self.bold_font_path: Path = bundled_data_path(self) / "arial_bold.ttf"
-        self.merry_christmas_font_path: Path = bundled_data_path(self) / "MerryChristmasFlake.ttf"
-        # self.font: typing.Dict[int, ImageFont.ImageFont] = {
-        #     size: ImageFont.truetype(str(self.font_path), size=size)
-        #     for size in {28, 30, 36, 40, 54}
-        # }
+        self.merry_christmas_flake_font_path: Path = bundled_data_path(self) / "MerryChristmasFlake.ttf"
+        self.merry_christmas_star_font_path: Path = bundled_data_path(self) / "MerryChristmasStar.ttf"
         self.bold_font: typing.Dict[int, ImageFont.ImageFont] = {
             size: ImageFont.truetype(str(self.bold_font_path), size=size)
             for size in {80, 100}
         }
-        self.merry_christmas_font: typing.Dict[int, ImageFont.ImageFont] = {
-            size: ImageFont.truetype(str(self.merry_christmas_font_path), size=size)
+        self.merry_christmas_flake_font: typing.Dict[int, ImageFont.ImageFont] = {
+            size: ImageFont.truetype(str(self.merry_christmas_flake_font_path), size=size)
+            for size in {200, 325}
+        }
+        self.merry_christmas_star_font: typing.Dict[int, ImageFont.ImageFont] = {
+            size: ImageFont.truetype(str(self.merry_christmas_star_font_path), size=size)
             for size in {200, 325}
         }
         self.christmas_tree_path: Path = bundled_data_path(self) / "christmas_tree.png"
@@ -141,7 +141,7 @@ class AdventCalendar(Cog):
         draw.text((x1 + x, y1 + y), text=text, fill=fill, font=font)
         return text_size
 
-    def _generate_image(
+    def _generate_advent_calendar(
         self,
         today_day: int,
         opened_days: typing.List[int],
@@ -162,7 +162,7 @@ class AdventCalendar(Cog):
             (300, 0, 1680, 400),
             text=_("*Advent0Calendar*"),
             fill=(255, 255, 255),
-            font=self.merry_christmas_font[325],
+            font=self.merry_christmas_flake_font[325],
         )
 
         def box_day(
@@ -202,7 +202,7 @@ class AdventCalendar(Cog):
                     (x + 4, y, x + size, y + size - 40),
                     text=str(random.randint(0, 9)),
                     fill=(255, 255, 255),
-                    font=self.merry_christmas_font[200],
+                    font=self.merry_christmas_flake_font[200],
                 )
             elif today_day <= day:
                 draw.rectangle(
@@ -254,7 +254,7 @@ class AdventCalendar(Cog):
         buffer.seek(0)
         return discord.File(buffer, filename="advent_calendar.png")
 
-    async def generate_image(
+    async def generate_advent_calendar(
         self,
         today_day: typing.Optional[int] = None,
         opened_days: typing.List[int] = [],
@@ -263,9 +263,38 @@ class AdventCalendar(Cog):
         if today_day is None:
             today_day = datetime.date.today().day
         return await asyncio.to_thread(
-            self._generate_image,
+            self._generate_advent_calendar,
             today_day=today_day,
             opened_days=opened_days,
+            to_file=to_file,
+        )
+
+    def _generate_merry_christmas(self, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
+        img: Image.Image = Image.new("RGBA", (1900, 450), (0, 0, 0, 0))
+        draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
+        draw.rounded_rectangle(
+            (0, 0, img.width, img.height),
+            radius=50,
+            fill=(43, 45, 49),
+        )
+        align_text_center = functools.partial(self.align_text_center, draw)
+        align_text_center(
+            xy=(0, 0, img.width, img.height),
+            text=_("Merry4Christmas!"),
+            fill=(255, 255, 255),
+            font=self.merry_christmas_star_font[325],
+        )
+
+        if not to_file:
+            return img
+        buffer = io.BytesIO()
+        img.save(buffer, format="png", optimize=True)
+        buffer.seek(0)
+        return discord.File(buffer, filename="merry_christmas.png")
+
+    async def generate_merry_christmas(self, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
+        return await asyncio.to_thread(
+            self._generate_merry_christmas,
             to_file=to_file,
         )
 
@@ -447,9 +476,14 @@ class AdventCalendar(Cog):
             else:
                 content = _("You've already opened your box for the day, **come back tomorrow!** 😉 Here's your current Advent Calendar!")
         elif today_day == 25:
-            content = _("🎄 **Merry Christmas!** 🎄")
+            embeds.append(
+                discord.Embed(
+                    color=await ctx.embed_color(),
+                ).set_image(url="attachment://merry_christmas.png")
+            )
+            files.append(await self.generate_merry_christmas())
             if len(opened_days) == 24:
-                content += _(" You've opened all the boxes!")
+                content = _("🎄 You've opened all the boxes! 🎄")
                 reward, kwargs = await self.get_reward(ctx.author, None)
                 if reward is not None:
                     content += _(" Here's your **final surprise**!")
@@ -465,7 +499,7 @@ class AdventCalendar(Cog):
                 text=ctx.guild.name, icon_url=ctx.guild.icon,
             )
         )
-        files.append(await self.generate_image(today_day=today_day, opened_days=opened_days))
+        files.append(await self.generate_advent_calendar(today_day=today_day, opened_days=opened_days))
         await ctx.send(
             content,
             embeds=embeds,

@@ -5,7 +5,6 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import random
 import asyncio
 import importlib
 import json
@@ -416,4 +415,7 @@ class DevUtils(Cog):
             raw_content = await ctx.bot.http.request(
                 route=Route(method="GET", path="/invites/{invite_code}", invite_code=thing.code)
             )
-        await Menu(json.dumps(raw_content, indent=4), lang="py").start(ctx)
+        await Menu(
+            json.dumps(raw_content, indent=4),
+            lang="json"
+        ).start(ctx)

@@ -214,7 +214,7 @@ class RolesButtons(Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(manage_roles=True)
     # @commands.bot_has_permissions(manage_roles=True, embed_links=True)
-    @commands.hybrid_group()
+    @commands.hybrid_group(aliases=["rb"])
     async def rolesbuttons(self, ctx: commands.Context) -> None:
         """Group of commands to use RolesButtons."""
         pass
@@ -354,6 +354,37 @@ class RolesButtons(Cog):
         self.views[message] = view
         await self.config.guild(ctx.guild).roles_buttons.set(config)
         await self.list.callback(self, ctx, message=message)
+
+    @rolesbuttons.command(aliases=["direct"])
+    async def create(
+        self,
+        ctx: commands.Context,
+        channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]],
+        roles_buttons: commands.Greedy[EmojiRoleConverter],
+    ) -> None:
+        channel = channel or ctx.channel
+        if not channel.permissions_for(ctx.me).send_messages:
+            raise commands.UserFeedbackCheckFailure(
+                _("I don't have the permission to send messages in this channel.")
+            )
+        if not channel.permissions_for(ctx.me).add_reactions:
+            raise commands.UserFeedbackCheckFailure(
+                _("I don't have the permission to add reactions in this channel.")
+            )
+        if not roles_buttons:
+            raise commands.UserFeedbackCheckFailure(_("You have not specified any valid role-button."))
+        message = await channel.send(
+            embed=discord.Embed(
+                description="\n".join(
+                    [
+                        f"**•** {emoji} - {role.mention}"
+                        for emoji, role in roles_buttons
+                    ]
+                ),
+                color=await ctx.embed_color(),
+            ),
+        )
+        await self.bulk.callback(self, ctx, message=message, roles_buttons=roles_buttons)
 
     @rolesbuttons.command()
     async def mode(

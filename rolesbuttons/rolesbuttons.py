@@ -213,8 +213,8 @@ class RolesButtons(Cog):
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_roles=True)
-    # @commands.bot_has_permissions(manage_roles=True, embed_links=True)
-    @commands.hybrid_group(aliases=["rb"])
+    @commands.bot_has_permissions(manage_roles=True, embed_links=True)
+    @commands.hybrid_group()  # aliases=["rb"]
     async def rolesbuttons(self, ctx: commands.Context) -> None:
         """Group of commands to use RolesButtons."""
         pass

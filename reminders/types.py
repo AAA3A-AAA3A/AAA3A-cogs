@@ -669,6 +669,10 @@ class Reminder:
             raise RuntimeError(
                 f"User {self.user_id} not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
             )
+        except discord.HTTPException:
+            raise RuntimeError(
+                f"An error occurred while fetching the user {self.user_id} for the reminder {self.user_id}#{self.id}@{self.content['type']}."
+            )
         if self.destination is None:
             destination: discord.abc.Messageable = await user.create_dm()
         else:
@@ -684,10 +688,20 @@ class Reminder:
                 raise RuntimeError(
                     f"An error occurred while fetching the destination channel for the reminder {self.user_id}#{self.id}@{self.content['type']}."
                 )
-            if destination.guild is not None and destination.guild.get_member(user.id) is None:
-                raise RuntimeError(
-                    f"Member {self.user_id} not found in the guild {destination.guild.id} for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
-                )
+            if destination.guild is not None:
+                try:
+                    member: discord.Member = await destination.guild.fetch_member(user.id)
+                except discord.NotFound:
+                    if not testing:
+                        await self.delete()
+                    raise RuntimeError(
+                        f"Member {self.user_id} not found in the guild {destination.guild.id} for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
+                    )
+                except discord.HTTPException:
+                    raise RuntimeError(
+                        f"An error occurred while fetching the member {self.user_id} in the guild {destination.guild.id} for the reminder {self.user_id}#{self.id}@{self.content['type']}."
+                    )
+
         if not self.content or "type" not in self.content:
             await self.delete()
             raise RuntimeError(
@@ -708,10 +722,11 @@ class Reminder:
             )
 
         elif self.content["type"] == "command":
-            if (invoker := self.cog.bot.get_user(self.content["command_invoker"])) is None or (
-                getattr(destination, "guild", None) is not None
-                and (invoker := destination.guild.get_member(invoker.id)) is None
-            ):
+            try:
+                invoker = await self.cog.bot.fetch_user(self.content["command_invoker"])
+                if getattr(destination, "guild", None) is not None:
+                    invoker = await destination.guild.fetch_member(invoker.id)
+            except discord.NotFound:
                 if not testing:
                     await self.delete()
                 raise RuntimeError(
@@ -764,12 +779,6 @@ class Reminder:
                             file_content = await r.read()
                     files.append(discord.File(BytesIO(file_content), filename=file_name))
             try:
-                if destination.guild is None:
-                    member = user
-                elif (member := destination.guild.get_member(user.id)) is None:
-                    raise RuntimeError(
-                        f"Member {self.user_id} not found in the guild {destination.guild.id} for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
-                    )
                 reference = None
                 if self.content["type"] in ("text", "message"):
                     if self.content["type"] == "message" and destination.id == int(
@@ -790,9 +799,9 @@ class Reminder:
                             reference = message
                     snooze_view_enabled = await self.cog.config.snooze_view()
                     if snooze_view_enabled:
-                        view = SnoozeView(cog=self.cog, reminder=self)
+                        view: SnoozeView = SnoozeView(cog=self.cog, reminder=self)
                     else:
-                        view = discord.ui.View()
+                        view: discord.ui.View = discord.ui.View()
                         view.add_item(
                             discord.ui.Button(
                                 label=_("Jump to original message"),
@@ -807,9 +816,9 @@ class Reminder:
                         if self.targets is not None
                         else None,
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=destination.permissions_for(member).mention_everyone,
+                            everyone=destination.guild is not None and destination.permissions_for(member).mention_everyone,
                             users=True,
-                            roles=destination.permissions_for(member).mention_everyone,
+                            roles=destination.guild is not None and destination.permissions_for(member).mention_everyone,
                             replied_user=False,
                         ),
                         view=view,
@@ -824,9 +833,9 @@ class Reminder:
                         embeds=embeds,
                         files=files,
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=destination.permissions_for(member).mention_everyone,
+                            everyone=destination.guild is not None and destination.permissions_for(member).mention_everyone,
                             users=True,
-                            roles=destination.permissions_for(member).mention_everyone,
+                            roles=destination.guild is not None and destination.permissions_for(member).mention_everyone,
                             replied_user=False,
                         ),
                     )

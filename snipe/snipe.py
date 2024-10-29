@@ -96,11 +96,11 @@ class SnipedMessage:
                 color=embed_color,
             )
         if self.type == "deleted":
-            embed.title = _("Deleted Message (Sent at {created_timestamp})").format(
+            embed.title = _("Deleted Message (Sent on {created_timestamp})").format(
                 created_timestamp=f"<t:{int(self.created_at.timestamp())}:F>"
             )
         else:
-            embed.title = _("Edited Message (Sent at {created_timestamp})").format(
+            embed.title = _("Edited Message (Sent on {created_timestamp})").format(
                 created_timestamp=f"<t:{int(self.created_at.timestamp())}:F>"
             )
         embed.set_author(

@@ -94,7 +94,6 @@ class RumbleNotifier(Cog):
         config = await self.config.guild(message.guild).all()
         if (
             await self.bot.cog_disabled_in_guild(cog=self, guild=message.guild)
-            or not await self.bot.allowed_by_whitelist_blacklist(who=message.author)
             or not message.channel.permissions_for(message.guild.me).send_messages
             or not config["enabled"]
             or not (channels_ids := config["channels"])
@@ -118,10 +117,9 @@ class RumbleNotifier(Cog):
         ):
             return
         suscribing = (
-            await self.config.guild(message.guild).suscribing()
+            config["suscribing"]
             and message.guild.me.guild_permissions.manage_roles
             and role.is_assignable()
-            and role < message.guild.me.top_role
         )
         embed: discord.Embed = discord.Embed(
             title=_("⚔️ New Rumble battle! ⚔️"),

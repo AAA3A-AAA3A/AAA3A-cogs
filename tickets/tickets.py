@@ -693,7 +693,7 @@ class Tickets(DashboardIntegration, Cog):
                     "**•** Owner Can Add Members: {owner_can_add_members}\n"
                     "**•** Owner Can Remove Members: {owner_can_remove_members}\n"
                     "**•** Close On Leave: {close_on_leave}\n"
-                    "**•** Delete On Close: {delete_on_close}\n\n"
+                    "**•** Auto Delete On Close: {auto_delete_on_close}\n\n"
                     "**•** Emoji Claim: {emoji_claim}\n"
                     "**•** Emoji Unclaim: {emoji_unclaim}\n"
                     "**•** Emoji Close: {emoji_close}\n"
@@ -728,7 +728,7 @@ class Tickets(DashboardIntegration, Cog):
                     owner_can_add_members=config["owner_can_add_members"],
                     owner_can_remove_members=config["owner_can_remove_members"],
                     close_on_leave=config["close_on_leave"],
-                    delete_on_close=config["delete_on_close"],
+                    auto_delete_on_close=config["auto_delete_on_close"],
                     emoji_claim=config["emojis"]["claim"],
                     emoji_unclaim=config["emojis"]["unclaim"],
                     emoji_close=config["emojis"]["close"],

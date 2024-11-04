@@ -518,7 +518,7 @@ class ClosedTicketControls(discord.ui.View):
             ),
         )
         await asyncio.sleep(5)
-        await ticket.delete(interaction.user)
+        await ticket.delete_channel(interaction.user)
 
 
 class CreateTicketView(discord.ui.View):

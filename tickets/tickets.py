@@ -940,7 +940,7 @@ class Tickets(DashboardIntegration, Cog):
             and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
-        await ticket.delete()
+        await ticket.delete_channel(ctx.author)
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)

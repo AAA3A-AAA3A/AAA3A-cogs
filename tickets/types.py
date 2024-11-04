@@ -351,7 +351,7 @@ class Ticket:
             for question, answer in self.owner_answers.items():
                 embed.add_field(
                     name=question,
-                    value=answer,
+                    value=f">>> {answer}",
                     inline=False,
                 )
             embeds.append(embed)

@@ -697,7 +697,7 @@ class Tickets(DashboardIntegration, Cog):
                     "**•** Emoji Claim: {emoji_claim}\n"
                     "**•** Emoji Unclaim: {emoji_unclaim}\n"
                     "**•** Emoji Close: {emoji_close}\n"
-                    "**•** Emoji Open: {emoji_open}\n"
+                    "**•** Emoji Reopen: {emoji_reopen}\n"
                     "**•** Emoji Lock: {emoji_lock}\n"
                     "**•** Emoji Unlock: {emoji_unlock}\n"
                     "**•** Emoji Transcript: {emoji_transcript}\n"
@@ -732,7 +732,7 @@ class Tickets(DashboardIntegration, Cog):
                     emoji_claim=config["emojis"]["claim"],
                     emoji_unclaim=config["emojis"]["unclaim"],
                     emoji_close=config["emojis"]["close"],
-                    emoji_open=config["emojis"]["open"],
+                    emoji_reopen=config["emojis"]["reopen"],
                     emoji_lock=config["emojis"]["lock"],
                     emoji_unlock=config["emojis"]["unlock"],
                     emoji_transcript=config["emojis"]["transcript"],

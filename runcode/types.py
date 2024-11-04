@@ -96,7 +96,10 @@ class WandboxRequest:
             "compiler_option_raw",
             "runtime_option_raw",
         ):
-            embed.add_field(name=field, value=box(f"{repr(getattr(self, field))}", lang="py"))
+            embed.add_field(
+                name=f"{field.replace('_', ' ').title()}:",
+                value=box(f"{repr(getattr(self, field))}", lang="py"),
+            )
         return embed
 
     async def fetch_response(self, raw: typing.Optional[bool] = False) -> "WandboxResponse":
@@ -269,7 +272,10 @@ class TioRequest:
                     page[:-3]
                 embed.description = f"{page}\n...```"
         for field in ("lang", "inputs", "compiler_flags", "command_line_options", "args"):
-            embed.add_field(name=field, value=box(f"{repr(getattr(self, field))}", lang="py"))
+            embed.add_field(
+                name=f"{field.replace('_', ' ').title()}:",
+                value=box(f"{repr(getattr(self, field))}", lang="py"),
+            )
         return embed
 
     async def fetch_response(self) -> "TioResponse":

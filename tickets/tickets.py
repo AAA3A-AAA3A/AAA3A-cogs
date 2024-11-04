@@ -73,11 +73,11 @@ class Tickets(DashboardIntegration, Cog):
                 "whitelist_roles": [],
                 "blacklist_roles": [],
                 # Channels.
-                "logs_channel": None,
                 "forum_channel": None,
                 "forum_tags": [],
                 "category_open": None,
                 "category_closed": None,
+                "logs_channel": None,
                 # Checks.
                 "owner_close_confirmation": True,
                 "owner_can_close": True,
@@ -181,10 +181,6 @@ class Tickets(DashboardIntegration, Cog):
                 "no_slash": True,
             },
             # Channels.
-            "logs_channel": {
-                "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-                "description": "Channel where the logs will be sent.",
-            },
             "forum_channel": {
                 "converter": typing.Union[discord.ForumChannel, discord.TextChannel],
                 "description": "Forum/text channel where the tickets will be created as threads.",
@@ -201,6 +197,10 @@ class Tickets(DashboardIntegration, Cog):
             "category_closed": {
                 "converter": discord.CategoryChannel,
                 "description": "Category where the closed tickets will be created.",
+            },
+            "logs_channel": {
+                "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+                "description": "Channel where the logs will be sent.",
             },
             # Checks.
             "owner_close_confirmation": {
@@ -682,11 +682,11 @@ class Tickets(DashboardIntegration, Cog):
                     "**•** View Roles: {view_roles}\n"
                     "**•** Whitelist Roles: {whitelist_roles}\n"
                     "**•** Blacklist Roles: {blacklist_roles}\n\n"
-                    "**•** Logs Channel: {logs_channel}\n"
                     "**•** Forum Channel: {forum_channel}\n"
                     "**•** Forum Tags: {forum_tags}\n"
                     "**•** Category Open: {category_open}\n"
-                    "**•** Category Closed: {category_closed}\n\n"
+                    "**•** Category Closed: {category_closed}\n"
+                    "**•** Logs Channel: {logs_channel}\n\n"
                     "**•** Owner Close Confirmation: {owner_close_confirmation}\n"
                     "**•** Owner Can Close: {owner_can_close}\n"
                     "**•** Owner Can Reopen: {owner_can_reopen}\n"
@@ -717,11 +717,11 @@ class Tickets(DashboardIntegration, Cog):
                     view_roles=humanize_list([role.mention for role_id in config["view_roles"] if (role := ctx.guild.get_role(role_id)) is not None]) or "...",
                     whitelist_roles=humanize_list([role.mention for role_id in config["whitelist_roles"] if (role := ctx.guild.get_role(role_id)) is not None]) or "...",
                     blacklist_roles=humanize_list([role.mention for role_id in config["blacklist_roles"] if (role := ctx.guild.get_role(role_id)) is not None]) or "...",
-                    logs_channel=channel.mention if (channel := ctx.guild.get_channel_or_thread(config["logs_channel"])) is not None else "...",
                     forum_channel=forum_channel.mention if forum_channel is not None else "...",
                     forum_tags=(humanize_list([f"`{f'{tag.emoji} ' if tag.emoji is not None else ''}{tag.name}`" for tag_id in config["forum_tags"] if (tag := forum_channel.get_tag(tag_id)) is not None]) or "...") if forum_channel is not None else "...",
                     category_open=category.mention if (category := ctx.guild.get_channel(config["category_open"])) is not None else "...",
                     category_closed=category.mention if (category := ctx.guild.get_channel(config["category_closed"])) is not None else "...",
+                    logs_channel=channel.mention if (channel := ctx.guild.get_channel_or_thread(config["logs_channel"])) is not None else "...",
                     owner_close_confirmation=config["owner_close_confirmation"],
                     owner_can_close=config["owner_can_close"],
                     owner_can_reopen=config["owner_can_reopen"],

@@ -57,7 +57,7 @@ class Tickets(DashboardIntegration, Cog):
             last_id=0,
             profiles={},
             default_profile_settings={
-                "enabled": True,
+                "enabled": False,
                 "max_open_tickets_by_member": 5,
                 "creating_modal": None,
                 "channel_name": None,

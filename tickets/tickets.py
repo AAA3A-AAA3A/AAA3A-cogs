@@ -663,11 +663,20 @@ class Tickets(DashboardIntegration, Cog):
                 color=await ctx.embed_color(),
             ),
         ]
-        forum_channel = ctx.guild.get_channel_or_thread(config["forum_channel"]) if (config["forum_channel"] is not None) else None
+        forum_channel = ctx.guild.get_channel_or_thread(config.get("forum_channel")) if config.get("forum_channel") else None
         embeds.append(
             discord.Embed(
                 title=_("Settings:"),
                 description=_(
+                    "**•** Enabled: {enabled}\n"
+                    "**•** Max Open Tickets By Member: {max_open_tickets_by_member}\n"
+                    "**•** Creating Modal: {creating_modal}\n"
+                    "**•** Channel Name: {channel_name}\n"
+                    "**•** Custom Message: {custom_message}\n"
+                    "**•** Close/Reopen Reason Modal: {close_reopen_reason_modal}\n"
+                    "**•** Create Modlog Case: {create_modlog_case}\n"
+                    "**•** Transcripts: {transcripts}\n"
+                    "**•** Always Include Item Label: {always_include_item_label}\n\n"
                     "**•** Support Roles: {support_roles}\n"
                     "**•** Ping Roles: {ping_roles}\n"
                     "**•** View Roles: {view_roles}\n"
@@ -681,13 +690,28 @@ class Tickets(DashboardIntegration, Cog):
                     "**•** Owner Close Confirmation: {owner_close_confirmation}\n"
                     "**•** Owner Can Close: {owner_can_close}\n"
                     "**•** Owner Can Reopen: {owner_can_reopen}\n"
+                    "**•** Owner Can Add Members: {owner_can_add_members}\n"
+                    "**•** Owner Can Remove Members: {owner_can_remove_members}\n"
                     "**•** Close On Leave: {close_on_leave}\n"
                     "**•** Delete On Close: {delete_on_close}\n\n"
                     "**•** Emoji Claim: {emoji_claim}\n"
                     "**•** Emoji Unclaim: {emoji_unclaim}\n"
                     "**•** Emoji Close: {emoji_close}\n"
-                    "**•** Emoji Open: {emoji_open}"
+                    "**•** Emoji Open: {emoji_open}\n"
+                    "**•** Emoji Lock: {emoji_lock}\n"
+                    "**•** Emoji Unlock: {emoji_unlock}\n"
+                    "**•** Emoji Transcript: {emoji_transcript}\n"
+                    "**•** Emoji Delete: {emoji_delete}"
                 ).format(
+                    enabled=config["enabled"],
+                    max_open_tickets_by_member=config["max_open_tickets_by_member"],
+                    creating_modal=_("Set.") if config["creating_modal"] is not None else "...",
+                    channel_name=config["channel_name"] or "...",
+                    custom_message=config["custom_message"] or "...",
+                    close_reopen_reason_modal=config["close_reopen_reason_modal"],
+                    create_modlog_case=config["create_modlog_case"],
+                    transcripts=config["transcripts"],
+                    always_include_item_label=config["always_include_item_label"],
                     support_roles=humanize_list([role.mention for role_id in config["support_roles"] if (role := ctx.guild.get_role(role_id)) is not None]) or "...",
                     ping_roles=humanize_list([role.mention for role_id in config["ping_roles"] if (role := ctx.guild.get_role(role_id)) is not None]) or "...",
                     view_roles=humanize_list([role.mention for role_id in config["view_roles"] if (role := ctx.guild.get_role(role_id)) is not None]) or "...",
@@ -701,12 +725,18 @@ class Tickets(DashboardIntegration, Cog):
                     owner_close_confirmation=config["owner_close_confirmation"],
                     owner_can_close=config["owner_can_close"],
                     owner_can_reopen=config["owner_can_reopen"],
+                    owner_can_add_members=config["owner_can_add_members"],
+                    owner_can_remove_members=config["owner_can_remove_members"],
                     close_on_leave=config["close_on_leave"],
                     delete_on_close=config["delete_on_close"],
                     emoji_claim=config["emojis"]["claim"],
                     emoji_unclaim=config["emojis"]["unclaim"],
                     emoji_close=config["emojis"]["close"],
                     emoji_open=config["emojis"]["open"],
+                    emoji_lock=config["emojis"]["lock"],
+                    emoji_unlock=config["emojis"]["unlock"],
+                    emoji_transcript=config["emojis"]["transcript"],
+                    emoji_delete=config["emojis"]["delete"],
                 ),
                 color=await ctx.embed_color(),
             ),

@@ -1,0 +1,17 @@
+{
+    "author": ["AAA3A"],
+    "name": "Tickets",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!\n⚠️ When setting up the cog, check `[p]settickets setup` and `[p]tickets settings`.",
+    "short": "Configure and manage a tickets system for your server!",
+    "description": "Configure and manage a tickets system for your server!",
+    "tags": [
+        "tickets",
+        "support",
+        "system",
+        "modular",
+        "help"
+    ],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "emoji", "chat-exporter"],
+    "min_bot_version": "3.5.0",
+    "end_user_data_statement": "This cog records the hoster and winners of the events."
+}

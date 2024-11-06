@@ -3,11 +3,11 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from redbot.core.utils.chat_formatting import box
+
 import asyncio
 import datetime
 import functools
-
-from redbot.core.utils.chat_formatting import box
 
 _: Translator = Translator("Tickets", __file__)
 
@@ -173,7 +173,7 @@ class TicketView(discord.ui.View):
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError("⛔ You aren't allowed to reopen this ticket!")
         modal: ReasonModal = ReasonModal(self.cog, self.ticket)
-        if config.get("close_reopen_modal"):
+        if config["close_reopen_reason_modal"]:
             await interaction.response.send_modal(modal)
         else:
             await modal.on_submit(interaction)
@@ -232,8 +232,6 @@ class MembersView(discord.ui.View):
         await interaction.response.defer(ephemeral=True, thinking=True)
         try:
             for member in select.values:
-                if not isinstance(member, discord.Member):
-                    continue
                 await self.ticket.add_member(
                     member,
                     interaction.user,
@@ -254,8 +252,6 @@ class MembersView(discord.ui.View):
         await interaction.response.defer(ephemeral=True, thinking=True)
         try:
             for member in select.values:
-                if not isinstance(member, discord.Member):
-                    continue
                 await self.ticket.remove_member(
                     member,
                     interaction.user,

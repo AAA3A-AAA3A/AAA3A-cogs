@@ -173,7 +173,7 @@ class TicketView(discord.ui.View):
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError("⛔ You aren't allowed to reopen this ticket!")
         modal: ReasonModal = ReasonModal(self.cog, self.ticket)
-        if config["close_reopen_modal"]:
+        if config.get("close_reopen_modal"):
             await interaction.response.send_modal(modal)
         else:
             await modal.on_submit(interaction)

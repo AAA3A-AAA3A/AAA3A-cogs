@@ -394,7 +394,7 @@ class Ticket:
     async def create(self) -> typing.Union[discord.TextChannel, discord.Thread]:
         config: typing.Dict[str, typing.Any] = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if not config["enabled"]:
-            raise RuntimeError("The creation of tickets is disabled for this profile.")
+            raise RuntimeError(_("The creation of tickets is disabled for this profile."))
         forum_channel = (
             self.guild.get_channel(forum_channel_id)
             if (forum_channel_id := config.get("forum_channel")) is not None
@@ -406,7 +406,7 @@ class Ticket:
             else None
         )
         if forum_channel is None and category_open is None:
-            raise RuntimeError("No forum channel or category open configured for this profile.")
+            raise RuntimeError(_("No forum channel or category open configured for this profile."))
         if (
             not await self.bot.is_admin(self.owner)
             and self.owner.id not in self.bot.owner_ids
@@ -421,7 +421,7 @@ class Ticket:
                     for blacklist_role_id in config["blacklist_roles"]
                 )
             ):
-                raise RuntimeError("You are not allowed to create a ticket with this profile.")
+                raise RuntimeError(_("You are not allowed to create a ticket with this profile."))
             if len(
                 [
                     ticket
@@ -429,7 +429,7 @@ class Ticket:
                     if ticket.owner_id == self.owner_id and not ticket.is_closed
                 ]
             ) >= config["max_open_tickets_by_member"]:
-                raise RuntimeError("You have reached the maximum number of open tickets for this profile.")
+                raise RuntimeError(_("You have reached the maximum number of open tickets for this profile."))
 
         audit_reason = _("Ticket creation for {ticket.owner.display_name} ({ticket.owner.id}) (profile `{ticket.profile}`)").format(ticket=self)
         if (
@@ -450,18 +450,27 @@ class Ticket:
         await view._update()
         if forum_channel is not None:
             if not forum_channel.permissions_for(forum_channel.guild.me).create_private_threads:
-                raise RuntimeError("I don't have the required permissions to create private threads in the forum/text channel configured.")
-            thread_message = await forum_channel.create_thread(
-                name=await self.channel_name(forum_channel=True),
-                auto_archive_duration=10080,
-                invitable=False,
-                **kwargs,
-                reason=audit_reason,
-            )
-            self.channel, view._message = thread_message.thread, thread_message.message
+                raise RuntimeError(_("I don't have the required permissions to create private threads in the forum/text channel configured."))
+            if isinstance(forum_channel, discord.ForumChannel):
+                thread_message = await forum_channel.create_thread(
+                    name=await self.channel_name(forum_channel=True),
+                    auto_archive_duration=10080,
+                    invitable=False,
+                    **kwargs,
+                    reason=audit_reason,
+                )
+                self.channel, view._message = thread_message.thread, thread_message.message
+            else:
+                self.channel = await forum_channel.create_thread(
+                    name=await self.channel_name(forum_channel=True),
+                    auto_archive_duration=10080,
+                    invitable=False,
+                    reason=audit_reason,
+                )
+                view._message = await self.channel.send(**kwargs)
         else:
             if not category_open.permissions_for(self.guild.me).manage_channels:
-                raise RuntimeError("I don't have the required permissions to create text channels in the category configured.")
+                raise RuntimeError(_("I don't have the required permissions to create text channels in the category configured."))
             self.channel = await self.guild.create_text_channel(
                 name=await self.channel_name(forum_channel=False),
                 category=category_open,
@@ -548,7 +557,7 @@ class Ticket:
         reason: typing.Optional[str] = None,
     ) -> None:
         if self.is_closed:
-            raise RuntimeError("This ticket is already closed.")
+            raise RuntimeError(_("This ticket is already closed."))
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if closer is not None and not config["owner_can_close"]:
             fake_context = type(
@@ -557,7 +566,7 @@ class Ticket:
                 {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": closer, "kwargs": {"profile": self.profile}},
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
-                raise RuntimeError("You aren't allowed to close this ticket!")
+                raise RuntimeError(_("You aren't allowed to close this ticket!"))
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         self.is_closed = True
         # self.reopened_by = None
@@ -623,7 +632,7 @@ class Ticket:
         reason: typing.Optional[str] = None,
     ) -> None:
         if not self.is_closed:
-            raise RuntimeError("This ticket is not closed.")
+            raise RuntimeError(_("This ticket is not closed."))
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if reopener is not None and not config["owner_can_reopen"]:
             fake_context = type(
@@ -632,7 +641,7 @@ class Ticket:
                 {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": reopener, "kwargs": {"profile": self.profile}},
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
-                raise RuntimeError("You aren't allowed to reopen this ticket!")
+                raise RuntimeError(_("You aren't allowed to reopen this ticket!"))
         self.is_closed = False
         # self.closed_by = None
         # self.closed_at = None
@@ -691,7 +700,7 @@ class Ticket:
 
     async def claim(self, claimer: discord.Member) -> None:
         if self.is_claimed:
-            raise RuntimeError("This ticket is already claimed.")
+            raise RuntimeError(_("This ticket is already claimed."))
         self.is_claimed = True
         self.claimed_by = claimer
         self.claimed_at = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -728,7 +737,7 @@ class Ticket:
 
     async def unclaim(self) -> None:
         if not self.is_claimed:
-            raise RuntimeError("This ticket is not claimed.")
+            raise RuntimeError(_("This ticket is not claimed."))
         self.is_claimed = False
         # self.claimed_by = None
         # self.claimed_at = None
@@ -765,7 +774,7 @@ class Ticket:
 
     async def lock(self, locker: typing.Optional[discord.Member] = None) -> None:
         if self.is_locked:
-            raise RuntimeError("This ticket is already locked.")
+            raise RuntimeError(_("This ticket is already locked."))
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if locker is not None:
             fake_context = type(
@@ -774,7 +783,7 @@ class Ticket:
                 {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": locker, "kwargs": {"profile": self.profile}},
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
-                raise RuntimeError("You aren't allowed to lock this ticket!")
+                raise RuntimeError(_("You aren't allowed to lock this ticket!"))
         self.is_locked = True
         self.locked_by = locker
         self.locked_at = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -826,7 +835,7 @@ class Ticket:
 
     async def unlock(self, unlocker: typing.Optional[discord.Member] = None) -> None:
         if not self.is_locked:
-            raise RuntimeError("This ticket is not locked.")
+            raise RuntimeError(_("This ticket is not locked."))
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if unlocker is not None:
             fake_context = type(
@@ -835,7 +844,7 @@ class Ticket:
                 {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": unlocker, "kwargs": {"profile": self.profile}},
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
-                raise RuntimeError("You aren't allowed to unlock this ticket!")
+                raise RuntimeError(_("You aren't allowed to unlock this ticket!"))
         self.is_locked = False
         # self.locked_by = None
         # self.locked_at = None
@@ -896,16 +905,16 @@ class Ticket:
                 {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": author, "kwargs": {"profile": self.profile}},
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
-                raise RuntimeError("You aren't allowed to add members to this ticket!")
+                raise RuntimeError(_("You aren't allowed to add members to this ticket!"))
         if member.id in self.members_ids:
-            raise RuntimeError("This member is already in the ticket.")
+            raise RuntimeError(_("This member is already in the ticket."))
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if (
             member == self.owner
             or any(member.get_role(support_role_id) is not None for support_role_id in config["support_roles"])
             or member.guild_permissions.administrator
         ):
-            raise RuntimeError("This member has a role that allows them to access the ticket without being added manually.")
+            raise RuntimeError(_("This member has a role that allows them to access the ticket without being added manually."))
         self.members_ids.append(member.id)
         await self.save()
 
@@ -953,9 +962,9 @@ class Ticket:
                 {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": author, "kwargs": {"profile": self.profile}},
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
-                raise RuntimeError("You aren't allowed to remove members from this ticket!")
+                raise RuntimeError(_("You aren't allowed to remove members from this ticket!"))
         if member.id not in self.members_ids:
-            raise RuntimeError("This member is not in the ticket.")
+            raise RuntimeError(_("This member is not in the ticket."))
         self.members_ids.remove(member.id)
         await self.save()
 

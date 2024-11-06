@@ -588,7 +588,8 @@ class RunCode(Cog):
         embeds = []
         for page in pages:
             embed = discord.Embed(
-                title=f"RunCode {api.capitalize()} API Languages", color=await ctx.embed_color()
+                title=_("RunCode — {api} API Languages").format(api=api.capitalize()),
+                color=await ctx.embed_color(),
             )
             embed.description = page
             embeds.append(embed)
@@ -615,7 +616,10 @@ class RunCode(Cog):
         keys: str = humanize_list(
             [f"`{key}`" for key in list(self.wandbox_languages[language].values())[0].keys()]
         )
-        embed = discord.Embed(title="RunCode Wandbox API Engines", color=await ctx.embed_color())
+        embed = discord.Embed(
+            title=_("RunCode — Wandbox API Engines"),
+            color=await ctx.embed_color(),
+        )
         embed.set_author(
             name=f"{language.capitalize()} language", icon_url=LANGUAGES_IMAGES[language]
         )
@@ -634,7 +638,8 @@ class RunCode(Cog):
             ]
         )
         embed = discord.Embed(
-            title="RunCode Wandbox API Identifiers", color=await ctx.embed_color()
+            title=_("RunCode — Wandbox API Identifiers"),
+            color=await ctx.embed_color(),
         )
         embed.description = result
         await ctx.send(embed=embed)
@@ -650,7 +655,10 @@ class RunCode(Cog):
                 for language, extensions in LANGUAGES_FILES_EXTENSIONS.items()
             ]
         )
-        embed = discord.Embed(title="Languages extensions", color=await ctx.embed_color())
+        embed = discord.Embed(
+            title=_("Languages extensions"),
+            color=await ctx.embed_color(),
+        )
         embed.description = result
         await ctx.send(embed=embed)
 

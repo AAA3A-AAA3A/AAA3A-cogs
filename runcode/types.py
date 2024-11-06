@@ -1,5 +1,6 @@
 from AAA3A_utils import CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
+from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -15,6 +16,8 @@ from humanfriendly import format_timespan
 from redbot.core.utils.chat_formatting import box, pagify
 
 from .data import LANGUAGES_IDENTIFIERS, LANGUAGES_IMAGES
+
+_: Translator = Translator("RunCode", __file__)
 
 
 @dataclass(frozen=True)
@@ -64,7 +67,8 @@ class WandboxRequest:
         embed_color: discord.Color = discord.Color.green(),
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
-            title="RunCode Request (with Wandbox API)", color=embed_color
+            title=_("RunCode Request (with Wandbox API)"),
+            color=embed_color,
         )
         embed.set_author(
             name=f"{self.engine.language.capitalize()} language",
@@ -167,7 +171,8 @@ class WandboxResponse:
             await menu.start(ctx)
             return
         embed: discord.Embed = discord.Embed(
-            title="RunCode Response (with Wandbox API)", url=self.url
+            title=_("RunCode Response (with Wandbox API)"),
+            url=self.url,
         )
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         run_time = format_timespan(self.run_time)
@@ -186,9 +191,13 @@ class WandboxResponse:
         else:
             embed.color = await ctx.embed_color()
 
-        embed.add_field(name="Engine used", value=self.request.engine.name, inline=True)
         embed.add_field(
-            name="Command used",
+            name=_("Engine used:"),
+            value=self.request.engine.name,
+            inline=True,
+        )
+        embed.add_field(
+            name=_("Command used:"),
             value=self.request.cog.wandbox_languages[self.request.engine.language][
                 self.request.engine.template
             ][self.request.engine.name].display_compile_command
@@ -196,7 +205,11 @@ class WandboxResponse:
             + (f" {self.request.runtime_options}" if self.request.runtime_options else ""),
             inline=True,
         )
-        embed.add_field(name="Exit status", value=self.status, inline=False)
+        embed.add_field(
+            name=_("Exit status:"),
+            value=self.status,
+            inline=False,
+        )
         description = ""
         for field in (
             "signal",
@@ -258,7 +271,8 @@ class TioRequest:
         embed_color: discord.Color = discord.Color.green(),
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
-            title="RunCode Request (with Tio API)", color=embed_color
+            title=_("RunCode Request (with Tio API)"),
+            color=embed_color,
         )
         embed.set_author(name=f"{self.language.name.capitalize()} language")
         if with_code:
@@ -336,7 +350,10 @@ class TioResponse:
             debug = output[start : end + 2]
         except ValueError:
             pass
-        embed.add_field(name="Debug", value=box(debug, lang="py"))
+        embed.add_field(
+            name=_("Debug"),
+            value=box(debug, lang="py"),
+        )
         pages = list(
             pagify(
                 description,

@@ -173,7 +173,7 @@ class TicketView(discord.ui.View):
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError("⛔ You aren't allowed to reopen this ticket!")
         modal: ReasonModal = ReasonModal(self.cog, self.ticket)
-        if config["close_reopen_modal"]:
+        if config["close_reopen_reason_modal"]:
             await interaction.response.send_modal(modal)
         else:
             await modal.on_submit(interaction)
@@ -225,16 +225,13 @@ class MembersView(discord.ui.View):
                 pass
 
     @discord.ui.select(cls=discord.ui.UserSelect, min_values=0, max_values=10, placeholder="Select the member(s) to add to the ticket.")
-    async def add(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
+    async def add(self, interaction: discord.Interaction, select: discord.ui.UserSelect) -> None:
         if not select.values:
             await interaction.response.defer()
             return
         await interaction.response.defer(ephemeral=True, thinking=True)
         try:
-            for member_id in select.values:
-                member = interaction.guild.get_member(int(member_id))
-                if member is None:
-                    continue
+            for member in select.values:
                 await self.ticket.add_member(
                     member,
                     interaction.user,
@@ -248,16 +245,13 @@ class MembersView(discord.ui.View):
         await interaction.followup.send(_("➕ Members have been added to the ticket!"), ephemeral=True)
 
     @discord.ui.select(cls=discord.ui.UserSelect, min_values=0, max_values=10, placeholder="Select the member(s) to remove from the ticket.")
-    async def remove(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
+    async def remove(self, interaction: discord.Interaction, select: discord.ui.UserSelect) -> None:
         if not select.values:
             await interaction.response.defer()
             return
         await interaction.response.defer(ephemeral=True, thinking=True)
         try:
-            for member_id in select.values:
-                member = interaction.guild.get_member(int(member_id))
-                if member is None:
-                    continue
+            for member in select.values:
                 await self.ticket.remove_member(
                     member,
                     interaction.user,

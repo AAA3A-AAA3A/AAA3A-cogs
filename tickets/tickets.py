@@ -1057,6 +1057,8 @@ class Tickets(DashboardIntegration, Cog):
             if message.components:
                 raise commands.UserFeedbackCheckFailure(_("This message already has components."))
             components = buttons_dropdowns[f"{message.channel.id}-{message.id}"] = {"buttons": {}, "dropdown_options": {}}
+        else:
+            components = buttons_dropdowns[f"{message.channel.id}-{message.id}"]
         if len(components["buttons"]) >= 20:
             raise commands.UserFeedbackCheckFailure(
                 _("You can't add more than 20 buttons for one message.")
@@ -1097,6 +1099,8 @@ class Tickets(DashboardIntegration, Cog):
             if message.components:
                 raise commands.UserFeedbackCheckFailure(_("This message already has components."))
             components = buttons_dropdowns[f"{message.channel.id}-{message.id}"] = {"buttons": {}, "dropdown_options": {}}
+        else:
+            components = buttons_dropdowns[f"{message.channel.id}-{message.id}"]
         if len(components["dropdown_options"]) >= 25:
             raise commands.UserFeedbackCheckFailure(
                 _("I can't add more than 25 options for one dropdown.")

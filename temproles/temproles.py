@@ -53,6 +53,7 @@ class TempRoles(Cog):
             logs_channel=None,
             allowed_self_temp_roles={},
             joining_temp_roles={},
+            auto_temp_roles={},
         )
 
     async def cog_load(self) -> None:
@@ -220,6 +221,52 @@ class TempRoles(Cog):
                             color=await self.bot.get_embed_color(logs_channel),
                         )
                     )
+
+    @commands.Cog.listener()
+    async def on_member_update(
+        self, before: discord.Member, after: discord.Member
+    ) -> None:
+        if before.roles == after.roles:
+            return
+        if before.roles > after.roles:
+            removed_roles = before.roles - after.roles
+            for role in removed_roles:
+                if str(role.id) in await self.config.member(after).temp_roles():
+                    member_temp_roles = await self.config.member(after).temp_roles()
+                    del member_temp_roles[str(role.id)]
+                    await self.config.member(after).temp_roles.set(member_temp_roles)
+        elif before.roles < after.roles:
+            added_roles = after.roles - before.roles
+            for role in added_roles:
+                if str(role.id) in await self.config.guild(after.guild).auto_temp_roles():
+                    auto_temp_roles = await self.config.guild(after.guild).auto_temp_roles()
+                    duration = datetime.timedelta(seconds=auto_temp_roles[str(role.id)])
+                    try:
+                        end_time = datetime.datetime.now(tz=datetime.timezone.utc) + duration
+                    except OverflowError:
+                        continue
+                    end_time = end_time.replace(second=0 if end_time.second < 30 else 30)
+                    duration_string = CogsUtils.get_interval_string(duration)
+                    member_temp_roles = await self.config.member(after).temp_roles()
+                    end_time = datetime.datetime.now(tz=datetime.timezone.utc) + duration
+                    member_temp_roles[str(role.id)] = int(end_time.replace(microsecond=0).timestamp())
+                    await self.config.member(after).temp_roles.set(member_temp_roles)
+                    if (
+                        (logs_channel_id := await self.config.guild(after.guild).logs_channel())
+                        is not None
+                        and (logs_channel := after.guild.get_channel(logs_channel_id))
+                        is not None
+                        and logs_channel.permissions_for(after.guild.me).embed_links
+                    ):
+                        await logs_channel.send(
+                            embed=discord.Embed(
+                                title=_("Auto Temp Roles"),
+                                description=_(
+                                    "Auto Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires in {duration_string}."
+                                ).format(role=role, member=after, duration_string=duration_string),
+                                color=await self.bot.get_embed_color(logs_channel),
+                            )
+                        )
 
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
@@ -654,7 +701,6 @@ class TempRoles(Cog):
             raise commands.UserFeedbackCheckFailure(_("This role is already a joining Temp Role."))
         joining_temp_roles[str(role.id)] = int(duration.total_seconds())
         await self.config.guild(ctx.guild).joining_temp_roles.set(joining_temp_roles)
-        await ctx.send(_("Joining Temp Role added."))
 
     @commands.admin_or_permissions(manage_roles=True)
     @temproles.command()
@@ -665,7 +711,6 @@ class TempRoles(Cog):
             raise commands.UserFeedbackCheckFailure(_("This role isn't a joining Temp Role."))
         del joining_temp_roles[str(role.id)]
         await self.config.guild(ctx.guild).joining_temp_roles.set(joining_temp_roles)
-        await ctx.send(_("Joining Temp Role removed."))
 
     @commands.admin_or_permissions(manage_roles=True)
     @temproles.command()
@@ -687,6 +732,69 @@ class TempRoles(Cog):
         for page in pages:
             embed: discord.Embed = discord.Embed(
                 title=_("Joining Temp Roles"), color=await ctx.embed_color()
+            )
+            embed.description = page
+            embeds.append(embed)
+        await Menu(pages=embeds).start(ctx)
+
+    @commands.admin_or_permissions(manage_roles=True)
+    @temproles.command()
+    async def autoaddtemprole(
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+        duration: DurationConverter,
+    ) -> None:
+        """Add an auto Temp Role.
+
+        **Parameters:**
+        - `role`: The role to assign to new members.
+        - `duration`: The duration of the role.
+        """
+        if role >= ctx.guild.me.top_role or (
+            role >= ctx.author.top_role and ctx.author != ctx.guild.owner
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy."
+                ).format(role=role)
+            )
+        auto_temp_roles = await self.config.guild(ctx.guild).auto_temp_roles()
+        if str(role.id) in auto_temp_roles:
+            raise commands.UserFeedbackCheckFailure(_("This role is already an auto Temp Role."))
+        auto_temp_roles[str(role.id)] = int(duration.total_seconds())
+        await self.config.guild(ctx.guild).auto_temp_roles.set(auto_temp_roles)
+
+    @commands.admin_or_permissions(manage_roles=True)
+    @temproles.command()
+    async def removeautoaddtemprole(self, ctx: commands.Context, role: discord.Role) -> None:
+        """Remove an auto Temp Role."""
+        auto_temp_roles = await self.config.guild(ctx.guild).auto_temp_roles()
+        if str(role.id) not in auto_temp_roles:
+            raise commands.UserFeedbackCheckFailure(_("This role isn't an auto Temp Role."))
+        del auto_temp_roles[str(role.id)]
+        await self.config.guild(ctx.guild).auto_temp_roles.set(auto_temp_roles)
+
+    @commands.admin_or_permissions(manage_roles=True)
+    @temproles.command()
+    async def autotemproles(self, ctx: commands.Context) -> None:
+        """List the auto Temp Roles."""
+        auto_temp_roles = await self.config.guild(ctx.guild).auto_temp_roles()
+        if not auto_temp_roles:
+            await ctx.send(_("No auto Temp Roles."))
+            return
+        description = "\n".join(
+            [
+                f"**•** {role.mention} ({role.id}) - {CogsUtils.get_interval_string(duration)}."
+                for role_id, duration in auto_temp_roles.items()
+                if (role := ctx.guild.get_role(int(role_id))) is not None
+            ]
+        )
+        embeds = []
+        pages = list(pagify(description, page_length=3000))
+        for page in pages:
+            embed: discord.Embed = discord.Embed(
+                title=_("Auto Temp Roles"), color=await ctx.embed_color()
             )
             embed.description = page
             embeds.append(embed)

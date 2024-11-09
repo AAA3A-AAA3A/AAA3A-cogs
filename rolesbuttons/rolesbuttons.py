@@ -355,13 +355,17 @@ class RolesButtons(Cog):
         await self.config.guild(ctx.guild).roles_buttons.set(config)
         await self.list.callback(self, ctx, message=message)
 
-    @rolesbuttons.command(aliases=["direct"])
+    @rolesbuttons.command(aliases=["quick"])
     async def create(
         self,
         ctx: commands.Context,
         channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]],
         roles_buttons: commands.Greedy[EmojiRoleConverter],
     ) -> None:
+        """Create a message with a nice embed and roles-buttons.
+
+        ```[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```
+        """
         channel = channel or ctx.channel
         if not channel.permissions_for(ctx.me).send_messages:
             raise commands.UserFeedbackCheckFailure(

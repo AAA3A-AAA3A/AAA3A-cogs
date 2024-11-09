@@ -229,14 +229,14 @@ class TempRoles(Cog):
         if before.roles == after.roles:
             return
         if before.roles > after.roles:
-            removed_roles = before.roles - after.roles
+            removed_roles = set(before.roles) - set(after.roles)
             for role in removed_roles:
                 if str(role.id) in await self.config.member(after).temp_roles():
                     member_temp_roles = await self.config.member(after).temp_roles()
                     del member_temp_roles[str(role.id)]
                     await self.config.member(after).temp_roles.set(member_temp_roles)
         elif before.roles < after.roles:
-            added_roles = after.roles - before.roles
+            added_roles = set(after.roles) - set(before.roles)
             for role in added_roles:
                 if str(role.id) in await self.config.guild(after.guild).auto_temp_roles():
                     auto_temp_roles = await self.config.guild(after.guild).auto_temp_roles()

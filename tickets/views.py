@@ -543,7 +543,13 @@ class CreateTicketView(discord.ui.View):
             profile = buttons_dropdowns[f"{interaction.message.channel.id}-{interaction.message.id}"][
                 "buttons" if isinstance(item, discord.ui.Button) else "dropdown_options"
             ][config_identifier]["profile"]
-            await self.cog.create_ticket(interaction, profile, interaction.user, category_label=category_label)
+            try:
+                await self.cog.create_ticket(interaction, profile, interaction.user, category_label=category_label)
+            except RuntimeError as e:
+                return await interaction.followup.send(
+                    f"⛔ {e}",
+                    ephemeral=True,
+                )
 
         for config_identifier, button in components["buttons"].items():
             if button["emoji"] is not None:

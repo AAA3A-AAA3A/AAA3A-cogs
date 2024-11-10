@@ -471,9 +471,8 @@ class Ticket:
                 thread_message = await forum_channel.create_thread(
                     name=await self.channel_name(forum_channel=True),
                     auto_archive_duration=10080,
-                    invitable=False,
-                    **kwargs,
                     reason=audit_reason,
+                    **kwargs,
                 )
                 self.channel, view._message = thread_message.thread, thread_message.message
             else:

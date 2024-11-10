@@ -312,8 +312,8 @@ class Ticket:
         embed.description = (
             (
                 _(
-                    "Claimed by: {claimed_by.mention} ({claimed_by.id})."
-                    "\nClaimed at: <t:{claimed_at}:F> (<t:{claimed_at}:R>)."
+                    "Claimed by: {claimed_by.mention}"
+                    "\nClaimed at: <t:{claimed_at}:F> (<t:{claimed_at}:R>)"
                 ).format(
                     claimed_by=self.claimed_by if self.claimed_by is not None else type("", (), {"mention": _("[Unknown]"), "id": self.claimed_by_id}),
                     claimed_at=int(self.claimed_at.timestamp()),
@@ -323,8 +323,8 @@ class Ticket:
             )
             # + (
             #     _(
-            #         "\nClosed by: {closed_by.mention} ({closed_by.id})."
-            #         "\nClosed at: <t:{closed_at}:F> (<t:{closed_at}:R>)."
+            #         "\nClosed by: {closed_by.mention}"
+            #         "\nClosed at: <t:{closed_at}:F> (<t:{closed_at}:R>)"
             #     ).format(
             #         closed_by=self.closed_by if self.closed_by is not None else type("", (), {"mention": _("[Unknown]"), "id": self.closed_by_id}),
             #         closed_at=int(self.closed_at.timestamp()),

@@ -319,7 +319,7 @@ class RolloutGameView(discord.ui.View):
                     _("\n**•** **{eleminated.display_name}** - Did not select a number in time.").format(eleminated=eleminated)
                 ).format(eleminated=eleminated)
         await self.ctx.send(
-            content=humanize_list([eliminated.mention for eliminated in eleminated_players]),
+            content=("💀 " if eleminated_players else "") + humanize_list([eliminated.mention for eliminated in eleminated_players]),
             embed=embed,
             reference=self._message.to_reference(fail_if_not_exists=False),
         )

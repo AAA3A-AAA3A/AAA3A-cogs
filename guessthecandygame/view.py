@@ -82,8 +82,9 @@ class GuessTheCandyGameView(discord.ui.View):
             await self.on_timeout()
             embed: discord.Embed = discord.Embed(
                 title=_("🎃 Guess The Candy 🎃"),
-                description=_("**Congratulations!** You guessed the correct candy in {time} seconds!").format(
-                    time=(datetime.datetime.now(tz=datetime.timezone.utc) - self.start_time).total_seconds()
+                description=_("**Congratulations!** You guessed it was **{candy}** correctly, in **{time} seconds**!").format(
+                    candy=self.candy,
+                    time=f"{(datetime.datetime.now(tz=datetime.timezone.utc) - self.start_time).total_seconds():.2f}",
                 ),
                 color=await self.ctx.embed_color(),
             )
@@ -93,4 +94,3 @@ class GuessTheCandyGameView(discord.ui.View):
                 embed=embed,
                 file=discord.File(self.cog.candies[self.candy], filename="candy.png"),
             )
-        

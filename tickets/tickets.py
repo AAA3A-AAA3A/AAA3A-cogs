@@ -382,7 +382,7 @@ class Tickets(DashboardIntegration, Cog):
                 view: TicketView = TicketView(cog=self, ticket=ticket)
                 view._message = ticket.message
                 await view._update()
-                self.bot.add_view(view, message_id=ticket.message.id)
+                self.bot.add_view(view, message_id=f"{ticket.channel_id}-{ticket.message_id}")
                 self.views[ticket.message] = view
             for message, components in guild_data["buttons_dropdowns"].items():
                 channel = self.bot.get_channel(int((str(message).split("-"))[0]))

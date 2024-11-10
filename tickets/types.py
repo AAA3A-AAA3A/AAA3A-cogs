@@ -1098,7 +1098,7 @@ class Ticket:
 
         transcript = await Transcript.export(
             channel=self.channel,
-            messages=[message async for message in self.channel.history(limit=None, oldest_first=True)],
+            messages=[message async for message in self.channel.history(limit=None)],
             tz_info="UTC",
             guild=self.guild,
             bot=self.bot,
@@ -1114,16 +1114,16 @@ class Ticket:
             audit_reason = _("Ticket deleted (profile `{self.profile}`)").format(self=self)
         else:
             audit_reason = _("Ticket deleted by {deleter.display_name} ({deleter.id}) (profile `{self.profile}`)").format(deleter=deleter, self=self)
+        self.cog.views.pop(self.message).stop()
         if isinstance(self.channel, discord.Thread):
             await self.channel.delete(reason=audit_reason)
         else:
             await self.channel.delete(reason=audit_reason)
-        self.cog.views.pop(self.message).stop()
 
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if (
-            (log_channel_id := await self.cog.config.guild(self.guild).log_channel())
-            and (log_channel := self.guild.get_channel(log_channel_id))
+            (log_channel_id := await self.cog.config.guild(self.guild).log_channel()) is not None
+            and (log_channel := self.guild.get_channel(log_channel_id)) is not None
         ):
             await log_channel.send(
                 embeds=[

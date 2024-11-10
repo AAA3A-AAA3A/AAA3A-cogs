@@ -341,11 +341,11 @@ class OwnerCloseConfirmation(discord.ui.View):
         embed.set_footer(text=_("Note that if there is no response from you the ticket will be closed."))
         config = await self.cog.config.guild(ticket.guild).profiles.get_raw(ticket.profile)
         try:
-            int(config["emojis"]["reopen"])
+            int(config["emojis"]["close"])
         except ValueError:
-            e = config["emojis"]["reopen"]
+            e = config["emojis"]["close"]
         else:
-            e = str(e) if (e := self.cog.bot.get_emoji(int(config["emojis"]["reopen"]))) is not None else None
+            e = str(e) if (e := self.cog.bot.get_emoji(int(config["emojis"]["close"]))) is not None else None
         self.close.emoji = e
         message = await (interaction.response.send_message if interaction is not None else ticket.channel.send)(
             _("{owner.mention}, is there anything else we can help you with?").format(owner=ticket.owner),

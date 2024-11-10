@@ -723,7 +723,7 @@ class GuildStats(Cog):
                 typing.Union[
                     typing.Literal["messages", "voice", "activities"],
                     typing.Tuple[
-                        typing.Literal["top"],
+                        typing.Literal["top", "weekly", "monthly"],
                         typing.Literal["messages", "voice"],
                         typing.Literal["members", "channels"],
                     ],
@@ -1959,59 +1959,204 @@ class GuildStats(Cog):
                     },
                 }
             elif isinstance(_type, typing.Tuple):
-                if _type[0] == "top":
-                    members_messages_counter: Counter = Counter(
-                        [
-                            member_id
-                            for channel_id in all_channels_data
-                            for member_id, count_messages in all_channels_data[channel_id][
-                                "total_messages_members"
-                            ].items()
-                            for __ in range(count_messages)
-                            if _object.get_member(int(member_id)) is not None
-                            and is_valid(int(member_id))
-                        ]
-                    )
-                    members_voice_counter: Counter = Counter(
-                        [
-                            member_id
-                            for channel_id in all_channels_data
-                            for member_id, count_voice in all_channels_data[channel_id][
-                                "total_voice_members"
-                            ].items()
-                            for __ in range(count_voice)
-                            if _object.get_member(int(member_id)) is not None
-                            and is_valid(int(member_id))
-                        ]
-                    )
-                    top_messages_channels = Counter(
-                        {
-                            channel_id: all_channels_data[channel_id][
-                                f"total_{members_type_key}messages"
-                            ]
-                            for channel_id in all_channels_data
-                            if _object.get_channel(int(channel_id)) is not None
-                        }
-                    )
-                    top_voice_channels = Counter(
-                        {
-                            channel_id: all_channels_data[channel_id][
-                                f"total_{members_type_key}voice"
-                            ]
-                            for channel_id in all_channels_data
-                            if _object.get_channel(int(channel_id)) is not None
-                        }
-                    )
-                    if _type[1] == "messages":
-                        if _type[2] == "members":
-                            counter_to_use = members_messages_counter
+                if _type[0] in ("top", "weekly", "monthly"):
+                    if _type[0] == "top":
+                        if _type[1] == "messages":
+                            if _type[2] == "members":
+                                counter_to_use = members_messages_counter
+                            else:
+                                counter_to_use = top_messages_channels
                         else:
-                            counter_to_use = top_messages_channels
-                    else:
-                        if _type[2] == "members":
-                            counter_to_use = members_voice_counter
+                            if _type[2] == "members":
+                                counter_to_use = members_voice_counter
+                            else:
+                                counter_to_use = top_voice_channels
+                    elif _type[0] == "weekly":
+                        if _type[1] == "messages":
+                            if _type[2] == "members":
+                                members_messages_counter: Counter = Counter(
+                                    [
+                                        member_id
+                                        for channel_id in all_channels_data
+                                        for member_id, count_messages in all_channels_data[channel_id][
+                                            "total_messages_members"
+                                        ].items()
+                                        for time in all_channels_data[channel_id]["messages"].get(
+                                            str(member_id), []
+                                        )
+                                        for __ in range(count_messages)
+                                        if _object.get_member(int(member_id)) is not None
+                                        and is_valid(int(member_id))
+                                        and (
+                                            (utc_now - datetime.timedelta(days=7)).timestamp()
+                                            <= time
+                                            <= utc_now.timestamp()
+                                        )
+                                    ]
+                                )
+                                counter_to_use = members_messages_counter
+                            else:
+                                top_messages_channels = Counter(
+                                    {
+                                        channel_id: sum(
+                                            all_channels_data[channel_id]["total_messages_members"].get(
+                                                str(member.id), 0
+                                            )
+                                            for member in _object.members
+                                            for time in all_channels_data[channel_id]["messages"].get(
+                                                str(member.id), []
+                                            )
+                                            if is_valid(member.id)
+                                            and (
+                                                (utc_now - datetime.timedelta(days=7)).timestamp()
+                                                <= time
+                                                <= utc_now.timestamp()
+                                            )
+                                        )
+                                        for channel_id in all_channels_data
+                                        if _object.get_channel(int(channel_id)) is not None
+                                    }
+                                )
+                                counter_to_use = top_messages_channels
                         else:
-                            counter_to_use = top_voice_channels
+                            if _type[2] == "members":
+                                members_voice_counter: Counter = Counter(
+                                    [
+                                        member_id
+                                        for channel_id in all_channels_data
+                                        for member_id, count_voice in all_channels_data[channel_id][
+                                            "total_voice_members"
+                                        ].items()
+                                        for times in all_channels_data[channel_id]["voice"].get(
+                                            str(member_id), []
+                                        )
+                                        for __ in range(count_voice)
+                                        if _object.get_member(int(member_id)) is not None
+                                        and is_valid(int(member_id))
+                                        and (
+                                            (utc_now - datetime.timedelta(days=7)).timestamp()
+                                            <= times[1]
+                                            <= utc_now.timestamp()
+                                        )
+                                    ]
+                                )
+                                counter_to_use = members_voice_counter
+                            else:
+                                top_voice_channels = Counter(
+                                    {
+                                        channel_id: sum(
+                                            all_channels_data[channel_id]["total_voice_members"].get(
+                                                str(member.id), 0
+                                            )
+                                            for member in _object.members
+                                            for times in all_channels_data[channel_id]["voice"].get(
+                                                str(member.id), []
+                                            )
+                                            if is_valid(member.id)
+                                            and (
+                                                (utc_now - datetime.timedelta(days=7)).timestamp()
+                                                <= times[1]
+                                                <= utc_now.timestamp()
+                                            )
+                                        )
+                                        for channel_id in all_channels_data
+                                        if _object.get_channel(int(channel_id)) is not None
+                                    }
+                                )
+                                counter_to_use = top_voice_channels
+                    elif _type[0] == "monthly":
+                        if _type[1] == "messages":
+                            if _type[2] == "members":
+                                members_messages_counter: Counter = Counter(
+                                    [
+                                        member_id
+                                        for channel_id in all_channels_data
+                                        for member_id, count_messages in all_channels_data[channel_id][
+                                            "total_messages_members"
+                                        ].items()
+                                        for time in all_channels_data[channel_id]["messages"].get(
+                                            str(member_id), []
+                                        )
+                                        for __ in range(count_messages)
+                                        if _object.get_member(int(member_id)) is not None
+                                        and is_valid(int(member_id))
+                                        and (
+                                            (utc_now - datetime.timedelta(days=30)).timestamp()
+                                            <= time
+                                            <= utc_now.timestamp()
+                                        )
+                                    ]
+                                )
+                                counter_to_use = members_messages_counter
+                            else:
+                                top_messages_channels = Counter(
+                                    {
+                                        channel_id: sum(
+                                            all_channels_data[channel_id]["total_messages_members"].get(
+                                                str(member.id), 0
+                                            )
+                                            for member in _object.members
+                                            for time in all_channels_data[channel_id]["messages"].get(
+                                                str(member.id), []
+                                            )
+                                            if is_valid(member.id)
+                                            and (
+                                                (utc_now - datetime.timedelta(days=30)).timestamp()
+                                                <= time
+                                                <= utc_now.timestamp()
+                                            )
+                                        )
+                                        for channel_id in all_channels_data
+                                        if _object.get_channel(int(channel_id)) is not None
+                                    }
+                                )
+                                counter_to_use = top_messages_channels
+                        else:
+                            if _type[2] == "members":
+                                members_voice_counter: Counter = Counter(
+                                    [
+                                        member_id
+                                        for channel_id in all_channels_data
+                                        for member_id, count_voice in all_channels_data[channel_id][
+                                            "total_voice_members"
+                                        ].items()
+                                        for times in all_channels_data[channel_id]["voice"].get(
+                                            str(member_id), []
+                                        )
+                                        for __ in range(count_voice)
+                                        if _object.get_member(int(member_id)) is not None
+                                        and is_valid(int(member_id))
+                                        and (
+                                            (utc_now - datetime.timedelta(days=30)).timestamp()
+                                            <= times[1]
+                                            <= utc_now.timestamp()
+                                        )
+                                    ]
+                                )
+                                counter_to_use = members_voice_counter
+                            else:
+                                top_voice_channels = Counter(
+                                    {
+                                        channel_id: sum(
+                                            all_channels_data[channel_id]["total_voice_members"].get(
+                                                str(member.id), 0
+                                            )
+                                            for member in _object.members
+                                            for times in all_channels_data[channel_id]["voice"].get(
+                                                str(member.id), []
+                                            )
+                                            if is_valid(member.id)
+                                            and (
+                                                (utc_now - datetime.timedelta(days=30)).timestamp()
+                                                <= times[1]
+                                                <= utc_now.timestamp()
+                                            )
+                                        )
+                                        for channel_id in all_channels_data
+                                        if _object.get_channel(int(channel_id)) is not None
+                                    }
+                                )
+                                counter_to_use = top_voice_channels
                     return {
                         f"top_{_type[1]}_{_type[2]}": {  # member/channel: messages/hours
                             int(member_or_channel_id): (
@@ -2698,7 +2843,7 @@ class GuildStats(Cog):
                 typing.Union[
                     typing.Literal["messages", "voice", "activities"],
                     typing.Tuple[
-                        typing.Literal["top"],
+                        typing.Literal["top", "weekly", "monthly"],
                         typing.Literal["messages", "voice"],
                         typing.Literal["members", "channels"],
                     ],
@@ -2862,7 +3007,7 @@ class GuildStats(Cog):
                 typing.Union[
                     typing.Literal["messages", "voice", "activities"],
                     typing.Tuple[
-                        typing.Literal["top"],
+                        typing.Literal["top", "weekly", "monthly"],
                         typing.Literal["messages", "voice"],
                         typing.Literal["members", "channels"],
                     ],
@@ -3035,6 +3180,22 @@ class GuildStats(Cog):
                         font=self.bold_font[50],
                     )
                     image = Image.open(self.icons["#" if _type[1] == "messages" else "sound"])
+                elif _type[0] == "weekly":
+                    draw.text(
+                        (190, 30),
+                        text=_("Weekly Top Stats"),
+                        fill=(255, 255, 255),
+                        font=self.bold_font[50],
+                    )
+                    image = Image.open(self.icons["#" if _type[1] == "messages" else "sound"])
+                elif _type[0] == "monthly":
+                    draw.text(
+                        (190, 30),
+                        text=_("Monthly Top Stats"),
+                        fill=(255, 255, 255),
+                        font=self.bold_font[50],
+                    )
+                    image = Image.open(self.icons["#" if _type[1] == "messages" else "sound"])
                 elif _type[0] == "activity":
                     draw.text(
                         (190, 30),
@@ -3193,7 +3354,7 @@ class GuildStats(Cog):
                 typing.Union[
                     typing.Literal["messages", "voice", "activities"],
                     typing.Tuple[
-                        typing.Literal["top"],
+                        typing.Literal["top", "weekly", "monthly"],
                         typing.Literal["messages", "voice"],
                         typing.Literal["members", "channels"],
                     ],
@@ -3244,7 +3405,7 @@ class GuildStats(Cog):
                 typing.Union[
                     typing.Literal["messages", "voice", "activities"],
                     typing.Tuple[
-                        typing.Literal["top"],
+                        typing.Literal["top", "weekly", "monthly"],
                         typing.Literal["messages", "voice"],
                         typing.Literal["members", "channels"],
                     ],
@@ -3597,7 +3758,7 @@ class GuildStats(Cog):
                 typing.Union[
                     typing.Literal["messages", "voice", "activities"],
                     typing.Tuple[
-                        typing.Literal["top"],
+                        typing.Literal["top", "weekly", "monthly"],
                         typing.Literal["messages", "voice"],
                         typing.Literal["members", "channels"],
                     ],
@@ -3651,7 +3812,7 @@ class GuildStats(Cog):
                 typing.Union[
                     typing.Literal["messages", "voice", "activities"],
                     typing.Tuple[
-                        typing.Literal["top"],
+                        typing.Literal["top", "weekly", "monthly"],
                         typing.Literal["messages", "voice"],
                         typing.Literal["members", "channels"],
                     ],
@@ -4858,13 +5019,13 @@ class GuildStats(Cog):
                 img.paste(image, (1005, 301, 1890, 976))
 
             elif isinstance(_type, typing.Tuple):
-                if _type[0] == "top":
+                if _type[0] in ("top", "weekly", "monthly"):
                     # Top Messages/Voice Members/Channels. box = 925 / empty = 30 | 30 cases / box = 76 / empty = 16
                     draw.rounded_rectangle((30, 204, 955, 996), radius=15, fill=(47, 49, 54))
                     align_text_center(
                         (50, 214, 50, 284),
                         text=_("Top")
-                        + f"{_('Messages') if _type[1] == 'messages' else _('Voice')} {_('Members') if _type[2] == 'members' else _('Channels')}",
+                        + f" {_('Messages') if _type[1] == 'messages' else _('Voice')} {_('Members') if _type[2] == 'members' else _('Channels')}",
                         fill=(255, 255, 255),
                         font=self.bold_font[40],
                     )
@@ -5788,7 +5949,7 @@ class GuildStats(Cog):
                 typing.Union[
                     typing.Literal["messages", "voice", "activities"],
                     typing.Tuple[
-                        typing.Literal["top"],
+                        typing.Literal["top", "weekly", "monthly"],
                         typing.Literal["messages", "voice"],
                         typing.Literal["members", "channels"],
                     ],
@@ -6118,15 +6279,15 @@ class GuildStats(Cog):
             graphic_mode=False,
         ).start(ctx)
 
-    @guildstats.command()
+    @guildstats.command(aliases=["lb"])
     async def top(
         self,
         ctx: commands.Context,
         members_type: typing.Optional[typing.Literal["humans", "bots", "both"]],
-        _type_1: typing.Literal["messages", "voice"],
-        _type_2: typing.Literal["members", "channels"],
+        _type_1: typing.Literal["messages", "voice"] = "messages",
+        _type_2: typing.Literal["members", "channels"] = "members",
     ) -> None:
-        """Display top stats for voice/messages members/channels."""
+        """Display top stats leaderboard for voice/messages members/channels."""
         if members_type is None:
             members_type = "humans"
         if not (
@@ -6142,6 +6303,64 @@ class GuildStats(Cog):
         await GuildStatsView(
             cog=self,
             _object=(ctx.guild, ("top", _type_1, _type_2)),
+            members_type=members_type,
+            show_graphic_in_main=False,
+            graphic_mode=False,
+        ).start(ctx)
+
+    @guildstats.command(aliases=["wlb"])
+    async def weekly(
+        self,
+        ctx: commands.Context,
+        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]],
+        _type_1: typing.Literal["messages", "voice"] = "messages",
+        _type_2: typing.Literal["members", "channels"] = "members",
+    ) -> None:
+        """Display weekly stats leaderboard for voice/messages members/channels."""
+        if members_type is None:
+            members_type = "humans"
+        if not (
+            enabled_state
+            if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None
+            else await self.config.default_state()
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
+                ).format(prefix=ctx.prefix)
+            )
+        await GuildStatsView(
+            cog=self,
+            _object=(ctx.guild, ("weekly", _type_1, _type_2)),
+            members_type=members_type,
+            show_graphic_in_main=False,
+            graphic_mode=False,
+        ).start(ctx)
+
+    @guildstats.command(aliases=["mlb"])
+    async def monthly(
+        self,
+        ctx: commands.Context,
+        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]],
+        _type_1: typing.Literal["messages", "voice"] = "messages",
+        _type_2: typing.Literal["members", "channels"] = "members",
+    ) -> None:
+        """Display monthly stats leaderboard for voice/messages members/channels."""
+        if members_type is None:
+            members_type = "humans"
+        if not (
+            enabled_state
+            if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None
+            else await self.config.default_state()
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
+                ).format(prefix=ctx.prefix)
+            )
+        await GuildStatsView(
+            cog=self,
+            _object=(ctx.guild, ("monthly", _type_1, _type_2)),
             members_type=members_type,
             show_graphic_in_main=False,
             graphic_mode=False,
@@ -6449,7 +6668,7 @@ class GuildStats(Cog):
                     del members_data[guild]
 
     @commands.admin_or_permissions(administrator=True)
-    @guildstats.command(hidden=True)
+    @guildstats.command(hidden=True, with_app_command=False)
     async def purge(
         self,
         ctx: commands.Context,

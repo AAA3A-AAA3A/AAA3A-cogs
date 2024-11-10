@@ -321,17 +321,17 @@ class Ticket:
                 if self.is_claimed
                 else _("Not claimed.")
             )
-            # + (
-            #     _(
-            #         "\nClosed by: {closed_by.mention}"
-            #         "\nClosed at: <t:{closed_at}:F> (<t:{closed_at}:R>)"
-            #     ).format(
-            #         closed_by=self.closed_by if self.closed_by is not None else type("", (), {"mention": _("[Unknown]"), "id": self.closed_by_id}),
-            #         closed_at=int(self.closed_at.timestamp()),
-            #     )
-            #     if self.is_closed
-            #     else ""
-            # )
+            + (
+                _(
+                    "\nClosed by: {closed_by.mention}"
+                    "\nClosed at: <t:{closed_at}:F> (<t:{closed_at}:R>)"
+                ).format(
+                    closed_by=self.closed_by if self.closed_by is not None else type("", (), {"mention": _("[Unknown]"), "id": self.closed_by_id}),
+                    closed_at=int(self.closed_at.timestamp()),
+                )
+                if self.is_closed
+                else ""
+            )
         )
         if self.reason is not None:
             embed.add_field(

@@ -88,7 +88,8 @@ class Ticket:
             if not self.cog.tickets[self.guild_id]:
                 del self.cog.tickets[self.guild_id]
         await self.cog.config.guild(self.guild).tickets.clear_raw(str(self.id))
-        self.cog.views.pop(self.message).stop()
+        if self.message in self.cog.views:
+            self.cog.views.pop(self.message).stop()
 
     @property
     def guild(self) -> discord.Guild:
@@ -1114,7 +1115,6 @@ class Ticket:
             audit_reason = _("Ticket deleted (profile `{self.profile}`)").format(self=self)
         else:
             audit_reason = _("Ticket deleted by {deleter.display_name} ({deleter.id}) (profile `{self.profile}`)").format(deleter=deleter, self=self)
-        self.cog.views.pop(self.message).stop()
         if isinstance(self.channel, discord.Thread):
             await self.channel.delete(reason=audit_reason)
         else:
@@ -1122,10 +1122,10 @@ class Ticket:
 
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if (
-            (log_channel_id := await self.cog.config.guild(self.guild).log_channel()) is not None
-            and (log_channel := self.guild.get_channel(log_channel_id)) is not None
+            (logs_channel_id := await self.cog.config.guild(self.guild).logs_channel()) is not None
+            and (logs_channel := self.guild.get_channel(logs_channel_id)) is not None
         ):
-            await log_channel.send(
+            await logs_channel.send(
                 embeds=[
                     discord.Embed(
                         title=_("🗑 Ticket Deleted"),

@@ -5983,7 +5983,7 @@ class GuildStats(Cog):
                 _object, size=(1840, 464), data=data, to_file=False
             )
         elif _type == "activities" or (
-            isinstance(_type, typing.Tuple) and _type[0] in ("top", "activity")
+            isinstance(_type, typing.Tuple) and _type[0] in ("top", "weekly", "monthly", "activity")
         ):
             graphic = await self.generate_graphic(
                 _object, size=(885, 675), data=data, to_file=False

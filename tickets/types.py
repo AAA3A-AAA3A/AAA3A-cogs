@@ -501,6 +501,7 @@ class Ticket:
                 moderator=self.guild.me,
                 channel=self.channel,
             )
+        await self.cog.send_ticket_log(self)
 
         return view._message
 
@@ -631,6 +632,7 @@ class Ticket:
                 reason=reason,
                 channel=self.channel,
             )
+        await self.cog.send_ticket_log(self)
 
         if config["auto_delete_on_close"] == 0:
             await self.channel.send(
@@ -713,6 +715,7 @@ class Ticket:
                 reason=reason,
                 channel=self.channel,
             )
+        await self.cog.send_ticket_log(self)
 
     async def claim(self, claimer: discord.Member) -> None:
         if self.is_claimed:
@@ -750,6 +753,7 @@ class Ticket:
                 moderator=claimer,
                 channel=self.channel,
             )
+        await self.cog.send_ticket_log(self)
 
     async def unclaim(self) -> None:
         if not self.is_claimed:
@@ -787,6 +791,7 @@ class Ticket:
                 moderator=self.guild.me,
                 channel=self.channel,
             )
+        await self.cog.send_ticket_log(self)
 
     async def lock(self, locker: typing.Optional[discord.Member] = None) -> None:
         if self.is_locked:

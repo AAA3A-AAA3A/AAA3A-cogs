@@ -477,7 +477,7 @@ class Tickets(DashboardIntegration, Cog):
             )
         return commands.check(predicate)
 
-    async def send_ticket_creation_log(self, ticket: Ticket) -> None:
+    async def send_ticket_log(self, ticket: Ticket) -> None:
         if (
             (guild := ticket.guild) is not None
             and (logs_channel_id := await self.config.guild(guild).profiles.get_raw(ticket.profile, "logs_channel", default=None)) is not None
@@ -487,7 +487,7 @@ class Tickets(DashboardIntegration, Cog):
                 view: discord.ui.View = discord.ui.View()
                 view.add_item(
                     discord.ui.Button(
-                        label="Jump to Ticket",
+                        label=_("Jump to Ticket"),
                         style=discord.ButtonStyle.link,
                         url=ticket.message.jump_url,
                     )
@@ -602,7 +602,6 @@ class Tickets(DashboardIntegration, Cog):
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         await self.config.guild(guild).last_id.set(id)
-        await self.send_ticket_creation_log(ticket)
 
         if isinstance(ctx_interaction, discord.Interaction):
             await ctx_interaction.followup.send(

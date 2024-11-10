@@ -779,7 +779,6 @@ class Ticket:
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         await self.log_action(
             action=_("👤 Ticket Unclaimed"),
-            author=self.guild.me,
         )
         if config["create_modlog_case"]:
             await modlog.create_case(

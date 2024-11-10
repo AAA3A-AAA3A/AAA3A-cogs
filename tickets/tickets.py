@@ -538,7 +538,7 @@ class Tickets(DashboardIntegration, Cog):
             modal.on_submit = lambda interaction: interaction.response.defer()
             text_inputs = []
             for text_input_kwargs in final_modal:
-                if not text_input_kwargs["label"].endswith(":"):
+                if not text_input_kwargs["label"].endswith((":", "?")):
                     text_input_kwargs["label"] += ":"
                 text_input_kwargs["style"] = discord.TextStyle(text_input_kwargs["style"])
                 text_input: discord.ui.TextInput = discord.ui.TextInput(**text_input_kwargs)

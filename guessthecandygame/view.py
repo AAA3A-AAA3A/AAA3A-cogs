@@ -82,7 +82,7 @@ class GuessTheCandyGameView(discord.ui.View):
             await self.on_timeout()
             embed: discord.Embed = discord.Embed(
                 title=_("🎃 Guess The Candy 🎃"),
-                description=_("**Congratulations!** You guessed it was **{candy}** correctly, in **{time} seconds**!").format(
+                description=_("**Congratulations!** You've correctly guessed it's **{candy}**, in **{time} seconds**!").format(
                     candy=self.candy,
                     time=f"{(datetime.datetime.now(tz=datetime.timezone.utc) - self.start_time).total_seconds():.2f}",
                 ),

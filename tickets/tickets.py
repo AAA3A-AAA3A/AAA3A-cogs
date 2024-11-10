@@ -61,6 +61,7 @@ class Tickets(DashboardIntegration, Cog):
                 "max_open_tickets_by_member": 5,
                 "creating_modal": None,
                 "channel_name": None,
+                "welcome_message": "Welcome {owner_mention}! 👋",
                 "custom_message": "Don't ping staff members, they will answer you as soon as possible.",
                 "close_reopen_reason_modal": True,
                 "create_modlog_case": False,
@@ -127,12 +128,17 @@ class Tickets(DashboardIntegration, Cog):
             },
             "channel_name": {
                 "converter": commands.Range[str, 1, 500],
-                "description": "Name of the channel where the tickets will be created, reduced to 100 characters. You can use the following placeholders: `{emoji}`, `{owner_display_name}`, `{owner_name}`, `{owner_id}`, `{guild_name}` and `{guild_id}`.",
+                "description": "Name of the channel where the tickets will be created, reduced to 100 characters. You can use the following placeholders: `{emoji}`, `{owner_display_name}`, `{owner_name}`, `{owner_mention}`, `{owner_id}`, `{guild_name}` and `{guild_id}`.",
+                "no_slash": True,
+            },
+            "welcome_message": {
+                "converter": commands.Range[str, 1, 1000],
+                "description": "Welcome message that will be sent when a ticket is created. You can use the following placeholders: `{owner_display_name}`, `{owner_name}`, `{owner_mention}`, `{owner_id}`, `{guild_name}` and `{guild_id}`.",
                 "no_slash": True,
             },
             "custom_message": {
                 "converter": commands.Range[str, 1, 3000],
-                "description": "Custom message that will be sent when a ticket is created. You can use the following placeholders: `{owner_display_name}`, `{owner_name}`, `{owner_id}`, `{guild_name}` and `{guild_id}`.",
+                "description": "Custom message that will be sent when a ticket is created. You can use the following placeholders: `{owner_display_name}`, `{owner_name}`, `{owner_mention}`, `{owner_id}`, `{guild_name}` and `{guild_id}`.",
             },
             "close_reopen_reason_modal": {
                 "converter": bool,
@@ -671,6 +677,7 @@ class Tickets(DashboardIntegration, Cog):
                     "**•** Max Open Tickets By Member: {max_open_tickets_by_member}\n"
                     "**•** Creating Modal: {creating_modal}\n"
                     "**•** Channel Name: {channel_name}\n"
+                    "**•** Welcome Message: {welcome_message}\n"
                     "**•** Custom Message: {custom_message}\n"
                     "**•** Close/Reopen Reason Modal: {close_reopen_reason_modal}\n"
                     "**•** Create Modlog Case: {create_modlog_case}\n"
@@ -706,6 +713,7 @@ class Tickets(DashboardIntegration, Cog):
                     max_open_tickets_by_member=config["max_open_tickets_by_member"],
                     creating_modal=_("Set.") if config["creating_modal"] is not None else "...",
                     channel_name=config["channel_name"] or "...",
+                    welcome_message=config.get("welcome_message") or "...",
                     custom_message=config["custom_message"] or "...",
                     close_reopen_reason_modal=config["close_reopen_reason_modal"],
                     create_modlog_case=config["create_modlog_case"],

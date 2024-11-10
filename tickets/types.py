@@ -280,6 +280,7 @@ class Ticket:
             emoji=self.emoji,
             owner_display_name=self.owner.display_name,
             owner_name=self.owner.name,
+            owner_mention=self.owner.mention,
             owner_id=self.owner.id,
             guild_name=self.guild.name,
             guild_id=self.guild.id,
@@ -367,6 +368,7 @@ class Ticket:
                     description=config["custom_message"].format(
                         owner_display_name=self.owner.display_name,
                         owner_name=self.owner.name,
+                        owner_mention=self.owner.mention,
                         owner_id=self.owner.id,
                         guild_name=self.guild.name,
                         guild_id=self.guild.id,
@@ -390,7 +392,14 @@ class Ticket:
             else ""
         )
         if self.owner is not None:
-            content += _("{owner.mention} Welcome!").format(owner=self.owner)
+            content += config.get("welcome_message", "Welcome {owner_mention}! 👋").format(
+                owner_display_name=self.owner.display_name,
+                owner_name=self.owner.name,
+                owner_mention=self.owner.mention,
+                owner_id=self.owner.id,
+                guild_name=self.guild.name,
+                guild_id=self.guild.id,
+            )
 
         embeds = await self.get_embeds()
         view: TicketView = TicketView(cog=self.cog, ticket=self)

@@ -13,7 +13,7 @@ from functools import partial
 
 import aiohttp
 from humanfriendly import format_timespan
-from redbot.core.utils.chat_formatting import box, pagify
+from redbot.core.utils.chat_formatting import box, pagify, inline
 
 from .data import LANGUAGES_IDENTIFIERS, LANGUAGES_IMAGES
 
@@ -165,7 +165,9 @@ class WandboxResponse:
             menu = Menu(pages=output, lang="py")
             menu.extra_items.append(
                 discord.ui.Button(
-                    label="View on Wandbox", style=discord.ButtonStyle.url, url=self.url
+                    label=_("View on Wandbox"),
+                    style=discord.ButtonStyle.link,
+                    url=self.url,
                 )
             )
             await menu.start(ctx)
@@ -193,16 +195,18 @@ class WandboxResponse:
 
         embed.add_field(
             name=_("Engine used:"),
-            value=self.request.engine.name,
+            value=inline(self.request.engine.name),
             inline=True,
         )
         embed.add_field(
             name=_("Command used:"),
-            value=self.request.cog.wandbox_languages[self.request.engine.language][
-                self.request.engine.template
-            ][self.request.engine.name].display_compile_command
-            + (f" {self.request.compiler_options}" if self.request.compiler_options else "")
-            + (f" {self.request.runtime_options}" if self.request.runtime_options else ""),
+            value=inline(
+                self.request.cog.wandbox_languages[self.request.engine.language][
+                    self.request.engine.template
+                ][self.request.engine.name].display_compile_command
+                + (f" {self.request.compiler_options}" if self.request.compiler_options else "")
+                + (f" {self.request.runtime_options}" if self.request.runtime_options else "")
+            ),
             inline=True,
         )
         embed.add_field(
@@ -220,7 +224,7 @@ class WandboxResponse:
         ):
             if value := getattr(self, field):
                 description += (
-                    f"\n\n**{field.replace('_', ' ').title()}**:\n{box(value, lang='py')}"
+                    f"\n\n# {field.replace('_', ' ').title()}:\n{value.strip()}"
                 )
         pages = list(
             pagify(
@@ -231,7 +235,7 @@ class WandboxResponse:
         embeds = []
         for page in pages:
             e = embed.copy()
-            e.description = page
+            e.description = box(page, lang="py")
             embeds.append(e)
         await Menu(pages=embeds).start(ctx)
 
@@ -337,7 +341,8 @@ class TioResponse:
             await Menu(pages=output, lang="py").start(ctx)
             return
         embed: discord.Embed = discord.Embed(
-            title="RunCode Response (with Tio API)", url=self.request.language.link
+            title=_("RunCode Response (with Tio API)"),
+            url=self.request.language.link,
         )
         embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         run_time = format_timespan(self.run_time)
@@ -351,7 +356,7 @@ class TioResponse:
         except ValueError:
             pass
         embed.add_field(
-            name=_("Debug"),
+            name=_("Debug:"),
             value=box(debug, lang="py"),
         )
         pages = list(

@@ -19,6 +19,8 @@ _: Translator = Translator("EmbedUtils", __file__)
 
 def cleanup_code(code: str) -> str:
     code = dev_commands.cleanup_code(textwrap.dedent(code)).strip()
+    if code.startswith("json\n"):
+        code = code[5:]
     with io.StringIO(code) as codeio:
         for line in codeio:
             line = line.strip()

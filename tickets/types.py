@@ -6,6 +6,7 @@ import typing  # isort:skip
 
 from redbot.core.utils.chat_formatting import humanize_list, bold
 
+import asyncio
 import chat_exporter
 import copy
 import datetime
@@ -267,9 +268,14 @@ class Ticket:
         channel_name = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile, "channel_name")
         if channel_name is None:
             if forum_channel or (self.channel is not None and isinstance(self.channel, discord.Thread)):
-                channel_name = "{emoji} Ticket — {owner_display_name} ({owner_id})"
+                channel_name = "{emoji} Ticket{profile} — {owner_display_name} ({owner_id})".replace(
+                    "{profile}", "" if self.profile == "main" else f" ({self.profile.replace('_', ' ').title()})"
+                )
             else:
-                channel_name = "{emoji}-ticket-{owner_name}"
+                channel_name = "{emoji}-{profile}-{owner_name}".replace(
+                    "{profile}", "ticket" if self.profile == "main" else self.profile
+                )
+                    
         return channel_name.format(
             emoji=self.emoji,
             owner_display_name=self.owner.display_name,
@@ -625,6 +631,16 @@ class Ticket:
                 reason=reason,
                 channel=self.channel,
             )
+
+        if config["auto_delete_on_close"] == 0:
+            await self.channel.send(
+                embed=discord.Embed(
+                    title=_("🗑️ This ticket will be deleted in a few seconds..."),
+                    color=discord.Color.red(),
+                ),
+            )
+            await asyncio.sleep(5)
+            await self.delete_channel(None)  # That's a setting, so no deleter.
 
     async def reopen(
         self,

@@ -1121,7 +1121,7 @@ class Ticket:
 
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if (
-            (logs_channel_id := await self.cog.config.guild(self.guild).logs_channel()) is not None
+            (logs_channel_id := await self.cog.config.guild(self.guild).profiles.get_raw(self.profile, "logs_channel"))
             and (logs_channel := self.guild.get_channel(logs_channel_id)) is not None
         ):
             await logs_channel.send(

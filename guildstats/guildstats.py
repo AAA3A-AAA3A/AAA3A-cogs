@@ -929,7 +929,6 @@ class GuildStats(Cog):
                             str(_object.id), 0
                         )
                         for channel_id in all_channels_data
-                        if _object.guild.get_channel(int(channel_id)) is not None
                     }
                 )
                 top_voice_channels = Counter(
@@ -938,7 +937,6 @@ class GuildStats(Cog):
                             str(_object.id), 0
                         )
                         for channel_id in all_channels_data
-                        if _object.guild.get_channel(int(channel_id)) is not None
                     }
                 )
                 top_activities = Counter(
@@ -993,16 +991,14 @@ class GuildStats(Cog):
                             roundest_value := round(
                                 sum(
                                     int(times[1] - times[0])
-                                    - int(
-                                        to_remove
-                                        if (
-                                            to_remove := (
+                                    - max(
+                                        int(
+                                            (
                                                 utc_now - datetime.timedelta(days=delta)
                                             ).timestamp()
                                             - times[0]
-                                        )
-                                        > 0
-                                        else 0
+                                        ),
+                                        0,
                                     )
                                     for channel_id in all_channels_data
                                     for times in all_channels_data[channel_id]["voice"].get(
@@ -1093,27 +1089,22 @@ class GuildStats(Cog):
                                 roundest_value := round(
                                     sum(
                                         int(times[1] - times[0])
-                                        - int(
-                                            to_remove
-                                            if (
-                                                to_remove := (
+                                        - max(
+                                            int(
+                                                (
                                                     utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp() - times[0]
+                                            ),
+                                            0,
+                                        )
+                                        - max(
+                                            int(
+                                                (
+                                                    utc_now - datetime.timedelta(days=-day - 1)
                                                 ).timestamp()
-                                                - times[0]
-                                            )
-                                            - int(
-                                                to_remove
-                                                if (
-                                                    to_remove := (
-                                                        utc_now - datetime.timedelta(days=-day - 1)
-                                                    ).timestamp()
-                                                    - (utc_now.timestamp() - times[1])
-                                                )
-                                                > 0
-                                                else 0
-                                            )
-                                            > 0
-                                            else 0
+                                                - (utc_now.timestamp() - times[1])
+                                            ),
+                                            0,
                                         )
                                         for channel_id in all_channels_data
                                         for times in all_channels_data[channel_id]["voice"].get(
@@ -1217,7 +1208,6 @@ class GuildStats(Cog):
                         if is_valid(member.id)
                     )
                     for channel_id in all_channels_data
-                    if _object.guild.get_channel(int(channel_id)) is not None
                 }
             )
             top_voice_channels = Counter(
@@ -1228,7 +1218,6 @@ class GuildStats(Cog):
                         if is_valid(member.id)
                     )
                     for channel_id in all_channels_data
-                    if _object.guild.get_channel(int(channel_id)) is not None
                 }
             )
             top_activities = Counter(
@@ -1291,16 +1280,14 @@ class GuildStats(Cog):
                         roundest_value := round(
                             sum(
                                 int(times[1] - times[0])
-                                - int(
-                                    to_remove
-                                    if (
-                                        to_remove := (
+                                - max(
+                                    int(
+                                        (
                                             utc_now - datetime.timedelta(days=delta)
                                         ).timestamp()
                                         - times[0]
-                                    )
-                                    > 0
-                                    else 0
+                                    ),
+                                    0,
                                 )
                                 for channel_id in all_channels_data
                                 for member in _object.members
@@ -1395,27 +1382,22 @@ class GuildStats(Cog):
                             roundest_value := round(
                                 sum(
                                     int(times[1] - times[0])
-                                    - int(
-                                        to_remove
-                                        if (
-                                            to_remove := (
+                                    - max(
+                                        int(
+                                            (
                                                 utc_now - datetime.timedelta(days=-day)
+                                            ).timestamp() - times[0]
+                                        ),
+                                        0,
+                                    )
+                                    - max(
+                                        int(
+                                            (
+                                                utc_now - datetime.timedelta(days=-day - 1)
                                             ).timestamp()
-                                            - times[0]
-                                        )
-                                        - int(
-                                            to_remove
-                                            if (
-                                                to_remove := (
-                                                    utc_now - datetime.timedelta(days=-day - 1)
-                                                ).timestamp()
-                                                - (utc_now.timestamp() - times[1])
-                                            )
-                                            > 0
-                                            else 0
-                                        )
-                                        > 0
-                                        else 0
+                                            - (utc_now.timestamp() - times[1])
+                                        ),
+                                        0,
                                     )
                                     for channel_id in all_channels_data
                                     for member in _object.members
@@ -1470,14 +1452,12 @@ class GuildStats(Cog):
                 {
                     channel_id: all_channels_data[channel_id][f"total_{members_type_key}messages"]
                     for channel_id in all_channels_data
-                    if _object.get_channel(int(channel_id)) is not None
                 }
             )
             top_voice_channels = Counter(
                 {
                     channel_id: all_channels_data[channel_id][f"total_{members_type_key}voice"]
                     for channel_id in all_channels_data
-                    if _object.get_channel(int(channel_id)) is not None
                 }
             )
             if _type is None:
@@ -1520,16 +1500,14 @@ class GuildStats(Cog):
                             roundest_value := round(
                                 sum(
                                     int(times[1] - times[0])
-                                    - int(
-                                        to_remove
-                                        if (
-                                            to_remove := (
+                                    - max(
+                                        int(
+                                            (
                                                 utc_now - datetime.timedelta(days=delta)
                                             ).timestamp()
                                             - times[0]
-                                        )
-                                        > 0
-                                        else 0
+                                        ),
+                                        0,
                                     )
                                     for channel_id in all_channels_data
                                     for member_id in all_channels_data[channel_id]["voice"]
@@ -1631,27 +1609,22 @@ class GuildStats(Cog):
                                 roundest_value := round(
                                     sum(
                                         int(times[1] - times[0])
-                                        - int(
-                                            to_remove
-                                            if (
-                                                to_remove := (
+                                        - max(
+                                            int(
+                                                (
                                                     utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp() - times[0]
+                                            ),
+                                            0,
+                                        )
+                                        - max(
+                                            int(
+                                                (
+                                                    utc_now - datetime.timedelta(days=-day - 1)
                                                 ).timestamp()
-                                                - times[0]
-                                            )
-                                            - int(
-                                                to_remove
-                                                if (
-                                                    to_remove := (
-                                                        utc_now - datetime.timedelta(days=-day - 1)
-                                                    ).timestamp()
-                                                    - (utc_now.timestamp() - times[1])
-                                                )
-                                                > 0
-                                                else 0
-                                            )
-                                            > 0
-                                            else 0
+                                                - (utc_now.timestamp() - times[1])
+                                            ),
+                                            0,
                                         )
                                         for channel_id in all_channels_data
                                         for member_id in all_channels_data[channel_id]["voice"]
@@ -1786,16 +1759,14 @@ class GuildStats(Cog):
                             roundest_value := round(
                                 sum(
                                     int(times[1] - times[0])
-                                    - int(
-                                        to_remove
-                                        if (
-                                            to_remove := (
+                                    - max(
+                                        int(
+                                            (
                                                 utc_now - datetime.timedelta(days=delta)
                                             ).timestamp()
                                             - times[0]
-                                        )
-                                        > 0
-                                        else 0
+                                        ),
+                                        0,
                                     )
                                     for channel_id in all_channels_data
                                     for member_id in all_channels_data[channel_id]["voice"]
@@ -1851,27 +1822,22 @@ class GuildStats(Cog):
                                 roundest_value := round(
                                     sum(
                                         int(times[1] - times[0])
-                                        - int(
-                                            to_remove
-                                            if (
-                                                to_remove := (
+                                        - max(
+                                            int(
+                                                (
                                                     utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp() - times[0]
+                                            ),
+                                            0,
+                                        )
+                                        - max(
+                                            int(
+                                                (
+                                                    utc_now - datetime.timedelta(days=-day - 1)
                                                 ).timestamp()
-                                                - times[0]
-                                            )
-                                            - int(
-                                                to_remove
-                                                if (
-                                                    to_remove := (
-                                                        utc_now - datetime.timedelta(days=-day - 1)
-                                                    ).timestamp()
-                                                    - (utc_now.timestamp() - times[1])
-                                                )
-                                                > 0
-                                                else 0
-                                            )
-                                            > 0
-                                            else 0
+                                                - (utc_now.timestamp() - times[1])
+                                            ),
+                                            0,
                                         )
                                         for channel_id in all_channels_data
                                         for member_id in all_channels_data[channel_id]["voice"]
@@ -1978,20 +1944,10 @@ class GuildStats(Cog):
                                     [
                                         member_id
                                         for channel_id in all_channels_data
-                                        for member_id, count_messages in all_channels_data[channel_id][
-                                            "total_messages_members"
-                                        ].items()
-                                        for time in all_channels_data[channel_id]["messages"].get(
-                                            str(member_id), []
-                                        )
-                                        for __ in range(count_messages)
-                                        if _object.get_member(int(member_id)) is not None
-                                        and is_valid(int(member_id))
-                                        and (
-                                            (utc_now - datetime.timedelta(days=7)).timestamp()
-                                            <= time
-                                            <= utc_now.timestamp()
-                                        )
+                                        for member_id in all_channels_data[channel_id]["messages"]
+                                        for time in all_channels_data[channel_id]["messages"][member_id]
+                                        if is_valid(int(member_id))
+                                        and time >= (utc_now - datetime.timedelta(days=7)).timestamp()
                                     ]
                                 )
                                 counter_to_use = members_messages_counter
@@ -1999,22 +1955,13 @@ class GuildStats(Cog):
                                 top_messages_channels = Counter(
                                     {
                                         channel_id: sum(
-                                            all_channels_data[channel_id]["total_messages_members"].get(
-                                                str(member.id), 0
-                                            )
-                                            for member in _object.members
-                                            for time in all_channels_data[channel_id]["messages"].get(
-                                                str(member.id), []
-                                            )
-                                            if is_valid(member.id)
-                                            and (
-                                                (utc_now - datetime.timedelta(days=7)).timestamp()
-                                                <= time
-                                                <= utc_now.timestamp()
-                                            )
+                                            1
+                                            for member_id in all_channels_data[channel_id]["messages"]
+                                            for time in all_channels_data[channel_id]["messages"][member_id]
+                                            if is_valid(member_id)
+                                            and time >= (utc_now - datetime.timedelta(days=7)).timestamp()
                                         )
                                         for channel_id in all_channels_data
-                                        if _object.get_channel(int(channel_id)) is not None
                                     }
                                 )
                                 counter_to_use = top_messages_channels
@@ -2024,20 +1971,23 @@ class GuildStats(Cog):
                                     [
                                         member_id
                                         for channel_id in all_channels_data
-                                        for member_id, count_voice in all_channels_data[channel_id][
-                                            "total_voice_members"
-                                        ].items()
-                                        for times in all_channels_data[channel_id]["voice"].get(
-                                            str(member_id), []
+                                        for member_id in all_channels_data[channel_id]["voice"]
+                                        for times in all_channels_data[channel_id]["voice"][member_id]
+                                        for __ in range(
+                                            int(times[1] - times[0])
+                                            - max(
+                                                int(
+                                                    (
+                                                        utc_now - datetime.timedelta(days=7)
+                                                    ).timestamp()
+                                                    - times[0]
+                                                ),
+                                                0,
+                                            )
                                         )
-                                        for __ in range(count_voice)
-                                        if _object.get_member(int(member_id)) is not None
-                                        and is_valid(int(member_id))
-                                        and (
-                                            (utc_now - datetime.timedelta(days=7)).timestamp()
-                                            <= times[1]
-                                            <= utc_now.timestamp()
-                                        )
+                                        if is_valid(int(member_id))
+                                        and times[1]
+                                        >= (utc_now - datetime.timedelta(days=7)).timestamp()
                                     ]
                                 )
                                 counter_to_use = members_voice_counter
@@ -2045,14 +1995,10 @@ class GuildStats(Cog):
                                 top_voice_channels = Counter(
                                     {
                                         channel_id: sum(
-                                            all_channels_data[channel_id]["total_voice_members"].get(
-                                                str(member.id), 0
-                                            )
-                                            for member in _object.members
-                                            for times in all_channels_data[channel_id]["voice"].get(
-                                                str(member.id), []
-                                            )
-                                            if is_valid(member.id)
+                                            1
+                                            for member_id in all_channels_data[channel_id]["voice"]
+                                            for times in all_channels_data[channel_id]["voice"][member_id]
+                                            if is_valid(member_id)
                                             and (
                                                 (utc_now - datetime.timedelta(days=7)).timestamp()
                                                 <= times[1]
@@ -2060,7 +2006,6 @@ class GuildStats(Cog):
                                             )
                                         )
                                         for channel_id in all_channels_data
-                                        if _object.get_channel(int(channel_id)) is not None
                                     }
                                 )
                                 counter_to_use = top_voice_channels
@@ -2071,20 +2016,10 @@ class GuildStats(Cog):
                                     [
                                         member_id
                                         for channel_id in all_channels_data
-                                        for member_id, count_messages in all_channels_data[channel_id][
-                                            "total_messages_members"
-                                        ].items()
-                                        for time in all_channels_data[channel_id]["messages"].get(
-                                            str(member_id), []
-                                        )
-                                        for __ in range(count_messages)
-                                        if _object.get_member(int(member_id)) is not None
-                                        and is_valid(int(member_id))
-                                        and (
-                                            (utc_now - datetime.timedelta(days=30)).timestamp()
-                                            <= time
-                                            <= utc_now.timestamp()
-                                        )
+                                        for member_id in all_channels_data[channel_id]["messages"]
+                                        for time in all_channels_data[channel_id]["messages"][member_id]
+                                        if is_valid(int(member_id))
+                                        and time >= (utc_now - datetime.timedelta(days=30)).timestamp()
                                     ]
                                 )
                                 counter_to_use = members_messages_counter
@@ -2092,22 +2027,13 @@ class GuildStats(Cog):
                                 top_messages_channels = Counter(
                                     {
                                         channel_id: sum(
-                                            all_channels_data[channel_id]["total_messages_members"].get(
-                                                str(member.id), 0
-                                            )
-                                            for member in _object.members
-                                            for time in all_channels_data[channel_id]["messages"].get(
-                                                str(member.id), []
-                                            )
-                                            if is_valid(member.id)
-                                            and (
-                                                (utc_now - datetime.timedelta(days=30)).timestamp()
-                                                <= time
-                                                <= utc_now.timestamp()
-                                            )
+                                            1
+                                            for member_id in all_channels_data[channel_id]["messages"]
+                                            for time in all_channels_data[channel_id]["messages"][member_id]
+                                            if is_valid(member_id)
+                                            and time >= (utc_now - datetime.timedelta(days=30)).timestamp()
                                         )
                                         for channel_id in all_channels_data
-                                        if _object.get_channel(int(channel_id)) is not None
                                     }
                                 )
                                 counter_to_use = top_messages_channels
@@ -2117,20 +2043,23 @@ class GuildStats(Cog):
                                     [
                                         member_id
                                         for channel_id in all_channels_data
-                                        for member_id, count_voice in all_channels_data[channel_id][
-                                            "total_voice_members"
-                                        ].items()
-                                        for times in all_channels_data[channel_id]["voice"].get(
-                                            str(member_id), []
+                                        for member_id in all_channels_data[channel_id]["voice"]
+                                        for times in all_channels_data[channel_id]["voice"][member_id]
+                                        for __ in range(
+                                            int(times[1] - times[0])
+                                            - max(
+                                                int(
+                                                    (
+                                                        utc_now - datetime.timedelta(days=30)
+                                                    ).timestamp()
+                                                    - times[0]
+                                                ),
+                                                0,
+                                            )
                                         )
-                                        for __ in range(count_voice)
-                                        if _object.get_member(int(member_id)) is not None
-                                        and is_valid(int(member_id))
-                                        and (
-                                            (utc_now - datetime.timedelta(days=30)).timestamp()
-                                            <= times[1]
-                                            <= utc_now.timestamp()
-                                        )
+                                        if is_valid(int(member_id))
+                                        and times[1]
+                                        >= (utc_now - datetime.timedelta(days=30)).timestamp()
                                     ]
                                 )
                                 counter_to_use = members_voice_counter
@@ -2138,22 +2067,23 @@ class GuildStats(Cog):
                                 top_voice_channels = Counter(
                                     {
                                         channel_id: sum(
-                                            all_channels_data[channel_id]["total_voice_members"].get(
-                                                str(member.id), 0
+                                            int(times[1] - times[0])
+                                            - max(
+                                                int(
+                                                    (
+                                                        utc_now - datetime.timedelta(days=30)
+                                                    ).timestamp()
+                                                    - times[0]
+                                                ),
+                                                0,
                                             )
-                                            for member in _object.members
-                                            for times in all_channels_data[channel_id]["voice"].get(
-                                                str(member.id), []
-                                            )
-                                            if is_valid(member.id)
-                                            and (
-                                                (utc_now - datetime.timedelta(days=30)).timestamp()
-                                                <= times[1]
-                                                <= utc_now.timestamp()
-                                            )
+                                            for member_id in all_channels_data[channel_id]["voice"]
+                                            for times in all_channels_data[channel_id]["voice"][member_id]
+                                            if is_valid(member_id)
+                                            and times[1]
+                                            >= (utc_now - datetime.timedelta(days=30)).timestamp()
                                         )
                                         for channel_id in all_channels_data
-                                        if _object.get_channel(int(channel_id)) is not None
                                     }
                                 )
                                 counter_to_use = top_voice_channels
@@ -2284,7 +2214,6 @@ class GuildStats(Cog):
                         for channel in _object.channels
                         if channel.id in all_channels_data
                     ]
-                    if _object.guild.get_channel(int(channel_id)) is not None
                 }
             )
             top_voice_channels = Counter(
@@ -2295,7 +2224,6 @@ class GuildStats(Cog):
                         for channel in _object.channels
                         if channel.id in all_channels_data
                     ]
-                    if _object.guild.get_channel(int(channel_id)) is not None
                 }
             )
             return {
@@ -2349,16 +2277,14 @@ class GuildStats(Cog):
                         roundest_value := round(
                             sum(
                                 int(times[1] - times[0])
-                                - int(
-                                    to_remove
-                                    if (
-                                        to_remove := (
+                                - max(
+                                    int(
+                                        (
                                             utc_now - datetime.timedelta(days=delta)
                                         ).timestamp()
                                         - times[0]
-                                    )
-                                    > 0
-                                    else 0
+                                    ),
+                                    0,
                                 )
                                 for channel_id in [
                                     channel.id
@@ -2461,27 +2387,22 @@ class GuildStats(Cog):
                             roundest_value := round(
                                 sum(
                                     int(times[1] - times[0])
-                                    - int(
-                                        to_remove
-                                        if (
-                                            to_remove := (
+                                    - max(
+                                        int(
+                                            (
                                                 utc_now - datetime.timedelta(days=-day)
+                                            ).timestamp() - times[0]
+                                        ),
+                                        0,
+                                    )
+                                    - max(
+                                        int(
+                                            (
+                                                utc_now - datetime.timedelta(days=-day - 1)
                                             ).timestamp()
-                                            - times[0]
-                                        )
-                                        - int(
-                                            to_remove
-                                            if (
-                                                to_remove := (
-                                                    utc_now - datetime.timedelta(days=-day - 1)
-                                                ).timestamp()
-                                                - (utc_now.timestamp() - times[1])
-                                            )
-                                            > 0
-                                            else 0
-                                        )
-                                        > 0
-                                        else 0
+                                            - (utc_now.timestamp() - times[1])
+                                        ),
+                                        0,
                                     )
                                     for channel_id in [
                                         channel.id
@@ -2529,7 +2450,6 @@ class GuildStats(Cog):
                 {
                     channel_id: all_channels_data[channel_id][f"total_{members_type_key}messages"]
                     for channel_id in all_channels_data
-                    if _object.guild.get_channel(int(channel_id)) is not None
                 }
             )
             top_messages_channels_sorted: typing.List[int] = sorted(
@@ -2647,7 +2567,6 @@ class GuildStats(Cog):
                 {
                     channel_id: all_channels_data[channel_id][f"total_{members_type_key}voice"]
                     for channel_id in all_channels_data
-                    if _object.guild.get_channel(int(channel_id)) is not None
                 }
             )
             top_voice_channels_sorted: typing.List[int] = sorted(
@@ -2677,16 +2596,14 @@ class GuildStats(Cog):
                                 roundest_value := round(
                                     sum(
                                         int(times[1] - times[0])
-                                        - int(
-                                            to_remove
-                                            if (
-                                                to_remove := (
+                                        - max(
+                                            int(
+                                                (
                                                     utc_now - datetime.timedelta(days=delta)
                                                 ).timestamp()
                                                 - times[0]
-                                            )
-                                            > 0
-                                            else 0
+                                            ),
+                                            0,
                                         )
                                         for member_id in all_channels_data[_object.id]["voice"]
                                         for times in all_channels_data[_object.id]["voice"][
@@ -2746,28 +2663,22 @@ class GuildStats(Cog):
                                     roundest_value := round(
                                         sum(
                                             int(times[1] - times[0])
-                                            - int(
-                                                to_remove
-                                                if (
-                                                    to_remove := (
+                                            - max(
+                                                int(
+                                                    (
                                                         utc_now - datetime.timedelta(days=-day)
+                                                    ).timestamp() - times[0]
+                                                ),
+                                                0,
+                                            )
+                                            - max(
+                                                int(
+                                                    (
+                                                        utc_now - datetime.timedelta(days=-day - 1)
                                                     ).timestamp()
-                                                    - times[0]
-                                                )
-                                                - int(
-                                                    to_remove
-                                                    if (
-                                                        to_remove := (
-                                                            utc_now
-                                                            - datetime.timedelta(days=-day - 1)
-                                                        ).timestamp()
-                                                        - (utc_now.timestamp() - times[1])
-                                                    )
-                                                    > 0
-                                                    else 0
-                                                )
-                                                > 0
-                                                else 0
+                                                    - (utc_now.timestamp() - times[1])
+                                                ),
+                                                0,
                                             )
                                             for member_id in all_channels_data[_object.id]["voice"]
                                             for times in all_channels_data[_object.id]["voice"][
@@ -6283,9 +6194,9 @@ class GuildStats(Cog):
     async def top(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]],
-        _type_1: typing.Literal["messages", "voice"] = "messages",
-        _type_2: typing.Literal["members", "channels"] = "members",
+        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
+        _type_1: typing.Optional[typing.Literal["messages", "voice"]] = "messages",
+        _type_2: typing.Optional[typing.Literal["members", "channels"]] = "members",
     ) -> None:
         """Display top stats leaderboard for voice/messages members/channels."""
         if members_type is None:
@@ -6308,13 +6219,13 @@ class GuildStats(Cog):
             graphic_mode=False,
         ).start(ctx)
 
-    @guildstats.command(aliases=["wlb"])
+    @guildstats.command(aliases=["wtop", "wlb"])
     async def weekly(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]],
-        _type_1: typing.Literal["messages", "voice"] = "messages",
-        _type_2: typing.Literal["members", "channels"] = "members",
+        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
+        _type_1: typing.Optional[typing.Literal["messages", "voice"]] = "messages",
+        _type_2: typing.Optional[typing.Literal["members", "channels"]] = "members",
     ) -> None:
         """Display weekly stats leaderboard for voice/messages members/channels."""
         if members_type is None:
@@ -6337,17 +6248,15 @@ class GuildStats(Cog):
             graphic_mode=False,
         ).start(ctx)
 
-    @guildstats.command(aliases=["mlb"])
+    @guildstats.command(aliases=["mtop", "mlb"])
     async def monthly(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]],
-        _type_1: typing.Literal["messages", "voice"] = "messages",
-        _type_2: typing.Literal["members", "channels"] = "members",
+        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
+        _type_1: typing.Optional[typing.Literal["messages", "voice"]] = "messages",
+        _type_2: typing.Optional[typing.Literal["members", "channels"]] = "members",
     ) -> None:
         """Display monthly stats leaderboard for voice/messages members/channels."""
-        if members_type is None:
-            members_type = "humans"
         if not (
             enabled_state
             if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None

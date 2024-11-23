@@ -272,16 +272,17 @@ class AdventCalendar(Cog):
     def _generate_merry_christmas(self, to_file: bool = True) -> typing.Union[Image.Image, discord.File]:
         img: Image.Image = Image.new("RGBA", (1900, 450), (0, 0, 0, 0))
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
-        draw.rounded_rectangle(
-            (0, 0, img.width, img.height),
-            radius=50,
-            fill=(43, 45, 49),
-        )
+        # draw.rounded_rectangle(
+        #     (0, 0, img.width, img.height),
+        #     radius=50,
+        #     fill=(43, 45, 49),
+        # )
         align_text_center = functools.partial(self.align_text_center, draw)
         align_text_center(
             xy=(0, 0, img.width, img.height),
             text=_("Merry4Christmas!"),
-            fill=(255, 255, 255),
+            fill=(255, 215, 0),  # gold
+            # fill=(255, 255, 255),
             font=self.merry_christmas_star_font[325],
         )
 

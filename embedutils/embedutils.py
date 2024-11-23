@@ -114,7 +114,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         You can use an [**embeds creator**](https://embedutils.com/) to get a JSON payload.
 
         If you provide a message, it will be edited.
-        You can use an attachment and the command `[p]embed yamlfile` will be invoked automatically.
+        You can use an attachment and the command `[p]embed fromfile` will be invoked automatically.
         """
         if data is None:
             return await self.embed_fromfile(ctx, channel_or_message=channel_or_message)

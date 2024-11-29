@@ -75,8 +75,8 @@ class SetRewardsView(discord.ui.View):
                         priority=reward["priority"],
                         percent=round(reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2),
                         multiplied_priority_percent=(
-                            f" ; x{reward['priority_multiplier']} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
-                            if reward["priority_multiplier"] is not None
+                            f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
+                            if any(r["priority_multiplier"] is not None for r in day_rewards)
                             else ""
                         ),
                     ),
@@ -92,8 +92,8 @@ class SetRewardsView(discord.ui.View):
                         priority=reward["priority"],
                         percent=round(reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2),
                         multiplied_priority_percent=(
-                            f" ; x{reward['priority_multiplier']} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
-                            if reward["priority_multiplier"] is not None
+                            f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
+                            if any(r["priority_multiplier"] is not None for r in day_rewards)
                             else ""
                         ),
                     ),
@@ -106,8 +106,8 @@ class SetRewardsView(discord.ui.View):
                         priority=reward["priority"],
                         percent=round(reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2),
                         multiplied_priority_percent=(
-                            f" ; x{reward['priority_multiplier']} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
-                            if reward["priority_multiplier"] is not None
+                            f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
+                            if any(r["priority_multiplier"] is not None for r in day_rewards)
                             else ""
                         ),
                     ),
@@ -120,8 +120,8 @@ class SetRewardsView(discord.ui.View):
                         priority=reward["priority"],
                         percent=round(reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2),
                         multiplied_priority_percent=(
-                            f" ; x{reward['priority_multiplier']} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
-                            if reward["priority_multiplier"] is not None
+                            f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
+                            if any(r["priority_multiplier"] is not None for r in day_rewards)
                             else ""
                         ),
                     ),
@@ -134,8 +134,8 @@ class SetRewardsView(discord.ui.View):
                         priority=reward["priority"],
                         percent=round(reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2),
                         multiplied_priority_percent=(
-                            f" ; x{reward['priority_multiplier']} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
-                            if reward["priority_multiplier"] is not None
+                            f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
+                            if any(r["priority_multiplier"] is not None for r in day_rewards)
                             else ""
                         ),
                     ),
@@ -148,8 +148,8 @@ class SetRewardsView(discord.ui.View):
                         priority=reward["priority"],
                         percent=round(reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2),
                         multiplied_priority_percent=(
-                            f" ; x{reward['priority_multiplier']} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
-                            if reward["priority_multiplier"] is not None
+                            f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
+                            if any(r["priority_multiplier"] is not None for r in day_rewards)
                             else ""
                         ),
                     ),
@@ -162,8 +162,8 @@ class SetRewardsView(discord.ui.View):
                         priority=reward["priority"],
                         percent=round(reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2),
                         multiplied_priority_percent=(
-                            f" ; x{reward['priority_multiplier']} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
-                            if reward["priority_multiplier"] is not None
+                            f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * reward['priority_multiplier'] / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
+                            if any(r["priority_multiplier"] is not None for r in day_rewards)
                             else ""
                         ),
                     ),

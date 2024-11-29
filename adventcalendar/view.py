@@ -177,7 +177,6 @@ class SetRewardsView(discord.ui.View):
         self,
         page: typing.Optional[int] = discord.utils.MISSING,
         edit_message: bool = True,
-        interaction: typing.Optional[discord.Interaction] = None,
     ) -> None:
         if page is not discord.utils.MISSING:
             self.current_day = page
@@ -204,30 +203,26 @@ class SetRewardsView(discord.ui.View):
         self.clear.disabled = not day_rewards
         self.clear_all.disabled = not any([reward for reward in (await self.cog.config.guild(self.ctx.guild).rewards()).values()])
         if edit_message:
-            if interaction is not None:
-                await interaction.response.edit_message(
-                    embed=await self.get_embed(),
-                    view=self,
-                )
-            else:
-                await self._message.edit(
-                    embed=await self.get_embed(),
-                    view=self,
-                )
+            await self._message.edit(
+                embed=await self.get_embed(),
+                view=self,
+            )
 
     @discord.ui.button(emoji="⏮️", style=discord.ButtonStyle.secondary, row=0)
     async def first_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        await self._update(page=1, interaction=interaction)
+        await interaction.response.defer()
+        await self._update(page=1)
 
     @discord.ui.button(emoji="◀️", style=discord.ButtonStyle.secondary, row=0)
     async def previous_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        await interaction.response.defer()
         if self.current_day == 1:
             page = None
         elif self.current_day is None:
             page = 24
         else:
             page = self.current_day - 1
-        await self._update(page=page, interaction=interaction)
+        await self._update(page=page)
 
     @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger, row=0)
     async def close(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
@@ -239,17 +234,19 @@ class SetRewardsView(discord.ui.View):
 
     @discord.ui.button(emoji="▶️", style=discord.ButtonStyle.secondary, row=0)
     async def next_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        await interaction.response.defer()
         if self.current_day == 24:
             page = None
         elif self.current_day is None:
             page = 1
         else:
             page = self.current_day + 1
-        await self._update(page=page, interaction=interaction)
+        await self._update(page=page)
 
     @discord.ui.button(emoji="⏭️", style=discord.ButtonStyle.secondary, row=0)
     async def last_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        await self._update(page=None, interaction=interaction)
+        await interaction.response.defer()
+        await self._update(page=None)
 
     @discord.ui.button(label="Role", style=discord.ButtonStyle.success, row=1)
     async def role(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:

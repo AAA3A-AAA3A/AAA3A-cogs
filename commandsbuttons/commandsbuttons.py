@@ -132,15 +132,17 @@ class CommandsButtons(Cog):
             and command == command_object.qualified_name
             and command_object.params
         ):
-            params = command_object.params
-            if len(params) > 5:
-                params = {name: param for name, param in params.items() if not param.required}
-            modal = discord.ui.Modal(title="Invoke Command")
+            params = sorted(
+                command_object.params.items(),
+                key=lambda param: param.required,
+                reverse=True,
+            )[:5]
+            modal = discord.ui.Modal(title=_("Invoke Command"))
             modal.on_submit = lambda interaction: interaction.response.defer()
             text_inputs: typing.List[discord.ui.TextInput] = []
-            for name, param in params.items():
+            for name, param in params:
                 text_input = discord.ui.TextInput(
-                    label=name.replace("_", " ").title(),
+                    label=f"{name.replace('_', ' ').title()}:",
                     style=discord.TextStyle.short,
                     placeholder=repr(param)[repr(param).index(":", 12) + 1 : -2][:100],
                     default=str(param.default)

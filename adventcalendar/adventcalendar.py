@@ -409,6 +409,7 @@ class AdventCalendar(Cog):
                     else None
                 ),
                 embed=embed,
+                allowed_mentions=discord.AllowedMentions(roles=True),
             )
             return reward, {
                 "embed": discord.Embed(

@@ -43,6 +43,7 @@ class AdventCalendar(Cog):
             custom_rewards_logs_channel=None,
             custom_rewards_ping_role=None,
             priority_multiplier_roles=[],
+            include_opener_mention=False,
         )
         self.config.register_member(
             opened_days=[],
@@ -72,6 +73,10 @@ class AdventCalendar(Cog):
             "priority_multiplier_roles": {
                 "converter": commands.Greedy[discord.Role],
                 "description": "Roles that will have their rewards priority multiplied (set individually for each reward).",
+            },
+            "include_opener_mention": {
+                "converter": bool,
+                "description": "Whether to include the opener's mention in all messages.",
             },
         }
         self.settings: Settings = Settings(
@@ -505,7 +510,11 @@ class AdventCalendar(Cog):
         )
         files.append(await self.generate_advent_calendar(today_day=today_day, opened_days=opened_days))
         await ctx.send(
-            content,
+            (
+                content
+                if not await self.config.guild(ctx.guild).include_opener_mention()
+                else f"{ctx.author.mention} {content or ''}"
+            ),
             embeds=embeds,
             files=files,
             reference=ctx.message.to_reference(fail_if_not_exists=False),

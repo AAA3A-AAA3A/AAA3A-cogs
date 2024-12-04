@@ -510,7 +510,7 @@ class AdventCalendar(Cog):
             else:
                 content = _(
                     "You've already opened your box for the day, **come back <t:{timestamp}:R>!** 😉 Here's your current Advent Calendar!"
-                ).format(timestamp=int(datetime.datetime.combine(today + datetime.timedelta(days=1), datetime.time(0, 0, 0), tzinfo=datetime.timezone.utc).timestamp()))
+                ).format(timestamp=int(datetime.datetime.combine(today + datetime.timedelta(days=1), datetime.time(0, 0, 0)).timestamp()))
         elif today_day == 25:
             embeds.append(
                 discord.Embed(

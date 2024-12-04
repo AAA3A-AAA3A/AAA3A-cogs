@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, Settings, CogsUtils, Loop  # isort:skip
+from AAA3A_utils import Cog, Settings, CogsUtils, Loop, Menu  # isort:skip
 from redbot.core import commands, Config, bank  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -579,10 +579,14 @@ class AdventCalendar(Cog):
             icon_url=member.display_avatar,
         )
         embed.set_image(url="attachment://advent_calendar.png")
-        await ctx.send(
-            embed=embed,
-            file=await self.generate_advent_calendar(today_day=today.day, opened_days=opened_days),
-        )
+        await Menu(
+            pages=[
+                {
+                    "embed": embed,
+                    "file": await self.generate_advent_calendar(today_day=today.day, opened_days=opened_days),
+                },
+            ],
+        ).start(ctx)
 
     @commands.bot_has_permissions(embed_links=True, attach_files=True)
     @setadventcalendar.command()
@@ -612,7 +616,7 @@ class AdventCalendar(Cog):
             text=ctx.guild.name,
             icon_url=ctx.guild.icon,
         )
-        await ctx.send(embed=embed)
+        await Menu(pages=[embed]).start(ctx)
 
     @commands.bot_has_permissions(embed_links=True, attach_files=True)
     @setadventcalendar.command()
@@ -714,7 +718,4 @@ class AdventCalendar(Cog):
         graphic = discord.File(buffer, filename="graphic.png")
         embed.set_image(url="attachment://graphic.png")
 
-        await ctx.send(
-            embed=embed,
-            file=graphic,
-        )
+        await Menu(pages={"embed": embed, "file": graphic}).start(ctx)

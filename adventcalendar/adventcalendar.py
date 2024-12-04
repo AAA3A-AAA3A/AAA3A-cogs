@@ -10,9 +10,11 @@ import datetime
 import functools
 import io
 import random
+from collections import Counter
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
+import plotly.graph_objects as go
 from redbot.core.data_manager import bundled_data_path
 
 from .view import SetRewardsView
@@ -170,6 +172,12 @@ class AdventCalendar(Cog):
             font=self.merry_christmas_flake_font[325],
         )
 
+        open_emojis = []
+        for __ in range(len(opened_days) // 10):
+            open_emojis.extend(list(range(10)))
+        open_emojis.extend(random.sample(list(range(10)), k=len(opened_days) % 10))
+        random.shuffle(open_emojis)
+
         def box_day(
             day: int,
             x: int, y: int,
@@ -205,7 +213,7 @@ class AdventCalendar(Cog):
             if day in opened_days:
                 align_text_center(
                     (x + 4, y, x + size, y + size - 40),
-                    text=str(random.randint(0, 9)),
+                    text=str(open_emojis.pop()),
                     fill=(255, 255, 255),
                     font=self.merry_christmas_flake_font[200],
                 )
@@ -305,7 +313,45 @@ class AdventCalendar(Cog):
         )
 
     async def get_reward(self, member: discord.Member, day: typing.Optional[int]) -> typing.Tuple[typing.Optional[typing.Dict[str, typing.Union[str, int]]], typing.Optional[typing.Dict[typing.Literal["embed", "file"], typing.Union[discord.Embed, discord.File]]]]:
-        day_rewards = await self.config.guild(member.guild).rewards.get_raw(str(day) if day is not None else "null")
+        day_rewards = [
+            reward
+            for reward in await self.config.guild(member.guild).rewards.get_raw(str(day) if day is not None else "null")
+            if not (
+                (
+                    reward["type"] == "role"
+                    and (
+                        (role := member.guild.get_role(reward["role_id"])) is None 
+                        or role in member.roles
+                    )
+                )
+                or (
+                    reward["type"] == "temp_role"
+                    and (
+                        (TempRoles := self.bot.get_cog("TempRoles")) is None
+                        or (role := member.guild.get_role(reward["role_id"])) is None
+                        or role in member.roles
+                    )
+                )
+                or (
+                    reward["type"] == "bank_credits"
+                    and await bank.is_global()
+                )
+                or (
+                    reward["type"] == "levelup_xp"
+                    and (
+                        (LevelUp := self.bot.get_cog("LevelUp")) is None
+                        or not hasattr(LevelUp, "add_xp")
+                    )
+                )
+                or (
+                    reward["type"] == "custom"
+                    and (
+                        (custom_rewards_logs_channel_id := await self.config.guild(member.guild).custom_rewards_logs_channel()) is None
+                        or (custom_rewards_logs_channel := member.guild.get_channel(custom_rewards_logs_channel_id)) is None
+                    )
+                )
+            )
+        ]
         if not day_rewards:
             return None, None
         reward = random.sample(
@@ -327,10 +373,6 @@ class AdventCalendar(Cog):
         if reward["type"] is None:
             return None, None
         elif reward["type"] == "role":
-            if (role := member.guild.get_role(reward["role_id"])) is None:
-                return None, None
-            if role in member.roles:
-                return None, None
             try:
                 await member.add_roles(role, reason=f"🎄 Advent Calendar {f'reward for day {day}' if day is not None else 'final reward'}.")
             except discord.HTTPException:
@@ -343,12 +385,6 @@ class AdventCalendar(Cog):
                 ),
             }
         elif reward["type"] == "temp_role":
-            if (role := member.guild.get_role(reward["role_id"])) is None:
-                return None, None
-            if role in member.roles:
-                return None, None
-            if (TempRoles := self.bot.get_cog("TempRoles")) is None:
-                return None, None
             duration = datetime.timedelta(seconds=reward["duration"])
             try:
                 end_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc) + duration
@@ -370,8 +406,6 @@ class AdventCalendar(Cog):
                 ),
             }
         elif reward["type"] == "bank_credits":
-            if await bank.is_global():
-                return None, None
             await bank.deposit_credits(member, reward["amount"])
             return reward, {
                 "embed": discord.Embed(
@@ -380,8 +414,6 @@ class AdventCalendar(Cog):
                 ),
             }
         elif reward["type"] == "levelup_xp":
-            if (LevelUp := self.bot.get_cog("LevelUp")) is None or not hasattr(LevelUp, "add_xp"):
-                return None, None
             await LevelUp.add_xp(member, xp=reward["amount"])
             return reward, {
                 "embed": discord.Embed(
@@ -391,11 +423,6 @@ class AdventCalendar(Cog):
                 "file": file if isinstance((file := await LevelUp.get_user_profile_cached(member)), discord.File) else None,
             }
         elif reward["type"] == "custom":
-            if (
-                (custom_rewards_logs_channel_id := await self.config.guild(member.guild).custom_rewards_logs_channel()) is None
-                or (custom_rewards_logs_channel := member.guild.get_channel(custom_rewards_logs_channel_id)) is None
-            ):
-                return None, None
             embed = discord.Embed(
                 title=_("Advent Calendar — {member.display_name} received a **custom reward**").format(member=member) + (f" for **day {day}**!" if day is not None else " as **final reward**!"),
                 color=discord.Color.green(),
@@ -491,7 +518,7 @@ class AdventCalendar(Cog):
                 ).set_image(url="attachment://merry_christmas.png")
             )
             files.append(await self.generate_merry_christmas())
-            if len(opened_days) == 24:
+            if len(opened_days) == 24 and None not in opened_days:
                 content = _("🎄 You've opened all the boxes! 🎄")
                 reward, kwargs = await self.get_reward(ctx.author, None)
                 if reward is not None:
@@ -500,6 +527,8 @@ class AdventCalendar(Cog):
                         embeds.append(kwargs["embed"])
                         if (file := kwargs.get("file")) is not None:
                             files.append(file)
+                opened_days.append(None)
+                await self.config.member(ctx.author).opened_days.set(opened_days)
 
         embeds.append(
             discord.Embed(
@@ -532,3 +561,160 @@ class AdventCalendar(Cog):
     async def rewards(self, ctx: commands.Context) -> None:
         """Set up the rewards for each day of the Advent Calendar."""
         await SetRewardsView(self).start(ctx)
+
+    @commands.bot_has_permissions(embed_links=True, attach_files=True)
+    @setadventcalendar.command()
+    async def madvent(self, ctx: commands.Context, *, member: discord.Member = commands.Author) -> None:
+        """Get the Advent Calendar for a member."""
+        today = datetime.date.today()
+        if not today.month == 12:
+            raise commands.UserFeedbackCheckFailure(_("The Advent Calendar is only available in December."))
+        opened_days = await self.config.member(member).opened_days()
+        embed: discord.Embed = discord.Embed(
+            title=_("Advent Calendar"),
+            color=await ctx.embed_color(),
+        )
+        embed.set_author(
+            name=member.display_name,
+            icon_url=member.display_avatar,
+        )
+        embed.set_image(url="attachment://advent_calendar.png")
+        await ctx.send(
+            embed=embed,
+            file=await self.generate_advent_calendar(today_day=today.day, opened_days=opened_days),
+        )
+
+    @commands.bot_has_permissions(embed_links=True, attach_files=True)
+    @setadventcalendar.command()
+    async def mstats(self, ctx: commands.Context, *, member: discord.Member = commands.Author) -> None:
+        """Get the stats of the Advent Calendar for a member."""
+        today = datetime.date.today()
+        if not today.month == 12:
+            raise commands.UserFeedbackCheckFailure(_("The Advent Calendar is only available in December."))
+        opened_days = await self.config.member(member).opened_days()
+        embed = discord.Embed(
+            title=_("Advent Calendar Stats"),
+            color=discord.Color.green() if len(opened_days) == today.day else (discord.Color.orange() if opened_days else discord.Color.red()),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+        )
+        embed.set_author(
+            name=member.display_name,
+            icon_url=member.display_avatar,
+        )
+        embed.add_field(
+            name=_("Opened Days:"),
+            value="".join(
+                "✅" if (day if day != 25 else None) in opened_days else "❌"
+                for day in range(1, min(today.day, 25) + 1)
+            ),
+        )
+        embed.set_footer(
+            text=ctx.guild.name,
+            icon_url=ctx.guild.icon,
+        )
+        await ctx.send(embed=embed)
+
+    @commands.bot_has_permissions(embed_links=True, attach_files=True)
+    @setadventcalendar.command()
+    async def stats(self, ctx: commands.Context) -> None:
+        """Get the stats of the Advent Calendar for the server."""
+        today = datetime.date.today()
+        if not today.month == 12:
+            raise commands.UserFeedbackCheckFailure(_("The Advent Calendar is only available in December."))
+        members_data = await self.config.all_members(ctx.guild)
+        opened_days = {
+            member_id: data["opened_days"]
+            for member_id, data in members_data.items()
+        }
+        total_boxes_opened = sum(len(data) for data in opened_days.values())
+        members_all_boxes_opened = sum(len(data) == today.day for data in opened_days.values())
+        boxes_opened: Counter = Counter(
+            day
+            for data in opened_days.values()
+            for day in data
+        )
+        embed = discord.Embed(
+            title=_("Advent Calendar Stats"),
+            color=discord.Color.green() if members_all_boxes_opened else (discord.Color.orange() if total_boxes_opened else discord.Color.red()),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+        )
+        embed.add_field(
+            name=_("Total Boxes Opened:"),
+            value=_(
+                "{total_boxes_opened} Boxe{s}"
+            ).format(
+                total_boxes_opened=total_boxes_opened,
+                s="s" if total_boxes_opened != 1 else "",
+            ),
+            inline=True,
+        )
+        embed.add_field(
+            name=_("Members with All Boxes Opened:"),
+            value=_(
+                "{members_all_boxes_opened} Member{s}"
+            ).format(
+                members_all_boxes_opened=members_all_boxes_opened,
+                s="s" if members_all_boxes_opened != 1 else "",
+            ),
+            inline=True,
+        )
+        embed.add_field(
+            name=_("Today Boxes Opened:"),
+            value=_(
+                "{today_boxes_opened} Boxe{s}"
+            ).format(
+                today_boxes_opened=boxes_opened[today.day],
+                s="s" if boxes_opened[today.day] != 1 else "",
+            ),
+            inline=False,
+        )
+        embed.set_footer(
+            text=ctx.guild.name,
+            icon_url=ctx.guild.icon,
+        )
+
+        fig = go.Figure()
+        fig.update_layout(
+            template="plotly_white",
+            paper_bgcolor="rgba(0,0,0,0)",  # Transparent background.
+            plot_bgcolor="rgba(0,0,0,0)",  # Transparent background.
+            font_color="white",  # White characters font.
+            font_size=30,  # Characters font size.
+            yaxis2={"overlaying": "y", "side": "right"},
+        )
+        x = list(range(1, min(today.day, 25) + 1))
+        y = [
+            boxes_opened[day]
+            for day in x
+        ]
+        self.logger.critical(f"{x=}, {y=}")
+        fig.add_trace(
+            go.Scatter(
+                x=x,
+                y=y,
+                line_color="rgb(0,255,0)",
+                name=_("Opened Boxes"),
+                showlegend=False,
+                line={"width": 14},
+                fill="tozeroy",
+                fillcolor="rgba(0,255,0,0.2)",
+            )
+        )
+        fig.update_xaxes(type="category", tickvals=x)
+        fig.update_yaxes(showgrid=True)
+        graphic_bytes: bytes = fig.to_image(
+            format="png",
+            width=1920,
+            height=1080,
+            scale=1,
+        )
+        buffer = io.BytesIO()
+        buffer.write(graphic_bytes)
+        buffer.seek(0)
+        graphic = discord.File(buffer, filename="graphic.png")
+        embed.set_image(url="attachment://graphic.png")
+
+        await ctx.send(
+            embed=embed,
+            file=graphic,
+        )

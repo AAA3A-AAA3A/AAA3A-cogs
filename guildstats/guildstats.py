@@ -3359,7 +3359,6 @@ class GuildStats(Cog):
             yaxis2={"overlaying": "y", "side": "right"},
         )
         x = list(range(-30, 1))
-        # x_rev = x[::-1]
         if data["graphic"].get("contributors") is not None:
             if size is None:
                 draw.ellipse(
@@ -3570,7 +3569,7 @@ class GuildStats(Cog):
                     )
                 )
         # fig.update_traces(mode="lines")
-        fig.update_xaxes(type="category", tickvals=list(range(-30, 1, 5)))  # x
+        fig.update_xaxes(type="category", tickvals=x)
         fig.update_yaxes(showgrid=True)
 
         graphic_bytes: bytes = fig.to_image(

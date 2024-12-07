@@ -632,7 +632,7 @@ class AdventCalendar(Cog):
             for member_id, data in members_data.items()
         }
         total_boxes_opened = sum(len(data) for data in opened_days.values())
-        members_all_boxes_opened = sum(len(data) == max(today.day, 25) for data in opened_days.values())
+        members_all_boxes_opened = sum(len(data) == min(today.day, 25) for data in opened_days.values())
         boxes_opened: Counter = Counter(
             day
             for data in opened_days.values()

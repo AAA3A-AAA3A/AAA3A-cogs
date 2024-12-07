@@ -720,4 +720,4 @@ class AdventCalendar(Cog):
         graphic = discord.File(buffer, filename="graphic.png")
         embed.set_image(url="attachment://graphic.png")
 
-        await Menu(pages={"embed": embed, "file": graphic}).start(ctx)
+        await Menu(pages=[{"embed": embed, "file": graphic}]).start(ctx)

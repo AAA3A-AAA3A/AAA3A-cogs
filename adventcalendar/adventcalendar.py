@@ -426,6 +426,7 @@ class AdventCalendar(Cog):
             embed = discord.Embed(
                 title=_("Advent Calendar — {member.display_name} received a **custom reward**").format(member=member) + (f" for **day {day}**!" if day is not None else " as **final reward**!"),
                 color=discord.Color.green(),
+                timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
             )
             embed.set_thumbnail(url=member.display_avatar)
             embed.add_field(name=_("Member:"), value=f"{member.mention} ({member.id})")
@@ -631,7 +632,7 @@ class AdventCalendar(Cog):
             for member_id, data in members_data.items()
         }
         total_boxes_opened = sum(len(data) for data in opened_days.values())
-        members_all_boxes_opened = sum(len(data) == today.day for data in opened_days.values())
+        members_all_boxes_opened = sum(len(data) == max(today.day, 25) for data in opened_days.values())
         boxes_opened: Counter = Counter(
             day
             for data in opened_days.values()
@@ -662,16 +663,17 @@ class AdventCalendar(Cog):
             ),
             inline=True,
         )
-        embed.add_field(
-            name=_("Today Boxes Opened:"),
-            value=_(
-                "{today_boxes_opened} Boxe{s}"
-            ).format(
-                today_boxes_opened=boxes_opened[today.day],
-                s="s" if boxes_opened[today.day] != 1 else "",
-            ),
-            inline=False,
-        )
+        if today.day <= 25:
+            embed.add_field(
+                name=_("Today Boxes Opened:"),
+                value=_(
+                    "{today_boxes_opened} Boxe{s}"
+                ).format(
+                    today_boxes_opened=boxes_opened[today.day if today.day != 25 else None],
+                    s="s" if boxes_opened[today.day] != 1 else "",
+                ),
+                inline=False,
+            )
         embed.set_footer(
             text=ctx.guild.name,
             icon_url=ctx.guild.icon,

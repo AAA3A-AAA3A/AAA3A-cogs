@@ -742,12 +742,12 @@ class AdventCalendar(Cog):
             raise commands.UserFeedbackCheckFailure(_("No member to ping."))
         msg = _("🎄 **You haven't opened your box for today yet!** 🎄^^\n\n")
         pages = []
-        for i, page in pagify(
+        for i, page in enumerate(pagify(
             humanize_list(
                 [member.mention for member in members],
             ),
             page_length=1500,
-        ):
+        )):
             pages.append(
                 f"{(msg if i == 0 else '')}||{page}||"
             )

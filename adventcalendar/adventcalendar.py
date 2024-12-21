@@ -740,7 +740,7 @@ class AdventCalendar(Cog):
         ]
         if not members:
             raise commands.UserFeedbackCheckFailure(_("No member to ping."))
-        msg = _("🎄 **You haven't opened your box for today yet!** 🎄^^\n\n")
+        msg = _("**You haven't opened your box of the 🎄 Advent Calendar 🎄 for today yet! ^^**\n\n")
         pages = []
         for i, page in enumerate(pagify(
             humanize_list(

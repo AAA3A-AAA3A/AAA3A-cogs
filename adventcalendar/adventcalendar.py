@@ -5,6 +5,9 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from redbot.core.data_manager import bundled_data_path
+from redbot.core.utils.chat_formatting import pagify, humanize_list
+
 import asyncio
 import datetime
 import functools
@@ -15,7 +18,6 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 import plotly.graph_objects as go
-from redbot.core.data_manager import bundled_data_path
 
 from .view import SetRewardsView
 
@@ -721,3 +723,33 @@ class AdventCalendar(Cog):
         embed.set_image(url="attachment://graphic.png")
 
         await Menu(pages=[{"embed": embed, "file": graphic}]).start(ctx)
+
+    @setadventcalendar.command(aliases=["pingadmuy"])
+    async def pingalldaysmembersuntilyesterday(self, ctx: commands.Context) -> None:
+        """Ping all members who have opened all boxes until yesterday and have not opened today's box."""
+        today = datetime.date.today()
+        if not today.month == 12:
+            raise commands.UserFeedbackCheckFailure(_("The Advent Calendar is only available in December."))
+        members_data = await self.config.all_members(ctx.guild)
+        members = [
+            member
+            for member_id, data in members_data.items()
+            if len(data["opened_days"]) == min(today.day - 1, 25)
+            and today.day not in data["opened_days"]
+            and (member := ctx.guild.get_member(member_id)) is not None
+        ]
+        if not members:
+            raise commands.UserFeedbackCheckFailure(_("No member to ping."))
+        msg = _("🎄 **You haven't opened your box for today yet!** 🎄^^\n\n")
+        pages = []
+        for i, page in pagify(
+            humanize_list(
+                [member.mention for member in members],
+            ),
+            page_length=1500,
+        ):
+            pages.append(
+                f"{(msg if i == 0 else '')}||{page}||"
+            )
+        for page in pages:
+            await ctx.send(page)

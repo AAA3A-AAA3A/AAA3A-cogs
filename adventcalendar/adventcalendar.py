@@ -735,7 +735,7 @@ class AdventCalendar(Cog):
             member
             for member_id, data in members_data.items()
             if len(data["opened_days"]) == min(today.day - 1, 25)
-            and today.day not in data["opened_days"]
+            and (today.day if today.day != 25 else None) not in data["opened_days"]
             and (member := ctx.guild.get_member(member_id)) is not None
         ]
         if not members:

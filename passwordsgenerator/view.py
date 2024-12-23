@@ -4,7 +4,10 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+from redbot.core.utils.chat_formatting import box
+
 import datetime
+import hashlib
 
 _: Translator = Translator("PasswordsGenerator", __file__)
 
@@ -26,18 +29,21 @@ class PasswordsGeneratorView(discord.ui.View):
         super().__init__(timeout=180)
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
+        self.current_password: str = None
 
         self.easy_to_remind: bool = easy_to_remind
         self.lengths: typing.Dict[str, int] = lengths or {}
         self.include_characters: typing.List[typing.Literal["upper", "lower", "digits", "special"]] = include_characters
 
     def get_embed(self) -> discord.Embed:
+        self.current_password, strength = self.cog.generate_password(
+            easy_to_remind=self.easy_to_remind,
+            lengths=self.lengths,
+            include_characters=self.include_characters,
+        )
         return self.cog.get_embed(
-            *self.cog.generate_password(
-                easy_to_remind=self.easy_to_remind,
-                lengths=self.lengths,
-                include_characters=self.include_characters,
-            )
+            password=self.current_password,
+            strength=strength,
         )
 
     async def start(self, ctx: commands.Context) -> None:
@@ -93,6 +99,7 @@ class PasswordsGeneratorView(discord.ui.View):
         self.ephemeral.label = _("Ephemeral")
         self.lengths_button.label = _("Lengths")
         self.include_characters_select.placeholder = _("Include Characters")
+        self.hashes.label = _("Hashes")
         if edit_message:
             try:
                 await self._message.edit(
@@ -157,6 +164,22 @@ class PasswordsGeneratorView(discord.ui.View):
         await interaction.response.defer()
         self.include_characters = [option for option in select.values]
         await self._update()
+
+    @discord.ui.button(emoji="#️⃣", label="Hashes", style=discord.ButtonStyle.secondary)
+    async def hashes(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        embed: discord.Embed = discord.Embed(
+            title=_("Password Hashes:"),
+        )
+        for hash_name in ("md5", "sha1", "sha224", "sha256", "sha384", "sha512"):
+            embed.add_field(
+                name=f"{hash_name.upper()}:",
+                value=box(hashlib.new(hash_name, self.current_password.encode()).hexdigest()),
+                inline=False,
+            )
+        await interaction.response.send_message(
+            embed=embed,
+            ephemeral=True,
+        )
 
 
 class LengthsModal(discord.ui.Modal):

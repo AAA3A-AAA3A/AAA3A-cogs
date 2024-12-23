@@ -872,6 +872,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             title=_("Dashboard - ") + self.qualified_name,
             color=await ctx.embed_color(),
         )
+        file = None
         if len(url) <= 2048:
             embed.description = _(
                 "You can create and send rich embeds directly from the Dashboard!"
@@ -881,7 +882,11 @@ class EmbedUtils(DashboardIntegration, Cog):
             embed.description = f"[Click here!]({url})"
         else:
             embed.description = _("The URL is too long to be displayed.")
-        await ctx.send(embed=embed)
+            file = text_to_file(text=url, filename="dashboard_url.txt")
+        await ctx.send(
+            embed=embed,
+            file=file,
+        )
 
     @commands.is_owner()
     @embed.command(aliases=["migratefromembedutils"])

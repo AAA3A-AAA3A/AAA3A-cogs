@@ -1,12 +1,10 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands, bank  # isort:skip
+from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
 from redbot.core.utils.chat_formatting import box
 
-import datetime
 import hashlib
 
 _: Translator = Translator("PasswordsGenerator", __file__)
@@ -35,14 +33,16 @@ class PasswordsGeneratorView(discord.ui.View):
         self.lengths: typing.Dict[str, int] = lengths or {}
         self.include_characters: typing.List[typing.Literal["upper", "lower", "digits", "special"]] = include_characters
 
-    def get_embed(self) -> discord.Embed:
-        self.current_password, strength = self.cog.generate_password(
+    def get_embed(self, store_password: bool = True) -> discord.Embed:
+        password, strength = self.cog.generate_password(
             easy_to_remember=self.easy_to_remember,
             lengths=self.lengths,
             include_characters=self.include_characters,
         )
+        if store_password:
+            self.current_password = password
         return self.cog.get_embed(
-            password=self.current_password,
+            password=password,
             strength=strength,
         )
 
@@ -137,7 +137,7 @@ class PasswordsGeneratorView(discord.ui.View):
     @discord.ui.button(emoji="🔒", label="Ephemeral", style=discord.ButtonStyle.success)
     async def ephemeral(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.send_message(
-            embed=self.get_embed(),
+            embed=self.get_embed(store_password=False),
             ephemeral=True,
         )
 

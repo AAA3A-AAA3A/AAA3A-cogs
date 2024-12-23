@@ -22,7 +22,7 @@ class PasswordsGeneratorView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        easy_to_remind: bool = False,
+        easy_to_remember: bool = False,
         lengths: typing.Dict[str, int] = None,
         include_characters: typing.List[typing.Literal["upper", "lower", "digits", "special"]] = DEFAULT_INCLUDE_CHARACTERS,
     ) -> None:
@@ -31,13 +31,13 @@ class PasswordsGeneratorView(discord.ui.View):
         self.ctx: commands.Context = None
         self.current_password: str = None
 
-        self.easy_to_remind: bool = easy_to_remind
+        self.easy_to_remember: bool = easy_to_remember
         self.lengths: typing.Dict[str, int] = lengths or {}
         self.include_characters: typing.List[typing.Literal["upper", "lower", "digits", "special"]] = include_characters
 
     def get_embed(self) -> discord.Embed:
         self.current_password, strength = self.cog.generate_password(
-            easy_to_remind=self.easy_to_remind,
+            easy_to_remember=self.easy_to_remember,
             lengths=self.lengths,
             include_characters=self.include_characters,
         )
@@ -58,9 +58,9 @@ class PasswordsGeneratorView(discord.ui.View):
 
     async def _update(self, edit_message: bool = True) -> None:
         self.remove_item(self.include_characters_select)
-        if not self.easy_to_remind:
+        if not self.easy_to_remember:
             self.change_mode.emoji = "🤔"
-            self.change_mode.label = _("Easy to Remind")
+            self.change_mode.label = _("Easy to Remember")
             INCLUDE_CHARACTERS_OPTIONS = {
                 "upper": {
                     "label": _("Upper Characters"),
@@ -152,7 +152,7 @@ class PasswordsGeneratorView(discord.ui.View):
     @discord.ui.button(style=discord.ButtonStyle.secondary)
     async def change_mode(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
-        self.easy_to_remind = not self.easy_to_remind
+        self.easy_to_remember = not self.easy_to_remember
         await self._update()
 
     @discord.ui.button(emoji="📋", label="Lengths", style=discord.ButtonStyle.secondary)
@@ -186,7 +186,7 @@ class LengthsModal(discord.ui.Modal):
     def __init__(self, view: PasswordsGeneratorView) -> None:
         super().__init__(title=_("Lengths"))
         self.view: PasswordsGeneratorView = view
-        if not self.view.easy_to_remind:
+        if not self.view.easy_to_remember:
             self.inputs = [
                 "length", "min_upper", "min_lower", "min_digits", "min_special",
             ]

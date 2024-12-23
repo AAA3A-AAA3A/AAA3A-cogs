@@ -22,18 +22,18 @@ _: Translator = Translator("PasswordsGenerator", __file__)
 
 @cog_i18n(_)
 class PasswordsGenerator(Cog):
-    """Generate random and possibly easier to remind passwords with specific requirements!"""
+    """Generate random and possibly easier to remember passwords with specific requirements!"""
 
     def generate_password(
         self,
-        easy_to_remind: bool = False,
+        easy_to_remember: bool = False,
         lengths: typing.Dict[str, int] = {},
         include_characters: typing.List[typing.Literal["upper", "lower", "digits", "special"]] = DEFAULT_INCLUDE_CHARACTERS,
     ) -> typing.Tuple[str, float]:
         _lengths = DEFAULT_LENGTHS.copy()
         _lengths.update(lengths)
         lengths = _lengths
-        if not easy_to_remind:
+        if not easy_to_remember:
             pwo: PasswordGenerator = PasswordGenerator()
             pwo.minlen = pwo.maxlen = lengths["length"]
             if "upper" not in include_characters:
@@ -95,7 +95,7 @@ class PasswordsGenerator(Cog):
     async def generatepassword(
         self,
         ctx: commands.Context,
-        easy_to_remind: typing.Optional[bool] = False,
+        easy_to_remember: typing.Optional[bool] = False,
         length: typing.Optional[commands.Range[int, 6, 1000]] = None,
         include_special: typing.Optional[bool] = True,
     ) -> None:
@@ -106,7 +106,7 @@ class PasswordsGenerator(Cog):
             include_characters.remove("special")
         view: PasswordsGeneratorView = PasswordsGeneratorView(
             self,
-            easy_to_remind=easy_to_remind,
+            easy_to_remember=easy_to_remember,
             lengths=lengths,
             include_characters=include_characters,
         )

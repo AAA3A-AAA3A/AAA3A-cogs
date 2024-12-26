@@ -134,7 +134,7 @@ class CommandsButtons(Cog):
         ):
             params = sorted(
                 command_object.params.items(),
-                key=lambda param: param.required,
+                key=lambda x: x[1].required,
                 reverse=True,
             )[:5]
             modal = discord.ui.Modal(title=_("Invoke Command"))

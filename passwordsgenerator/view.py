@@ -33,6 +33,11 @@ class PasswordsGeneratorView(discord.ui.View):
         self.lengths: typing.Dict[str, int] = lengths or {}
         self.include_characters: typing.List[typing.Literal["upper", "lower", "digits", "special"]] = include_characters
 
+        self.ephemeral.label = _("Ephemeral")
+        self.lengths_button.label = _("Lengths")
+        self.include_characters_select.placeholder = _("Include Characters")
+        self.hashes.label = _("Hashes")
+
     def get_embed(self, store_password: bool = True) -> discord.Embed:
         password, strength = self.cog.generate_password(
             easy_to_remember=self.easy_to_remember,
@@ -96,10 +101,6 @@ class PasswordsGeneratorView(discord.ui.View):
         else:
             self.change_mode.emoji = "🤖"
             self.change_mode.label = _("Random")
-        self.ephemeral.label = _("Ephemeral")
-        self.lengths_button.label = _("Lengths")
-        self.include_characters_select.placeholder = _("Include Characters")
-        self.hashes.label = _("Hashes")
         if edit_message:
             try:
                 await self._message.edit(

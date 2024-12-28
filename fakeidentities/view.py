@@ -34,6 +34,11 @@ class FakeIdentityView(discord.ui.View):
         self.location: typing.Optional[Locale] = location
         self.seed: typing.Optional[int] = seed
 
+        self.gender_select.placeholder = _("Select a gender.")
+        self.nationality_select.placeholder = _("Select a nationality.")
+        self.location_select.placeholder = _("Select a location.")
+        self.select_page.placeholder = _("Select the page.")
+
     def generate_fake_identity(self) -> FakeIdentity:
         self.current_fake_identity: FakeIdentity = self.cog.generate_fake_identity(
             gender=self.gender,
@@ -63,7 +68,6 @@ class FakeIdentityView(discord.ui.View):
                 value=gender.value,
                 default=gender == self.gender,
             )
-        self.gender_select.placeholder = _("Select a gender.")
         self.nationality_select.options.clear()
         self.location_select.options.clear()
         for locale, country in LOCALES.items():
@@ -81,8 +85,6 @@ class FakeIdentityView(discord.ui.View):
                 value=locale.value,
                 default=locale == self.location,
             )
-        self.nationality_select.placeholder = _("Select a nationality.")
-        self.location_select.placeholder = _("Select a location.")
         self.select_page.options.clear()
         for page, data in get_pages().items():
             self.select_page.add_option(
@@ -91,7 +93,6 @@ class FakeIdentityView(discord.ui.View):
                 value=page,
                 default=page == self.page,
             )
-        self.select_page.placeholder = _("Select the page.")
         if edit_message:
             try:
                 await self._message.edit(

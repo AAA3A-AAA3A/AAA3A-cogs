@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:23\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:39\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -26,6 +26,10 @@ msgstr "Гвинтик для створення піксельних артів
 msgid "This message isn't in the cache."
 msgstr "Цього повідомлення немає в кеші."
 
+#: draw\start_view.py:60 draw\view.py:523
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
 #: draw\start_view.py:94 draw\start_view.py:103
 msgid "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
 msgstr "Створіть нову дошку для малювання з параметрами `height = {height}`, `width = {width}` та `background = {background}`."
@@ -46,11 +50,11 @@ msgstr "Будь ласка, введіть всі кольори, які ви �
 msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
 msgstr "Будь ласка, надішліть повідомлення, що містить емодзі, які ви хочете додати до своєї палітри. Наприклад, `😎 Я люблю черепах 🐢`."
 
-#: draw\view.py:810
+#: draw\view.py:812
 msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
 msgstr "Будь ласка, введіть комірку, до якої ви хочете перемістити курсор, наприклад, `A1`, `a1`, `A10`, `A`, `10` і т.д."
 
-#: draw\view.py:939
+#: draw\view.py:941
 msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
 "B7-C9:green`."
 msgstr "Будь ласка, введіть клітинки з назвами основних кольорів. Один колір для кожного рядка, відокремлений від комірки символом \":\". Приклад: `A1:червоний\n"

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -148,7 +148,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:308
+#: rolesbuttons\rolesbuttons.py:308 rolesbuttons\rolesbuttons.py:382
 msgid "You have not specified any valid role-button."
 msgstr ""
 
@@ -158,31 +158,48 @@ msgid ""
 "Nitro, you may have used a custom emoji from another server."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:365
+#: rolesbuttons\rolesbuttons.py:367
+#, docstring
+msgid ""
+"Create a message with a nice embed and roles-buttons.\n"
+"\n"
+"        ```[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```\n"
+"        "
+msgstr ""
+
+#: rolesbuttons\rolesbuttons.py:374
+msgid "I don't have the permission to send messages in this channel."
+msgstr ""
+
+#: rolesbuttons\rolesbuttons.py:378
+msgid "I don't have the permission to add reactions in this channel."
+msgstr ""
+
+#: rolesbuttons\rolesbuttons.py:401
 #, docstring
 msgid ""
 "Choose a mode for the roles-buttons of a message.\n"
 "\n"
-"        Type `add_or_remove`:\n"
+"        Mode `add_or_remove`:\n"
 "        - Users get the role if they do not already have it, or lose it.\n"
-"        Type `add_only`:\n"
+"        Mode `add_only`:\n"
 "        - Users can only get the role, but only manual action will remove it.\n"
-"        Type `remove_only`:\n"
+"        Mode `remove_only`:\n"
 "        - Users can only lose a role, and will not be able to get it again without a manual action.\n"
-"        Type `replace`:\n"
-"        - Same as add_or_remove, but the roles from this message will be mutually exclusive, and getting one will remove the previous.\n"
+"        Mode `replace`:\n"
+"        - Same as `add_or_remove`, but the roles from this message will be mutually exclusive, and getting one will remove the previous.\n"
 "        "
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:379
+#: rolesbuttons\rolesbuttons.py:415
 msgid "No role-button is configured for this message. e"
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:384
+#: rolesbuttons\rolesbuttons.py:420
 msgid "Mode set for the roles-buttons of this message."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:390
+#: rolesbuttons\rolesbuttons.py:426
 #, docstring
 msgid ""
 "Remove a role-button for a message.\n"
@@ -191,52 +208,52 @@ msgid ""
 "        "
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:397 rolesbuttons\rolesbuttons.py:426
-#: rolesbuttons\rolesbuttons.py:448
+#: rolesbuttons\rolesbuttons.py:433 rolesbuttons\rolesbuttons.py:462
+#: rolesbuttons\rolesbuttons.py:484
 msgid "No role-button is configured for this message."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:401
+#: rolesbuttons\rolesbuttons.py:437
 msgid "I wasn't watching for this button on this message."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:418 rolesbuttons\rolesbuttons.py:435
+#: rolesbuttons\rolesbuttons.py:454 rolesbuttons\rolesbuttons.py:471
 msgid "Roles-buttons cleared for this message."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:422
+#: rolesbuttons\rolesbuttons.py:458
 #, docstring
 msgid "Clear all roles-buttons for a message."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:440
+#: rolesbuttons\rolesbuttons.py:476
 #, docstring
 msgid ""
 "List all roles-buttons of this server or display the settings for a specific"
 " one."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:454
+#: rolesbuttons\rolesbuttons.py:490
 msgid "No roles-buttons in this server."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:456
+#: rolesbuttons\rolesbuttons.py:492
 msgid "Roles Buttons"
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:457
+#: rolesbuttons\rolesbuttons.py:493
 msgid "There is {len_roles_buttons} roles buttons in this server."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:467
+#: rolesbuttons\rolesbuttons.py:503
 msgid "Message Jump Link: {message_jump_link}\n"
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:488
+#: rolesbuttons\rolesbuttons.py:524
 #, docstring
 msgid "Clear all roles-buttons for a guild."
 msgstr ""
 
-#: rolesbuttons\rolesbuttons.py:490
+#: rolesbuttons\rolesbuttons.py:526
 msgid "All roles-buttons purged."
 msgstr ""

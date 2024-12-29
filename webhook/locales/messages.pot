@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"POT-Creation-Date: 2024-12-29 10:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,32 +57,32 @@ msgid ""
 "        "
 msgstr ""
 
-#: webhook\webhook.py:200
+#: webhook\webhook.py:204
 #, docstring
 msgid ""
 "Sends a message to the specified webhook using your display name and you "
 "avatar."
 msgstr ""
 
-#: webhook\webhook.py:220
+#: webhook\webhook.py:224
 #, docstring
 msgid ""
-"Sends a message a channel as a webhook using your display name and your avatar.\n"
+"Sends a message in a channel as a webhook using your display name and your avatar.\n"
 "\n"
 "        You can attach files to the command.\n"
 "        "
 msgstr ""
 
-#: webhook\webhook.py:254
+#: webhook\webhook.py:258
 #, docstring
 msgid ""
-"Sends a message a channel as a webhook using the display name and the avatar of a specified member.\n"
+"Sends a message in a channel as a webhook using the display name and the avatar of a specified member.\n"
 "\n"
 "        You can attach files to the command.\n"
 "        "
 msgstr ""
 
-#: webhook\webhook.py:289
+#: webhook\webhook.py:380
 #, docstring
 msgid ""
 "Sends a message a channel as a webhook using a specified display name and a specified avatar url.\n"
@@ -91,7 +91,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: webhook\webhook.py:323
+#: webhook\webhook.py:414
 #, docstring
 msgid ""
 "Sends a message a channel as a webhook using Clyde's display name and avatar.\n"
@@ -100,21 +100,21 @@ msgid ""
 "        "
 msgstr ""
 
-#: webhook\webhook.py:349
+#: webhook\webhook.py:440
 #, docstring
 msgid ""
 "Show all members in the server that have the permission `manage_webhooks`."
 msgstr ""
 
-#: webhook\webhook.py:371
+#: webhook\webhook.py:462
 msgid "No one here has the permission `manage_webhooks` other than the owner."
 msgstr ""
 
-#: webhook\webhook.py:375
+#: webhook\webhook.py:466
 msgid "Members with the permission `manage_webhooks`"
 msgstr ""
 
-#: webhook\webhook.py:391
+#: webhook\webhook.py:482
 #, docstring
 msgid ""
 "Edit a message sent by a webhook.\n"
@@ -123,56 +123,56 @@ msgid ""
 "        "
 msgstr ""
 
-#: webhook\webhook.py:411
+#: webhook\webhook.py:502
 msgid "No webhook found for this message."
 msgstr ""
 
-#: webhook\webhook.py:424
+#: webhook\webhook.py:515
 #, docstring
 msgid "Delete all webhooks in this server."
 msgstr ""
 
-#: webhook\webhook.py:427
+#: webhook\webhook.py:518
 msgid "There are no webhooks in this server."
 msgstr ""
 
-#: webhook\webhook.py:431
+#: webhook\webhook.py:522
 msgid "⚠️ - Webhooks Deletion"
 msgstr ""
 
-#: webhook\webhook.py:432
+#: webhook\webhook.py:523
 msgid ""
 "This will delete all webhooks in the server. Are you sure you want to do "
 "this?"
 msgstr ""
 
-#: webhook\webhook.py:442
+#: webhook\webhook.py:533
 msgid "Deleting all webhooks..."
 msgstr ""
 
-#: webhook\webhook.py:454 webhook\webhook.py:456
+#: webhook\webhook.py:545 webhook\webhook.py:547
 msgid "{count} webhooks deleted."
 msgstr ""
 
-#: webhook\webhook.py:461
+#: webhook\webhook.py:552
 #, docstring
 msgid ""
 "Initiate a session within this channel sending messages to a specified "
 "webhook link."
 msgstr ""
 
-#: webhook\webhook.py:464
+#: webhook\webhook.py:555
 msgid ""
 "This channel already has an ongoing session. Use `{ctx.clean_prefix}webhook "
 "session close` to close it."
 msgstr ""
 
-#: webhook\webhook.py:475
+#: webhook\webhook.py:566
 #, docstring
 msgid "Close an ongoing webhook session in a channel."
 msgstr ""
 
-#: webhook\webhook.py:479
+#: webhook\webhook.py:570
 msgid ""
 "This channel does not have an ongoing webhook session. Start one with "
 "`{ctx.clean_prefix}webhook session`."

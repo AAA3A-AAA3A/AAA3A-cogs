@@ -1,0 +1,311 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: ctrlz\converters.py:15
+msgid "Invalid action."
+msgstr ""
+
+#: ctrlz\converters.py:27
+msgid ""
+"Invalid datetime format. Expected format is ISO (`YYYY-MM-DDTHH:MM:SS`)."
+msgstr ""
+
+#: ctrlz\converters.py:34
+msgid "The date must be within the last 7 days."
+msgstr ""
+
+#: ctrlz\ctrlz.py:27 ctrlz\ctrlz.py:33 ctrlz\ctrlz.py:48 ctrlz\ctrlz.py:54
+#: ctrlz\ctrlz.py:60 ctrlz\ctrlz.py:72
+msgid "The target of the audit log was not found."
+msgstr ""
+
+#: ctrlz\ctrlz.py:194
+#, docstring
+msgid "Revert some actions in servers, from the audit logs!"
+msgstr ""
+
+#: ctrlz\ctrlz.py:248
+msgid "Channel Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:249
+msgid "Overwrite Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:250
+msgid "Ban"
+msgstr ""
+
+#: ctrlz\ctrlz.py:251
+msgid "Bot Add"
+msgstr ""
+
+#: ctrlz\ctrlz.py:252
+msgid "Role Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:253
+msgid "Invite Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:254
+msgid "Webhook Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:255
+msgid "Emoji Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:256
+msgid "Message Pin"
+msgstr ""
+
+#: ctrlz\ctrlz.py:257
+msgid "Integration Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:258
+msgid "Stage Instance Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:259
+msgid "Sticker Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:260
+msgid "Scheduled Event Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:261
+msgid "Thread Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:262
+msgid "Automod Rule Create"
+msgstr ""
+
+#: ctrlz\ctrlz.py:265
+msgid "Guild Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:266
+msgid "Channel Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:267
+msgid "Overwrite Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:268
+msgid "Member Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:269
+msgid "Member Role Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:270
+msgid "Role Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:271
+msgid "Webhook Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:272
+msgid "Emoji Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:273
+msgid "Stage Instance Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:274
+msgid "Sticker Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:275
+msgid "Scheduled Event Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:276
+msgid "Thread Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:277
+msgid "Automod Rule Update"
+msgstr ""
+
+#: ctrlz\ctrlz.py:280
+msgid "Channel Delete"
+msgstr ""
+
+#: ctrlz\ctrlz.py:281
+msgid "Overwrite Delete"
+msgstr ""
+
+#: ctrlz\ctrlz.py:282
+msgid "Unban"
+msgstr ""
+
+#: ctrlz\ctrlz.py:283
+msgid "Role Delete"
+msgstr ""
+
+#: ctrlz\ctrlz.py:284
+msgid "Invite Delete"
+msgstr ""
+
+#: ctrlz\ctrlz.py:285
+msgid "Webhook Delete"
+msgstr ""
+
+#: ctrlz\ctrlz.py:286
+msgid "Message Unpin"
+msgstr ""
+
+#: ctrlz\ctrlz.py:287
+msgid "Scheduled Event Delete"
+msgstr ""
+
+#: ctrlz\ctrlz.py:288
+msgid "Automod Rule Delete"
+msgstr ""
+
+#: ctrlz\ctrlz.py:310 ctrlz\ctrlz.py:394
+msgid "Unknown audit log action."
+msgstr ""
+
+#: ctrlz\ctrlz.py:312
+msgid "Audit Log — {label}"
+msgstr ""
+
+#: ctrlz\ctrlz.py:322
+msgid "Target:"
+msgstr ""
+
+#: ctrlz\ctrlz.py:336
+msgid "Reason:"
+msgstr ""
+
+#: ctrlz\ctrlz.py:357
+msgid "Before:"
+msgstr ""
+
+#: ctrlz\ctrlz.py:373
+msgid "After:"
+msgstr ""
+
+#: ctrlz\ctrlz.py:396
+msgid "The audit log has already been reverted."
+msgstr ""
+
+#: ctrlz\ctrlz.py:403
+msgid ""
+"I don't have the necessary permissions or the target of the audit log is "
+"higher than me."
+msgstr ""
+
+#: ctrlz\ctrlz.py:409
+msgid "An error occurred while reverting the audit log:\n"
+msgstr ""
+
+#: ctrlz\ctrlz.py:448
+#, docstring
+msgid "View the audit logs that can be reverted."
+msgstr ""
+
+#: ctrlz\ctrlz.py:457 ctrlz\ctrlz.py:483
+msgid "No audit logs found."
+msgstr ""
+
+#: ctrlz\ctrlz.py:471
+#, docstring
+msgid ""
+"Revert all the audit logs that can be reverted.\n"
+"\n"
+"        You can choose the audit logs to ignore.\n"
+"        "
+msgstr ""
+
+#: ctrlz\views.py:21
+msgid "Create Actions"
+msgstr ""
+
+#: ctrlz\views.py:22
+msgid "Update Actions"
+msgstr ""
+
+#: ctrlz\views.py:23
+msgid "Delete Actions"
+msgstr ""
+
+#: ctrlz\views.py:24 ctrlz\views.py:261
+msgid "Revert"
+msgstr ""
+
+#: ctrlz\views.py:29
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: ctrlz\views.py:249
+msgid "✅ This Audit Log has been reverted successfully."
+msgstr ""
+
+#: ctrlz\views.py:283
+msgid "Already Reverted"
+msgstr ""
+
+#: ctrlz\views.py:297
+msgid "Ignore"
+msgstr ""
+
+#: ctrlz\views.py:300
+msgid "Unignore"
+msgstr ""
+
+#: ctrlz\views.py:334
+msgid "Are you sure you want to revert all these audit logs?"
+msgstr ""
+
+#: ctrlz\views.py:350
+msgid "❌ There are no audit logs to revert."
+msgstr ""
+
+#: ctrlz\views.py:354
+msgid "Reverting Audit Logs..."
+msgstr ""
+
+#: ctrlz\views.py:355
+msgid "This may take a while."
+msgstr ""
+
+#: ctrlz\views.py:359 ctrlz\views.py:399
+msgid "Progression:"
+msgstr ""
+
+#: ctrlz\views.py:363 ctrlz\views.py:405
+msgid "Errors:"
+msgstr ""
+
+#: ctrlz\views.py:364
+msgid "No errors yet."
+msgstr ""
+
+#: ctrlz\views.py:414
+msgid "❌ Errors..."
+msgstr ""
+
+#: ctrlz\views.py:422
+msgid "✅ All Audit Logs have been reverted successfully."
+msgstr ""

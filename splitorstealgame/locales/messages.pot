@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,20 +13,24 @@ msgstr ""
 
 #: splitorstealgame\splitorstealgame.py:19
 #, docstring
-msgid "A cog to play a match of SplitOrSteal game!"
+msgid "A cog to play a match of Split Or Steal game!"
 msgstr ""
 
-#: splitorstealgame\view.py:33
+#: splitorstealgame\view.py:31
+msgid "Split Or Steal Game"
+msgstr ""
+
+#: splitorstealgame\view.py:34
 msgid ""
 "Join the game by clicking on the button below. 2 players will be selected "
 "randomly."
 msgstr ""
 
-#: splitorstealgame\view.py:49
+#: splitorstealgame\view.py:50
 msgid "At least two players are needed to play."
 msgstr ""
 
-#: splitorstealgame\view.py:58
+#: splitorstealgame\view.py:59
 msgid ""
 "The two players are {player_A.mention} and {player_B.mention}.\n"
 "You have to click the button that you choose (`split` or `steal`).\n"
@@ -35,50 +39,54 @@ msgid ""
 "• if one of you chooses `split` and one of you chooses `steal`, the one who choose `steal` will win."
 msgstr ""
 
-#: splitorstealgame\view.py:84
+#: splitorstealgame\view.py:85
 msgid "At least one player has stopped playing."
 msgstr ""
 
-#: splitorstealgame\view.py:87
+#: splitorstealgame\view.py:88
 msgid ""
 "{player_A.display_name} and {player_B.display_name}, you both chose `split` "
 "and therefore both win."
 msgstr ""
 
-#: splitorstealgame\view.py:93
+#: splitorstealgame\view.py:94
 msgid ""
 "{player_A.display_name} and {player_B.display_name}, you both chose `steal` "
 "and therefore both loose."
 msgstr ""
 
-#: splitorstealgame\view.py:99
+#: splitorstealgame\view.py:100
 msgid ""
 "{player_A.display_name} chose `steal` and {player_B.display_name} chose "
 "`split`, and therefore {player_A.display_name} win."
 msgstr ""
 
-#: splitorstealgame\view.py:105
+#: splitorstealgame\view.py:106
 msgid ""
 "{player_B.display_name} chose `steal` and {player_A.display_name} chose "
 "`split`, and therefore {player_B.display_name} win."
 msgstr ""
 
-#: splitorstealgame\view.py:137
+#: splitorstealgame\view.py:115
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: splitorstealgame\view.py:138
 msgid "You have already joined this game."
 msgstr ""
 
-#: splitorstealgame\view.py:141
+#: splitorstealgame\view.py:142
 msgid "You have joined this game."
 msgstr ""
 
-#: splitorstealgame\view.py:149 splitorstealgame\view.py:164
+#: splitorstealgame\view.py:150 splitorstealgame\view.py:165
 msgid "You have already chose `{original_response}`."
 msgstr ""
 
-#: splitorstealgame\view.py:156
+#: splitorstealgame\view.py:157
 msgid "You have chose `split`."
 msgstr ""
 
-#: splitorstealgame\view.py:171
+#: splitorstealgame\view.py:172
 msgid "You have chose `steal`."
 msgstr ""

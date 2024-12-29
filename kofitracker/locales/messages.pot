@@ -1,0 +1,165 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: kofitracker\kofitracker.py:48
+#, docstring
+msgid "Track donations, subscriptions and shop orders on KoFi!"
+msgstr ""
+
+#: kofitracker\kofitracker.py:134
+msgid "New {type} on {display_name}'s KoFi"
+msgstr ""
+
+#: kofitracker\kofitracker.py:149
+msgid "Amount:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:154
+msgid "Message:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:157
+msgid "Tier:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:160
+msgid "(First Subscription Payment)"
+msgstr ""
+
+#: kofitracker\kofitracker.py:164
+msgid "Shop Items:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:175
+msgid "Shipping Details:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:176
+msgid ""
+"**{full_name}**\n"
+"{street_address}\n"
+"{city}, {state_or_province} {postal_code}\n"
+"{country} ({country_code})\n"
+"{telephone}"
+msgstr ""
+
+#: kofitracker\kofitracker.py:187
+msgid "Email:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:198
+msgid "Received from KoFi."
+msgstr ""
+
+#: kofitracker\kofitracker.py:205 kofitracker\kofitracker.py:268
+msgid "Support {display_name} on KoFi!"
+msgstr ""
+
+#: kofitracker\kofitracker.py:227
+msgid "This KoFi page does not exist."
+msgstr ""
+
+#: kofitracker\kofitracker.py:230
+msgid "{display_name}'s KoFi"
+msgstr ""
+
+#: kofitracker\kofitracker.py:238
+msgid "About Me:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:240
+msgid "Received Amount:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:244
+msgid "Goal Title:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:247
+msgid "Goal Description:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:252
+msgid "Current Percentage:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:257
+msgid "Of Goal Total:"
+msgstr ""
+
+#: kofitracker\kofitracker.py:260
+msgid "Fetched from KoFi."
+msgstr ""
+
+#: kofitracker\kofitracker.py:301
+#, docstring
+msgid ""
+"Add a KoFi page to track.\n"
+"\n"
+"        ⚠ **Note:** If you choose to show personal details, the user's email and shipping details will be shown to everyone in the channel.\n"
+"        "
+msgstr ""
+
+#: kofitracker\kofitracker.py:310
+msgid "This KoFi page is already being tracked."
+msgstr ""
+
+#: kofitracker\kofitracker.py:328
+#, docstring
+msgid "Remove a KoFi page from tracking."
+msgstr ""
+
+#: kofitracker\kofitracker.py:334
+msgid "This KoFi page is not being tracked."
+msgstr ""
+
+#: kofitracker\kofitracker.py:346
+#, docstring
+msgid "List the KoFi pages being tracked."
+msgstr ""
+
+#: kofitracker\kofitracker.py:351
+msgid "No KoFi pages are being tracked."
+msgstr ""
+
+#: kofitracker\kofitracker.py:353
+msgid "KoFi Pages being tracked in {channel}"
+msgstr ""
+
+#: kofitracker\kofitracker.py:371
+#, docstring
+msgid "Instructions on how to set up KoFiTracker."
+msgstr ""
+
+#: kofitracker\kofitracker.py:374
+msgid ""
+"Red-Dashboard is not installed. Check <https://red-web-"
+"dashboard.readthedocs.io>."
+msgstr ""
+
+#: kofitracker\kofitracker.py:379
+msgid "You can't access the Dashboard."
+msgstr ""
+
+#: kofitracker\kofitracker.py:381
+msgid "KoFiTracker Instructions"
+msgstr ""
+
+#: kofitracker\kofitracker.py:383
+msgid ""
+"**1.** Go to [KoFi](https://ko-fi.com) and log in.\n"
+"**2.** Go to your page and click on the `Settings` button.\n"
+"**3.** Go to the `Webhooks` section in `More`.\n"
+"**4.** Set the webhook URL to {webhook_url} and click on `Update`.\n"
+"**5.** Copy the `Verification Token` and use it with the command `{prefix}setkofitracker add <kofi_page_url> <verification_token>`."
+msgstr ""

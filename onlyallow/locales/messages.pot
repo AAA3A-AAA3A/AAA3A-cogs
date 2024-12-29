@@ -1,0 +1,93 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: onlyallow\onlyallow.py:23
+#, docstring
+msgid ""
+"Only allow users to execute specific commands or commands from specific "
+"cogs, on specific servers! If nothing is set in a server, all cogs/commands "
+"are permitted."
+msgstr ""
+
+#: onlyallow\onlyallow.py:56
+msgid ""
+"Only specific cogs and commands are allowed in this server. Ask to a bot "
+"owner to add the cog(s) or the command(s) you want to use."
+msgstr ""
+
+#: onlyallow\onlyallow.py:118
+#, docstring
+msgid "Add a cog to the allowed cogs list in a server or the current one."
+msgstr ""
+
+#: onlyallow\onlyallow.py:122
+msgid "This cog is already in the allowed cogs list."
+msgstr ""
+
+#: onlyallow\onlyallow.py:134
+#, docstring
+msgid ""
+"Add a command to the allowed commands list in a server or the current one."
+msgstr ""
+
+#: onlyallow\onlyallow.py:139
+msgid "This command is already in the allowed commands list."
+msgstr ""
+
+#: onlyallow\onlyallow.py:152
+#, docstring
+msgid ""
+"Remove a cog from the allowed cogs list in a server or the current one."
+msgstr ""
+
+#: onlyallow\onlyallow.py:156
+msgid "This cog isn't in the allowed cogs list."
+msgstr ""
+
+#: onlyallow\onlyallow.py:170
+#, docstring
+msgid ""
+"Remove a command from the allowed commands list in a server or the current "
+"one."
+msgstr ""
+
+#: onlyallow\onlyallow.py:174
+msgid "This command isn't in the allowed commands list."
+msgstr ""
+
+#: onlyallow\onlyallow.py:182
+#, docstring
+msgid ""
+"Clear the allowed cogs and commands list in a server or the current one."
+msgstr ""
+
+#: onlyallow\onlyallow.py:190
+#, docstring
+msgid "List the allowed cogs and commands in the server."
+msgstr ""
+
+#: onlyallow\onlyallow.py:193
+msgid "All cogs and commands are allowed in this server."
+msgstr ""
+
+#: onlyallow\onlyallow.py:197
+msgid "Only Allow"
+msgstr ""
+
+#: onlyallow\onlyallow.py:205
+msgid "Allowed Cogs"
+msgstr ""
+
+#: onlyallow\onlyallow.py:206
+msgid "Allowed Commands"
+msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,31 +44,31 @@ msgstr ""
 msgid "Incorrect syntax, please use Markdown's syntax for your code."
 msgstr ""
 
-#: runcode\runcode.py:387
+#: runcode\runcode.py:389
 msgid ""
 "The language of your code could not be found. Specify it with the `language`"
 " parameter."
 msgstr ""
 
-#: runcode\runcode.py:416
+#: runcode\runcode.py:418
 msgid ""
 "`{engine}` is not a correct engine for {code_language}\n"
 "To list all the available engine for it, please use `{ctx.prefix}setruncode listengines {code_language}`."
 msgstr ""
 
-#: runcode\runcode.py:429
+#: runcode\runcode.py:431
 msgid ""
 "There is no options available for compilation using `{engine}`.\n"
 "Ignoring this option."
 msgstr ""
 
-#: runcode\runcode.py:442
+#: runcode\runcode.py:444
 msgid ""
 "There is no options available for runtime execution `{engine}`.\n"
 "Ignoring this option."
 msgstr ""
 
-#: runcode\runcode.py:578
+#: runcode\runcode.py:580
 #, docstring
 msgid ""
 "\n"
@@ -76,7 +76,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: runcode\runcode.py:599
+#: runcode\runcode.py:593
+msgid "RunCode — {api} API Languages"
+msgstr ""
+
+#: runcode\runcode.py:602
 #, docstring
 msgid ""
 "\n"
@@ -87,7 +91,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: runcode\runcode.py:627
+#: runcode\runcode.py:622
+msgid "RunCode — Wandbox API Engines"
+msgstr ""
+
+#: runcode\runcode.py:633
 #, docstring
 msgid ""
 "\n"
@@ -95,10 +103,54 @@ msgid ""
 "        "
 msgstr ""
 
-#: runcode\runcode.py:644
+#: runcode\runcode.py:643
+msgid "RunCode — Wandbox API Identifiers"
+msgstr ""
+
+#: runcode\runcode.py:651
 #, docstring
 msgid ""
 "\n"
 "        Lists all the languages extensions.\n"
 "        "
+msgstr ""
+
+#: runcode\runcode.py:661
+msgid "Languages extensions"
+msgstr ""
+
+#: runcode\types.py:70
+msgid "RunCode Request (with Wandbox API)"
+msgstr ""
+
+#: runcode\types.py:168
+msgid "View on Wandbox"
+msgstr ""
+
+#: runcode\types.py:176
+msgid "RunCode Response (with Wandbox API)"
+msgstr ""
+
+#: runcode\types.py:197
+msgid "Engine used:"
+msgstr ""
+
+#: runcode\types.py:202
+msgid "Command used:"
+msgstr ""
+
+#: runcode\types.py:213
+msgid "Exit status:"
+msgstr ""
+
+#: runcode\types.py:276
+msgid "RunCode Request (with Tio API)"
+msgstr ""
+
+#: runcode\types.py:342
+msgid "RunCode Response (with Tio API)"
+msgstr ""
+
+#: runcode\types.py:357
+msgid "Debug:"
 msgstr ""

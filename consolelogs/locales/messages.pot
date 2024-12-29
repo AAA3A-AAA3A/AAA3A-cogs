@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,37 +11,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: consolelogs\consolelogs.py:102
+#: consolelogs\consolelogs.py:105
 #, docstring
 msgid ""
 "A cog to display the console logs, with buttons and filter options, and to "
 "send commands errors in configured channels!"
 msgstr ""
 
-#: consolelogs\consolelogs.py:264
+#: consolelogs\consolelogs.py:281
 msgid "No logs to display."
 msgstr ""
 
-#: consolelogs\consolelogs.py:415
+#: consolelogs\consolelogs.py:434
 #, docstring
 msgid ""
 "Scroll the console logs, for all levels/loggers or provided level/logger "
 "name."
 msgstr ""
 
-#: consolelogs\consolelogs.py:451
+#: consolelogs\consolelogs.py:470
 #, docstring
 msgid ""
 "View the console logs one by one, for all levels/loggers or provided "
 "level/logger name."
 msgstr ""
 
-#: consolelogs\consolelogs.py:462
+#: consolelogs\consolelogs.py:481
 #, docstring
 msgid "Display the stats for the bot logs since the bot start."
 msgstr ""
 
-#: consolelogs\consolelogs.py:495
+#: consolelogs\consolelogs.py:514
 #, docstring
 msgid ""
 "Enable errors logging in a channel.\n"
@@ -58,28 +58,28 @@ msgid ""
 "        "
 msgstr ""
 
-#: consolelogs\consolelogs.py:516
+#: consolelogs\consolelogs.py:535
 msgid "I don't have the permissions to send embeds in this channel."
 msgstr ""
 
-#: consolelogs\consolelogs.py:532
+#: consolelogs\consolelogs.py:553
 msgid "Errors logging enabled in {channel.mention}."
 msgstr ""
 
-#: consolelogs\consolelogs.py:540
+#: consolelogs\consolelogs.py:561
 #, docstring
 msgid "Disable errors logging in a channel."
 msgstr ""
 
-#: consolelogs\consolelogs.py:543
+#: consolelogs\consolelogs.py:564
 msgid "Errors logging isn't enabled in this channel."
 msgstr ""
 
-#: consolelogs\consolelogs.py:546
+#: consolelogs\consolelogs.py:567
 msgid "Errors logging disabled in {channel.mention}."
 msgstr ""
 
-#: consolelogs\consolelogs.py:550
+#: consolelogs\consolelogs.py:571
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr ""

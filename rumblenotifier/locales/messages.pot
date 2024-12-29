@@ -1,0 +1,81 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: rumblenotifier\rumblenotifier.py:22
+msgid "You can't set a role higher than your own."
+msgstr ""
+
+#: rumblenotifier\rumblenotifier.py:28
+#, docstring
+msgid ""
+"Ping a role when a rumble starts, and let members suscribe or unsuscribe "
+"from the notifications!"
+msgstr ""
+
+#: rumblenotifier\rumblenotifier.py:129
+msgid "⚔️ New Rumble battle! ⚔️"
+msgstr ""
+
+#: rumblenotifier\rumblenotifier.py:130
+msgid "I've notified the {length} members of the {role} role."
+msgstr ""
+
+#: rumblenotifier\rumblenotifier.py:138
+msgid "Want to be notified in the future? Use the buttons below!"
+msgstr ""
+
+#: rumblenotifier\views.py:15
+msgid "Unsuscribe"
+msgstr ""
+
+#: rumblenotifier\views.py:16
+msgid "Suscribe"
+msgstr ""
+
+#: rumblenotifier\views.py:33
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: rumblenotifier\views.py:42
+msgid ""
+"I don't have the required permissions to assign the role. Please contact an "
+"administrator."
+msgstr ""
+
+#: rumblenotifier\views.py:63
+msgid "You are already unsuscribed from the Rumble notifications."
+msgstr ""
+
+#: rumblenotifier\views.py:70
+msgid ""
+"An error occurred while trying to remove the role. Please contact an "
+"administrator.\n"
+msgstr ""
+
+#: rumblenotifier\views.py:76
+msgid "You have been removed from the Rumble notifications."
+msgstr ""
+
+#: rumblenotifier\views.py:91
+msgid "You are already suscribed to the Rumble notifications."
+msgstr ""
+
+#: rumblenotifier\views.py:98
+msgid ""
+"An error occurred while trying to add the role. Please contact an "
+"administrator.\n"
+msgstr ""
+
+#: rumblenotifier\views.py:104
+msgid "You have been added to the Rumble notifications."
+msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,409 +11,444 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: guildstats\guildstats.py:68
+#: guildstats\guildstats.py:66
 msgid "No member/category/text channel/voice channel found."
 msgstr ""
 
-#: guildstats\guildstats.py:74
+#: guildstats\guildstats.py:72
 #, docstring
 msgid ""
 "A cog to generate images with messages and voice stats, for members, roles, "
 "guilds, categories, text channels, voice channels and activities!"
 msgstr ""
 
-#: guildstats\guildstats.py:2944
+#: guildstats\guildstats.py:3237
 msgid "Role {_object.name}"
 msgstr ""
 
-#: guildstats\guildstats.py:2951
+#: guildstats\guildstats.py:3244
 msgid "Guild Stats"
 msgstr ""
 
-#: guildstats\guildstats.py:2966
+#: guildstats\guildstats.py:3261
 msgid "Messages Stats"
 msgstr ""
 
-#: guildstats\guildstats.py:2973
+#: guildstats\guildstats.py:3268
 msgid "Voice Stats"
 msgstr ""
 
-#: guildstats\guildstats.py:2979
+#: guildstats\guildstats.py:3274
 msgid "Activities Stats"
 msgstr ""
 
-#: guildstats\guildstats.py:2988
+#: guildstats\guildstats.py:3283
 msgid "Top Stats"
 msgstr ""
 
-#: guildstats\guildstats.py:2996
+#: guildstats\guildstats.py:3291
+msgid "Weekly Top Stats"
+msgstr ""
+
+#: guildstats\guildstats.py:3299
+msgid "Monthly Top Stats"
+msgstr ""
+
+#: guildstats\guildstats.py:3307
 msgid "Activity - {activity_name}"
 msgstr ""
 
-#: guildstats\guildstats.py:3008
+#: guildstats\guildstats.py:3319
 msgid "Category - {_object.name}"
 msgstr ""
 
-#: guildstats\guildstats.py:3094 guildstats\guildstats.py:3128
+#: guildstats\guildstats.py:3407 guildstats\guildstats.py:3441
 msgid "Created On"
 msgstr ""
 
-#: guildstats\guildstats.py:3109
+#: guildstats\guildstats.py:3422
 msgid "Joined On"
 msgstr ""
 
-#: guildstats\guildstats.py:3226 guildstats\guildstats.py:3904
-#: guildstats\guildstats.py:4746 guildstats\guildstats.py:4806
-#: guildstats\guildstats.py:4857 guildstats\guildstats.py:4874
-#: guildstats\guildstats.py:5337 guildstats\guildstats.py:5556
+#: guildstats\guildstats.py:3545 guildstats\guildstats.py:4260
+#: guildstats\guildstats.py:4316 guildstats\guildstats.py:5158
+#: guildstats\guildstats.py:5218 guildstats\guildstats.py:5269
+#: guildstats\guildstats.py:5286 guildstats\guildstats.py:5749
+#: guildstats\guildstats.py:5968
 msgid "Graphic"
 msgstr ""
 
-#: guildstats\guildstats.py:3291 guildstats\guildstats.py:4264
-#: guildstats\guildstats.py:4526 guildstats\guildstats.py:5205
-#: guildstats\guildstats.py:5424
+#: guildstats\guildstats.py:3609 guildstats\guildstats.py:4676
+#: guildstats\guildstats.py:4938 guildstats\guildstats.py:5617
+#: guildstats\guildstats.py:5836
 msgid "Contributors"
 msgstr ""
 
-#: guildstats\guildstats.py:3499 guildstats\guildstats.py:5592
-#: guildstats\guildstats.py:5634
+#: guildstats\guildstats.py:3823 guildstats\guildstats.py:6012
+#: guildstats\guildstats.py:6054
 msgid "Tracking data in this server for {interval_string}."
 msgstr ""
 
-#: guildstats\guildstats.py:3508 guildstats\guildstats.py:5601
-#: guildstats\guildstats.py:5643
+#: guildstats\guildstats.py:3832 guildstats\guildstats.py:6021
+#: guildstats\guildstats.py:6063
 msgid "Only {members_type} are taken into account."
 msgstr ""
 
-#: guildstats\guildstats.py:3640 guildstats\guildstats.py:3922
-#: guildstats\guildstats.py:4185 guildstats\guildstats.py:4447
-#: guildstats\guildstats.py:4891 guildstats\guildstats.py:5135
-#: guildstats\guildstats.py:5354
+#: guildstats\guildstats.py:3966 guildstats\guildstats.py:4334
+#: guildstats\guildstats.py:4597 guildstats\guildstats.py:4859
+#: guildstats\guildstats.py:5303 guildstats\guildstats.py:5547
+#: guildstats\guildstats.py:5766
 msgid "Server Lookback"
 msgstr ""
 
-#: guildstats\guildstats.py:3650 guildstats\guildstats.py:3933
-#: guildstats\guildstats.py:4901
+#: guildstats\guildstats.py:3977 guildstats\guildstats.py:4345
+#: guildstats\guildstats.py:5313
 msgid "Text"
 msgstr ""
 
-#: guildstats\guildstats.py:3661 guildstats\guildstats.py:3805
-#: guildstats\guildstats.py:3947 guildstats\guildstats.py:4765
-#: guildstats\guildstats.py:4912
+#: guildstats\guildstats.py:3991 guildstats\guildstats.py:4155
+#: guildstats\guildstats.py:4359 guildstats\guildstats.py:5177
+#: guildstats\guildstats.py:5324
 msgid "Voice"
 msgstr ""
 
-#: guildstats\guildstats.py:3674 guildstats\guildstats.py:3962
-#: guildstats\guildstats.py:4210 guildstats\guildstats.py:4765
-#: guildstats\guildstats.py:4925 guildstats\guildstats.py:5160
+#: guildstats\guildstats.py:4006 guildstats\guildstats.py:4374
+#: guildstats\guildstats.py:4622 guildstats\guildstats.py:5177
+#: guildstats\guildstats.py:5337 guildstats\guildstats.py:5572
 msgid "Messages"
 msgstr ""
 
-#: guildstats\guildstats.py:3684 guildstats\guildstats.py:3729
-#: guildstats\guildstats.py:3973 guildstats\guildstats.py:4027
-#: guildstats\guildstats.py:4221 guildstats\guildstats.py:4275
-#: guildstats\guildstats.py:4483 guildstats\guildstats.py:4537
-#: guildstats\guildstats.py:4935 guildstats\guildstats.py:4980
-#: guildstats\guildstats.py:5170 guildstats\guildstats.py:5215
-#: guildstats\guildstats.py:5389 guildstats\guildstats.py:5434
+#: guildstats\guildstats.py:4017 guildstats\guildstats.py:4071
+#: guildstats\guildstats.py:4385 guildstats\guildstats.py:4439
+#: guildstats\guildstats.py:4633 guildstats\guildstats.py:4687
+#: guildstats\guildstats.py:4895 guildstats\guildstats.py:4949
+#: guildstats\guildstats.py:5347 guildstats\guildstats.py:5392
+#: guildstats\guildstats.py:5582 guildstats\guildstats.py:5627
+#: guildstats\guildstats.py:5801 guildstats\guildstats.py:5846
 msgid "1d"
 msgstr ""
 
-#: guildstats\guildstats.py:3695 guildstats\guildstats.py:3740
-#: guildstats\guildstats.py:3987 guildstats\guildstats.py:4041
-#: guildstats\guildstats.py:4235 guildstats\guildstats.py:4289
-#: guildstats\guildstats.py:4497 guildstats\guildstats.py:4551
-#: guildstats\guildstats.py:4946 guildstats\guildstats.py:4991
-#: guildstats\guildstats.py:5181 guildstats\guildstats.py:5226
-#: guildstats\guildstats.py:5400 guildstats\guildstats.py:5445
+#: guildstats\guildstats.py:4031 guildstats\guildstats.py:4085
+#: guildstats\guildstats.py:4399 guildstats\guildstats.py:4453
+#: guildstats\guildstats.py:4647 guildstats\guildstats.py:4701
+#: guildstats\guildstats.py:4909 guildstats\guildstats.py:4963
+#: guildstats\guildstats.py:5358 guildstats\guildstats.py:5403
+#: guildstats\guildstats.py:5593 guildstats\guildstats.py:5638
+#: guildstats\guildstats.py:5812 guildstats\guildstats.py:5857
 msgid "7d"
 msgstr ""
 
-#: guildstats\guildstats.py:3706 guildstats\guildstats.py:3752
-#: guildstats\guildstats.py:4001 guildstats\guildstats.py:4055
-#: guildstats\guildstats.py:4249 guildstats\guildstats.py:4303
-#: guildstats\guildstats.py:4511 guildstats\guildstats.py:4565
-#: guildstats\guildstats.py:4957 guildstats\guildstats.py:5003
-#: guildstats\guildstats.py:5192 guildstats\guildstats.py:5238
-#: guildstats\guildstats.py:5411 guildstats\guildstats.py:5457
+#: guildstats\guildstats.py:4045 guildstats\guildstats.py:4099
+#: guildstats\guildstats.py:4413 guildstats\guildstats.py:4467
+#: guildstats\guildstats.py:4661 guildstats\guildstats.py:4715
+#: guildstats\guildstats.py:4923 guildstats\guildstats.py:4977
+#: guildstats\guildstats.py:5369 guildstats\guildstats.py:5415
+#: guildstats\guildstats.py:5604 guildstats\guildstats.py:5650
+#: guildstats\guildstats.py:5823 guildstats\guildstats.py:5869
 msgid "30d"
 msgstr ""
 
-#: guildstats\guildstats.py:3719 guildstats\guildstats.py:4016
-#: guildstats\guildstats.py:4472 guildstats\guildstats.py:4970
-#: guildstats\guildstats.py:5379
+#: guildstats\guildstats.py:4060 guildstats\guildstats.py:4428
+#: guildstats\guildstats.py:4884 guildstats\guildstats.py:5382
+#: guildstats\guildstats.py:5791
 msgid "Voice Activity"
 msgstr ""
 
-#: guildstats\guildstats.py:3782
+#: guildstats\guildstats.py:4129
 msgid "Server Ranks"
 msgstr ""
 
-#: guildstats\guildstats.py:3798 guildstats\guildstats.py:3811
+#: guildstats\guildstats.py:4146 guildstats\guildstats.py:4164
 msgid "No data."
 msgstr ""
 
-#: guildstats\guildstats.py:3820
+#: guildstats\guildstats.py:4174
 msgid "Top Channels & Activity"
 msgstr ""
 
-#: guildstats\guildstats.py:4070 guildstats\guildstats.py:4822
-#: guildstats\guildstats.py:5018
-msgid "Top Members"
-msgstr ""
-
-#: guildstats\guildstats.py:4128 guildstats\guildstats.py:5076
-msgid "Top Channels"
-msgstr ""
-
-#: guildstats\guildstats.py:4318 guildstats\guildstats.py:5272
-msgid "Top Messages Members"
-msgstr ""
-
-#: guildstats\guildstats.py:4382
-msgid "Top Messages Channels"
-msgstr ""
-
-#: guildstats\guildstats.py:4580 guildstats\guildstats.py:5491
-msgid "Top Voice Members"
-msgstr ""
-
-#: guildstats\guildstats.py:4644
-msgid "Top Voice Channels"
-msgstr ""
-
-#: guildstats\guildstats.py:4709
+#: guildstats\guildstats.py:4279 guildstats\guildstats.py:5121
 msgid "Top Activities (Applications)"
 msgstr ""
 
-#: guildstats\guildstats.py:4764
-msgid "Tope"
+#: guildstats\guildstats.py:4482 guildstats\guildstats.py:5234
+#: guildstats\guildstats.py:5430
+msgid "Top Members"
 msgstr ""
 
-#: guildstats\guildstats.py:4765
+#: guildstats\guildstats.py:4540 guildstats\guildstats.py:5488
+msgid "Top Channels"
+msgstr ""
+
+#: guildstats\guildstats.py:4730 guildstats\guildstats.py:5684
+msgid "Top Messages Members"
+msgstr ""
+
+#: guildstats\guildstats.py:4794
+msgid "Top Messages Channels"
+msgstr ""
+
+#: guildstats\guildstats.py:4992 guildstats\guildstats.py:5903
+msgid "Top Voice Members"
+msgstr ""
+
+#: guildstats\guildstats.py:5056
+msgid "Top Voice Channels"
+msgstr ""
+
+#: guildstats\guildstats.py:5176
+msgid "Top"
+msgstr ""
+
+#: guildstats\guildstats.py:5177
 msgid "Members"
 msgstr ""
 
-#: guildstats\guildstats.py:4765
+#: guildstats\guildstats.py:5177
 msgid "Channels"
 msgstr ""
 
-#: guildstats\guildstats.py:5253 guildstats\guildstats.py:5472
+#: guildstats\guildstats.py:5665 guildstats\guildstats.py:5884
 msgid "Server Rank"
 msgstr ""
 
-#: guildstats\guildstats.py:5764 guildstats\guildstats.py:5804
-#: guildstats\guildstats.py:5840 guildstats\guildstats.py:5866
-#: guildstats\guildstats.py:5892 guildstats\guildstats.py:5918
-#: guildstats\guildstats.py:5947 guildstats\guildstats.py:5980
-#: guildstats\guildstats.py:6010 guildstats\guildstats.py:6041
-#: guildstats\guildstats.py:6072 guildstats\guildstats.py:6105
+#: guildstats\guildstats.py:6186 guildstats\guildstats.py:6224
+#: guildstats\guildstats.py:6260 guildstats\guildstats.py:6286
+#: guildstats\guildstats.py:6312 guildstats\guildstats.py:6338
+#: guildstats\guildstats.py:6367 guildstats\guildstats.py:6400
+#: guildstats\guildstats.py:6428 guildstats\guildstats.py:6459
+#: guildstats\guildstats.py:6488 guildstats\guildstats.py:6515
+#: guildstats\guildstats.py:6546 guildstats\guildstats.py:6576
+#: guildstats\guildstats.py:6616
 msgid ""
 "This cog is disabled in this guild. Administrators can enable it with the "
 "command `{prefix}guildstats enable`."
 msgstr ""
 
-#: guildstats\guildstats.py:5771 guildstats\guildstats.py:5811
-#: guildstats\guildstats.py:6112
+#: guildstats\guildstats.py:6193 guildstats\guildstats.py:6231
+#: guildstats\guildstats.py:6583 guildstats\guildstats.py:6623
 msgid ""
 "This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
 msgstr ""
 
-#: guildstats\guildstats.py:5795
+#: guildstats\guildstats.py:6217
 #, docstring
 msgid "Display stats for a specified member."
 msgstr ""
 
-#: guildstats\guildstats.py:5831
+#: guildstats\guildstats.py:6251
 #, docstring
 msgid "Display stats for a specified role."
 msgstr ""
 
-#: guildstats\guildstats.py:5859
+#: guildstats\guildstats.py:6279
 #, docstring
 msgid "Display stats for this guild."
 msgstr ""
 
-#: guildstats\guildstats.py:5885
+#: guildstats\guildstats.py:6305
 #, docstring
 msgid "Display stats for the messages in this guild."
 msgstr ""
 
-#: guildstats\guildstats.py:5911
+#: guildstats\guildstats.py:6331
 #, docstring
 msgid "Display stats for the voice in this guild."
 msgstr ""
 
-#: guildstats\guildstats.py:5936
+#: guildstats\guildstats.py:6356
 #, docstring
 msgid "Display stats for activities in this guild."
 msgstr ""
 
-#: guildstats\guildstats.py:5939 guildstats\guildstats.py:6064
-#: guildstats\guildstats.py:6097
+#: guildstats\guildstats.py:6359 guildstats\guildstats.py:6538
+#: guildstats\guildstats.py:6568 guildstats\guildstats.py:6608
 msgid "Activities stats are disabled on this bot."
 msgstr ""
 
-#: guildstats\guildstats.py:5968
+#: guildstats\guildstats.py:6388
 #, docstring
 msgid "Display stats for a specified category."
 msgstr ""
 
-#: guildstats\guildstats.py:6001
+#: guildstats\guildstats.py:6421
 #, docstring
 msgid "Display stats for a specified channel."
 msgstr ""
 
-#: guildstats\guildstats.py:6015
+#: guildstats\guildstats.py:6433
 msgid "Threads aren't supported by this cog."
 msgstr ""
 
-#: guildstats\guildstats.py:6032
+#: guildstats\guildstats.py:6450
 #, docstring
-msgid "Display top stats for voice/messages members/channels."
+msgid "Display top stats leaderboard for voice/messages members/channels."
 msgstr ""
 
-#: guildstats\guildstats.py:6061
+#: guildstats\guildstats.py:6479
+#, docstring
+msgid "Display weekly stats leaderboard for voice/messages members/channels."
+msgstr ""
+
+#: guildstats\guildstats.py:6508
+#, docstring
+msgid "Display monthly stats leaderboard for voice/messages members/channels."
+msgstr ""
+
+#: guildstats\guildstats.py:6535
 #, docstring
 msgid "Display stats for a specific activity in this guild."
 msgstr ""
 
-#: guildstats\guildstats.py:6092
+#: guildstats\guildstats.py:6565
+#, docstring
+msgid "Display stats for the activities of a specified member."
+msgstr ""
+
+#: guildstats\guildstats.py:6603
 #, docstring
 msgid ""
 "Display graphic for members, roles guilds, text channels, voice channels and"
 " activities."
 msgstr ""
 
-#: guildstats\guildstats.py:6128
+#: guildstats\guildstats.py:6641
 #, docstring
 msgid "Asking GuildStats to ignore your actions."
 msgstr ""
 
-#: guildstats\guildstats.py:6136
+#: guildstats\guildstats.py:6649
 msgid ""
 "You will no longer be seen by this cog and the data I held on you have been "
 "deleted."
 msgstr ""
 
-#: guildstats\guildstats.py:6143
+#: guildstats\guildstats.py:6656
 msgid "You'll be seen again by this cog."
 msgstr ""
 
-#: guildstats\guildstats.py:6148
+#: guildstats\guildstats.py:6661
 #, docstring
 msgid "Ignore or unignore a specific user."
 msgstr ""
 
-#: guildstats\guildstats.py:6155
+#: guildstats\guildstats.py:6668
 msgid ""
 "{user.mention} ({user.id}) will no longer be seen by this cog, and their "
 "data has been deleted."
 msgstr ""
 
-#: guildstats\guildstats.py:6164
+#: guildstats\guildstats.py:6677
 msgid "{user.mention} ({user.id}) will be seen again by this cog."
 msgstr ""
 
-#: guildstats\guildstats.py:6171
+#: guildstats\guildstats.py:6684
 #, docstring
 msgid "Ignore or unignore a specific category."
 msgstr ""
 
-#: guildstats\guildstats.py:6179
+#: guildstats\guildstats.py:6692
 msgid ""
 "`{category.name}` ({category.id}) will now be ignored in stats (except for "
 "the specific category one)."
 msgstr ""
 
-#: guildstats\guildstats.py:6187
+#: guildstats\guildstats.py:6700
 msgid "`{category.name}` ({category.id}) will no longer be ignored in stats."
 msgstr ""
 
-#: guildstats\guildstats.py:6200
+#: guildstats\guildstats.py:6713
 #, docstring
 msgid "Ignore or unignore a specific channel."
 msgstr ""
 
-#: guildstats\guildstats.py:6206
+#: guildstats\guildstats.py:6719
 msgid ""
 "{channel.mention} ({channel.id}) will now be ignored in stats (except for "
 "the specific channel one)."
 msgstr ""
 
-#: guildstats\guildstats.py:6214
+#: guildstats\guildstats.py:6727
 msgid "{channel.mention} ({channel.id}) will no longer be ignored in stats."
 msgstr ""
 
-#: guildstats\guildstats.py:6222
+#: guildstats\guildstats.py:6735
 #, docstring
 msgid "Ignore or unignore a specific activity."
 msgstr ""
 
-#: guildstats\guildstats.py:6230
+#: guildstats\guildstats.py:6743
 msgid ""
 "The activity `{activity_name}` will now be ignored in stats (except for the "
 "specific activity one)."
 msgstr ""
 
-#: guildstats\guildstats.py:6238
+#: guildstats\guildstats.py:6751
 msgid "The activity `{activity_name}` will no longer be ignored in stats."
 msgstr ""
 
-#: guildstats\guildstats.py:6246
+#: guildstats\guildstats.py:6759
 #, docstring
 msgid "Enable or disable activities stats."
 msgstr ""
 
-#: guildstats\guildstats.py:6252
+#: guildstats\guildstats.py:6765
 #, docstring
 msgid "Enable or disable by default the cog in the bot guilds."
 msgstr ""
 
-#: guildstats\guildstats.py:6258
+#: guildstats\guildstats.py:6771
 #, docstring
 msgid "Enable the cog in this guild/server."
 msgstr ""
 
-#: guildstats\guildstats.py:6262
+#: guildstats\guildstats.py:6775
 msgid "GuildStats already enabled in this guild/server."
 msgstr ""
 
-#: guildstats\guildstats.py:6265
+#: guildstats\guildstats.py:6778
 msgid "GuildStats enabled in this guild/server."
 msgstr ""
 
-#: guildstats\guildstats.py:6270
+#: guildstats\guildstats.py:6783
 #, docstring
 msgid "Disable the cog in this guild/server."
 msgstr ""
 
-#: guildstats\guildstats.py:6274
+#: guildstats\guildstats.py:6787
 msgid "GuildStats already disabled in this guild/server."
 msgstr ""
 
-#: guildstats\guildstats.py:6277
+#: guildstats\guildstats.py:6790
 msgid "GuildStats disabled in this guild/server."
 msgstr ""
 
-#: guildstats\guildstats.py:6283
+#: guildstats\guildstats.py:6796
 #, docstring
 msgid "Get an embed for check loop status."
 msgstr ""
 
-#: guildstats\guildstats.py:6294
+#: guildstats\guildstats.py:6803
+#, docstring
+msgid "Purge old members data."
+msgstr ""
+
+#: guildstats\guildstats.py:6837
 #, docstring
 msgid "Purge Config for the current guild."
 msgstr ""
 
-#: guildstats\guildstats.py:6299
+#: guildstats\guildstats.py:6842
 msgid "All GuildStats data purged for this guild."
 msgstr ""
 
-#: guildstats\guildstats.py:6302
+#: guildstats\guildstats.py:6845
 msgid "All GuildStats activities data purged for this guild."
 msgstr ""
 
-#: guildstats\guildstats.py:6321
+#: guildstats\guildstats.py:6864
 msgid "All GuildStats {_type} data purged for this guild."
+msgstr ""
+
+#: guildstats\view.py:94
+msgid "You are not allowed to use this interaction."
 msgstr ""

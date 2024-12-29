@@ -1,0 +1,111 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: fakeidentities\fakeidentities.py:50
+#, docstring
+msgid ""
+"Generate random and fake identities, including names, addresses, emails, and"
+" phone numbers!"
+msgstr ""
+
+#: fakeidentities\types.py:38
+msgid "Main"
+msgstr ""
+
+#: fakeidentities\types.py:47
+msgid "Medical"
+msgstr ""
+
+#: fakeidentities\types.py:54
+msgid "Studies & Profession"
+msgstr ""
+
+#: fakeidentities\types.py:62
+msgid "Address & Transport"
+msgstr ""
+
+#: fakeidentities\types.py:70
+msgid "Payment"
+msgstr ""
+
+#: fakeidentities\types.py:77
+msgid "Login & Devices"
+msgstr ""
+
+#: fakeidentities\types.py:85
+msgid "Favorite"
+msgstr ""
+
+#: fakeidentities\types.py:92
+msgid "Woman & Children"
+msgstr ""
+
+#: fakeidentities\types.py:166
+msgid "Seed: {seed}"
+msgstr ""
+
+#: fakeidentities\types.py:339
+msgid ""
+"\n"
+"- OS: {os}\n"
+"- Manufacturer: {manufacturer}\n"
+"- CPU: {cpu} ({cpu_codename}) {cpu_frequency} ({generation})\n"
+"- Graphics: {graphics}\n"
+"- RAM: {ram_size} {ram_type}\n"
+"- Resolution: {resolution}\n"
+"- Screen Size: {screen_size}\n"
+"- Storage: {ssd_or_hdd}\n"
+"- MAC Address: `{mac_address}`\n"
+"- IP v4: `{ip_v4}`\n"
+"- IP v6: `{ip_v6}`"
+msgstr ""
+
+#: fakeidentities\types.py:370
+msgid ""
+"\n"
+"- Model: {model}\n"
+"- RAM: {ram_size}\n"
+"- MAC Address: `{mac_address}`\n"
+"- IP v4: `{ip_v4}`\n"
+"- IP v6: `{ip_v6}`"
+msgstr ""
+
+#: fakeidentities\types.py:400
+msgid ""
+"\n"
+"- Dish: {dish}\n"
+"- Vegetable: {vegetable}\n"
+"- Fruit: {fruit}\n"
+"- Drink: {drink}\n"
+"- Spices: {spices}"
+msgstr ""
+
+#: fakeidentities\view.py:38
+msgid "Select a gender."
+msgstr ""
+
+#: fakeidentities\view.py:39
+msgid "Select a nationality."
+msgstr ""
+
+#: fakeidentities\view.py:40
+msgid "Select a location."
+msgstr ""
+
+#: fakeidentities\view.py:41
+msgid "Select the page."
+msgstr ""
+
+#: fakeidentities\view.py:109
+msgid "You are not allowed to use this interaction."
+msgstr ""

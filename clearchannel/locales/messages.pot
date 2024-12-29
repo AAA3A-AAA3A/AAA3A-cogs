@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,33 +20,33 @@ msgid ""
 "    "
 msgstr ""
 
-#: clearchannel\clearchannel.py:97
+#: clearchannel\clearchannel.py:98
 msgid "⚠️ - ClearChannel"
 msgstr ""
 
-#: clearchannel\clearchannel.py:98
+#: clearchannel\clearchannel.py:99
 msgid ""
 "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n"
 "⚠ The channel will be cloned, and then **deleted**."
 msgstr ""
 
-#: clearchannel\clearchannel.py:130
+#: clearchannel\clearchannel.py:131
 msgid "Clear Channel requested by {ctx.author} ({ctx.author.id})."
 msgstr ""
 
-#: clearchannel\clearchannel.py:136
+#: clearchannel\clearchannel.py:137
 msgid "🗑️-Deleted-{old_channel.name}"
 msgstr ""
 
-#: clearchannel\clearchannel.py:150
+#: clearchannel\clearchannel.py:151
 msgid "ClearChannel"
 msgstr ""
 
-#: clearchannel\clearchannel.py:151
+#: clearchannel\clearchannel.py:152
 msgid "ALL the messages in this channel have been deleted..."
 msgstr ""
 
-#: clearchannel\clearchannel.py:174
+#: clearchannel\clearchannel.py:175
 msgid ""
 "All messages in channel #{old_channel.name} ({old_channel.id}) have been "
 "deleted! You can find the new channel, with the same permissions: "

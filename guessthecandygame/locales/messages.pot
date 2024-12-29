@@ -1,0 +1,36 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: guessthecandygame\guessthecandygame.py:21
+#, docstring
+msgid "Recognise the correct candy as fast as you can!"
+msgstr ""
+
+#: guessthecandygame\view.py:35 guessthecandygame\view.py:86
+msgid "🎃 Guess The Candy 🎃"
+msgstr ""
+
+#: guessthecandygame\view.py:36
+msgid ""
+"Recognise the correct candy as fast as you can, from the displayed shadow!"
+msgstr ""
+
+#: guessthecandygame\view.py:78
+msgid "You guessed wrong! Try again!"
+msgstr ""
+
+#: guessthecandygame\view.py:87
+msgid ""
+"**Congratulations!** You've correctly guessed it's **{candy}**, in **{time} "
+"seconds**!"
+msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,80 +11,84 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: dev\dev.py:468
+#: dev\dev.py:472
 #, docstring
 msgid "Various development focused utilities!"
 msgstr ""
 
-#: dev\dev.py:745 dev\dev.py:807 dev\dev.py:1014
+#: dev\dev.py:750 dev\dev.py:813 dev\dev.py:1021
 msgid "Unreadable attachment with `utf-8`."
 msgstr ""
 
-#: dev\dev.py:762
+#: dev\dev.py:767
 msgid "This message isn't reachable."
 msgstr ""
 
-#: dev\dev.py:868
+#: dev\dev.py:874
 msgid "Already running a REPL session in this channel. Exit it with `quit`."
 msgstr ""
 
-#: dev\dev.py:872
+#: dev\dev.py:878
 msgid ""
 "Already running a REPL session in this channel. Resume the REPL with "
 "`{prefix}replresume`."
 msgstr ""
 
-#: dev\dev.py:884
+#: dev\dev.py:890
 msgid ""
 "Enter code to execute or evaluate. `exit()` or `quit` to exit. "
 "`{prefix}replpause` to pause."
 msgstr ""
 
-#: dev\dev.py:929
+#: dev\dev.py:935
 msgid "Exiting."
 msgstr ""
 
-#: dev\dev.py:937
+#: dev\dev.py:943
 msgid "There is no currently running REPL session in this channel."
 msgstr ""
 
-#: dev\dev.py:943
+#: dev\dev.py:949
 msgid "The REPL session in this channel has been resumed."
 msgstr ""
 
-#: dev\dev.py:945
+#: dev\dev.py:951
 msgid "The REPL session in this channel is now paused."
 msgstr ""
 
-#: dev\dev.py:967
+#: dev\dev.py:973
 msgid ""
 "Bot owners will now bypass all commands with cooldowns{optional_duration}."
 msgstr ""
 
-#: dev\dev.py:977
+#: dev\dev.py:983
 msgid ""
 "Bot owners will no longer bypass all commands with "
 "cooldowns{optional_duration}."
 msgstr ""
 
-#: dev\dev.py:1103
+#: dev\dev.py:1110
 #, docstring
 msgid "Display all Dev environment values."
 msgstr ""
 
-#: dev\dev.py:1112
+#: dev\dev.py:1119
 #, docstring
 msgid "Reset its own locals in evals."
 msgstr ""
 
-#: dev\view.py:38
+#: dev\view.py:42
 msgid "Execute"
 msgstr ""
 
-#: dev\view.py:40
+#: dev\view.py:44
 msgid "Code to Execute"
 msgstr ""
 
-#: dev\view.py:42
+#: dev\view.py:46
 msgid "Write your code here..."
+msgstr ""
+
+#: dev\view.py:84
+msgid "You are not allowed to use this interaction."
 msgstr ""

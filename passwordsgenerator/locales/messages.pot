@@ -1,0 +1,91 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: passwordsgenerator\passwordsgenerator.py:24
+#, docstring
+msgid ""
+"Generate random and possibly easier to remember passwords with specific "
+"requirements!"
+msgstr ""
+
+#: passwordsgenerator\passwordsgenerator.py:72
+msgid "Generated Password"
+msgstr ""
+
+#: passwordsgenerator\passwordsgenerator.py:81
+msgid "Length:"
+msgstr ""
+
+#: passwordsgenerator\passwordsgenerator.py:85
+msgid "Strength:"
+msgstr ""
+
+#: passwordsgenerator\view.py:47
+msgid "Ephemeral"
+msgstr ""
+
+#: passwordsgenerator\view.py:48 passwordsgenerator\view.py:205
+msgid "Lengths"
+msgstr ""
+
+#: passwordsgenerator\view.py:49
+msgid "Include Characters"
+msgstr ""
+
+#: passwordsgenerator\view.py:50
+msgid "Hashes"
+msgstr ""
+
+#: passwordsgenerator\view.py:79
+msgid "Easy to Remember"
+msgstr ""
+
+#: passwordsgenerator\view.py:82
+msgid "Upper Characters"
+msgstr ""
+
+#: passwordsgenerator\view.py:87
+msgid "Lower Characters"
+msgstr ""
+
+#: passwordsgenerator\view.py:92
+msgid "Digits"
+msgstr ""
+
+#: passwordsgenerator\view.py:97
+msgid "Special Characters"
+msgstr ""
+
+#: passwordsgenerator\view.py:114
+msgid "Random"
+msgstr ""
+
+#: passwordsgenerator\view.py:127
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: passwordsgenerator\view.py:189
+msgid "Password Hashes:"
+msgstr ""
+
+#: passwordsgenerator\view.py:243
+msgid "You must enter a valid number."
+msgstr ""
+
+#: passwordsgenerator\view.py:248
+msgid "The value must be positive."
+msgstr ""
+
+#: passwordsgenerator\view.py:253
+msgid "The value must be less than 100."
+msgstr ""

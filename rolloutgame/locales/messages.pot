@@ -1,0 +1,182 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: rolloutgame\rolloutgame.py:25
+#, docstring
+msgid "Play a match of Rollout game, with buttons!"
+msgstr ""
+
+#: rolloutgame\rolloutgame.py:133
+msgid "Congratulations **{winner.display_name}**! You won the game!"
+msgstr ""
+
+#: rolloutgame\rolloutgame.py:144
+msgid "It's a tie! No one won the game."
+msgstr ""
+
+#: rolloutgame\rolloutgame.py:161
+msgid "No one has played this game yet."
+msgstr ""
+
+#: rolloutgame\rolloutgame.py:204
+#, docstring
+msgid "Reset leaderboard in the guild."
+msgstr ""
+
+#: rolloutgame\views.py:26
+msgid "Join Game"
+msgstr ""
+
+#: rolloutgame\views.py:27
+msgid "Leave"
+msgstr ""
+
+#: rolloutgame\views.py:28
+msgid "View Players (1)"
+msgstr ""
+
+#: rolloutgame\views.py:29
+msgid "Start Game!"
+msgstr ""
+
+#: rolloutgame\views.py:36
+msgid "Rollout Game"
+msgstr ""
+
+#: rolloutgame\views.py:37
+msgid ""
+"Click the button below to join the party! Please note that the maximum "
+"amount of players is 50."
+msgstr ""
+
+#: rolloutgame\views.py:44
+msgid "Instructions:"
+msgstr ""
+
+#: rolloutgame\views.py:45
+msgid ""
+"**•** At each round, select a number between 1 and 25 within 30 seconds.\n"
+"**•** If the bot rolls the number you selected, you lose.\n"
+"**•** The last player standing wins the game!"
+msgstr ""
+
+#: rolloutgame\views.py:52 rolloutgame\views.py:125
+msgid "Hosted by {host.display_name}"
+msgstr ""
+
+#: rolloutgame\views.py:76
+msgid "You have already joined the game!"
+msgstr ""
+
+#: rolloutgame\views.py:81
+msgid "The game is full, you can't join!"
+msgstr ""
+
+#: rolloutgame\views.py:85 rolloutgame\views.py:102
+msgid "View Players ({len_players})"
+msgstr ""
+
+#: rolloutgame\views.py:92
+msgid "You have joined the game!"
+msgstr ""
+
+#: rolloutgame\views.py:98
+msgid "You have not joined the game!"
+msgstr ""
+
+#: rolloutgame\views.py:109
+msgid "You have left the game!"
+msgstr ""
+
+#: rolloutgame\views.py:117
+msgid "No one has joined the game yet!"
+msgstr ""
+
+#: rolloutgame\views.py:121
+msgid "Rollout Game — Players"
+msgstr ""
+
+#: rolloutgame\views.py:144
+msgid "You can't start the game!"
+msgstr ""
+
+#: rolloutgame\views.py:148
+msgid "You need at least 2 players to start the game!"
+msgstr ""
+
+#: rolloutgame\views.py:160
+msgid "Only the host can cancel the game!"
+msgstr ""
+
+#: rolloutgame\views.py:196
+msgid "Rollout Game — Round {round}"
+msgstr ""
+
+#: rolloutgame\views.py:197
+msgid "Select a number between 1 and 25. Choose is limited to 30 seconds."
+msgstr ""
+
+#: rolloutgame\views.py:240
+msgid "You are not in this game!"
+msgstr ""
+
+#: rolloutgame\views.py:244
+msgid "You have already selected a number!"
+msgstr ""
+
+#: rolloutgame\views.py:276
+msgid "You have selected the number {number}!"
+msgstr ""
+
+#: rolloutgame\views.py:288
+msgid "Round {round} — Results"
+msgstr ""
+
+#: rolloutgame\views.py:305
+msgid "No one has answered in time. The game ends..."
+msgstr ""
+
+#: rolloutgame\views.py:311
+msgid ""
+"The bot has rolled the number {number}! However, since all remaining players"
+" have been eliminated, the round will be restarted."
+msgstr ""
+
+#: rolloutgame\views.py:318
+msgid "No player left in the game."
+msgstr ""
+
+#: rolloutgame\views.py:321
+msgid "The bot has rolled the number {number}!"
+msgstr ""
+
+#: rolloutgame\views.py:323
+msgid ""
+"\n"
+"\n"
+"**No one has been eliminated this round.**"
+msgstr ""
+
+#: rolloutgame\views.py:326
+msgid ""
+"\n"
+"\n"
+"**{number} players have been eliminated this round:**"
+msgstr ""
+
+#: rolloutgame\views.py:330
+msgid ""
+"\n"
+"\n"
+"**1 player has been eliminated this round:**"
+msgstr ""

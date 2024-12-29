@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"POT-Creation-Date: 2024-12-29 10:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,8 +12,8 @@ msgstr ""
 "Generated-By: redgettext 3.4.2\n"
 
 #: transferchannel\transferchannel.py:24
-#: transferchannel\transferchannel.py:334
-#: transferchannel\transferchannel.py:368
+#: transferchannel\transferchannel.py:340
+#: transferchannel\transferchannel.py:374
 msgid ""
 "There are {count_messages} transfered messages from {source.mention} to "
 "{destination.mention}."
@@ -45,23 +45,23 @@ msgid ""
 "text messages by adding `embeds`/`messages` to your command."
 msgstr ""
 
-#: transferchannel\transferchannel.py:155
+#: transferchannel\transferchannel.py:159
 msgid "Sorry. I could not find any messages."
 msgstr ""
 
-#: transferchannel\transferchannel.py:236
+#: transferchannel\transferchannel.py:242
 msgid "**Author:** {message.author.mention} ({message.author.id})"
 msgstr ""
 
-#: transferchannel\transferchannel.py:239
+#: transferchannel\transferchannel.py:245
 msgid "**Channel:** <#{message.channel.id}>"
 msgstr ""
 
-#: transferchannel\transferchannel.py:240
+#: transferchannel\transferchannel.py:246
 msgid "**Time (UTC):** {iso_format}"
 msgstr ""
 
-#: transferchannel\transferchannel.py:290
+#: transferchannel\transferchannel.py:296
 #, docstring
 msgid ""
 "Transfer all messages from a channel to another channel. This might take a long time.\n"
@@ -70,7 +70,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:318
+#: transferchannel\transferchannel.py:324
 #, docstring
 msgid ""
 "Transfer a specific message to another channel. This might take a long time.\n"
@@ -80,7 +80,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:351
+#: transferchannel\transferchannel.py:357
 #, docstring
 msgid ""
 "Transfer a part of the messages from a channel to another channel. This might take a long time.\n"
@@ -90,7 +90,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:383
+#: transferchannel\transferchannel.py:389
 #, docstring
 msgid ""
 "Transfer a part of the messages from a channel to another channel. This might take a long time.\n"
@@ -100,7 +100,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:415
+#: transferchannel\transferchannel.py:421
 #, docstring
 msgid ""
 "Transfer a part of the messages from a channel to another channel. This might take a long time.\n"
@@ -110,7 +110,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:448
+#: transferchannel\transferchannel.py:454
 #, docstring
 msgid ""
 "Transfer a part of the messages from a channel to another channel. This might take a long time.\n"
@@ -120,7 +120,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:481
+#: transferchannel\transferchannel.py:487
 #, docstring
 msgid ""
 "Transfer a part of the messages from a channel to another channel. This might take a long time.\n"
@@ -130,7 +130,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: transferchannel\transferchannel.py:514
+#: transferchannel\transferchannel.py:520
 #, docstring
 msgid ""
 "Transfer a part of the messages from a channel to another channel. This might take a long time.\n"

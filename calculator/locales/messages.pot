@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,13 +16,33 @@ msgstr ""
 msgid "A cog to do calculations from Discord with buttons!"
 msgstr ""
 
-#: calculator\calculator.py:151 calculator\calculator.py:281
+#: calculator\calculator.py:214 calculator\calculator.py:387
 #: calculator\view.py:207 calculator\view.py:214
 msgid "Error!"
 msgstr ""
 
-#: calculator\calculator.py:164
+#: calculator\calculator.py:224
 msgid "{ctx.me.display_name}'s Calculator"
+msgstr ""
+
+#: calculator\calculator.py:477
+#, docstring
+msgid "Set the default state of the react calculations."
+msgstr ""
+
+#: calculator\calculator.py:485
+#, docstring
+msgid "Set the default state of the auto calculations."
+msgstr ""
+
+#: calculator\calculator.py:491
+#, docstring
+msgid "Set the default state of the simple embed mode."
+msgstr ""
+
+#: calculator\calculator.py:499
+#, docstring
+msgid "Set the default state of the result codeblock mode."
 msgstr ""
 
 #: calculator\view.py:17 calculator\view.py:84
@@ -31,6 +51,10 @@ msgstr ""
 
 #: calculator\view.py:37 calculator\view.py:104
 msgid "Clear"
+msgstr ""
+
+#: calculator\view.py:189
+msgid "You are not allowed to use this interaction."
 msgstr ""
 
 #: calculator\view.py:280

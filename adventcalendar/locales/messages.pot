@@ -1,0 +1,385 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: adventcalendar\adventcalendar.py:31
+#, docstring
+msgid ""
+"Set up an Advent Calendar for your members, with custom rewards or messages "
+"each day! Work in december only..."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:178
+msgid "*Advent0Calendar*"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:310
+msgid "Merry4Christmas!"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:419
+msgid "🎁 You've received a **new role**! 🎁"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:420
+msgid "You've received the {role} role!"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:445
+msgid "🎁 You've received a **temporary role**! 🎁"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:446
+msgid "You've received the {role} role **for {duration_string}**!"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:458
+msgid "🎁 You've received **{amount} credits**! 🎁"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:468
+msgid "🎁 You've received **{amount} XP**! 🎁"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:483
+msgid "Advent Calendar — {member.display_name} received a **custom reward**"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:491
+msgid "Member:"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:492
+msgid "Reward label:"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:518
+msgid "🎁 You will receive **{label}**! 🎁"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:519
+msgid "Please wait for a staff member to give you your reward."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:526
+msgid "🎁 Here's a **message** for you! 🎁"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:549
+msgid ""
+"The Advent Calendar is only available in December. **Come back in "
+"{interval_string}!** 🎄"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:558
+msgid "The Advent Calendar is not enabled in this server."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:564
+msgid "You don't have the required roles to access the Advent Calendar."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:568
+msgid "You're not allowed to access the Advent Calendar."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:578
+msgid ""
+"🎄 Here's your surprise for **day {today_day}** of the Advent Calendar! 🎄"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:586
+msgid "🎄 You didn't get anything today, **come back tomorrow!** 🎄"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:590
+msgid ""
+"You've already opened your box for the day, **come back <t:{timestamp}:R>!**"
+" 😉 Here's your current Advent Calendar!"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:607
+msgid "🎄 You've opened all the boxes! 🎄"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:610
+msgid " Here's your **final surprise**!"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:652
+#, docstring
+msgid "Set up the rewards for each day of the Advent Calendar."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:660
+#, docstring
+msgid "Get the Advent Calendar for a member."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:664 adventcalendar\adventcalendar.py:696
+#: adventcalendar\adventcalendar.py:732 adventcalendar\adventcalendar.py:826
+msgid "The Advent Calendar is only available in December."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:668
+msgid "Advent Calendar"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:692
+#, docstring
+msgid "Get the stats of the Advent Calendar for a member."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:700 adventcalendar\adventcalendar.py:742
+msgid "Advent Calendar Stats"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:713
+msgid "Opened Days:"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:728
+#, docstring
+msgid "Get the stats of the Advent Calendar for the server."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:751
+msgid "Total Boxes Opened:"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:752
+msgid "{total_boxes_opened} Boxe{s}"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:759
+msgid "Members with All Boxes Opened:"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:760
+msgid "{members_all_boxes_opened} Member{s}"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:768
+msgid "Today Boxes Opened:"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:769
+msgid "{today_boxes_opened} Boxe{s}"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:797
+msgid "Opened Boxes"
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:822
+#, docstring
+msgid ""
+"Ping all members who have opened all boxes until yesterday and have not "
+"opened today's box."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:837
+msgid "No member to ping."
+msgstr ""
+
+#: adventcalendar\adventcalendar.py:838
+msgid ""
+"**You haven't opened your box of the 🎄 Advent Calendar 🎄 for today yet! ^^**\n"
+"\n"
+msgstr ""
+
+#: adventcalendar\view.py:20
+msgid "Role"
+msgstr ""
+
+#: adventcalendar\view.py:21
+msgid "Temp Role"
+msgstr ""
+
+#: adventcalendar\view.py:22
+msgid "Bank Credits"
+msgstr ""
+
+#: adventcalendar\view.py:23
+msgid "LevelUp XP"
+msgstr ""
+
+#: adventcalendar\view.py:24 adventcalendar\view.py:670
+msgid "Custom Reward"
+msgstr ""
+
+#: adventcalendar\view.py:25 adventcalendar\view.py:712
+msgid "Message"
+msgstr ""
+
+#: adventcalendar\view.py:26 adventcalendar\view.py:754
+msgid "Nothing"
+msgstr ""
+
+#: adventcalendar\view.py:27
+msgid "Clear"
+msgstr ""
+
+#: adventcalendar\view.py:28
+msgid "Clear All"
+msgstr ""
+
+#: adventcalendar\view.py:44
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: adventcalendar\view.py:64
+msgid "🎄 Final (24 boxes opened) 🎄"
+msgstr ""
+
+#: adventcalendar\view.py:66
+msgid "🎄 Rewards for Day {day} 🎄"
+msgstr ""
+
+#: adventcalendar\view.py:94
+msgid "• Role Reward ({priority} ; {percent}{multiplied_priority_percent})"
+msgstr ""
+
+#: adventcalendar\view.py:115
+msgid ""
+"• Temp Role Reward ({priority} ; {percent}%{multiplied_priority_percent})"
+msgstr ""
+
+#: adventcalendar\view.py:133
+msgid ""
+"• Bank Credits Reward ({priority} ; {percent}%{multiplied_priority_percent})"
+msgstr ""
+
+#: adventcalendar\view.py:151
+msgid ""
+"• LevelUp XP Reward ({priority} ; {percent}%{multiplied_priority_percent})"
+msgstr ""
+
+#: adventcalendar\view.py:169
+msgid "• Custom Reward ({priority} ; {percent}%{multiplied_priority_percent})"
+msgstr ""
+
+#: adventcalendar\view.py:187
+msgid "• Message ({priority} ; {percent}%{multiplied_priority_percent})"
+msgstr ""
+
+#: adventcalendar\view.py:205
+msgid "• Nothing ({priority} ; {percent}%{multiplied_priority_percent})"
+msgstr ""
+
+#: adventcalendar\view.py:375
+msgid "Are you sure you want to clear all rewards for day {day}?"
+msgstr ""
+
+#: adventcalendar\view.py:379
+msgid "Are you sure you want to clear all final rewards?"
+msgstr ""
+
+#: adventcalendar\view.py:408
+msgid "Are you sure you want to clear all rewards?"
+msgstr ""
+
+#: adventcalendar\view.py:427
+msgid "Priority:"
+msgstr ""
+
+#: adventcalendar\view.py:428
+msgid "Enter the priority of the reward..."
+msgstr ""
+
+#: adventcalendar\view.py:436
+msgid "Priority Multiplier (for configured roles):"
+msgstr ""
+
+#: adventcalendar\view.py:437
+msgid "Keep empty if you don't want this feature..."
+msgstr ""
+
+#: adventcalendar\view.py:449
+msgid "I can't assign this role."
+msgstr ""
+
+#: adventcalendar\view.py:451
+msgid "This role is higher than your top role."
+msgstr ""
+
+#: adventcalendar\view.py:457
+msgid "Role Reward"
+msgstr ""
+
+#: adventcalendar\view.py:461
+msgid "Role:"
+msgstr ""
+
+#: adventcalendar\view.py:462
+msgid "Enter the role name/ID..."
+msgstr ""
+
+#: adventcalendar\view.py:505
+msgid "Temp Role Reward"
+msgstr ""
+
+#: adventcalendar\view.py:508
+msgid "Duration:"
+msgstr ""
+
+#: adventcalendar\view.py:509
+msgid "Enter the duration..."
+msgstr ""
+
+#: adventcalendar\view.py:568
+msgid "Bank Credits Reward"
+msgstr ""
+
+#: adventcalendar\view.py:571
+msgid "Bank Credits Amount:"
+msgstr ""
+
+#: adventcalendar\view.py:572
+msgid "Enter the bank credits amount to give..."
+msgstr ""
+
+#: adventcalendar\view.py:596
+msgid "The bank credits amount must be a positive number."
+msgstr ""
+
+#: adventcalendar\view.py:619
+msgid "LevelUp XP Reward"
+msgstr ""
+
+#: adventcalendar\view.py:622
+msgid "LevelUp XP amount:"
+msgstr ""
+
+#: adventcalendar\view.py:623
+msgid "Enter the XP amount..."
+msgstr ""
+
+#: adventcalendar\view.py:647
+msgid "The XP amount must be a positive number."
+msgstr ""
+
+#: adventcalendar\view.py:673
+msgid "Label:"
+msgstr ""
+
+#: adventcalendar\view.py:674
+msgid "Enter the label..."
+msgstr ""
+
+#: adventcalendar\view.py:715
+msgid "Message:"
+msgstr ""
+
+#: adventcalendar\view.py:716
+msgid "Enter the message..."
+msgstr ""

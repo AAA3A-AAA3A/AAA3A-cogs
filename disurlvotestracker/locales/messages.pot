@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-21 16:17+0200\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,146 +41,157 @@ msgid ""
 "hierarchy."
 msgstr ""
 
-#: disurlvotestracker\dashboard_integration.py:38
-#: disurlvotestracker\dashboard_integration.py:72
-#: disurlvotestracker\disurlvotestracker.py:320
-#: disurlvotestracker\disurlvotestracker.py:352
+#: disurlvotestracker\dashboard_integration.py:48
+#: disurlvotestracker\dashboard_integration.py:103
+#: disurlvotestracker\disurlvotestracker.py:401
+#: disurlvotestracker\disurlvotestracker.py:452
+#: disurlvotestracker\disurlvotestracker.py:547
 msgid "DisurlVotesTracker is not enabled in this server."
 msgstr ""
 
-#: disurlvotestracker\dashboard_integration.py:46
+#: disurlvotestracker\dashboard_integration.py:62
 msgid "No votes found in this server."
 msgstr ""
 
-#: disurlvotestracker\dashboard_integration.py:62
-#: disurlvotestracker\dashboard_integration.py:106
+#: disurlvotestracker\dashboard_integration.py:82
+#: disurlvotestracker\dashboard_integration.py:145
 msgid "Total: {total} vote{s}"
 msgstr ""
 
-#: disurlvotestracker\dashboard_integration.py:90
+#: disurlvotestracker\dashboard_integration.py:125
 msgid "No monthly votes found in this server."
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:27
+#: disurlvotestracker\disurlvotestracker.py:25
 #, docstring
 msgid "Track votes on Disurl, assign roles to voters and remind them to vote!"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:181
+#: disurlvotestracker\disurlvotestracker.py:180
 msgid "Voted on Disurl! (12 hours)"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:196
+#: disurlvotestracker\disurlvotestracker.py:214
 msgid "New vote for {guild.name}!"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:199
+#: disurlvotestracker\disurlvotestracker.py:220
 msgid ""
 "{member.mention} voted on Disurl!\n"
-"`{number_member_votes} vote{s_1} this month & {number_member_monthly_votes} lifetime vote{s_2}`"
+"`{number_member_monthly_votes} vote{s_2} this month & {number_member_votes} lifetime vote{s_1}`"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:208
+#: disurlvotestracker\disurlvotestracker.py:231
 msgid ""
 "\n"
 "\n"
 "{member.display_name} received the role {voters_role.mention} for the next 12 hours."
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:209
+#: disurlvotestracker\disurlvotestracker.py:234
 msgid ""
 "\n"
 "\n"
 "You could vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:210
-msgid "Thanks for supporting the server! | User ID: {member.id}"
+#: disurlvotestracker\disurlvotestracker.py:238
+msgid "Thanks for supporting this server! | User ID: {member.id}"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:266
+#: disurlvotestracker\disurlvotestracker.py:313
 msgid "Voters role expired! (12 hours)"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:275
+#: disurlvotestracker\disurlvotestracker.py:330
 msgid "Vote on Disurl!"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:277
+#: disurlvotestracker\disurlvotestracker.py:335
 msgid ""
 "{member.mention}, don't forget to vote on "
 "**[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again"
-" 12 hours after this vote. **Thanks for supporting the server!**"
+" 12 hours after this vote. **Thanks for supporting this server!**"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:318
+#: disurlvotestracker\disurlvotestracker.py:398
 #, docstring
 msgid "Show the lifetime leaderboard of voters."
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:328
-#: disurlvotestracker\disurlvotestracker.py:370
+#: disurlvotestracker\disurlvotestracker.py:412
+#: disurlvotestracker\disurlvotestracker.py:473
 msgid "No voters found."
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:330
+#: disurlvotestracker\disurlvotestracker.py:414
 msgid "Leaderboard"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:333
+#: disurlvotestracker\disurlvotestracker.py:418
 msgid "{ctx.guild.name} | {total} Lifetime Vote{s}"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:336
+#: disurlvotestracker\disurlvotestracker.py:426
 msgid ""
 "You are at position {author_index} with {number_member_lifetime_votes} "
 "vote{s}."
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:350
+#: disurlvotestracker\disurlvotestracker.py:449
 #, docstring
 msgid "Show the monthly leaderboard of voters."
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:372
+#: disurlvotestracker\disurlvotestracker.py:475
 msgid "Monthly Leaderboard"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:375
+#: disurlvotestracker\disurlvotestracker.py:479
 msgid "{ctx.guild.name} | {total} Monthly Vote{s}"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:378
+#: disurlvotestracker\disurlvotestracker.py:487
 msgid ""
 "You are at position {author_index} with {number_member_monthly_votes} "
 "vote{s}."
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:400
+#: disurlvotestracker\disurlvotestracker.py:518
 #, docstring
 msgid "Instructions on how to set up DisurlVotesTracker."
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:403
+#: disurlvotestracker\disurlvotestracker.py:521
 msgid ""
 "Red-Dashboard is not installed. Check <https://red-web-"
 "dashboard.readthedocs.io>."
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:408
+#: disurlvotestracker\disurlvotestracker.py:526
 msgid "You can't access the Dashboard."
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:410
+#: disurlvotestracker\disurlvotestracker.py:528
 msgid "DisurlVotesTracker Instructions"
 msgstr ""
 
-#: disurlvotestracker\disurlvotestracker.py:412
+#: disurlvotestracker\disurlvotestracker.py:530
 msgid ""
-"1. Go to [Disurl Dashboard](https://disurl.me/dashboard/server/{guild_id}/webhooks) and set the webhook URL to `{webhook_url}`.\n"
-"2. Set the Disurl API authorization key with the key which you provided on Disurl.\n"
-"3. Set the votes channel where vote notifications will be sent.\n"
-"4. Set the optional the voters role that will be assigned to voters.\n"
-"5. Optionally, toggle the vote reminder.\n"
-"6. Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`.7. Enable the cog."
+"**1.** Go to [Disurl Dashboard](https://disurl.me/dashboard/server/{guild_id}/webhooks) and set the webhook URL to `{webhook_url}`.\n"
+"**2.** Set the Disurl API authorization key with the key which you provided on Disurl.\n"
+"**3.** Set the votes channel where vote notifications will be sent.\n"
+"**4.** Set the optional the voters role that will be assigned to voters.\n"
+"**5.** Optionally, toggle the vote reminder.\n"
+"**6.** Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`.**7.** Enable the cog."
+msgstr ""
+
+#: disurlvotestracker\disurlvotestracker.py:544
+#, docstring
+msgid "Reset the leaderboards."
+msgstr ""
+
+#: disurlvotestracker\disurlvotestracker.py:557
+#, docstring
+msgid "Get an embed for check loop status."
 msgstr ""

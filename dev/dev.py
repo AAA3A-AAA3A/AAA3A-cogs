@@ -1,5 +1,5 @@
 ﻿from AAA3A_utils import Cog, Menu, Settings, CogsUtils  # isort:skip
-from redbot.core import commands, Config  # isort:skip
+from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -706,6 +706,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
 
     @commands.is_owner()
     @commands.hybrid_command()
+    @app_commands.allowed_installs(guilds=True, users=True)
     # @discord.utils.copy_doc(dev_commands.Dev.debug.callback)
     async def debug(self, ctx: commands.Context, *, code: str = None) -> None:
         """Evaluate a statement of python code.
@@ -772,6 +773,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
 
     @commands.is_owner()
     @commands.hybrid_command(name="eval")
+    @app_commands.allowed_installs(guilds=True, users=True)
     # @discord.utils.copy_doc(dev_commands.Dev._eval.callback)
     async def _eval(self, ctx: commands.Context, *, body: str = None) -> None:
         """Execute asynchronous code.
@@ -995,6 +997,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
 
     @commands.is_owner()
     @commands.hybrid_command(name="eshell")
+    @app_commands.allowed_installs(guilds=True, users=True)
     async def _eshell(
         self, ctx: commands.Context, silent: typing.Optional[bool] = False, *, command: str = None
     ) -> None:

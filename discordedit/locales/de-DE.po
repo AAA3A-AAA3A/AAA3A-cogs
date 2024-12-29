@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:21\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:37\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -173,19 +173,23 @@ msgstr "Wollen Sie wirklich die AutoMod-Regel {rule.name} ({rule.id}) in {guild.
 msgid "Rule `{rule.name} ({rule.id})` edited."
 msgstr "Regel `{rule.name} ({rule.id})` bearbeitet."
 
-#: discordedit\editautomod.py:623
+#: discordedit\editautomod.py:467 discordedit\view.py:90
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: discordedit\editautomod.py:629
 msgid "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`."
 msgstr "Wählen Sie Kanäle/Rollen aus, die für die AutoMod-Regel \"{rule.name} ({rule.id})` ausgenommen werden sollen."
 
-#: discordedit\editautomod.py:645
+#: discordedit\editautomod.py:652
 msgid "Rule `{rule.name} ({rule.id})` enabled."
 msgstr "Regel `{rule.name} ({rule.id})` aktiviert."
 
-#: discordedit\editautomod.py:647
+#: discordedit\editautomod.py:654
 msgid "Rule {rule.name} `{rule.id}` disabled."
 msgstr "Regel {rule.name} `{rule.id}` deaktiviert."
 
-#: discordedit\editautomod.py:665
+#: discordedit\editautomod.py:673
 msgid "Rule `{rule.name} ({rule.id})` deleted."
 msgstr "Regel `{rule.name} ({rule.id})` gelöscht."
 
@@ -1183,7 +1187,7 @@ msgstr "Möchten Sie den Sprachkanal {channel.mention} ({channel.id}) wirklich l
 msgid "View and edit voice channel."
 msgstr "Sprachkanal anzeigen und bearbeiten."
 
-#: discordedit\view.py:120
+#: discordedit\view.py:122
 msgid "You are not allowed to execute this command."
 msgstr "Sie sind nicht berechtigt, diesen Befehl auszuführen."
 

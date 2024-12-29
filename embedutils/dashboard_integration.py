@@ -164,7 +164,10 @@ class DashboardIntegration:
             )
             if not notifications:
                 notifications.append(
-                    {"message": _("Message{s} sent successfully!").format(s=s), "category": "success"}
+                    {
+                        "message": _("Message{s} sent successfully!").format(s=s),
+                        "category": "success",
+                    }
                 )
             return {
                 "status": 0,

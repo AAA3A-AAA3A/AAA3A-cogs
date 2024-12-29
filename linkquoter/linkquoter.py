@@ -21,7 +21,10 @@ _: Translator = Translator("LinkQuoter", __file__)
 
 class LinkQuoterView(discord.ui.View):
     def __init__(
-        self, invoker: discord.Member, quoted_message: discord.Message, delete_message_button: bool = True
+        self,
+        invoker: discord.Member,
+        quoted_message: discord.Message,
+        delete_message_button: bool = True,
     ) -> None:
         super().__init__(timeout=60)
         self.invoker: discord.Member = invoker
@@ -320,9 +323,11 @@ class LinkQuoter(DashboardIntegration, Cog):
                     view=view,
                     username=message.author.display_name,
                     avatar_url=message.author.display_avatar,
-                    thread=ctx.channel
-                    if isinstance(ctx.channel, discord.Thread)
-                    else discord.utils.MISSING,
+                    thread=(
+                        ctx.channel
+                        if isinstance(ctx.channel, discord.Thread)
+                        else discord.utils.MISSING
+                    ),
                     wait=True,
                 )
             except discord.HTTPException:

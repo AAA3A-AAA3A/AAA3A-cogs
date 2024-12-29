@@ -132,18 +132,20 @@ class Examples(typing.List):
                     .replace("CHANNEL_ID", str(ctx.channel.id))
                     .replace(
                         "ROLE_ID",
-                        str(ctx.author.top_role)
-                        if getattr(ctx.author, "top_role", None) is not None
-                        else '"{ROLE_ID}"',
+                        (
+                            str(ctx.author.top_role)
+                            if getattr(ctx.author, "top_role", None) is not None
+                            else '"{ROLE_ID}"'
+                        ),
                     )
                     .replace("MESSAGE_ID", str(ctx.message.id))
                     .replace("BOT_ID", str(ctx.bot.user.id))
                     .replace("APPLICATION_ID", str(ctx.bot.application_id))
                 )
             embed = discord.Embed(
-                title=f"Example {i}:"
-                if len(self) > 1 or True
-                else "Example:",  # Always include the example index...
+                title=(
+                    f"Example {i}:" if len(self) > 1 or True else "Example:"
+                ),  # Always include the example index...
                 description=(box(example, lang="py") if "```" not in example else example)[:4096],
                 color=embed_color,
             )
@@ -256,9 +258,11 @@ class Documentation:
         embed = discord.Embed(
             title=discord.utils.escape_markdown(self.name),
             url=self.url if self.url.startswith("http") else None,
-            description=list(pagify(description, page_length=4000))[0]
-            if description
-            else "No description.",
+            description=(
+                list(pagify(description, page_length=4000))[0]
+                if description
+                else "No description."
+            ),
             color=embed_color,
         )
         embed.set_author(

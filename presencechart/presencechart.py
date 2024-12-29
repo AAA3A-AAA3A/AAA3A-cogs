@@ -179,10 +179,12 @@ class PresenceChart(Cog):
             go.Pie(
                 labels=list(x_and_y.keys()),
                 values=list(x_and_y.values()),
-                hole=(0.7 if frame_mode else 0.75)
-                if not isinstance(member_or_role, discord.Role)
-                or member_or_role.guild.icon is not None
-                else 0,
+                hole=(
+                    (0.7 if frame_mode else 0.75)
+                    if not isinstance(member_or_role, discord.Role)
+                    or member_or_role.guild.icon is not None
+                    else 0
+                ),
                 textposition="inside",
                 textfont={"size": 60, "color": "rgb(255,255,255)"},
                 marker={"line": {"color": "rgb(0,0,0)", "width": 0}, "colors": colors},

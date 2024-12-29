@@ -320,9 +320,11 @@ class Ticket:
                     # "👥 Ticket claimed by: Nobody."
                 ).format(
                     ticket=self,
-                    short_reason=f"{self.reason[:700]}...".replace("\n", " ")
-                    if len(self.reason) > 700
-                    else self.reason.replace("\n", " "),
+                    short_reason=(
+                        f"{self.reason[:700]}...".replace("\n", " ")
+                        if len(self.reason) > 700
+                        else self.reason.replace("\n", " ")
+                    ),
                 )
                 self.channel: discord.TextChannel = await self.guild.create_text_channel(
                     name,

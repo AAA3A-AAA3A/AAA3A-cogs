@@ -27,19 +27,35 @@ class ForumTagConverter(commands.Converter):
         cog = ctx.bot.get_cog("Tickets")
         if (
             not isinstance((profile := ctx.args[-1]), str)
-            or (forum_channel_id := await cog.config.guild(ctx.guild).profiles.get_raw(profile, "forum_channel")) is None
+            or (
+                forum_channel_id := await cog.config.guild(ctx.guild).profiles.get_raw(
+                    profile, "forum_channel"
+                )
+            )
+            is None
             or (forum_channel := ctx.guild.get_channel(forum_channel_id)) is None
             or not isinstance(forum_channel, discord.ForumChannel)
         ):
-            raise commands.BadArgument(_("You must set the forum channel before setting a forum tag."))
+            raise commands.BadArgument(
+                _("You must set the forum channel before setting a forum tag.")
+            )
         try:
             argument = int(argument)
         except ValueError:
             if (tag := discord.utils.get(forum_channel.available_tags, name=argument)) is not None:
                 return tag.id
         if forum_channel.get_tag(argument) is None:
-            available_tags = humanize_list([f"`{f'{tag.emoji} ' if tag.emoji is not None else ''}{tag.name}` ({tag.id})" for tag in forum_channel.available_tags])
-            raise commands.BadArgument(_("The forum tag ID provided doesn't exist. The available tags are: {available_tags}.").format(available_tags=available_tags))
+            available_tags = humanize_list(
+                [
+                    f"`{f'{tag.emoji} ' if tag.emoji is not None else ''}{tag.name}` ({tag.id})"
+                    for tag in forum_channel.available_tags
+                ]
+            )
+            raise commands.BadArgument(
+                _(
+                    "The forum tag ID provided doesn't exist. The available tags are: {available_tags}."
+                ).format(available_tags=available_tags)
+            )
         return argument
 
 

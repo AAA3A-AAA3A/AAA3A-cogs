@@ -46,9 +46,9 @@ class EditReminderModal(discord.ui.Modal):
         if self.reminder.content["type"] in ("text", "say"):
             self.content: discord.ui.TextInput = discord.ui.TextInput(
                 label="Text",
-                placeholder="(required)"
-                if self.reminder.content["type"] == "say"
-                else "(optional)",
+                placeholder=(
+                    "(required)" if self.reminder.content["type"] == "say" else "(optional)"
+                ),
                 default=self.reminder.content["text"],
                 style=discord.TextStyle.paragraph,
                 max_length=MAX_REMINDER_LENGTH,

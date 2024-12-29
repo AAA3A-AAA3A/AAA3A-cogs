@@ -5,11 +5,12 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import json
-from mimesis.datasets.int import GENDER_SYMBOLS
-from mimesis.locales import Locale
-from mimesis.enums import Gender
 
-from .types import LOCALES, get_pages, FakeIdentity
+from mimesis.datasets.int import GENDER_SYMBOLS
+from mimesis.enums import Gender
+from mimesis.locales import Locale
+
+from .types import LOCALES, FakeIdentity, get_pages
 
 _: Translator = Translator("FakeIdentities", __file__)
 

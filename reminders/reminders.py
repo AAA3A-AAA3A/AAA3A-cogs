@@ -358,12 +358,14 @@ class Reminders(DashboardIntegration, Cog):
             content = {
                 "type": "message",
                 "text": (
-                    f"{message_or_text.clean_content[:MAX_REMINDER_LENGTH - 4]}\n..."
-                    if len(message_or_text.clean_content) > MAX_REMINDER_LENGTH
-                    else message_or_text.clean_content
-                )
-                if message_or_text.clean_content
-                else None,
+                    (
+                        f"{message_or_text.clean_content[:MAX_REMINDER_LENGTH - 4]}\n..."
+                        if len(message_or_text.clean_content) > MAX_REMINDER_LENGTH
+                        else message_or_text.clean_content
+                    )
+                    if message_or_text.clean_content
+                    else None
+                ),
                 "embed": message_or_text.embeds[0].to_dict() if message_or_text.embeds else None,
                 "message_author": {
                     "display_name": message_or_text.author.display_name,
@@ -546,12 +548,14 @@ class Reminders(DashboardIntegration, Cog):
             content = {
                 "type": "message",
                 "text": (
-                    f"{message_or_text.clean_content[:MAX_REMINDER_LENGTH - 4]}\n..."
-                    if len(message_or_text.clean_content) > MAX_REMINDER_LENGTH
-                    else message_or_text.clean_content
-                )
-                if message_or_text.clean_content
-                else None,
+                    (
+                        f"{message_or_text.clean_content[:MAX_REMINDER_LENGTH - 4]}\n..."
+                        if len(message_or_text.clean_content) > MAX_REMINDER_LENGTH
+                        else message_or_text.clean_content
+                    )
+                    if message_or_text.clean_content
+                    else None
+                ),
                 "embed": message_or_text.embeds[0].to_dict() if message_or_text.embeds else None,
                 "message_author": {
                     "display_name": message_or_text.author.display_name,
@@ -931,9 +935,9 @@ class Reminders(DashboardIntegration, Cog):
                     "You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder."
                 ).format(
                     len_reminders=len(reminders),
-                    of_this_content_type=_(" of this content type")
-                    if content_type is not None
-                    else "",
+                    of_this_content_type=(
+                        _(" of this content type") if content_type is not None else ""
+                    ),
                     clean_prefix=ctx.clean_prefix,
                 ),
                 color=await ctx.embed_color(),
@@ -1318,19 +1322,21 @@ class Reminders(DashboardIntegration, Cog):
                         next_expires_at=datetime.datetime.fromtimestamp(
                             reminder_data["expires"], tz=datetime.timezone.utc
                         ),
-                        repeat=Repeat.from_json(
-                            [
-                                {
-                                    "type": "sample",
-                                    "value": reminder_data["repeat"],
-                                    "start_trigger": None,
-                                    "first_trigger": None,
-                                    "last_trigger": None,
-                                }
-                            ]
-                        )
-                        if reminder_data.get("repeat")
-                        else None,
+                        repeat=(
+                            Repeat.from_json(
+                                [
+                                    {
+                                        "type": "sample",
+                                        "value": reminder_data["repeat"],
+                                        "start_trigger": None,
+                                        "first_trigger": None,
+                                        "last_trigger": None,
+                                    }
+                                ]
+                            )
+                            if reminder_data.get("repeat")
+                            else None
+                        ),
                     )
                     await reminder.save()
         await ctx.send(_("Data successfully migrated from RemindMe by PhasecoreX."))

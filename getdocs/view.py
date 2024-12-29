@@ -40,9 +40,9 @@ class GetDocsView(discord.ui.View):
 
         self._message: discord.Message = None
         self._current: Documentation = None
-        self._mode: typing.Literal[
-            "documentation", "parameters", "examples", "attributes"
-        ] = "documentation"
+        self._mode: typing.Literal["documentation", "parameters", "examples", "attributes"] = (
+            "documentation"
+        )
         self._ready: asyncio.Event = asyncio.Event()
 
     async def start(self, ctx: commands.Context) -> None:

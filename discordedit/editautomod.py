@@ -539,47 +539,53 @@ class EditAutoModRuleView(discord.ui.View):
             embed.add_field(name="Trigger:", value=repr(rule.trigger), inline=True)
             embed.add_field(
                 name="Actions:",
-                value="\n".join(
-                    [
-                        (
-                            f"**• {action.type}: **"
-                            + (
-                                f" - Channel ID {action.channel_id}"
-                                if action.channel_id is not None
-                                else ""
+                value=(
+                    "\n".join(
+                        [
+                            (
+                                f"**• {action.type}: **"
+                                + (
+                                    f" - Channel ID {action.channel_id}"
+                                    if action.channel_id is not None
+                                    else ""
+                                )
+                                + (
+                                    f" - Duration {action.duration}"
+                                    if action.duration is not None
+                                    else ""
+                                )
+                                + (
+                                    f' - Custom message "{action.custom_message}"'
+                                    if action.custom_message is not None
+                                    else ""
+                                )
                             )
-                            + (
-                                f" - Duration {action.duration}"
-                                if action.duration is not None
-                                else ""
-                            )
-                            + (
-                                f' - Custom message "{action.custom_message}"'
-                                if action.custom_message is not None
-                                else ""
-                            )
-                        )
-                        for action in rule.actions
-                    ]
-                )
-                if rule.actions
-                else "None.",
+                            for action in rule.actions
+                        ]
+                    )
+                    if rule.actions
+                    else "None."
+                ),
                 inline=False,
             )
             embed.add_field(
                 name="Exempt Channels:",
-                value=humanize_list(
-                    [f"{channel.mention} ({channel.id})" for channel in rule.exempt_channels]
-                )
-                if rule.exempt_channels
-                else "None.",
+                value=(
+                    humanize_list(
+                        [f"{channel.mention} ({channel.id})" for channel in rule.exempt_channels]
+                    )
+                    if rule.exempt_channels
+                    else "None."
+                ),
                 inline=True,
             )
             embed.add_field(
                 name="Exempt Roles:",
-                value=humanize_list([f"{role.mention} ({role.id})" for role in rule.exempt_roles])
-                if rule.exempt_roles
-                else "None.",
+                value=(
+                    humanize_list([f"{role.mention} ({role.id})" for role in rule.exempt_roles])
+                    if rule.exempt_roles
+                    else "None."
+                ),
                 inline=True,
             )
         return embed
@@ -642,9 +648,11 @@ class EditAutoModRuleView(discord.ui.View):
             )
             return
         await interaction.response.send_message(
-            _("Rule `{rule.name} ({rule.id})` enabled.").format(rule=self.rule)
-            if self.rule.enabled
-            else _("Rule {rule.name} `{rule.id}` disabled.").format(rule=self.rule),
+            (
+                _("Rule `{rule.name} ({rule.id})` enabled.").format(rule=self.rule)
+                if self.rule.enabled
+                else _("Rule {rule.name} `{rule.id}` disabled.").format(rule=self.rule)
+            ),
             ephemeral=True,
         )
         await self._update()

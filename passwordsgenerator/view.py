@@ -3,15 +3,22 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import box
-
 import hashlib
+
+from redbot.core.utils.chat_formatting import box
 
 _: Translator = Translator("PasswordsGenerator", __file__)
 
 DEFAULT_LENGTHS: typing.Dict[str, int] = {
-    "length": 16, "min_upper": 1, "min_lower": 1, "min_digits": 1, "min_special": 1,
-    "min_word_length": 3, "max_word_length": 8, "max_int_value": 1000, "number_of_elements": 4,
+    "length": 16,
+    "min_upper": 1,
+    "min_lower": 1,
+    "min_digits": 1,
+    "min_special": 1,
+    "min_word_length": 3,
+    "max_word_length": 8,
+    "max_int_value": 1000,
+    "number_of_elements": 4,
 }
 DEFAULT_INCLUDE_CHARACTERS: typing.List[str] = ["upper", "lower", "digits", "special"]
 
@@ -22,7 +29,9 @@ class PasswordsGeneratorView(discord.ui.View):
         cog: commands.Cog,
         easy_to_remember: bool = False,
         lengths: typing.Dict[str, int] = None,
-        include_characters: typing.List[typing.Literal["upper", "lower", "digits", "special"]] = DEFAULT_INCLUDE_CHARACTERS,
+        include_characters: typing.List[
+            typing.Literal["upper", "lower", "digits", "special"]
+        ] = DEFAULT_INCLUDE_CHARACTERS,
     ) -> None:
         super().__init__(timeout=180)
         self.cog: commands.Cog = cog
@@ -31,7 +40,9 @@ class PasswordsGeneratorView(discord.ui.View):
 
         self.easy_to_remember: bool = easy_to_remember
         self.lengths: typing.Dict[str, int] = lengths or {}
-        self.include_characters: typing.List[typing.Literal["upper", "lower", "digits", "special"]] = include_characters
+        self.include_characters: typing.List[
+            typing.Literal["upper", "lower", "digits", "special"]
+        ] = include_characters
 
         self.ephemeral.label = _("Ephemeral")
         self.lengths_button.label = _("Lengths")
@@ -151,17 +162,23 @@ class PasswordsGeneratorView(discord.ui.View):
             pass
 
     @discord.ui.button(style=discord.ButtonStyle.secondary)
-    async def change_mode(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def change_mode(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         await interaction.response.defer()
         self.easy_to_remember = not self.easy_to_remember
         await self._update()
 
     @discord.ui.button(emoji="📋", label="Lengths", style=discord.ButtonStyle.secondary)
-    async def lengths_button(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def lengths_button(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         await interaction.response.send_modal(LengthsModal(self))
 
     @discord.ui.select(placeholder="Include Characters", min_values=1, max_values=4)
-    async def include_characters_select(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
+    async def include_characters_select(
+        self, interaction: discord.Interaction, select: discord.ui.Select
+    ) -> None:
         await interaction.response.defer()
         self.include_characters = [option for option in select.values]
         await self._update()
@@ -189,11 +206,18 @@ class LengthsModal(discord.ui.Modal):
         self.view: PasswordsGeneratorView = view
         if not self.view.easy_to_remember:
             self.inputs = [
-                "length", "min_upper", "min_lower", "min_digits", "min_special",
+                "length",
+                "min_upper",
+                "min_lower",
+                "min_digits",
+                "min_special",
             ]
         else:
             self.inputs = [
-                "min_word_length", "max_word_length", "max_int_value", "number_of_elements",
+                "min_word_length",
+                "max_word_length",
+                "max_int_value",
+                "number_of_elements",
             ]
         for key in self.inputs:
             text_input = discord.ui.TextInput(

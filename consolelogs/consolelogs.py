@@ -8,6 +8,7 @@ import typing  # isort:skip
 from redbot import __version__ as red_version
 from redbot.core import data_manager
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify
+
 try:
     from redbot.core._events import INTRO
 except ModuleNotFoundError:  # Lemon's fork.
@@ -19,11 +20,12 @@ import logging
 import re
 import traceback
 from collections import Counter
-from colorama import Fore
 from dataclasses import dataclass
 from io import BytesIO, TextIOWrapper
 
-from rich import box as rich_box, print as rich_print
+from colorama import Fore
+from rich import box as rich_box
+from rich import print as rich_print
 from rich.columns import Columns
 from rich.panel import Panel
 from rich.table import Table
@@ -155,7 +157,10 @@ class ConsoleLogs(DashboardIntegration, Cog):
         with TextIOWrapper(io_file, encoding="utf-8") as text_wrapper:
             rich_print(
                 Columns(
-                    [Panel(table_general_info, title=self.bot.user.display_name), Panel(table_counts)],
+                    [
+                        Panel(table_general_info, title=self.bot.user.display_name),
+                        Panel(table_counts),
+                    ],
                     equal=True,
                     align="center",
                 ),
@@ -348,9 +353,11 @@ class ConsoleLogs(DashboardIntegration, Cog):
         menu = Menu(
             pages=pages,
             prefix=prefix,
-            lang="py"
-            if (ctx.author.is_on_mobile() if isinstance(ctx.author, discord.Member) else False)
-            else "ansi",
+            lang=(
+                "py"
+                if (ctx.author.is_on_mobile() if isinstance(ctx.author, discord.Member) else False)
+                else "ansi"
+            ),
         )
         menu._current_page = page_index
         await menu.start(ctx)
@@ -536,9 +543,11 @@ class ConsoleLogs(DashboardIntegration, Cog):
                 "dpy_ignored_exceptions": dpy_ignored_exceptions,
                 "full_console": full_console,
                 "guild_invite": guild_invite,
-                "ignored_cogs": [cog.qualified_name for cog in ignored_cogs]
-                if ignored_cogs is not None
-                else [],
+                "ignored_cogs": (
+                    [cog.qualified_name for cog in ignored_cogs]
+                    if ignored_cogs is not None
+                    else []
+                ),
             }
         )
         await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))
@@ -623,9 +632,11 @@ class ConsoleLogs(DashboardIntegration, Cog):
         embed.add_field(name="Message:", value=f"[Jump to message.]({ctx.message.jump_url})")
         embed.add_field(
             name="Channel:",
-            value=f"{ctx.channel.mention}\n{ctx.channel} ({ctx.channel.id})"
-            if ctx.guild is not None
-            else str(ctx.channel),
+            value=(
+                f"{ctx.channel.mention}\n{ctx.channel} ({ctx.channel.id})"
+                if ctx.guild is not None
+                else str(ctx.channel)
+            ),
         )
         if ctx.guild is not None:
             embed.add_field(name="Guild:", value=f"{ctx.guild.name} ({ctx.guild.id})")

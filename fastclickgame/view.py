@@ -3,8 +3,6 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import humanize_list
-
 import asyncio
 import datetime
 import functools
@@ -14,6 +12,7 @@ from random import randint
 
 from redbot.core import bank
 from redbot.core.errors import BalanceTooHigh
+from redbot.core.utils.chat_formatting import humanize_list
 
 _: Translator = Translator("FastClickGame", __file__)
 
@@ -59,7 +58,10 @@ class FastClickGameView(discord.ui.View):
         embed.description = _(
             "⏳ The game will start {timestamp}, first one to click the 🟩 button wins.\n> **{rounds} round{s}** to play."
         ).format(
-            timestamp=discord.utils.format_dt(datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=5), "R"),
+            timestamp=discord.utils.format_dt(
+                datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=5),
+                "R",
+            ),
             rounds=self.rounds,
             s="s" if self.rounds > 1 else "",
         )
@@ -69,7 +71,9 @@ class FastClickGameView(discord.ui.View):
         for current_round in range(1, self.rounds + 1):
             self.event.clear()
             await asyncio.sleep(5 if current_round == 1 else 3)
-            embed.title = _("Fast Click Game - Round {current_round}/{total_rounds}").format(current_round=current_round, total_rounds=self.rounds)
+            embed.title = _("Fast Click Game - Round {current_round}/{total_rounds}").format(
+                current_round=current_round, total_rounds=self.rounds
+            )
             embed.description = _("🖱️ To win you must be the first to press the 🟩 button.")
             success_i = randint(0, self.buttons - 1)
             success_button = self.children[success_i]
@@ -89,11 +93,19 @@ class FastClickGameView(discord.ui.View):
             embed.description = (
                 _("🏆 {winner.mention} has won this round!\n")
                 + _("🖱️ They clicked the button in **{click_time}s**.\n")
-                + (_("⏳ Next round starting {timestamp}...\n") if current_round < self.rounds else "")
+                + (
+                    _("⏳ Next round starting {timestamp}...\n")
+                    if current_round < self.rounds
+                    else ""
+                )
             ).format(
                 winner=winner,
                 click_time=self.times[-1],
-                timestamp=discord.utils.format_dt(datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=3), "R"),
+                timestamp=discord.utils.format_dt(
+                    datetime.datetime.now(tz=datetime.timezone.utc)
+                    + datetime.timedelta(seconds=3),
+                    "R",
+                ),
             )
             success_button.style = discord.ButtonStyle.secondary
             success_button.emoji = None
@@ -101,17 +113,18 @@ class FastClickGameView(discord.ui.View):
             success_button.disabled = True
             await self._message.edit(embed=embed, view=self)
 
-        counter = Counter(
-            {
-                winner: self.winners.count(winner)
-                for winner in self.winners
-            }
-        )
+        counter = Counter({winner: self.winners.count(winner) for winner in self.winners})
         max_fastest_clicks = max(counter.values())
-        winners = [winner for winner, fastest_clicks in counter.items() if fastest_clicks == max_fastest_clicks]
+        winners = [
+            winner
+            for winner, fastest_clicks in counter.items()
+            if fastest_clicks == max_fastest_clicks
+        ]
         winners_mentions = humanize_list([winner.mention for winner in winners])
         embed.title = _("Fast Click Game - Winner{s}").format(s="s" if len(winners) > 1 else "")
-        embed.description = _("**🏆 {winners} won with {fastest_clicks} fastest click{s}!**").format(
+        embed.description = _(
+            "**🏆 {winners} won with {fastest_clicks} fastest click{s}!**"
+        ).format(
             winners=winners_mentions,
             fastest_clicks=max_fastest_clicks,
             s="s" if max_fastest_clicks > 1 else "",
@@ -159,8 +172,7 @@ class FastClickGameView(discord.ui.View):
         for child in self.children:
             child: discord.ui.Item
             if hasattr(child, "disabled") and not (
-                isinstance(child, discord.ui.Button)
-                and child.style == discord.ButtonStyle.url
+                isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
             ):
                 child.disabled = True
         try:

@@ -21,7 +21,10 @@ class RumbleNotifierView(discord.ui.View):
             or not await self.cog.bot.allowed_by_whitelist_blacklist(who=interaction.user)
             or not await self.cog.config.guild(interaction.guild).enabled()
             or not (channels_ids := await self.cog.config.guild(interaction.guild).channels())
-            or (interaction.channel.id not in channels_ids and interaction.channel.category_id not in channels_ids)
+            or (
+                interaction.channel.id not in channels_ids
+                and interaction.channel.category_id not in channels_ids
+            )
             or (role_id := await self.cog.config.guild(interaction.guild).role()) is None
             or (role := interaction.guild.get_role(role_id)) is None
             or not await self.cog.config.guild(interaction.guild).suscribing()
@@ -36,13 +39,22 @@ class RumbleNotifierView(discord.ui.View):
             and role < interaction.guild.me.top_role
         ):
             await interaction.response.send_message(
-                _("I don't have the required permissions to assign the role. Please contact an administrator."),
+                _(
+                    "I don't have the required permissions to assign the role. Please contact an administrator."
+                ),
             )
             return False
         return True
 
-    @discord.ui.button(emoji="✖️", label="Unsuscribe", style=discord.ButtonStyle.danger, custom_id="RumbleNotifier_unsuscribe")
-    async def unsuscribe(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    @discord.ui.button(
+        emoji="✖️",
+        label="Unsuscribe",
+        style=discord.ButtonStyle.danger,
+        custom_id="RumbleNotifier_unsuscribe",
+    )
+    async def unsuscribe(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
         role_id = await self.cog.config.guild(interaction.guild).role()
         role = interaction.guild.get_role(role_id)
@@ -55,11 +67,21 @@ class RumbleNotifierView(discord.ui.View):
             await interaction.user.remove_roles(role)
         except discord.HTTPException as e:
             await interaction.followup.send(
-                _("An error occurred while trying to remove the role. Please contact an administrator.\n") + box(str(e), lang="py"),
+                _(
+                    "An error occurred while trying to remove the role. Please contact an administrator.\n"
+                )
+                + box(str(e), lang="py"),
             )
-        await interaction.followup.send(_("You have been removed from the Rumble notifications."), ephemeral=True)
+        await interaction.followup.send(
+            _("You have been removed from the Rumble notifications."), ephemeral=True
+        )
 
-    @discord.ui.button(emoji="⚔️", label="Suscribe", style=discord.ButtonStyle.success, custom_id="RumbleNotifier_suscribe")
+    @discord.ui.button(
+        emoji="⚔️",
+        label="Suscribe",
+        style=discord.ButtonStyle.success,
+        custom_id="RumbleNotifier_suscribe",
+    )
     async def suscribe(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
         role_id = await self.cog.config.guild(interaction.guild).role()
@@ -73,6 +95,11 @@ class RumbleNotifierView(discord.ui.View):
             await interaction.user.add_roles(role)
         except discord.HTTPException as e:
             await interaction.followup.send(
-                _("An error occurred while trying to add the role. Please contact an administrator.\n") + box(str(e), lang="py"),
+                _(
+                    "An error occurred while trying to add the role. Please contact an administrator.\n"
+                )
+                + box(str(e), lang="py"),
             )
-        await interaction.followup.send(_("You have been added to the Rumble notifications."), ephemeral=True)
+        await interaction.followup.send(
+            _("You have been added to the Rumble notifications."), ephemeral=True
+        )

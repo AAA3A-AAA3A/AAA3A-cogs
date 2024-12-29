@@ -642,9 +642,11 @@ class GetDocs(DashboardIntegration, Cog):
                     self._docs_stats.get(source, {"manuals": None, "documentations": None})[
                         "documentations"
                     ],
-                    f"{str(self._caching_time[source])}s"
-                    if source in self._caching_time
-                    else None,
+                    (
+                        f"{str(self._caching_time[source])}s"
+                        if source in self._caching_time
+                        else None
+                    ),
                     sizeof_fmt(self._docs_sizes[source]) if source in self._docs_sizes else None,
                 ]
             )
@@ -696,16 +698,18 @@ class GetDocs(DashboardIntegration, Cog):
             "Name": documentation.name,
             "Signature": documentation.signature,
             "Description": documentation.description.replace("\n", " "),
-            "Parameters": f"{humanize_list([inline(parameter.split(' ')[0].strip('**')) for parameter in documentation.parameters])}."
-            if documentation.parameters
-            else "No parameter(s)",
+            "Parameters": (
+                f"{humanize_list([inline(parameter.split(' ')[0].strip('**')) for parameter in documentation.parameters])}."
+                if documentation.parameters
+                else "No parameter(s)"
+            ),
         }
         for _type in ("attributes", "properties", "methods"):
             if getattr(documentation.attributes, _type):
                 # result += f"{_type.capitalize()}:\n{BREAK_LINE.join([f'• {inline(attribute.name)}' for _type in ('attributes', 'properties', 'methods') for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
-                data[
-                    _type.capitalize()
-                ] = f"{humanize_list([inline(attribute.name) for _type in ('attributes', 'properties', 'methods') for attribute in getattr(documentation.attributes, _type).values()])}."
+                data[_type.capitalize()] = (
+                    f"{humanize_list([inline(attribute.name) for _type in ('attributes', 'properties', 'methods') for attribute in getattr(documentation.attributes, _type).values()])}."
+                )
         return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
 
 
@@ -1269,9 +1273,11 @@ class Source:
                         lines = _field_value.split("\n")
                         field_value = (
                             "".join(
-                                f"**•** **{line.strip()}**\n"
-                                if i % 2 == 0
-                                else f"> {line.split(' - ')[0].strip()}{' - ' if line.split(' - ')[1:] else ''}{' - '.join(line.split(' - ')[1:]).strip()}\n"
+                                (
+                                    f"**•** **{line.strip()}**\n"
+                                    if i % 2 == 0
+                                    else f"> {line.split(' - ')[0].strip()}{' - ' if line.split(' - ')[1:] else ''}{' - '.join(line.split(' - ')[1:]).strip()}\n"
+                                )
                                 for i, line in enumerate(lines)
                             )
                             if len(lines) % 2 == 0
@@ -1712,13 +1718,13 @@ class Source:
                         self._docs_cache, name=parent_name
                     )
                     if parent is not None:
-                        parent.attributes.methods[
-                            documentation.name[len(parent_name) + 1 :]
-                        ] = Attribute(
-                            name=documentation.name[(len(parent_name) + 1) * 2 :],
-                            role="",
-                            url=documentation.url,
-                            description=documentation.description.split("\n")[0],
+                        parent.attributes.methods[documentation.name[len(parent_name) + 1 :]] = (
+                            Attribute(
+                                name=documentation.name[(len(parent_name) + 1) * 2 :],
+                                role="",
+                                url=documentation.url,
+                                description=documentation.description.split("\n")[0],
+                            )
                         )
         return results
 

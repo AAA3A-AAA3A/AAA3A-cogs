@@ -1,15 +1,16 @@
+import copy
+import datetime
+from dataclasses import _is_dataclass_instance, dataclass, fields
+
+import pycountry
+from mimesis.enums import Gender
+from mimesis.locales import Locale
 from redbot.core.i18n import Translator
+from redbot.core.utils.chat_formatting import humanize_list, inline
+
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import inline, humanize_list
-
-import copy
-import datetime
-import pycountry
-from dataclasses import dataclass, fields, _is_dataclass_instance
-from mimesis.locales import Locale
-from mimesis.enums import Gender
 
 _: Translator = Translator("FakeIdentities", __file__)
 
@@ -109,7 +110,10 @@ def _asdict_inner(obj, dict_factory=dict):
     elif isinstance(obj, (list, tuple)):
         return type(obj)(_asdict_inner(v, dict_factory) for v in obj)
     elif isinstance(obj, dict):
-        return type(obj)((_asdict_inner(k, dict_factory), _asdict_inner(v, dict_factory)) for k, v in obj.items())
+        return type(obj)(
+            (_asdict_inner(k, dict_factory), _asdict_inner(v, dict_factory))
+            for k, v in obj.items()
+        )
     elif isinstance(obj, datetime.date):
         return obj.isoformat()
     elif hasattr(obj, "value"):
@@ -155,11 +159,7 @@ class FakeIdentity:
     def to_embed(self, page: str = "main") -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title=f"{LOCALES[self.nationality].flag} {self.name.title} {self.name.first} {self.name.last} (Location: {LOCALES[self.location].flag})",
-            color=(
-                discord.Color.green()
-                if self.gender is Gender.MALE else
-                discord.Color.pink()
-            ),
+            color=(discord.Color.green() if self.gender is Gender.MALE else discord.Color.pink()),
         )
         embed.set_thumbnail(url=self.thumbnail_url)
         embed.set_footer(
@@ -336,7 +336,9 @@ class Computer:
     ip_v6: str
 
     def to_string(self) -> str:
-        return _("\n- OS: {os}\n- Manufacturer: {manufacturer}\n- CPU: {cpu} ({cpu_codename}) {cpu_frequency} ({generation})\n- Graphics: {graphics}\n- RAM: {ram_size} {ram_type}\n- Resolution: {resolution}\n- Screen Size: {screen_size}\n- Storage: {ssd_or_hdd}\n- MAC Address: `{mac_address}`\n- IP v4: `{ip_v4}`\n- IP v6: `{ip_v6}`").format(
+        return _(
+            "\n- OS: {os}\n- Manufacturer: {manufacturer}\n- CPU: {cpu} ({cpu_codename}) {cpu_frequency} ({generation})\n- Graphics: {graphics}\n- RAM: {ram_size} {ram_type}\n- Resolution: {resolution}\n- Screen Size: {screen_size}\n- Storage: {ssd_or_hdd}\n- MAC Address: `{mac_address}`\n- IP v4: `{ip_v4}`\n- IP v6: `{ip_v6}`"
+        ).format(
             os=self.os,
             manufacturer=self.manufacturer,
             cpu=self.cpu,
@@ -365,7 +367,9 @@ class Phone:
     ip_v6: str
 
     def to_string(self) -> str:
-        return _("\n- Model: {model}\n- RAM: {ram_size}\n- MAC Address: `{mac_address}`\n- IP v4: `{ip_v4}`\n- IP v6: `{ip_v6}`").format(
+        return _(
+            "\n- Model: {model}\n- RAM: {ram_size}\n- MAC Address: `{mac_address}`\n- IP v4: `{ip_v4}`\n- IP v6: `{ip_v6}`"
+        ).format(
             model=self.model,
             ram_size=self.ram_size,
             mac_address=self.mac_address,
@@ -393,7 +397,9 @@ class Food:
     spices: str
 
     def to_string(self) -> str:
-        return _("\n- Dish: {dish}\n- Vegetable: {vegetable}\n- Fruit: {fruit}\n- Drink: {drink}\n- Spices: {spices}").format(
+        return _(
+            "\n- Dish: {dish}\n- Vegetable: {vegetable}\n- Fruit: {fruit}\n- Drink: {drink}\n- Spices: {spices}"
+        ).format(
             dish=self.dish,
             vegetable=self.vegetable,
             fruit=self.fruit,
@@ -405,7 +411,10 @@ class Food:
 @dataclass(frozen=True)
 class SecondaryIdentity:
     name: Name
-    birth: Birth    
+    birth: Birth
 
     def to_string(self) -> str:
-        return (f"{self.name.title} " if self.name.title is not None else "") + f"{self.name.first} {self.name.last} ({self.birth.age} years old - {self.birth.date})"
+        return (
+            (f"{self.name.title} " if self.name.title is not None else "")
+            + f"{self.name.first} {self.name.last} ({self.birth.age} years old - {self.birth.date})"
+        )

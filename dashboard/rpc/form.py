@@ -11,6 +11,7 @@ from markupsafe import Markup
 from werkzeug.datastructures import ImmutableMultiDict
 from werkzeug.utils import cached_property
 from wtforms import (
+    BooleanField,
     Field,
     Form,
     FormField,
@@ -18,7 +19,6 @@ from wtforms import (
     SelectFieldBase,
     SelectMultipleField,
     SubmitField,
-    BooleanField,
 )  # NOQA
 from wtforms.csrf.core import CSRF
 from wtforms.fields.core import UnboundField

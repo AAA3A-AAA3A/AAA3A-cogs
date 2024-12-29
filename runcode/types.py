@@ -13,7 +13,7 @@ from functools import partial
 
 import aiohttp
 from humanfriendly import format_timespan
-from redbot.core.utils.chat_formatting import box, pagify, inline
+from redbot.core.utils.chat_formatting import box, inline, pagify
 
 from .data import LANGUAGES_IDENTIFIERS, LANGUAGES_IMAGES
 
@@ -223,9 +223,7 @@ class WandboxResponse:
             "program_error",
         ):
             if value := getattr(self, field):
-                description += (
-                    f"\n\n# {field.replace('_', ' ').title()}:\n{value.strip()}"
-                )
+                description += f"\n\n# {field.replace('_', ' ').title()}:\n{value.strip()}"
         pages = list(
             pagify(
                 description,

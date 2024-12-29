@@ -60,7 +60,14 @@ class PersonalReact(DashboardIntegration, Cog):
                 "description": "The minimum length of a custom trigger.",
             },
             "blacklisted_channels": {
-                "converter": commands.Greedy[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel, discord.Thread]],
+                "converter": commands.Greedy[
+                    typing.Union[
+                        discord.TextChannel,
+                        discord.VoiceChannel,
+                        discord.CategoryChannel,
+                        discord.Thread,
+                    ]
+                ],
                 "description": "The channels where the bot won't react.",
             },
             "use_amounts_sum": {
@@ -134,13 +141,23 @@ class PersonalReact(DashboardIntegration, Cog):
         file = io.BytesIO(str(data).encode(encoding="utf-8"))
         return {f"{self.qualified_name}.json": file}
 
-    async def get_reactions(self, member: discord.Member, _type: typing.Literal["base", "custom_trigger"]) -> typing.Tuple[typing.List[typing.Union[str, discord.Emoji]], int, int, bool, typing.Dict[discord.Role, int]]:
+    async def get_reactions(
+        self, member: discord.Member, _type: typing.Literal["base", "custom_trigger"]
+    ) -> typing.Tuple[
+        typing.List[typing.Union[str, discord.Emoji]],
+        int,
+        int,
+        bool,
+        typing.Dict[discord.Role, int],
+    ]:
         reactions = await self.config.member(member).reactions()
         max_reactions_per_member = await self.config.guild(member.guild).max_reactions_per_member()
         if _type == "base":
             _roles_requirements = await self.config.guild(member.guild).base_roles_requirements()
         else:
-            _roles_requirements = await self.config.guild(member.guild).custom_trigger_roles_requirements()
+            _roles_requirements = await self.config.guild(
+                member.guild
+            ).custom_trigger_roles_requirements()
         roles_requirements = {}
         for role_id, amount in sorted(_roles_requirements.items(), key=lambda x: x[1]):
             if (role := member.get_role(int(role_id))) is not None:
@@ -152,10 +169,18 @@ class PersonalReact(DashboardIntegration, Cog):
             if (use_amounts_sum := await self.config.guild(member.guild).use_amounts_sum())
             else max(roles_requirements.values() or [0])
         )
-        is_staff = member.id in self.bot.owner_ids or await self.bot.is_admin(member) or member.guild_permissions.manage_guild
+        is_staff = (
+            member.id in self.bot.owner_ids
+            or await self.bot.is_admin(member)
+            or member.guild_permissions.manage_guild
+        )
         if is_staff:
             total_amount = max_reactions_per_member
-        if (always_allow_custom_trigger := await self.config.guild(member.guild).always_allow_custom_trigger()) and _type == "custom_trigger":
+        if (
+            always_allow_custom_trigger := await self.config.guild(
+                member.guild
+            ).always_allow_custom_trigger()
+        ) and _type == "custom_trigger":
             if use_amounts_sum:
                 total_amount += (await self.get_reactions(member, "base"))[1]
             else:
@@ -166,8 +191,15 @@ class PersonalReact(DashboardIntegration, Cog):
             for r in reactions
             if (reaction := (r if isinstance(r, str) else self.bot.get_emoji(r))) is not None
         ]
-        return reactions[:total_amount], total_amount, max_reactions_per_member, use_amounts_sum, is_staff, always_allow_custom_trigger, roles_requirements
-        
+        return (
+            reactions[:total_amount],
+            total_amount,
+            max_reactions_per_member,
+            use_amounts_sum,
+            is_staff,
+            always_allow_custom_trigger,
+            roles_requirements,
+        )
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:
@@ -177,13 +209,15 @@ class PersonalReact(DashboardIntegration, Cog):
             return
         if not isinstance(message.author, discord.Member):
             return
-        if (
-            await self.bot.cog_disabled_in_guild(cog=self, guild=message.guild)
-            or not await self.bot.allowed_by_whitelist_blacklist(who=message.author)
-        ):
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=message.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
             return
         blacklisted_channels = await self.config.guild(message.guild).blacklisted_channels()
-        if message.channel.id in blacklisted_channels or message.channel.category_id in blacklisted_channels:
+        if (
+            message.channel.id in blacklisted_channels
+            or message.channel.category_id in blacklisted_channels
+        ):
             return
         member = None
         members_data = await self.config.all_members(guild=message.guild)
@@ -191,14 +225,8 @@ class PersonalReact(DashboardIntegration, Cog):
             _type = "base"
             if (
                 data.get("enabled", False)
-                and (
-                    message.author.id != int(m_id)
-                    or not data.get("ignore_myself", False)
-                )
-                and (
-                    not message.author.bot
-                    or not data.get("ignore_bots", True)
-                )
+                and (message.author.id != int(m_id) or not data.get("ignore_myself", False))
+                and (not message.author.bot or not data.get("ignore_bots", True))
                 and (
                     (
                         discord.utils.get(message.mentions, id=m_id) is not None
@@ -210,10 +238,7 @@ class PersonalReact(DashboardIntegration, Cog):
                             )
                         )
                     )
-                    or (
-                        data.get("user_id", False)
-                        and str(m_id) in message.content.split(" ")
-                    )
+                    or (data.get("user_id", False) and str(m_id) in message.content.split(" "))
                     or (
                         (custom_trigger := data.get("custom_trigger")) is not None
                         and custom_trigger.lower() in message.content.lower().split(" ")
@@ -258,8 +283,12 @@ class PersonalReact(DashboardIntegration, Cog):
     @personalreact.command()
     async def enable(self, ctx: commands.Context) -> None:
         """Enable PersonalReact for you."""
-        if (await self.get_reactions(ctx.author, "base"))[1] == 0 and (await self.get_reactions(ctx.author, "custom_trigger"))[1] == 0:
-            raise commands.UserFeedbackCheckFailure(_("You aren't elligible for using PersonalReact."))
+        if (await self.get_reactions(ctx.author, "base"))[1] == 0 and (
+            await self.get_reactions(ctx.author, "custom_trigger")
+        )[1] == 0:
+            raise commands.UserFeedbackCheckFailure(
+                _("You aren't elligible for using PersonalReact.")
+            )
         if not await self.config.member(ctx.author).reactions():
             raise commands.UserFeedbackCheckFailure(_("You don't have any reaction set."))
         await self.config.member(ctx.author).enabled.set(True)
@@ -273,7 +302,9 @@ class PersonalReact(DashboardIntegration, Cog):
     async def replies(self, ctx: commands.Context, toggle: bool) -> None:
         """Allow the bot to react on the messages which ping you in replies."""
         if toggle and not await self.config.guild(ctx.guild).allow_replies_trigger():
-            raise commands.UserFeedbackCheckFailure(_("This server doesn't allow the replies trigger."))
+            raise commands.UserFeedbackCheckFailure(
+                _("This server doesn't allow the replies trigger.")
+            )
         await self.config.member(ctx.author).replies.set(toggle)
 
     @personalreact.command()
@@ -285,9 +316,19 @@ class PersonalReact(DashboardIntegration, Cog):
     async def customtrigger(self, ctx: commands.Context, custom_trigger: str) -> None:
         """Set a custom trigger."""
         if (await self.get_reactions(ctx.author, "custom_trigger"))[1] == 0:
-            raise commands.UserFeedbackCheckFailure(_("You aren't elligible for using the custom trigger feature."))
-        if len(custom_trigger) < (min_custom_trigger_length := await self.config.guild(ctx.guild).min_custom_trigger_length()):
-            raise commands.UserFeedbackCheckFailure(_("The custom trigger must be at least {min_custom_trigger_length} characters long.").format(min_custom_trigger_length=min_custom_trigger_length))
+            raise commands.UserFeedbackCheckFailure(
+                _("You aren't elligible for using the custom trigger feature.")
+            )
+        if len(custom_trigger) < (
+            min_custom_trigger_length := await self.config.guild(
+                ctx.guild
+            ).min_custom_trigger_length()
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "The custom trigger must be at least {min_custom_trigger_length} characters long."
+                ).format(min_custom_trigger_length=min_custom_trigger_length)
+            )
         if " " in custom_trigger:
             raise commands.UserFeedbackCheckFailure(_("The custom trigger can't have spaces."))
         await self.config.member(ctx.author).custom_trigger.set(custom_trigger)
@@ -295,41 +336,74 @@ class PersonalReact(DashboardIntegration, Cog):
     @personalreact.command(aliases=["reacts"])
     async def reactions(self, ctx: commands.Context, reactions: commands.Greedy[Emoji]) -> None:
         """Set your reactions."""
-        if (await self.get_reactions(ctx.author, "base"))[1] == 0 and (await self.get_reactions(ctx.author, "custom_trigger"))[1] == 0:
-            raise commands.UserFeedbackCheckFailure(_("You aren't elligible for using PersonalReact."))
+        if (await self.get_reactions(ctx.author, "base"))[1] == 0 and (
+            await self.get_reactions(ctx.author, "custom_trigger")
+        )[1] == 0:
+            raise commands.UserFeedbackCheckFailure(
+                _("You aren't elligible for using PersonalReact.")
+            )
         if not reactions:
             if not await CogsUtils.ConfirmationAsk(
-                ctx, content=_("You didn't provide any reaction. Do you want to clear your reactions?"),
+                ctx,
+                content=_("You didn't provide any reaction. Do you want to clear your reactions?"),
             ):
                 return
             await self.config.member(ctx.author).reactions.clear()
             await self.config.member(ctx.author).enabled.set(False)
             return
-        if len(reactions) > (max_reactions_per_member := (await self.config.guild(ctx.guild).max_reactions_per_member())):
-            raise commands.UserFeedbackCheckFailure(_("You can't have more than {max_reactions_per_member} reactions.").format(max_reactions_per_member=max_reactions_per_member))
-        await self.config.member(ctx.author).reactions.set([getattr(reaction, "id", reaction) for reaction in reactions])
+        if len(reactions) > (
+            max_reactions_per_member := (
+                await self.config.guild(ctx.guild).max_reactions_per_member()
+            )
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _("You can't have more than {max_reactions_per_member} reactions.").format(
+                    max_reactions_per_member=max_reactions_per_member
+                )
+            )
+        await self.config.member(ctx.author).reactions.set(
+            [getattr(reaction, "id", reaction) for reaction in reactions]
+        )
 
     @personalreact.command(aliases=["addreaction", "addreacts", "addreact"])
     async def addreactions(self, ctx: commands.Context, reactions: commands.Greedy[Emoji]) -> None:
         """Add reaction(s)."""
-        if (await self.get_reactions(ctx.author, "base"))[1] == 0 and (await self.get_reactions(ctx.author, "custom_trigger"))[1] == 0:
-            raise commands.UserFeedbackCheckFailure(_("You aren't elligible for using PersonalReact."))
+        if (await self.get_reactions(ctx.author, "base"))[1] == 0 and (
+            await self.get_reactions(ctx.author, "custom_trigger")
+        )[1] == 0:
+            raise commands.UserFeedbackCheckFailure(
+                _("You aren't elligible for using PersonalReact.")
+            )
         if not reactions:
-            raise commands.UserFeedbackCheckFailure(_("You need to provide at least one reaction."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You need to provide at least one reaction.")
+            )
         _reactions = await self.config.member(ctx.author).reactions()
         for reaction in reactions:
             reaction = getattr(reaction, "id", reaction)
             if reaction not in _reactions:
                 _reactions.append(reaction)
-        if len(_reactions) > (max_reactions_per_member := (await self.config.guild(ctx.guild).max_reactions_per_member())):
-            raise commands.UserFeedbackCheckFailure(_("You can't have more than {max_reactions_per_member} reactions.").format(max_reactions_per_member=max_reactions_per_member))
+        if len(_reactions) > (
+            max_reactions_per_member := (
+                await self.config.guild(ctx.guild).max_reactions_per_member()
+            )
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _("You can't have more than {max_reactions_per_member} reactions.").format(
+                    max_reactions_per_member=max_reactions_per_member
+                )
+            )
         await self.config.member(ctx.author).reactions.set(_reactions)
 
     @personalreact.command(aliases=["removereaction", "removereacts", "removereact"])
-    async def removereactions(self, ctx: commands.Context, reactions: commands.Greedy[Emoji]) -> None:
+    async def removereactions(
+        self, ctx: commands.Context, reactions: commands.Greedy[Emoji]
+    ) -> None:
         """Remove reaction(s)."""
         if not reactions:
-            raise commands.UserFeedbackCheckFailure(_("You need to provide at least one reaction."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You need to provide at least one reaction.")
+            )
         _reactions = await self.config.member(ctx.author).reactions()
         for reaction in reactions:
             reaction = getattr(reaction, "id", reaction)
@@ -360,7 +434,9 @@ class PersonalReact(DashboardIntegration, Cog):
         """Set the roles requirements."""
         await SettingsView(cog=self).start(ctx)
 
-    @setpersonalreact.command(aliases=["addbaserolerequirement", "addbaserolesreq", "addbaserolereq"])
+    @setpersonalreact.command(
+        aliases=["addbaserolerequirement", "addbaserolesreq", "addbaserolereq"]
+    )
     async def addbaserolesrequirements(
         self,
         ctx: commands.Context,
@@ -374,10 +450,14 @@ class PersonalReact(DashboardIntegration, Cog):
         for role in roles:
             base_roles_requirements[str(role.id)] = amount
         if len(base_roles_requirements) > 25:
-            raise commands.UserFeedbackCheckFailure(_("You can't have more than 25 base roles requirements."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You can't have more than 25 base roles requirements.")
+            )
         await self.config.guild(ctx.guild).base_roles_requirements.set(base_roles_requirements)
 
-    @setpersonalreact.command(aliases=["removebaserolerequirement", "removebaserolesreq", "removebaserolereq"])
+    @setpersonalreact.command(
+        aliases=["removebaserolerequirement", "removebaserolesreq", "removebaserolereq"]
+    )
     async def removebaserolesrequirements(
         self,
         ctx: commands.Context,
@@ -402,14 +482,22 @@ class PersonalReact(DashboardIntegration, Cog):
         """Add custom trigger roles requirements."""
         if not roles:
             raise commands.UserFeedbackCheckFailure(_("You need to provide at least one role."))
-        custom_trigger_roles_requirements = await self.config.guild(ctx.guild).custom_trigger_roles_requirements()
+        custom_trigger_roles_requirements = await self.config.guild(
+            ctx.guild
+        ).custom_trigger_roles_requirements()
         for role in roles:
             custom_trigger_roles_requirements[str(role.id)] = amount
         if len(custom_trigger_roles_requirements) > 25:
-            raise commands.UserFeedbackCheckFailure(_("You can't have more than 25 custom trigger roles requirements."))
-        await self.config.guild(ctx.guild).custom_trigger_roles_requirements.set(custom_trigger_roles_requirements)
+            raise commands.UserFeedbackCheckFailure(
+                _("You can't have more than 25 custom trigger roles requirements.")
+            )
+        await self.config.guild(ctx.guild).custom_trigger_roles_requirements.set(
+            custom_trigger_roles_requirements
+        )
 
-    @setpersonalreact.command(aliases=["removectrolerequirement", "removectrolesreq", "removectrolereq"])
+    @setpersonalreact.command(
+        aliases=["removectrolerequirement", "removectrolesreq", "removectrolereq"]
+    )
     async def removectrolesrequirements(
         self,
         ctx: commands.Context,
@@ -418,11 +506,15 @@ class PersonalReact(DashboardIntegration, Cog):
         """Remove custom trigger roles requirements."""
         if not roles:
             raise commands.UserFeedbackCheckFailure(_("You need to provide at least one role."))
-        custom_trigger_roles_requirements = await self.config.guild(ctx.guild).custom_trigger_roles_requirements()
+        custom_trigger_roles_requirements = await self.config.guild(
+            ctx.guild
+        ).custom_trigger_roles_requirements()
         for role in roles:
             if str(role.id) in custom_trigger_roles_requirements:
                 del custom_trigger_roles_requirements[str(role.id)]
-        await self.config.guild(ctx.guild).custom_trigger_roles_requirements.set(custom_trigger_roles_requirements)
+        await self.config.guild(ctx.guild).custom_trigger_roles_requirements.set(
+            custom_trigger_roles_requirements
+        )
 
     @setpersonalreact.command()
     async def clearmember(self, ctx: commands.Context, *, member: discord.Member) -> None:

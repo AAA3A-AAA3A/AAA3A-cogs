@@ -556,9 +556,11 @@ class TicketTool(settings, DashboardIntegration, Cog):
         embed.add_field(
             inline=True,
             name=_("Owned by:"),
-            value=f"<@{ticket.owner}> ({ticket.owner})"
-            if isinstance(ticket.owner, int)
-            else f"{ticket.owner.mention} ({ticket.owner.id})",
+            value=(
+                f"<@{ticket.owner}> ({ticket.owner})"
+                if isinstance(ticket.owner, int)
+                else f"{ticket.owner.mention} ({ticket.owner.id})"
+            ),
         )
         if ticket.channel is not None:
             embed.add_field(
@@ -571,17 +573,21 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 embed.add_field(
                     inline=False,
                     name=_("Closed by:"),
-                    value=f"<@{ticket.closed_by}> ({ticket.closed_by})"
-                    if isinstance(ticket.closed_by, int)
-                    else f"{ticket.closed_by.mention} ({ticket.closed_by.id})",
+                    value=(
+                        f"<@{ticket.closed_by}> ({ticket.closed_by})"
+                        if isinstance(ticket.closed_by, int)
+                        else f"{ticket.closed_by.mention} ({ticket.closed_by.id})"
+                    ),
                 )
             if ticket.deleted_by is not None:
                 embed.add_field(
                     inline=True,
                     name=_("Deleted by:"),
-                    value=f"<@{ticket.deleted_by}> ({ticket.deleted_by})"
-                    if isinstance(ticket.deleted_by, int)
-                    else f"{ticket.deleted_by.mention} ({ticket.deleted_by.id})",
+                    value=(
+                        f"<@{ticket.deleted_by}> ({ticket.deleted_by})"
+                        if isinstance(ticket.deleted_by, int)
+                        else f"{ticket.deleted_by.mention} ({ticket.deleted_by.id})"
+                    ),
                 )
             if ticket.closed_at is not None:
                 embed.add_field(
@@ -894,12 +900,16 @@ class TicketTool(settings, DashboardIntegration, Cog):
             embed: discord.Embed = discord.Embed()
             embed.title = "Custom Modal"
             embed.set_author(
-                name=ctx.author.display_name
-                if interaction is None
-                else interaction.user.display_name,
-                icon_url=ctx.author.display_avatar
-                if interaction is None
-                else interaction.user.display_avatar,
+                name=(
+                    ctx.author.display_name
+                    if interaction is None
+                    else interaction.user.display_name
+                ),
+                icon_url=(
+                    ctx.author.display_avatar
+                    if interaction is None
+                    else interaction.user.display_avatar
+                ),
             )
             embed.color = await ctx.embed_color()
             for label, value in modal_answers.items():

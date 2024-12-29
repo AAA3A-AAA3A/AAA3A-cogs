@@ -123,9 +123,11 @@ class EmbedUtils(DashboardIntegration, Cog):
                 channel = channel_or_message or ctx.channel
                 await channel.send(
                     **data,
-                    allowed_mentions=discord.AllowedMentions(everyone=True, users=True, roles=True)
-                    if ctx.permissions.mention_everyone
-                    else discord.utils.MISSING,
+                    allowed_mentions=(
+                        discord.AllowedMentions(everyone=True, users=True, roles=True)
+                        if ctx.permissions.mention_everyone
+                        else discord.utils.MISSING
+                    ),
                 )
             else:
                 await channel_or_message.edit(**data)
@@ -155,9 +157,11 @@ class EmbedUtils(DashboardIntegration, Cog):
                 channel = channel_or_message or ctx.channel
                 await channel.send(
                     **data,
-                    allowed_mentions=discord.AllowedMentions(everyone=True, users=True, roles=True)
-                    if ctx.permissions.mention_everyone
-                    else discord.utils.MISSING,
+                    allowed_mentions=(
+                        discord.AllowedMentions(everyone=True, users=True, roles=True)
+                        if ctx.permissions.mention_everyone
+                        else discord.utils.MISSING
+                    ),
                 )
             else:
                 await channel_or_message.edit(**data)
@@ -190,9 +194,11 @@ class EmbedUtils(DashboardIntegration, Cog):
                 channel = channel_or_message or ctx.channel
                 await channel.send(
                     **data,
-                    allowed_mentions=discord.AllowedMentions(everyone=True, users=True, roles=True)
-                    if ctx.permissions.mention_everyone
-                    else discord.utils.MISSING,
+                    allowed_mentions=(
+                        discord.AllowedMentions(everyone=True, users=True, roles=True)
+                        if ctx.permissions.mention_everyone
+                        else discord.utils.MISSING
+                    ),
                 )
             else:
                 await channel_or_message.edit(**data)
@@ -221,9 +227,11 @@ class EmbedUtils(DashboardIntegration, Cog):
                 channel = channel_or_message or ctx.channel
                 await channel.send(
                     **data,
-                    allowed_mentions=discord.AllowedMentions(everyone=True, users=True, roles=True)
-                    if ctx.permissions.mention_everyone
-                    else discord.utils.MISSING,
+                    allowed_mentions=(
+                        discord.AllowedMentions(everyone=True, users=True, roles=True)
+                        if ctx.permissions.mention_everyone
+                        else discord.utils.MISSING
+                    ),
                 )
             else:
                 await channel_or_message.edit(**data)
@@ -252,9 +260,11 @@ class EmbedUtils(DashboardIntegration, Cog):
                 channel = channel_or_message or ctx.channel
                 await channel.send(
                     **data,
-                    allowed_mentions=discord.AllowedMentions(everyone=True, users=True, roles=True)
-                    if ctx.permissions.mention_everyone
-                    else discord.utils.MISSING,
+                    allowed_mentions=(
+                        discord.AllowedMentions(everyone=True, users=True, roles=True)
+                        if ctx.permissions.mention_everyone
+                        else discord.utils.MISSING
+                    ),
                 )
             else:
                 await channel_or_message.edit(**data)
@@ -304,9 +314,11 @@ class EmbedUtils(DashboardIntegration, Cog):
                 channel = channel_or_message or ctx.channel
                 await channel.send(
                     **data,
-                    allowed_mentions=discord.AllowedMentions(everyone=True, users=True, roles=True)
-                    if ctx.permissions.mention_everyone
-                    else discord.utils.MISSING,
+                    allowed_mentions=(
+                        discord.AllowedMentions(everyone=True, users=True, roles=True)
+                        if ctx.permissions.mention_everyone
+                        else discord.utils.MISSING
+                    ),
                 )
             else:
                 await channel_or_message.edit(**data)

@@ -15,9 +15,9 @@ class Tool(discord.ui.Button):
     def __init__(self, view: discord.ui.View, *, primary: typing.Optional[bool] = True) -> None:
         super().__init__(
             emoji=self.emoji,
-            style=discord.ButtonStyle.success
-            if primary is True
-            else discord.ButtonStyle.secondary,
+            style=(
+                discord.ButtonStyle.success if primary is True else discord.ButtonStyle.secondary
+            ),
         )
         self._view: discord.ui.View = view
         self.board: Board = self._view.board

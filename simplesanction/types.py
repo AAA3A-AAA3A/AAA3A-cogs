@@ -129,9 +129,9 @@ class Action:
                     reason_message = await ctx.send(
                         _(self.reason_ask_message).format(
                             member=member,
-                            duration=str(parse_timedelta(duration))
-                            if duration is not None
-                            else None,
+                            duration=(
+                                str(parse_timedelta(duration)) if duration is not None else None
+                            ),
                             reason=reason,
                             channel=ctx.channel,
                         )

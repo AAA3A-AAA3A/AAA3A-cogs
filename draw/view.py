@@ -572,13 +572,15 @@ class DrawView(discord.ui.View):
                 value="\n\n".join(
                     [
                         (
-                            f"{str(n.emoji)} "
-                            + (n.content if idx == 0 else n.get_truncated_content()).replace(
-                                "\n", "\n> "
-                            )
-                        )  # Put each notification into seperate quotes
-                        if len(n.content) != 0
-                        else ""  # Show only non-empty notifications
+                            (
+                                f"{str(n.emoji)} "
+                                + (n.content if idx == 0 else n.get_truncated_content()).replace(
+                                    "\n", "\n> "
+                                )
+                            )  # Put each notification into seperate quotes
+                            if len(n.content) != 0
+                            else ""
+                        )  # Show only non-empty notifications
                         for idx, n in enumerate(self.notifications)
                     ]
                 ),

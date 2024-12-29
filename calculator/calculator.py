@@ -80,7 +80,14 @@ class Calculator(Cog):
                 "description": "Toggle the auto calculations.",
             },
             "auto_calculations_ignored_channels": {
-                "converter": commands.Greedy[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread, discord.CategoryChannel]],
+                "converter": commands.Greedy[
+                    typing.Union[
+                        discord.TextChannel,
+                        discord.VoiceChannel,
+                        discord.Thread,
+                        discord.CategoryChannel,
+                    ]
+                ],
                 "description": "The channels to ignore for the auto calculations.",
             },
             "react_calculations": {
@@ -88,7 +95,14 @@ class Calculator(Cog):
                 "description": "Toggle the reaction calculations.",
             },
             "react_calculations_ignored_channels": {
-                "converter": commands.Greedy[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread, discord.CategoryChannel]],
+                "converter": commands.Greedy[
+                    typing.Union[
+                        discord.TextChannel,
+                        discord.VoiceChannel,
+                        discord.Thread,
+                        discord.CategoryChannel,
+                    ]
+                ],
                 "description": "The channels to ignore for the reaction calculations.",
             },
             "simple_embed": {
@@ -210,24 +224,36 @@ class Calculator(Cog):
             title=_("{ctx.me.display_name}'s Calculator").format(ctx=ctx),
             color=await ctx.embed_color(),
         )
-        result_codeblock = await self.config.guild(ctx.guild).result_codeblock() if ctx.guild is not None else None
+        result_codeblock = (
+            await self.config.guild(ctx.guild).result_codeblock()
+            if ctx.guild is not None
+            else None
+        )
         if result_codeblock is None:
             result_codeblock = await self.config.default_result_codeblock()
         if result is None:
-            embed.description = box(f"{str(expression)}", lang="fix") if result_codeblock else f"`{str(expression)}`"
+            embed.description = (
+                box(f"{str(expression)}", lang="fix")
+                if result_codeblock
+                else f"`{str(expression)}`"
+            )
         else:
             expression = str(expression).replace("|", "")
             if result_codeblock:
-                embed.description = (
-                    box(f"> {expression}", lang="fix") + box(f"= {result}", lang="fix")
+                embed.description = box(f"> {expression}", lang="fix") + box(
+                    f"= {result}", lang="fix"
                 )
             else:
                 embed.description = f"`> {expression}`\n= **{result}**"
-        simple_embed = await self.config.guild(ctx.guild).simple_embed() if ctx.guild is not None else None
+        simple_embed = (
+            await self.config.guild(ctx.guild).simple_embed() if ctx.guild is not None else None
+        )
         if simple_embed is None:
             simple_embed = await self.config.default_simple_embed()
         if not simple_embed:
-            embed.set_thumbnail(url="https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png")
+            embed.set_thumbnail(
+                url="https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png"
+            )
             embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             if ctx.guild:
                 embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
@@ -295,16 +321,26 @@ class Calculator(Cog):
             return
         if message.webhook_id is not None or message.author.bot:
             return
-        auto_calculations = await self.config.guild(message.guild).auto_calculations() if message.guild is not None else None
+        auto_calculations = (
+            await self.config.guild(message.guild).auto_calculations()
+            if message.guild is not None
+            else None
+        )
         if auto_calculations is None:
             auto_calculations = await self.config.default_auto_calculations()
-        react_calculations = await self.config.guild(message.guild).react_calculations() if message.guild is not None else None
+        react_calculations = (
+            await self.config.guild(message.guild).react_calculations()
+            if message.guild is not None
+            else None
+        )
         if react_calculations is None:
             react_calculations = await self.config.default_react_calculations()
         if not auto_calculations and not react_calculations:
             return
 
-        content_to_check = message.content.split("#")[0].replace(" ", "").lstrip("+-").strip().removesuffix(".")
+        content_to_check = (
+            message.content.split("#")[0].replace(" ", "").lstrip("+-").strip().removesuffix(".")
+        )
         if (
             not content_to_check
             or content_to_check.isdecimal()
@@ -353,8 +389,16 @@ class Calculator(Cog):
         ) or result == message.content:
             return
 
-        auto_calculations_ignored_channels = await self.config.guild(message.guild).auto_calculations_ignored_channels() if message.guild is not None else []
-        react_calculations_ignored_channels = await self.config.guild(message.guild).react_calculations_ignored_channels() if message.guild is not None else []
+        auto_calculations_ignored_channels = (
+            await self.config.guild(message.guild).auto_calculations_ignored_channels()
+            if message.guild is not None
+            else []
+        )
+        react_calculations_ignored_channels = (
+            await self.config.guild(message.guild).react_calculations_ignored_channels()
+            if message.guild is not None
+            else []
+        )
         if (
             auto_calculations
             and message.channel.id not in auto_calculations_ignored_channels
@@ -427,13 +471,17 @@ class Calculator(Cog):
 
     @commands.is_owner()
     @setcalculator.command()
-    async def defaultreactcalculations(self, ctx: commands.Context, default_react_calculations: bool) -> None:
+    async def defaultreactcalculations(
+        self, ctx: commands.Context, default_react_calculations: bool
+    ) -> None:
         """Set the default state of the react calculations."""
         await self.config.default_react_calculations.set(default_react_calculations)
 
     @commands.is_owner()
     @setcalculator.command()
-    async def defaultautocalculations(self, ctx: commands.Context, default_auto_calculations: bool) -> None:
+    async def defaultautocalculations(
+        self, ctx: commands.Context, default_auto_calculations: bool
+    ) -> None:
         """Set the default state of the auto calculations."""
         await self.config.default_auto_calculations.set(default_auto_calculations)
 
@@ -445,6 +493,8 @@ class Calculator(Cog):
 
     @commands.is_owner()
     @setcalculator.command()
-    async def defaultresultcodeblock(self, ctx: commands.Context, default_result_codeblock: bool) -> None:
+    async def defaultresultcodeblock(
+        self, ctx: commands.Context, default_result_codeblock: bool
+    ) -> None:
         """Set the default state of the result codeblock mode."""
         await self.config.default_result_codeblock.set(default_result_codeblock)

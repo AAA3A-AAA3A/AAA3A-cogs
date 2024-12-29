@@ -40,9 +40,9 @@ class Session:
         self.cog: commands.Cog = cog
         self.author: discord.Member = author
 
-        self.channel: typing.Union[
-            discord.TextChannel, discord.VoiceChannel, discord.Thread
-        ] = channel
+        self.channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread] = (
+            channel
+        )
         self.webhook: discord.Webhook = webhook
 
     async def initialize(self, ctx: commands.Context):
@@ -195,7 +195,11 @@ class Webhook(Cog):
 
     @webhook.command(name="send")
     async def webhook_send(
-        self, ctx: commands.Context, webhook_link: WebhookLinkConverter, *, content: commands.Range[str, 1, 2000]
+        self,
+        ctx: commands.Context,
+        webhook_link: WebhookLinkConverter,
+        *,
+        content: commands.Range[str, 1, 2000],
     ) -> None:
         """Sends a message to the specified webhook using your display name and you avatar."""
         try:

@@ -61,22 +61,45 @@ class PersonalReactView(discord.ui.View):
         else:
             self.toggle.label = _("Disable")
             self.toggle.style = discord.ButtonStyle.danger
-        self.replies.style = discord.ButtonStyle.success if data["replies"] else discord.ButtonStyle.secondary
-        self.user_id.style = discord.ButtonStyle.success if data["user_id"] else discord.ButtonStyle.secondary
-        self.ignore_myself.style = discord.ButtonStyle.success if data["ignore_myself"] else discord.ButtonStyle.secondary
-        self.ignore_bots.style = discord.ButtonStyle.success if data["ignore_bots"] else discord.ButtonStyle.secondary
-        __, base_total_amount, __, base_use_amounts_sum, base_is_staff, __, base_roles_requirements = await self.cog.get_reactions(
-            self.ctx.author, "base"
+        self.replies.style = (
+            discord.ButtonStyle.success if data["replies"] else discord.ButtonStyle.secondary
         )
-        __, custom_trigger_total_amount, __, custom_trigger_use_amounts_sum, custom_trigger_is_staff, always_allow_custom_trigger, custom_trigger_roles_requirements = await self.cog.get_reactions(
-            self.ctx.author, "custom_trigger"
+        self.user_id.style = (
+            discord.ButtonStyle.success if data["user_id"] else discord.ButtonStyle.secondary
         )
+        self.ignore_myself.style = (
+            discord.ButtonStyle.success if data["ignore_myself"] else discord.ButtonStyle.secondary
+        )
+        self.ignore_bots.style = (
+            discord.ButtonStyle.success if data["ignore_bots"] else discord.ButtonStyle.secondary
+        )
+        (
+            __,
+            base_total_amount,
+            __,
+            base_use_amounts_sum,
+            base_is_staff,
+            __,
+            base_roles_requirements,
+        ) = await self.cog.get_reactions(self.ctx.author, "base")
+        (
+            __,
+            custom_trigger_total_amount,
+            __,
+            custom_trigger_use_amounts_sum,
+            custom_trigger_is_staff,
+            always_allow_custom_trigger,
+            custom_trigger_roles_requirements,
+        ) = await self.cog.get_reactions(self.ctx.author, "custom_trigger")
 
         embed = discord.Embed(
-            title=f"{'✅' if data['enabled'] and base_total_amount > 0 else '❌'} " + _("PersonalReact"),
+            title=f"{'✅' if data['enabled'] and base_total_amount > 0 else '❌'} "
+            + _("PersonalReact"),
             color=await self.ctx.embed_color(),
         )
-        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
+        embed.set_author(
+            name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar
+        )
         embed.set_thumbnail(url=self.ctx.author.display_avatar)
         embed.set_footer(text=self.ctx.guild.name, icon_url=self.ctx.guild.icon)
 
@@ -89,20 +112,38 @@ class PersonalReactView(discord.ui.View):
                     f"**{'+' if base_use_amounts_sum else '•'} {amount}** — {role.mention}"
                     for role, amount in base_roles_requirements.items()
                 )
-                + "\n\n" + (_("✅ Elligible") + _(" ({amount} reactions)").format(amount=base_total_amount) if base_total_amount > 0 else _("❌ Not elligible"))
+                + "\n\n"
+                + (
+                    _("✅ Elligible") + _(" ({amount} reactions)").format(amount=base_total_amount)
+                    if base_total_amount > 0
+                    else _("❌ Not elligible")
+                )
             ),
         )
         embed.add_field(
             name=_("Custom Trigger Roles Requirements:"),
             value=(
                 (_("**+ ∞** Staff") if custom_trigger_is_staff else "")
-                + (_("\n**{action} {base_total_amount}** Always Allow").format(action="+" if base_use_amounts_sum else "•", base_total_amount=base_total_amount) if always_allow_custom_trigger and base_total_amount > 0 else "")
+                + (
+                    _("\n**{action} {base_total_amount}** Always Allow").format(
+                        action="+" if base_use_amounts_sum else "•",
+                        base_total_amount=base_total_amount,
+                    )
+                    if always_allow_custom_trigger and base_total_amount > 0
+                    else ""
+                )
                 + ("\n" if custom_trigger_roles_requirements else "")
                 + "\n".join(
                     f"**{'+' if custom_trigger_use_amounts_sum else '•'} {amount}** — {role.mention}"
                     for role, amount in custom_trigger_roles_requirements.items()
                 )
-                + "\n\n" + (_("✅ Elligible") + _(" ({amount} reactions)").format(amount=custom_trigger_total_amount) if custom_trigger_total_amount > 0 else _("❌ Not elligible"))
+                + "\n\n"
+                + (
+                    _("✅ Elligible")
+                    + _(" ({amount} reactions)").format(amount=custom_trigger_total_amount)
+                    if custom_trigger_total_amount > 0
+                    else _("❌ Not elligible")
+                )
             ),
         )
 
@@ -110,15 +151,37 @@ class PersonalReactView(discord.ui.View):
             name=_("Triggers:"),
             value=(
                 _("**•** Your mention")
-                + (_("\n**•** {emoji}Replies (with @)").format(emoji="❌ " if not await self.cog.config.guild(self.ctx.guild).allow_replies_trigger() else "") if data["replies"] else "")
+                + (
+                    _("\n**•** {emoji}Replies (with @)").format(
+                        emoji=(
+                            "❌ "
+                            if not await self.cog.config.guild(
+                                self.ctx.guild
+                            ).allow_replies_trigger()
+                            else ""
+                        )
+                    )
+                    if data["replies"]
+                    else ""
+                )
                 + (_("\n**•** Your User ID") if data["user_id"] else "")
-                + (_("\n**•** {emoji}Custom Trigger").format(emoji="❌ " if custom_trigger_total_amount == 0 else "") if data["custom_trigger"] is not None else "")
+                + (
+                    _("\n**•** {emoji}Custom Trigger").format(
+                        emoji="❌ " if custom_trigger_total_amount == 0 else ""
+                    )
+                    if data["custom_trigger"] is not None
+                    else ""
+                )
             ),
             inline=False,
         )
         embed.add_field(
             name=_("Custom Trigger:"),
-            value=f"`{data['custom_trigger']}`" if data["custom_trigger"] is not None else _("Not set."),
+            value=(
+                f"`{data['custom_trigger']}`"
+                if data["custom_trigger"] is not None
+                else _("Not set.")
+            ),
         )
 
         embed.add_field(
@@ -127,11 +190,11 @@ class PersonalReactView(discord.ui.View):
                 [
                     reaction
                     for r in data["reactions"]
-                    if (
-                        reaction := (r if isinstance(r, str) else self.ctx.bot.get_emoji(r))
-                    ) is not None
+                    if (reaction := (r if isinstance(r, str) else self.ctx.bot.get_emoji(r)))
+                    is not None
                 ]
-            ) or _("No reactions set."),
+            )
+            or _("No reactions set."),
             inline=False,
         )
 
@@ -151,7 +214,9 @@ class PersonalReactView(discord.ui.View):
         enabled = await self.cog.config.member(self.ctx.author).enabled()
         enabled = not enabled
         if enabled:
-            if (await self.cog.get_reactions(self.ctx.author, "base"))[1] == 0 and (await self.cog.get_reactions(self.ctx.author, "custom_trigger"))[1] == 0:
+            if (await self.cog.get_reactions(self.ctx.author, "base"))[1] == 0 and (
+                await self.cog.get_reactions(self.ctx.author, "custom_trigger")
+            )[1] == 0:
                 await interaction.response.send_message(
                     _("You aren't elligible for using PersonalReact."),
                     ephemeral=True,
@@ -187,7 +252,9 @@ class PersonalReactView(discord.ui.View):
         await interaction.response.edit_message(embed=await self.get_embed(), view=self)
 
     @discord.ui.button(label="Custom Trigger", row=1)
-    async def custom_trigger(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def custom_trigger(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         if (await self.cog.get_reactions(self.ctx.author, "custom_trigger"))[1] == 0:
             await interaction.response.send_message(
                 _("You aren't elligible for using the custom trigger feature."),
@@ -199,8 +266,12 @@ class PersonalReactView(discord.ui.View):
                 self.cog,
                 self.ctx,
                 self,
-                default_custom_trigger=await self.cog.config.member(self.ctx.author).custom_trigger(),
-                min_custom_trigger_length=await self.cog.config.guild(self.ctx.guild).min_custom_trigger_length(),
+                default_custom_trigger=await self.cog.config.member(
+                    self.ctx.author
+                ).custom_trigger(),
+                min_custom_trigger_length=await self.cog.config.guild(
+                    self.ctx.guild
+                ).min_custom_trigger_length(),
             )
         )
 
@@ -216,14 +287,18 @@ class PersonalReactView(discord.ui.View):
         self.cog.views[view._message] = view
 
     @discord.ui.button(label="Ignore Myself", row=2)
-    async def ignore_myself(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def ignore_myself(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         ignore_myself = await self.cog.config.member(self.ctx.author).ignore_myself()
         ignore_myself = not ignore_myself
         await self.cog.config.member(self.ctx.author).ignore_myself.set(ignore_myself)
         await interaction.response.edit_message(embed=await self.get_embed(), view=self)
 
     @discord.ui.button(label="Ignore Bots", row=2)
-    async def ignore_bots(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def ignore_bots(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         ignore_bots = await self.cog.config.member(self.ctx.author).ignore_bots()
         ignore_bots = not ignore_bots
         await self.cog.config.member(self.ctx.author).ignore_bots.set(ignore_bots)
@@ -266,7 +341,9 @@ class CustomTriggerModal(discord.ui.Modal):
     async def on_submit(self, interaction: discord.Interaction) -> None:
         custom_trigger = self.custom_trigger.value
         if custom_trigger and " " in custom_trigger:
-            await interaction.response.send_message(_("The custom trigger can't have spaces."), ephemeral=True)
+            await interaction.response.send_message(
+                _("The custom trigger can't have spaces."), ephemeral=True
+            )
             return
         await interaction.response.defer()
         if custom_trigger:
@@ -280,7 +357,13 @@ class CustomTriggerModal(discord.ui.Modal):
 
 
 class AddReactionsModal(discord.ui.Modal):
-    def __init__(self, cog: commands.Cog, ctx: commands.Context, parent_view: discord.ui.View, view: discord.ui.View) -> None:
+    def __init__(
+        self,
+        cog: commands.Cog,
+        ctx: commands.Context,
+        parent_view: discord.ui.View,
+        view: discord.ui.View,
+    ) -> None:
         self.ctx: commands.Context = ctx
         self.cog: commands.Cog = cog
         self.parent_view: discord.ui.View = parent_view
@@ -308,9 +391,15 @@ class AddReactionsModal(discord.ui.Modal):
             reaction = getattr(reaction, "id", reaction)
             if reaction not in _reactions:
                 _reactions.append(reaction)
-        if len(_reactions) > (max_reactions_per_member := (await self.cog.config.guild(self.ctx.guild).max_reactions_per_member())):
+        if len(_reactions) > (
+            max_reactions_per_member := (
+                await self.cog.config.guild(self.ctx.guild).max_reactions_per_member()
+            )
+        ):
             await interaction.response.send_message(
-                _("You can't have more than {max_reactions_per_member} reactions.").format(max_reactions_per_member=max_reactions_per_member),
+                _("You can't have more than {max_reactions_per_member} reactions.").format(
+                    max_reactions_per_member=max_reactions_per_member
+                ),
                 ephemeral=True,
             )
             return
@@ -331,7 +420,9 @@ class AddReactionsModal(discord.ui.Modal):
 
 
 class ReactionsView(discord.ui.View):
-    def __init__(self, cog: commands.Cog, ctx: commands.Context, parent_view: discord.ui.View) -> None:
+    def __init__(
+        self, cog: commands.Cog, ctx: commands.Context, parent_view: discord.ui.View
+    ) -> None:
         super().__init__(timeout=60)
         self.ctx: commands.Context = ctx
         self.cog: commands.Cog = cog
@@ -433,8 +524,12 @@ class SettingsView(discord.ui.View):
             pass
 
     async def get_embed(self) -> discord.Embed:
-        base_roles_requirements = await self.cog.config.guild(self.ctx.guild).base_roles_requirements()
-        custom_trigger_roles_requirements = await self.cog.config.guild(self.ctx.guild).custom_trigger_roles_requirements()
+        base_roles_requirements = await self.cog.config.guild(
+            self.ctx.guild
+        ).base_roles_requirements()
+        custom_trigger_roles_requirements = await self.cog.config.guild(
+            self.ctx.guild
+        ).custom_trigger_roles_requirements()
         use_amounts_sum = await self.cog.config.guild(self.ctx.guild).use_amounts_sum()
         embed = discord.Embed(
             title=_("PersonalReact - Roles Requirements"),
@@ -463,7 +558,9 @@ class SettingsView(discord.ui.View):
         return embed
 
     @discord.ui.button(label="Base Roles")
-    async def base_roles(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def base_roles(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         view: RolesView = RolesView(self.cog, self.ctx, self, "base")
         await view._update()
         await interaction.response.send_message(
@@ -504,7 +601,13 @@ class SettingsView(discord.ui.View):
 
 
 class RolesView(discord.ui.View):
-    def __init__(self, cog: commands.Cog, ctx: commands.Context, settings_view: SettingsView, _type: typing.Literal["base", "custom_trigger"]) -> None:
+    def __init__(
+        self,
+        cog: commands.Cog,
+        ctx: commands.Context,
+        settings_view: SettingsView,
+        _type: typing.Literal["base", "custom_trigger"],
+    ) -> None:
         super().__init__(timeout=60)
         self.ctx: commands.Context = ctx
         self.cog: commands.Cog = cog
@@ -523,7 +626,9 @@ class RolesView(discord.ui.View):
                     value=str(i),
                     default=i == 1,
                 )
-                for i in range(1, await self.cog.config.guild(self.ctx.guild).max_reactions_per_member() + 1)
+                for i in range(
+                    1, await self.cog.config.guild(self.ctx.guild).max_reactions_per_member() + 1
+                )
             ]
         roles_requirements = (
             await self.cog.config.guild(self.ctx.guild).base_roles_requirements()
@@ -558,7 +663,9 @@ class RolesView(discord.ui.View):
     async def amount(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         await interaction.response.defer()
 
-    @discord.ui.select(cls=discord.ui.RoleSelect, min_values=1, placeholder="Select role(s) to add...")
+    @discord.ui.select(
+        cls=discord.ui.RoleSelect, min_values=1, placeholder="Select role(s) to add..."
+    )
     async def add(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         roles_requirements = (
             await self.cog.config.guild(self.ctx.guild).base_roles_requirements()
@@ -568,11 +675,19 @@ class RolesView(discord.ui.View):
         for role in select.values:
             roles_requirements[role.id] = int((self.amount.values or [1])[0])
         if len(roles_requirements) == 25:
-            raise commands.UserFeedbackCheckFailure(_("You can't have more than 25 {_type} roles requirements.").format(_type=self._type))
+            raise commands.UserFeedbackCheckFailure(
+                _("You can't have more than 25 {_type} roles requirements.").format(
+                    _type=self._type
+                )
+            )
         if self._type == "base":
-            await self.cog.config.guild(self.ctx.guild).base_roles_requirements.set(roles_requirements)
+            await self.cog.config.guild(self.ctx.guild).base_roles_requirements.set(
+                roles_requirements
+            )
         else:
-            await self.cog.config.guild(self.ctx.guild).custom_trigger_roles_requirements.set(roles_requirements)
+            await self.cog.config.guild(self.ctx.guild).custom_trigger_roles_requirements.set(
+                roles_requirements
+            )
         try:
             await self.settings_view._message.edit(embed=await self.settings_view.get_embed())
         except discord.HTTPException:
@@ -598,9 +713,13 @@ class RolesView(discord.ui.View):
             roles_requirements.pop(int(role_id), None)
         await interaction.response.send_message(repr(roles_requirements))
         if self._type == "base":
-            await self.cog.config.guild(self.ctx.guild).base_roles_requirements.set(roles_requirements)
+            await self.cog.config.guild(self.ctx.guild).base_roles_requirements.set(
+                roles_requirements
+            )
         else:
-            await self.cog.config.guild(self.ctx.guild).custom_trigger_roles_requirements.set(roles_requirements)
+            await self.cog.config.guild(self.ctx.guild).custom_trigger_roles_requirements.set(
+                roles_requirements
+            )
         try:
             await self.settings_view._message.edit(embed=await self.settings_view.get_embed())
         except discord.HTTPException:

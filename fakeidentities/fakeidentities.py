@@ -7,13 +7,36 @@ import typing  # isort:skip
 
 import datetime
 import hashlib
-import mimesis
 import random
 import secrets
-from mimesis.locales import Locale
-from mimesis.enums import Gender, TitleType
 
-from .types import LOCALES, FakeIdentity, Name, Birth, Communication, Medical, Studies, Profession, Address, Street, Coordinates, Transport, Payment, CreditCard, Login, Devices, Computer, Phone, Favorite, Food, SecondaryIdentity
+import mimesis
+from mimesis.enums import Gender, TitleType
+from mimesis.locales import Locale
+
+from .types import (
+    LOCALES,
+    Address,
+    Birth,
+    Communication,
+    Computer,
+    Coordinates,
+    CreditCard,
+    Devices,
+    FakeIdentity,
+    Favorite,
+    Food,
+    Login,
+    Medical,
+    Name,
+    Payment,
+    Phone,
+    Profession,
+    SecondaryIdentity,
+    Street,
+    Studies,
+    Transport,
+)  # NOQA
 from .view import FakeIdentityView
 
 # Credits:
@@ -37,7 +60,7 @@ class FakeIdentities(Cog):
         location: typing.Optional[Locale] = None,
         seed: typing.Optional[int] = None,
     ) -> FakeIdentity:
-        seed = seed or secrets.randbelow(2 ** 32)
+        seed = seed or secrets.randbelow(2**32)
         random.seed(seed)
         nationality = nationality or random.choice(list(LOCALES))
         person_nationality: mimesis.Person = mimesis.Person(
@@ -80,7 +103,9 @@ class FakeIdentities(Cog):
 
         has_partner = random.random() <= 0.5
         has_children = random.random() <= 0.5 if has_partner else random.random() <= 0.1
-        children_number = (random.randint(1, 2) if random.random() <= 0.3 else 3) if has_children else 0
+        children_number = (
+            (random.randint(1, 2) if random.random() <= 0.3 else 3) if has_children else 0
+        )
         children_last_name = None
 
         # "picture": {
@@ -93,7 +118,6 @@ class FakeIdentities(Cog):
             nationality=nationality,
             location=location,
             seed=seed,
-
             name=Name(
                 title=person_nationality.title(gender, TitleType.TYPICAL),
                 first=person_nationality.first_name(gender),
@@ -101,7 +125,6 @@ class FakeIdentities(Cog):
                 surname=person_location.surname(gender) if random.random() <= 0.5 else None,
             ),
             thumbnail_url=f"https://randomuser.me/api/portraits/{'men' if gender is Gender.MALE else 'women'}/{random.randint(0, 99 if gender is Gender.MALE else 96)}.jpg",
-
             birth=Birth(
                 date=(birthdate := person_nationality.birthdate()),
                 age=int((datetime.date.today() - birthdate).days // 365.5),
@@ -111,13 +134,11 @@ class FakeIdentities(Cog):
                 phone=person_location.telephone(),
                 cell=person_location.telephone() if random.random() <= 0.5 else None,
             ),
-
             medical=Medical(
                 blood_type=person_nationality.blood_type(),
                 weight=person_nationality.weight(),
                 height=person_nationality.height(),
             ),
-
             studies=Studies(
                 university=person_location.university(),
                 academic_degree=person_location.academic_degree(),
@@ -126,7 +147,6 @@ class FakeIdentities(Cog):
                 occupation=person_location.occupation(),
                 company=finance.company(),
             ),
-
             address=Address(
                 street=Street(
                     number=address.street_number(),
@@ -146,7 +166,6 @@ class FakeIdentities(Cog):
                 manufacturer=transport.manufacturer(),
                 vehicle_registration_code=transport.vehicle_registration_code(location),
             ),
-
             payment=Payment(
                 bank=finance.bank(),
                 credit_card=CreditCard(
@@ -159,11 +178,9 @@ class FakeIdentities(Cog):
                 bitcoin_address=payment.bitcoin_address(),
                 ethereum_address=payment.ethereum_address(),
             ),
-
             login=Login(
                 uuid=person_location.identifier("@@@@-@@@@-@@@@-@@@@"),
                 pin_code=code.pin(),
-
                 username=person_location.username(),
                 password=(password := person_location.password()),
                 md5=hashlib.md5(password.encode()).hexdigest(),
@@ -174,37 +191,28 @@ class FakeIdentities(Cog):
                 computer=Computer(
                     os=development.os(),
                     manufacturer=hardware.manufacturer(),
-
                     cpu=hardware.cpu(),
                     cpu_codename=hardware.cpu_codename(),
                     cpu_frequency=hardware.cpu_frequency(),
                     generation=hardware.generation(),
-
                     graphics=hardware.graphics(),
-
                     ram_size=hardware.ram_size(),
                     ram_type=hardware.ram_type(),
-
                     resolution=hardware.resolution(),
                     screen_size=hardware.screen_size(),
-
                     ssd_or_hdd=hardware.ssd_or_hdd(),
-
                     mac_address=internet.mac_address(),
                     ip_v4=internet.ip_v4(),
                     ip_v6=internet.ip_v6(),
                 ),
                 phone=Phone(
                     model=hardware.phone_model(),
-
                     ram_size=hardware.ram_size(),
-
                     mac_address=internet.mac_address(),
                     ip_v4=internet.ip_v4(),
                     ip_v6=internet.ip_v6(),
                 ),
             ),
-
             favorite=Favorite(
                 political_views=person_location.political_views(),
                 color=text.color(),
@@ -219,11 +227,16 @@ class FakeIdentities(Cog):
                     spices=food.spices(),
                 ),
             ),
-
             partner=(
                 SecondaryIdentity(
                     name=Name(
-                        title=person_location.title((other_gender := (Gender.FEMALE if gender is Gender.MALE else Gender.MALE))),
+                        title=person_location.title(
+                            (
+                                other_gender := (
+                                    Gender.FEMALE if gender is Gender.MALE else Gender.MALE
+                                )
+                            )
+                        ),
                         first=person_location.first_name(other_gender),
                         last=(partner_last_name := person_location.name(other_gender)),
                         surname=None,
@@ -233,14 +246,21 @@ class FakeIdentities(Cog):
                         age=int((datetime.date.today() - birthdate).days // 365.5),
                     ),
                 )
-                if has_partner else None
+                if has_partner
+                else None
             ),
             children=[
                 SecondaryIdentity(
                     name=Name(
                         title=None,
                         first=person_location.first_name(random.choice(list(Gender))),
-                        last=children_last_name if children_last_name is not None else (children_last_name := random.choice([last_name, partner_last_name])),
+                        last=(
+                            children_last_name
+                            if children_last_name is not None
+                            else (
+                                children_last_name := random.choice([last_name, partner_last_name])
+                            )
+                        ),
                         surname=None,
                     ),
                     birth=Birth(

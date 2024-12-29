@@ -84,15 +84,17 @@ class DictionaryView(discord.ui.View):
         embed.description = "\n".join(
             [
                 (
-                    f"**•** [**`{phonetic['text'] or 'Name not provided'}`**]({phonetic['audio_url']})"
-                    + (
-                        f" ({phonetic['audio_url'].split('/')[-1]})"
-                        if phonetic["audio_url"]
-                        else ""
+                    (
+                        f"**•** [**`{phonetic['text'] or 'Name not provided'}`**]({phonetic['audio_url']})"
+                        + (
+                            f" ({phonetic['audio_url'].split('/')[-1]})"
+                            if phonetic["audio_url"]
+                            else ""
+                        )
                     )
+                    if phonetic["audio_url"]
+                    else f"**•** **`{phonetic['text']}`**"
                 )
-                if phonetic["audio_url"]
-                else f"**•** **`{phonetic['text']}`**"
                 for phonetic in self.word.phonetics
             ]
         )

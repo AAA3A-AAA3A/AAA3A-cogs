@@ -177,7 +177,9 @@ class TempRoles(Cog):
             return
         joining_temp_roles = {
             role: duration
-            for role_id, duration in (await self.config.guild(member.guild).joining_temp_roles()).items()
+            for role_id, duration in (
+                await self.config.guild(member.guild).joining_temp_roles()
+            ).items()
             if (role := member.guild.get_role(int(role_id))) is not None
         }
         for role, duration in joining_temp_roles.items():
@@ -191,7 +193,8 @@ class TempRoles(Cog):
             duration_string = CogsUtils.get_interval_string(duration)
             try:
                 await member.add_roles(
-                    role, reason=f"Joining Temp Role assigned to new member, expires in {duration_string}."
+                    role,
+                    reason=f"Joining Temp Role assigned to new member, expires in {duration_string}.",
                 )
             except discord.HTTPException as e:
                 self.logger.error(
@@ -208,8 +211,7 @@ class TempRoles(Cog):
                 if (
                     (logs_channel_id := await self.config.guild(member.guild).logs_channel())
                     is not None
-                    and (logs_channel := member.guild.get_channel(logs_channel_id))
-                    is not None
+                    and (logs_channel := member.guild.get_channel(logs_channel_id)) is not None
                     and logs_channel.permissions_for(member.guild.me).embed_links
                 ):
                     await logs_channel.send(
@@ -223,9 +225,7 @@ class TempRoles(Cog):
                     )
 
     @commands.Cog.listener()
-    async def on_member_update(
-        self, before: discord.Member, after: discord.Member
-    ) -> None:
+    async def on_member_update(self, before: discord.Member, after: discord.Member) -> None:
         if before.roles == after.roles:
             return
         if len(before.roles) > len(after.roles):
@@ -249,13 +249,14 @@ class TempRoles(Cog):
                     duration_string = CogsUtils.get_interval_string(duration)
                     member_temp_roles = await self.config.member(after).temp_roles()
                     end_time = datetime.datetime.now(tz=datetime.timezone.utc) + duration
-                    member_temp_roles[str(role.id)] = int(end_time.replace(microsecond=0).timestamp())
+                    member_temp_roles[str(role.id)] = int(
+                        end_time.replace(microsecond=0).timestamp()
+                    )
                     await self.config.member(after).temp_roles.set(member_temp_roles)
                     if (
                         (logs_channel_id := await self.config.guild(after.guild).logs_channel())
                         is not None
-                        and (logs_channel := after.guild.get_channel(logs_channel_id))
-                        is not None
+                        and (logs_channel := after.guild.get_channel(logs_channel_id)) is not None
                         and logs_channel.permissions_for(after.guild.me).embed_links
                     ):
                         await logs_channel.send(
@@ -299,15 +300,15 @@ class TempRoles(Cog):
                     ).format(timestamp=f"<t:{int(member_temp_roles[str(role.id)])}:R>"),
                 ):
                     return await CogsUtils.delete_message(ctx.message)
-                return await self.edit.callback(self, ctx, member=member, role=role, duration=duration)
+                return await self.edit.callback(
+                    self, ctx, member=member, role=role, duration=duration
+                )
         elif role in member.roles:
             raise commands.UserFeedbackCheckFailure(
                 _("This member already has {role.mention} ({role.id}).").format(role=role)
             )
         if not role.is_assignable():
-            raise commands.UserFeedbackCheckFailure(
-                _("This role can't be assigned.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("This role can't be assigned."))
         if (
             ctx.command.name != "selfassign"
             and ctx.author != ctx.guild.owner
@@ -317,7 +318,9 @@ class TempRoles(Cog):
                 _("You can't assign this role to this member, due to the Discord role hierarchy.")
             )
         try:
-            end_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc) + duration
+            end_time: datetime.datetime = (
+                datetime.datetime.now(tz=datetime.timezone.utc) + duration
+            )
         except OverflowError:
             raise commands.UserFeedbackCheckFailure(
                 _("The time set is way too high, consider setting something reasonable.")
@@ -342,7 +345,12 @@ class TempRoles(Cog):
                     description=(_("Self ") if ctx.command.name == "selfassign" else "")
                     + _(
                         "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {duration_string}."
-                    ).format(role=role, member=member, author=ctx.author, duration_string=duration_string),
+                    ).format(
+                        role=role,
+                        member=member,
+                        author=ctx.author,
+                        duration_string=duration_string,
+                    ),
                     color=await ctx.bot.get_embed_color(logs_channel),
                 )
             )
@@ -376,7 +384,9 @@ class TempRoles(Cog):
                 _("This role isn't a TempRole of this member.")
             )
         try:
-            end_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc) + duration
+            end_time: datetime.datetime = (
+                datetime.datetime.now(tz=datetime.timezone.utc) + duration
+            )
         except OverflowError:
             raise commands.UserFeedbackCheckFailure(
                 _("The time set is way too high, consider setting something reasonable.")
@@ -399,7 +409,12 @@ class TempRoles(Cog):
                     title=_("Temp Roles"),
                     description=_(
                         "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {duration_string}."
-                    ).format(role=role, member=member, author=ctx.author, duration_string=duration_string),
+                    ).format(
+                        role=role,
+                        member=member,
+                        author=ctx.author,
+                        duration_string=duration_string,
+                    ),
                     color=await ctx.bot.get_embed_color(logs_channel),
                 )
             )
@@ -476,7 +491,9 @@ class TempRoles(Cog):
             else:
                 description = _("This member hasn't this Temp Role.")
         elif member is not None:
-            embed.set_author(name=f"{member.display_name} ({member.id})", icon_url=member.display_avatar)
+            embed.set_author(
+                name=f"{member.display_name} ({member.id})", icon_url=member.display_avatar
+            )
             if not (temp_roles := await self.config.member(member).temp_roles()):
                 description = _("This member hasn't any Temp Roles.")
             else:
@@ -620,9 +637,9 @@ class TempRoles(Cog):
             )
             if duration < min_duration:
                 raise commands.UserFeedbackCheckFailure(
-                    _("The duration for this role must be greater than {min_duration_string}.").format(
-                        min_duration_string=CogsUtils.get_interval_string(min_duration)
-                    )
+                    _(
+                        "The duration for this role must be greater than {min_duration_string}."
+                    ).format(min_duration_string=CogsUtils.get_interval_string(min_duration))
                 )
         if allowed_self_temp_roles[str(role.id)]["max_time"] is not None:
             max_duration = datetime.timedelta(
@@ -630,9 +647,9 @@ class TempRoles(Cog):
             )
             if duration > max_duration:
                 raise commands.UserFeedbackCheckFailure(
-                    _("The duration for this role must be less than {max_duration_string}.").format(
-                        max_duration_string=CogsUtils.get_interval_string(max_duration)
-                    )
+                    _(
+                        "The duration for this role must be less than {max_duration_string}."
+                    ).format(max_duration_string=CogsUtils.get_interval_string(max_duration))
                 )
         await self.assign.callback(self, ctx, member=ctx.author, role=role, duration=duration)
 

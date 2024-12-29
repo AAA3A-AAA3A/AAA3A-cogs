@@ -4,12 +4,12 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
+
+from prettytable import PrettyTable
 from redbot.core import bank
 from redbot.core.errors import BalanceTooHigh
-from redbot.core.utils.chat_formatting import pagify, box
-
-import asyncio
-from prettytable import PrettyTable
+from redbot.core.utils.chat_formatting import box, pagify
 
 from .views import JoinGameView, RolloutGameView
 
@@ -96,7 +96,10 @@ class RolloutGame(Cog):
             round += 1
             view: RolloutGameView = RolloutGameView(self)
             await view.start(
-                ctx, players=players, round=round, disabled_numbers=disabled_numbers,
+                ctx,
+                players=players,
+                round=round,
+                disabled_numbers=disabled_numbers,
             )
             for __ in range(30):
                 if len(view._choices) == len(view.players):
@@ -127,7 +130,9 @@ class RolloutGame(Cog):
 
         if winner is not None:
             embed = discord.Embed(
-                title=_("Congratulations **{winner.display_name}**! You won the game!").format(winner=winner),
+                title=_("Congratulations **{winner.display_name}**! You won the game!").format(
+                    winner=winner
+                ),
                 color=await ctx.embed_color(),
                 timestamp=ctx.message.created_at,
             )

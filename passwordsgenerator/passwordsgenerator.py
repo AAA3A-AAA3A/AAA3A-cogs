@@ -4,14 +4,14 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import string
+
+from password_generator import PasswordGenerator
+from password_strength import PasswordStats
+from passwordgenerator import pwgenerator as pw
 from redbot.core.utils.chat_formatting import box
 
-import string
-from password_generator import PasswordGenerator
-from passwordgenerator import pwgenerator as pw
-from password_strength import PasswordStats
-
-from .view import DEFAULT_LENGTHS, DEFAULT_INCLUDE_CHARACTERS, PasswordsGeneratorView
+from .view import DEFAULT_INCLUDE_CHARACTERS, DEFAULT_LENGTHS, PasswordsGeneratorView
 
 # Credits:
 # General repo credits.
@@ -27,7 +27,9 @@ class PasswordsGenerator(Cog):
         self,
         easy_to_remember: bool = False,
         lengths: typing.Dict[str, int] = {},
-        include_characters: typing.List[typing.Literal["upper", "lower", "digits", "special"]] = DEFAULT_INCLUDE_CHARACTERS,
+        include_characters: typing.List[
+            typing.Literal["upper", "lower", "digits", "special"]
+        ] = DEFAULT_INCLUDE_CHARACTERS,
     ) -> typing.Tuple[str, float]:
         _lengths = DEFAULT_LENGTHS.copy()
         _lengths.update(lengths)
@@ -71,11 +73,8 @@ class PasswordsGenerator(Cog):
             description=box(password),
             color=(
                 discord.Color.green()
-                if strength >= 0.66 else (
-                    discord.Color.orange()
-                    if strength >= 0.50 else
-                    discord.Color.red()
-                )
+                if strength >= 0.66
+                else (discord.Color.orange() if strength >= 0.50 else discord.Color.red())
             ),
         )
         embed.add_field(

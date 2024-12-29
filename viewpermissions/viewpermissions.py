@@ -106,9 +106,9 @@ class ViewPermissions(Cog):
                         ).items():
                             if value:
                                 role = discord.utils.get(roles, id=overwrite.id)
-                                sources[
-                                    permission_name
-                                ] = f"Role {role.mention} channel overwrite."
+                                sources[permission_name] = (
+                                    f"Role {role.mention} channel overwrite."
+                                )
                 base.handle_overwrite(allow=allows, deny=denies)
                 # Apply member specific permission overwrites.
                 members_ids = [member.id for member in members]

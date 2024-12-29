@@ -189,18 +189,20 @@ class Minecraft(Cog):
             name=_("Players"),
             value="{status.players.online}/{status.players.max}\n{players_list}".format(
                 status=status,
-                players_list=box(
-                    list(
-                        pagify(
-                            await self.clear_mcformatting(
-                                "\n".join([p.name for p in status.players.sample])
-                            ),
-                            page_length=992,
-                        )
-                    )[0]
-                )
-                if status.players.sample
-                else "",
+                players_list=(
+                    box(
+                        list(
+                            pagify(
+                                await self.clear_mcformatting(
+                                    "\n".join([p.name for p in status.players.sample])
+                                ),
+                                page_length=992,
+                            )
+                        )[0]
+                    )
+                    if status.players.sample
+                    else ""
+                ),
             ),
         )
         embed.add_field(
@@ -430,12 +432,14 @@ class Minecraft(Cog):
         data = {
             "Host & Port": f"{server.address.host}:{server.address.port}",
             "Description": box(server_description),
-            "Status": "Offline."
-            if "This server is offline." in server_description
-            else (
-                "Currently stopping."
-                if "This server is currently stopping." in server_description
-                else "Online."
+            "Status": (
+                "Offline."
+                if "This server is offline." in server_description
+                else (
+                    "Currently stopping."
+                    if "This server is currently stopping." in server_description
+                    else "Online."
+                )
             ),
             "Latency": f"{status.latency:.2f} ms",
             "Players": f"{status.players.online}/{status.players.max}",

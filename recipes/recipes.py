@@ -97,36 +97,48 @@ class Recipes(Cog):
             preparation_time=json_content["prepTime"][2:].lower(),
             cook_time=json_content["cookTime"][2:].lower(),
             rating=(
-                {
-                    "value": round(float(json_content["aggregateRating"]["ratingValue"]), 1),
-                    "count": int(json_content["aggregateRating"]["ratingCount"]),
-                }
-            )
-            if "aggregateRating" in json_content
-            else None,
+                (
+                    {
+                        "value": round(float(json_content["aggregateRating"]["ratingValue"]), 1),
+                        "count": int(json_content["aggregateRating"]["ratingCount"]),
+                    }
+                )
+                if "aggregateRating" in json_content
+                else None
+            ),
             images_urls=json_content["image"],
             ingredients=[
                 unquote(ingredient).lstrip("<em>").rstrip("</em>")
                 for ingredient in json_content["recipeIngredient"]
             ],
             instructions=(
-                {
-                    unquote(section["name"].title()): [
-                        unquote(instruction["text"]) for instruction in section["itemListElement"]
-                    ]
-                    for section in json_content["recipeInstructions"]
-                } if json_content["recipeInstructions"] and "itemListElement" in json_content["recipeInstructions"][0] else
-                {"Instructions": [unquote(instruction["text"]) for instruction in json_content["recipeInstructions"]]}
-            )
-            if not json_content["recipeInstructions"]
-            or isinstance(json_content["recipeInstructions"][0], typing.Dict)
-            else (
-                {
-                    "Main section": [
-                        unquote(instruction["text"])
-                        for instruction in json_content["recipeInstructions"][0]
-                    ]
-                }
+                (
+                    {
+                        unquote(section["name"].title()): [
+                            unquote(instruction["text"])
+                            for instruction in section["itemListElement"]
+                        ]
+                        for section in json_content["recipeInstructions"]
+                    }
+                    if json_content["recipeInstructions"]
+                    and "itemListElement" in json_content["recipeInstructions"][0]
+                    else {
+                        "Instructions": [
+                            unquote(instruction["text"])
+                            for instruction in json_content["recipeInstructions"]
+                        ]
+                    }
+                )
+                if not json_content["recipeInstructions"]
+                or isinstance(json_content["recipeInstructions"][0], typing.Dict)
+                else (
+                    {
+                        "Main section": [
+                            unquote(instruction["text"])
+                            for instruction in json_content["recipeInstructions"][0]
+                        ]
+                    }
+                )
             ),
         )
         self.cache[url] = recipe

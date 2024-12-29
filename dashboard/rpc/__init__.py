@@ -237,27 +237,37 @@ class DashboardRPC:
                         "description": command.help.strip() or "",
                         "aliases": list(command.aliases),
                         # "is_owner": is_owner,
-                        "privilege_level": command.requires.privilege_level.name
-                        if command.requires.privilege_level is not None
-                        else None,
-                        "user_permissions": "\n".join(
-                            [
-                                permission.replace("_", " ").capitalize()
-                                for permission, value in dict(command.requires.user_perms).items()
-                                if value
-                            ]
-                        )
-                        if command.requires.user_perms is not None
-                        else None,
-                        "user_permissions": "\n".join(
-                            [
-                                permission.replace("_", " ").capitalize()
-                                for permission, value in dict(command.requires.user_perms).items()
-                                if value
-                            ]
-                        )
-                        if command.requires.user_perms is not None
-                        else None,
+                        "privilege_level": (
+                            command.requires.privilege_level.name
+                            if command.requires.privilege_level is not None
+                            else None
+                        ),
+                        "user_permissions": (
+                            "\n".join(
+                                [
+                                    permission.replace("_", " ").capitalize()
+                                    for permission, value in dict(
+                                        command.requires.user_perms
+                                    ).items()
+                                    if value
+                                ]
+                            )
+                            if command.requires.user_perms is not None
+                            else None
+                        ),
+                        "user_permissions": (
+                            "\n".join(
+                                [
+                                    permission.replace("_", " ").capitalize()
+                                    for permission, value in dict(
+                                        command.requires.user_perms
+                                    ).items()
+                                    if value
+                                ]
+                            )
+                            if command.requires.user_perms is not None
+                            else None
+                        ),
                         "subs": [],
                     }
                 except ValueError:
@@ -386,9 +396,11 @@ class DashboardRPC:
                     "name": guild.name,
                     "owner": guild.owner.display_name,
                     "owner_id": guild.owner.id,
-                    "icon_url": guild.icon.url.split("?")[0]
-                    if guild.icon is not None
-                    else "https://cdn.discordapp.com/embed/avatars/1.png",
+                    "icon_url": (
+                        guild.icon.url.split("?")[0]
+                        if guild.icon is not None
+                        else "https://cdn.discordapp.com/embed/avatars/1.png"
+                    ),
                     "icon_animated": guild.icon.is_animated() if guild.icon is not None else False,
                     "user_role": None,
                 }
@@ -482,9 +494,11 @@ class DashboardRPC:
             "name": guild.name,
             "owner": guild.owner.display_name,
             "owner_id": guild.owner.id,
-            "icon_url": guild.icon.url
-            if guild.icon is not None
-            else "https://cdn.discordapp.com/embed/avatars/1.png",
+            "icon_url": (
+                guild.icon.url
+                if guild.icon is not None
+                else "https://cdn.discordapp.com/embed/avatars/1.png"
+            ),
             "icon_animated": guild.icon.is_animated() if guild.icon is not None else False,
             "verification_level": verification_level,
             "created_at": guild.created_at.timestamp(),

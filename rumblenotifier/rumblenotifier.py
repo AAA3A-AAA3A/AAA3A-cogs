@@ -14,6 +14,7 @@ from .views import RumbleNotifierView
 
 _: Translator = Translator("RumbleNotifier", __file__)
 
+
 class RoleConverter(commands.RoleConverter):
     async def convert(self, ctx: commands.Context, argument: str) -> discord.Role:
         role = await super().convert(ctx, argument)
@@ -49,7 +50,11 @@ class RumbleNotifier(Cog):
                 "description": "Enable or disable the cog.",
             },
             "channels": {
-                "converter": commands.Greedy[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]],
+                "converter": commands.Greedy[
+                    typing.Union[
+                        discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel
+                    ]
+                ],
                 "description": "The channels/categories where the cog will detect rumbles.",
             },
             "role": {
@@ -86,10 +91,7 @@ class RumbleNotifier(Cog):
             return
         if isinstance(message.channel, discord.Thread):
             return
-        if not (
-            message.author.bot
-            and message.author.id == 693167035068317736
-        ):
+        if not (message.author.bot and message.author.id == 693167035068317736):
             return
         config = await self.config.guild(message.guild).all()
         if (
@@ -97,7 +99,10 @@ class RumbleNotifier(Cog):
             or not message.channel.permissions_for(message.guild.me).send_messages
             or not config["enabled"]
             or not (channels_ids := config["channels"])
-            or (message.channel.id not in channels_ids and message.channel.category_id not in channels_ids)
+            or (
+                message.channel.id not in channels_ids
+                and message.channel.category_id not in channels_ids
+            )
             or (role_id := config["role"]) is None
             or (role := message.guild.get_role(role_id)) is None
         ):
@@ -107,8 +112,7 @@ class RumbleNotifier(Cog):
         if not (
             message.embeds
             and (
-                message.embeds[0].title is not None
-                and "Rumble Royale" in message.embeds[0].title
+                message.embeds[0].title is not None and "Rumble Royale" in message.embeds[0].title
             )
             and (
                 message.embeds[0].description is not None
@@ -123,7 +127,9 @@ class RumbleNotifier(Cog):
         )
         embed: discord.Embed = discord.Embed(
             title=_("⚔️ New Rumble battle! ⚔️"),
-            description=_("I've notified the {length} members of the {role} role.").format(length=len(role.members), role=role.mention),
+            description=_("I've notified the {length} members of the {role} role.").format(
+                length=len(role.members), role=role.mention
+            ),
             color=discord.Color.gold(),
         )
         if suscribing:

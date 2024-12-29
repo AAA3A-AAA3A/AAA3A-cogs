@@ -8,8 +8,8 @@ import typing  # isort:skip
 
 import datetime
 import io
-from copy import deepcopy
 from collections import Counter
+from copy import deepcopy
 
 from .converter import RoleHierarchyConverter
 from .dashboard_integration import DashboardIntegration
@@ -52,7 +52,9 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                 "description": "Toggle the cog. WARNING: Red-Dashboard has to be installed and started for this to work.",
             },
             "votes_channel": {
-                "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+                "converter": typing.Union[
+                    discord.TextChannel, discord.VoiceChannel, discord.Thread
+                ],
                 "description": "The channel where votes notifications will be sent.",
             },
             "disurl_authaurization_key": {
@@ -160,12 +162,13 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             or (votes_channel := guild.get_channel_or_thread(votes_channel_id)) is None
         ):
             return
-        if payload["headers"].get("Authorization") != ("Basic " + await self.config.guild(guild).disurl_authaurization_key()):
+        if payload["headers"].get("Authorization") != (
+            "Basic " + await self.config.guild(guild).disurl_authaurization_key()
+        ):
             return
         if (
-            (member := guild.get_member(int(payload["userId"]))) is None
-            or not await self.bot.allowed_by_whitelist_blacklist(who=member)
-        ):
+            member := guild.get_member(int(payload["userId"]))
+        ) is None or not await self.bot.allowed_by_whitelist_blacklist(who=member):
             return
 
         if (
@@ -183,17 +186,30 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             voters_role = None
 
         utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
-        start_month = datetime.datetime(utc_now.year, utc_now.month, 1, tzinfo=datetime.timezone.utc)
+        start_month = datetime.datetime(
+            utc_now.year, utc_now.month, 1, tzinfo=datetime.timezone.utc
+        )
         member_data = await self.config.member(member).all()
         number_member_votes = len(member_data["votes"]) + 1
-        start_month = datetime.datetime.now(tz=datetime.timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        number_member_monthly_votes = len(
-            [vote for vote in member_data["votes"] if datetime.datetime.now(tz=datetime.timezone.utc) >= start_month]
-        ) + 1
+        start_month = datetime.datetime.now(tz=datetime.timezone.utc).replace(
+            day=1, hour=0, minute=0, second=0, microsecond=0
+        )
+        number_member_monthly_votes = (
+            len(
+                [
+                    vote
+                    for vote in member_data["votes"]
+                    if datetime.datetime.now(tz=datetime.timezone.utc) >= start_month
+                ]
+            )
+            + 1
+        )
         s_1 = "" if number_member_votes == 1 else "s"
         s_2 = "" if number_member_monthly_votes == 1 else "s"
         try:
-            if (custom_vote_message := await self.config.guild(guild).custom_vote_message()) is None:
+            if (
+                custom_vote_message := await self.config.guild(guild).custom_vote_message()
+            ) is None:
                 embed: discord.Embed = discord.Embed(
                     title=_("New vote for {guild.name}!").format(guild=guild),
                     color=discord.Color.green(),
@@ -206,13 +222,24 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                     "`{number_member_monthly_votes} vote{s_2} this month & {number_member_votes} lifetime vote{s_1}`"
                 ).format(
                     member=member,
-                    number_member_votes=number_member_votes, s_1=s_1,
-                    number_member_monthly_votes=number_member_monthly_votes, s_2=s_2,
+                    number_member_votes=number_member_votes,
+                    s_1=s_1,
+                    number_member_monthly_votes=number_member_monthly_votes,
+                    s_2=s_2,
                 )
                 if voters_role is not None:
-                    embed.description += _("\n\n{member.display_name} received the role {voters_role.mention} for the next 12 hours.").format(member=member, voters_role=voters_role)
-                embed.description += _("\n\nYou could vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!").format(guild=guild)
-                embed.set_footer(text=_("Thanks for supporting this server! | User ID: {member.id}").format(member=member), icon_url=guild.icon)
+                    embed.description += _(
+                        "\n\n{member.display_name} received the role {voters_role.mention} for the next 12 hours."
+                    ).format(member=member, voters_role=voters_role)
+                embed.description += _(
+                    "\n\nYou could vote on [Disurl](https://disurl.me/server/{guild.id}/vote) here again in 12 hours!"
+                ).format(guild=guild)
+                embed.set_footer(
+                    text=_("Thanks for supporting this server! | User ID: {member.id}").format(
+                        member=member
+                    ),
+                    icon_url=guild.icon,
+                )
                 await votes_channel.send(embed=embed)
             else:
                 env = {
@@ -227,16 +254,23 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                     "votes_channel_mention": votes_channel.mention,
                     "votes_channel_id": votes_channel.id,
                     "voters_role_name": voters_role.name if voters_role is not None else None,
-                    "voters_role_mention": voters_role.mention if voters_role is not None else None,
+                    "voters_role_mention": (
+                        voters_role.mention if voters_role is not None else None
+                    ),
                     "voters_role_id": voters_role.id if voters_role is not None else None,
-                    "number_member_votes": number_member_votes, "s_1": s_1,
-                    "number_member_monthly_votes": number_member_monthly_votes, "s_2": s_2,
+                    "number_member_votes": number_member_votes,
+                    "s_1": s_1,
+                    "number_member_monthly_votes": number_member_monthly_votes,
+                    "s_2": s_2,
                 }
                 await CustomMessageConverter(**custom_vote_message).send_message(
                     None, channel=votes_channel, env=env
                 )
         except discord.HTTPException as e:
-            self.logger.error(f"Error when sending Disurl vote reminder in `{votes_channel.name}` ({votes_channel.id}).", exc_info=e)
+            self.logger.error(
+                f"Error when sending Disurl vote reminder in `{votes_channel.name}` ({votes_channel.id}).",
+                exc_info=e,
+            )
 
         if payload["type"] == "vote":
             votes = await self.config.member(member).votes()
@@ -255,11 +289,15 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             ):
                 continue
             for member_id, member_data in (await self.config.all_members(guild)).items():
-                if member_data["last_reminder_sent"] or not (
-                    votes := member_data["votes"]
-                ):
+                if member_data["last_reminder_sent"] or not (votes := member_data["votes"]):
                     continue
-                if datetime.datetime.now(tz=datetime.timezone.utc) - datetime.datetime.fromtimestamp(votes[-1], tz=datetime.timezone.utc) < datetime.timedelta(hours=12):
+                if datetime.datetime.now(
+                    tz=datetime.timezone.utc
+                ) - datetime.datetime.fromtimestamp(
+                    votes[-1], tz=datetime.timezone.utc
+                ) < datetime.timedelta(
+                    hours=12
+                ):
                     continue
                 await self.config.member_from_ids(guild_id, member_id).last_reminder_sent.set(True)
                 if (member := guild.get_member(member_id)) is None:
@@ -271,7 +309,9 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                     and voters_role in member.roles
                 ):
                     try:
-                        await member.remove_roles(voters_role, reason=_("Voters role expired! (12 hours)"))
+                        await member.remove_roles(
+                            voters_role, reason=_("Voters role expired! (12 hours)")
+                        )
                     except discord.HTTPException as e:
                         self.logger.error(
                             f"Failed to remove the voters role from {member} ({member.id}) in {guild} ({guild.id}): {e}"
@@ -279,9 +319,18 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
 
                 try:
                     if await self.config.guild(guild).vote_reminder():
-                        if (custom_vote_reminder_message := guild_data["custom_vote_reminder_message"]) is None:
+                        if (
+                            custom_vote_reminder_message := guild_data[
+                                "custom_vote_reminder_message"
+                            ]
+                        ) is None:
                             view = discord.ui.View()
-                            view.add_item(discord.ui.Button(label=_("Vote on Disurl!"), url=f"https://disurl.me/server/{guild.id}/vote"))
+                            view.add_item(
+                                discord.ui.Button(
+                                    label=_("Vote on Disurl!"),
+                                    url=f"https://disurl.me/server/{guild.id}/vote",
+                                )
+                            )
                             await votes_channel.send(
                                 _(
                                     "{member.mention}, don't forget to vote on **[Disurl](https://disurl.me/server/{guild.id}/vote)**! You could vote again 12 hours after this vote. **Thanks for supporting this server!**"
@@ -290,9 +339,16 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                             )
                         else:
                             number_member_votes = len(member_data["votes"])
-                            start_month = datetime.datetime.now(tz=datetime.timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+                            start_month = datetime.datetime.now(tz=datetime.timezone.utc).replace(
+                                day=1, hour=0, minute=0, second=0, microsecond=0
+                            )
                             number_member_monthly_votes = len(
-                                [vote for vote in member_data["votes"] if datetime.datetime.now(tz=datetime.timezone.utc) >= start_month]
+                                [
+                                    vote
+                                    for vote in member_data["votes"]
+                                    if datetime.datetime.now(tz=datetime.timezone.utc)
+                                    >= start_month
+                                ]
                             )
                             s_1 = "" if number_member_votes == 1 else "s"
                             s_2 = "" if number_member_monthly_votes == 1 else "s"
@@ -307,17 +363,28 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                                 "votes_channel_name": votes_channel.name,
                                 "votes_channel_mention": votes_channel.mention,
                                 "votes_channel_id": votes_channel.id,
-                                "voters_role_name": voters_role.name if voters_role is not None else None,
-                                "voters_role_mention": voters_role.mention if voters_role is not None else None,
-                                "voters_role_id": voters_role.id if voters_role is not None else None,
-                                "number_member_votes": number_member_votes, "s_1": s_1,
-                                "number_member_monthly_votes": number_member_monthly_votes, "s_2": s_2,
+                                "voters_role_name": (
+                                    voters_role.name if voters_role is not None else None
+                                ),
+                                "voters_role_mention": (
+                                    voters_role.mention if voters_role is not None else None
+                                ),
+                                "voters_role_id": (
+                                    voters_role.id if voters_role is not None else None
+                                ),
+                                "number_member_votes": number_member_votes,
+                                "s_1": s_1,
+                                "number_member_monthly_votes": number_member_monthly_votes,
+                                "s_2": s_2,
                             }
-                            await CustomMessageConverter(**custom_vote_reminder_message).send_message(
-                                None, channel=votes_channel, env=env
-                            )
+                            await CustomMessageConverter(
+                                **custom_vote_reminder_message
+                            ).send_message(None, channel=votes_channel, env=env)
                 except discord.HTTPException as e:
-                    self.logger.error(f"Error when sending Disurl notification in `{votes_channel.name}` ({votes_channel.id}).", exc_info=e)
+                    self.logger.error(
+                        f"Error when sending Disurl notification in `{votes_channel.name}` ({votes_channel.id}).",
+                        exc_info=e,
+                    )
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
@@ -330,26 +397,45 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
     async def leaderboard(self, ctx: commands.Context) -> None:
         """Show the lifetime leaderboard of voters."""
         if not await self.config.guild(ctx.guild).enabled():
-            raise commands.UserFeedbackCheckFailure(_("DisurlVotesTracker is not enabled in this server."))
+            raise commands.UserFeedbackCheckFailure(
+                _("DisurlVotesTracker is not enabled in this server.")
+            )
         members_data = await self.config.all_members(ctx.guild)
-        counter = Counter({
-            member: len(member_data["votes"])
-            for member_id, member_data in members_data.items()
-            if member_data["votes"] and (member := ctx.guild.get_member(member_id)) is not None
-        })
+        counter = Counter(
+            {
+                member: len(member_data["votes"])
+                for member_id, member_data in members_data.items()
+                if member_data["votes"] and (member := ctx.guild.get_member(member_id)) is not None
+            }
+        )
         if not counter:
             raise commands.UserFeedbackCheckFailure(_("No voters found."))
         embed: discord.Embed = discord.Embed(
             title=_("Leaderboard"),
             color=await ctx.embed_color(),
         )
-        embed.set_author(name=_("{ctx.guild.name} | {total} Lifetime Vote{s}").format(ctx=ctx, total=counter.total(), s="" if counter.total() == 1 else "s"), icon_url=ctx.guild.icon.url)
+        embed.set_author(
+            name=_("{ctx.guild.name} | {total} Lifetime Vote{s}").format(
+                ctx=ctx, total=counter.total(), s="" if counter.total() == 1 else "s"
+            ),
+            icon_url=ctx.guild.icon.url,
+        )
         if ctx.author in counter:
             author_index = list(k for k, __ in counter.most_common()).index(ctx.author) + 1
-            embed.set_footer(text=_("You are at position {author_index} with {number_member_lifetime_votes} vote{s}.").format(author_index=author_index, s="" if counter[ctx.author] == 1 else "s", number_member_lifetime_votes=counter[ctx.author]))
+            embed.set_footer(
+                text=_(
+                    "You are at position {author_index} with {number_member_lifetime_votes} vote{s}."
+                ).format(
+                    author_index=author_index,
+                    s="" if counter[ctx.author] == 1 else "s",
+                    number_member_lifetime_votes=counter[ctx.author],
+                )
+            )
         description = [
             f"**{i}.** **{member.display_name}**: {number_member_lifetime_votes} vote{'' if number_member_lifetime_votes == 1 else 's'}"
-            for i, (member, number_member_lifetime_votes) in enumerate(counter.most_common(), start=1)
+            for i, (member, number_member_lifetime_votes) in enumerate(
+                counter.most_common(), start=1
+            )
         ]
         embeds = []
         for page in discord.utils.as_chunks(description, 10):
@@ -362,36 +448,55 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
     async def monthlyleaderboard(self, ctx: commands.Context) -> None:
         """Show the monthly leaderboard of voters."""
         if not await self.config.guild(ctx.guild).enabled():
-            raise commands.UserFeedbackCheckFailure(_("DisurlVotesTracker is not enabled in this server."))
-        start_month = datetime.datetime.now(tz=datetime.timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        members_data = await self.config.all_members(ctx.guild)
-        counter = Counter({
-            member: len(
-                [
-                    vote
-                    for vote in member_data["votes"]
-                    if datetime.datetime.fromtimestamp(
-                        vote, tz=datetime.timezone.utc
-                    )
-                    >= start_month
-                ]
+            raise commands.UserFeedbackCheckFailure(
+                _("DisurlVotesTracker is not enabled in this server.")
             )
-            for member_id, member_data in members_data.items()
-            if member_data["votes"] and (member := ctx.guild.get_member(member_id)) is not None
-        })
+        start_month = datetime.datetime.now(tz=datetime.timezone.utc).replace(
+            day=1, hour=0, minute=0, second=0, microsecond=0
+        )
+        members_data = await self.config.all_members(ctx.guild)
+        counter = Counter(
+            {
+                member: len(
+                    [
+                        vote
+                        for vote in member_data["votes"]
+                        if datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc)
+                        >= start_month
+                    ]
+                )
+                for member_id, member_data in members_data.items()
+                if member_data["votes"] and (member := ctx.guild.get_member(member_id)) is not None
+            }
+        )
         if not counter:
             raise commands.UserFeedbackCheckFailure(_("No voters found."))
         embed: discord.Embed = discord.Embed(
             title=_("Monthly Leaderboard"),
             color=await ctx.embed_color(),
         )
-        embed.set_author(name=_("{ctx.guild.name} | {total} Monthly Vote{s}").format(ctx=ctx, total=counter.total(), s="" if counter.total() == 1 else "s"), icon_url=ctx.guild.icon.url)
+        embed.set_author(
+            name=_("{ctx.guild.name} | {total} Monthly Vote{s}").format(
+                ctx=ctx, total=counter.total(), s="" if counter.total() == 1 else "s"
+            ),
+            icon_url=ctx.guild.icon.url,
+        )
         if ctx.author in counter:
             author_index = list(k for k, __ in counter.most_common()).index(ctx.author) + 1
-            embed.set_footer(text=_("You are at position {author_index} with {number_member_monthly_votes} vote{s}.").format(author_index=author_index, s="" if counter[ctx.author] == 1 else "s", number_member_monthly_votes=counter[ctx.author]))
+            embed.set_footer(
+                text=_(
+                    "You are at position {author_index} with {number_member_monthly_votes} vote{s}."
+                ).format(
+                    author_index=author_index,
+                    s="" if counter[ctx.author] == 1 else "s",
+                    number_member_monthly_votes=counter[ctx.author],
+                )
+            )
         description = [
             f"**{i}.** **{member.display_name}**: {number_member_monthly_votes} vote{'' if number_member_monthly_votes == 1 else 's'}"
-            for i, (member, number_member_monthly_votes) in enumerate(counter.most_common(), start=1)
+            for i, (member, number_member_monthly_votes) in enumerate(
+                counter.most_common(), start=1
+            )
         ]
         embeds = []
         for page in discord.utils.as_chunks(description, 10):
@@ -438,7 +543,9 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
     async def resetleaderboards(self, ctx: commands.Context, confirmation: bool = False) -> None:
         """Reset the leaderboards."""
         if not await self.config.guild(ctx.guild).enabled():
-            raise commands.UserFeedbackCheckFailure(_("DisurlVotesTracker is not enabled in this server."))
+            raise commands.UserFeedbackCheckFailure(
+                _("DisurlVotesTracker is not enabled in this server.")
+            )
         if not confirmation:
             raise commands.UserInputError()
         await self.config.clear_all_members(ctx.guild)

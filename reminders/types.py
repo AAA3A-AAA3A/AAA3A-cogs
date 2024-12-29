@@ -74,15 +74,15 @@ class RepeatRule:
         return {
             "type": self.type,
             "value": int(self.value.timestamp()) if self.type == "date" else self.value,
-            "start_trigger": int(self.start_trigger.timestamp())
-            if self.start_trigger is not None
-            else None,
-            "first_trigger": int(self.first_trigger.timestamp())
-            if self.first_trigger is not None
-            else None,
-            "last_trigger": int(self.last_trigger.timestamp())
-            if self.last_trigger is not None
-            else None,
+            "start_trigger": (
+                int(self.start_trigger.timestamp()) if self.start_trigger is not None else None
+            ),
+            "first_trigger": (
+                int(self.first_trigger.timestamp()) if self.first_trigger is not None else None
+            ),
+            "last_trigger": (
+                int(self.last_trigger.timestamp()) if self.last_trigger is not None else None
+            ),
         }
 
     @classmethod
@@ -95,40 +95,44 @@ class RepeatRule:
                 value=datetime.datetime.fromtimestamp(
                     int(data["value"]), tz=datetime.timezone.utc
                 ),
-                start_trigger=datetime.datetime.fromtimestamp(
-                    data["start_trigger"], tz=datetime.timezone.utc
-                )
-                if data.get("start_trigger") is not None
-                else None,
-                first_trigger=datetime.datetime.fromtimestamp(
-                    data["first_trigger"], tz=datetime.timezone.utc
-                )
-                if data.get("first_trigger") is not None
-                else None,
-                last_trigger=datetime.datetime.fromtimestamp(
-                    data["last_trigger"], tz=datetime.timezone.utc
-                )
-                if data.get("last_trigger") is not None
-                else None,
+                start_trigger=(
+                    datetime.datetime.fromtimestamp(
+                        data["start_trigger"], tz=datetime.timezone.utc
+                    )
+                    if data.get("start_trigger") is not None
+                    else None
+                ),
+                first_trigger=(
+                    datetime.datetime.fromtimestamp(
+                        data["first_trigger"], tz=datetime.timezone.utc
+                    )
+                    if data.get("first_trigger") is not None
+                    else None
+                ),
+                last_trigger=(
+                    datetime.datetime.fromtimestamp(data["last_trigger"], tz=datetime.timezone.utc)
+                    if data.get("last_trigger") is not None
+                    else None
+                ),
             )
         return cls(
             type=data["type"],
             value=data["value"],
-            start_trigger=datetime.datetime.fromtimestamp(
-                data["start_trigger"], tz=datetime.timezone.utc
-            )
-            if data.get("start_trigger") is not None
-            else None,
-            first_trigger=datetime.datetime.fromtimestamp(
-                data["first_trigger"], tz=datetime.timezone.utc
-            )
-            if data.get("first_trigger") is not None
-            else None,
-            last_trigger=datetime.datetime.fromtimestamp(
-                data["last_trigger"], tz=datetime.timezone.utc
-            )
-            if data.get("last_trigger") is not None
-            else None,
+            start_trigger=(
+                datetime.datetime.fromtimestamp(data["start_trigger"], tz=datetime.timezone.utc)
+                if data.get("start_trigger") is not None
+                else None
+            ),
+            first_trigger=(
+                datetime.datetime.fromtimestamp(data["first_trigger"], tz=datetime.timezone.utc)
+                if data.get("first_trigger") is not None
+                else None
+            ),
+            last_trigger=(
+                datetime.datetime.fromtimestamp(data["last_trigger"], tz=datetime.timezone.utc)
+                if data.get("last_trigger") is not None
+                else None
+            ),
         )
 
     @executor()
@@ -371,17 +375,21 @@ class Reminder:
             expires_at=datetime.datetime.fromtimestamp(
                 int(data["expires_at"]), tz=datetime.timezone.utc
             ),
-            last_expires_at=datetime.datetime.fromtimestamp(
-                int(data["last_expires_at"]), tz=datetime.timezone.utc
-            )
-            if data.get("last_expires_at") is not None
-            else None,
+            last_expires_at=(
+                datetime.datetime.fromtimestamp(
+                    int(data["last_expires_at"]), tz=datetime.timezone.utc
+                )
+                if data.get("last_expires_at") is not None
+                else None
+            ),
             next_expires_at=datetime.datetime.fromtimestamp(
                 int(data["next_expires_at"]), tz=datetime.timezone.utc
             ),
-            repeat=Repeat.from_json((data.get("repeat") or data.get("intervals")))
-            if (data.get("repeat") or data.get("intervals")) is not None
-            else None,
+            repeat=(
+                Repeat.from_json((data.get("repeat") or data.get("intervals")))
+                if (data.get("repeat") or data.get("intervals")) is not None
+                else None
+            ),
         )
 
     def __str__(self, utc_now: datetime.datetime = None) -> str:
@@ -424,9 +432,11 @@ class Reminder:
             )
         ).format(
             state=f"{'[Snooze] ' if self.snooze else ''}{'[Me Too] ' if self.me_too else ''}",
-            targets_mentions=humanize_list([target["mention"] for target in self.targets])
-            if self.targets is not None
-            else _("you"),
+            targets_mentions=(
+                humanize_list([target["mention"] for target in self.targets])
+                if self.targets is not None
+                else _("you")
+            ),
             this=(
                 _("the event `{event_name}`").format(event_name=self.content["event_name"])
                 if self.content["type"] == "event"
@@ -487,12 +497,16 @@ class Reminder:
             created_in_timestamp=CogsUtils.get_interval_string(
                 self.created_at, use_timestamp=True
             ),
-            repeat=_("No existing repeat rule(s).")
-            if self.repeat is None
-            else (
-                _("{nb_repeat_rules} repeat rules.").format(nb_repeat_rules=len(self.repeat.rules))
-                if len(self.repeat.rules) > 1
-                else self.repeat.rules[0].get_info()
+            repeat=(
+                _("No existing repeat rule(s).")
+                if self.repeat is None
+                else (
+                    _("{nb_repeat_rules} repeat rules.").format(
+                        nb_repeat_rules=len(self.repeat.rules)
+                    )
+                    if len(self.repeat.rules) > 1
+                    else self.repeat.rules[0].get_info()
+                )
             ),
             title=self.content.get("title") or _("Not provided."),
             content_type=self.content["type"],
@@ -523,20 +537,24 @@ class Reminder:
                     )
                 )
             ),
-            targets=humanize_list(
-                [f"{target['mention']} ({target['id']})" for target in self.targets]
-            )
-            if self.targets is not None
-            else _("No target(s)."),
-            destination=_("In DMs")
-            if self.destination is None
-            else (
-                f"{destination.recipient}'s DMs ({destination.id})"
-                if isinstance(destination, discord.DMChannel)
-                else f"{destination.mention} ({destination.id})"
-            )
-            if (destination := self.cog.bot.get_channel(self.destination)) is not None
-            else f"{self.destination} (Not found.)",
+            targets=(
+                humanize_list([f"{target['mention']} ({target['id']})" for target in self.targets])
+                if self.targets is not None
+                else _("No target(s).")
+            ),
+            destination=(
+                _("In DMs")
+                if self.destination is None
+                else (
+                    (
+                        f"{destination.recipient}'s DMs ({destination.id})"
+                        if isinstance(destination, discord.DMChannel)
+                        else f"{destination.mention} ({destination.id})"
+                    )
+                    if (destination := self.cog.bot.get_channel(self.destination)) is not None
+                    else f"{self.destination} (Not found.)"
+                )
+            ),
             jump_url=self.jump_url,
         )
 
@@ -812,13 +830,17 @@ class Reminder:
                     message = await destination.send(
                         embeds=embeds,
                         files=files,
-                        content=humanize_list([target["mention"] for target in self.targets])
-                        if self.targets is not None
-                        else None,
+                        content=(
+                            humanize_list([target["mention"] for target in self.targets])
+                            if self.targets is not None
+                            else None
+                        ),
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=destination.guild is not None and destination.permissions_for(member).mention_everyone,
+                            everyone=destination.guild is not None
+                            and destination.permissions_for(member).mention_everyone,
                             users=True,
-                            roles=destination.guild is not None and destination.permissions_for(member).mention_everyone,
+                            roles=destination.guild is not None
+                            and destination.permissions_for(member).mention_everyone,
                             replied_user=False,
                         ),
                         view=view,
@@ -833,9 +855,11 @@ class Reminder:
                         embeds=embeds,
                         files=files,
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=destination.guild is not None and destination.permissions_for(member).mention_everyone,
+                            everyone=destination.guild is not None
+                            and destination.permissions_for(member).mention_everyone,
                             users=True,
-                            roles=destination.guild is not None and destination.permissions_for(member).mention_everyone,
+                            roles=destination.guild is not None
+                            and destination.permissions_for(member).mention_everyone,
                             replied_user=False,
                         ),
                     )

@@ -5,9 +5,9 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
-
 from collections import Counter
 from pathlib import Path
+
 
 def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
@@ -15,6 +15,7 @@ def dashboard_page(*args, **kwargs):
         return func
 
     return decorator
+
 
 _: Translator = Translator("DisurlVotesTracker", __file__)
 

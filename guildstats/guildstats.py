@@ -15,7 +15,7 @@ from pathlib import Path
 
 import plotly.graph_objects as go
 from fontTools.ttLib import TTFont
-from PIL import Image, ImageDraw, ImageFont, ImageChops
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 from redbot.core.data_manager import bundled_data_path
 
 from .view import GuildStatsView
@@ -27,9 +27,7 @@ _: Translator = Translator("GuildStats", __file__)
 
 
 class ObjectConverter(commands.Converter):
-    async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[
+    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[
         discord.Member,
         discord.Role,
         typing.Literal["messages", "voice", "activities"],
@@ -588,9 +586,9 @@ class GuildStats(Cog):
                     "voice": {},
                     "voice_cache": {},
                 }
-            self.cache[after.channel.guild]["channels"][after.channel]["voice_cache"][
-                member
-            ] = datetime.datetime.now(tz=datetime.timezone.utc)
+            self.cache[after.channel.guild]["channels"][after.channel]["voice_cache"][member] = (
+                datetime.datetime.now(tz=datetime.timezone.utc)
+            )
         if before.channel is not None:
             if isinstance(after.channel, discord.StageChannel):
                 return
@@ -670,9 +668,9 @@ class GuildStats(Cog):
                         "total_activities_times": {},
                         "activities_cache": {},
                     }
-                self.cache[after.guild]["members"][after]["activities_cache"][
-                    activity.name
-                ] = datetime.datetime.now(tz=datetime.timezone.utc)
+                self.cache[after.guild]["members"][after]["activities_cache"][activity.name] = (
+                    datetime.datetime.now(tz=datetime.timezone.utc)
+                )
         if before is not None:
             ignored_users = await self.config.ignored_users()
             if before.id in ignored_users:
@@ -956,21 +954,23 @@ class GuildStats(Cog):
                             )
                             for channel_id in all_channels_data
                         ),
-                        "voice": roundest_value
-                        if (
-                            roundest_value := round(
-                                sum(
-                                    all_channels_data[channel_id]["total_voice_members"].get(
-                                        str(_object.id), 0
+                        "voice": (
+                            roundest_value
+                            if (
+                                roundest_value := round(
+                                    sum(
+                                        all_channels_data[channel_id]["total_voice_members"].get(
+                                            str(_object.id), 0
+                                        )
+                                        for channel_id in all_channels_data
                                     )
-                                    for channel_id in all_channels_data
+                                    / 3600,
+                                    ndigits=2,
                                 )
-                                / 3600,
-                                ndigits=2,
                             )
-                        )
-                        != 0
-                        else 0,
+                            != 0
+                            else 0
+                        ),
                     },
                     "messages": {  # days: messages
                         delta: len(
@@ -986,85 +986,108 @@ class GuildStats(Cog):
                         for delta in (1, 7, 30)
                     },
                     "voice_activity": {  # days: hours
-                        delta: roundest_value
-                        if (
-                            roundest_value := round(
-                                sum(
-                                    int(times[1] - times[0])
-                                    - max(
-                                        int(
-                                            (
-                                                utc_now - datetime.timedelta(days=delta)
-                                            ).timestamp()
-                                            - times[0]
-                                        ),
-                                        0,
+                        delta: (
+                            roundest_value
+                            if (
+                                roundest_value := round(
+                                    sum(
+                                        int(times[1] - times[0])
+                                        - max(
+                                            int(
+                                                (
+                                                    utc_now - datetime.timedelta(days=delta)
+                                                ).timestamp()
+                                                - times[0]
+                                            ),
+                                            0,
+                                        )
+                                        for channel_id in all_channels_data
+                                        for times in all_channels_data[channel_id]["voice"].get(
+                                            str(_object.id), []
+                                        )
+                                        if times[1]
+                                        >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                                     )
-                                    for channel_id in all_channels_data
-                                    for times in all_channels_data[channel_id]["voice"].get(
-                                        str(_object.id), []
-                                    )
-                                    if times[1]
-                                    >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                    / 3600,
+                                    ndigits=2,
                                 )
-                                / 3600,
-                                ndigits=2,
                             )
+                            != 0
+                            else 0
                         )
-                        != 0
-                        else 0
                         for delta in (1, 7, 30)
                     },
                     "server_ranks": {  # type: rank #
-                        "text": (members_messages_sorted.index(str(_object.id)) + 1)
-                        if str(_object.id) in members_messages_sorted
-                        else None,
-                        "voice": (members_voice_sorted.index(str(_object.id)) + 1)
-                        if str(_object.id) in members_voice_sorted
-                        else None,
+                        "text": (
+                            (members_messages_sorted.index(str(_object.id)) + 1)
+                            if str(_object.id) in members_messages_sorted
+                            else None
+                        ),
+                        "voice": (
+                            (members_voice_sorted.index(str(_object.id)) + 1)
+                            if str(_object.id) in members_voice_sorted
+                            else None
+                        ),
                     },
                     "top_channels_and_activity": {
                         "text": {  # type: {channel, messages}
-                            "channel": top_messages_channels.most_common(1)[0][0]
-                            if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0
-                            else None,
-                            "value": top_messages_channels.most_common(1)[0][1]
-                            if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0
-                            else None,
+                            "channel": (
+                                top_messages_channels.most_common(1)[0][0]
+                                if top_messages_channels
+                                and top_messages_channels.most_common(1)[0][1] > 0
+                                else None
+                            ),
+                            "value": (
+                                top_messages_channels.most_common(1)[0][1]
+                                if top_messages_channels
+                                and top_messages_channels.most_common(1)[0][1] > 0
+                                else None
+                            ),
                         },
                         "voice": {  # type: {channel, hours}
-                            "channel": top_voice_channels.most_common(1)[0][0]
-                            if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
-                            else None,
+                            "channel": (
+                                top_voice_channels.most_common(1)[0][0]
+                                if top_voice_channels
+                                and top_voice_channels.most_common(1)[0][1] > 0
+                                else None
+                            ),
                             "value": (
-                                roundest_value
-                                if (
-                                    roundest_value := round(
-                                        top_voice_channels.most_common(1)[0][1] / 3600, ndigits=2
+                                (
+                                    roundest_value
+                                    if (
+                                        roundest_value := round(
+                                            top_voice_channels.most_common(1)[0][1] / 3600,
+                                            ndigits=2,
+                                        )
                                     )
+                                    != int(roundest_value)
+                                    else int(roundest_value)
                                 )
-                                != int(roundest_value)
-                                else int(roundest_value)
-                            )
-                            if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
-                            else None,
+                                if top_voice_channels
+                                and top_voice_channels.most_common(1)[0][1] > 0
+                                else None
+                            ),
                         },
                         "activity": {  # type: {activity, hours}
-                            "activity": top_activities.most_common(1)[0][0]
-                            if top_activities and top_activities.most_common(1)[0][1] > 0
-                            else None,
+                            "activity": (
+                                top_activities.most_common(1)[0][0]
+                                if top_activities and top_activities.most_common(1)[0][1] > 0
+                                else None
+                            ),
                             "value": (
-                                roundest_value
-                                if (
-                                    roundest_value := round(
-                                        top_activities.most_common(1)[0][1] / 3600, ndigits=2
+                                (
+                                    roundest_value
+                                    if (
+                                        roundest_value := round(
+                                            top_activities.most_common(1)[0][1] / 3600, ndigits=2
+                                        )
                                     )
+                                    != int(roundest_value)
+                                    else int(roundest_value)
                                 )
-                                != int(roundest_value)
-                                else int(roundest_value)
-                            )
-                            if top_activities and top_activities.most_common(1)[0][1] > 0
-                            else None,
+                                if top_activities and top_activities.most_common(1)[0][1] > 0
+                                else None
+                            ),
                         },
                     },
                     "graphic": {
@@ -1084,47 +1107,60 @@ class GuildStats(Cog):
                             for day in range(-30, 0)
                         },
                         "voice": {  # day: hours
-                            day: roundest_value
-                            if (
-                                roundest_value := round(
-                                    sum(
-                                        int(times[1] - times[0])
-                                        - max(
-                                            int(
-                                                (
-                                                    utc_now - datetime.timedelta(days=-day)
-                                                ).timestamp() - times[0]
-                                            ),
-                                            0,
-                                        )
-                                        - max(
-                                            int(
+                            day: (
+                                roundest_value
+                                if (
+                                    roundest_value := round(
+                                        sum(
+                                            int(times[1] - times[0])
+                                            - max(
+                                                int(
+                                                    (
+                                                        utc_now - datetime.timedelta(days=-day)
+                                                    ).timestamp()
+                                                    - times[0]
+                                                ),
+                                                0,
+                                            )
+                                            - max(
+                                                int(
+                                                    (
+                                                        utc_now - datetime.timedelta(days=-day - 1)
+                                                    ).timestamp()
+                                                    - (utc_now.timestamp() - times[1])
+                                                ),
+                                                0,
+                                            )
+                                            for channel_id in all_channels_data
+                                            for times in all_channels_data[channel_id][
+                                                "voice"
+                                            ].get(str(_object.id), [])
+                                            if (
                                                 (
                                                     utc_now - datetime.timedelta(days=-day - 1)
                                                 ).timestamp()
-                                                - (utc_now.timestamp() - times[1])
-                                            ),
-                                            0,
+                                                >= times[0]
+                                                >= (
+                                                    utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp()
+                                            )
+                                            or (
+                                                (
+                                                    utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp()
+                                            )
+                                            <= times[1]
+                                            <= (
+                                                utc_now - datetime.timedelta(days=-day - 1)
+                                            ).timestamp()
                                         )
-                                        for channel_id in all_channels_data
-                                        for times in all_channels_data[channel_id]["voice"].get(
-                                            str(_object.id), []
-                                        )
-                                        if (
-                                            (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
-                                            >= times[0]
-                                            >= (utc_now - datetime.timedelta(days=-day)).timestamp()
-                                        )
-                                        or ((utc_now - datetime.timedelta(days=-day)).timestamp())
-                                        <= times[1]
-                                        <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                        / 3600,
+                                        ndigits=2,
                                     )
-                                    / 3600,
-                                    ndigits=2,
                                 )
+                                != 0
+                                else 0
                             )
-                            != 0
-                            else 0
                             for day in range(-30, 0)
                         },
                     },
@@ -1133,7 +1169,9 @@ class GuildStats(Cog):
                 activities_counter: Counter = Counter(
                     [
                         activity_name
-                        for activity_name, count_time in all_members_data.get(_object.id, {}).get("total_activities_times", {}).items()
+                        for activity_name, count_time in all_members_data.get(_object.id, {})
+                        .get("total_activities_times", {})
+                        .items()
                         for __ in range(count_time)
                         if activity_name not in ignored_activities
                     ]
@@ -1241,23 +1279,25 @@ class GuildStats(Cog):
                         for member in _object.members
                         if is_valid(member.id)
                     ),
-                    "voice": roundest_value
-                    if (
-                        roundest_value := round(
-                            sum(
-                                all_channels_data[channel_id]["total_voice_members"].get(
-                                    str(member.id), 0
+                    "voice": (
+                        roundest_value
+                        if (
+                            roundest_value := round(
+                                sum(
+                                    all_channels_data[channel_id]["total_voice_members"].get(
+                                        str(member.id), 0
+                                    )
+                                    for channel_id in all_channels_data
+                                    for member in _object.members
+                                    if is_valid(member.id)
                                 )
-                                for channel_id in all_channels_data
-                                for member in _object.members
-                                if is_valid(member.id)
+                                / 3600,
+                                ndigits=2,
                             )
-                            / 3600,
-                            ndigits=2,
                         )
-                    )
-                    != 0
-                    else 0,
+                        != 0
+                        else 0
+                    ),
                 },
                 "messages": {  # days: messages
                     delta: len(
@@ -1275,87 +1315,105 @@ class GuildStats(Cog):
                     for delta in (1, 7, 30)
                 },
                 "voice_activity": {  # days: hours
-                    delta: roundest_value
-                    if (
-                        roundest_value := round(
-                            sum(
-                                int(times[1] - times[0])
-                                - max(
-                                    int(
-                                        (
-                                            utc_now - datetime.timedelta(days=delta)
-                                        ).timestamp()
-                                        - times[0]
-                                    ),
-                                    0,
+                    delta: (
+                        roundest_value
+                        if (
+                            roundest_value := round(
+                                sum(
+                                    int(times[1] - times[0])
+                                    - max(
+                                        int(
+                                            (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                            - times[0]
+                                        ),
+                                        0,
+                                    )
+                                    for channel_id in all_channels_data
+                                    for member in _object.members
+                                    for times in all_channels_data[channel_id]["voice"].get(
+                                        str(member.id), []
+                                    )
+                                    if is_valid(member.id)
+                                    and times[1]
+                                    >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                                 )
-                                for channel_id in all_channels_data
-                                for member in _object.members
-                                for times in all_channels_data[channel_id]["voice"].get(
-                                    str(member.id), []
-                                )
-                                if is_valid(member.id)
-                                and times[1]
-                                >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                / 3600,
+                                ndigits=2,
                             )
-                            / 3600,
-                            ndigits=2,
                         )
+                        != 0
+                        else 0
                     )
-                    != 0
-                    else 0
                     for delta in (1, 7, 30)
                 },
                 "server_ranks": {  # type: rank #
-                    "text": (roles_messages_sorted.index(str(_object.id)) + 1)
-                    if str(_object.id) in roles_messages_sorted
-                    else None,
-                    "voice": (roles_voice_sorted.index(str(_object.id)) + 1)
-                    if str(_object.id) in roles_voice_sorted
-                    else None,
+                    "text": (
+                        (roles_messages_sorted.index(str(_object.id)) + 1)
+                        if str(_object.id) in roles_messages_sorted
+                        else None
+                    ),
+                    "voice": (
+                        (roles_voice_sorted.index(str(_object.id)) + 1)
+                        if str(_object.id) in roles_voice_sorted
+                        else None
+                    ),
                 },
                 "top_channels_and_activity": {
                     "text": {  # type: {channel, messages}
-                        "channel": top_messages_channels.most_common(1)[0][0]
-                        if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0
-                        else None,
-                        "value": top_messages_channels.most_common(1)[0][1]
-                        if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0
-                        else None,
+                        "channel": (
+                            top_messages_channels.most_common(1)[0][0]
+                            if top_messages_channels
+                            and top_messages_channels.most_common(1)[0][1] > 0
+                            else None
+                        ),
+                        "value": (
+                            top_messages_channels.most_common(1)[0][1]
+                            if top_messages_channels
+                            and top_messages_channels.most_common(1)[0][1] > 0
+                            else None
+                        ),
                     },
                     "voice": {  # type: {channel, hours}
-                        "channel": top_voice_channels.most_common(1)[0][0]
-                        if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
-                        else None,
+                        "channel": (
+                            top_voice_channels.most_common(1)[0][0]
+                            if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
+                            else None
+                        ),
                         "value": (
-                            roundest_value
-                            if (
-                                roundest_value := round(
-                                    top_voice_channels.most_common(1)[0][1] / 3600, ndigits=2
+                            (
+                                roundest_value
+                                if (
+                                    roundest_value := round(
+                                        top_voice_channels.most_common(1)[0][1] / 3600, ndigits=2
+                                    )
                                 )
+                                != int(roundest_value)
+                                else int(roundest_value)
                             )
-                            != int(roundest_value)
-                            else int(roundest_value)
-                        )
-                        if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
-                        else None,
+                            if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
+                            else None
+                        ),
                     },
                     "activity": {  # type: {activity, hours}
-                        "activity": top_activities.most_common(1)[0][0]
-                        if top_activities and top_activities.most_common(1)[0][1] > 0
-                        else None,
+                        "activity": (
+                            top_activities.most_common(1)[0][0]
+                            if top_activities and top_activities.most_common(1)[0][1] > 0
+                            else None
+                        ),
                         "value": (
-                            roundest_value
-                            if (
-                                roundest_value := round(
-                                    top_activities.most_common(1)[0][1] / 3600, ndigits=2
+                            (
+                                roundest_value
+                                if (
+                                    roundest_value := round(
+                                        top_activities.most_common(1)[0][1] / 3600, ndigits=2
+                                    )
                                 )
+                                != int(roundest_value)
+                                else int(roundest_value)
                             )
-                            != int(roundest_value)
-                            else int(roundest_value)
-                        )
-                        if top_activities and top_activities.most_common(1)[0][1] > 0
-                        else None,
+                            if top_activities and top_activities.most_common(1)[0][1] > 0
+                            else None
+                        ),
                     },
                 },
                 "graphic": {
@@ -1377,49 +1435,58 @@ class GuildStats(Cog):
                         for day in range(-30, 0)
                     },
                     "voice": {  # day: hours
-                        day: roundest_value
-                        if (
-                            roundest_value := round(
-                                sum(
-                                    int(times[1] - times[0])
-                                    - max(
-                                        int(
-                                            (
-                                                utc_now - datetime.timedelta(days=-day)
-                                            ).timestamp() - times[0]
-                                        ),
-                                        0,
-                                    )
-                                    - max(
-                                        int(
+                        day: (
+                            roundest_value
+                            if (
+                                roundest_value := round(
+                                    sum(
+                                        int(times[1] - times[0])
+                                        - max(
+                                            int(
+                                                (
+                                                    utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp()
+                                                - times[0]
+                                            ),
+                                            0,
+                                        )
+                                        - max(
+                                            int(
+                                                (
+                                                    utc_now - datetime.timedelta(days=-day - 1)
+                                                ).timestamp()
+                                                - (utc_now.timestamp() - times[1])
+                                            ),
+                                            0,
+                                        )
+                                        for channel_id in all_channels_data
+                                        for member in _object.members
+                                        for times in all_channels_data[channel_id]["voice"].get(
+                                            str(member.id), []
+                                        )
+                                        if is_valid(member.id)
+                                        and (
                                             (
                                                 utc_now - datetime.timedelta(days=-day - 1)
                                             ).timestamp()
-                                            - (utc_now.timestamp() - times[1])
-                                        ),
-                                        0,
+                                            >= times[0]
+                                            >= (
+                                                utc_now - datetime.timedelta(days=-day)
+                                            ).timestamp()
+                                        )
+                                        or ((utc_now - datetime.timedelta(days=-day)).timestamp())
+                                        <= times[1]
+                                        <= (
+                                            utc_now - datetime.timedelta(days=-day - 1)
+                                        ).timestamp()
                                     )
-                                    for channel_id in all_channels_data
-                                    for member in _object.members
-                                    for times in all_channels_data[channel_id]["voice"].get(
-                                        str(member.id), []
-                                    )
-                                    if is_valid(member.id)
-                                    and (
-                                        (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
-                                        >= times[0]
-                                        >= (utc_now - datetime.timedelta(days=-day)).timestamp()
-                                    )
-                                    or ((utc_now - datetime.timedelta(days=-day)).timestamp())
-                                    <= times[1]
-                                    <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    / 3600,
+                                    ndigits=2,
                                 )
-                                / 3600,
-                                ndigits=2,
                             )
+                            != 0
+                            else 0
                         )
-                        != 0
-                        else 0
                         for day in range(-30, 0)
                     },
                 },
@@ -1467,19 +1534,23 @@ class GuildStats(Cog):
                             all_channels_data[channel_id][f"total_{members_type_key}messages"]
                             for channel_id in all_channels_data
                         ),
-                        "voice": roundest_value
-                        if (
-                            roundest_value := round(
-                                sum(
-                                    all_channels_data[channel_id][f"total_{members_type_key}voice"]
-                                    for channel_id in all_channels_data
+                        "voice": (
+                            roundest_value
+                            if (
+                                roundest_value := round(
+                                    sum(
+                                        all_channels_data[channel_id][
+                                            f"total_{members_type_key}voice"
+                                        ]
+                                        for channel_id in all_channels_data
+                                    )
+                                    / 3600,
+                                    ndigits=2,
                                 )
-                                / 3600,
-                                ndigits=2,
                             )
-                        )
-                        != 0
-                        else 0,
+                            != 0
+                            else 0
+                        ),
                     },
                     "messages": {  # days: messages
                         delta: len(
@@ -1495,94 +1566,117 @@ class GuildStats(Cog):
                         for delta in (1, 7, 30)
                     },
                     "voice_activity": {  # days: hours
-                        delta: roundest_value
-                        if (
-                            roundest_value := round(
-                                sum(
-                                    int(times[1] - times[0])
-                                    - max(
-                                        int(
-                                            (
-                                                utc_now - datetime.timedelta(days=delta)
-                                            ).timestamp()
-                                            - times[0]
-                                        ),
-                                        0,
+                        delta: (
+                            roundest_value
+                            if (
+                                roundest_value := round(
+                                    sum(
+                                        int(times[1] - times[0])
+                                        - max(
+                                            int(
+                                                (
+                                                    utc_now - datetime.timedelta(days=delta)
+                                                ).timestamp()
+                                                - times[0]
+                                            ),
+                                            0,
+                                        )
+                                        for channel_id in all_channels_data
+                                        for member_id in all_channels_data[channel_id]["voice"]
+                                        for times in all_channels_data[channel_id]["voice"][
+                                            member_id
+                                        ]
+                                        if times[1]
+                                        >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                        and is_valid(int(member_id))
                                     )
-                                    for channel_id in all_channels_data
-                                    for member_id in all_channels_data[channel_id]["voice"]
-                                    for times in all_channels_data[channel_id]["voice"][member_id]
-                                    if times[1]
-                                    >= (utc_now - datetime.timedelta(days=delta)).timestamp()
-                                    and is_valid(int(member_id))
+                                    / 3600,
+                                    ndigits=2,
                                 )
-                                / 3600,
-                                ndigits=2,
                             )
+                            != 0
+                            else 0
                         )
-                        != 0
-                        else 0
                         for delta in (1, 7, 30)
                     },
                     "top_members": {  # type: (member, messages/hours)
                         "text": {
-                            "member": int(members_messages_counter.most_common(1)[0][0])
-                            if members_messages_counter
-                            and members_messages_counter.most_common(1)[0][1] > 0
-                            else None,
-                            "value": members_messages_counter.most_common(1)[0][1]
-                            if members_messages_counter
-                            and members_messages_counter.most_common(1)[0][1] > 0
-                            else None,
+                            "member": (
+                                int(members_messages_counter.most_common(1)[0][0])
+                                if members_messages_counter
+                                and members_messages_counter.most_common(1)[0][1] > 0
+                                else None
+                            ),
+                            "value": (
+                                members_messages_counter.most_common(1)[0][1]
+                                if members_messages_counter
+                                and members_messages_counter.most_common(1)[0][1] > 0
+                                else None
+                            ),
                         },
                         "voice": {
-                            "member": int(members_voice_counter.most_common(1)[0][0])
-                            if members_voice_counter
-                            and members_voice_counter.most_common(1)[0][1] > 0
-                            else None,
+                            "member": (
+                                int(members_voice_counter.most_common(1)[0][0])
+                                if members_voice_counter
+                                and members_voice_counter.most_common(1)[0][1] > 0
+                                else None
+                            ),
                             "value": (
-                                roundest_value
-                                if (
-                                    roundest_value := round(
-                                        members_voice_counter.most_common(1)[0][1] / 3600,
-                                        ndigits=2,
+                                (
+                                    roundest_value
+                                    if (
+                                        roundest_value := round(
+                                            members_voice_counter.most_common(1)[0][1] / 3600,
+                                            ndigits=2,
+                                        )
                                     )
+                                    != 0
+                                    else 0
                                 )
-                                != 0
-                                else 0
-                            )
-                            if members_voice_counter
-                            and members_voice_counter.most_common(1)[0][1] > 0
-                            else None,
+                                if members_voice_counter
+                                and members_voice_counter.most_common(1)[0][1] > 0
+                                else None
+                            ),
                         },
                     },
                     "top_channels": {  # type: (channel, messages/hours)
                         "text": {
-                            "channel": int(top_messages_channels.most_common(1)[0][0])
-                            if top_messages_channels
-                            and top_messages_channels.most_common(1)[0][1] > 0
-                            else None,
-                            "value": top_messages_channels.most_common(1)[0][1]
-                            if top_messages_channels
-                            and top_messages_channels.most_common(1)[0][1] > 0
-                            else None,
+                            "channel": (
+                                int(top_messages_channels.most_common(1)[0][0])
+                                if top_messages_channels
+                                and top_messages_channels.most_common(1)[0][1] > 0
+                                else None
+                            ),
+                            "value": (
+                                top_messages_channels.most_common(1)[0][1]
+                                if top_messages_channels
+                                and top_messages_channels.most_common(1)[0][1] > 0
+                                else None
+                            ),
                         },
                         "voice": {
-                            "channel": int(top_voice_channels.most_common(1)[0][0])
-                            if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
-                            else None,
+                            "channel": (
+                                int(top_voice_channels.most_common(1)[0][0])
+                                if top_voice_channels
+                                and top_voice_channels.most_common(1)[0][1] > 0
+                                else None
+                            ),
                             "value": (
-                                roundest_value
-                                if (
-                                    roundest_value := round(
-                                        top_voice_channels.most_common(1)[0][1] / 3600, ndigits=2
+                                (
+                                    roundest_value
+                                    if (
+                                        roundest_value := round(
+                                            top_voice_channels.most_common(1)[0][1] / 3600,
+                                            ndigits=2,
+                                        )
                                     )
+                                    != 0
+                                    else 0
                                 )
-                                != 0
-                                else 0
-                            )
-                            if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
-                            else None,
+                                if top_voice_channels
+                                and top_voice_channels.most_common(1)[0][1] > 0
+                                else None
+                            ),
                         },
                     },
                     "graphic": {
@@ -1604,55 +1698,62 @@ class GuildStats(Cog):
                             for day in range(-30, 0)
                         },
                         "voice": {  # day: hours
-                            day: roundest_value
-                            if (
-                                roundest_value := round(
-                                    sum(
-                                        int(times[1] - times[0])
-                                        - max(
-                                            int(
-                                                (
-                                                    utc_now - datetime.timedelta(days=-day)
-                                                ).timestamp() - times[0]
-                                            ),
-                                            0,
-                                        )
-                                        - max(
-                                            int(
+                            day: (
+                                roundest_value
+                                if (
+                                    roundest_value := round(
+                                        sum(
+                                            int(times[1] - times[0])
+                                            - max(
+                                                int(
+                                                    (
+                                                        utc_now - datetime.timedelta(days=-day)
+                                                    ).timestamp()
+                                                    - times[0]
+                                                ),
+                                                0,
+                                            )
+                                            - max(
+                                                int(
+                                                    (
+                                                        utc_now - datetime.timedelta(days=-day - 1)
+                                                    ).timestamp()
+                                                    - (utc_now.timestamp() - times[1])
+                                                ),
+                                                0,
+                                            )
+                                            for channel_id in all_channels_data
+                                            for member_id in all_channels_data[channel_id]["voice"]
+                                            for times in all_channels_data[channel_id]["voice"][
+                                                member_id
+                                            ]
+                                            if (
                                                 (
                                                     utc_now - datetime.timedelta(days=-day - 1)
                                                 ).timestamp()
-                                                - (utc_now.timestamp() - times[1])
-                                            ),
-                                            0,
-                                        )
-                                        for channel_id in all_channels_data
-                                        for member_id in all_channels_data[channel_id]["voice"]
-                                        for times in all_channels_data[channel_id]["voice"][
-                                            member_id
-                                        ]
-                                        if (
-                                            (
+                                                >= times[0]
+                                                >= (
+                                                    utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp()
+                                            )
+                                            or (
+                                                (
+                                                    utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp()
+                                            )
+                                            <= times[1]
+                                            <= (
                                                 utc_now - datetime.timedelta(days=-day - 1)
                                             ).timestamp()
-                                            >= times[0]
-                                            >= (
-                                                utc_now - datetime.timedelta(days=-day)
-                                            ).timestamp()
+                                            and is_valid(int(member_id))
                                         )
-                                        or ((utc_now - datetime.timedelta(days=-day)).timestamp())
-                                        <= times[1]
-                                        <= (
-                                            utc_now - datetime.timedelta(days=-day - 1)
-                                        ).timestamp()
-                                        and is_valid(int(member_id))
+                                        / 3600,
+                                        ndigits=2,
                                     )
-                                    / 3600,
-                                    ndigits=2,
                                 )
+                                != 0
+                                else 0
                             )
-                            != 0
-                            else 0
                             for day in range(-30, 0)
                         },
                     },
@@ -1740,40 +1841,13 @@ class GuildStats(Cog):
                 }
             elif _type == "voice":
                 return {
-                    "server_lookback": roundest_value
-                    if (
-                        roundest_value := round(
-                            sum(
-                                all_channels_data[channel_id][f"total_{members_type_key}voice"]
-                                for channel_id in all_channels_data
-                            )
-                            / 3600,
-                            ndigits=2,
-                        )
-                    )
-                    != 0
-                    else 0,  # hours
-                    "voice_activity": {  # days: hours
-                        delta: roundest_value
+                    "server_lookback": (
+                        roundest_value
                         if (
                             roundest_value := round(
                                 sum(
-                                    int(times[1] - times[0])
-                                    - max(
-                                        int(
-                                            (
-                                                utc_now - datetime.timedelta(days=delta)
-                                            ).timestamp()
-                                            - times[0]
-                                        ),
-                                        0,
-                                    )
+                                    all_channels_data[channel_id][f"total_{members_type_key}voice"]
                                     for channel_id in all_channels_data
-                                    for member_id in all_channels_data[channel_id]["voice"]
-                                    for times in all_channels_data[channel_id]["voice"][member_id]
-                                    if times[1]
-                                    >= (utc_now - datetime.timedelta(days=delta)).timestamp()
-                                    and is_valid(int(member_id))
                                 )
                                 / 3600,
                                 ndigits=2,
@@ -1781,6 +1855,39 @@ class GuildStats(Cog):
                         )
                         != 0
                         else 0
+                    ),  # hours
+                    "voice_activity": {  # days: hours
+                        delta: (
+                            roundest_value
+                            if (
+                                roundest_value := round(
+                                    sum(
+                                        int(times[1] - times[0])
+                                        - max(
+                                            int(
+                                                (
+                                                    utc_now - datetime.timedelta(days=delta)
+                                                ).timestamp()
+                                                - times[0]
+                                            ),
+                                            0,
+                                        )
+                                        for channel_id in all_channels_data
+                                        for member_id in all_channels_data[channel_id]["voice"]
+                                        for times in all_channels_data[channel_id]["voice"][
+                                            member_id
+                                        ]
+                                        if times[1]
+                                        >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                        and is_valid(int(member_id))
+                                    )
+                                    / 3600,
+                                    ndigits=2,
+                                )
+                            )
+                            != 0
+                            else 0
+                        )
                         for delta in (1, 7, 30)
                     },
                     "contributors": {  # days: hours
@@ -1817,55 +1924,62 @@ class GuildStats(Cog):
                     },
                     "graphic": {
                         "voice": {  # day: hours
-                            day: roundest_value
-                            if (
-                                roundest_value := round(
-                                    sum(
-                                        int(times[1] - times[0])
-                                        - max(
-                                            int(
-                                                (
-                                                    utc_now - datetime.timedelta(days=-day)
-                                                ).timestamp() - times[0]
-                                            ),
-                                            0,
-                                        )
-                                        - max(
-                                            int(
+                            day: (
+                                roundest_value
+                                if (
+                                    roundest_value := round(
+                                        sum(
+                                            int(times[1] - times[0])
+                                            - max(
+                                                int(
+                                                    (
+                                                        utc_now - datetime.timedelta(days=-day)
+                                                    ).timestamp()
+                                                    - times[0]
+                                                ),
+                                                0,
+                                            )
+                                            - max(
+                                                int(
+                                                    (
+                                                        utc_now - datetime.timedelta(days=-day - 1)
+                                                    ).timestamp()
+                                                    - (utc_now.timestamp() - times[1])
+                                                ),
+                                                0,
+                                            )
+                                            for channel_id in all_channels_data
+                                            for member_id in all_channels_data[channel_id]["voice"]
+                                            for times in all_channels_data[channel_id]["voice"][
+                                                member_id
+                                            ]
+                                            if (
                                                 (
                                                     utc_now - datetime.timedelta(days=-day - 1)
                                                 ).timestamp()
-                                                - (utc_now.timestamp() - times[1])
-                                            ),
-                                            0,
-                                        )
-                                        for channel_id in all_channels_data
-                                        for member_id in all_channels_data[channel_id]["voice"]
-                                        for times in all_channels_data[channel_id]["voice"][
-                                            member_id
-                                        ]
-                                        if (
-                                            (
+                                                >= times[0]
+                                                >= (
+                                                    utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp()
+                                            )
+                                            or (
+                                                (
+                                                    utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp()
+                                            )
+                                            <= times[1]
+                                            <= (
                                                 utc_now - datetime.timedelta(days=-day - 1)
                                             ).timestamp()
-                                            >= times[0]
-                                            >= (
-                                                utc_now - datetime.timedelta(days=-day)
-                                            ).timestamp()
+                                            and is_valid(int(member_id))
                                         )
-                                        or ((utc_now - datetime.timedelta(days=-day)).timestamp())
-                                        <= times[1]
-                                        <= (
-                                            utc_now - datetime.timedelta(days=-day - 1)
-                                        ).timestamp()
-                                        and is_valid(int(member_id))
+                                        / 3600,
+                                        ndigits=2,
                                     )
-                                    / 3600,
-                                    ndigits=2,
                                 )
+                                != 0
+                                else 0
                             )
-                            != 0
-                            else 0
                             for day in range(-30, 0)
                         },
                         "contributors": {  # day: contributors
@@ -1945,9 +2059,12 @@ class GuildStats(Cog):
                                         member_id
                                         for channel_id in all_channels_data
                                         for member_id in all_channels_data[channel_id]["messages"]
-                                        for time in all_channels_data[channel_id]["messages"][member_id]
+                                        for time in all_channels_data[channel_id]["messages"][
+                                            member_id
+                                        ]
                                         if is_valid(int(member_id))
-                                        and time >= (utc_now - datetime.timedelta(days=7)).timestamp()
+                                        and time
+                                        >= (utc_now - datetime.timedelta(days=7)).timestamp()
                                     ]
                                 )
                                 counter_to_use = members_messages_counter
@@ -1956,10 +2073,15 @@ class GuildStats(Cog):
                                     {
                                         channel_id: sum(
                                             1
-                                            for member_id in all_channels_data[channel_id]["messages"]
-                                            for time in all_channels_data[channel_id]["messages"][member_id]
+                                            for member_id in all_channels_data[channel_id][
+                                                "messages"
+                                            ]
+                                            for time in all_channels_data[channel_id]["messages"][
+                                                member_id
+                                            ]
                                             if is_valid(member_id)
-                                            and time >= (utc_now - datetime.timedelta(days=7)).timestamp()
+                                            and time
+                                            >= (utc_now - datetime.timedelta(days=7)).timestamp()
                                         )
                                         for channel_id in all_channels_data
                                     }
@@ -1972,7 +2094,9 @@ class GuildStats(Cog):
                                         member_id
                                         for channel_id in all_channels_data
                                         for member_id in all_channels_data[channel_id]["voice"]
-                                        for times in all_channels_data[channel_id]["voice"][member_id]
+                                        for times in all_channels_data[channel_id]["voice"][
+                                            member_id
+                                        ]
                                         for __ in range(
                                             int(times[1] - times[0])
                                             - max(
@@ -1997,7 +2121,9 @@ class GuildStats(Cog):
                                         channel_id: sum(
                                             1
                                             for member_id in all_channels_data[channel_id]["voice"]
-                                            for times in all_channels_data[channel_id]["voice"][member_id]
+                                            for times in all_channels_data[channel_id]["voice"][
+                                                member_id
+                                            ]
                                             if is_valid(member_id)
                                             and (
                                                 (utc_now - datetime.timedelta(days=7)).timestamp()
@@ -2017,9 +2143,12 @@ class GuildStats(Cog):
                                         member_id
                                         for channel_id in all_channels_data
                                         for member_id in all_channels_data[channel_id]["messages"]
-                                        for time in all_channels_data[channel_id]["messages"][member_id]
+                                        for time in all_channels_data[channel_id]["messages"][
+                                            member_id
+                                        ]
                                         if is_valid(int(member_id))
-                                        and time >= (utc_now - datetime.timedelta(days=30)).timestamp()
+                                        and time
+                                        >= (utc_now - datetime.timedelta(days=30)).timestamp()
                                     ]
                                 )
                                 counter_to_use = members_messages_counter
@@ -2028,10 +2157,15 @@ class GuildStats(Cog):
                                     {
                                         channel_id: sum(
                                             1
-                                            for member_id in all_channels_data[channel_id]["messages"]
-                                            for time in all_channels_data[channel_id]["messages"][member_id]
+                                            for member_id in all_channels_data[channel_id][
+                                                "messages"
+                                            ]
+                                            for time in all_channels_data[channel_id]["messages"][
+                                                member_id
+                                            ]
                                             if is_valid(member_id)
-                                            and time >= (utc_now - datetime.timedelta(days=30)).timestamp()
+                                            and time
+                                            >= (utc_now - datetime.timedelta(days=30)).timestamp()
                                         )
                                         for channel_id in all_channels_data
                                     }
@@ -2044,7 +2178,9 @@ class GuildStats(Cog):
                                         member_id
                                         for channel_id in all_channels_data
                                         for member_id in all_channels_data[channel_id]["voice"]
-                                        for times in all_channels_data[channel_id]["voice"][member_id]
+                                        for times in all_channels_data[channel_id]["voice"][
+                                            member_id
+                                        ]
                                         for __ in range(
                                             int(times[1] - times[0])
                                             - max(
@@ -2078,7 +2214,9 @@ class GuildStats(Cog):
                                                 0,
                                             )
                                             for member_id in all_channels_data[channel_id]["voice"]
-                                            for times in all_channels_data[channel_id]["voice"][member_id]
+                                            for times in all_channels_data[channel_id]["voice"][
+                                                member_id
+                                            ]
                                             if is_valid(member_id)
                                             and times[1]
                                             >= (utc_now - datetime.timedelta(days=30)).timestamp()
@@ -2236,23 +2374,25 @@ class GuildStats(Cog):
                             if channel.id in all_channels_data
                         ]
                     ),
-                    "voice": roundest_value
-                    if (
-                        roundest_value := round(
-                            sum(
-                                all_channels_data[channel_id][f"total_{members_type_key}voice"]
-                                for channel_id in [
-                                    channel.id
-                                    for channel in _object.channels
-                                    if channel.id in all_channels_data
-                                ]
+                    "voice": (
+                        roundest_value
+                        if (
+                            roundest_value := round(
+                                sum(
+                                    all_channels_data[channel_id][f"total_{members_type_key}voice"]
+                                    for channel_id in [
+                                        channel.id
+                                        for channel in _object.channels
+                                        if channel.id in all_channels_data
+                                    ]
+                                )
+                                / 3600,
+                                ndigits=2,
                             )
-                            / 3600,
-                            ndigits=2,
                         )
-                    )
-                    != 0
-                    else 0,
+                        != 0
+                        else 0
+                    ),
                 },
                 "messages": {  # days: messages
                     delta: len(
@@ -2272,93 +2412,114 @@ class GuildStats(Cog):
                     for delta in (1, 7, 30)
                 },
                 "voice_activity": {  # days: hours
-                    delta: roundest_value
-                    if (
-                        roundest_value := round(
-                            sum(
-                                int(times[1] - times[0])
-                                - max(
-                                    int(
-                                        (
-                                            utc_now - datetime.timedelta(days=delta)
-                                        ).timestamp()
-                                        - times[0]
-                                    ),
-                                    0,
+                    delta: (
+                        roundest_value
+                        if (
+                            roundest_value := round(
+                                sum(
+                                    int(times[1] - times[0])
+                                    - max(
+                                        int(
+                                            (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                            - times[0]
+                                        ),
+                                        0,
+                                    )
+                                    for channel_id in [
+                                        channel.id
+                                        for channel in _object.channels
+                                        if channel.id in all_channels_data
+                                    ]
+                                    for member_id in all_channels_data[channel_id]["voice"]
+                                    for times in all_channels_data[channel_id]["voice"][member_id]
+                                    if times[1]
+                                    >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                    and is_valid(int(member_id))
                                 )
-                                for channel_id in [
-                                    channel.id
-                                    for channel in _object.channels
-                                    if channel.id in all_channels_data
-                                ]
-                                for member_id in all_channels_data[channel_id]["voice"]
-                                for times in all_channels_data[channel_id]["voice"][member_id]
-                                if times[1]
-                                >= (utc_now - datetime.timedelta(days=delta)).timestamp()
-                                and is_valid(int(member_id))
+                                / 3600,
+                                ndigits=2,
                             )
-                            / 3600,
-                            ndigits=2,
                         )
+                        != 0
+                        else 0
                     )
-                    != 0
-                    else 0
                     for delta in (1, 7, 30)
                 },
                 "top_members": {  # type: (member, messages/hours)
                     "text": {
-                        "member": int(members_messages_counter.most_common(1)[0][0])
-                        if members_messages_counter
-                        and members_messages_counter.most_common(1)[0][1] > 0
-                        else None,
-                        "value": members_messages_counter.most_common(1)[0][1]
-                        if members_messages_counter
-                        and members_messages_counter.most_common(1)[0][1] > 0
-                        else None,
+                        "member": (
+                            int(members_messages_counter.most_common(1)[0][0])
+                            if members_messages_counter
+                            and members_messages_counter.most_common(1)[0][1] > 0
+                            else None
+                        ),
+                        "value": (
+                            members_messages_counter.most_common(1)[0][1]
+                            if members_messages_counter
+                            and members_messages_counter.most_common(1)[0][1] > 0
+                            else None
+                        ),
                     },
                     "voice": {
-                        "member": int(members_voice_counter.most_common(1)[0][0])
-                        if members_voice_counter and members_voice_counter.most_common(1)[0][1] > 0
-                        else None,
+                        "member": (
+                            int(members_voice_counter.most_common(1)[0][0])
+                            if members_voice_counter
+                            and members_voice_counter.most_common(1)[0][1] > 0
+                            else None
+                        ),
                         "value": (
-                            roundest_value
-                            if (
-                                roundest_value := round(
-                                    members_voice_counter.most_common(1)[0][1] / 3600, ndigits=2
+                            (
+                                roundest_value
+                                if (
+                                    roundest_value := round(
+                                        members_voice_counter.most_common(1)[0][1] / 3600,
+                                        ndigits=2,
+                                    )
                                 )
+                                != 0
+                                else 0
                             )
-                            != 0
-                            else 0
-                        )
-                        if members_voice_counter and members_voice_counter.most_common(1)[0][1] > 0
-                        else None,
+                            if members_voice_counter
+                            and members_voice_counter.most_common(1)[0][1] > 0
+                            else None
+                        ),
                     },
                 },
                 "top_channels": {  # type: (channel, messages/hours)
                     "text": {
-                        "channel": int(top_messages_channels.most_common(1)[0][0])
-                        if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0
-                        else None,
-                        "value": top_messages_channels.most_common(1)[0][1]
-                        if top_messages_channels and top_messages_channels.most_common(1)[0][1] > 0
-                        else None,
+                        "channel": (
+                            int(top_messages_channels.most_common(1)[0][0])
+                            if top_messages_channels
+                            and top_messages_channels.most_common(1)[0][1] > 0
+                            else None
+                        ),
+                        "value": (
+                            top_messages_channels.most_common(1)[0][1]
+                            if top_messages_channels
+                            and top_messages_channels.most_common(1)[0][1] > 0
+                            else None
+                        ),
                     },
                     "voice": {
-                        "channel": int(top_voice_channels.most_common(1)[0][0])
-                        if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
-                        else None,
+                        "channel": (
+                            int(top_voice_channels.most_common(1)[0][0])
+                            if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
+                            else None
+                        ),
                         "value": (
-                            roundest_value
-                            if (
-                                roundest_value := round(
-                                    top_voice_channels.most_common(1)[0][1] / 3600, ndigits=2
+                            (
+                                roundest_value
+                                if (
+                                    roundest_value := round(
+                                        top_voice_channels.most_common(1)[0][1] / 3600, ndigits=2
+                                    )
                                 )
+                                != 0
+                                else 0
                             )
-                            != 0
-                            else 0
-                        )
-                        if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
-                        else None,
+                            if top_voice_channels and top_voice_channels.most_common(1)[0][1] > 0
+                            else None
+                        ),
                     },
                 },
                 "graphic": {
@@ -2382,51 +2543,62 @@ class GuildStats(Cog):
                         for day in range(-30, 0)
                     },
                     "voice": {  # day: hours
-                        day: roundest_value
-                        if (
-                            roundest_value := round(
-                                sum(
-                                    int(times[1] - times[0])
-                                    - max(
-                                        int(
-                                            (
-                                                utc_now - datetime.timedelta(days=-day)
-                                            ).timestamp() - times[0]
-                                        ),
-                                        0,
-                                    )
-                                    - max(
-                                        int(
+                        day: (
+                            roundest_value
+                            if (
+                                roundest_value := round(
+                                    sum(
+                                        int(times[1] - times[0])
+                                        - max(
+                                            int(
+                                                (
+                                                    utc_now - datetime.timedelta(days=-day)
+                                                ).timestamp()
+                                                - times[0]
+                                            ),
+                                            0,
+                                        )
+                                        - max(
+                                            int(
+                                                (
+                                                    utc_now - datetime.timedelta(days=-day - 1)
+                                                ).timestamp()
+                                                - (utc_now.timestamp() - times[1])
+                                            ),
+                                            0,
+                                        )
+                                        for channel_id in [
+                                            channel.id
+                                            for channel in _object.channels
+                                            if channel.id in all_channels_data
+                                        ]
+                                        for member_id in all_channels_data[channel_id]["voice"]
+                                        for times in all_channels_data[channel_id]["voice"][
+                                            member_id
+                                        ]
+                                        if (
                                             (
                                                 utc_now - datetime.timedelta(days=-day - 1)
                                             ).timestamp()
-                                            - (utc_now.timestamp() - times[1])
-                                        ),
-                                        0,
+                                            >= times[0]
+                                            >= (
+                                                utc_now - datetime.timedelta(days=-day)
+                                            ).timestamp()
+                                        )
+                                        or ((utc_now - datetime.timedelta(days=-day)).timestamp())
+                                        <= times[1]
+                                        <= (
+                                            utc_now - datetime.timedelta(days=-day - 1)
+                                        ).timestamp()
+                                        and is_valid(int(member_id))
                                     )
-                                    for channel_id in [
-                                        channel.id
-                                        for channel in _object.channels
-                                        if channel.id in all_channels_data
-                                    ]
-                                    for member_id in all_channels_data[channel_id]["voice"]
-                                    for times in all_channels_data[channel_id]["voice"][member_id]
-                                    if (
-                                        (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
-                                        >= times[0]
-                                        >= (utc_now - datetime.timedelta(days=-day)).timestamp()
-                                    )
-                                    or ((utc_now - datetime.timedelta(days=-day)).timestamp())
-                                    <= times[1]
-                                    <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
-                                    and is_valid(int(member_id))
+                                    / 3600,
+                                    ndigits=2,
                                 )
-                                / 3600,
-                                ndigits=2,
                             )
+                            != 0
+                            else 0
                         )
-                        != 0
-                        else 0
                         for day in range(-30, 0)
                     },
                 },
@@ -2458,11 +2630,11 @@ class GuildStats(Cog):
                 reverse=True,
             )
             return {
-                "server_lookback": all_channels_data[_object.id][
-                    f"total_{members_type_key}messages"
-                ]
-                if _object.id in all_channels_data
-                else 0,  # messages
+                "server_lookback": (
+                    all_channels_data[_object.id][f"total_{members_type_key}messages"]
+                    if _object.id in all_channels_data
+                    else 0
+                ),  # messages
                 "messages": {  # days: messages
                     delta: (
                         len(
@@ -2497,10 +2669,12 @@ class GuildStats(Cog):
                     )
                     for delta in (1, 7, 30)
                 },
-                "server_rank": (top_messages_channels_sorted.index(_object.id) + 1)
-                if _object.id in top_messages_channels_sorted
-                and all_channels_data[_object.id][f"total_{members_type_key}messages"] > 0
-                else None,  # rank #
+                "server_rank": (
+                    (top_messages_channels_sorted.index(_object.id) + 1)
+                    if _object.id in top_messages_channels_sorted
+                    and all_channels_data[_object.id][f"total_{members_type_key}messages"] > 0
+                    else None
+                ),  # rank #
                 "top_messages_members": {  # member: messages
                     int(member_id): count_messages
                     for (member_id, count_messages) in members_messages_counter.most_common(3)
@@ -2576,18 +2750,21 @@ class GuildStats(Cog):
             )
             return {
                 "server_lookback": (
-                    roundest_value
-                    if (
-                        roundest_value := round(
-                            all_channels_data[_object.id][f"total_{members_type_key}voice"] / 3600,
-                            ndigits=2,
+                    (
+                        roundest_value
+                        if (
+                            roundest_value := round(
+                                all_channels_data[_object.id][f"total_{members_type_key}voice"]
+                                / 3600,
+                                ndigits=2,
+                            )
                         )
+                        != int(roundest_value)
+                        else int(roundest_value)
                     )
-                    != int(roundest_value)
-                    else int(roundest_value)
-                )
-                if _object.id in all_channels_data
-                else 0,  # hours
+                    if _object.id in all_channels_data
+                    else 0
+                ),  # hours
                 "voice_activity": {  # days: hours
                     delta: (
                         (
@@ -2642,10 +2819,12 @@ class GuildStats(Cog):
                     )
                     for delta in (1, 7, 30)
                 },
-                "server_rank": (top_voice_channels_sorted.index(_object.id) + 1)
-                if _object.id in top_voice_channels_sorted
-                and all_channels_data[_object.id][f"total_{members_type_key}voice"] > 0
-                else None,  # rank #
+                "server_rank": (
+                    (top_voice_channels_sorted.index(_object.id) + 1)
+                    if _object.id in top_voice_channels_sorted
+                    and all_channels_data[_object.id][f"total_{members_type_key}voice"] > 0
+                    else None
+                ),  # rank #
                 "top_voice_members": {  # member: hours
                     int(member_id): (
                         roundest_value
@@ -2667,7 +2846,8 @@ class GuildStats(Cog):
                                                 int(
                                                     (
                                                         utc_now - datetime.timedelta(days=-day)
-                                                    ).timestamp() - times[0]
+                                                    ).timestamp()
+                                                    - times[0]
                                                 ),
                                                 0,
                                             )
@@ -2879,9 +3059,11 @@ class GuildStats(Cog):
             self.remove_unprintable_characters(member.display_name)
             if (
                 sum(
-                    1
-                    if ord(char) in self.font_to_remove_unprintable_characters.getBestCmap()
-                    else 0
+                    (
+                        1
+                        if ord(char) in self.font_to_remove_unprintable_characters.getBestCmap()
+                        else 0
+                    )
                     for char in member.display_name
                 )
                 / len(member.display_name)
@@ -2893,9 +3075,12 @@ class GuildStats(Cog):
                 if member.global_name is not None
                 and (
                     sum(
-                        1
-                        if ord(char) in self.font_to_remove_unprintable_characters.getBestCmap()
-                        else 0
+                        (
+                            1
+                            if ord(char)
+                            in self.font_to_remove_unprintable_characters.getBestCmap()
+                            else 0
+                        )
                         for char in member.global_name
                     )
                     / len(member.global_name)
@@ -2967,9 +3152,11 @@ class GuildStats(Cog):
                 img.paste(image, (30, 30, 170, 170), mask=mask)
             if (
                 sum(
-                    1
-                    if ord(char) in self.font_to_remove_unprintable_characters.getBestCmap()
-                    else 0
+                    (
+                        1
+                        if ord(char) in self.font_to_remove_unprintable_characters.getBestCmap()
+                        else 0
+                    )
                     for char in _object.display_name
                 )
                 / len(_object.display_name)
@@ -2989,9 +3176,11 @@ class GuildStats(Cog):
                 ) <= 1000:
                     draw.text(
                         (190 + display_name_size[2] + 25, 48),
-                        text=self.remove_unprintable_characters(_object.global_name)
-                        if _object.global_name is not None
-                        else _object.name,
+                        text=(
+                            self.remove_unprintable_characters(_object.global_name)
+                            if _object.global_name is not None
+                            else _object.name
+                        ),
                         fill=(163, 163, 163),
                         font=self.font[40],
                     )
@@ -2999,9 +3188,12 @@ class GuildStats(Cog):
                 _object.global_name is not None
                 and (
                     sum(
-                        1
-                        if ord(char) in self.font_to_remove_unprintable_characters.getBestCmap()
-                        else 0
+                        (
+                            1
+                            if ord(char)
+                            in self.font_to_remove_unprintable_characters.getBestCmap()
+                            else 0
+                        )
                         for char in _object.global_name
                     )
                     / len(_object.global_name)
@@ -3053,12 +3245,14 @@ class GuildStats(Cog):
                 )
                 image = Image.open(
                     self.icons[
-                        "home"
-                        if "DISCOVERABLE"
-                        not in (
-                            _object if isinstance(_object, discord.Guild) else _object.guild
-                        ).features
-                        else "globe"
+                        (
+                            "home"
+                            if "DISCOVERABLE"
+                            not in (
+                                _object if isinstance(_object, discord.Guild) else _object.guild
+                            ).features
+                            else "globe"
+                        )
                     ]
                 )
             elif _type == "messages":
@@ -3176,12 +3370,14 @@ class GuildStats(Cog):
         else:
             image = Image.open(
                 self.icons[
-                    "home"
-                    if "DISCOVERABLE"
-                    not in (
-                        _object if isinstance(_object, discord.Guild) else _object.guild
-                    ).features
-                    else "globe"
+                    (
+                        "home"
+                        if "DISCOVERABLE"
+                        not in (
+                            _object if isinstance(_object, discord.Guild) else _object.guild
+                        ).features
+                        else "globe"
+                    )
                 ]
             )
             image = image.resize((55, 55))
@@ -3288,20 +3484,25 @@ class GuildStats(Cog):
             _object=_object if _type is None else (_object, _type),
             size=size,
             to_file=to_file,
-            _object_display=(await _object.display_avatar.read())
-            if isinstance(_object, discord.Member)
-            else (
-                (await _object.display_icon.read())
-                if isinstance(_object, discord.Role) and _object.display_icon is not None
-                else None
+            _object_display=(
+                (await _object.display_avatar.read())
+                if isinstance(_object, discord.Member)
+                else (
+                    (await _object.display_icon.read())
+                    if isinstance(_object, discord.Role) and _object.display_icon is not None
+                    else None
+                )
             ),
             guild_icon=(
-                await (
-                    _object if isinstance(_object, discord.Guild) else _object.guild
-                ).icon.read()
-            )
-            if (_object if isinstance(_object, discord.Guild) else _object.guild).icon is not None
-            else None,
+                (
+                    await (
+                        _object if isinstance(_object, discord.Guild) else _object.guild
+                    ).icon.read()
+                )
+                if (_object if isinstance(_object, discord.Guild) else _object.guild).icon
+                is not None
+                else None
+            ),
         )
 
     def _generate_graphic(
@@ -3598,18 +3799,24 @@ class GuildStats(Cog):
                 )
                 tracking_data_start_time = tracking_data_start_time.replace(
                     second=utc_now.second,
-                    minute=utc_now.minute
-                    if (utc_now - tracking_data_start_time)
-                    > datetime.timedelta(seconds=3600 * 24 * 7)
-                    else tracking_data_start_time.minute,
-                    hour=utc_now.hour
-                    if (utc_now - tracking_data_start_time)
-                    > datetime.timedelta(seconds=3600 * 24 * 30)
-                    else tracking_data_start_time.hour,
-                    day=utc_now.day
-                    if (utc_now - tracking_data_start_time)
-                    > datetime.timedelta(seconds=3600 * 24 * 365)
-                    else tracking_data_start_time.day,
+                    minute=(
+                        utc_now.minute
+                        if (utc_now - tracking_data_start_time)
+                        > datetime.timedelta(seconds=3600 * 24 * 7)
+                        else tracking_data_start_time.minute
+                    ),
+                    hour=(
+                        utc_now.hour
+                        if (utc_now - tracking_data_start_time)
+                        > datetime.timedelta(seconds=3600 * 24 * 30)
+                        else tracking_data_start_time.hour
+                    ),
+                    day=(
+                        utc_now.day
+                        if (utc_now - tracking_data_start_time)
+                        > datetime.timedelta(seconds=3600 * 24 * 365)
+                        else tracking_data_start_time.day
+                    ),
                 )
                 align_text_center(
                     (90, 972, 90, 1022),
@@ -3766,7 +3973,10 @@ class GuildStats(Cog):
                 draw.rounded_rectangle((50, 301, 616, 418), radius=15, fill=(32, 34, 37))
                 draw.rounded_rectangle((50, 301, 325, 418), radius=15, fill=(24, 26, 27))
                 align_text_center(
-                    (50, 301, 325, 418), text=_("Text"), fill=(255, 255, 255), font=self.bold_font[36]
+                    (50, 301, 325, 418),
+                    text=_("Text"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[36],
                 )
                 align_text_center(
                     (325, 301, 616, 418),
@@ -3777,7 +3987,10 @@ class GuildStats(Cog):
                 draw.rounded_rectangle((50, 448, 616, 565), radius=15, fill=(32, 34, 37))
                 draw.rounded_rectangle((50, 448, 325, 565), radius=15, fill=(24, 26, 27))
                 align_text_center(
-                    (50, 448, 325, 565), text=_("Voice"), fill=(255, 255, 255), font=self.bold_font[36]
+                    (50, 448, 325, 565),
+                    text=_("Voice"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[36],
                 )
                 align_text_center(
                     (325, 448, 616, 565),
@@ -3800,7 +4013,10 @@ class GuildStats(Cog):
                 draw.rounded_rectangle((688, 301, 1254, 377), radius=15, fill=(32, 34, 37))
                 draw.rounded_rectangle((688, 301, 910, 377), radius=15, fill=(24, 26, 27))
                 align_text_center(
-                    (688, 301, 910, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
+                    (688, 301, 910, 377),
+                    text=_("1d"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[36],
                 )
                 align_text_center(
                     (910, 301, 1254, 377),
@@ -3811,7 +4027,10 @@ class GuildStats(Cog):
                 draw.rounded_rectangle((688, 395, 1254, 471), radius=15, fill=(32, 34, 37))
                 draw.rounded_rectangle((688, 395, 910, 471), radius=15, fill=(24, 26, 27))
                 align_text_center(
-                    (688, 395, 910, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
+                    (688, 395, 910, 471),
+                    text=_("7d"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[36],
                 )
                 align_text_center(
                     (910, 395, 1254, 471),
@@ -3822,7 +4041,10 @@ class GuildStats(Cog):
                 draw.rounded_rectangle((688, 489, 1254, 565), radius=15, fill=(32, 34, 37))
                 draw.rounded_rectangle((688, 489, 910, 565), radius=15, fill=(24, 26, 27))
                 align_text_center(
-                    (688, 489, 910, 565), text=_("30d"), fill=(255, 255, 255), font=self.bold_font[36]
+                    (688, 489, 910, 565),
+                    text=_("30d"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[36],
                 )
                 align_text_center(
                     (910, 489, 1254, 565),
@@ -3845,7 +4067,10 @@ class GuildStats(Cog):
                 draw.rounded_rectangle((1326, 301, 1892, 377), radius=15, fill=(32, 34, 37))
                 draw.rounded_rectangle((1326, 301, 1548, 377), radius=15, fill=(24, 26, 27))
                 align_text_center(
-                    (1326, 301, 1548, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
+                    (1326, 301, 1548, 377),
+                    text=_("1d"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[36],
                 )
                 align_text_center(
                     (1548, 301, 1892, 377),
@@ -3856,7 +4081,10 @@ class GuildStats(Cog):
                 draw.rounded_rectangle((1326, 395, 1892, 471), radius=15, fill=(32, 34, 37))
                 draw.rounded_rectangle((1326, 395, 1548, 471), radius=15, fill=(24, 26, 27))
                 align_text_center(
-                    (1326, 395, 1548, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
+                    (1326, 395, 1548, 471),
+                    text=_("7d"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[36],
                 )
                 align_text_center(
                     (1548, 395, 1892, 471),
@@ -3912,22 +4140,29 @@ class GuildStats(Cog):
                 )
                 align_text_center(
                     (325, 712, 616, 829),
-                    text=f"#{data['server_ranks']['text']}"
-                    if data["server_ranks"]["text"] is not None
-                    else _("No data."),
+                    text=(
+                        f"#{data['server_ranks']['text']}"
+                        if data["server_ranks"]["text"] is not None
+                        else _("No data.")
+                    ),
                     fill=(255, 255, 255),
                     font=self.font[36],
                 )
                 draw.rounded_rectangle((50, 859, 616, 976), radius=15, fill=(32, 34, 37))
                 draw.rounded_rectangle((50, 859, 325, 976), radius=15, fill=(24, 26, 27))
                 align_text_center(
-                    (50, 859, 325, 976), text=_("Voice"), fill=(255, 255, 255), font=self.bold_font[36]
+                    (50, 859, 325, 976),
+                    text=_("Voice"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[36],
                 )
                 align_text_center(
                     (325, 859, 616, 976),
-                    text=f"#{data['server_ranks']['voice']}"
-                    if data["server_ranks"]["voice"] is not None
-                    else _("No data."),
+                    text=(
+                        f"#{data['server_ranks']['voice']}"
+                        if data["server_ranks"]["voice"] is not None
+                        else _("No data.")
+                    ),
                     fill=(255, 255, 255),
                     font=self.font[36],
                 )
@@ -4017,7 +4252,9 @@ class GuildStats(Cog):
 
                 if show_graphic:
                     # Graphic. box = 940 / empty = 0 | + 411 (381 + 30) / 1 case / box = 264 / empty = 0
-                    draw.rounded_rectangle((30, 1026, 1910, 1407 + 200), radius=15, fill=(47, 49, 54))
+                    draw.rounded_rectangle(
+                        (30, 1026, 1910, 1407 + 200), radius=15, fill=(47, 49, 54)
+                    )
                     align_text_center(
                         (50, 1036, 50, 1106),
                         text=_("Graphic"),
@@ -4027,7 +4264,9 @@ class GuildStats(Cog):
                     image = Image.open(self.icons["query_stats"])
                     image = image.resize((70, 70))
                     img.paste(image, (1830, 1036, 1900, 1106), mask=image.split()[3])
-                    draw.rounded_rectangle((50, 1123, 1890, 1387 + 200), radius=15, fill=(32, 34, 37))
+                    draw.rounded_rectangle(
+                        (50, 1123, 1890, 1387 + 200), radius=15, fill=(32, 34, 37)
+                    )
                     image: Image.Image = graphic
                     image = image.resize((1840, 464))
                     img.paste(image, (50, 1123, 1890, 1387 + 200))
@@ -5745,15 +5984,23 @@ class GuildStats(Cog):
         )
         tracking_data_start_time = tracking_data_start_time.replace(
             second=utc_now.second,
-            minute=utc_now.minute
-            if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7)
-            else tracking_data_start_time.minute,
-            hour=utc_now.hour
-            if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 30)
-            else tracking_data_start_time.hour,
-            day=utc_now.day
-            if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 365)
-            else tracking_data_start_time.day,
+            minute=(
+                utc_now.minute
+                if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7)
+                else tracking_data_start_time.minute
+            ),
+            hour=(
+                utc_now.hour
+                if (utc_now - tracking_data_start_time)
+                > datetime.timedelta(seconds=3600 * 24 * 30)
+                else tracking_data_start_time.hour
+            ),
+            day=(
+                utc_now.day
+                if (utc_now - tracking_data_start_time)
+                > datetime.timedelta(seconds=3600 * 24 * 365)
+                else tracking_data_start_time.day
+            ),
         )
         if show_graphic:
             if default_state:
@@ -5893,7 +6140,8 @@ class GuildStats(Cog):
                 _object, size=(1840, 464), data=data, to_file=False
             )
         elif _type == "activities" or (
-            isinstance(_type, typing.Tuple) and _type[0] in ("top", "weekly", "monthly", "activity")
+            isinstance(_type, typing.Tuple)
+            and _type[0] in ("top", "weekly", "monthly", "activity")
         ):
             graphic = await self.generate_graphic(
                 _object, size=(885, 675), data=data, to_file=False
@@ -5949,9 +6197,11 @@ class GuildStats(Cog):
         await GuildStatsView(
             cog=self,
             _object=_object,
-            members_type=("bots" if _object.bot else "humans")
-            if isinstance(_object, discord.Member)
-            else members_type,
+            members_type=(
+                ("bots" if _object.bot else "humans")
+                if isinstance(_object, discord.Member)
+                else members_type
+            ),
             show_graphic_in_main=show_graphic if _object != "activities" else False,
             graphic_mode=False,
         ).start(ctx)
@@ -6376,9 +6626,11 @@ class GuildStats(Cog):
             )
         await GuildStatsView(
             cog=self,
-            _object=_object
-            if _object not in ("voice", "messages", "activities")
-            else (ctx.guild, _object),
+            _object=(
+                _object
+                if _object not in ("voice", "messages", "activities")
+                else (ctx.guild, _object)
+            ),
             members_type=members_type,
             show_graphic_in_main=False,
             graphic_mode=True,

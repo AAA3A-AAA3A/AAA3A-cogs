@@ -4,17 +4,16 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import humanize_list, bold
-
 import asyncio
-import chat_exporter
 import copy
 import datetime
 import io
+from dataclasses import _is_dataclass_instance, dataclass, field, fields
 
-from dataclasses import dataclass, field, _is_dataclass_instance, fields
+import chat_exporter
+from redbot.core.utils.chat_formatting import bold, humanize_list
 
-from .views import TicketView, ClosedTicketControls
+from .views import ClosedTicketControls, TicketView
 
 _: Translator = Translator("Tickets", __file__)
 
@@ -33,7 +32,10 @@ def _asdict_inner(obj, dict_factory=dict):
     elif isinstance(obj, (list, tuple)):
         return type(obj)(_asdict_inner(v, dict_factory) for v in obj)
     elif isinstance(obj, dict):
-        return type(obj)((_asdict_inner(k, dict_factory), _asdict_inner(v, dict_factory)) for k, v in obj.items())
+        return type(obj)(
+            (_asdict_inner(k, dict_factory), _asdict_inner(v, dict_factory))
+            for k, v in obj.items()
+        )
     else:
         return copy.deepcopy(obj)
 
@@ -55,7 +57,13 @@ class Ticket:
     category_label: typing.Optional[str] = None
     owner_answers: typing.Dict[str, str] = field(default_factory=dict)
 
-    opened_at_timestamp: int = field(default_factory=lambda: int(datetime.datetime.now(tz=datetime.timezone.utc).replace(second=0, microsecond=0).timestamp()))
+    opened_at_timestamp: int = field(
+        default_factory=lambda: int(
+            datetime.datetime.now(tz=datetime.timezone.utc)
+            .replace(second=0, microsecond=0)
+            .timestamp()
+        )
+    )
     is_claimed: bool = False
     claimed_by_id: typing.Optional[int] = None
     claimed_at_timestamp: int = None
@@ -110,13 +118,17 @@ class Ticket:
         self.owner_id = owner.id
 
     @property
-    def channel(self) -> typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]]:
+    def channel(
+        self,
+    ) -> typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]]:
         if (guild := self.guild) is None:
             return None
         return guild.get_channel_or_thread(self.channel_id)
 
     @channel.setter
-    def channel(self, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]) -> None:
+    def channel(
+        self, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+    ) -> None:
         self.guild_id = channel.guild.id
         self.channel_id = channel.id
 
@@ -241,7 +253,9 @@ class Ticket:
     def unlocked_at(self) -> typing.Optional[datetime.datetime]:
         if self.unlocked_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.unlocked_at_timestamp, tz=datetime.timezone.utc)
+        return datetime.datetime.fromtimestamp(
+            self.unlocked_at_timestamp, tz=datetime.timezone.utc
+        )
 
     @unlocked_at.setter
     def unlocked_at(self, unlocked_at: typing.Optional[datetime.datetime]) -> None:
@@ -266,17 +280,28 @@ class Ticket:
         return "🔒" if self.is_closed else ("👥" if self.is_claimed else "❓")
 
     async def channel_name(self, forum_channel: typing.Optional[bool] = None) -> str:
-        channel_name = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile, "channel_name")
+        channel_name = await self.cog.config.guild(self.guild).profiles.get_raw(
+            self.profile, "channel_name"
+        )
         if channel_name is None:
-            if forum_channel or (self.channel is not None and isinstance(self.channel, discord.Thread)):
-                channel_name = "{emoji} Ticket{profile} — {owner_display_name} ({owner_id})".replace(
-                    "{profile}", "" if self.profile == "main" else f" ({self.profile.replace('_', ' ').title()})"
+            if forum_channel or (
+                self.channel is not None and isinstance(self.channel, discord.Thread)
+            ):
+                channel_name = (
+                    "{emoji} Ticket{profile} — {owner_display_name} ({owner_id})".replace(
+                        "{profile}",
+                        (
+                            ""
+                            if self.profile == "main"
+                            else f" ({self.profile.replace('_', ' ').title()})"
+                        ),
+                    )
                 )
             else:
                 channel_name = "{emoji}-{profile}-{owner_name}".replace(
                     "{profile}", "ticket" if self.profile == "main" else self.profile
                 )
-                    
+
         return channel_name.format(
             emoji=self.emoji,
             owner_display_name=self.owner.display_name,
@@ -290,7 +315,11 @@ class Ticket:
     async def get_embed(self, for_logging: bool = False) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title=bold(_("Ticket #{self.id} [{self.profile}]")).format(self=self),
-            color=discord.Color.red() if self.is_closed else (discord.Color.green() if not self.is_claimed else discord.Color.blue()),
+            color=(
+                discord.Color.red()
+                if self.is_closed
+                else (discord.Color.green() if not self.is_claimed else discord.Color.blue())
+            ),
             url=self.message.jump_url if for_logging and self.message is not None else None,
         )
         if self.owner is not None:
@@ -312,28 +341,33 @@ class Ticket:
                 )
         embed.set_thumbnail(url=self.guild.icon)
         embed.description = (
-            (
-                _(
-                    "Claimed by: {claimed_by.mention}"
-                    "\nClaimed at: <t:{claimed_at}:F> (<t:{claimed_at}:R>)"
-                ).format(
-                    claimed_by=self.claimed_by if self.claimed_by is not None else type("", (), {"mention": _("[Unknown]"), "id": self.claimed_by_id}),
-                    claimed_at=int(self.claimed_at.timestamp()),
-                )
-                if self.is_claimed
-                else _("Not claimed.")
+            _(
+                "Claimed by: {claimed_by.mention}"
+                "\nClaimed at: <t:{claimed_at}:F> (<t:{claimed_at}:R>)"
+            ).format(
+                claimed_by=(
+                    self.claimed_by
+                    if self.claimed_by is not None
+                    else type("", (), {"mention": _("[Unknown]"), "id": self.claimed_by_id})
+                ),
+                claimed_at=int(self.claimed_at.timestamp()),
             )
-            + (
-                _(
-                    "\nClosed by: {closed_by.mention}"
-                    "\nClosed at: <t:{closed_at}:F> (<t:{closed_at}:R>)"
-                ).format(
-                    closed_by=self.closed_by if self.closed_by is not None else type("", (), {"mention": _("[Unknown]"), "id": self.closed_by_id}),
-                    closed_at=int(self.closed_at.timestamp()),
-                )
-                if self.is_closed
-                else ""
+            if self.is_claimed
+            else _("Not claimed.")
+        ) + (
+            _(
+                "\nClosed by: {closed_by.mention}"
+                "\nClosed at: <t:{closed_at}:F> (<t:{closed_at}:R>)"
+            ).format(
+                closed_by=(
+                    self.closed_by
+                    if self.closed_by is not None
+                    else type("", (), {"mention": _("[Unknown]"), "id": self.closed_by_id})
+                ),
+                closed_at=int(self.closed_at.timestamp()),
             )
+            if self.is_closed
+            else ""
         )
         if self.reason is not None:
             embed.add_field(
@@ -351,7 +385,9 @@ class Ticket:
     async def get_embeds(self) -> typing.List[discord.Embed]:
         embeds = [await self.get_embed()]
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
-        if (self.category_label is not None and config["always_include_item_label"]) or self.owner_answers:
+        if (
+            self.category_label is not None and config["always_include_item_label"]
+        ) or self.owner_answers:
             embed: discord.Embed = discord.Embed(
                 title=self.category_label,
                 color=await self.bot.get_embed_color(self.guild.channels[0]),
@@ -379,7 +415,12 @@ class Ticket:
             )
         return embeds
 
-    async def get_kwargs(self) -> typing.Dict[typing.Literal["content", "embeds", "view", "allowed_mentions"], typing.Union[str, discord.Embed, discord.ui.View]]:
+    async def get_kwargs(
+        self,
+    ) -> typing.Dict[
+        typing.Literal["content", "embeds", "view", "allowed_mentions"],
+        typing.Union[str, discord.Embed, discord.ui.View],
+    ]:
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         content = (
             f"[ {humanize_list([ping_role.mention for ping_role in ping_roles])} ]\n\n"
@@ -405,10 +446,17 @@ class Ticket:
         embeds = await self.get_embeds()
         view: TicketView = TicketView(cog=self.cog, ticket=self)
 
-        return {"content": content.strip(), "embeds": embeds, "view": view, "allowed_mentions": discord.AllowedMentions(roles=True)}
+        return {
+            "content": content.strip(),
+            "embeds": embeds,
+            "view": view,
+            "allowed_mentions": discord.AllowedMentions(roles=True),
+        }
 
     async def create(self) -> typing.Union[discord.TextChannel, discord.Thread]:
-        config: typing.Dict[str, typing.Any] = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        config: typing.Dict[str, typing.Any] = await self.cog.config.guild(
+            self.guild
+        ).profiles.get_raw(self.profile)
         if not config["enabled"]:
             raise RuntimeError(_("The creation of tickets is disabled for this profile."))
         forum_channel = (
@@ -423,31 +471,37 @@ class Ticket:
         )
         if forum_channel is None and category_open is None:
             raise RuntimeError(_("No forum channel or category open configured for this profile."))
-        if (
-            not await self.bot.is_admin(self.owner)
-            and self.owner.id not in self.bot.owner_ids
-        ):
+        if not await self.bot.is_admin(self.owner) and self.owner.id not in self.bot.owner_ids:
             if (
-                config["whitelist_roles"] and not any(
+                config["whitelist_roles"]
+                and not any(
                     self.owner.get_role(whitelist_role_id) is not None
                     for whitelist_role_id in config["whitelist_roles"]
                 )
-                or config["blacklist_roles"] and any(
+                or config["blacklist_roles"]
+                and any(
                     self.owner.get_role(blacklist_role_id) is not None
                     for blacklist_role_id in config["blacklist_roles"]
                 )
             ):
                 raise RuntimeError(_("You are not allowed to create a ticket with this profile."))
-            if len(
-                [
-                    ticket
-                    for ticket in self.cog.tickets.get(self.guild_id, {}).values()
-                    if ticket.owner_id == self.owner_id and not ticket.is_closed
-                ]
-            ) >= config["max_open_tickets_by_member"]:
-                raise RuntimeError(_("You have reached the maximum number of open tickets for this profile."))
+            if (
+                len(
+                    [
+                        ticket
+                        for ticket in self.cog.tickets.get(self.guild_id, {}).values()
+                        if ticket.owner_id == self.owner_id and not ticket.is_closed
+                    ]
+                )
+                >= config["max_open_tickets_by_member"]
+            ):
+                raise RuntimeError(
+                    _("You have reached the maximum number of open tickets for this profile.")
+                )
 
-        audit_reason = _("Ticket creation for {ticket.owner.display_name} ({ticket.owner.id}) (profile `{ticket.profile}`)").format(ticket=self)
+        audit_reason = _(
+            "Ticket creation for {ticket.owner.display_name} ({ticket.owner.id}) (profile `{ticket.profile}`)"
+        ).format(ticket=self)
         if (
             (ticket_role_id := config.get("ticket_role")) is not None
             and (ticket_role := self.guild.get_role(ticket_role_id)) is not None
@@ -466,7 +520,11 @@ class Ticket:
         await view._update()
         if forum_channel is not None:
             if not forum_channel.permissions_for(forum_channel.guild.me).create_private_threads:
-                raise RuntimeError(_("I don't have the required permissions to create private threads in the forum/text channel configured."))
+                raise RuntimeError(
+                    _(
+                        "I don't have the required permissions to create private threads in the forum/text channel configured."
+                    )
+                )
             if isinstance(forum_channel, discord.ForumChannel):
                 thread_message = await forum_channel.create_thread(
                     name=await self.channel_name(forum_channel=True),
@@ -485,7 +543,11 @@ class Ticket:
                 view._message = await self.channel.send(**kwargs)
         else:
             if not category_open.permissions_for(self.guild.me).manage_channels:
-                raise RuntimeError(_("I don't have the required permissions to create text channels in the category configured."))
+                raise RuntimeError(
+                    _(
+                        "I don't have the required permissions to create text channels in the category configured."
+                    )
+                )
             self.channel = await self.guild.create_text_channel(
                 name=await self.channel_name(forum_channel=False),
                 category=category_open,
@@ -514,8 +576,12 @@ class Ticket:
 
         return view._message
 
-    async def get_channel_overwrites(self) -> typing.Dict[typing.Union[discord.Member, discord.Role], discord.PermissionOverwrite]:
-        config: typing.Dict[str, typing.Any] = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+    async def get_channel_overwrites(
+        self,
+    ) -> typing.Dict[typing.Union[discord.Member, discord.Role], discord.PermissionOverwrite]:
+        config: typing.Dict[str, typing.Any] = await self.cog.config.guild(
+            self.guild
+        ).profiles.get_raw(self.profile)
         overwrites = {
             self.guild.default_role: discord.PermissionOverwrite(
                 read_messages=False,
@@ -579,7 +645,13 @@ class Ticket:
             fake_context = type(
                 "FakeContext",
                 (),
-                {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": closer, "kwargs": {"profile": self.profile}},
+                {
+                    "bot": self.bot,
+                    "guild": self.guild,
+                    "channel": self.channel,
+                    "author": closer,
+                    "kwargs": {"profile": self.profile},
+                },
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError(_("You aren't allowed to close this ticket!"))
@@ -594,7 +666,9 @@ class Ticket:
         if closer is None:
             audit_reason = _("Ticket closed (profile `{self.profile}`)").format(self=self)
         else:
-            audit_reason = _("Ticket closed by {closer.display_name} ({closer.id}) (profile `{self.profile}`)").format(closer=closer, self=self)
+            audit_reason = _(
+                "Ticket closed by {closer.display_name} ({closer.id}) (profile `{self.profile}`)"
+            ).format(closer=closer, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
                 name=await self.channel_name(),
@@ -609,7 +683,8 @@ class Ticket:
                     category_closed
                     if (
                         (category_closed_id := config.get("category_closed")) is not None
-                        and (category_closed := self.guild.get_channel(category_closed_id)) is not None
+                        and (category_closed := self.guild.get_channel(category_closed_id))
+                        is not None
                     )
                     else self.channel.category
                 ),
@@ -665,7 +740,13 @@ class Ticket:
             fake_context = type(
                 "FakeContext",
                 (),
-                {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": reopener, "kwargs": {"profile": self.profile}},
+                {
+                    "bot": self.bot,
+                    "guild": self.guild,
+                    "channel": self.channel,
+                    "author": reopener,
+                    "kwargs": {"profile": self.profile},
+                },
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError(_("You aren't allowed to reopen this ticket!"))
@@ -679,7 +760,9 @@ class Ticket:
         if reopener is None:
             audit_reason = _("Ticket reopened (profile `{self.profile}`)").format(self=self)
         else:
-            audit_reason = _("Ticket reopened by {reopener.display_name} ({reopener.id}) (profile `{self.profile}`)").format(reopener=reopener, self=self)
+            audit_reason = _(
+                "Ticket reopened by {reopener.display_name} ({reopener.id}) (profile `{self.profile}`)"
+            ).format(reopener=reopener, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
                 name=await self.channel_name(),
@@ -734,7 +817,9 @@ class Ticket:
         self.claimed_at = datetime.datetime.now(tz=datetime.timezone.utc)
         await self.save()
 
-        audit_reason = _("Ticket claimed by {claimer.display_name} ({claimer.id}) (profile `{self.profile}`)").format(claimer=claimer, self=self)
+        audit_reason = _(
+            "Ticket claimed by {claimer.display_name} ({claimer.id}) (profile `{self.profile}`)"
+        ).format(claimer=claimer, self=self)
         await self.channel.edit(
             name=await self.channel_name(),
             reason=audit_reason,
@@ -809,7 +894,13 @@ class Ticket:
             fake_context = type(
                 "FakeContext",
                 (),
-                {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": locker, "kwargs": {"profile": self.profile}},
+                {
+                    "bot": self.bot,
+                    "guild": self.guild,
+                    "channel": self.channel,
+                    "author": locker,
+                    "kwargs": {"profile": self.profile},
+                },
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError(_("You aren't allowed to lock this ticket!"))
@@ -821,7 +912,9 @@ class Ticket:
         if locker is None:
             audit_reason = _("Ticket locked (profile `{self.profile}`)").format(self=self)
         else:
-            audit_reason = _("Ticket locked by {locker.display_name} ({locker.id}) (profile `{self.profile}`)").format(locker=locker, self=self)
+            audit_reason = _(
+                "Ticket locked by {locker.display_name} ({locker.id}) (profile `{self.profile}`)"
+            ).format(locker=locker, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
                 locked=True,
@@ -870,7 +963,13 @@ class Ticket:
             fake_context = type(
                 "FakeContext",
                 (),
-                {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": unlocker, "kwargs": {"profile": self.profile}},
+                {
+                    "bot": self.bot,
+                    "guild": self.guild,
+                    "channel": self.channel,
+                    "author": unlocker,
+                    "kwargs": {"profile": self.profile},
+                },
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError(_("You aren't allowed to unlock this ticket!"))
@@ -884,7 +983,9 @@ class Ticket:
         if unlocker is not None:
             audit_reason = _("Ticket unlocked (profile `{self.profile}`)").format(self=self)
         else:
-            audit_reason = _("Ticket unlocked by {unlocker.display_name} ({unlocker.id}) (profile `{self.profile}`)").format(unlocker=unlocker, self=self)
+            audit_reason = _(
+                "Ticket unlocked by {unlocker.display_name} ({unlocker.id}) (profile `{self.profile}`)"
+            ).format(unlocker=unlocker, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
                 locked=False,
@@ -925,13 +1026,21 @@ class Ticket:
                 channel=self.channel,
             )
 
-    async def add_member(self, member: discord.Member, author: typing.Optional[discord.Member] = None) -> None:
+    async def add_member(
+        self, member: discord.Member, author: typing.Optional[discord.Member] = None
+    ) -> None:
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if author is not None and not config["owner_can_add_members"]:
             fake_context = type(
                 "FakeContext",
                 (),
-                {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": author, "kwargs": {"profile": self.profile}},
+                {
+                    "bot": self.bot,
+                    "guild": self.guild,
+                    "channel": self.channel,
+                    "author": author,
+                    "kwargs": {"profile": self.profile},
+                },
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError(_("You aren't allowed to add members to this ticket!"))
@@ -940,17 +1049,28 @@ class Ticket:
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if (
             member == self.owner
-            or any(member.get_role(support_role_id) is not None for support_role_id in config["support_roles"])
+            or any(
+                member.get_role(support_role_id) is not None
+                for support_role_id in config["support_roles"]
+            )
             or member.guild_permissions.administrator
         ):
-            raise RuntimeError(_("This member has a role that allows them to access the ticket without being added manually."))
+            raise RuntimeError(
+                _(
+                    "This member has a role that allows them to access the ticket without being added manually."
+                )
+            )
         self.members_ids.append(member.id)
         await self.save()
 
         if author is None:
-            audit_reason = _("Member added to the ticket: {member.display_name} ({member.id})").format(member=member)
+            audit_reason = _(
+                "Member added to the ticket: {member.display_name} ({member.id})"
+            ).format(member=member)
         else:
-            audit_reason = _("Member added to the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id})").format(author=author, member=member)
+            audit_reason = _(
+                "Member added to the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id})"
+            ).format(author=author, member=member)
         if isinstance(self.channel, discord.Thread):
             await self.channel.add_user(member)
         else:
@@ -982,13 +1102,21 @@ class Ticket:
                 channel=self.channel,
             )
 
-    async def remove_member(self, member: discord.Member, author: typing.Optional[discord.Member] = None) -> None:
+    async def remove_member(
+        self, member: discord.Member, author: typing.Optional[discord.Member] = None
+    ) -> None:
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if author is not None and not config["owner_can_remove_members"]:
             fake_context = type(
                 "FakeContext",
                 (),
-                {"bot": self.bot, "guild": self.guild, "channel": self.channel, "author": author, "kwargs": {"profile": self.profile}},
+                {
+                    "bot": self.bot,
+                    "guild": self.guild,
+                    "channel": self.channel,
+                    "author": author,
+                    "kwargs": {"profile": self.profile},
+                },
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError(_("You aren't allowed to remove members from this ticket!"))
@@ -998,9 +1126,13 @@ class Ticket:
         await self.save()
 
         if author is None:
-            audit_reason = _("Member removed from the ticket: {member.display_name} ({member.id})").format(member=member)
+            audit_reason = _(
+                "Member removed from the ticket: {member.display_name} ({member.id})"
+            ).format(member=member)
         else:
-            audit_reason = _("Member removed from the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id})").format(author=author, member=member)
+            audit_reason = _(
+                "Member removed from the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id})"
+            ).format(author=author, member=member)
         if isinstance(self.channel, discord.Thread):
             await self.channel.remove_user(member)
         else:
@@ -1035,7 +1167,9 @@ class Ticket:
         reason: typing.Optional[str] = None,
     ) -> None:
         embed = discord.Embed(
-            description=bold(_("{action} by {author.mention}").format(action=action, author=author)),
+            description=bold(
+                _("{action} by {author.mention}").format(action=action, author=author)
+            ),
             color=await self.bot.get_embed_color(self.channel),
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
@@ -1058,9 +1192,7 @@ class Ticket:
             @classmethod
             async def export(
                 cls,
-                channel: typing.Union[
-                    discord.TextChannel, discord.VoiceChannel, discord.Thread
-                ],
+                channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
                 messages: typing.List[discord.Message],
                 tz_info="UTC",
                 guild: typing.Optional[discord.Guild] = None,
@@ -1113,7 +1245,9 @@ class Ticket:
         if deleter is None:
             audit_reason = _("Ticket deleted (profile `{self.profile}`)").format(self=self)
         else:
-            audit_reason = _("Ticket deleted by {deleter.display_name} ({deleter.id}) (profile `{self.profile}`)").format(deleter=deleter, self=self)
+            audit_reason = _(
+                "Ticket deleted by {deleter.display_name} ({deleter.id}) (profile `{self.profile}`)"
+            ).format(deleter=deleter, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.delete(reason=audit_reason)
         else:
@@ -1121,14 +1255,17 @@ class Ticket:
 
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if (
-            (logs_channel_id := await self.cog.config.guild(self.guild).profiles.get_raw(self.profile, "logs_channel"))
-            and (logs_channel := self.guild.get_channel(logs_channel_id)) is not None
-        ):
+            logs_channel_id := await self.cog.config.guild(self.guild).profiles.get_raw(
+                self.profile, "logs_channel"
+            )
+        ) and (logs_channel := self.guild.get_channel(logs_channel_id)) is not None:
             await logs_channel.send(
                 embeds=[
                     discord.Embed(
                         title=_("🗑 Ticket Deleted"),
-                        description=_("{self.owner.mention}'s ticket has been deleted.").format(self=self),
+                        description=_("{self.owner.mention}'s ticket has been deleted.").format(
+                            self=self
+                        ),
                         color=discord.Color.red(),
                         timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                     ),

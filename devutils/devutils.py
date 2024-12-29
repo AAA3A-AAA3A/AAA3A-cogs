@@ -279,9 +279,11 @@ class DevUtils(Cog):
             bot=ctx.bot,
             author=message.author,
             channel=message.channel,
-            command=f"{ctx.prefix}devutils reinvoke{message.content[len(ctx.prefix)+8:]}"
-            if message.content.startswith(f"{ctx.prefix}reinvoke")
-            else message.content,
+            command=(
+                f"{ctx.prefix}devutils reinvoke{message.content[len(ctx.prefix)+8:]}"
+                if message.content.startswith(f"{ctx.prefix}reinvoke")
+                else message.content
+            ),
             prefix="",
             message=message,
         )
@@ -415,7 +417,4 @@ class DevUtils(Cog):
             raw_content = await ctx.bot.http.request(
                 route=Route(method="GET", path="/invites/{invite_code}", invite_code=thing.code)
             )
-        await Menu(
-            json.dumps(raw_content, indent=4),
-            lang="json"
-        ).start(ctx)
+        await Menu(json.dumps(raw_content, indent=4), lang="json").start(ctx)

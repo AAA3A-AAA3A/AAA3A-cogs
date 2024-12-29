@@ -159,20 +159,23 @@ class Board:
                                     (x, y, x + size, y + size),
                                     radius=3,
                                     fill=None,
-                                    outline=(18, 18, 20, 255)
-                                    if getattr(
-                                        MAIN_COLORS_DICT.get(self.cursor, self.cursor),
-                                        "RGBA",
-                                        (0, 0, 0, 0),
-                                    )
-                                    == (0, 0, 0, 255)
-                                    else (
-                                        MAIN_COLORS_DICT.get(self.cursor, self.cursor).RGBA
-                                        if isinstance(
-                                            MAIN_COLORS_DICT.get(self.cursor, self.cursor), Color
+                                    outline=(
+                                        (18, 18, 20, 255)
+                                        if getattr(
+                                            MAIN_COLORS_DICT.get(self.cursor, self.cursor),
+                                            "RGBA",
+                                            (0, 0, 0, 0),
                                         )
-                                        and self.cursor != "transparent"
-                                        else (255, 0, 0, 255)
+                                        == (0, 0, 0, 255)
+                                        else (
+                                            MAIN_COLORS_DICT.get(self.cursor, self.cursor).RGBA
+                                            if isinstance(
+                                                MAIN_COLORS_DICT.get(self.cursor, self.cursor),
+                                                Color,
+                                            )
+                                            and self.cursor != "transparent"
+                                            else (255, 0, 0, 255)
+                                        )
                                     ),
                                     width=2,
                                 )
@@ -202,16 +205,22 @@ class Board:
                         (x, y, x + size, y + size),
                         radius=3,
                         fill=None,
-                        outline=(18, 18, 20, 255)
-                        if getattr(
-                            MAIN_COLORS_DICT.get(self.cursor, self.cursor), "RGBA", (0, 0, 0, 0)
-                        )
-                        == (0, 0, 0, 255)
-                        else (
-                            MAIN_COLORS_DICT.get(self.cursor, self.cursor).RGBA
-                            if isinstance(MAIN_COLORS_DICT.get(self.cursor, self.cursor), Color)
-                            and self.cursor != "transparent"
-                            else (255, 0, 0, 255)
+                        outline=(
+                            (18, 18, 20, 255)
+                            if getattr(
+                                MAIN_COLORS_DICT.get(self.cursor, self.cursor),
+                                "RGBA",
+                                (0, 0, 0, 0),
+                            )
+                            == (0, 0, 0, 255)
+                            else (
+                                MAIN_COLORS_DICT.get(self.cursor, self.cursor).RGBA
+                                if isinstance(
+                                    MAIN_COLORS_DICT.get(self.cursor, self.cursor), Color
+                                )
+                                and self.cursor != "transparent"
+                                else (255, 0, 0, 255)
+                            )
                         ),
                         width=2,
                     )

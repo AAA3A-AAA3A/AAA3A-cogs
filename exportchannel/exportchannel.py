@@ -74,10 +74,14 @@ class ExportChannel(Cog):
         messages = []
         async for message in channel.history(
             limit=(
-                limit if channel != ctx.message.channel and ctx.interaction is None else limit + 1
-            )
-            if limit is not None
-            else None,
+                (
+                    limit
+                    if channel != ctx.message.channel and ctx.interaction is None
+                    else limit + 1
+                )
+                if limit is not None
+                else None
+            ),
             before=before,
             after=after,
             oldest_first=False,
@@ -216,7 +220,9 @@ class ExportChannel(Cog):
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
+                discord.ui.Button(
+                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
+                )
             )
         else:
             embed, view = None, None
@@ -255,7 +261,9 @@ class ExportChannel(Cog):
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
+                discord.ui.Button(
+                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
+                )
             )
         else:
             embed, view = None, None
@@ -301,7 +309,9 @@ class ExportChannel(Cog):
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
+                discord.ui.Button(
+                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
+                )
             )
         else:
             embed, view = None, None
@@ -347,7 +357,9 @@ class ExportChannel(Cog):
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
+                discord.ui.Button(
+                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
+                )
             )
         else:
             embed, view = None, None
@@ -393,7 +405,9 @@ class ExportChannel(Cog):
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
+                discord.ui.Button(
+                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
+                )
             )
         else:
             embed, view = None, None
@@ -441,7 +455,9 @@ class ExportChannel(Cog):
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
+                discord.ui.Button(
+                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
+                )
             )
         else:
             embed, view = None, None
@@ -487,7 +503,9 @@ class ExportChannel(Cog):
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
+                discord.ui.Button(
+                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
+                )
             )
         else:
             embed, view = None, None
@@ -535,7 +553,9 @@ class ExportChannel(Cog):
             )
             view = discord.ui.View()
             view.add_item(
-                discord.ui.Button(style=discord.ButtonStyle.url, label=_("View transcript"), url=url)
+                discord.ui.Button(
+                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
+                )
             )
         else:
             embed, view = None, None

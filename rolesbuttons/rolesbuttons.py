@@ -359,7 +359,9 @@ class RolesButtons(Cog):
     async def create(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]],
+        channel: typing.Optional[
+            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+        ],
         roles_buttons: commands.Greedy[EmojiRoleConverter],
     ) -> None:
         """Create a message with a nice embed and roles-buttons.
@@ -376,14 +378,13 @@ class RolesButtons(Cog):
                 _("I don't have the permission to add reactions in this channel.")
             )
         if not roles_buttons:
-            raise commands.UserFeedbackCheckFailure(_("You have not specified any valid role-button."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You have not specified any valid role-button.")
+            )
         message = await channel.send(
             embed=discord.Embed(
                 description="\n".join(
-                    [
-                        f"**•** {emoji} - {role.mention}"
-                        for emoji, role in roles_buttons
-                    ]
+                    [f"**•** {emoji} - {role.mention}" for emoji, role in roles_buttons]
                 ),
                 color=await ctx.embed_color(),
             ),

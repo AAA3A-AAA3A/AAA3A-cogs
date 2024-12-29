@@ -5,9 +5,9 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import box
-
 import os
+
+from redbot.core.utils.chat_formatting import box
 
 # Credits:
 # General repo credits.
@@ -48,7 +48,9 @@ class Honeypot(Cog):
                 "description": "The action to take when a self bot/scammer is detected.",
             },
             "logs_channel": {
-                "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+                "converter": typing.Union[
+                    discord.TextChannel, discord.VoiceChannel, discord.Thread
+                ],
                 "description": "The channel to send the logs to.",
             },
             "ping_role": {
@@ -125,13 +127,16 @@ class Honeypot(Cog):
         if action is not None:
             try:
                 if action == "mute":
-                    if (
-                        (mute_role_id := config["mute_role"]) is not None
-                        and (mute_role := message.guild.get_role(mute_role_id)) is not None
-                    ):
-                        await message.author.add_roles(mute_role, reason="Self bot/scammer detected.")
+                    if (mute_role_id := config["mute_role"]) is not None and (
+                        mute_role := message.guild.get_role(mute_role_id)
+                    ) is not None:
+                        await message.author.add_roles(
+                            mute_role, reason="Self bot/scammer detected."
+                        )
                     else:
-                        failed = _("**Failed:** The mute role is not set or doesn't exist anymore.")
+                        failed = _(
+                            "**Failed:** The mute role is not set or doesn't exist anymore."
+                        )
                 elif action == "kick":
                     await message.author.kick(reason="Self bot/scammer detected.")
                 elif action == "ban":
@@ -140,23 +145,34 @@ class Honeypot(Cog):
                         delete_message_days=config["ban_delete_message_days"],
                     )
             except discord.HTTPException as e:
-                failed = _("**Failed:** An error occurred while trying to take action against the member:\n") + box(str(e), lang="py") 
+                failed = _(
+                    "**Failed:** An error occurred while trying to take action against the member:\n"
+                ) + box(str(e), lang="py")
             else:
                 await modlog.create_case(
-                    self.bot, message.guild, message.created_at, action_type=action,
-                    user=message.author, moderator=message.guild.me, reason="Self bot/scammer detected.",
+                    self.bot,
+                    message.guild,
+                    message.created_at,
+                    action_type=action,
+                    user=message.author,
+                    moderator=message.guild.me,
+                    reason="Self bot/scammer detected.",
                 )
             embed.add_field(
                 name=_("Action:"),
                 value=(
-                    _("The member has been muted.")
-                    if action == "mute"
-                    else (
-                        _("The member has been kicked.")
-                        if action == "kick"
-                        else _("The member has been banned.")
+                    (
+                        _("The member has been muted.")
+                        if action == "mute"
+                        else (
+                            _("The member has been kicked.")
+                            if action == "kick"
+                            else _("The member has been banned.")
+                        )
                     )
-                ) if failed is None else failed,
+                    if failed is None
+                    else failed
+                ),
                 inline=False,
             )
         embed.set_footer(text=message.guild.name, icon_url=message.guild.icon)
@@ -182,22 +198,37 @@ class Honeypot(Cog):
     async def createchannel(self, ctx: commands.Context) -> None:
         """Create the honeypot channel."""
         if (
-            (honeypot_channel_id := await self.config.guild(ctx.guild).honeypot_channel()) is not None
-            and (honeypot_channel := ctx.guild.get_channel(honeypot_channel_id)) is not None
-        ):
-            raise commands.UserFeedbackCheckFailure(_("The honeypot channel already exists: {honeypot_channel.mention} ({honeypot_channel.id}).").format(honeypot_channel=honeypot_channel))
+            honeypot_channel_id := await self.config.guild(ctx.guild).honeypot_channel()
+        ) is not None and (
+            honeypot_channel := ctx.guild.get_channel(honeypot_channel_id)
+        ) is not None:
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "The honeypot channel already exists: {honeypot_channel.mention} ({honeypot_channel.id})."
+                ).format(honeypot_channel=honeypot_channel)
+            )
         honeypot_channel = await ctx.guild.create_text_channel(
             name="honeypot",
             position=0,
             overwrites={
-                ctx.guild.me: discord.PermissionOverwrite(view_channel=True, read_messages=True, send_messages=True, manage_messages=True, manage_channels=True),
-                ctx.guild.default_role: discord.PermissionOverwrite(view_channel=True, read_messages=True, send_messages=True),
+                ctx.guild.me: discord.PermissionOverwrite(
+                    view_channel=True,
+                    read_messages=True,
+                    send_messages=True,
+                    manage_messages=True,
+                    manage_channels=True,
+                ),
+                ctx.guild.default_role: discord.PermissionOverwrite(
+                    view_channel=True, read_messages=True, send_messages=True
+                ),
             },
             reason=f"Honeypot channel creation requested by {ctx.author.display_name} ({ctx.author.id}).",
         )
         embed = discord.Embed(
             title=_("⚠️ DO NOT POST HERE! ⚠️"),
-            description=_("An action will be immediately taken against you if you send a message in this channel."),
+            description=_(
+                "An action will be immediately taken against you if you send a message in this channel."
+            ),
             color=discord.Color.red(),
         )
         embed.add_field(

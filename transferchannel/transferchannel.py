@@ -124,10 +124,14 @@ class TransferChannel(Cog):
         messages = []
         async for message in channel.history(
             limit=(
-                limit if channel != ctx.message.channel and ctx.interaction is None else limit + 1
-            )
-            if limit is not None
-            else None,
+                (
+                    limit
+                    if channel != ctx.message.channel and ctx.interaction is None
+                    else limit + 1
+                )
+                if limit is not None
+                else None
+            ),
             before=before,
             after=after,
             oldest_first=False,
@@ -172,9 +176,9 @@ class TransferChannel(Cog):
         if way == "webhooks":
             hook = await CogsUtils.get_hook(
                 bot=ctx.bot,
-                channel=destination.parent
-                if isinstance(destination, discord.Thread)
-                else destination,
+                channel=(
+                    destination.parent if isinstance(destination, discord.Thread) else destination
+                ),
             )
         for message in messages:
             if destination.permissions_for(destination.guild.me).attach_files:
@@ -194,9 +198,11 @@ class TransferChannel(Cog):
                         allowed_mentions=discord.AllowedMentions(
                             everyone=False, users=False, roles=False
                         ),
-                        thread=destination
-                        if isinstance(destination, discord.Thread)
-                        else discord.utils.MISSING,
+                        thread=(
+                            destination
+                            if isinstance(destination, discord.Thread)
+                            else discord.utils.MISSING
+                        ),
                         wait=True,
                     )
             elif way == "embeds":

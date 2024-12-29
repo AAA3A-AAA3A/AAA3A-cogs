@@ -160,21 +160,23 @@ class DevOutput(dev_commands.DevOutput):
                     pass
         if tick and self.exc is not None:
             await self.ctx.react_quietly(
-                reaction="❗"
-                if isinstance(self.exc, SyntaxError)
-                else (
-                    "⏰"
-                    if isinstance(
-                        self.exc,
-                        (
-                            TimeoutError,
-                            asyncio.TimeoutError,
-                            aiohttp.ClientTimeout,
-                            aiohttp.ServerTimeoutError,
-                            subprocess.TimeoutExpired,
-                        ),
+                reaction=(
+                    "❗"
+                    if isinstance(self.exc, SyntaxError)
+                    else (
+                        "⏰"
+                        if isinstance(
+                            self.exc,
+                            (
+                                TimeoutError,
+                                asyncio.TimeoutError,
+                                aiohttp.ClientTimeout,
+                                aiohttp.ServerTimeoutError,
+                                subprocess.TimeoutExpired,
+                            ),
+                        )
+                        else "❌"
                     )
-                    else "❌"
                 )
             )
         box_lang = (
@@ -210,9 +212,11 @@ class DevOutput(dev_commands.DevOutput):
         if tick and self.exc is None:
             await self.ctx.react_quietly(
                 # sourcery skip: swap-if-expression
-                reaction=commands.context.TICK
-                if not hasattr(commands.context, "MORE_TICKS")
-                else random.choice(list(commands.context.MORE_TICKS))
+                reaction=(
+                    commands.context.TICK
+                    if not hasattr(commands.context, "MORE_TICKS")
+                    else random.choice(list(commands.context.MORE_TICKS))
+                )
             )
 
     @classmethod
@@ -969,9 +973,9 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                 _(
                     "Bot owners will now bypass all commands with cooldowns{optional_duration}."
                 ).format(
-                    optional_duration=""
-                    if time is None
-                    else f" for {CogsUtils.get_interval_string(time)}"
+                    optional_duration=(
+                        "" if time is None else f" for {CogsUtils.get_interval_string(time)}"
+                    )
                 )
             )
         else:
@@ -979,9 +983,9 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                 _(
                     "Bot owners will no longer bypass all commands with cooldowns{optional_duration}."
                 ).format(
-                    optional_duration=""
-                    if time is None
-                    else f" for {CogsUtils.get_interval_string(time)}"
+                    optional_duration=(
+                        "" if time is None else f" for {CogsUtils.get_interval_string(time)}"
+                    )
                 )
             )
         if time is not None:

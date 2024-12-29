@@ -5,13 +5,13 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import box
-
 import datetime
 import json
 
+from redbot.core.utils.chat_formatting import box
+
 from .converters import AuditLogActionConverter, DateTimeConverter
-from .views import CtrlZView, CtrlZMassView
+from .views import CtrlZMassView, CtrlZView
 
 # Credits:
 # General repo credits.
@@ -20,10 +20,14 @@ from .views import CtrlZView, CtrlZMassView
 _: Translator = Translator("CtrlZ", __file__)
 
 REASON = "Reverted with CtrlZ."
+
+
 def default_delete_method(audit_log: discord.AuditLogEntry) -> None:
     if isinstance(audit_log.target, discord.Object):
         raise RuntimeError(_("The target of the audit log was not found."))
     return audit_log.target.delete(reason=REASON)
+
+
 async def default_edit_method(audit_log: discord.AuditLogEntry) -> None:
     if isinstance(audit_log.target, discord.Object):
         raise RuntimeError(_("The target of the audit log was not found."))
@@ -37,26 +41,45 @@ async def default_edit_method(audit_log: discord.AuditLogEntry) -> None:
         elif isinstance(value, discord.Object):
             del kwargs[key]
     await audit_log.target.edit(**kwargs, reason=REASON)
+
+
 def delete_overwrite_method(audit_log: discord.AuditLogEntry) -> None:
     if isinstance(audit_log.extra, discord.Object):
         raise RuntimeError(_("The target of the audit log was not found."))
     return audit_log.target.set_permissions(audit_log.extra, overwrite=None, reason=REASON)
+
+
 def delete_bot_add_method(audit_log: discord.AuditLogEntry) -> None:
     if not isinstance(audit_log.target, discord.Member):
         raise RuntimeError(_("The target of the audit log was not found."))
     return audit_log.target.kick(reason=REASON)
+
+
 def update_overwrite_method(audit_log: discord.AuditLogEntry) -> None:
     if isinstance(audit_log.extra, discord.Object):
         raise RuntimeError(_("The target of the audit log was not found."))
     return audit_log.target.set_permissions(
         audit_log.extra,
-        overwrite=discord.PermissionOverwrite.from_pair(allow=audit_log.before.allow, deny=audit_log.before.deny),
+        overwrite=discord.PermissionOverwrite.from_pair(
+            allow=audit_log.before.allow, deny=audit_log.before.deny
+        ),
         reason=REASON,
     )
+
+
 def update_member_role_method(audit_log: discord.AuditLogEntry) -> None:
     if isinstance(audit_log.target, discord.Object):
         raise RuntimeError(_("The target of the audit log was not found."))
-    return audit_log.target.add_roles(*[role for role in audit_log.changes.before.roles if role not in audit_log.changes.after.roles], reason=REASON)
+    return audit_log.target.add_roles(
+        *[
+            role
+            for role in audit_log.changes.before.roles
+            if role not in audit_log.changes.after.roles
+        ],
+        reason=REASON,
+    )
+
+
 def create_channel_method(audit_log: discord.AuditLogEntry) -> None:
     kwargs = dict(audit_log.before)
     return audit_log.guild._create_channel(
@@ -65,18 +88,28 @@ def create_channel_method(audit_log: discord.AuditLogEntry) -> None:
         **kwargs,
         reason=REASON,
     )
+
+
 def create_overwrite_method(audit_log: discord.AuditLogEntry) -> None:
     return audit_log.target.set_permissions(
         audit_log.extra,
-        overwrite=discord.PermissionOverwrite.from_pair(allow=audit_log.before.allow, deny=audit_log.before.deny),
+        overwrite=discord.PermissionOverwrite.from_pair(
+            allow=audit_log.before.allow, deny=audit_log.before.deny
+        ),
         reason=REASON,
     )
+
+
 def create_invite_method(audit_log: discord.AuditLogEntry) -> None:
     kwargs = dict(audit_log.before)
     return kwargs.pop("channel").create_invite(**kwargs, reason=REASON)
+
+
 def create_webhook_method(audit_log: discord.AuditLogEntry) -> None:
     kwargs = dict(audit_log.before)
     return kwargs.pop("channel").create_webhook(**kwargs, reason=REASON)
+
+
 async def create_scheduled_event_method(audit_log: discord.AuditLogEntry) -> None:
     kwargs = dict(audit_log.before)
     del kwargs["status"]
@@ -86,18 +119,30 @@ async def create_scheduled_event_method(audit_log: discord.AuditLogEntry) -> Non
                 kwargs[key] = await value.read()
             except discord.HTTPException:
                 del kwargs[key]
-    return audit_log.guild.create_scheduled_event(image=kwargs.pop("cover_image", None), **kwargs, reason=REASON)
-REVERT_METHODS: typing.Dict[str, typing.Dict[discord.AuditLogAction, typing.Callable[[discord.AuditLogEntry], None]]] = {
+    return audit_log.guild.create_scheduled_event(
+        image=kwargs.pop("cover_image", None), **kwargs, reason=REASON
+    )
+
+
+REVERT_METHODS: typing.Dict[
+    str, typing.Dict[discord.AuditLogAction, typing.Callable[[discord.AuditLogEntry], None]]
+] = {
     "create": {
         discord.AuditLogAction.channel_create: default_delete_method,
         discord.AuditLogAction.overwrite_create: delete_overwrite_method,
-        discord.AuditLogAction.ban: lambda audit_log: audit_log.guild.unban(audit_log.target, reason=REASON),
+        discord.AuditLogAction.ban: lambda audit_log: audit_log.guild.unban(
+            audit_log.target, reason=REASON
+        ),
         discord.AuditLogAction.bot_add: lambda audit_log: audit_log.target.kick(reason=REASON),
         discord.AuditLogAction.role_create: default_delete_method,
         discord.AuditLogAction.invite_create: default_delete_method,
         discord.AuditLogAction.webhook_create: default_delete_method,
         discord.AuditLogAction.emoji_create: default_delete_method,
-        discord.AuditLogAction.message_pin: lambda audit_log: audit_log.extra.channel.get_partial_message(audit_log.extra.message_id).unpin(reason=REASON),
+        discord.AuditLogAction.message_pin: lambda audit_log: audit_log.extra.channel.get_partial_message(
+            audit_log.extra.message_id
+        ).unpin(
+            reason=REASON
+        ),
         discord.AuditLogAction.integration_create: default_delete_method,
         discord.AuditLogAction.stage_instance_create: default_delete_method,
         discord.AuditLogAction.sticker_create: default_delete_method,
@@ -123,13 +168,23 @@ REVERT_METHODS: typing.Dict[str, typing.Dict[discord.AuditLogAction, typing.Call
     "delete": {
         discord.AuditLogAction.channel_delete: create_channel_method,
         discord.AuditLogAction.overwrite_delete: delete_overwrite_method,
-        discord.AuditLogAction.unban: lambda audit_log: audit_log.guild.ban(audit_log.target, reason=REASON),
-        discord.AuditLogAction.role_delete: lambda audit_log: audit_log.guild.create_role(**dict(audit_log.before), reason=REASON),
+        discord.AuditLogAction.unban: lambda audit_log: audit_log.guild.ban(
+            audit_log.target, reason=REASON
+        ),
+        discord.AuditLogAction.role_delete: lambda audit_log: audit_log.guild.create_role(
+            **dict(audit_log.before), reason=REASON
+        ),
         discord.AuditLogAction.invite_delete: create_invite_method,
         discord.AuditLogAction.webhook_delete: create_webhook_method,
-        discord.AuditLogAction.message_unpin: lambda audit_log: audit_log.extra.channel.get_partial_message(audit_log.extra.message_id).pin(reason=REASON),
+        discord.AuditLogAction.message_unpin: lambda audit_log: audit_log.extra.channel.get_partial_message(
+            audit_log.extra.message_id
+        ).pin(
+            reason=REASON
+        ),
         discord.AuditLogAction.scheduled_event_delete: create_scheduled_event_method,
-        discord.AuditLogAction.automod_rule_delete: lambda audit_log: audit_log.guild.create_automod_rule(**dict(audit_log.before), reason=REASON),
+        discord.AuditLogAction.automod_rule_delete: lambda audit_log: audit_log.guild.create_automod_rule(
+            **dict(audit_log.before), reason=REASON
+        ),
     },
 }
 
@@ -237,20 +292,21 @@ class CtrlZ(Cog):
     async def is_audit_log_revertable(self, audit_log: discord.AuditLogEntry) -> bool:
         audit_logs_actions = await self.get_audit_logs_actions()
         return any(
-            audit_log.action in action_actions
-            for action_actions in audit_logs_actions.values()
+            audit_log.action in action_actions for action_actions in audit_logs_actions.values()
         )
 
     async def get_audit_log_embed(self, audit_log: discord.AuditLogEntry) -> discord.Embed:
         audit_logs_actions = await self.get_audit_logs_actions()
-        if (label := next(
-            (
-                action_actions[audit_log.action]
-                for action_actions in audit_logs_actions.values()
-                if audit_log.action in action_actions
-            ),
-            None,
-        )) is None:
+        if (
+            label := next(
+                (
+                    action_actions[audit_log.action]
+                    for action_actions in audit_logs_actions.values()
+                    if audit_log.action in action_actions
+                ),
+                None,
+            )
+        ) is None:
             raise RuntimeError(_("Unknown audit log action."))
         embed = discord.Embed(
             title=_("Audit Log — {label}").format(label=label),
@@ -267,7 +323,12 @@ class CtrlZ(Cog):
                 value=(
                     f"{getattr(audit_log.target, 'mention', getattr(audit_log.target, 'name', repr(audit_log.target)))} ({audit_log.target.id})"
                     if not isinstance(audit_log.target, discord.Object)
-                    else f"Unknown ({audit_log.target.id})" + (f" (`{audit_log.target.type.__name__}`)" if audit_log.target.type != discord.Object else "")
+                    else f"Unknown ({audit_log.target.id})"
+                    + (
+                        f" (`{audit_log.target.type.__name__}`)"
+                        if audit_log.target.type != discord.Object
+                        else ""
+                    )
                 ),
             )
         if audit_log.reason is not None:
@@ -276,6 +337,7 @@ class CtrlZ(Cog):
                 value=f">>> {audit_log.reason}",
                 inline=False,
             )
+
         def display_diff(element: typing.Any) -> str:
             if isinstance(element, discord.AuditLogDiff):
                 return display_diff(dict(element))
@@ -288,12 +350,13 @@ class CtrlZ(Cog):
             elif isinstance(element, (str, int)):
                 return element
             return repr(element)
+
         if audit_log.changes.before:
             diff = json.dumps(display_diff(audit_log.changes.before), indent=4)
             embed.add_field(
                 name=_("Before:"),
                 value=box(
-                    diff if len(diff) <= 1024-10 else diff[:1024-10],
+                    diff if len(diff) <= 1024 - 10 else diff[: 1024 - 10],
                     lang="py",
                 ),
                 # value="\n".join(
@@ -309,7 +372,7 @@ class CtrlZ(Cog):
             embed.add_field(
                 name=_("After:"),
                 value=box(
-                    diff if len(diff) <= 1024-10 else diff[:1024-10],
+                    diff if len(diff) <= 1024 - 10 else diff[: 1024 - 10],
                     lang="py",
                 ),
             )
@@ -318,14 +381,16 @@ class CtrlZ(Cog):
 
     async def revert_audit_log(self, audit_log: discord.AuditLogEntry) -> None:
         audit_logs_actions = await self.get_audit_logs_actions()
-        if (action := next(
-            (
-                action
-                for action, action_actions in audit_logs_actions.items()
-                if audit_log.action in action_actions
-            ),
-            None,
-        )) is None:
+        if (
+            action := next(
+                (
+                    action
+                    for action, action_actions in audit_logs_actions.items()
+                    if audit_log.action in action_actions
+                ),
+                None,
+            )
+        ) is None:
             raise RuntimeError(_("Unknown audit log action."))
         if audit_log.id in await self.config.guild(audit_log.guild).reverted_audit_logs():
             raise RuntimeError(_("The audit log has already been reverted."))
@@ -334,11 +399,19 @@ class CtrlZ(Cog):
         # except discord.NotFound:
         #     raise RuntimeError(_("The target of the audit log was not found."))
         except discord.Forbidden:
-            raise RuntimeError(_("I don't have the necessary permissions or the target of the audit log is higher than me."))
+            raise RuntimeError(
+                _(
+                    "I don't have the necessary permissions or the target of the audit log is higher than me."
+                )
+            )
         except Exception as e:
-            raise RuntimeError(_("An error occurred while reverting the audit log:\n") + box(str(e), lang="py"))
+            raise RuntimeError(
+                _("An error occurred while reverting the audit log:\n") + box(str(e), lang="py")
+            )
         else:
-            async with self.config.guild(audit_log.guild).reverted_audit_logs() as reverted_audit_logs:
+            async with self.config.guild(
+                audit_log.guild
+            ).reverted_audit_logs() as reverted_audit_logs:
                 reverted_audit_logs.append(audit_log.id)
 
     async def cleanup_old_reverted_audit_logs(self) -> None:
@@ -346,7 +419,11 @@ class CtrlZ(Cog):
             reverted_audit_logs = [
                 audit_log_id
                 for audit_log_id in guild_data["reverted_audit_logs"]
-                if (datetime.datetime.now(tz=datetime.timezone.utc) - discord.utils.snowflake_time(audit_log_id)) < datetime.timedelta(days=7)
+                if (
+                    datetime.datetime.now(tz=datetime.timezone.utc)
+                    - discord.utils.snowflake_time(audit_log_id)
+                )
+                < datetime.timedelta(days=7)
             ]
             await self.config.guild_from_id(guild_id).reverted_audit_logs.set(reverted_audit_logs)
 
@@ -378,7 +455,9 @@ class CtrlZ(Cog):
         )
         if not audit_logs:
             raise commands.UserFeedbackCheckFailure(_("No audit logs found."))
-        await CtrlZView(self).start(ctx=ctx, audit_logs=audit_logs, displayed_actions=displayed_actions)
+        await CtrlZView(self).start(
+            ctx=ctx, audit_logs=audit_logs, displayed_actions=displayed_actions
+        )
 
     @ctrlz.command()
     async def mass(
@@ -402,4 +481,6 @@ class CtrlZ(Cog):
         )
         if not audit_logs:
             raise commands.UserFeedbackCheckFailure(_("No audit logs found."))
-        await CtrlZMassView(self).start(ctx=ctx, audit_logs=audit_logs, displayed_actions=displayed_actions)
+        await CtrlZMassView(self).start(
+            ctx=ctx, audit_logs=audit_logs, displayed_actions=displayed_actions
+        )

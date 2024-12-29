@@ -5,9 +5,9 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
-
 from collections import Counter
 from pathlib import Path
+
 
 def dashboard_page(*args, **kwargs):
     def decorator(func: typing.Callable):
@@ -15,6 +15,7 @@ def dashboard_page(*args, **kwargs):
         return func
 
     return decorator
+
 
 _: Translator = Translator("DisurlVotesTracker", __file__)
 
@@ -30,24 +31,43 @@ class DashboardIntegration:
             await self.settings.commands_added.wait()
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
-    @dashboard_page(name="leaderboard", description="Display the Disurl lifetime votes leaderboard.")
+    @dashboard_page(
+        name="leaderboard", description="Display the Disurl lifetime votes leaderboard."
+    )
     async def lifetime_leaderboard_page(
-        self, user: discord.User, guild: discord.Guild, query: typing.Optional[str] = None, **kwargs
+        self,
+        user: discord.User,
+        guild: discord.Guild,
+        query: typing.Optional[str] = None,
+        **kwargs,
     ) -> typing.Dict[str, typing.Any]:
         if not await self.config.guild(guild).enabled():
-            return {"status": 1, "error_title": "DisurlVotesTracker not enabled", "error_message": _("DisurlVotesTracker is not enabled in this server.")}
+            return {
+                "status": 1,
+                "error_title": "DisurlVotesTracker not enabled",
+                "error_message": _("DisurlVotesTracker is not enabled in this server."),
+            }
         members_data = await self.config.all_members(guild)
-        counter = Counter({
-            member: len(member_data["votes"])
-            for member_id, member_data in members_data.items()
-            if member_data["votes"] and (member := guild.get_member(member_id)) is not None
-        })
+        counter = Counter(
+            {
+                member: len(member_data["votes"])
+                for member_id, member_data in members_data.items()
+                if member_data["votes"] and (member := guild.get_member(member_id)) is not None
+            }
+        )
         if not counter:
-            return {"status": 1, "error_title": "No votes found", "error_message": _("No votes found in this server.")}
+            return {
+                "status": 1,
+                "error_title": "No votes found",
+                "error_message": _("No votes found in this server."),
+            }
         members = [
             {"position": i, "display_name": member.display_name, "id": member.id, "votes": votes}
             for i, (member, votes) in enumerate(counter.most_common(), start=1)
-            if query is None or query.lower() in member.display_name.lower() or query == str(member.id) or query.lstrip("#") == str(i)
+            if query is None
+            or query.lower() in member.display_name.lower()
+            or query == str(member.id)
+            or query.lstrip("#") == str(i)
         ]
         return {
             "status": 0,
@@ -59,39 +79,58 @@ class DashboardIntegration:
                     page=kwargs["extra_kwargs"].get("page"),
                     default_per_page=100,
                 ),
-                "total": _("Total: {total} vote{s}").format(total=counter.total(), s="" if counter.total() == 1 else "s"),
+                "total": _("Total: {total} vote{s}").format(
+                    total=counter.total(), s="" if counter.total() == 1 else "s"
+                ),
                 "query": query,
             },
         }
 
-    @dashboard_page(name="montly-leaderboard", description="Display the Disurl monthly votes leaderboard.")
+    @dashboard_page(
+        name="montly-leaderboard", description="Display the Disurl monthly votes leaderboard."
+    )
     async def montly_leaderboard_page(
-        self, user: discord.User, guild: discord.Guild, query: typing.Optional[str] = None, **kwargs
+        self,
+        user: discord.User,
+        guild: discord.Guild,
+        query: typing.Optional[str] = None,
+        **kwargs,
     ) -> typing.Dict[str, typing.Any]:
         if not await self.config.guild(guild).enabled():
-            return {"status": 1, "error_title": "DisurlVotesTracker not enabled", "error_message": _("DisurlVotesTracker is not enabled in this server.")}
+            return {
+                "status": 1,
+                "error_title": "DisurlVotesTracker not enabled",
+                "error_message": _("DisurlVotesTracker is not enabled in this server."),
+            }
         members_data = await self.config.all_members(guild)
-        counter = Counter({
-            member: len(
-                [
-                    vote
-                    for vote in member_data["votes"]
-                    if datetime.datetime.now(tz=datetime.timezone.utc)
-                    - datetime.datetime.fromtimestamp(
-                        vote, tz=datetime.timezone.utc
-                    )
-                    < datetime.timedelta(days=30)
-                ]
-            )
-            for member_id, member_data in members_data.items()
-            if member_data["votes"] and (member := guild.get_member(member_id)) is not None
-        })
+        counter = Counter(
+            {
+                member: len(
+                    [
+                        vote
+                        for vote in member_data["votes"]
+                        if datetime.datetime.now(tz=datetime.timezone.utc)
+                        - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc)
+                        < datetime.timedelta(days=30)
+                    ]
+                )
+                for member_id, member_data in members_data.items()
+                if member_data["votes"] and (member := guild.get_member(member_id)) is not None
+            }
+        )
         if not counter:
-            return {"status": 1, "error_title": "No votes found", "error_message": _("No monthly votes found in this server.")}
+            return {
+                "status": 1,
+                "error_title": "No votes found",
+                "error_message": _("No monthly votes found in this server."),
+            }
         members = [
             {"position": i, "display_name": member.display_name, "id": member.id, "votes": votes}
             for i, (member, votes) in enumerate(counter.most_common(), start=1)
-            if query is None or query.lower() in member.display_name.lower() or query == str(member.id) or query.lstrip("#") == str(i)
+            if query is None
+            or query.lower() in member.display_name.lower()
+            or query == str(member.id)
+            or query.lstrip("#") == str(i)
         ]
         return {
             "status": 0,
@@ -103,7 +142,9 @@ class DashboardIntegration:
                     page=kwargs["extra_kwargs"].get("page"),
                     default_per_page=100,
                 ),
-                "total": _("Total: {total} vote{s}").format(total=counter.total(), s="" if counter.total() == 1 else "s"),
+                "total": _("Total: {total} vote{s}").format(
+                    total=counter.total(), s="" if counter.total() == 1 else "s"
+                ),
                 "query": query,
             },
         }

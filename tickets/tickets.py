@@ -5,15 +5,21 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import humanize_list, pagify
-
 import asyncio
 import datetime
 
-from .converters import ProfileConverter, ForumTagConverter, Emoji, MyMessageConverter, ModalConverter
+from redbot.core.utils.chat_formatting import humanize_list, pagify
+
+from .converters import (
+    Emoji,
+    ForumTagConverter,
+    ModalConverter,
+    MyMessageConverter,
+    ProfileConverter,
+)  # NOQA
 from .dashboard_integration import DashboardIntegration
 from .types import Ticket
-from .views import TicketView, OwnerCloseConfirmation, ClosedTicketControls, CreateTicketView
+from .views import ClosedTicketControls, CreateTicketView, OwnerCloseConfirmation, TicketView
 
 # Credits:
 # General repo credits.
@@ -29,14 +35,21 @@ class TicketConverter(commands.Converter):
         except ValueError:
             ticket = None
         else:
-            ticket = discord.utils.get(cog.tickets.get(ctx.guild.id, {}).values(), channel_id=arg) or discord.utils.get(cog.tickets.get(ctx.guild.id, {}).values(), message_id=arg)
+            ticket = discord.utils.get(
+                cog.tickets.get(ctx.guild.id, {}).values(), channel_id=arg
+            ) or discord.utils.get(cog.tickets.get(ctx.guild.id, {}).values(), message_id=arg)
         if ticket is None:
             try:
                 ticket = cog.tickets[ctx.guild.id][int(argument.removeprefix("#"))]
             except (ValueError, KeyError):
                 raise commands.BadArgument(_("Event not found."))
-        if not ticket.channel.permissions_for(ctx.author).view_channel and ctx.author.id not in ctx.bot.owner_ids:
-            raise commands.UserFeedbackCheckFailure(_("You don't have permission to view the channel of this ticket."))
+        if (
+            not ticket.channel.permissions_for(ctx.author).view_channel
+            and ctx.author.id not in ctx.bot.owner_ids
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _("You don't have permission to view the channel of this ticket.")
+            )
         return ticket
 
 
@@ -102,9 +115,7 @@ class Tickets(DashboardIntegration, Cog):
             buttons_dropdowns={},
         )
         guild_settings["profiles"]["main"] = guild_settings["default_profile_settings"]
-        self.config.register_guild(
-            **guild_settings
-        )
+        self.config.register_guild(**guild_settings)
         self.config.register_member(
             tickets_number=0,
             closed_tickets_number=0,
@@ -205,7 +216,9 @@ class Tickets(DashboardIntegration, Cog):
                 "description": "Category where the closed tickets will be created.",
             },
             "logs_channel": {
-                "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+                "converter": typing.Union[
+                    discord.TextChannel, discord.VoiceChannel, discord.Thread
+                ],
                 "description": "Channel where the logs will be sent.",
             },
             # Checks.
@@ -365,7 +378,6 @@ class Tickets(DashboardIntegration, Cog):
                     "case_str": "Member Removed from Ticket",
                 },
             ]
-            
         )
         await self.settings.add_commands()
         asyncio.create_task(self.load_tickets())
@@ -437,7 +449,8 @@ class Tickets(DashboardIntegration, Cog):
                 if (
                     ticket.is_closed
                     and config["auto_delete_on_close"] is not None
-                    and datetime.datetime.now(tz=datetime.timezone.utc) - ticket.closed_at > datetime.timedelta(hours=config["auto_delete_on_close"])
+                    and datetime.datetime.now(tz=datetime.timezone.utc) - ticket.closed_at
+                    > datetime.timedelta(hours=config["auto_delete_on_close"])
                 ):
                     await ticket.delete_action()
 
@@ -451,9 +464,17 @@ class Tickets(DashboardIntegration, Cog):
             ) and author.id not in bot.owner_ids:
                 return False
             cog = bot.get_cog("Tickets")
-            if (ticket := (ctx.data if isinstance(ctx, discord.Interaction) else ctx.kwargs).get("ticket")) is not None:
+            if (
+                ticket := (ctx.data if isinstance(ctx, discord.Interaction) else ctx.kwargs).get(
+                    "ticket"
+                )
+            ) is not None:
                 profile = ticket.profile
-            elif (ticket := discord.utils.get(cog.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is not None:
+            elif (
+                ticket := discord.utils.get(
+                    cog.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            ) is not None:
                 profile = ticket.profile
             else:
                 profile = "main"
@@ -463,9 +484,12 @@ class Tickets(DashboardIntegration, Cog):
                 or author.guild_permissions.manage_guild
                 or any(
                     author.get_role(role_id) is not None
-                    for role_id in await cog.config.guild(ctx.guild).profiles.get_raw(profile, "support_roles", default=[])
+                    for role_id in await cog.config.guild(ctx.guild).profiles.get_raw(
+                        profile, "support_roles", default=[]
+                    )
                 )
             )
+
         return commands.check(predicate)
 
     def is_support_any_profile():
@@ -473,20 +497,23 @@ class Tickets(DashboardIntegration, Cog):
             bot = ctx.client if isinstance(ctx, discord.Interaction) else ctx.bot
             author = ctx.user if isinstance(ctx, discord.Interaction) else ctx.author
             cog = bot.get_cog("Tickets")
-            return (
-                await cog.is_support.__func__().predicate(ctx)
-                or any(
-                    author.get_role(role_id) is not None
-                    for data in (await cog.config.guild(ctx.guild).profiles()).values()
-                    for role_id in data["support_roles"]
-                )
+            return await cog.is_support.__func__().predicate(ctx) or any(
+                author.get_role(role_id) is not None
+                for data in (await cog.config.guild(ctx.guild).profiles()).values()
+                for role_id in data["support_roles"]
             )
+
         return commands.check(predicate)
 
     async def send_ticket_log(self, ticket: Ticket) -> None:
         if (
             (guild := ticket.guild) is not None
-            and (logs_channel_id := await self.config.guild(guild).profiles.get_raw(ticket.profile, "logs_channel", default=None)) is not None
+            and (
+                logs_channel_id := await self.config.guild(guild).profiles.get_raw(
+                    ticket.profile, "logs_channel", default=None
+                )
+            )
+            is not None
             and (logs_channel := guild.get_channel_or_thread(logs_channel_id)) is not None
         ):
             try:
@@ -503,7 +530,10 @@ class Tickets(DashboardIntegration, Cog):
                     view=view,
                 )
             except discord.HTTPException as e:
-                self.logger.error(f"Error when sending event creation log for the event #{ticket.id} in the guild `{ticket.channel.name}` ({ticket.channel.id}) in the channel `{ticket.guild.name}` ({ticket.guild.id}).", exc_info=e)
+                self.logger.error(
+                    f"Error when sending event creation log for the event #{ticket.id} in the guild `{ticket.channel.name}` ({ticket.channel.id}) in the channel `{ticket.guild.name}` ({ticket.guild.id}).",
+                    exc_info=e,
+                )
 
     async def create_ticket(
         self,
@@ -516,7 +546,11 @@ class Tickets(DashboardIntegration, Cog):
         guild = ctx_interaction.guild
 
         creating_modal = await self.config.guild(guild).profiles.get_raw(profile, "creating_modal")
-        if creating_modal is None and reason is None and isinstance(ctx_interaction, discord.Interaction):
+        if (
+            creating_modal is None
+            and reason is None
+            and isinstance(ctx_interaction, discord.Interaction)
+        ):
             final_modal = [
                 {
                     "label": "Reason:",
@@ -548,29 +582,39 @@ class Tickets(DashboardIntegration, Cog):
                 await ctx_interaction.response.send_modal(modal)
             else:
                 view: discord.ui.View = discord.ui.View(timeout=180)
+
                 async def interaction_check(interaction: discord.Interaction):
-                    if interaction.user != owner and interaction.user != (ctx_interaction.user if isinstance(ctx_interaction, discord.Interaction) else ctx_interaction.author):
+                    if interaction.user != owner and interaction.user != (
+                        ctx_interaction.user
+                        if isinstance(ctx_interaction, discord.Interaction)
+                        else ctx_interaction.author
+                    ):
                         await interaction.response.send_message(
                             _("Only the ticket owner can fill the answers."),
                             ephemeral=True,
                         )
                         return False
                     return True
+
                 view.interaction_check = interaction_check
+
                 async def on_timeout():
                     try:
                         await view._message.delete()
                     except discord.HTTPException:
                         pass
+
                 view.on_timeout = on_timeout
                 button: discord.ui.Button = discord.ui.Button(
                     emoji="❓",
                     label=_("Fill Answers"),
                 )
+
                 async def callback(interaction: discord.Interaction):
                     await view.on_timeout()
                     view.stop()
                     await interaction.response.send_modal(modal)
+
                 button.callback = callback
                 view.add_item(button)
                 view._message = await ctx_interaction.reply(view=view)
@@ -611,7 +655,9 @@ class Tickets(DashboardIntegration, Cog):
 
         if isinstance(ctx_interaction, discord.Interaction):
             await ctx_interaction.followup.send(
-                _("❓ Your ticket has been created! Please wait for a staff member to assist you in {channel.mention}.").format(channel=ticket.channel),
+                _(
+                    "❓ Your ticket has been created! Please wait for a staff member to assist you in {channel.mention}."
+                ).format(channel=ticket.channel),
                 ephemeral=True,
             )
 
@@ -668,7 +714,11 @@ class Tickets(DashboardIntegration, Cog):
                 color=await ctx.embed_color(),
             ),
         ]
-        forum_channel = ctx.guild.get_channel_or_thread(config.get("forum_channel")) if config.get("forum_channel") else None
+        forum_channel = (
+            ctx.guild.get_channel_or_thread(config.get("forum_channel"))
+            if config.get("forum_channel")
+            else None
+        )
         embeds.append(
             discord.Embed(
                 title=_("Settings:"),
@@ -719,16 +769,78 @@ class Tickets(DashboardIntegration, Cog):
                     create_modlog_case=config["create_modlog_case"],
                     transcripts=config["transcripts"],
                     always_include_item_label=config["always_include_item_label"],
-                    support_roles=humanize_list([role.mention for role_id in config["support_roles"] if (role := ctx.guild.get_role(role_id)) is not None]) or "...",
-                    ping_roles=humanize_list([role.mention for role_id in config["ping_roles"] if (role := ctx.guild.get_role(role_id)) is not None]) or "...",
-                    view_roles=humanize_list([role.mention for role_id in config["view_roles"] if (role := ctx.guild.get_role(role_id)) is not None]) or "...",
-                    whitelist_roles=humanize_list([role.mention for role_id in config["whitelist_roles"] if (role := ctx.guild.get_role(role_id)) is not None]) or "...",
-                    blacklist_roles=humanize_list([role.mention for role_id in config["blacklist_roles"] if (role := ctx.guild.get_role(role_id)) is not None]) or "...",
+                    support_roles=humanize_list(
+                        [
+                            role.mention
+                            for role_id in config["support_roles"]
+                            if (role := ctx.guild.get_role(role_id)) is not None
+                        ]
+                    )
+                    or "...",
+                    ping_roles=humanize_list(
+                        [
+                            role.mention
+                            for role_id in config["ping_roles"]
+                            if (role := ctx.guild.get_role(role_id)) is not None
+                        ]
+                    )
+                    or "...",
+                    view_roles=humanize_list(
+                        [
+                            role.mention
+                            for role_id in config["view_roles"]
+                            if (role := ctx.guild.get_role(role_id)) is not None
+                        ]
+                    )
+                    or "...",
+                    whitelist_roles=humanize_list(
+                        [
+                            role.mention
+                            for role_id in config["whitelist_roles"]
+                            if (role := ctx.guild.get_role(role_id)) is not None
+                        ]
+                    )
+                    or "...",
+                    blacklist_roles=humanize_list(
+                        [
+                            role.mention
+                            for role_id in config["blacklist_roles"]
+                            if (role := ctx.guild.get_role(role_id)) is not None
+                        ]
+                    )
+                    or "...",
                     forum_channel=forum_channel.mention if forum_channel is not None else "...",
-                    forum_tags=(humanize_list([f"`{f'{tag.emoji} ' if tag.emoji is not None else ''}{tag.name}`" for tag_id in config["forum_tags"] if (tag := forum_channel.get_tag(tag_id)) is not None]) or "...") if forum_channel is not None else "...",
-                    category_open=category.mention if (category := ctx.guild.get_channel(config["category_open"])) is not None else "...",
-                    category_closed=category.mention if (category := ctx.guild.get_channel(config["category_closed"])) is not None else "...",
-                    logs_channel=channel.mention if (channel := ctx.guild.get_channel_or_thread(config["logs_channel"])) is not None else "...",
+                    forum_tags=(
+                        (
+                            humanize_list(
+                                [
+                                    f"`{f'{tag.emoji} ' if tag.emoji is not None else ''}{tag.name}`"
+                                    for tag_id in config["forum_tags"]
+                                    if (tag := forum_channel.get_tag(tag_id)) is not None
+                                ]
+                            )
+                            or "..."
+                        )
+                        if forum_channel is not None
+                        else "..."
+                    ),
+                    category_open=(
+                        category.mention
+                        if (category := ctx.guild.get_channel(config["category_open"])) is not None
+                        else "..."
+                    ),
+                    category_closed=(
+                        category.mention
+                        if (category := ctx.guild.get_channel(config["category_closed"]))
+                        is not None
+                        else "..."
+                    ),
+                    logs_channel=(
+                        channel.mention
+                        if (channel := ctx.guild.get_channel_or_thread(config["logs_channel"]))
+                        is not None
+                        else "..."
+                    ),
                     owner_close_confirmation=config["owner_close_confirmation"],
                     owner_can_close=config["owner_can_close"],
                     owner_can_reopen=config["owner_can_reopen"],
@@ -752,11 +864,18 @@ class Tickets(DashboardIntegration, Cog):
 
     @is_support_any_profile()
     @ticket.command(aliases=["infos"])
-    async def show(self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None) -> None:
+    async def show(
+        self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None
+    ) -> None:
         """Show a ticket."""
         if (
             ticket is None
-            and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         await ctx.send(embed=await ticket.get_embed(for_logging=True))
@@ -777,11 +896,16 @@ class Tickets(DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         tickets_to_display = []
         for ticket in tickets.values():
-            if not ticket.channel.permissions_for(ctx.author).view_channel and ctx.author.id not in ctx.bot.owner_ids:
+            if (
+                not ticket.channel.permissions_for(ctx.author).view_channel
+                and ctx.author.id not in ctx.bot.owner_ids
+            ):
                 continue
             if owner is not None and ticket.owner != owner:
                 continue
-            if claimed and (ticket.is_closed or not ticket.is_claimed or ctx.author != ticket.claimed_by):
+            if claimed and (
+                ticket.is_closed or not ticket.is_claimed or ctx.author != ticket.claimed_by
+            ):
                 continue
             if status == "open" and ticket.is_closed:
                 continue
@@ -793,10 +917,7 @@ class Tickets(DashboardIntegration, Cog):
                 continue
             tickets_to_display.append(ticket)
         if not short:
-            embeds = [
-                await ticket.get_embed(for_logging=True)
-                for ticket in tickets_to_display
-            ]
+            embeds = [await ticket.get_embed(for_logging=True) for ticket in tickets_to_display]
         else:
             embed: discord.Embed = discord.Embed(
                 title=_("{len_tickets} Ticket{s}").format(
@@ -824,11 +945,18 @@ class Tickets(DashboardIntegration, Cog):
 
     @is_support()
     @ticket.command()
-    async def close(self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None) -> None:
+    async def close(
+        self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None
+    ) -> None:
         """Close a ticket."""
         if (
             ticket is None
-            and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         try:
@@ -838,11 +966,18 @@ class Tickets(DashboardIntegration, Cog):
 
     @is_support()
     @ticket.command(aliases=["open"])
-    async def reopen(self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None) -> None:
+    async def reopen(
+        self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None
+    ) -> None:
         """Reopen a ticket."""
         if (
             ticket is None
-            and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         try:
@@ -852,11 +987,18 @@ class Tickets(DashboardIntegration, Cog):
 
     @is_support(ignore_owner=True)
     @ticket.command()
-    async def claim(self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None) -> None:
+    async def claim(
+        self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None
+    ) -> None:
         """Claim a ticket."""
         if (
             ticket is None
-            and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         try:
@@ -866,11 +1008,18 @@ class Tickets(DashboardIntegration, Cog):
 
     @is_support(ignore_owner=True)
     @ticket.command()
-    async def unclaim(self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None) -> None:
+    async def unclaim(
+        self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None
+    ) -> None:
         """Unclaim a ticket."""
         if (
             ticket is None
-            and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         try:
@@ -879,11 +1028,18 @@ class Tickets(DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
 
     @is_support(ignore_owner=True)
-    async def lock(self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None) -> None:
+    async def lock(
+        self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None
+    ) -> None:
         """Lock a ticket."""
         if (
             ticket is None
-            and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         try:
@@ -893,11 +1049,18 @@ class Tickets(DashboardIntegration, Cog):
 
     @is_support(ignore_owner=True)
     @ticket.command()
-    async def unlock(self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None) -> None:
+    async def unlock(
+        self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None
+    ) -> None:
         """Unlock a ticket."""
         if (
             ticket is None
-            and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         try:
@@ -917,7 +1080,12 @@ class Tickets(DashboardIntegration, Cog):
         """Add a member to a ticket."""
         if (
             ticket is None
-            and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         try:
@@ -937,7 +1105,12 @@ class Tickets(DashboardIntegration, Cog):
         """Remove a member from a ticket."""
         if (
             ticket is None
-            and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         try:
@@ -947,11 +1120,18 @@ class Tickets(DashboardIntegration, Cog):
 
     @is_support(ignore_owner=True)
     @ticket.command()
-    async def export(self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None) -> None:
+    async def export(
+        self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None
+    ) -> None:
         """Export a ticket."""
         if (
             ticket is None
-            and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         transcript = await ticket.export()
@@ -970,11 +1150,18 @@ class Tickets(DashboardIntegration, Cog):
         await message.edit(view=view)
 
     @is_support(ignore_owner=True)
-    async def delete(self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None) -> None:
+    async def delete(
+        self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None
+    ) -> None:
         """Delete a ticket."""
         if (
             ticket is None
-            and (ticket := discord.utils.get(self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel)) is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
         ):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         await ticket.delete_channel(ctx.author)
@@ -1011,7 +1198,9 @@ class Tickets(DashboardIntegration, Cog):
         )
         embeds.append(
             discord.Embed(
-                title=_("Look at all the different settings with `{ctx.prefix}tickets settings`.").format(ctx=ctx),
+                title=_(
+                    "Look at all the different settings with `{ctx.prefix}tickets settings`."
+                ).format(ctx=ctx),
                 color=await ctx.embed_color(),
             )
         )
@@ -1063,16 +1252,17 @@ class Tickets(DashboardIntegration, Cog):
         if f"{message.channel.id}-{message.id}" not in buttons_dropdowns:
             if message.components:
                 raise commands.UserFeedbackCheckFailure(_("This message already has components."))
-            components = buttons_dropdowns[f"{message.channel.id}-{message.id}"] = {"buttons": {}, "dropdown_options": {}}
+            components = buttons_dropdowns[f"{message.channel.id}-{message.id}"] = {
+                "buttons": {},
+                "dropdown_options": {},
+            }
         else:
             components = buttons_dropdowns[f"{message.channel.id}-{message.id}"]
         if len(components["buttons"]) >= 20:
             raise commands.UserFeedbackCheckFailure(
                 _("You can't add more than 20 buttons for one message.")
             )
-        config_identifier = CogsUtils.generate_key(
-            length=5, existing_keys=components["buttons"]
-        )
+        config_identifier = CogsUtils.generate_key(length=5, existing_keys=components["buttons"])
         components["buttons"][config_identifier] = {
             "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
             "label": label,
@@ -1105,7 +1295,10 @@ class Tickets(DashboardIntegration, Cog):
         if f"{message.channel.id}-{message.id}" not in buttons_dropdowns:
             if message.components:
                 raise commands.UserFeedbackCheckFailure(_("This message already has components."))
-            components = buttons_dropdowns[f"{message.channel.id}-{message.id}"] = {"buttons": {}, "dropdown_options": {}}
+            components = buttons_dropdowns[f"{message.channel.id}-{message.id}"] = {
+                "buttons": {},
+                "dropdown_options": {},
+            }
         else:
             components = buttons_dropdowns[f"{message.channel.id}-{message.id}"]
         if len(components["dropdown_options"]) >= 25:
@@ -1136,7 +1329,9 @@ class Tickets(DashboardIntegration, Cog):
         """Clear the components of a message."""
         buttons_dropdowns = await self.config.guild(ctx.guild).buttons_dropdowns()
         if f"{message.channel.id}-{message.id}" not in buttons_dropdowns:
-            raise commands.UserFeedbackCheckFailure(_("This message doesn't have components added with Tickets."))
+            raise commands.UserFeedbackCheckFailure(
+                _("This message doesn't have components added with Tickets.")
+            )
         buttons_dropdowns.pop(f"{message.channel.id}-{message.id}")
         if message in self.views:
             self.views.pop(message).stop()

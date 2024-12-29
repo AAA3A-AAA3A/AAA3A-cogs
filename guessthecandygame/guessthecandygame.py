@@ -31,15 +31,14 @@ class GuessTheCandyGame(Cog):
         cog_path = bundled_data_path(self)
         candies_names = {
             f.name.split(".")[0].replace("_", " ").title(): f.name
-            for f in (cog_path / "candies").iterdir() if f.is_file() and f.suffix == ".png"
+            for f in (cog_path / "candies").iterdir()
+            if f.is_file() and f.suffix == ".png"
         }
         self.candies = {
-            name: cog_path / "candies" / file_name
-            for name, file_name in candies_names.items()
+            name: cog_path / "candies" / file_name for name, file_name in candies_names.items()
         }
         self.shadows = {
-            name: cog_path / "shadows" / file_name
-            for name, file_name in candies_names.items()
+            name: cog_path / "shadows" / file_name for name, file_name in candies_names.items()
         }
 
     @property
@@ -49,6 +48,8 @@ class GuessTheCandyGame(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True, attach_files=True)
     @commands.hybrid_command(aliases=["guessthecandygame", "gtc"])
-    async def guessthecandy(self, ctx: commands.Context, difficulty: commands.Range[int, 5, 23] = 5) -> None:
+    async def guessthecandy(
+        self, ctx: commands.Context, difficulty: commands.Range[int, 5, 23] = 5
+    ) -> None:
         """Recognise the correct candy as fast as you can..."""
         await GuessTheCandyGameView(cog=self, difficulty=difficulty).start(ctx)

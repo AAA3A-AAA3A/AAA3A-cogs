@@ -126,7 +126,12 @@ class FastClickGame(DashboardIntegration, Cog):
         pass
 
     @fastclickgame.command()
-    async def multi(self, ctx: commands.Context, rounds: commands.Range[int, 1, 10] = 3, buttons: commands.Range[int, 5, 25] = 25) -> None:
+    async def multi(
+        self,
+        ctx: commands.Context,
+        rounds: commands.Range[int, 1, 10] = 3,
+        buttons: commands.Range[int, 5, 25] = 25,
+    ) -> None:
         """Play Fast Click Game with multiple rounds."""
         await FastClickGameView(cog=self, rounds=rounds, buttons=buttons, players=[]).start(ctx)
 
@@ -138,12 +143,20 @@ class FastClickGame(DashboardIntegration, Cog):
         embed = discord.Embed(
             title=_("Fast Click Game"),
             color=await ctx.embed_color(),
-            description=_("Do you want to play Fast Click Game with {ctx.author.mention}?").format(ctx=ctx),
+            description=_("Do you want to play Fast Click Game with {ctx.author.mention}?").format(
+                ctx=ctx
+            ),
         )
-        fake_ctx = type("FakeContext", (object,), {"author": player, "send": ctx.send, "channel": ctx.channel, "bot": ctx.bot})
+        fake_ctx = type(
+            "FakeContext",
+            (object,),
+            {"author": player, "send": ctx.send, "channel": ctx.channel, "bot": ctx.bot},
+        )
         if not await CogsUtils.ConfirmationAsk(fake_ctx, content=player.mention, embed=embed):
             return
-        await FastClickGameView(cog=self, rounds=1, buttons=5, players=[ctx.author, player]).start(ctx)
+        await FastClickGameView(cog=self, rounds=1, buttons=5, players=[ctx.author, player]).start(
+            ctx
+        )
 
     @fastclickgame.command(aliases=["lb"])
     async def leaderboard(self, ctx: commands.Context) -> None:

@@ -12,6 +12,7 @@ from redbot.core.utils.chat_formatting import humanize_list
 
 _: Translator = Translator("OnlyAllow", __file__)
 
+
 class GuildConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> discord.Guild:
         return await commands.GuildConverter().convert(ctx, argument)
@@ -34,7 +35,9 @@ class OnlyAllow(Cog):
             allowed_commands=[],
         )
 
-        self.cache: typing.Dict[int, typing.Dict[typing.Literal["allowed_cogs", "allowed_commands"], typing.List[str]]] = {}
+        self.cache: typing.Dict[
+            int, typing.Dict[typing.Literal["allowed_cogs", "allowed_commands"], typing.List[str]]
+        ] = {}
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -50,11 +53,15 @@ class OnlyAllow(Cog):
     async def bot_check(self, ctx: commands.Context) -> bool:
         if not await self.check_command(ctx):
             raise commands.CheckFailure(
-                _("Only specific cogs and commands are allowed in this server. Ask to a bot owner to add the cog(s) or the command(s) you want to use.")
+                _(
+                    "Only specific cogs and commands are allowed in this server. Ask to a bot owner to add the cog(s) or the command(s) you want to use."
+                )
             )
         return True
 
-    async def check_command(self, ctx: commands.Context, command: typing.Optional[commands.Command] = None) -> bool:
+    async def check_command(
+        self, ctx: commands.Context, command: typing.Optional[commands.Command] = None
+    ) -> bool:
         if command is None:
             command = ctx.command
             if isinstance(command, commands.Group):
@@ -75,19 +82,20 @@ class OnlyAllow(Cog):
                 or command.cog is None  # This condition can be removed, without any issues.
                 or isinstance(command, commands.commands._AlwaysAvailableCommand)
                 or command.qualified_name == "help"
-                or (command.cog is not None and command.cog.qualified_name in ("Core", self.qualified_name))
+                or (
+                    command.cog is not None
+                    and command.cog.qualified_name in ("Core", self.qualified_name)
+                )
             )
             or (
-                (
-                    command.cog is not None
-                    and command.cog.qualified_name in data["allowed_cogs"]
-                ) or any(
-                    command.qualified_name.split(" ")[:len(allowed_command.split(" "))] == allowed_command.split(" ")
+                (command.cog is not None and command.cog.qualified_name in data["allowed_cogs"])
+                or any(
+                    command.qualified_name.split(" ")[: len(allowed_command.split(" "))]
+                    == allowed_command.split(" ")
                     for allowed_command in data["allowed_commands"]
                 )
             )
         )
-        
 
     @commands.guild_only()
     @commands.is_owner()
@@ -127,7 +135,9 @@ class OnlyAllow(Cog):
         guild = guild or ctx.guild
         async with self.config.guild(guild).all() as data:
             if command.qualified_name in data["allowed_commands"]:
-                raise commands.BadArgument(_("This command is already in the allowed commands list."))
+                raise commands.BadArgument(
+                    _("This command is already in the allowed commands list.")
+                )
             data["allowed_commands"].append(command.qualified_name)
         self.cache[guild.id] = data
 

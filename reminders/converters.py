@@ -515,9 +515,11 @@ class TimeConverter(commands.Converter):
                 utc_now,
                 expires_at,
                 repeat,
-                text.strip().strip("".join(discord.ext.commands.view._all_quotes))
-                if text is not None
-                else None,
+                (
+                    text.strip().strip("".join(discord.ext.commands.view._all_quotes))
+                    if text is not None
+                    else None
+                ),
             )
 
 

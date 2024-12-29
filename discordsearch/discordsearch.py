@@ -190,19 +190,21 @@ class DiscordSearch(Cog):
                 embed.add_field(
                     name=f"Message ({message.id}) content:",
                     value=(
-                        message.content
-                        if len(message.content) < 1025
-                        else (message.content[:1020] + "\n...")
-                    )
-                    if message.content
-                    else "None",
+                        (
+                            message.content
+                            if len(message.content) < 1025
+                            else (message.content[:1020] + "\n...")
+                        )
+                        if message.content
+                        else "None"
+                    ),
                     inline=False,
                 )
                 embed.add_field(
                     name="Embed(s):",
-                    value=_("Look at the original message.")
-                    if len(message.embeds) > 0
-                    else "None",
+                    value=(
+                        _("Look at the original message.") if len(message.embeds) > 0 else "None"
+                    ),
                     inline=False,
                 )
                 embed.timestamp = message.created_at

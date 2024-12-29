@@ -60,9 +60,11 @@ class DiscordEditView(discord.ui.View):
         )
         for button_index in range(len(self._chunked_parameters)):
             button = discord.ui.Button(
-                label=f"Edit {self._object_qualified_name} {button_index + 1}"
-                if len(self._chunked_parameters) > 1
-                else f"Edit {self._object_qualified_name}",
+                label=(
+                    f"Edit {self._object_qualified_name} {button_index + 1}"
+                    if len(self._chunked_parameters) > 1
+                    else f"Edit {self._object_qualified_name}"
+                ),
                 style=discord.ButtonStyle.secondary,
             )
             button.callback = functools.partial(self.edit_object_button, button_index=button_index)
@@ -144,16 +146,18 @@ class DiscordEditView(discord.ui.View):
                 label=parameter.replace("_", " ").title(),
                 style=discord.TextStyle.short,
                 placeholder=repr(self.parameters[parameter]["converter"]),
-                default=str(attribute)
-                if (
-                    attribute := getattr(
-                        self._object,
-                        self.parameters[parameter].get("attribute_name", parameter),
-                        None,
+                default=(
+                    str(attribute)
+                    if (
+                        attribute := getattr(
+                            self._object,
+                            self.parameters[parameter].get("attribute_name", parameter),
+                            None,
+                        )
                     )
-                )
-                is not None
-                else None,
+                    is not None
+                    else None
+                ),
                 required=False,
             )
             text_inputs[parameter] = text_input

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:18\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:36\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -101,6 +101,10 @@ msgstr "Argumentul `/unique_answer` trebuie să fie un boolean (True sau False).
 #, docstring
 msgid "A cog to use Discord Modals, forms with graphic interface!"
 msgstr "O rotiță pentru a utiliza Discord Modals, formulare cu interfață grafică!"
+
+#: discordmodals\discordmodals.py:457 discordmodals\discordmodals.py:478
+msgid "You are not allowed to use this interaction."
+msgstr ""
 
 #: discordmodals\discordmodals.py:463
 msgid "This message is not in Config."

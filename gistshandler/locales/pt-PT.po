@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:23\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:38\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -49,6 +49,10 @@ msgstr "Não é permitido editar este texto."
 #: gistshandler\view.py:209
 msgid "Gist `{gist.id}` updated."
 msgstr "Gist `{gist.id}` actualizado."
+
+#: gistshandler\view.py:247
+msgid "You are not allowed to use this interaction."
+msgstr ""
 
 #: gistshandler\view.py:385
 msgid "You're not allowed to delete this gist."

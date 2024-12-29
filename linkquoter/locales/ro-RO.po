@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:25\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:36\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -45,37 +45,41 @@ msgstr "Serverul respectiv nu este optat pentru a permite ca mesajele sale să f
 msgid "You don't have permission to read messages in that channel."
 msgstr "Nu aveți permisiunea de a citi mesajele din acel canal."
 
-#: linkquoter\linkquoter.py:56
+#: linkquoter\linkquoter.py:46
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: linkquoter\linkquoter.py:68
 #, docstring
 msgid "Quote any Discord message from its link!"
 msgstr "Citați orice mesaj Discord din linkul său!"
 
-#: linkquoter\linkquoter.py:218
+#: linkquoter\linkquoter.py:230
 msgid "{author.display_name} said..."
 msgstr "{author.display_name} a spus..."
 
-#: linkquoter\linkquoter.py:244
+#: linkquoter\linkquoter.py:256
 msgid "Attachments:"
 msgstr "Anexe:"
 
-#: linkquoter\linkquoter.py:255
+#: linkquoter\linkquoter.py:267
 msgid "Stickers:"
 msgstr "Autocolante:"
 
-#: linkquoter\linkquoter.py:267
+#: linkquoter\linkquoter.py:279
 msgid "Replying to:"
 msgstr "Răspunzând la:"
 
-#: linkquoter\linkquoter.py:268
+#: linkquoter\linkquoter.py:280
 msgid "Click to view attachments."
 msgstr "Faceți clic pentru a vedea atașamentele."
 
-#: linkquoter\linkquoter.py:337
+#: linkquoter\linkquoter.py:352
 #, docstring
 msgid "Migrate config from LinkQuoter by Phen."
 msgstr "Migrarea configurației de la LinkQuoter de către Phen."
 
-#: linkquoter\linkquoter.py:362
+#: linkquoter\linkquoter.py:377
 msgid "Data successfully migrated from LinkQuoter by Phen."
 msgstr "Datele au fost migrate cu succes de la LinkQuoter de către Phen."
 

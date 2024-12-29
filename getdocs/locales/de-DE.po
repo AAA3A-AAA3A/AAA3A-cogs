@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:22\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:37\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -26,11 +26,11 @@ msgstr "Bitte geben Sie eine gültige Dokumentationsquelle an."
 msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
 msgstr "Ein Cog, um einige Dokumentationen in Discord zu erhalten und anzuzeigen! Benutze `[p]listsources` um eine Liste aller verfügbaren Quellen zu erhalten."
 
-#: getdocs\getdocs.py:366 getdocs\getdocs.py:1724
+#: getdocs\getdocs.py:366 getdocs\getdocs.py:1745
 msgid "RTFM caching isn't finished."
 msgstr "Das RTFM-Caching ist noch nicht abgeschlossen."
 
-#: getdocs\getdocs.py:421
+#: getdocs\getdocs.py:421 getdocs\view.py:54 getdocs\view.py:93
 msgid "No results found."
 msgstr "Keine Ergebnisse gefunden."
 
@@ -73,8 +73,16 @@ msgstr "\n"
 "        Statistiken über alle Dokumentationsquellen anzeigen.\n"
 "        "
 
-#: getdocs\getdocs.py:655
+#: getdocs\getdocs.py:657
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Holen Sie sich eine Einbettung, um den Schleifenstatus zu überprüfen."
+
+#: getdocs\view.py:21
+msgid "Select an option."
+msgstr "Wählen Sie eine Option."
+
+#: getdocs\view.py:67
+msgid "You are not allowed to use this interaction."
+msgstr ""
 

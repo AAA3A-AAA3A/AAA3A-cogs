@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-21 15:16\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:39\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -17,74 +17,78 @@ msgstr ""
 "X-Crowdin-File-ID: 263\n"
 "Language: uk_UA\n"
 
-#: dev\dev.py:468
+#: dev\dev.py:472
 #, docstring
 msgid "Various development focused utilities!"
 msgstr "Різноманітні утиліти, орієнтовані на розвиток!"
 
-#: dev\dev.py:745 dev\dev.py:807 dev\dev.py:1014
+#: dev\dev.py:750 dev\dev.py:813 dev\dev.py:1021
 msgid "Unreadable attachment with `utf-8`."
 msgstr "Нечитабельне вкладення з `utf-8`."
 
-#: dev\dev.py:762
+#: dev\dev.py:767
 msgid "This message isn't reachable."
 msgstr "Це повідомлення недоступне."
 
-#: dev\dev.py:868
+#: dev\dev.py:874
 msgid "Already running a REPL session in this channel. Exit it with `quit`."
 msgstr "У цьому каналі вже запущено сеанс REPL. Вийдіть з нього за допомогою `quit`."
 
-#: dev\dev.py:872
+#: dev\dev.py:878
 msgid "Already running a REPL session in this channel. Resume the REPL with `{prefix}replresume`."
 msgstr "На цьому каналі вже запущено сеанс REPL. Відновіть REPL за допомогою `{prefix}replresume`."
 
-#: dev\dev.py:884
+#: dev\dev.py:890
 msgid "Enter code to execute or evaluate. `exit()` or `quit` to exit. `{prefix}replpause` to pause."
 msgstr "Введіть код для виконання або обчислення. `exit()` або `quit` для виходу. `{prefix}replpause` щоб поставити на паузу."
 
-#: dev\dev.py:929
+#: dev\dev.py:935
 msgid "Exiting."
 msgstr "Виходьте."
 
-#: dev\dev.py:937
+#: dev\dev.py:943
 msgid "There is no currently running REPL session in this channel."
 msgstr "На цьому каналі немає поточної сесії REPL."
 
-#: dev\dev.py:943
+#: dev\dev.py:949
 msgid "The REPL session in this channel has been resumed."
 msgstr "Сесію REPL на цьому каналі відновлено."
 
-#: dev\dev.py:945
+#: dev\dev.py:951
 msgid "The REPL session in this channel is now paused."
 msgstr "Сеанс REPL у цьому каналі призупинено."
 
-#: dev\dev.py:967
+#: dev\dev.py:973
 msgid "Bot owners will now bypass all commands with cooldowns{optional_duration}."
 msgstr "Власники ботів тепер будуть обходити всі команди з перезавантаженням{optional_duration}."
 
-#: dev\dev.py:977
+#: dev\dev.py:983
 msgid "Bot owners will no longer bypass all commands with cooldowns{optional_duration}."
 msgstr "Власники ботів більше не будуть обходити всі команди з перезавантаженням{optional_duration}."
 
-#: dev\dev.py:1103
+#: dev\dev.py:1110
 #, docstring
 msgid "Display all Dev environment values."
 msgstr "Відобразити всі значення середовища Dev."
 
-#: dev\dev.py:1112
+#: dev\dev.py:1119
 #, docstring
 msgid "Reset its own locals in evals."
 msgstr "Скинути власні локалі в оцінках."
 
-#: dev\view.py:38
+#: dev\view.py:42
 msgid "Execute"
 msgstr "Виконати"
 
-#: dev\view.py:40
+#: dev\view.py:44
 msgid "Code to Execute"
 msgstr "Код для виконання"
 
-#: dev\view.py:42
+#: dev\view.py:46
 msgid "Write your code here..."
 msgstr "Напишіть свій код тут..."
+
+#: dev\view.py:84
+msgid "You are not allowed to use this interaction."
+msgstr ""
 

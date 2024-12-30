@@ -876,10 +876,11 @@ class Reminders(DashboardIntegration, Cog):
             """
         )
         embed: discord.Embed = discord.Embed(
-            title="Time parsing tips", color=await ctx.embed_color()
+            title=_("Time Parsing Tips"),
+            description=cleandoc(tips),
+            color=await ctx.embed_color(),
         )
-        embed.description = cleandoc(tips)
-        await ctx.send(embed=embed)
+        await Menu(pages=[embed]).start(ctx)
 
     @reminder.command()
     async def timezone(self, ctx: commands.Context, timezone: TimezoneConverter) -> None:

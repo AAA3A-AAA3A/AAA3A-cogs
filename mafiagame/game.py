@@ -837,7 +837,7 @@ class Game:
                     title=_("Roles in this game:"),
                     description="\n".join(
                         [
-                            f"- **{f'{count} ' if (count := roles.count(role)) > 1 else ''}{role.name}{"s" if count > 1 else ''}** (**{role.side}**): {_(role.ability)}"
+                            f"- **{f'{count} ' if (count := roles.count(role)) > 1 else ''}{role.name}{'s' if count > 1 else ''}** (**{role.side}**): {_(role.ability)}"
                             for role in sorted(
                                 set(roles),
                                 key=lambda role: (

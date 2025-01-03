@@ -1,0 +1,22 @@
+{
+    "author": ["AAA3A"],
+    "name": "MafiaGame",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, **please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)**!",
+    "short": "Play the Mafia game, with many roles (Mafia/Villagers/Neutral), modes (including Random and Custom), anomalies...!",
+    "description": "Play the Mafia game, with many roles (Mafia/Villagers/Neutral), modes (including Random and Custom), anomalies...!",
+    "tags": [
+        "game",
+        "mafia",
+        "kills",
+        "roles",
+        "modes",
+        "anomalies",
+        "villagers",
+        "neutral",
+        "town",
+        "werewolf"
+    ],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "chat-exporter"],
+    "min_bot_version": "3.5.0",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

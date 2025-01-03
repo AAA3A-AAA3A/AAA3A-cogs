@@ -1,0 +1,5042 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-01-03 12:11+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: mafiagame\anomalies.py:39
+msgid "Anomaly — **{emoji} {name}**!"
+msgstr ""
+
+#: mafiagame\anomalies.py:66
+msgid ""
+"Everyone except Mafia side's players and Plague Doctor turn into the Jester "
+"for one day, then return to their normal selves."
+msgstr ""
+
+#: mafiagame\anomalies.py:69
+msgid ""
+"Some weird gas filled up the sky, and you were suddenly turned into a "
+"**Jester**! You will return to your normal self the following night."
+msgstr ""
+
+#: mafiagame\anomalies.py:94
+msgid ""
+"Random amount of people will be blinded and unable to perform their roles."
+msgstr ""
+
+#: mafiagame\anomalies.py:97
+msgid ""
+"A blinding light filled the sky! You were blinded and unable to perform your"
+" task tonight... if you were going to anyways..."
+msgstr ""
+
+#: mafiagame\anomalies.py:116
+msgid ""
+"Town gets another chance to lynch someone! The second chance to vote "
+"immediately appears after someone is lynched or no one was hanged."
+msgstr ""
+
+#: mafiagame\anomalies.py:124
+msgid ""
+"Some dead can talk! But not vote because, you know, dead people can't vote."
+msgstr ""
+
+#: mafiagame\anomalies.py:127
+msgid "You suddenly feel a surge of energy, and you can talk to the living!"
+msgstr ""
+
+#: mafiagame\anomalies.py:174
+msgid "The town has only 10 seconds to talk and 10 seconds to vote!"
+msgstr ""
+
+#: mafiagame\anomalies.py:180
+msgid ""
+"Messages from last night disappeared! Who killed who? Who saved who? Who "
+"knows? Only thing you know is who's dead..."
+msgstr ""
+
+#: mafiagame\anomalies.py:191
+msgid "The role of a random player gets revealed to everyone!"
+msgstr ""
+
+#: mafiagame\anomalies.py:199
+msgid "{player.member.display_name} is {the_or_a} **{player.role.name}**!"
+msgstr ""
+
+#: mafiagame\anomalies.py:218
+msgid "A random dead player gets revived!"
+msgstr ""
+
+#: mafiagame\anomalies.py:227
+msgid "{player.member.display_name} has been revived!"
+msgstr ""
+
+#: mafiagame\anomalies.py:240
+msgid "The Sun is causing a heat stroke! A random player will die."
+msgstr ""
+
+#: mafiagame\anomalies.py:257
+msgid ""
+"The cat has gotten your tongue! Random amount of peope can't speak, but they"
+" can vote."
+msgstr ""
+
+#: mafiagame\game.py:70
+msgid "🌞 Day {number} 🌞"
+msgstr ""
+
+#: mafiagame\game.py:75
+msgid "Currently alive:"
+msgstr ""
+
+#: mafiagame\game.py:85
+msgid "Currently dead:"
+msgstr ""
+
+#: mafiagame\game.py:90 mafiagame\game.py:1027 mafiagame\game.py:1039
+#: mafiagame\game.py:1049 mafiagame\game.py:1235 mafiagame\mafiagame.py:374
+msgid " - Town Traitor"
+msgstr ""
+
+#: mafiagame\game.py:97
+msgid "No one is dead yet..."
+msgstr ""
+
+#: mafiagame\game.py:130
+msgid "Night falls... 🌙"
+msgstr ""
+
+#: mafiagame\game.py:131
+msgid ""
+"Alright everyone, close your eyes and let the night begin. It's 🔪 story time"
+" 🔪!"
+msgstr ""
+
+#: mafiagame\game.py:137
+msgid "Don't panic, I've muted all of you."
+msgstr ""
+
+#: mafiagame\game.py:169
+msgid "The Mafia was too lazy to kill anyone tonight..."
+msgstr ""
+
+#: mafiagame\game.py:222
+msgid ""
+"The Mafia visited {tg.member.display_name} tonight, but they were already "
+"dead!"
+msgstr ""
+
+#: mafiagame\game.py:233
+msgid "{tg.member.display_name} hasn't been found!"
+msgstr ""
+
+#: mafiagame\game.py:236 mafiagame\roles.py:1389 mafiagame\roles.py:2094
+#: mafiagame\roles.py:2534 mafiagame\roles.py:3647
+msgid "You were unable to perform your action."
+msgstr ""
+
+#: mafiagame\game.py:257
+msgid "They were AFK for too long."
+msgstr ""
+
+#: mafiagame\game.py:285
+msgid "Day dawns... 🌞"
+msgstr ""
+
+#: mafiagame\game.py:286
+msgid "Good morning everyone! It's time to discuss who you think is a Mafia."
+msgstr ""
+
+#: mafiagame\game.py:299
+msgid ""
+"{mayor_player.member.display_name} has revealed themselves as **Mayor**!"
+msgstr ""
+
+#: mafiagame\game.py:302
+msgid "The {mayor_player.member.mention}'s vote will now count as two."
+msgstr ""
+
+#: mafiagame\game.py:314
+msgid "Now, I will give you {talk_timeout} seconds to talk! 🔊"
+msgstr ""
+
+#: mafiagame\game.py:317
+msgid ""
+"Want to accuse someone? Want to defend yourself, or confess? Now is the "
+"time!"
+msgstr ""
+
+#: mafiagame\game.py:378
+msgid ""
+"🗳️ Voting time! 🗳️\n"
+"Minimum votes required: {minimum_votes_required}"
+msgstr ""
+
+#: mafiagame\game.py:388
+msgid "You have {voting_timeout} seconds to vote."
+msgstr ""
+
+#: mafiagame\game.py:468
+msgid "Voting Results:"
+msgstr ""
+
+#: mafiagame\game.py:503
+msgid "{target.member.display_name} has been called to the stand!"
+msgstr ""
+
+#: mafiagame\game.py:506
+msgid ""
+"You have {defend_timeout} seconds to defend yourself, before the town casts "
+"your judgement."
+msgstr ""
+
+#: mafiagame\game.py:519
+msgid ""
+"It's judgement time! The town has now {judgement_timeout} seconds to vote."
+msgstr ""
+
+#: mafiagame\game.py:543
+msgid "Judgement Results:"
+msgstr ""
+
+#: mafiagame\game.py:548 mafiagame\views.py:1115
+msgid "👿 GUIlTY ({len_guilty})"
+msgstr ""
+
+#: mafiagame\game.py:565 mafiagame\views.py:1124
+msgid "😇 INNOCENT ({len_innocent})"
+msgstr ""
+
+#: mafiagame\game.py:582
+msgid "No one has voted."
+msgstr ""
+
+#: mafiagame\game.py:608
+msgid "They have been voted out by the town."
+msgstr ""
+
+#: mafiagame\game.py:614
+msgid "The Lawyer has obtained an acquittal for {target.member.display_name}!"
+msgstr ""
+
+#: mafiagame\game.py:627
+msgid "The Lawyer has defended a non-Villager!"
+msgstr ""
+
+#: mafiagame\game.py:630
+msgid "{lawyer.member.display_name} is the **Lawyer**!"
+msgstr ""
+
+#: mafiagame\game.py:636
+msgid "{target.member.display_name} is the **{target.role.name}**!"
+msgstr ""
+
+#: mafiagame\game.py:649
+msgid "The town was unable to reach a consensus."
+msgstr ""
+
+#: mafiagame\game.py:650
+msgid "Better work together on that next time!"
+msgstr ""
+
+#: mafiagame\game.py:740
+msgid "There is no **Town Traitor** in this game!"
+msgstr ""
+
+#: mafiagame\game.py:741
+msgid "It would be too much chaos for a small game like this."
+msgstr ""
+
+#: mafiagame\game.py:782
+msgid "A game of Mafia is currently in progress."
+msgstr ""
+
+#: mafiagame\game.py:801
+msgid "👋 Welcome to Mafia! 👋"
+msgstr ""
+
+#: mafiagame\game.py:802
+msgid "If you haven't read the rules yet, please do it now."
+msgstr ""
+
+#: mafiagame\game.py:806
+msgid "Some important rules:"
+msgstr ""
+
+#: mafiagame\game.py:807
+msgid ""
+"💬 Please not send any messages, unless instructed to do so.\n"
+"💢 Admins, please don't use your godly powers to talk when others can't.\n"
+"🔇 Please don't talk about the game outside of this channel, unless instructed to do so.\n"
+"💯 Please don't leave the game unless you have a valid reason to do so.\n"
+"🚫 Screenshots are not permitted and would only ruin the game."
+msgstr ""
+
+#: mafiagame\game.py:826
+msgid "👀 Mafia is starting...! 👀"
+msgstr ""
+
+#: mafiagame\game.py:837
+msgid "Roles in this game:"
+msgstr ""
+
+#: mafiagame\game.py:882 mafiagame\views.py:329
+msgid "🔪 You are {the_or_a} **Town Traitor**! 🔪"
+msgstr ""
+
+#: mafiagame\game.py:884 mafiagame\game.py:901 mafiagame\roles.py:208
+#: mafiagame\roles.py:447 mafiagame\roles.py:449 mafiagame\views.py:331
+#: mafiagame\views.py:347
+msgid "the"
+msgstr ""
+
+#: mafiagame\game.py:886 mafiagame\game.py:903 mafiagame\roles.py:210
+#: mafiagame\roles.py:449 mafiagame\views.py:333 mafiagame\views.py:349
+msgid "a"
+msgstr ""
+
+#: mafiagame\game.py:889 mafiagame\views.py:336
+msgid "You are a Villager, but you are secretly working for the Mafia."
+msgstr ""
+
+#: mafiagame\game.py:899 mafiagame\views.py:345
+msgid "🔪 You are {the_or_a} **Town VIP**! 🔪"
+msgstr ""
+
+#: mafiagame\game.py:906 mafiagame\views.py:352
+msgid "Mafia have to kill you before winning the game."
+msgstr ""
+
+#: mafiagame\game.py:940
+msgid "🔪 Let the game begin! 🔪"
+msgstr ""
+
+#: mafiagame\game.py:1007
+msgid "Game Over — {side} won the game!"
+msgstr ""
+
+#: mafiagame\game.py:1022
+msgid "🏆 Main Winners ({len_main_winners}):"
+msgstr ""
+
+#: mafiagame\game.py:1027 mafiagame\game.py:1039 mafiagame\game.py:1049
+msgid " - Town VIP"
+msgstr ""
+
+#: mafiagame\game.py:1034
+msgid "🏅 Secondary Winners ({len_secondary_winners}):"
+msgstr ""
+
+#: mafiagame\game.py:1046
+msgid "🗡️ Losers ({len_losers}):"
+msgstr ""
+
+#: mafiagame\game.py:1055
+msgid ""
+"Thanks for playing! Enjoyed the game? Please consider supporting the Dev!"
+msgstr ""
+
+#: mafiagame\game.py:1064
+msgid ""
+"{town_vip_player.member.display_name} was the **Town VIP** and was still "
+"alive!"
+msgstr ""
+
+#: mafiagame\game.py:1068
+msgid "{town_vip_players} were the **Town VIPs** and were still alive!"
+msgstr ""
+
+#: mafiagame\game.py:1082 mafiagame\views.py:1546
+msgid "Support the Dev!"
+msgstr ""
+
+#: mafiagame\game.py:1105
+msgid "🏆 New Achievements Unlocked! 🏆"
+msgstr ""
+
+#: mafiagame\game.py:1205
+msgid "{host.mention} Do you want to delete the Mafia channel?"
+msgstr ""
+
+#: mafiagame\game.py:1232
+msgid "🔪 Here's your Mafia team! 🔪"
+msgstr ""
+
+#: mafiagame\game.py:1242
+msgid "You can DM the bot to communicate with your team!"
+msgstr ""
+
+#: mafiagame\mafiagame.py:40
+msgid "You can't disable the GodFather or the Villager role."
+msgstr ""
+
+#: mafiagame\mafiagame.py:43
+msgid "Invalid Mafia role."
+msgstr ""
+
+#: mafiagame\mafiagame.py:57
+msgid "Invalid Mafia mode."
+msgstr ""
+
+#: mafiagame\mafiagame.py:71
+msgid "Invalid Mafia anomaly."
+msgstr ""
+
+#: mafiagame\mafiagame.py:89
+#, docstring
+msgid ""
+"Play the Mafia game, with many roles (Mafia/Villagers/Neutral), modes "
+"(including Random and Custom), anomalies...!"
+msgstr ""
+
+#: mafiagame\mafiagame.py:392
+msgid "This command doesn't work as user installable."
+msgstr ""
+
+#: mafiagame\mafiagame.py:410
+#, docstring
+msgid "Start a game of Mafia!"
+msgstr ""
+
+#: mafiagame\mafiagame.py:412
+msgid "A game is already running in this guild."
+msgstr ""
+
+#: mafiagame\mafiagame.py:428
+msgid "I don't have the permission to create channels in the category."
+msgstr ""
+
+#: mafiagame\mafiagame.py:453
+#, docstring
+msgid "Explain how to play the Mafia game."
+msgstr ""
+
+#: mafiagame\mafiagame.py:463
+#, docstring
+msgid "Show the informations about a specific role."
+msgstr ""
+
+#: mafiagame\mafiagame.py:468
+#, docstring
+msgid "Show the different roles of the Mafia game"
+msgstr ""
+
+#: mafiagame\mafiagame.py:475
+#, docstring
+msgid "Show the informations about a specific mode."
+msgstr ""
+
+#: mafiagame\mafiagame.py:480
+#, docstring
+msgid "Show the different modes of the Mafia game."
+msgstr ""
+
+#: mafiagame\mafiagame.py:492
+#, docstring
+msgid "Set your default custom dying message."
+msgstr ""
+
+#: mafiagame\mafiagame.py:500
+#, docstring
+msgid "Show the information about a specific anomaly."
+msgstr ""
+
+#: mafiagame\mafiagame.py:505
+#, docstring
+msgid "Show the different anomalies of the Mafia game."
+msgstr ""
+
+#: mafiagame\mafiagame.py:528
+#, docstring
+msgid "Show your achievements or the achievements of a specific member."
+msgstr ""
+
+#: mafiagame\mafiagame.py:530 mafiagame\mafiagame.py:628
+#: mafiagame\mafiagame.py:647 mafiagame\mafiagame.py:660
+msgid "A bot can't play the Mafia game."
+msgstr ""
+
+#: mafiagame\mafiagame.py:536
+msgid "General Achievements"
+msgstr ""
+
+#: mafiagame\mafiagame.py:538
+msgid "Achievements — {role.name}"
+msgstr ""
+
+#: mafiagame\mafiagame.py:565
+msgid "✅ All achievements completed!"
+msgstr ""
+
+#: mafiagame\mafiagame.py:568
+msgid "Completed {completed} out of {total} achievements ({percentage}%)!"
+msgstr ""
+
+#: mafiagame\mafiagame.py:579
+msgid "✨ Developer ✨"
+msgstr ""
+
+#: mafiagame\mafiagame.py:580
+msgid "Has developed this Mafia game."
+msgstr ""
+
+#: mafiagame\mafiagame.py:585
+msgid "✨ Helper ✨"
+msgstr ""
+
+#: mafiagame\mafiagame.py:586
+msgid "Has helped to create this Mafia game."
+msgstr ""
+
+#: mafiagame\mafiagame.py:591
+msgid "✨ Tester ✨"
+msgstr ""
+
+#: mafiagame\mafiagame.py:592
+msgid "Has helped to test this Mafia game."
+msgstr ""
+
+#: mafiagame\mafiagame.py:626
+#, docstring
+msgid "Ban a member temporary from the Mafia game in this server."
+msgstr ""
+
+#: mafiagame\mafiagame.py:637
+msgid ""
+"This member has been **temporarily banned for {duration}** from the Mafia "
+"game in this server."
+msgstr ""
+
+#: mafiagame\mafiagame.py:645
+#, docstring
+msgid "Unban a member from the Mafia game in this server."
+msgstr ""
+
+#: mafiagame\mafiagame.py:650
+msgid "The member is not banned from the Mafia game in this server."
+msgstr ""
+
+#: mafiagame\mafiagame.py:653
+msgid "This member has been **unbanned** from the Mafia game in this server."
+msgstr ""
+
+#: mafiagame\mafiagame.py:658
+#, docstring
+msgid "Kill a member for AFK from the Mafia game in this server."
+msgstr ""
+
+#: mafiagame\mafiagame.py:662
+msgid "A game is not running in this guild."
+msgstr ""
+
+#: mafiagame\mafiagame.py:665
+msgid "This member is not playing the Mafia game in this server."
+msgstr ""
+
+#: mafiagame\mafiagame.py:669
+msgid "This player is already dead in the Mafia game in this server."
+msgstr ""
+
+#: mafiagame\mafiagame.py:672
+msgid "This player has been **killed** from the Mafia game in this server."
+msgstr ""
+
+#: mafiagame\modes.py:68
+msgid "Mode — **{emoji} {name}**"
+msgstr ""
+
+#: mafiagame\modes.py:75
+msgid "**•** **Must:** {must}"
+msgstr ""
+
+#: mafiagame\modes.py:79
+msgid ""
+"\n"
+"**•** **May (1):** {may}"
+msgstr ""
+
+#: mafiagame\modes.py:83
+msgid ""
+"\n"
+"**•** **Choices:**"
+msgstr ""
+
+#: mafiagame\modes.py:85
+msgid ""
+"\n"
+"  **{amount}** from {choices}"
+msgstr ""
+
+#: mafiagame\modes.py:93
+msgid "Any"
+msgstr ""
+
+#: mafiagame\modes.py:98
+msgid "{players_range} Players"
+msgstr ""
+
+#: mafiagame\modes.py:115
+msgid "{players_number} Players"
+msgstr ""
+
+#: mafiagame\modes.py:116
+msgid ""
+"**•** Villagers: {villagers}\n"
+"**•** Mafia: {mafia}\n"
+"**•** Neutral: {neutral}"
+msgstr ""
+
+#: mafiagame\modes.py:180
+msgid "A mode with 3 classic roles and some villagers."
+msgstr ""
+
+#: mafiagame\modes.py:191
+msgid "A mode which includes some crazy roles."
+msgstr ""
+
+#: mafiagame\modes.py:206
+msgid "A mode where chaos reigns."
+msgstr ""
+
+#: mafiagame\modes.py:249
+msgid "A mode where survival is key."
+msgstr ""
+
+#: mafiagame\modes.py:286
+msgid "A mode where blood is spilled."
+msgstr ""
+
+#: mafiagame\modes.py:447
+msgid "A mode where roles are randomly assigned."
+msgstr ""
+
+#: mafiagame\modes.py:516
+msgid ""
+"A mode where you can choose all the roles. Use `[p]setmafia customroles` to "
+"configure this mode."
+msgstr ""
+
+#: mafiagame\roles.py:140
+msgid "{member.display_name} has been attacked by **the Mafia**!"
+msgstr ""
+
+#: mafiagame\roles.py:145
+msgid "{member.display_name} has been **lynched**!"
+msgstr ""
+
+#: mafiagame\roles.py:148
+msgid "{member.display_name} has killed **themselves**!"
+msgstr ""
+
+#: mafiagame\roles.py:153
+msgid "{member.display_name} has been considered as **AFK**!"
+msgstr ""
+
+#: mafiagame\roles.py:158
+msgid ""
+"{member.display_name} has been killed by the **Anomaly Scorching Sun**!"
+msgstr ""
+
+#: mafiagame\roles.py:162
+msgid "{member.display_name} has been killed by {the_or_a} **{cause}**!"
+msgstr ""
+
+#: mafiagame\roles.py:194
+msgid "They were {the_or_a} **{player.role.name}**!"
+msgstr ""
+
+#: mafiagame\roles.py:198
+msgid "They were **???**!"
+msgstr ""
+
+#: mafiagame\roles.py:206
+msgid "They were {the_or_a} **Town Traitor**!"
+msgstr ""
+
+#: mafiagame\roles.py:213
+msgid "They were working with the Mafia to kill the villagers."
+msgstr ""
+
+#: mafiagame\roles.py:229 mafiagame\roles.py:264
+msgid "Last Words (Dying Message):"
+msgstr ""
+
+#: mafiagame\roles.py:230
+msgid "???"
+msgstr ""
+
+#: mafiagame\roles.py:253
+msgid "{player.member.display_name} were {the_or_a} **{player.role.name}**!"
+msgstr ""
+
+#: mafiagame\roles.py:359
+msgid "No special ability."
+msgstr ""
+
+#: mafiagame\roles.py:409
+msgid "You are {now}{the_or_a} **{name}**!"
+msgstr ""
+
+#: mafiagame\roles.py:418
+msgid ""
+"\n"
+"\n"
+"*Outside the `Custom` mode, it is not possible to be assigned this role at the start of the game.*"
+msgstr ""
+
+#: mafiagame\roles.py:426
+msgid "Ability: 🔪"
+msgstr ""
+
+#: mafiagame\roles.py:427
+msgid "Side: 👀"
+msgstr ""
+
+#: mafiagame\roles.py:428
+msgid "Visit Type: 🏃‍♂️"
+msgstr ""
+
+#: mafiagame\roles.py:430
+msgid "Objective: 🥅"
+msgstr ""
+
+#: mafiagame\roles.py:431
+msgid " *(secondary)*"
+msgstr ""
+
+#: mafiagame\roles.py:630
+msgid ""
+"God Father is the big bad boss of the town. Every mafia is under his thumb, "
+"ready to execute the God Father's will."
+msgstr ""
+
+#: mafiagame\roles.py:633
+msgid ""
+"Each night, the God Father can select a player to kill. If they have a "
+"Mafia, their Mafia will attack the target instead, and they will not be seen"
+" visiting."
+msgstr ""
+
+#: mafiagame\roles.py:637
+msgid "Kill all villagers."
+msgstr ""
+
+#: mafiagame\roles.py:685
+msgid ""
+"Your God Father is about to die and appointed you to replace them at the "
+"head of the Mafia! *You will now be able to choose who to kill every "
+"night...*"
+msgstr ""
+
+#: mafiagame\roles.py:694
+msgid ""
+"The God Father's right hand. The mafia lives to serve the God Father, doing "
+"the biddings the God Father commands. That is always how it is... for now..."
+msgstr ""
+
+#: mafiagame\roles.py:697
+msgid ""
+"Each night, the Mafia carries out the God Father's kill orders. If the God "
+"Father dies, they become the God Father."
+msgstr ""
+
+#: mafiagame\roles.py:701
+msgid "Help the God Father to kill all villagers."
+msgstr ""
+
+#: mafiagame\roles.py:721
+msgid "Win the game without dying or becoming the God Father."
+msgstr ""
+
+#: mafiagame\roles.py:734
+msgid ""
+"{target.member.display_name} was attacked by the Mafia but the Doctor saved "
+"them!"
+msgstr ""
+
+#: mafiagame\roles.py:747
+msgid ""
+"As the villagers' only medical professional, the Doctor possesses all the "
+"knowledge to save mafia victims. However, the online degree does not cover "
+"non mafia victims."
+msgstr ""
+
+#: mafiagame\roles.py:750
+msgid ""
+"Each night, the Doctor can select a player to save. If the player is "
+"attacked, they will survive. The Doctor can't save the same person two "
+"nights in row."
+msgstr ""
+
+#: mafiagame\roles.py:754
+msgid "Save the Mafia's victims."
+msgstr ""
+
+#: mafiagame\roles.py:775
+msgid "Heal someone who was attacked."
+msgstr ""
+
+#: mafiagame\roles.py:780
+msgid "Save 3 people in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:784
+msgid "Heal yourself after being attacked."
+msgstr ""
+
+#: mafiagame\roles.py:794
+msgid ""
+"It is late at night. Another case was reported. It's time to start cracking "
+"the case and expose the Mafia in this town..."
+msgstr ""
+
+#: mafiagame\roles.py:797
+msgid ""
+"Each night, the Detective can select a player to investigate. They will know"
+" if they are on the Mafia's side or not."
+msgstr ""
+
+#: mafiagame\roles.py:801
+msgid "Sniff out the Mafia."
+msgstr ""
+
+#: mafiagame\roles.py:821
+msgid "Investigate someone who is not on the Mafia's side."
+msgstr ""
+
+#: mafiagame\roles.py:825
+msgid "Investigate someone who is on the Mafia's side."
+msgstr ""
+
+#: mafiagame\roles.py:840
+msgid "{target.member.display_name} is on the Mafia's side!"
+msgstr ""
+
+#: mafiagame\roles.py:842
+msgid "{target.member.display_name} is not on the Mafia's side!"
+msgstr ""
+
+#: mafiagame\roles.py:854
+msgid ""
+"It's another normal day for good villager. Just finished a day of hard work,"
+" and it's good to be back home. Hope nothing bad happens!"
+msgstr ""
+
+#: mafiagame\roles.py:857
+msgid "Survive the nights."
+msgstr ""
+
+#: mafiagame\roles.py:877 mafiagame\roles.py:2342
+msgid "Stay alive until the end of the game."
+msgstr ""
+
+#: mafiagame\roles.py:891
+msgid ""
+"The Vigilante is a villager who has taken the law into their own hands. They"
+" will do whatever it takes to protect the town."
+msgstr ""
+
+#: mafiagame\roles.py:894
+msgid ""
+"Each night, the Vigilante can select a player to kill. However, if they kill"
+" a villager, they kill their target, but also themselves."
+msgstr ""
+
+#: mafiagame\roles.py:898
+msgid "Kill all the Mafia's members."
+msgstr ""
+
+#: mafiagame\roles.py:921
+msgid "Shoot 3 Non-Villagers' players in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:925
+msgid "Shoot yourself at night."
+msgstr ""
+
+#: mafiagame\roles.py:932
+msgid "The Vigilante can't shoot on Night 1."
+msgstr ""
+
+#: mafiagame\roles.py:940
+msgid "They killed someone on the villagers' side."
+msgstr ""
+
+#: mafiagame\roles.py:947
+msgid ""
+"The Mayor is the leader of the town. They can reveal themselves to the town "
+"and permanently gain an extra vote."
+msgstr ""
+
+#: mafiagame\roles.py:950
+msgid "A night, the Mayor can choose to reveal themselves to the town."
+msgstr ""
+
+#: mafiagame\roles.py:951
+msgid "Help the town lynch the Mafia's members."
+msgstr ""
+
+#: mafiagame\roles.py:971
+msgid "Win without revealing yourself as the Mayor."
+msgstr ""
+
+#: mafiagame\roles.py:975
+msgid "Reveal yourself as Mayor on day 1."
+msgstr ""
+
+#: mafiagame\roles.py:982
+msgid "You've already revealed yourself!"
+msgstr ""
+
+#: mafiagame\roles.py:984
+msgid ""
+"Hey Mayor! Would you like to reveal yourself to the town the next morning?"
+msgstr ""
+
+#: mafiagame\roles.py:1010
+msgid "You have decided to reveal yourself to the town the next morning!"
+msgstr ""
+
+#: mafiagame\roles.py:1016
+msgid "You have decided to not reveal yourself to the town the next morning!"
+msgstr ""
+
+#: mafiagame\roles.py:1029
+msgid ""
+"A master of deception and cunning, the Framer knows every trick to deceive "
+"the town's investigative force. Planting fake evidence and alibis are what "
+"makes the Framer feared in the investigative world."
+msgstr ""
+
+#: mafiagame\roles.py:1032
+msgid ""
+"Each night, the Framer can select a player to frame. They will appear as a "
+"member of the Mafia, to all role-checkers for the night."
+msgstr ""
+
+#: mafiagame\roles.py:1036
+msgid "Mislead the village."
+msgstr ""
+
+#: mafiagame\roles.py:1056
+msgid "Frame a member of the Mafia."
+msgstr ""
+
+#: mafiagame\roles.py:1066
+msgid ""
+"A being of unknown intentions, the Executioner harbors unforgivable hatred "
+"towards a specific villager. Did the villager insult him? Stole something? "
+"Took the last curly fry? Who knows. All the executioner wants is the demise "
+"of this villager..."
+msgstr ""
+
+#: mafiagame\roles.py:1069
+msgid ""
+"Each day, the Executioner tries to convince the town to lynch a given "
+"target."
+msgstr ""
+
+#: mafiagame\roles.py:1072
+msgid "Convince the town to lynch their target during a vote."
+msgstr ""
+
+#: mafiagame\roles.py:1094
+msgid "Get your target lynched on day 1."
+msgstr ""
+
+#: mafiagame\roles.py:1100
+msgid "Get your target lynched on day 10 or later."
+msgstr ""
+
+#: mafiagame\roles.py:1120 mafiagame\views.py:363
+msgid "🔫 Your target is {player.global_target.member.display_name}! 🔫"
+msgstr ""
+
+#: mafiagame\roles.py:1123 mafiagame\views.py:366
+msgid "You must get them lynched by the town."
+msgstr ""
+
+#: mafiagame\roles.py:1137
+msgid ""
+"Your target, {other.member.display_name}, has died, you have failed to make "
+"the town lynch them!"
+msgstr ""
+
+#: mafiagame\roles.py:1146
+msgid ""
+"The Jester sits in the corner of the room, waiting in anticipation. The "
+"rioters are shouting outside, waiting to lynch the Jester. Does the Jester "
+"fear death? No. Death fears the Jester..."
+msgstr ""
+
+#: mafiagame\roles.py:1149
+msgid "Get themselves lynched by the town, and win the game."
+msgstr ""
+
+#: mafiagame\roles.py:1172
+msgid "Get lynched on day 1."
+msgstr ""
+
+#: mafiagame\roles.py:1178
+msgid "Get lynched on day 10 or later."
+msgstr ""
+
+#: mafiagame\roles.py:1196
+msgid ""
+"As a freelance investigator, the Private Investigator works alone. With only"
+" a camera and incredible stealth, the Private Investigator can gather "
+"information faster than the local law."
+msgstr ""
+
+#: mafiagame\roles.py:1199
+msgid ""
+"Each night, the Private Investigator can check two people to see if they "
+"share the same side."
+msgstr ""
+
+#: mafiagame\roles.py:1203 mafiagame\roles.py:1279
+msgid "Gather informations for the village."
+msgstr ""
+
+#: mafiagame\roles.py:1229
+msgid "Check 2 players from different sides."
+msgstr ""
+
+#: mafiagame\roles.py:1233
+msgid "Investigate yourself."
+msgstr ""
+
+#: mafiagame\roles.py:1256
+msgid ""
+"{tg1.member.display_name} and {tg2.member.display_name} are on the same "
+"side!"
+msgstr ""
+
+#: mafiagame\roles.py:1260
+msgid ""
+"{tg1.member.display_name} and {tg2.member.display_name} are not on the same "
+"side!"
+msgstr ""
+
+#: mafiagame\roles.py:1272
+msgid ""
+"Highly trained in espionage, the Spy sneaks around the town to track down "
+"mafia activities. However, the Spy stays a safe distance from his targets, "
+"knowing he is no match for them yet..."
+msgstr ""
+
+#: mafiagame\roles.py:1275
+msgid ""
+"Each night, the Spy can choose a target to spy on each night. They can see "
+"who the target visits on the night."
+msgstr ""
+
+#: mafiagame\roles.py:1305
+msgid "See your target visit you."
+msgstr ""
+
+#: mafiagame\roles.py:1320
+msgid "Spy on the same player 3 times and see them visiting."
+msgstr ""
+
+#: mafiagame\roles.py:1330 mafiagame\roles.py:1636
+msgid "Your target, {target.member.display_name}, "
+msgstr ""
+
+#: mafiagame\roles.py:1332
+msgid " has visited {t.member.display_name} this night."
+msgstr ""
+
+#: mafiagame\roles.py:1335
+msgid "apparently didn't visit anyone this night."
+msgstr ""
+
+#: mafiagame\roles.py:1344
+msgid ""
+"A master of distractions, the Distractor can divert the attention of people "
+"however they please. With only a fear of poultry, the Distractor are a "
+"fearsome foe to the Mafia."
+msgstr ""
+
+#: mafiagame\roles.py:1347
+msgid ""
+"Each night, the Distractor can choose one player to prevent them from using "
+"their role. They can distract anyone with a visiting role."
+msgstr ""
+
+#: mafiagame\roles.py:1351
+msgid "Distract the bad guys."
+msgstr ""
+
+#: mafiagame\roles.py:1377
+msgid "Successfully distract someone."
+msgstr ""
+
+#: mafiagame\roles.py:1388 mafiagame\roles.py:2093
+msgid "Sorry, you got distracted tonight!"
+msgstr ""
+
+#: mafiagame\roles.py:1399
+msgid ""
+"The Baiter is a serial killer, but really a lazy one. Instead of hunting for"
+" prey, Baiter prefer to stay at home and kill whoever shows up."
+msgstr ""
+
+#: mafiagame\roles.py:1402
+msgid ""
+"Baiter doesn't have any special night abilities, but they have a powerful "
+"passive ability: they kill anyone that visits them with an active visit "
+"type. They can kill an unlimited number of players in any night."
+msgstr ""
+
+#: mafiagame\roles.py:1405
+msgid "Kill at least 3 people."
+msgstr ""
+
+#: mafiagame\roles.py:1437
+msgid "Kill 3 or more people in one night."
+msgstr ""
+
+#: mafiagame\roles.py:1446
+msgid "Win the game without killing any Villagers."
+msgstr ""
+
+#: mafiagame\roles.py:1452
+msgid "Have no one get killed by you the whole game."
+msgstr ""
+
+#: mafiagame\roles.py:1466
+msgid "They have visited them."
+msgstr ""
+
+#: mafiagame\roles.py:1474
+msgid ""
+"The Bomber loves big booms. Bomber worked at a mine before, but those "
+"explosions got old quick. Bomber missed the excitement, the rush! That's why"
+" the Bomber came to this town, look for more things to go big boom..."
+msgstr ""
+
+#: mafiagame\roles.py:1477
+msgid ""
+"Each night, the Bomber can plant a bomb on someone or blow up all planted "
+"bombs. They have a 20 percent chance of strapping a bomb to themselves each "
+"night, in which they need to spend the night defusing the bomb. If they die,"
+" one of their planted bombs will explode randomly. Considered a threat to "
+"the village, the town isn't safe until the Bomber is dead."
+msgstr ""
+
+#: mafiagame\roles.py:1481 mafiagame\roles.py:4262
+msgid "KILL EVERYONE!"
+msgstr ""
+
+#: mafiagame\roles.py:1513
+msgid "Explode 5 or more players at once."
+msgstr ""
+
+#: mafiagame\roles.py:1521
+msgid "Explode a God Father."
+msgstr ""
+
+#: mafiagame\roles.py:1537
+msgid ""
+"You've attached a bomb to yourself by mistake, and spent all night defusing "
+"it! Your target is not dead."
+msgstr ""
+
+#: mafiagame\roles.py:1546
+msgid "One of the Bomber's bombs has exploded!"
+msgstr ""
+
+#: mafiagame\roles.py:1554
+msgid "The Bomber has died, and one of their bombs has exploded!"
+msgstr ""
+
+#: mafiagame\roles.py:1573
+msgid ""
+"A protective guardian, the Watcher has eyes of a hawk. Unlike the Vigilante,"
+" the Watcher does not believe in violence. Justice should be handled the "
+"right way."
+msgstr ""
+
+#: mafiagame\roles.py:1576
+msgid ""
+"Each night, the Watcher can choose a player to watch for the night. The "
+"Watcher will be told which players have visited their chosen target."
+msgstr ""
+
+#: mafiagame\roles.py:1580
+msgid "Gather info for the village."
+msgstr ""
+
+#: mafiagame\roles.py:1608
+msgid "Successfully watch your target get visited by someone."
+msgstr ""
+
+#: mafiagame\roles.py:1623
+msgid "Have 4 or more people visit your target in one night."
+msgstr ""
+
+#: mafiagame\roles.py:1638
+msgid " has been visited by {players} this night."
+msgstr ""
+
+#: mafiagame\roles.py:1642
+msgid "hasn't been visited by anyone this night."
+msgstr ""
+
+#: mafiagame\roles.py:1651
+msgid ""
+"The town seems to have lost its usual liveliness. The streets are empty, the"
+" shops are closed, and a fog covers the entire village. Not a single soul "
+"dares to step out into the night. Out of the fog steps out a black, hooded "
+"figure with a bird mask. It's time..."
+msgstr ""
+
+#: mafiagame\roles.py:1654
+msgid ""
+"Each night, the Plague Doctor can visit someone to infect them with the plague. The infected players will spread the plague to all those whom they visit and those who visit them.\n"
+"🦠 Once the Plague Doctor has everyone infected, a warning is given to the party that the Plague Doctor has infected everyone with the Plague. The party then has to lynch the Plague Doctor on the day of the warning or else the Plague Doctor will win the game."
+msgstr ""
+
+#: mafiagame\roles.py:1658
+msgid "Infect everyone."
+msgstr ""
+
+#: mafiagame\roles.py:1680
+msgid "Infect all the living players."
+msgstr ""
+
+#: mafiagame\roles.py:1688
+msgid "Have all the living players be infected on day 5 or earlier."
+msgstr ""
+
+#: mafiagame\roles.py:1733
+msgid "The **Plague Doctor** has infected everyone!"
+msgstr ""
+
+#: mafiagame\roles.py:1734
+msgid ""
+"The town has one day to lynch the Plague Doctor, or else the Plague Doctor "
+"will win the game!"
+msgstr ""
+
+#: mafiagame\roles.py:1754
+msgid ""
+"A madman driven by panic and fear, the Hoarder will stop at nothing to make "
+"sure they have enough toilet paper, even if it means raiding other people's "
+"homes and stealing their toilet paper. The Hoarder is also banned from "
+"Walmart."
+msgstr ""
+
+#: mafiagame\roles.py:1757
+msgid ""
+"Each night, the Hoarder can choose a player to duel for their toilet paper. "
+"If the Hoarder is victorious, the Hoarder kills the target and acquires one "
+"stash of toilet paper. If the Hoarder fails, nothing happens."
+msgstr ""
+
+#: mafiagame\roles.py:1761
+msgid "Collect 3 stashes of toilet paper."
+msgstr ""
+
+#: mafiagame\roles.py:1789
+msgid "Successfully hoard and kill the Godfather and Bomber in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:1798
+msgid "Hoard and kill at least 5 players."
+msgstr ""
+
+#: mafiagame\roles.py:1817
+msgid "They have killed them and acquired one stash of 🧻 toilet paper 🧻."
+msgstr ""
+
+#: mafiagame\roles.py:1824
+msgid ""
+"The Hacker is a deity in the cyber world. They can find anything about their"
+" target in a snap of a finger by tracing their internet histories, banking "
+"statements, and social medias. Nothing is safe from the Hacker if it's "
+"online."
+msgstr ""
+
+#: mafiagame\roles.py:1827
+msgid ""
+"Each night, the Hacker can select a player and get a list of their possible "
+"roles."
+msgstr ""
+
+#: mafiagame\roles.py:1831
+msgid "Gather intel for the Mafia."
+msgstr ""
+
+#: mafiagame\roles.py:1853
+msgid "Find a Spy, Vigilante or Doctor."
+msgstr ""
+
+#: mafiagame\roles.py:1864
+msgid "Find a Detective, Vigilante and Doctor in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:1868
+msgid "Find a Baiter."
+msgstr ""
+
+#: mafiagame\roles.py:1894
+msgid "Possible roles for {target.member.display_name}:"
+msgstr ""
+
+#: mafiagame\roles.py:1903
+msgid ""
+"Goose is the embodiment of chaos. The Goose's sole purpose in life is to "
+"torture the living. There are no emotions in the Goose, only the desire to "
+"Goose."
+msgstr ""
+
+#: mafiagame\roles.py:1906
+msgid ""
+"Each night, the Goose can select a player and change their target(s) at "
+"random."
+msgstr ""
+
+#: mafiagame\roles.py:1910
+msgid "Fulfill your destiny and bring chaos to the village."
+msgstr ""
+
+#: mafiagame\roles.py:1937
+msgid "Make a Vigilante shoot another villager."
+msgstr ""
+
+#: mafiagame\roles.py:1952
+msgid "Force 2 villagers to die to a Baiter in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:1973
+msgid ""
+"{target.member.display_name} seems to be duelling with fate, better not "
+"interfere..."
+msgstr ""
+
+#: mafiagame\roles.py:1982
+msgid "{target.member.display_name} didn't visit anyone last night. Weird..."
+msgstr ""
+
+#: mafiagame\roles.py:1995
+msgid ""
+"Possessing one of the rarest talents in the world, the Link serves as the "
+"medium between two minds. Years of training allows the Link to dig into the "
+"hidden minds of others and expose all secrets."
+msgstr ""
+
+#: mafiagame\roles.py:1998
+msgid ""
+"Each night, the Link can create psychic links between two people, allowing "
+"them to see each other's side. The Link can't see the sides themselves."
+msgstr ""
+
+#: mafiagame\roles.py:2002
+msgid "Provide the Village with information."
+msgstr ""
+
+#: mafiagame\roles.py:2022
+msgid "Link yourself."
+msgstr ""
+
+#: mafiagame\roles.py:2034
+msgid ""
+"You have been linked to {other_tg.member.display_name}! Their side is "
+"**{other_tg.role.side}**."
+msgstr ""
+
+#: mafiagame\roles.py:2043
+msgid ""
+"You have linked {tg1.member.display_name} and {tg2.member.display_name}!"
+msgstr ""
+
+#: mafiagame\roles.py:2053
+msgid ""
+"Thirsty for blood, the Mimic hunts every night for prey to consume. As the "
+"Mimic drains the blood of the victims, Mimic's silhouette slowly morphes "
+"into their victim's shape..."
+msgstr ""
+
+#: mafiagame\roles.py:2056
+msgid ""
+"Each night, the Mimic can drain a player and assume their identity for the "
+"night to investigators. They have a 50% chance of distracting the target."
+msgstr ""
+
+#: mafiagame\roles.py:2060
+msgid "Confuse the village's intel and cause obstructions."
+msgstr ""
+
+#: mafiagame\roles.py:2082
+msgid "Mimic the same player 3 times in one game."
+msgstr ""
+
+#: mafiagame\roles.py:2104
+msgid ""
+"With a mastery in the art of potion brewing, the Alchemist utilizes their "
+"knowledge to help their side win through deception, control, and death."
+msgstr ""
+
+#: mafiagame\roles.py:2107
+msgid ""
+"Each night, the Alchemist randomly brews one of 4 potions:\n"
+"- The **Lethal Potion** kills a player.\n"
+"- The **Invisibility Potion** grants a player immunity for the night.\n"
+"- The **Truth Potion** forces a player to reveal their side to the Alchemist.\n"
+"- The **Mundane Potion** does nothing.\n"
+"The Alchemist can use the brewed potion on a chosen target."
+msgstr ""
+
+#: mafiagame\roles.py:2111 mafiagame\roles.py:2871
+msgid "Help your side win."
+msgstr ""
+
+#: mafiagame\roles.py:2140
+msgid "Use the Invisibility, Lethal and Truth potion in a single game."
+msgstr ""
+
+#: mafiagame\roles.py:2147
+msgid "Make your team members invisible 5 times."
+msgstr ""
+
+#: mafiagame\roles.py:2154
+msgid "Lethal Potion"
+msgstr ""
+
+#: mafiagame\roles.py:2155
+msgid "Invisibility Potion"
+msgstr ""
+
+#: mafiagame\roles.py:2156
+msgid "Truth Potion"
+msgstr ""
+
+#: mafiagame\roles.py:2157
+msgid "Mundane Potion"
+msgstr ""
+
+#: mafiagame\roles.py:2166
+msgid "You have brewed a **{potion}**!"
+msgstr ""
+
+#: mafiagame\roles.py:2179
+msgid "The side of {target.member.display_name} is **{target.role.side}**."
+msgstr ""
+
+#: mafiagame\roles.py:2200
+msgid ""
+"After living a mundane, uneventful life, the Isekai finds themselve facing a"
+" Goddess. The Goddess laids out three cards to choose from, each depicitng a"
+" different life. The Isekai is given a second chance to redeem his life in "
+"another world..."
+msgstr ""
+
+#: mafiagame\roles.py:2203
+msgid ""
+"The Isekai has no ability at the start of the game. However, once they die, "
+"the next night they are given three role choices to reincarnate as."
+msgstr ""
+
+#: mafiagame\roles.py:2206
+msgid "Die, so you can be useful. :P"
+msgstr ""
+
+#: mafiagame\roles.py:2222
+msgid "You have died!"
+msgstr ""
+
+#: mafiagame\roles.py:2223
+msgid "You can choose to reincarnate as one of the following roles."
+msgstr ""
+
+#: mafiagame\roles.py:2232
+msgid ""
+"It's the time of the jolly. Looking at the Good list, however, the Santa "
+"raises his glasses to take a second look. Looks like there's only one good "
+"child this year. Time to make sure the spirit of Christmas lives on..."
+msgstr ""
+
+#: mafiagame\roles.py:2235
+msgid ""
+"The Santa doesn't have any special night abilities. However, they have a "
+"different goal: Keep a given target alive. If the good boi dies, they will "
+"lose faith in humanity and become a Jester."
+msgstr ""
+
+#: mafiagame\roles.py:2238
+msgid "Keep the good child alive."
+msgstr ""
+
+#: mafiagame\roles.py:2259
+msgid "Win even after you're dead."
+msgstr ""
+
+#: mafiagame\roles.py:2273
+msgid "🎅 Your target is {player.global_target.member.display_name}! 🎅"
+msgstr ""
+
+#: mafiagame\roles.py:2276
+msgid "You must keep them alive."
+msgstr ""
+
+#: mafiagame\roles.py:2289
+msgid ""
+"You have lost faith in humanity after failing to protect your target, "
+"{other.member.display_name}!"
+msgstr ""
+
+#: mafiagame\roles.py:2298
+msgid ""
+"A figure scurries back into the house. As the person spreads the intel onto "
+"the table in relief, the door locked behind them. Looking back in fear, the "
+"person pounds on the door. Outside the window, a shadow disappears into the "
+"night..."
+msgstr ""
+
+#: mafiagame\roles.py:2301
+msgid ""
+"Each night, the Silencer can choose a player to silence. If their target "
+"dies that night, their role and their last words will not be revealed, but "
+"only shown to the Silencer."
+msgstr ""
+
+#: mafiagame\roles.py:2305
+msgid "Prevent the village from gathering intel."
+msgstr ""
+
+#: mafiagame\roles.py:2325
+msgid "Win the game without silencing anyone."
+msgstr ""
+
+#: mafiagame\roles.py:2335
+msgid ""
+"The Mafia outside continues to bang on the door. The Shaman inside pulls out"
+" a blank voodoo doll. If they're coming with intent of harm, the Shaman "
+"won't be going down without a fight..."
+msgstr ""
+
+#: mafiagame\roles.py:2338
+msgid ""
+"Each night that they have a voodoo doll, the Shaman can link it to another player, causing any effects on them to instead transfer to that player.\n"
+"If no one actively attacks Shaman on the night which they use their voodoo doll, it will vanish for the rest of the game."
+msgstr ""
+
+#: mafiagame\roles.py:2363
+msgid "Win the game without using your voodoo doll."
+msgstr ""
+
+#: mafiagame\roles.py:2368
+msgid "Have your doll redirect an attack."
+msgstr ""
+
+#: mafiagame\roles.py:2381
+msgid "Your voodoo doll has vanished for the rest of the game."
+msgstr ""
+
+#: mafiagame\roles.py:2395
+msgid ""
+"You tried to perform your action on {t.member.display_name}, but some "
+"mysterious force transferred all the effects of your action to another "
+"player!"
+msgstr ""
+
+#: mafiagame\roles.py:2416
+msgid ""
+"An addict to the evil abyss of gambling, the Gambler is willing to bet "
+"anything to feel the rush of gambling. Armed with sets of magical dice, the "
+"Gambler is well aware of the risks and rewards the dice could reap."
+msgstr ""
+
+#: mafiagame\roles.py:2419
+msgid ""
+"Each night, the Gambler has up to 3 dice options to throw one of them.\n"
+"- **White Dice**, *70% chance* of success. If successful, you gain a 50% chance of surviving a Mafia's attack. Otherwise, a random villager is distracted.\n"
+"- **Yellow Dice**, *50% chance* of success. If successful, a random villager is given an extra vote for the day. Otherwise, you lose one vote for the day.\n"
+"- **Red Dice**, *20% chance* of success. If successful, a random dead villager is revived. Otherwise, you die. This option only appears when at least one village side role is dead."
+msgstr ""
+
+#: mafiagame\roles.py:2422
+msgid "Make good gambling decisions that won't doom the town."
+msgstr ""
+
+#: mafiagame\roles.py:2444
+msgid "Heal yourself by rolling the White Dice."
+msgstr ""
+
+#: mafiagame\roles.py:2452
+msgid "Give a villager an extra vote from the Yellow Dice."
+msgstr ""
+
+#: mafiagame\roles.py:2460
+msgid "Successfully revive someone from the Red Dice."
+msgstr ""
+
+#: mafiagame\roles.py:2467
+msgid "Hey Gambler! What dice do you want to throw tonight?"
+msgstr ""
+
+#: mafiagame\roles.py:2526
+msgid "You have survived a Mafia's attack!"
+msgstr ""
+
+#: mafiagame\roles.py:2533
+msgid "Sorry, you got distracted by the Gambler's dice tonight!"
+msgstr ""
+
+#: mafiagame\roles.py:2549
+msgid "You have been revived by the Gambler's dice!"
+msgstr ""
+
+#: mafiagame\roles.py:2550
+msgid "You are now alive and well."
+msgstr ""
+
+#: mafiagame\roles.py:2556
+msgid "They have rolled the Red Dice and lost."
+msgstr ""
+
+#: mafiagame\roles.py:2566
+msgid ""
+"The Judge is the ultimate authority in the village. They have the power to "
+"decide the fate of the accused."
+msgstr ""
+
+#: mafiagame\roles.py:2569
+msgid ""
+"Each day, the Judge can choose a player to be lynched immediately. However, "
+"if they prosecute a villager, they kill their target, but also themselves. "
+"They can use their ability twice."
+msgstr ""
+
+#: mafiagame\roles.py:2573 mafiagame\roles.py:3067
+msgid "Help the village find the guilty players."
+msgstr ""
+
+#: mafiagame\roles.py:2594
+msgid "Prosecute someone."
+msgstr ""
+
+#: mafiagame\roles.py:2600
+msgid "Prosecute a non-town member."
+msgstr ""
+
+#: mafiagame\roles.py:2604
+msgid "Prosecute a Jester."
+msgstr ""
+
+#: mafiagame\roles.py:2613
+msgid "The Judge can't prosecute on Day 1."
+msgstr ""
+
+#: mafiagame\roles.py:2615
+msgid "Hey Judge! Who do you want to prosecute today?"
+msgstr ""
+
+#: mafiagame\roles.py:2631
+msgid "They have been judged guilty."
+msgstr ""
+
+#: mafiagame\roles.py:2635
+msgid "They have prosecuted an innocent Villager."
+msgstr ""
+
+#: mafiagame\roles.py:2642
+msgid ""
+"The Lawyer is a master of manipulation and deceit. They can defend someone "
+"each day, making them appear innocent to the town."
+msgstr ""
+
+#: mafiagame\roles.py:2645
+msgid ""
+"Each day, the Lawyer can choose to acquit a player on the stand. If the "
+"player has been voted guilty, they'll use 1 charge and save them from being "
+"lynched. However, if you save someone that does not belong to the Villagers "
+"team, both they and the player they saved's role will be revealed to "
+"everyone, and they'll lose their remaining usages. They can only acquit "
+"twice a game."
+msgstr ""
+
+#: mafiagame\roles.py:2649 mafiagame\roles.py:3432
+msgid "Help the village protect their allies."
+msgstr ""
+
+#: mafiagame\roles.py:2670
+msgid "Acquit 2 players in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:2674
+msgid "Acquit yourself."
+msgstr ""
+
+#: mafiagame\roles.py:2678
+msgid "Acquit a Jester."
+msgstr ""
+
+#: mafiagame\roles.py:2687
+msgid "Hey Lawyer! Do you want to defend {target.member.display_name} today?"
+msgstr ""
+
+#: mafiagame\roles.py:2711
+msgid "You have chosen to defend {target.member.display_name}."
+msgstr ""
+
+#: mafiagame\roles.py:2717
+msgid "You have chosen not to defend {target.member.display_name}."
+msgstr ""
+
+#: mafiagame\roles.py:2727
+msgid "The Blackmailer is a master of threatening and silencing."
+msgstr ""
+
+#: mafiagame\roles.py:2728
+msgid ""
+"Every night, the Blackmailer can select a player to blackmail. Blackmailed "
+"players won't be able to speak nor vote for that day. You cannot blackmail "
+"the same player twice a row."
+msgstr ""
+
+#: mafiagame\roles.py:2732 mafiagame\roles.py:2790 mafiagame\roles.py:2958
+#: mafiagame\roles.py:3929 mafiagame\roles.py:4002
+msgid "Help the Mafia win."
+msgstr ""
+
+#: mafiagame\roles.py:2752
+msgid "Blackmail a member of the Mafia."
+msgstr ""
+
+#: mafiagame\roles.py:2756
+msgid "Blackmail yourself."
+msgstr ""
+
+#: mafiagame\roles.py:2762
+msgid "Blackmail the same person 3 times in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:2772
+msgid ""
+"You have been **blackmailed**! You won't be able to speak or vote today."
+msgstr ""
+
+#: mafiagame\roles.py:2783
+msgid ""
+"The Harbinger is a mysterious figure that protect their target at all costs."
+msgstr ""
+
+#: mafiagame\roles.py:2786
+msgid ""
+"Each night, the Harbinger can select a player to hide with. They will kill a"
+" random player that visits their target, but also reveal their own role to "
+"everyone that visits their target."
+msgstr ""
+
+#: mafiagame\roles.py:2812
+msgid "Assasinate a Doctor."
+msgstr ""
+
+#: mafiagame\roles.py:2820
+msgid "Assasinate a Vigilante."
+msgstr ""
+
+#: mafiagame\roles.py:2826
+msgid "Assasinate a Bomber."
+msgstr ""
+
+#: mafiagame\roles.py:2837
+msgid "{player.member.display_name} is {the_or_a} **{role_name}**!"
+msgstr ""
+
+#: mafiagame\roles.py:2840
+msgid "They were hiding with {player.member.display_name}."
+msgstr ""
+
+#: mafiagame\roles.py:2867
+msgid ""
+"The Submissor is a coward that will do anything to save their own skin."
+msgstr ""
+
+#: mafiagame\roles.py:2868
+msgid ""
+"The first time you are attacked, you will beg mercy from the attacker and "
+"will join their side. Once the player who attacked you dies, you take on "
+"their role. If attacked the second time, you will die as you have given your"
+" life to the first attacker."
+msgstr ""
+
+#: mafiagame\roles.py:2892
+msgid "Submit yourself to the Mafia."
+msgstr ""
+
+#: mafiagame\roles.py:2897
+msgid "Submit yourself to a Vigilante."
+msgstr ""
+
+#: mafiagame\roles.py:2902
+msgid "Submit yourself to a Neutral player."
+msgstr ""
+
+#: mafiagame\roles.py:2920
+msgid ""
+"You have been attacked by {p.member.display_name}! You have begged mercy and"
+" joined their side: **{p.role.side}**."
+msgstr ""
+
+#: mafiagame\roles.py:2930
+msgid ""
+"You have been joined by {player.member.display_name}, {the_or_a} "
+"**{role_name}**!"
+msgstr ""
+
+#: mafiagame\roles.py:2945
+msgid ""
+"You have taken on the role of {other.member.display_name}, because they "
+"died."
+msgstr ""
+
+#: mafiagame\roles.py:2954
+msgid "The Manipulator is a master of deception and manipulation."
+msgstr ""
+
+#: mafiagame\roles.py:2955
+msgid ""
+"Once a game, during the day, the Manipulator can manipulate the Mafia's "
+"votes, giving them an extra vote each for that day, while hiding everyone's "
+"vote."
+msgstr ""
+
+#: mafiagame\roles.py:2978
+msgid "Manipulate the votes."
+msgstr ""
+
+#: mafiagame\roles.py:2997
+msgid "Lynch a revealed Mayor with your manipulated votes."
+msgstr ""
+
+#: mafiagame\roles.py:3015
+msgid "Lynch a Judge with your manipulated votes."
+msgstr ""
+
+#: mafiagame\roles.py:3024
+msgid "You have already used your manipulation for this game."
+msgstr ""
+
+#: mafiagame\roles.py:3026
+msgid "Hey Manipulator! Do you want to manipulate the Mafia's votes today?"
+msgstr ""
+
+#: mafiagame\roles.py:3048
+msgid "You have chosen to manipulate the Mafia's votes."
+msgstr ""
+
+#: mafiagame\roles.py:3054
+msgid "You have chosen not to manipulate the Mafia's votes."
+msgstr ""
+
+#: mafiagame\roles.py:3062
+msgid "The Politician is a master of public speaking and manipulation."
+msgstr ""
+
+#: mafiagame\roles.py:3063
+msgid ""
+"Twice a game, during the day, you may interrupt the nomination phase by "
+"choosing a player to reveal their role to everyone, and blocking everyone "
+"from voting."
+msgstr ""
+
+#: mafiagame\roles.py:3087
+msgid "Protest and reveal an unturned Submissor."
+msgstr ""
+
+#: mafiagame\roles.py:3091
+msgid "Protest and reveal a Mayor."
+msgstr ""
+
+#: mafiagame\roles.py:3095
+msgid "Protest and reveal a member of the Mafia."
+msgstr ""
+
+#: mafiagame\roles.py:3109
+msgid "{the_or_a} Politician has interrupted the voting phase!"
+msgstr ""
+
+#: mafiagame\roles.py:3112
+msgid ""
+"They have chosen to reveal {target.member.display_name}'s role to everyone."
+msgstr ""
+
+#: mafiagame\roles.py:3118 mafiagame\roles.py:3341
+msgid "**{target.member.display_name}** is {the_or_a} **{role_name}**!"
+msgstr ""
+
+#: mafiagame\roles.py:3133
+msgid "The Magician is a master of illusions and trickery."
+msgstr ""
+
+#: mafiagame\roles.py:3134
+msgid ""
+"Each night, the Magician can select 2 players. If those 2 players live until"
+" the following night, their roles will be swapped. They can use this ability"
+" twice."
+msgstr ""
+
+#: mafiagame\roles.py:3139 mafiagame\roles.py:3211 mafiagame\roles.py:3288
+#: mafiagame\roles.py:3364
+msgid "Witness the village lose."
+msgstr ""
+
+#: mafiagame\roles.py:3164
+msgid "Swap two players with the same side."
+msgstr ""
+
+#: mafiagame\roles.py:3174
+msgid "Swap a member of the Mafia with an unturned Submissor."
+msgstr ""
+
+#: mafiagame\roles.py:3184
+msgid "Swap a Vigilante with a Neutral player."
+msgstr ""
+
+#: mafiagame\roles.py:3196
+msgid "Your role has been swapped with someone else by the Magician!"
+msgstr ""
+
+#: mafiagame\roles.py:3204
+msgid ""
+"The Starspawn is a powerful being that can manipulate the stars to their "
+"will."
+msgstr ""
+
+#: mafiagame\roles.py:3207
+msgid ""
+"Each night, the Starspawn can visit a player and make them invisible. They "
+"cannot choose the same player on consecutive nights. Once a game, they can "
+"use their daybreak ability and block all day-actions from happening."
+msgstr ""
+
+#: mafiagame\roles.py:3244
+msgid ""
+"Use your daybreak ability in a game with Judge, Lawyer, Manipulator and "
+"Politician!"
+msgstr ""
+
+#: mafiagame\roles.py:3260
+msgid "Have your daybreak ability affect no one."
+msgstr ""
+
+#: mafiagame\roles.py:3266
+msgid "Make the same player invisible 5 times in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:3283
+msgid "The Thief is a master of stealing and deceit."
+msgstr ""
+
+#: mafiagame\roles.py:3284
+msgid ""
+"Each night, the Thief can select a player to steal from. If they have an "
+"ability with limited usages, they will be left with 0 remaining usages. "
+"Otherwise, you learn the role of that player."
+msgstr ""
+
+#: mafiagame\roles.py:3308
+msgid "Steal the Judge's ability."
+msgstr ""
+
+#: mafiagame\roles.py:3312
+msgid "Steal the Lawyer's ability."
+msgstr ""
+
+#: mafiagame\roles.py:3324
+msgid ""
+"You have stolen from {target.member.display_name}! They have 0 usages left."
+msgstr ""
+
+#: mafiagame\roles.py:3335
+msgid "You have stolen from {target.member.display_name}!"
+msgstr ""
+
+#: mafiagame\roles.py:3358
+msgid "The Manager is a master of organization and efficiency."
+msgstr ""
+
+#: mafiagame\roles.py:3359
+msgid ""
+"Each night, the Manager can visit a player to manage them. If their action "
+"is limited to a certain number of usages, they will gain an additional "
+"usage. Otherwise, they will permanently gain an extra vote. They don't learn"
+" the outcome of their action. They can't manage a player they have managed "
+"before. They can use their ability thrice."
+msgstr ""
+
+#: mafiagame\roles.py:3384
+msgid "Manage a player with limited usages."
+msgstr ""
+
+#: mafiagame\roles.py:3388
+msgid "Manage a player without limited usages."
+msgstr ""
+
+#: mafiagame\roles.py:3404
+msgid ""
+"You have managed {target.member.display_name}! They have gained an "
+"additional usage."
+msgstr ""
+
+#: mafiagame\roles.py:3415
+msgid ""
+"You have managed {target.member.display_name}! They have gained an extra "
+"vote."
+msgstr ""
+
+#: mafiagame\roles.py:3427
+msgid ""
+"The Guardian is a protector of the innocent and a defender of the weak."
+msgstr ""
+
+#: mafiagame\roles.py:3428
+msgid ""
+"Each night, the Guardian can select a player to protect. If that player is "
+"attacked, the Guardian will block the attack and kill the attacker instead, "
+"dying alongside with them. If the Guardian protects themselves, they will "
+"not die, but will not kill the attacker either. They cannot protect the same"
+" player twice a row."
+msgstr ""
+
+#: mafiagame\roles.py:3454
+msgid "Successfully protect someone from being attacked."
+msgstr ""
+
+#: mafiagame\roles.py:3458
+msgid "Successfully protect yourself from being attacked."
+msgstr ""
+
+#: mafiagame\roles.py:3466
+msgid "Take down the Godfather as you die."
+msgstr ""
+
+#: mafiagame\roles.py:3487
+msgid "They have attacked a player protected by the Guardian."
+msgstr ""
+
+#: mafiagame\roles.py:3490
+msgid "They have protected a player from an attack."
+msgstr ""
+
+#: mafiagame\roles.py:3499
+msgid "The Mortician is a master of post-mortem investigations."
+msgstr ""
+
+#: mafiagame\roles.py:3500
+msgid ""
+"Every other night, the Mortician can select a dead player to identify their "
+"attacker. They will obtain three suspects that might have killed their "
+"target."
+msgstr ""
+
+#: mafiagame\roles.py:3504 mafiagame\roles.py:3835
+msgid "Help the village win."
+msgstr ""
+
+#: mafiagame\roles.py:3525
+msgid "Autopsy a body."
+msgstr ""
+
+#: mafiagame\roles.py:3529
+msgid ""
+"Autopsy 3 bodies that were killed by different killers in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:3537
+msgid "Autopsy a body that was killed by the Bomber."
+msgstr ""
+
+#: mafiagame\roles.py:3553
+msgid "Investigation Results"
+msgstr ""
+
+#: mafiagame\roles.py:3554
+msgid ""
+"The suspects for the death of {target.member.display_name} are: {suspects}."
+msgstr ""
+
+#: mafiagame\roles.py:3573
+msgid "The Baker is a master of baking and cooking."
+msgstr ""
+
+#: mafiagame\roles.py:3574
+msgid ""
+"Each night, the Baker can select a player to give bread to. The player "
+"receiving the bread might gain an additional vote for that day, healed from "
+"Mafia attacks, distracted or lose the ability to vote for that day. The "
+"Baker will win once the required number of alive players have bread, and "
+"their only win condition is to survive. They may continue giving bread after"
+" they have won."
+msgstr ""
+
+#: mafiagame\roles.py:3578
+msgid "Give the required amount of alive players bread."
+msgstr ""
+
+#: mafiagame\roles.py:3599
+msgid "Give bread to 3 players in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:3608
+msgid "Have all of your breads give negative effects to players."
+msgstr ""
+
+#: mafiagame\roles.py:3617
+msgid "Have all of your breads give positive effects to players."
+msgstr ""
+
+#: mafiagame\roles.py:3646
+msgid "Sorry, you got distracted by the bread you received!"
+msgstr ""
+
+#: mafiagame\roles.py:3659
+msgid ""
+"Cupid is a mischievous matchmaker who loves to play with people's hearts."
+msgstr ""
+
+#: mafiagame\roles.py:3662
+msgid ""
+"On the first night, the Cupid can choose two players to become lovers. If "
+"they don't, two players will be selected randomly. If one lover dies, the "
+"other will commit suicide and the Cupid will become a Killer and gain the "
+"ability to kill each night. If the Cupid dies, the lovers become Killers."
+msgstr ""
+
+#: mafiagame\roles.py:3665
+msgid "Ensure the lovers survive until the end of the game."
+msgstr ""
+
+#: mafiagame\roles.py:3686
+msgid "Ensure both lovers survive until the end of the game, without dying."
+msgstr ""
+
+#: mafiagame\roles.py:3703
+msgid "You can only use your ability on the first night."
+msgstr ""
+
+#: mafiagame\roles.py:3709
+msgid "You have been struck by Cupid's arrow!"
+msgstr ""
+
+#: mafiagame\roles.py:3710
+msgid ""
+"You are now in love with {other_lover.member.display_name} "
+"({other_lover.member.name}). If they die, you will die too. If your Cupid "
+"die, you will become a Killer."
+msgstr ""
+
+#: mafiagame\roles.py:3719
+msgid ""
+"You have struck **{lover1.member.display_name} ({lover1.member.name})** and "
+"**{lover2.member.display_name} ({lover2.member.name})** with your arrow!"
+msgstr ""
+
+#: mafiagame\roles.py:3722
+msgid ""
+"They are now in love with each other. If your lovers die, you will become a "
+"Killer."
+msgstr ""
+
+#: mafiagame\roles.py:3740
+msgid ""
+"Your Cupid has died! You are now a Killer and can vote to kill someone each "
+"night."
+msgstr ""
+
+#: mafiagame\roles.py:3755
+msgid "They saw their lover die and couldn't bear the pain."
+msgstr ""
+
+#: mafiagame\roles.py:3759
+msgid ""
+"Your lovers have died! You are now a Killer and can kill someone each night."
+msgstr ""
+
+#: mafiagame\roles.py:3769
+msgid ""
+"The Killer is a ruthless murderer who will stop at nothing to achieve their "
+"goal."
+msgstr ""
+
+#: mafiagame\roles.py:3772
+msgid ""
+"Each night, the Killer can select a player to kill. If there is several "
+"Killers in the game, who target different players, nothing happens. They "
+"can't kill other Killers."
+msgstr ""
+
+#: mafiagame\roles.py:3775
+msgid "Kill all players."
+msgstr ""
+
+#: mafiagame\roles.py:3797
+msgid "Kill at least 3 players in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:3821
+msgid "The Killers couldn't agree on a target!"
+msgstr ""
+
+#: mafiagame\roles.py:3822
+msgid "No one was killed."
+msgstr ""
+
+#: mafiagame\roles.py:3831
+msgid "The Oracle is a protector of the town."
+msgstr ""
+
+#: mafiagame\roles.py:3832
+msgid ""
+"Each night, the Oracle can select a Villagers' role to make all players with"
+" that role invisible."
+msgstr ""
+
+#: mafiagame\roles.py:3871
+msgid "Make an unrevealed Mayor invisible."
+msgstr ""
+
+#: mafiagame\roles.py:3892
+msgid "Successfully make 5 different players invisible in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:3911
+msgid "There are {number} {target.name}{s} alive in the game."
+msgstr ""
+
+#: mafiagame\roles.py:3922
+msgid ""
+"The Ritualist is a master of dark arts, using rituals to eliminate their "
+"enemies."
+msgstr ""
+
+#: mafiagame\roles.py:3925
+msgid ""
+"Each night, the Ritualist can select a player and guess their role. If they "
+"guess correctly, the player will be killed. Otherwise, the Ritualist's role "
+"will be revealed to everyone. This action can be used three times."
+msgstr ""
+
+#: mafiagame\roles.py:3951
+msgid "Successfully perform a ritual."
+msgstr ""
+
+#: mafiagame\roles.py:3957
+msgid "Perform all 3 rituals on members of the Villagers' side."
+msgstr ""
+
+#: mafiagame\roles.py:3971
+msgid "The Ritualist has guessed their role correctly."
+msgstr ""
+
+#: mafiagame\roles.py:3977
+msgid ""
+"The Ritualist has guessed wrong! Their role is now revealed to everyone."
+msgstr ""
+
+#: mafiagame\roles.py:3982
+msgid "{player.member.display_name} is the **Ritualist**!"
+msgstr ""
+
+#: mafiagame\roles.py:3995
+msgid ""
+"The Necromancer is a master of the dark arts, able to reanimate the dead."
+msgstr ""
+
+#: mafiagame\roles.py:3998
+msgid ""
+"Every night, the Necromancer can select a dead player to reanimate, and a "
+"living player to target. Any feedback that the dead player would receive "
+"will instead be redirected to the Necromancer. If the dead player requires "
+"multiple inputs, they will not respond. The Necromancer cannot reanimate "
+"corpses that they have used before. Additionally, once a game, they may "
+"revive a dead player that they have not used as a corpse. That player will "
+"only be revived at the end of the day if the Necromancer is alive."
+msgstr ""
+
+#: mafiagame\roles.py:4049
+msgid "The Grave Robber is a master of collecting souls."
+msgstr ""
+
+#: mafiagame\roles.py:4050
+msgid ""
+"Each night, the Grave Robber can select a player. If that player dies, the "
+"Grave Robber will collect their soul. Once they have collected the required "
+"number of souls, they will transform into **Death, Horseman of the "
+"Apocalypse**."
+msgstr ""
+
+#: mafiagame\roles.py:4053
+msgid "Transform into Death, Horseman of the Apocalypse."
+msgstr ""
+
+#: mafiagame\roles.py:4082
+msgid ""
+"You have collected the required number of souls... You have transformed into"
+" **Death, Horseman of the Apocalypse**!"
+msgstr ""
+
+#: mafiagame\roles.py:4091
+msgid ""
+"Death, Horseman of the Apocalypse, is a bringer of death and destruction."
+msgstr ""
+
+#: mafiagame\roles.py:4094
+msgid ""
+"You have no ability. Instead, the town has 1 day to lynch you before their "
+"lives come to an end."
+msgstr ""
+
+#: mafiagame\roles.py:4102
+msgid "The Farmer is a master of plants and agriculture."
+msgstr ""
+
+#: mafiagame\roles.py:4103
+msgid ""
+"Each night, the Farmer can choose to plant a seed or give a plant to a "
+"player. When they plant a seed, that seed will become a plant the next day. "
+"If they give a plant to a player, the player's role will change to their "
+"base team role: Villagers will turn into Villager, Mafia's members will turn"
+" into Mafia and Neutral's players will turn into Jester. Once they have "
+"given a plant to a player from each team, they will transform into **Famine,"
+" Horseman of the Apocalypse**."
+msgstr ""
+
+#: mafiagame\roles.py:4106 mafiagame\roles.py:4110
+msgid "Transform into Famine, Horseman of the Apocalypse."
+msgstr ""
+
+#: mafiagame\roles.py:4118
+msgid "You don't have any plants to give!"
+msgstr ""
+
+#: mafiagame\roles.py:4140
+msgid ""
+"You gave a plant to a player from each team... You have transformed into "
+"**Famine, Horseman of the Apocalypse**!"
+msgstr ""
+
+#: mafiagame\roles.py:4153
+msgid ""
+"Famine, Horseman of the Apocalypse, is a bringer of hunger and starvation."
+msgstr ""
+
+#: mafiagame\roles.py:4156
+msgid ""
+"Each night, Famine can choose to bring forth an apocalypse. They have 8 "
+"apocalypses to choose from. Once they have chosen an apocalypse, they can no"
+" longer use the same apocalypse until they use every other apocalypse."
+msgstr ""
+
+#: mafiagame\roles.py:4160
+msgid "Be the last one standing."
+msgstr ""
+
+#: mafiagame\roles.py:4185
+msgid "Choose an apocalypse to bring forth:"
+msgstr ""
+
+#: mafiagame\roles.py:4203
+msgid "You have brought forth the **{apocalypse}** apocalypse!"
+msgstr ""
+
+#: mafiagame\roles.py:4215
+msgid "The Doomsayer is a prophet of the end times."
+msgstr ""
+
+#: mafiagame\roles.py:4216
+msgid ""
+"Each night, the Doomsayer can select 3 players to guess their roles. If they"
+" guess all 3 roles correctly, they will kill the players and transform into "
+"**War, Horseman of the Apocalypse**."
+msgstr ""
+
+#: mafiagame\roles.py:4219 mafiagame\roles.py:4223
+msgid "Transform into War, Horseman of the Apocalypse."
+msgstr ""
+
+#: mafiagame\roles.py:4237
+msgid "The Doomsayer has guessed their role correctly."
+msgstr ""
+
+#: mafiagame\roles.py:4241
+msgid ""
+"Your guesses were correct... You have transformed into **War, Horseman of "
+"the Apocalypse**!"
+msgstr ""
+
+#: mafiagame\roles.py:4249
+msgid "You have guessed wrong! Retry next night..."
+msgstr ""
+
+#: mafiagame\roles.py:4257
+msgid ""
+"War, Horseman of the Apocalypse, is a bringer of chaos and destruction."
+msgstr ""
+
+#: mafiagame\roles.py:4258
+msgid ""
+"Each night, War can select players to kill. The amount of players they can "
+"kill each night increases by one every day."
+msgstr ""
+
+#: mafiagame\roles.py:4284
+msgid "Kill 3 Mafia members in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:4289
+msgid "Kill 3 Villagers in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:4294
+msgid "Kill 3 Neutral players in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:4301
+msgid ""
+"Have at least 3 Horsemen from the Apocalypse, including yourself, in the "
+"same game."
+msgstr ""
+
+#: mafiagame\roles.py:4308
+msgid "Have the ability to kill 5 or more players."
+msgstr ""
+
+#: mafiagame\roles.py:4474
+msgid "Win with all Villagers still alive."
+msgstr ""
+
+#: mafiagame\roles.py:4478
+msgid "Have a game that last 10 days."
+msgstr ""
+
+#: mafiagame\roles.py:4485
+msgid "Win with half of the Villagers roles."
+msgstr ""
+
+#: mafiagame\roles.py:4490
+msgid "Win with all Mafia members still alive."
+msgstr ""
+
+#: mafiagame\roles.py:4495
+msgid "Win with half of the Mafia roles."
+msgstr ""
+
+#: mafiagame\roles.py:4502
+msgid "Win with half of the Neutral roles."
+msgstr ""
+
+#: mafiagame\roles.py:4506
+msgid "Win with half of the roles."
+msgstr ""
+
+#: mafiagame\roles.py:4513
+msgid "Win with all Villagers roles."
+msgstr ""
+
+#: mafiagame\roles.py:4518
+msgid "Win with all Mafia roles."
+msgstr ""
+
+#: mafiagame\roles.py:4525
+msgid "Win with all Neutral roles."
+msgstr ""
+
+#: mafiagame\roles.py:4529
+msgid "Win with all roles."
+msgstr ""
+
+#: mafiagame\roles.py:4539
+msgid "Win your first game{as_role}."
+msgstr ""
+
+#: mafiagame\roles.py:4540 mafiagame\roles.py:4545 mafiagame\roles.py:4550
+#: mafiagame\roles.py:4555 mafiagame\roles.py:4559
+msgid " as {role.name}"
+msgstr ""
+
+#: mafiagame\roles.py:4543
+msgid "Win {value} games{as_role}."
+msgstr ""
+
+#: mafiagame\roles.py:4549
+msgid "Play your first game{as_role}."
+msgstr ""
+
+#: mafiagame\roles.py:4553
+msgid "Play {value} games{as_role}."
+msgstr ""
+
+#: mafiagame\roles.py:4558
+msgid "Win the game{as_role} without dying."
+msgstr ""
+
+#: mafiagame\utils.py:22
+msgid ""
+"The Mafia killed {member.display_name} because they were too good at video "
+"games."
+msgstr ""
+
+#: mafiagame\utils.py:23
+msgid "The Mafia killed {member.display_name} because they were too sus."
+msgstr ""
+
+#: mafiagame\utils.py:24
+msgid ""
+"{member.display_name} thought hiding in a bush would work... turns out, "
+"Mafia members love gardening."
+msgstr ""
+
+#: mafiagame\utils.py:27
+msgid ""
+"{member.display_name} tried to convince the Mafia that they were one of "
+"them. The cement shoes were not convinced."
+msgstr ""
+
+#: mafiagame\utils.py:30
+msgid ""
+"{member.display_name} slept with one eye open... but forgot about the second"
+" one."
+msgstr ""
+
+#: mafiagame\utils.py:31
+msgid ""
+"{member.display_name} thought they were safe in witness protection... until "
+"they accidentally posted their location on social media."
+msgstr ""
+
+#: mafiagame\utils.py:34
+msgid ""
+"{member.display_name} went to bed early, but the Mafia came knocking. They "
+"were just dying to meet them."
+msgstr ""
+
+#: mafiagame\utils.py:37
+msgid ""
+"{member.display_name} tried to bribe the Mafia with Monopoly money. It "
+"didn't go over well."
+msgstr ""
+
+#: mafiagame\utils.py:40
+msgid ""
+"{member.display_name} tried to blend in with the crowd. Unfortunately, they "
+"were holding a sign that said \"Not Mafia\"."
+msgstr ""
+
+#: mafiagame\utils.py:43
+msgid ""
+"{member.display_name} tripped over a body while sneaking around. "
+"Unfortunately, it was their own."
+msgstr ""
+
+#: mafiagame\utils.py:46
+msgid ""
+"{member.display_name} thought they had outsmarted the Mafia. The Mafia let "
+"them think that... for about 5 seconds."
+msgstr ""
+
+#: mafiagame\utils.py:49
+msgid ""
+"{member.display_name} tried to fake their own death, but the Mafia decided "
+"to make it official."
+msgstr ""
+
+#: mafiagame\utils.py:52
+msgid ""
+"{member.display_name} had a foolproof plan to expose the Mafia... until they"
+" realized they were the fool."
+msgstr ""
+
+#: mafiagame\utils.py:55
+msgid ""
+"{member.display_name} thought the Mafia meeting was a potluck. They brought "
+"the wrong dish... and didn't live to fix it."
+msgstr ""
+
+#: mafiagame\utils.py:58
+msgid ""
+"{member.display_name} asked the Mafia if they were hiring. They handed over "
+"a job offer... permanently."
+msgstr ""
+
+#: mafiagame\utils.py:61
+msgid ""
+"{member.display_name} was caught monologuing about how they knew the Mafia's"
+" secret. The Mafia loves a dramatic pause."
+msgstr ""
+
+#: mafiagame\utils.py:64
+msgid ""
+"{member.display_name} tried to hide behind the curtains, but forgot that the"
+" Mafia doesn't do theater."
+msgstr ""
+
+#: mafiagame\utils.py:67
+msgid ""
+"{member.display_name} thought the Mafia wouldn't attack on a Tuesday. The "
+"Mafia loves a surprise."
+msgstr ""
+
+#: mafiagame\utils.py:70
+msgid ""
+"{member.display_name} was last seen trying to explain the concept of 'trust'"
+" to the Mafia. It didn't go well."
+msgstr ""
+
+#: mafiagame\utils.py:73
+msgid ""
+"{member.display_name} attempted to outvote the Mafia, but the votes were "
+"already counted... in bullets."
+msgstr ""
+
+#: mafiagame\utils.py:76
+msgid ""
+"{member.display_name} tried to reason with the Mafia but forgot they don't "
+"negotiate with amateurs."
+msgstr ""
+
+#: mafiagame\utils.py:79
+msgid ""
+"{member.display_name} thought they could blend in by wearing a mustache. The"
+" Mafia prefers clean shaves."
+msgstr ""
+
+#: mafiagame\utils.py:82
+msgid ""
+"{member.display_name} brought a knife to a Mafia gunfight. It didn't end "
+"well."
+msgstr ""
+
+#: mafiagame\utils.py:83
+msgid ""
+"{member.display_name} thought they were safe in witness protection, until "
+"they ordered pizza... from the wrong family."
+msgstr ""
+
+#: mafiagame\utils.py:86
+msgid ""
+"{member.display_name} challenged the Mafia to a game of chess. The Mafia "
+"preferred Russian roulette."
+msgstr ""
+
+#: mafiagame\utils.py:89
+msgid ""
+"{member.display_name} thought they could expose the Mafia at the town "
+"meeting. The Mafia was already running it."
+msgstr ""
+
+#: mafiagame\utils.py:92
+msgid ""
+"{member.display_name} tried to hide in plain sight, but forgot the Mafia has"
+" excellent vision at night."
+msgstr ""
+
+#: mafiagame\utils.py:95
+msgid ""
+"{member.display_name} attempted to bribe the Mafia with cookies. The Mafia "
+"prefers cold, hard cash."
+msgstr ""
+
+#: mafiagame\utils.py:98
+msgid ""
+"{member.display_name} tried to outsmart the Mafia but forgot they don't play"
+" by the rules."
+msgstr ""
+
+#: mafiagame\utils.py:101
+msgid ""
+"{member.display_name} thought the Mafia would spare them if they "
+"complimented their suits. They were wrong."
+msgstr ""
+
+#: mafiagame\utils.py:104
+msgid ""
+"{member.display_name} tried to run, but the Mafia always gets their steps "
+"in."
+msgstr ""
+
+#: mafiagame\utils.py:105
+msgid ""
+"{member.display_name} went fishing, but it turns out the Mafia owns the "
+"lake."
+msgstr ""
+
+#: mafiagame\utils.py:106
+msgid ""
+"{member.display_name} tried to play dead, but the Mafia knows how to check "
+"for a pulse."
+msgstr ""
+
+#: mafiagame\utils.py:109
+msgid ""
+"{member.display_name} thought switching towns would work, but the Mafia had "
+"a welcome party waiting."
+msgstr ""
+
+#: mafiagame\utils.py:112
+msgid ""
+"{member.display_name} attempted to turn the Mafia against each other... and "
+"ended up turning into a ghost instead."
+msgstr ""
+
+#: mafiagame\utils.py:115
+msgid ""
+"{member.display_name} thought they could outwit the Mafia, but ended up "
+"outwitting themselves."
+msgstr ""
+
+#: mafiagame\utils.py:118
+msgid ""
+"{member.display_name} tried to frame someone else, but the Mafia is good at "
+"framing... and finishing."
+msgstr ""
+
+#: mafiagame\utils.py:121
+msgid ""
+"{member.display_name} thought leaving town would save them, but the Mafia "
+"has long arms."
+msgstr ""
+
+#: mafiagame\utils.py:124
+msgid ""
+"{member.display_name} tried to hide in a bakery. The Mafia loves their "
+"bread... and revenge."
+msgstr ""
+
+#: mafiagame\utils.py:127
+msgid ""
+"{member.display_name} was writing a tell-all book about the Mafia. "
+"Unfortunately, the final chapter was... short."
+msgstr ""
+
+#: mafiagame\utils.py:130
+msgid ""
+"{member.display_name} thought they could sneak out, but the Mafia always "
+"hears everything."
+msgstr ""
+
+#: mafiagame\utils.py:133
+msgid ""
+"{member.display_name} tried to out-dodge the Mafia, but bullets travel "
+"faster."
+msgstr ""
+
+#: mafiagame\utils.py:134
+msgid ""
+"{member.display_name} thought joining a rival gang would protect them. The "
+"Mafia had other plans."
+msgstr ""
+
+#: mafiagame\utils.py:137
+msgid ""
+"{member.display_name} hid in the back of a getaway car... unfortunately, it "
+"was the Mafia's."
+msgstr ""
+
+#: mafiagame\utils.py:140
+msgid ""
+"{member.display_name} thought they were clever, but the Mafia is always two "
+"steps ahead."
+msgstr ""
+
+#: mafiagame\utils.py:143
+msgid ""
+"{member.display_name} tried to play innocent, but the Mafia doesn't believe "
+"in fairy tales."
+msgstr ""
+
+#: mafiagame\utils.py:146
+msgid ""
+"{member.display_name} thought hiding in a crowd would work, but the Mafia "
+"knew exactly who to look for."
+msgstr ""
+
+#: mafiagame\utils.py:149
+msgid ""
+"{member.display_name} tried to flee on a boat, but the Mafia controls the "
+"docks."
+msgstr ""
+
+#: mafiagame\utils.py:150
+msgid ""
+"{member.display_name} tried to expose the Mafia in the newspaper. They "
+"forgot who owns the printing press."
+msgstr ""
+
+#: mafiagame\utils.py:153
+msgid ""
+"{member.display_name} attempted to bribe the Mafia with favors. The Mafia "
+"prefers cash—lots of it."
+msgstr ""
+
+#: mafiagame\utils.py:156
+msgid ""
+"{member.display_name} thought they could hide behind a lawyer, but the Mafia"
+" hired a better one."
+msgstr ""
+
+#: mafiagame\utils.py:159
+msgid ""
+"{member.display_name} tried to disappear, but the Mafia has eyes everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:160
+msgid ""
+"{member.display_name} thought pretending to be asleep would save them. The "
+"Mafia never sleeps."
+msgstr ""
+
+#: mafiagame\utils.py:163
+msgid ""
+"{member.display_name} tried to fake their own death. The Mafia kindly made "
+"it real."
+msgstr ""
+
+#: mafiagame\utils.py:166
+msgid ""
+"{member.display_name} thought they could negotiate with the Mafia. The only "
+"deal they got was a one-way ticket."
+msgstr ""
+
+#: mafiagame\utils.py:169
+msgid ""
+"{member.display_name} tried to hide in the shadows, but the Mafia owns the "
+"night."
+msgstr ""
+
+#: mafiagame\utils.py:170
+msgid ""
+"{member.display_name} thought wearing a disguise would help. The Mafia "
+"recognized them by their shoes."
+msgstr ""
+
+#: mafiagame\utils.py:173
+msgid ""
+"{member.display_name} tried to dig up dirt on the Mafia. They ended up six "
+"feet under."
+msgstr ""
+
+#: mafiagame\utils.py:176
+msgid ""
+"{member.display_name} thought they could trust a stranger. Turns out, the "
+"stranger worked for the Mafia."
+msgstr ""
+
+#: mafiagame\utils.py:179
+msgid ""
+"{member.display_name} tried to send an anonymous tip. The Mafia intercepted "
+"the message."
+msgstr ""
+
+#: mafiagame\utils.py:182
+msgid ""
+"{member.display_name} thought hiding in the church would work. Even the "
+"priest couldn't save them from the Mafia."
+msgstr ""
+
+#: mafiagame\utils.py:185
+msgid ""
+"{member.display_name} tried to escape by train. The Mafia was already "
+"waiting at the station."
+msgstr ""
+
+#: mafiagame\utils.py:188
+msgid ""
+"{member.display_name} thought the Mafia wouldn't strike in broad daylight. "
+"They were mistaken."
+msgstr ""
+
+#: mafiagame\utils.py:191
+msgid ""
+"{member.display_name} tried to throw the Mafia off their trail, but they "
+"don't lose track of loose ends."
+msgstr ""
+
+#: mafiagame\utils.py:194
+msgid ""
+"{member.display_name} thought hiding in the sewers was clever. The Mafia’s "
+"already been down there."
+msgstr ""
+
+#: mafiagame\utils.py:197
+msgid ""
+"{member.display_name} tried to outdrink the Mafia. They didn’t survive the "
+"hangover."
+msgstr ""
+
+#: mafiagame\utils.py:200
+msgid ""
+"{member.display_name} thought they'd blend in at a costume party. The Mafia "
+"always knows who’s under the mask."
+msgstr ""
+
+#: mafiagame\utils.py:203
+msgid ""
+"{member.display_name} tried to take the back alley shortcut, but the Mafia "
+"controls all the exits."
+msgstr ""
+
+#: mafiagame\utils.py:206
+msgid ""
+"{member.display_name} thought the Mafia wouldn’t notice their getaway car. "
+"It was rigged before they even got in."
+msgstr ""
+
+#: mafiagame\utils.py:209
+msgid ""
+"{member.display_name} tried to hide behind the bar, but the Mafia owns the "
+"whole building."
+msgstr ""
+
+#: mafiagame\utils.py:212
+msgid ""
+"{member.display_name} thought they could use a fake name. The Mafia has real"
+" bullets."
+msgstr ""
+
+#: mafiagame\utils.py:215
+msgid ""
+"{member.display_name} tried to hide in the freezer, but the Mafia prefers "
+"things on ice."
+msgstr ""
+
+#: mafiagame\utils.py:218
+msgid ""
+"{member.display_name} thought going underground would keep them safe. The "
+"Mafia digs deeper."
+msgstr ""
+
+#: mafiagame\utils.py:221
+msgid ""
+"{member.display_name} tried to sneak past the Mafia, but they were waiting "
+"on the other side."
+msgstr ""
+
+#: mafiagame\utils.py:224
+msgid ""
+"{member.display_name} thought they could bribe their way out. The Mafia "
+"doesn't take credit cards."
+msgstr ""
+
+#: mafiagame\utils.py:227
+msgid ""
+"{member.display_name} tried to run for mayor, but the Mafia runs the whole "
+"town."
+msgstr ""
+
+#: mafiagame\utils.py:229
+msgid ""
+"{member.display_name} thought they could make a getaway on a jet ski. The "
+"Mafia prefers concrete boots."
+msgstr ""
+
+#: mafiagame\utils.py:232
+msgid ""
+"{member.display_name} tried to play a double agent, but the Mafia only "
+"trusts in triples."
+msgstr ""
+
+#: mafiagame\utils.py:235
+msgid ""
+"{member.display_name} thought they could blend in by becoming a street "
+"performer. The Mafia doesn’t tip well."
+msgstr ""
+
+#: mafiagame\utils.py:238
+msgid ""
+"{member.display_name} tried to escape through the sewer pipes, but the Mafia"
+" had already sealed the exits."
+msgstr ""
+
+#: mafiagame\utils.py:241
+msgid ""
+"{member.display_name} thought bribing the doorman would help. The Mafia owns"
+" the whole building."
+msgstr ""
+
+#: mafiagame\utils.py:244
+msgid ""
+"{member.display_name} tried to hide in a crowd at a festival. The Mafia "
+"knows how to find the needle in the haystack."
+msgstr ""
+
+#: mafiagame\utils.py:247
+msgid ""
+"{member.display_name} tried to use a fake ID. The Mafia’s database is always"
+" up to date."
+msgstr ""
+
+#: mafiagame\utils.py:250
+msgid ""
+"{member.display_name} thought joining the local poker game would keep them "
+"safe. The Mafia always knows when you’re bluffing."
+msgstr ""
+
+#: mafiagame\utils.py:253
+msgid ""
+"{member.display_name} tried to disappear into the nightlife, but the Mafia "
+"controls all the nightclubs."
+msgstr ""
+
+#: mafiagame\utils.py:256
+msgid ""
+"{member.display_name} tried to use their charm to get out of trouble. The "
+"Mafia prefers a different kind of persuasion."
+msgstr ""
+
+#: mafiagame\utils.py:259
+msgid ""
+"{member.display_name} thought they were safe at home. The Mafia knows no "
+"boundaries."
+msgstr ""
+
+#: mafiagame\utils.py:262
+msgid ""
+"{member.display_name} tried to escape on a hot air balloon. The Mafia "
+"prefers a more grounded approach."
+msgstr ""
+
+#: mafiagame\utils.py:265
+msgid ""
+"{member.display_name} thought faking a sickness would save them. The Mafia "
+"doesn’t fall for medical excuses."
+msgstr ""
+
+#: mafiagame\utils.py:268
+msgid ""
+"{member.display_name} tried to blend in at the local gym. The Mafia doesn’t "
+"exercise; they execute."
+msgstr ""
+
+#: mafiagame\utils.py:271
+msgid ""
+"{member.display_name} thought they could hide in the library. The Mafia "
+"reads all the chapters, including the last one."
+msgstr ""
+
+#: mafiagame\utils.py:274
+msgid ""
+"{member.display_name} tried to blend in at the masquerade ball. The Mafia "
+"always knows who’s behind the mask."
+msgstr ""
+
+#: mafiagame\utils.py:277
+msgid ""
+"{member.display_name} thought they could evade the Mafia by taking a scenic "
+"route. They enjoyed the view... one last time."
+msgstr ""
+
+#: mafiagame\utils.py:280
+msgid ""
+"{member.display_name} attempted to hide in a dumpster. The Mafia knows all "
+"the best hiding spots."
+msgstr ""
+
+#: mafiagame\utils.py:283
+msgid ""
+"{member.display_name} thought they could escape by plane. The Mafia controls"
+" the airport."
+msgstr ""
+
+#: mafiagame\utils.py:286
+msgid ""
+"{member.display_name} tried to bribe their way out with counterfeit money. "
+"The Mafia doesn’t deal in fakes."
+msgstr ""
+
+#: mafiagame\utils.py:289
+msgid ""
+"{member.display_name} thought a new identity would protect them. The Mafia "
+"has an extensive directory."
+msgstr ""
+
+#: mafiagame\utils.py:292
+msgid ""
+"{member.display_name} tried to flee during a blackout. The Mafia doesn’t "
+"need lights to find their targets."
+msgstr ""
+
+#: mafiagame\utils.py:295
+msgid ""
+"{member.display_name} thought joining a cult would offer protection. The "
+"Mafia prefers their own brand of loyalty."
+msgstr ""
+
+#: mafiagame\utils.py:298
+msgid ""
+"{member.display_name} tried to sneak into a VIP party. The Mafia owns the "
+"guest list."
+msgstr ""
+
+#: mafiagame\utils.py:301
+msgid ""
+"{member.display_name} thought they could escape in a hot air balloon. The "
+"Mafia’s reach extends even skyward."
+msgstr ""
+
+#: mafiagame\utils.py:304
+msgid ""
+"{member.display_name} tried to hide in the attic. The Mafia has eyes on "
+"every floor."
+msgstr ""
+
+#: mafiagame\utils.py:307
+msgid ""
+"{member.display_name} thought a disguise would save them. The Mafia "
+"recognizes all the tricks."
+msgstr ""
+
+#: mafiagame\utils.py:310
+msgid ""
+"{member.display_name} tried to hide in the shadows. The Mafia knows how to "
+"turn on the spotlight."
+msgstr ""
+
+#: mafiagame\utils.py:313
+msgid ""
+"{member.display_name} attempted to bribe a police officer. The Mafia owns "
+"the precinct."
+msgstr ""
+
+#: mafiagame\utils.py:316
+msgid ""
+"{member.display_name} thought escaping through a secret passage would work. "
+"The Mafia has a map of every route."
+msgstr ""
+
+#: mafiagame\utils.py:319
+msgid ""
+"{member.display_name} tried to hide in a church. The Mafia doesn’t believe "
+"in sanctuary."
+msgstr ""
+
+#: mafiagame\utils.py:322
+msgid ""
+"{member.display_name} thought they could lose the Mafia by switching "
+"vehicles. The Mafia tracks all their cars."
+msgstr ""
+
+#: mafiagame\utils.py:325
+msgid ""
+"{member.display_name} tried to escape via yacht. The Mafia controls the "
+"docks."
+msgstr ""
+
+#: mafiagame\utils.py:326
+msgid ""
+"{member.display_name} thought leaving town would be enough. The Mafia has "
+"connections everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:329
+msgid ""
+"{member.display_name} attempted to blend in at a costume shop. The Mafia "
+"always sees through the disguise."
+msgstr ""
+
+#: mafiagame\utils.py:332
+msgid ""
+"{member.display_name} tried to use their knowledge of the city to hide. The "
+"Mafia knows the city better."
+msgstr ""
+
+#: mafiagame\utils.py:335
+msgid ""
+"{member.display_name} thought changing their appearance would help. The "
+"Mafia recognizes more than just faces."
+msgstr ""
+
+#: mafiagame\utils.py:338
+msgid ""
+"{member.display_name} tried to use a fake accent. The Mafia can spot a phony"
+" from a mile away."
+msgstr ""
+
+#: mafiagame\utils.py:341
+msgid ""
+"{member.display_name} thought hiding in plain sight at a parade would be "
+"safe. The Mafia doesn’t miss a beat."
+msgstr ""
+
+#: mafiagame\utils.py:344
+msgid ""
+"{member.display_name} tried to blend in at a sporting event. The Mafia has "
+"tickets to all games."
+msgstr ""
+
+#: mafiagame\utils.py:347
+msgid ""
+"{member.display_name} thought a new haircut would disguise them. The Mafia "
+"notices even the smallest changes."
+msgstr ""
+
+#: mafiagame\utils.py:350
+msgid ""
+"{member.display_name} tried to sneak out during a street festival. The Mafia"
+" controls all the festivities."
+msgstr ""
+
+#: mafiagame\utils.py:353
+msgid ""
+"{member.display_name} thought they could outsmart the Mafia with a fake "
+"alibi. The Mafia prefers real evidence."
+msgstr ""
+
+#: mafiagame\utils.py:356
+msgid ""
+"{member.display_name} tried to hide in a crowded market. The Mafia always "
+"finds the needle in the haystack."
+msgstr ""
+
+#: mafiagame\utils.py:359
+msgid ""
+"{member.display_name} attempted to escape in a hearse. The Mafia has no "
+"respect for the dead."
+msgstr ""
+
+#: mafiagame\utils.py:362
+msgid ""
+"{member.display_name} thought they could evade the Mafia by moving to a "
+"rural area. The Mafia’s network is vast."
+msgstr ""
+
+#: mafiagame\utils.py:365
+msgid ""
+"{member.display_name} tried to use a decoy. The Mafia sees through all "
+"distractions."
+msgstr ""
+
+#: mafiagame\utils.py:368
+msgid ""
+"{member.display_name} thought changing their name would protect them. The "
+"Mafia has a file on everyone."
+msgstr ""
+
+#: mafiagame\utils.py:371
+msgid ""
+"{member.display_name} tried to escape through the sewers. The Mafia knows "
+"every underground route."
+msgstr ""
+
+#: mafiagame\utils.py:374
+msgid ""
+"{member.display_name} thought moving to a new city would help. The Mafia has"
+" operatives everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:377
+msgid ""
+"{member.display_name} tried to fake their death at a hospital. The Mafia "
+"doesn’t fall for medical tricks."
+msgstr ""
+
+#: mafiagame\utils.py:380
+msgid ""
+"{member.display_name} attempted to escape during a power outage. The Mafia "
+"is prepared for all contingencies."
+msgstr ""
+
+#: mafiagame\utils.py:383
+msgid ""
+"{member.display_name} thought they could hide in a warehouse. The Mafia has "
+"access to every storage unit."
+msgstr ""
+
+#: mafiagame\utils.py:386
+msgid ""
+"{member.display_name} tried to hide in a film studio. The Mafia knows how to"
+" direct their own drama."
+msgstr ""
+
+#: mafiagame\utils.py:389
+msgid ""
+"{member.display_name} attempted to leave town by freight train. The Mafia "
+"controls all transportation."
+msgstr ""
+
+#: mafiagame\utils.py:392
+msgid ""
+"{member.display_name} thought they could escape through a university. The "
+"Mafia has connections in every field."
+msgstr ""
+
+#: mafiagame\utils.py:395
+msgid ""
+"{member.display_name} tried to lay low at a country club. The Mafia’s reach "
+"extends to all social circles."
+msgstr ""
+
+#: mafiagame\utils.py:398
+msgid ""
+"{member.display_name} thought they could avoid the Mafia by blending in at a"
+" charity event. The Mafia controls all donations."
+msgstr ""
+
+#: mafiagame\utils.py:401
+msgid ""
+"{member.display_name} tried to hide in a circus tent. The Mafia doesn’t get "
+"fooled by acrobatics."
+msgstr ""
+
+#: mafiagame\utils.py:404
+msgid ""
+"{member.display_name} thought a new vehicle would help them escape. The "
+"Mafia tracks all types of transportation."
+msgstr ""
+
+#: mafiagame\utils.py:407
+msgid ""
+"{member.display_name} tried to blend in at a carnival. The Mafia knows all "
+"the games and tricks."
+msgstr ""
+
+#: mafiagame\utils.py:410
+msgid ""
+"{member.display_name} attempted to escape via helicopter. The Mafia has "
+"helicopters of their own."
+msgstr ""
+
+#: mafiagame\utils.py:413
+msgid ""
+"{member.display_name} thought a disguise would save them. The Mafia can see "
+"through the most elaborate ruses."
+msgstr ""
+
+#: mafiagame\utils.py:416
+msgid ""
+"{member.display_name} tried to avoid the Mafia by moving underground. The "
+"Mafia has connections in the sewers."
+msgstr ""
+
+#: mafiagame\utils.py:419
+msgid ""
+"{member.display_name} thought a remote cabin would offer safety. The Mafia "
+"can find you anywhere."
+msgstr ""
+
+#: mafiagame\utils.py:422
+msgid ""
+"{member.display_name} tried to avoid detection by switching neighborhoods. "
+"The Mafia owns real estate everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:425
+msgid ""
+"{member.display_name} thought they could blend in at a rave. The Mafia "
+"controls the nightlife."
+msgstr ""
+
+#: mafiagame\utils.py:428
+msgid ""
+"{member.display_name} tried to escape on a bicycle. The Mafia prefers more "
+"reliable forms of transport."
+msgstr ""
+
+#: mafiagame\utils.py:431
+msgid ""
+"{member.display_name} attempted to hide at a ski resort. The Mafia tracks "
+"every snowflake."
+msgstr ""
+
+#: mafiagame\utils.py:434
+msgid ""
+"{member.display_name} thought they could escape by becoming a recluse. The "
+"Mafia knows every hiding place."
+msgstr ""
+
+#: mafiagame\utils.py:437
+msgid ""
+"{member.display_name} tried to use a body double. The Mafia can spot a fake "
+"from a mile away."
+msgstr ""
+
+#: mafiagame\utils.py:440
+msgid ""
+"{member.display_name} thought joining a commune would protect them. The "
+"Mafia infiltrates all communities."
+msgstr ""
+
+#: mafiagame\utils.py:443
+msgid ""
+"{member.display_name} tried to hide in a botanical garden. The Mafia has "
+"eyes on every petal."
+msgstr ""
+
+#: mafiagame\utils.py:446
+msgid ""
+"{member.display_name} thought they could escape by relocating to a remote "
+"island. The Mafia’s reach is global."
+msgstr ""
+
+#: mafiagame\utils.py:449
+msgid ""
+"{member.display_name} tried to escape through the city's sewer system. The "
+"Mafia has access to all underground routes."
+msgstr ""
+
+#: mafiagame\utils.py:452
+msgid ""
+"{member.display_name} thought they could evade the Mafia by blending in at a"
+" local fair. The Mafia owns the ringmaster."
+msgstr ""
+
+#: mafiagame\utils.py:455
+msgid ""
+"{member.display_name} tried to use a distraction to get away. The Mafia "
+"always keeps their eyes on the prize."
+msgstr ""
+
+#: mafiagame\utils.py:458
+msgid ""
+"{member.display_name} attempted to escape through a network of tunnels. The "
+"Mafia knows every exit."
+msgstr ""
+
+#: mafiagame\utils.py:461
+msgid ""
+"{member.display_name} thought a secluded farmhouse would keep them safe. The"
+" Mafia’s reach extends to the countryside."
+msgstr ""
+
+#: mafiagame\utils.py:464
+msgid ""
+"{member.display_name} tried to blend in at a costume party. The Mafia can "
+"see through the most elaborate disguises."
+msgstr ""
+
+#: mafiagame\utils.py:467
+msgid ""
+"{member.display_name} attempted to flee during a city-wide event. The Mafia "
+"controls all major gatherings."
+msgstr ""
+
+#: mafiagame\utils.py:470
+msgid ""
+"{member.display_name} thought they could use a false identity. The Mafia has"
+" real eyes everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:473
+msgid ""
+"{member.display_name} tried to escape via a private jet. The Mafia owns the "
+"skies as well."
+msgstr ""
+
+#: mafiagame\utils.py:476
+msgid ""
+"{member.display_name} attempted to disappear at a music festival. The Mafia "
+"can find you in a crowd."
+msgstr ""
+
+#: mafiagame\utils.py:479
+msgid ""
+"{member.display_name} thought they could avoid the Mafia by switching "
+"hotels. The Mafia has a booking for every room."
+msgstr ""
+
+#: mafiagame\utils.py:482
+msgid ""
+"{member.display_name} tried to escape through a maze. The Mafia knows every "
+"twist and turn."
+msgstr ""
+
+#: mafiagame\utils.py:485
+msgid ""
+"{member.display_name} thought relocating to a mountain lodge would help. The"
+" Mafia controls every peak and valley."
+msgstr ""
+
+#: mafiagame\utils.py:488
+msgid ""
+"{member.display_name} tried to escape by blending in at a local art gallery."
+" The Mafia sees all the hidden messages."
+msgstr ""
+
+#: mafiagame\utils.py:491
+msgid ""
+"{member.display_name} thought they could hide in a theater during a show. "
+"The Mafia controls all the seats."
+msgstr ""
+
+#: mafiagame\utils.py:494
+msgid ""
+"{member.display_name} attempted to escape during a sports game. The Mafia "
+"has tickets to every match."
+msgstr ""
+
+#: mafiagame\utils.py:497
+msgid ""
+"{member.display_name} tried to disappear at a film set. The Mafia is the "
+"true star of the show."
+msgstr ""
+
+#: mafiagame\utils.py:500
+msgid ""
+"{member.display_name} thought they could hide in an amusement park. The "
+"Mafia controls all the rides."
+msgstr ""
+
+#: mafiagame\utils.py:503
+msgid ""
+"{member.display_name} tried to escape through a labyrinthine library. The "
+"Mafia has read all the books."
+msgstr ""
+
+#: mafiagame\utils.py:506
+msgid ""
+"{member.display_name} thought they could use a fake passport. The Mafia has "
+"access to all documents."
+msgstr ""
+
+#: mafiagame\utils.py:509
+msgid ""
+"{member.display_name} attempted to hide in a fancy restaurant. The Mafia "
+"controls all the dining rooms."
+msgstr ""
+
+#: mafiagame\utils.py:512
+msgid ""
+"{member.display_name} thought relocating to a small town would help. The "
+"Mafia’s network extends even there."
+msgstr ""
+
+#: mafiagame\utils.py:515
+msgid ""
+"{member.display_name} tried to use a fake emergency. The Mafia knows when "
+"you’re bluffing."
+msgstr ""
+
+#: mafiagame\utils.py:518
+msgid ""
+"{member.display_name} thought they could escape through a network of safe "
+"houses. The Mafia has maps to all of them."
+msgstr ""
+
+#: mafiagame\utils.py:521
+msgid ""
+"{member.display_name} attempted to flee during a blackout. The Mafia sees in"
+" the dark."
+msgstr ""
+
+#: mafiagame\utils.py:524
+msgid ""
+"{member.display_name} tried to use a body double. The Mafia knows every face"
+" in town."
+msgstr ""
+
+#: mafiagame\utils.py:527
+msgid ""
+"{member.display_name} thought they could avoid the Mafia by moving to a "
+"remote village. The Mafia has connections everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:530
+msgid ""
+"{member.display_name} tried to blend in at a local theater production. The "
+"Mafia knows all the lines."
+msgstr ""
+
+#: mafiagame\utils.py:533
+msgid ""
+"{member.display_name} attempted to escape via a glider. The Mafia has aerial"
+" surveillance."
+msgstr ""
+
+#: mafiagame\utils.py:536
+msgid ""
+"{member.display_name} thought a new address would help. The Mafia follows "
+"all the moving trucks."
+msgstr ""
+
+#: mafiagame\utils.py:539
+msgid ""
+"{member.display_name} tried to hide at a local aquarium. The Mafia has eyes "
+"on every tank."
+msgstr ""
+
+#: mafiagame\utils.py:542
+msgid ""
+"{member.display_name} attempted to disappear at a flea market. The Mafia "
+"knows every stall."
+msgstr ""
+
+#: mafiagame\utils.py:545
+msgid ""
+"{member.display_name} thought they could blend in at a wine tasting. The "
+"Mafia doesn’t miss a drop."
+msgstr ""
+
+#: mafiagame\utils.py:548
+msgid ""
+"{member.display_name} tried to escape on a moped. The Mafia prefers more "
+"permanent solutions."
+msgstr ""
+
+#: mafiagame\utils.py:551
+msgid ""
+"{member.display_name} attempted to hide in a sprawling estate. The Mafia has"
+" access to every room."
+msgstr ""
+
+#: mafiagame\utils.py:554
+msgid ""
+"{member.display_name} thought a fake medical emergency would buy them time. "
+"The Mafia doesn’t fall for stunts."
+msgstr ""
+
+#: mafiagame\utils.py:557
+msgid ""
+"{member.display_name} tried to escape through an underground fight club. The"
+" Mafia controls all the rings."
+msgstr ""
+
+#: mafiagame\utils.py:560
+msgid ""
+"{member.display_name} thought relocating to a desert would save them. The "
+"Mafia has a way of finding you even in the sand."
+msgstr ""
+
+#: mafiagame\utils.py:563
+msgid ""
+"{member.display_name} tried to hide in a hedge maze. The Mafia has already "
+"mapped it out."
+msgstr ""
+
+#: mafiagame\utils.py:566
+msgid ""
+"{member.display_name} attempted to escape via a speedboat. The Mafia "
+"controls all the docks and marinas."
+msgstr ""
+
+#: mafiagame\utils.py:569
+msgid ""
+"{member.display_name} thought a new vehicle would help them flee. The Mafia "
+"tracks every license plate."
+msgstr ""
+
+#: mafiagame\utils.py:572
+msgid ""
+"{member.display_name} tried to disappear in a crowded train station. The "
+"Mafia has agents on every platform."
+msgstr ""
+
+#: mafiagame\utils.py:575
+msgid ""
+"{member.display_name} attempted to hide in a high-rise apartment. The Mafia "
+"owns the building."
+msgstr ""
+
+#: mafiagame\utils.py:578
+msgid ""
+"{member.display_name} thought changing their phone number would help. The "
+"Mafia has every number on speed dial."
+msgstr ""
+
+#: mafiagame\utils.py:581
+msgid ""
+"{member.display_name} tried to escape by blending in at a local street "
+"market. The Mafia owns all the stalls."
+msgstr ""
+
+#: mafiagame\utils.py:584
+msgid ""
+"{member.display_name} thought they could hide in a tech convention. The "
+"Mafia is always ahead of the latest trends."
+msgstr ""
+
+#: mafiagame\utils.py:587
+msgid ""
+"{member.display_name} tried to blend in at a beach resort. The Mafia has a "
+"way of finding everyone, even on vacation."
+msgstr ""
+
+#: mafiagame\utils.py:590
+msgid ""
+"{member.display_name} attempted to escape through a cable car. The Mafia can"
+" track all aerial routes."
+msgstr ""
+
+#: mafiagame\utils.py:593
+msgid ""
+"{member.display_name} thought joining a new social club would keep them "
+"safe. The Mafia has infiltrated all clubs."
+msgstr ""
+
+#: mafiagame\utils.py:596
+msgid ""
+"{member.display_name} tried to hide in a remote logging camp. The Mafia has "
+"connections everywhere, even in the woods."
+msgstr ""
+
+#: mafiagame\utils.py:599
+msgid ""
+"{member.display_name} thought they could avoid the Mafia by hiding in a "
+"rooftop garden. The Mafia always finds a way up."
+msgstr ""
+
+#: mafiagame\utils.py:602
+msgid ""
+"{member.display_name} tried to escape through a local brewery. The Mafia has"
+" access to all brewing equipment."
+msgstr ""
+
+#: mafiagame\utils.py:605
+msgid ""
+"{member.display_name} attempted to blend in at a summer camp. The Mafia has "
+"scouts everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:608
+msgid ""
+"{member.display_name} thought relocating to a ski lodge would save them. The"
+" Mafia tracks all seasonal spots."
+msgstr ""
+
+#: mafiagame\utils.py:611
+msgid ""
+"{member.display_name} tried to disappear into the local library’s archive. "
+"The Mafia has access to every record."
+msgstr ""
+
+#: mafiagame\utils.py:614
+msgid ""
+"{member.display_name} attempted to flee via a private yacht. The Mafia "
+"controls every body of water."
+msgstr ""
+
+#: mafiagame\utils.py:617
+msgid ""
+"{member.display_name} thought they could avoid detection by blending in at a"
+" local flea market. The Mafia knows every vendor."
+msgstr ""
+
+#: mafiagame\utils.py:620
+msgid ""
+"{member.display_name} tried to escape through a vintage car club. The Mafia "
+"has agents in all classic circles."
+msgstr ""
+
+#: mafiagame\utils.py:623
+msgid ""
+"{member.display_name} attempted to hide in an abandoned factory. The Mafia "
+"always knows where the abandoned places are."
+msgstr ""
+
+#: mafiagame\utils.py:626
+msgid ""
+"{member.display_name} thought changing their appearance with surgery would "
+"help. The Mafia recognizes even the smallest changes."
+msgstr ""
+
+#: mafiagame\utils.py:629
+msgid ""
+"{member.display_name} tried to escape by hopping a freight train. The Mafia "
+"tracks all shipments."
+msgstr ""
+
+#: mafiagame\utils.py:632
+msgid ""
+"{member.display_name} attempted to hide in a local historic site. The Mafia "
+"has a history of finding their targets."
+msgstr ""
+
+#: mafiagame\utils.py:635
+msgid ""
+"{member.display_name} thought they could blend in at a comedy club. The "
+"Mafia has no sense of humor about betrayal."
+msgstr ""
+
+#: mafiagame\utils.py:638
+msgid ""
+"{member.display_name} tried to avoid the Mafia by living off the grid. The "
+"Mafia finds ways to turn off-grid back on."
+msgstr ""
+
+#: mafiagame\utils.py:641
+msgid ""
+"{member.display_name} attempted to escape via a mountain pass. The Mafia "
+"knows all the treacherous routes."
+msgstr ""
+
+#: mafiagame\utils.py:644
+msgid ""
+"{member.display_name} thought they could hide in a boutique hotel. The Mafia"
+" has connections in every corner of hospitality."
+msgstr ""
+
+#: mafiagame\utils.py:647
+msgid ""
+"{member.display_name} tried to disappear at a magic show. The Mafia prefers "
+"their own brand of illusions."
+msgstr ""
+
+#: mafiagame\utils.py:650
+msgid ""
+"{member.display_name} attempted to hide in a scientific research lab. The "
+"Mafia has spies everywhere, even in labs."
+msgstr ""
+
+#: mafiagame\utils.py:653
+msgid ""
+"{member.display_name} thought relocating to a coastal town would help. The "
+"Mafia has eyes on every coast."
+msgstr ""
+
+#: mafiagame\utils.py:656
+msgid ""
+"{member.display_name} tried to escape during a charity gala. The Mafia "
+"controls all the high society."
+msgstr ""
+
+#: mafiagame\utils.py:659
+msgid ""
+"{member.display_name} attempted to disappear in a spa retreat. The Mafia "
+"doesn’t take days off."
+msgstr ""
+
+#: mafiagame\utils.py:662
+msgid ""
+"{member.display_name} thought a new passport would help. The Mafia has "
+"connections at every border."
+msgstr ""
+
+#: mafiagame\utils.py:665
+msgid ""
+"{member.display_name} tried to hide in an industrial complex. The Mafia has "
+"agents in every sector."
+msgstr ""
+
+#: mafiagame\utils.py:668
+msgid ""
+"{member.display_name} attempted to blend in at a local farmers' market. The "
+"Mafia has agents in every market."
+msgstr ""
+
+#: mafiagame\utils.py:671
+msgid ""
+"{member.display_name} thought a new home in a gated community would be safe."
+" The Mafia has keys to every gate."
+msgstr ""
+
+#: mafiagame\utils.py:674
+msgid ""
+"{member.display_name} tried to escape through a series of tunnels. The Mafia"
+" knows every underground passage."
+msgstr ""
+
+#: mafiagame\utils.py:677
+msgid ""
+"{member.display_name} attempted to disappear into a local art studio. The "
+"Mafia has eyes on every masterpiece."
+msgstr ""
+
+#: mafiagame\utils.py:680
+msgid ""
+"{member.display_name} thought joining a yoga retreat would help. The Mafia "
+"finds inner peace in their own way."
+msgstr ""
+
+#: mafiagame\utils.py:683
+msgid ""
+"{member.display_name} tried to blend in at a new age convention. The Mafia "
+"knows every type of new age."
+msgstr ""
+
+#: mafiagame\utils.py:686
+msgid ""
+"{member.display_name} attempted to escape through a regional park. The Mafia"
+" has trackers in all the wild."
+msgstr ""
+
+#: mafiagame\utils.py:689
+msgid ""
+"{member.display_name} thought they could hide in a film festival. The Mafia "
+"has cameras everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:692
+msgid ""
+"{member.display_name} tried to escape by blending in at a local concert. The"
+" Mafia knows all the hits."
+msgstr ""
+
+#: mafiagame\utils.py:695
+msgid ""
+"{member.display_name} attempted to disappear in a remote village. The Mafia "
+"has eyes in every village."
+msgstr ""
+
+#: mafiagame\utils.py:698
+msgid ""
+"{member.display_name} thought a disguise would work at a local theater. The "
+"Mafia sees every act."
+msgstr ""
+
+#: mafiagame\utils.py:701
+msgid ""
+"{member.display_name} tried to hide in a historic mansion. The Mafia has "
+"keys to every mansion."
+msgstr ""
+
+#: mafiagame\utils.py:704
+msgid ""
+"{member.display_name} attempted to escape through a private airfield. The "
+"Mafia controls all air traffic."
+msgstr ""
+
+#: mafiagame\utils.py:707
+msgid ""
+"{member.display_name} thought they could avoid the Mafia by changing their "
+"diet. The Mafia has a taste for all changes."
+msgstr ""
+
+#: mafiagame\utils.py:710
+msgid ""
+"{member.display_name} tried to blend in at a scientific conference. The "
+"Mafia has connections in every field."
+msgstr ""
+
+#: mafiagame\utils.py:713
+msgid ""
+"{member.display_name} attempted to disappear at a local brewery. The Mafia "
+"controls all the taps."
+msgstr ""
+
+#: mafiagame\utils.py:716
+msgid ""
+"{member.display_name} thought relocating to a secluded island would save "
+"them. The Mafia has reach everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:719
+msgid ""
+"{member.display_name} tried to hide in a local music store. The Mafia knows "
+"all the notes."
+msgstr ""
+
+#: mafiagame\utils.py:722
+msgid ""
+"{member.display_name} attempted to escape through a labyrinthine market. The"
+" Mafia knows every stall and alley."
+msgstr ""
+
+#: mafiagame\utils.py:725
+msgid ""
+"{member.display_name} thought they could avoid detection by hiding in a "
+"small town’s diner. The Mafia’s network includes diners."
+msgstr ""
+
+#: mafiagame\utils.py:728
+msgid ""
+"{member.display_name} tried to blend in at a local garden center. The Mafia "
+"has green thumbs and sharp eyes."
+msgstr ""
+
+#: mafiagame\utils.py:731
+msgid ""
+"{member.display_name} attempted to escape via a luxury yacht. The Mafia’s "
+"influence extends to the high seas."
+msgstr ""
+
+#: mafiagame\utils.py:734
+msgid ""
+"{member.display_name} thought they could hide in a secluded cabin. The Mafia"
+" can track even the most remote locations."
+msgstr ""
+
+#: mafiagame\utils.py:737
+msgid ""
+"{member.display_name} tried to disappear in a local park. The Mafia has a "
+"way of finding every green space."
+msgstr ""
+
+#: mafiagame\utils.py:740
+msgid ""
+"{member.display_name} attempted to escape through a network of safe houses. "
+"The Mafia has every safe house on their radar."
+msgstr ""
+
+#: mafiagame\utils.py:743
+msgid ""
+"{member.display_name} thought they could avoid the Mafia by blending in at a"
+" trade show. The Mafia has eyes on every booth."
+msgstr ""
+
+#: mafiagame\utils.py:746
+msgid ""
+"{member.display_name} tried to hide in a rooftop garden. The Mafia has "
+"access to all heights."
+msgstr ""
+
+#: mafiagame\utils.py:749
+msgid ""
+"{member.display_name} attempted to escape through a private vineyard. The "
+"Mafia controls every vintage."
+msgstr ""
+
+#: mafiagame\utils.py:752
+msgid ""
+"{member.display_name} thought they could blend in at a local antique store. "
+"The Mafia knows every piece."
+msgstr ""
+
+#: mafiagame\utils.py:755
+msgid ""
+"{member.display_name} tried to disappear in a crowded amusement park. The "
+"Mafia has surveillance on every ride."
+msgstr ""
+
+#: mafiagame\utils.py:758
+msgid ""
+"{member.display_name} attempted to escape via a local ferry. The Mafia owns "
+"all the boats."
+msgstr ""
+
+#: mafiagame\utils.py:761
+msgid ""
+"{member.display_name} thought they could hide in a large, bustling market. "
+"The Mafia always finds the crowd."
+msgstr ""
+
+#: mafiagame\utils.py:764
+msgid ""
+"{member.display_name} tried to avoid detection by relocating to a historic "
+"district. The Mafia has history everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:767
+msgid ""
+"{member.display_name} attempted to disappear into a local cultural festival."
+" The Mafia is always part of the celebration."
+msgstr ""
+
+#: mafiagame\utils.py:770
+msgid ""
+"{member.display_name} thought they could avoid the Mafia by hiding in a "
+"high-end boutique. The Mafia has fashion connections."
+msgstr ""
+
+#: mafiagame\utils.py:773
+msgid ""
+"{member.display_name} tried to blend in at a local aquarium. The Mafia sees "
+"every fin and scale."
+msgstr ""
+
+#: mafiagame\utils.py:776
+msgid ""
+"{member.display_name} attempted to escape by taking a private tour. The "
+"Mafia controls all the tours."
+msgstr ""
+
+#: mafiagame\utils.py:779
+msgid ""
+"{member.display_name} thought relocating to a ski resort would be safe. The "
+"Mafia tracks every snowflake."
+msgstr ""
+
+#: mafiagame\utils.py:782
+msgid ""
+"{member.display_name} tried to disappear in a secluded vineyard. The Mafia "
+"has access to every grape."
+msgstr ""
+
+#: mafiagame\utils.py:785
+msgid ""
+"{member.display_name} attempted to hide in an exclusive country club. The "
+"Mafia has memberships everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:788
+msgid ""
+"{member.display_name} thought they could avoid the Mafia by relocating to a "
+"mountain retreat. The Mafia knows every peak."
+msgstr ""
+
+#: mafiagame\utils.py:791
+msgid ""
+"{member.display_name} tried to escape through a complex network of caves. "
+"The Mafia has maps of every underground route."
+msgstr ""
+
+#: mafiagame\utils.py:794
+msgid ""
+"{member.display_name} attempted to blend in at a local arts festival. The "
+"Mafia sees through every artifice."
+msgstr ""
+
+#: mafiagame\utils.py:797
+msgid ""
+"{member.display_name} thought they could escape by moving to a remote "
+"fishing village. The Mafia controls all the coasts."
+msgstr ""
+
+#: mafiagame\utils.py:800
+msgid ""
+"{member.display_name} tried to disappear in a crowded convention center. The"
+" Mafia knows how to find the hidden."
+msgstr ""
+
+#: mafiagame\utils.py:803
+msgid ""
+"{member.display_name} attempted to escape through a network of hidden rooms."
+" The Mafia knows every secret passage."
+msgstr ""
+
+#: mafiagame\utils.py:806
+msgid ""
+"{member.display_name} thought they could hide in a local museum. The Mafia "
+"has eyes on every exhibit."
+msgstr ""
+
+#: mafiagame\utils.py:809
+msgid ""
+"{member.display_name} tried to escape via a scenic train route. The Mafia "
+"controls all scenic views."
+msgstr ""
+
+#: mafiagame\utils.py:812
+msgid ""
+"{member.display_name} attempted to blend in at a local farm. The Mafia knows"
+" every barn and silo."
+msgstr ""
+
+#: mafiagame\utils.py:815
+msgid ""
+"{member.display_name} thought relocating to a remote cabin would help. The "
+"Mafia tracks every move."
+msgstr ""
+
+#: mafiagame\utils.py:818
+msgid ""
+"{member.display_name} tried to escape by blending in at a local zoo. The "
+"Mafia watches every animal."
+msgstr ""
+
+#: mafiagame\utils.py:821
+msgid ""
+"{member.display_name} attempted to hide in a remote mountain lodge. The "
+"Mafia has access to every peak."
+msgstr ""
+
+#: mafiagame\utils.py:824
+msgid ""
+"{member.display_name} thought they could avoid the Mafia by blending in at a"
+" local car show. The Mafia has eyes on every vehicle."
+msgstr ""
+
+#: mafiagame\utils.py:827
+msgid ""
+"{member.display_name} tried to disappear in a crowded city park. The Mafia "
+"knows every inch of the green space."
+msgstr ""
+
+#: mafiagame\utils.py:830
+msgid ""
+"{member.display_name} attempted to escape through a series of underground "
+"bunkers. The Mafia knows every bunker."
+msgstr ""
+
+#: mafiagame\utils.py:833
+msgid ""
+"{member.display_name} thought they could hide at a historic battlefield. The"
+" Mafia knows every old skirmish."
+msgstr ""
+
+#: mafiagame\utils.py:836
+msgid ""
+"{member.display_name} tried to blend in at a local botanical garden. The "
+"Mafia has a green thumb for finding hiding places."
+msgstr ""
+
+#: mafiagame\utils.py:839
+msgid ""
+"{member.display_name} attempted to disappear during a major city event. The "
+"Mafia controls all major gatherings."
+msgstr ""
+
+#: mafiagame\utils.py:842
+msgid ""
+"{member.display_name} thought a disguise at a masquerade ball would work. "
+"The Mafia always sees through masks."
+msgstr ""
+
+#: mafiagame\utils.py:845
+msgid ""
+"{member.display_name} tried to escape via a private ski chalet. The Mafia "
+"has access to all resorts."
+msgstr ""
+
+#: mafiagame\utils.py:848
+msgid ""
+"{member.display_name} attempted to hide in an upscale gallery. The Mafia "
+"knows every art dealer."
+msgstr ""
+
+#: mafiagame\utils.py:851
+msgid ""
+"{member.display_name} thought relocating to a remote cottage would help. The"
+" Mafia tracks every retreat."
+msgstr ""
+
+#: mafiagame\utils.py:854
+msgid ""
+"{member.display_name} tried to disappear into a crowded street fair. The "
+"Mafia knows every street corner."
+msgstr ""
+
+#: mafiagame\utils.py:857
+msgid ""
+"{member.display_name} attempted to blend in at a local opera house. The "
+"Mafia sees through every performance."
+msgstr ""
+
+#: mafiagame\utils.py:860
+msgid ""
+"{member.display_name} thought they could escape by taking a scenic boat "
+"ride. The Mafia owns every waterway."
+msgstr ""
+
+#: mafiagame\utils.py:863
+msgid ""
+"{member.display_name} tried to hide in a busy metropolitan area. The Mafia "
+"knows every city block."
+msgstr ""
+
+#: mafiagame\utils.py:866
+msgid ""
+"{member.display_name} attempted to disappear into a local airport. The Mafia"
+" has eyes on every departure."
+msgstr ""
+
+#: mafiagame\utils.py:869
+msgid ""
+"{member.display_name} thought blending in at a charity auction would work. "
+"The Mafia has all the bidders."
+msgstr ""
+
+#: mafiagame\utils.py:872
+msgid ""
+"{member.display_name} tried to escape through a local observatory. The Mafia"
+" keeps watch from the stars."
+msgstr ""
+
+#: mafiagame\utils.py:875
+msgid ""
+"{member.display_name} attempted to hide in a remote lighthouse. The Mafia "
+"has beacons everywhere."
+msgstr ""
+
+#: mafiagame\utils.py:878
+msgid ""
+"{member.display_name} thought they could avoid detection by moving to a "
+"small island. The Mafia’s reach is global."
+msgstr ""
+
+#: mafiagame\utils.py:881
+msgid ""
+"{member.display_name} tried to blend in at a local fitness center. The Mafia"
+" can spot anyone trying to change their routine."
+msgstr ""
+
+#: mafiagame\utils.py:884
+msgid ""
+"{member.display_name} attempted to escape through a series of interconnected"
+" caves. The Mafia knows every path."
+msgstr ""
+
+#: mafiagame\utils.py:887
+msgid ""
+"{member.display_name} thought relocating to a small town would be safe. The "
+"Mafia has agents in every town."
+msgstr ""
+
+#: mafiagame\utils.py:890
+msgid ""
+"{member.display_name} tried to disappear in a bustling city subway. The "
+"Mafia controls all transit systems."
+msgstr ""
+
+#: mafiagame\utils.py:893
+msgid ""
+"{member.display_name} attempted to hide in a local pet shop. The Mafia sees "
+"through every cute face."
+msgstr ""
+
+#: mafiagame\utils.py:896
+msgid ""
+"{member.display_name} thought a disguise would work at a local music "
+"festival. The Mafia knows all the tunes."
+msgstr ""
+
+#: mafiagame\utils.py:899
+msgid ""
+"{member.display_name} tried to escape by blending in at a high-end fashion "
+"show. The Mafia sets all the trends."
+msgstr ""
+
+#: mafiagame\utils.py:902
+msgid ""
+"{member.display_name} attempted to disappear in a local tech startup. The "
+"Mafia has connections in every sector."
+msgstr ""
+
+#: mafiagame\utils.py:905
+msgid ""
+"{member.display_name} thought hiding in a local orchard would help. The "
+"Mafia knows every fruit-bearing tree."
+msgstr ""
+
+#: mafiagame\utils.py:908
+msgid ""
+"{member.display_name} tried to hide in a local vineyard. The Mafia controls "
+"every bottle and grape."
+msgstr ""
+
+#: mafiagame\utils.py:911
+msgid ""
+"{member.display_name} attempted to escape through a series of historical "
+"landmarks. The Mafia knows all the landmarks."
+msgstr ""
+
+#: mafiagame\utils.py:914
+msgid ""
+"{member.display_name} thought they could avoid detection by blending in at a"
+" local culinary school. The Mafia knows every dish."
+msgstr ""
+
+#: mafiagame\utils.py:917
+msgid ""
+"{member.display_name} tried to escape via a private vineyard. The Mafia "
+"tracks every vintage."
+msgstr ""
+
+#: mafiagame\utils.py:920
+msgid ""
+"{member.display_name} attempted to hide in a busy city square. The Mafia "
+"keeps tabs on every corner."
+msgstr ""
+
+#: mafiagame\utils.py:923
+msgid ""
+"{member.display_name} thought a disguise at a local fundraiser would work. "
+"The Mafia sees through all the charm."
+msgstr ""
+
+#: mafiagame\utils.py:926
+msgid ""
+"{member.display_name} tried to disappear in a local library’s special "
+"collections. The Mafia has a catalog of every secret."
+msgstr ""
+
+#: mafiagame\utils.py:929
+msgid ""
+"{member.display_name} attempted to escape through a network of old mining "
+"tunnels. The Mafia has maps of every mine."
+msgstr ""
+
+#: mafiagame\utils.py:932
+msgid ""
+"{member.display_name} thought relocating to a coastal lighthouse would help."
+" The Mafia controls every beacon."
+msgstr ""
+
+#: mafiagame\utils.py:935
+msgid ""
+"{member.display_name} tried to blend in at a local outdoor market. The Mafia"
+" knows every vendor and stall."
+msgstr ""
+
+#: mafiagame\utils.py:938
+msgid ""
+"{member.display_name} attempted to disappear during a high-profile charity "
+"gala. The Mafia has agents at every event."
+msgstr ""
+
+#: mafiagame\utils.py:941
+msgid ""
+"{member.display_name} thought they could avoid the Mafia by blending in at a"
+" large-scale convention. The Mafia controls every delegate."
+msgstr ""
+
+#: mafiagame\utils.py:944
+msgid ""
+"{member.display_name} tried to hide in a local rock climbing gym. The Mafia "
+"has eyes on every ascent."
+msgstr ""
+
+#: mafiagame\utils.py:947
+msgid ""
+"{member.display_name} attempted to escape through a series of old railway "
+"tunnels. The Mafia knows every track."
+msgstr ""
+
+#: mafiagame\utils.py:950
+msgid ""
+"{member.display_name} thought relocating to a remote ranch would be safe. "
+"The Mafia has reach even in the wild."
+msgstr ""
+
+#: mafiagame\utils.py:953
+msgid ""
+"{member.display_name} tried to disappear at a local fireworks display. The "
+"Mafia controls every explosion."
+msgstr ""
+
+#: mafiagame\utils.py:956
+msgid ""
+"{member.display_name} attempted to blend in at a local jazz club. The Mafia "
+"knows every note and chord."
+msgstr ""
+
+#: mafiagame\utils.py:959
+msgid ""
+"{member.display_name} thought hiding in a local botanical garden would work."
+" The Mafia sees through every leaf and petal."
+msgstr ""
+
+#: mafiagame\utils.py:962
+msgid ""
+"{member.display_name} tried to escape via a remote luxury resort. The Mafia "
+"has agents everywhere, even in paradise."
+msgstr ""
+
+#: mafiagame\utils.py:965
+msgid ""
+"{member.display_name} attempted to disappear in a local arcade. The Mafia "
+"controls all the high scores."
+msgstr ""
+
+#: mafiagame\utils.py:968
+msgid ""
+"{member.display_name} thought they could avoid detection by blending in at a"
+" local agricultural fair. The Mafia has their eyes on every stall."
+msgstr ""
+
+#: mafiagame\utils.py:971
+msgid ""
+"{member.display_name} tried to hide in a crowded city plaza. The Mafia can "
+"find you in the midst of a crowd."
+msgstr ""
+
+#: mafiagame\utils.py:974
+msgid ""
+"{member.display_name} attempted to escape through a network of private "
+"tunnels. The Mafia has access to all secret paths."
+msgstr ""
+
+#: mafiagame\utils.py:977
+msgid ""
+"{member.display_name} thought relocating to a mountain retreat would be "
+"safe. The Mafia tracks every peak."
+msgstr ""
+
+#: mafiagame\utils.py:980
+msgid ""
+"{member.display_name} tried to disappear during a high-profile fashion "
+"event. The Mafia has a sense for all the high styles."
+msgstr ""
+
+#: mafiagame\utils.py:983
+msgid ""
+"{member.display_name} attempted to blend in at a local art studio. The Mafia"
+" sees through every brushstroke."
+msgstr ""
+
+#: mafiagame\utils.py:986
+msgid ""
+"{member.display_name} thought they could avoid the Mafia by hiding in a "
+"local zoo. The Mafia has their eyes on every enclosure."
+msgstr ""
+
+#: mafiagame\utils.py:989
+msgid ""
+"{member.display_name} tried to escape via a remote countryside estate. The "
+"Mafia has reach into every corner of the country."
+msgstr ""
+
+#: mafiagame\utils.py:992
+msgid ""
+"{member.display_name} attempted to hide in a local gymnasium. The Mafia can "
+"spot anyone trying to break a sweat."
+msgstr ""
+
+#: mafiagame\views.py:52
+msgid "Join Game"
+msgstr ""
+
+#: mafiagame\views.py:53
+msgid "Leave"
+msgstr ""
+
+#: mafiagame\views.py:54
+msgid "View Players (1)"
+msgstr ""
+
+#: mafiagame\views.py:55
+msgid "Start Game!"
+msgstr ""
+
+#: mafiagame\views.py:90
+msgid "Mafia Game"
+msgstr ""
+
+#: mafiagame\views.py:91
+msgid ""
+"Click the button below to join the party! Please note that the maximum "
+"amount of players is 25."
+msgstr ""
+
+#: mafiagame\views.py:98 mafiagame\views.py:195
+msgid "Hosted by {host.display_name}"
+msgstr ""
+
+#: mafiagame\views.py:122
+msgid "You have already joined the game!"
+msgstr ""
+
+#: mafiagame\views.py:127
+msgid "The game is full, you can't join!"
+msgstr ""
+
+#: mafiagame\views.py:134
+msgid ""
+"You are **temporarily banned for {duration}** from joining Mafia games!"
+msgstr ""
+
+#: mafiagame\views.py:151
+msgid "You are already in a game of Mafia in another server!"
+msgstr ""
+
+#: mafiagame\views.py:155 mafiagame\views.py:172
+msgid "View Players ({len_players})"
+msgstr ""
+
+#: mafiagame\views.py:162
+msgid "You have joined the game!"
+msgstr ""
+
+#: mafiagame\views.py:168
+msgid "You have not joined the game!"
+msgstr ""
+
+#: mafiagame\views.py:179
+msgid "You have left the game!"
+msgstr ""
+
+#: mafiagame\views.py:187
+msgid "No one has joined the game yet!"
+msgstr ""
+
+#: mafiagame\views.py:191
+msgid "Mafia Game - Players"
+msgstr ""
+
+#: mafiagame\views.py:214
+msgid "You can't start the game!"
+msgstr ""
+
+#: mafiagame\views.py:218
+msgid "You need at least 5 players to start the game!"
+msgstr ""
+
+#: mafiagame\views.py:230
+msgid "Only the host can cancel the game!"
+msgstr ""
+
+#: mafiagame\views.py:249
+msgid "You can't change the mode of the game!"
+msgstr ""
+
+#: mafiagame\views.py:254
+msgid "You have selected the **{mode}** mode!"
+msgstr ""
+
+#: mafiagame\views.py:271
+msgid "You can't change the settings of the game!"
+msgstr ""
+
+#: mafiagame\views.py:289
+msgid "Show my Role"
+msgstr ""
+
+#: mafiagame\views.py:306 mafiagame\views.py:518 mafiagame\views.py:928
+#: mafiagame\views.py:1053
+msgid "You are not a player in this game!"
+msgstr ""
+
+#: mafiagame\views.py:311
+msgid "Not all players have been assigned a role yet!"
+msgstr ""
+
+#: mafiagame\views.py:315
+msgid "You are already dead!"
+msgstr ""
+
+#: mafiagame\views.py:383 mafiagame\views.py:1562
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: mafiagame\views.py:400
+msgid "Make a selection..."
+msgstr ""
+
+#: mafiagame\views.py:429
+msgid ""
+"You have selected {len_players} player{s} to be immune during the Night 1!"
+msgstr ""
+
+#: mafiagame\views.py:447
+msgid "Jump to Mafia!"
+msgstr ""
+
+#: mafiagame\views.py:454
+msgid "Spectate"
+msgstr ""
+
+#: mafiagame\views.py:472
+msgid "You are already spectating the game!"
+msgstr ""
+
+#: mafiagame\views.py:477
+msgid "You are a player in this game!"
+msgstr ""
+
+#: mafiagame\views.py:484
+msgid "You are now spectating the game! 👀 Jump to {channel.mention}!"
+msgstr ""
+
+#: mafiagame\views.py:497 mafiagame\views.py:911
+msgid "Perform Action"
+msgstr ""
+
+#: mafiagame\views.py:499 mafiagame\views.py:876
+msgid "Dying Message"
+msgstr ""
+
+#: mafiagame\views.py:523
+msgid "You are dead, you can't perform any action!"
+msgstr ""
+
+#: mafiagame\views.py:537 mafiagame\views.py:1014
+msgid "You have already used your action the maximum amount of times!"
+msgstr ""
+
+#: mafiagame\views.py:544
+msgid "You can't perform any night action!"
+msgstr ""
+
+#: mafiagame\views.py:624
+msgid "There are no valid target to select!"
+msgstr ""
+
+#: mafiagame\views.py:629
+msgid "Select a target to kill "
+msgstr ""
+
+#: mafiagame\views.py:636
+msgid "Select a target."
+msgstr ""
+
+#: mafiagame\views.py:638
+msgid "Select {targets_number} targets."
+msgstr ""
+
+#: mafiagame\views.py:644
+msgid "BOOM!"
+msgstr ""
+
+#: mafiagame\views.py:648
+msgid "Daybreak"
+msgstr ""
+
+#: mafiagame\views.py:671
+msgid "You have selected {target.member.mention}!"
+msgstr ""
+
+#: mafiagame\views.py:677
+msgid "You need to select {targets_number} targets!"
+msgstr ""
+
+#: mafiagame\views.py:688
+msgid "You have selected {len_targets} targets!"
+msgstr ""
+
+#: mafiagame\views.py:693 mafiagame\views.py:727 mafiagame\views.py:829
+#: mafiagame\views.py:1253
+msgid "You have unselected!"
+msgstr ""
+
+#: mafiagame\views.py:700
+msgid "You have chosen to make explode all the bombs you already planted!"
+msgstr ""
+
+#: mafiagame\views.py:708
+msgid "You have chosen to block all days-actions from happening tomorrow!"
+msgstr ""
+
+#: mafiagame\views.py:720
+msgid ""
+"You have selected {first_target.member.mention} and {target.member.mention}!"
+msgstr ""
+
+#: mafiagame\views.py:776
+msgid "Select a role."
+msgstr ""
+
+#: mafiagame\views.py:803
+msgid "You need to select a target first!"
+msgstr ""
+
+#: mafiagame\views.py:817
+msgid "You have selected the **{role.name}** role{for_player}!"
+msgstr ""
+
+#: mafiagame\views.py:822
+msgid " for {player.member.mention}"
+msgstr ""
+
+#: mafiagame\views.py:879
+msgid "Dying Message:"
+msgstr ""
+
+#: mafiagame\views.py:880
+msgid "Enter your death message..."
+msgstr ""
+
+#: mafiagame\views.py:892
+msgid "Your death message has been set!"
+msgstr ""
+
+#: mafiagame\views.py:910
+msgid "Select a player to vote against."
+msgstr ""
+
+#: mafiagame\views.py:933 mafiagame\views.py:1058
+msgid "You are dead, you can't vote!"
+msgstr ""
+
+#: mafiagame\views.py:945 mafiagame\views.py:1075
+msgid "You have **rolled a yellow dice** and lost, you can't vote today!"
+msgstr ""
+
+#: mafiagame\views.py:951 mafiagame\views.py:1081
+msgid "You are **blackmailed**, you can't vote today!"
+msgstr ""
+
+#: mafiagame\views.py:965 mafiagame\views.py:1095
+msgid "You are **breaded**, you can't vote today!"
+msgstr ""
+
+#: mafiagame\views.py:984
+msgid "You have voted against {player.member.mention}!"
+msgstr ""
+
+#: mafiagame\views.py:989
+msgid "You have unvoted!"
+msgstr ""
+
+#: mafiagame\views.py:1003
+msgid "All day-actions have been blocked for today by {the_or_a} Starspawn!"
+msgstr ""
+
+#: mafiagame\views.py:1020
+msgid "You can't perform any day action!"
+msgstr ""
+
+#: mafiagame\views.py:1034
+msgid "GUILTY"
+msgstr ""
+
+#: mafiagame\views.py:1035
+msgid "INNOCENT"
+msgstr ""
+
+#: mafiagame\views.py:1036
+msgid "Abstain"
+msgstr ""
+
+#: mafiagame\views.py:1064
+msgid "You can't vote on your own judgement!"
+msgstr ""
+
+#: mafiagame\views.py:1141
+msgid "You have voted **GUILTY**!"
+msgstr ""
+
+#: mafiagame\views.py:1149
+msgid "You have voted **INNOCENT**!"
+msgstr ""
+
+#: mafiagame\views.py:1159
+msgid "You have abstained!"
+msgstr ""
+
+#: mafiagame\views.py:1172
+msgid "Select the role you want to reincarnate as."
+msgstr ""
+
+#: mafiagame\views.py:1194
+msgid "You have reincarnated as **{role.name}**!"
+msgstr ""
+
+#: mafiagame\views.py:1214
+msgid "Select a dice to throw."
+msgstr ""
+
+#: mafiagame\views.py:1217
+msgid "White Dice"
+msgstr ""
+
+#: mafiagame\views.py:1219
+msgid "70% chance of success"
+msgstr ""
+
+#: mafiagame\views.py:1223
+msgid "Yellow Dice"
+msgstr ""
+
+#: mafiagame\views.py:1225
+msgid "50% chance of success"
+msgstr ""
+
+#: mafiagame\views.py:1229
+msgid "Red Dice"
+msgstr ""
+
+#: mafiagame\views.py:1231
+msgid "20% chance of success"
+msgstr ""
+
+#: mafiagame\views.py:1247
+msgid "You have thrown the **{dice}** dice!"
+msgstr ""
+
+#: mafiagame\views.py:1271
+msgid "Select a player to prosecute."
+msgstr ""
+
+#: mafiagame\views.py:1315
+msgid "Main Page"
+msgstr ""
+
+#: mafiagame\views.py:1318
+msgid "How to play the Mafia game?"
+msgstr ""
+
+#: mafiagame\views.py:1319
+msgid ""
+"Mafia is a party game where players are secretly assigned roles that "
+"determine their objectives."
+msgstr ""
+
+#: mafiagame\views.py:1328
+msgid "Phases"
+msgstr ""
+
+#: mafiagame\views.py:1331
+msgid "**Phases:**"
+msgstr ""
+
+#: mafiagame\views.py:1332
+msgid "The game is divided into several phases."
+msgstr ""
+
+#: mafiagame\views.py:1335
+msgid "🌙 Night Phase"
+msgstr ""
+
+#: mafiagame\views.py:1336
+msgid ""
+"At night, players with night actions can use their abilities, possibly "
+"choose their target(s). The Mafia can kill a player, the Doctor can save a "
+"player, the Detective can investigate a player, etc."
+msgstr ""
+
+#: mafiagame\views.py:1342
+msgid "🌞 Day Phase"
+msgstr ""
+
+#: mafiagame\views.py:1343
+msgid ""
+"At the end of the night, the various events of the night and the victims of "
+"the Mafia are described. Players then have a time to talk and identify who "
+"to vote against."
+msgstr ""
+
+#: mafiagame\views.py:1349
+msgid "⚖️ Voting & Judgement Phases"
+msgstr ""
+
+#: mafiagame\views.py:1350
+msgid ""
+"- Once the speaking time is up, players who are still alive can vote against those they wish to eliminate. A minimum number of votes must be reached, worth around half the remaining players. Some players may have multiple votes for the whole game (like the Mayor), or just one day.\n"
+"- If a player is nominated by enough players, they have a time to defend themselves before a new vote, for which the answer can be “Guilty”, “Innocent” or “Abstain”. This time, if more players vote “Guilty”, the player is lynched. Depending on the configuration, his role or death message will be displayed for all to see."
+msgstr ""
+
+#: mafiagame\views.py:1356
+msgid "🔁 Repeat"
+msgstr ""
+
+#: mafiagame\views.py:1357
+msgid "The game continues until one side or a Neutral role wins."
+msgstr ""
+
+#: mafiagame\views.py:1363
+msgid "Roles"
+msgstr ""
+
+#: mafiagame\views.py:1366
+msgid "**Roles ({len_roles}):**"
+msgstr ""
+
+#: mafiagame\views.py:1367
+msgid ""
+"There are many different roles in the game. Each role has its own abilities "
+"and objectives. They are randomly assigned to players at the beginning of "
+"the game."
+msgstr ""
+
+#: mafiagame\views.py:1372
+msgid "Mafia Roles ({len_mafia_roles})"
+msgstr ""
+
+#: mafiagame\views.py:1377
+msgid ""
+"The Mafia is a group of players who know each other and must eliminate the Villagers. The God Father is the leader of the Mafia and choose the victim each night.\n"
+"🏆 The Mafia wins when their number is equal to or greater than the half of the alive players."
+msgstr ""
+
+#: mafiagame\views.py:1383
+msgid "Villagers Roles ({len_villagers_roles})"
+msgstr ""
+
+#: mafiagame\views.py:1388
+msgid ""
+"The Villagers are the majority of the players. They don't know each other and must eliminate the Mafia. The Mayor is the leader of the Town and can choose to revelate their role to everyone.\n"
+"🏆 The Villagers win when all the Mafia members and the Bomber are dead."
+msgstr ""
+
+#: mafiagame\views.py:1394
+msgid "Neutral Roles ({len_neutral_roles})"
+msgstr ""
+
+#: mafiagame\views.py:1399
+msgid ""
+"The Neutral roles have their own objectives and can win alone or with "
+"another side."
+msgstr ""
+
+#: mafiagame\views.py:1405
+msgid "Horsemen of the Apocalypse Roles ({len_horsemen_roles})"
+msgstr ""
+
+#: mafiagame\views.py:1414
+msgid ""
+"These roles can't be assigned to players at the beginning of the game. Some "
+"Neutral roles can turn into Horseman of the Apocalypse roles during the game"
+" when they achieve an objective."
+msgstr ""
+
+#: mafiagame\views.py:1420
+msgid ""
+"ℹ️ See `{prefix}mafia roles` or `{prefix}mafia role <role>` for more "
+"information."
+msgstr ""
+
+#: mafiagame\views.py:1425
+msgid "Roles Priority"
+msgstr ""
+
+#: mafiagame\views.py:1426
+msgid ""
+" Each role waits for an action to finish before proceeding to the next role."
+" This is the reason why sometimes you die before you could do your action. "
+"The roles are resolved in a specific order. If two players have the same "
+"role, the player who joined the game first will have their role resolved "
+"first."
+msgstr ""
+
+#: mafiagame\views.py:1439
+msgid "Modes"
+msgstr ""
+
+#: mafiagame\views.py:1442
+msgid "**Modes:**"
+msgstr ""
+
+#: mafiagame\views.py:1443
+msgid ""
+"There are several possible modes.\n"
+"- {predefined_modes_number} have predefined options and make specific choices depending on the number of players.\n"
+"- A `Random` mode works from the number of players and selects roles randomly according to the number of players on Mafia's side, Villagers' side or Neutral's side required.\n"
+"- A `Custom` mode depends on your own preferences with `{prefix}setmafia customroles <roles...>`.\n"
+"ℹ️ See `{prefix}mafia modes` or `{prefix}mafia mode <mode>` for more information."
+msgstr ""
+
+#: mafiagame\views.py:1453
+msgid "Town Traitor & Town VIP"
+msgstr ""
+
+#: mafiagame\views.py:1456
+msgid "**Town Traitor:**"
+msgstr ""
+
+#: mafiagame\views.py:1457
+msgid ""
+"The Town Traitor is a member of the Town who is secretly working with the Mafia. The Town Traitor wins with the Mafia.\n"
+"⚠️ Warning: the Mayor could be the Town Traitor!"
+msgstr ""
+
+#: mafiagame\views.py:1463
+msgid "**Town VIP:**"
+msgstr ""
+
+#: mafiagame\views.py:1464
+msgid ""
+"The Town VIP is a member of the Town that the Mafia must kill to win. The "
+"Villagers win if the Town VIP is alive at the end of the game."
+msgstr ""
+
+#: mafiagame\views.py:1474
+msgid "Anomalies"
+msgstr ""
+
+#: mafiagame\views.py:1477
+msgid "**Anomalies:**"
+msgstr ""
+
+#: mafiagame\views.py:1478
+msgid ""
+"Anomalies are special events that can occur during the game. They can be beneficial or harmful. Each turn, they have 40% chance to occur and a random anomaly among the {anomalies_number} existing will be selected.\n"
+"ℹ️ See `{prefix}mafia anomalies` or `{prefix}mafia anomaly <anomaly>` for more information."
+msgstr ""
+
+#: mafiagame\views.py:1488
+msgid "Achievements"
+msgstr ""
+
+#: mafiagame\views.py:1491
+msgid "**Achievements:**"
+msgstr ""
+
+#: mafiagame\views.py:1492
+msgid ""
+"Achievements are special goals that players can achieve during the game. They can be general or specific to a role. They are global for all the servers. If you get an achievement, you will receive a DM when a game ends.\n"
+"ℹ️ You can check them with `{prefix}mafia achievements`."
+msgstr ""
+
+#: mafiagame\views.py:1502
+msgid "Execute Command"
+msgstr ""

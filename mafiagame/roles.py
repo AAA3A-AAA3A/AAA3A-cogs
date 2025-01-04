@@ -130,6 +130,17 @@ class Player:
             except discord.HTTPException:
                 pass
 
+        if self.game.days_nights and self.game.days_nights[-1].__class__.__name__ == "Night":
+            silencer = next(
+                (
+                    t
+                    for p, t in self.game.days_nights[-1].targets.items()
+                    if p.role is Silencer and self == t
+                ),
+                None,
+            )
+        else:
+            silencer = None
         if self.game.current_anomaly is None or self.game.current_anomaly.name != "Foggy Mist":
             embeds = []
             embed: discord.Embed = discord.Embed(
@@ -174,17 +185,6 @@ class Player:
             embed.set_thumbnail(url=self.member.display_avatar)
             embed.set_image(url="attachment://you_died.png")
             embeds.append(embed)
-            if self.game.days_nights and self.game.days_nights[-1].__class__.__name__ == "Night":
-                silencer = next(
-                    (
-                        t
-                        for p, t in self.game.days_nights[-1].targets.items()
-                        if p.role is Silencer and self == t
-                    ),
-                    None,
-                )
-            else:
-                silencer = None
             if self.game.config["show_dead_role"]:
                 embed: discord.Embed = discord.Embed(
                     title=(

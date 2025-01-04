@@ -93,7 +93,15 @@ class EmbedUtils(DashboardIntegration, Cog):
         embed: discord.Embed = discord.Embed(color=color, title=title, description=description)
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx
+                channel = (
+                    channel_or_message
+                    if channel_or_message is not None
+                    else (
+                        ctx.channel
+                        if ctx.interaction is None or ctx.interaction.is_guild_integration()
+                        else ctx
+                    )
+                )
                 await channel.send(embed=embed)
             else:
                 await channel_or_message.edit(embed=embed)
@@ -121,7 +129,15 @@ class EmbedUtils(DashboardIntegration, Cog):
             return await self.embed_fromfile(ctx, channel_or_message=channel_or_message)
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx
+                channel = (
+                    channel_or_message
+                    if channel_or_message is not None
+                    else (
+                        ctx.channel
+                        if ctx.interaction is None or ctx.interaction.is_guild_integration()
+                        else ctx
+                    )
+                )
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -155,7 +171,15 @@ class EmbedUtils(DashboardIntegration, Cog):
             return await self.embed_yamlfile(ctx, channel_or_message=channel_or_message)
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx
+                channel = (
+                    channel_or_message
+                    if channel_or_message is not None
+                    else (
+                        ctx.channel
+                        if ctx.interaction is None or ctx.interaction.is_guild_integration()
+                        else ctx
+                    )
+                )
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -192,7 +216,15 @@ class EmbedUtils(DashboardIntegration, Cog):
         data = await JSON_LIST_CONVERTER.convert(ctx, argument=argument)
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx
+                channel = (
+                    channel_or_message
+                    if channel_or_message is not None
+                    else (
+                        ctx.channel
+                        if ctx.interaction is None or ctx.interaction.is_guild_integration()
+                        else ctx
+                    )
+                )
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -225,7 +257,15 @@ class EmbedUtils(DashboardIntegration, Cog):
         data = await YAML_LIST_CONVERTER.convert(ctx, argument=argument)
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx
+                channel = (
+                    channel_or_message
+                    if channel_or_message is not None
+                    else (
+                        ctx.channel
+                        if ctx.interaction is None or ctx.interaction.is_guild_integration()
+                        else ctx
+                    )
+                )
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -258,7 +298,15 @@ class EmbedUtils(DashboardIntegration, Cog):
         """
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx
+                channel = (
+                    channel_or_message
+                    if channel_or_message is not None
+                    else (
+                        ctx.channel
+                        if ctx.interaction is None or ctx.interaction.is_guild_integration()
+                        else ctx
+                    )
+                )
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -312,7 +360,15 @@ class EmbedUtils(DashboardIntegration, Cog):
                 raise commands.UserInputError
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx
+                channel = (
+                    channel_or_message
+                    if channel_or_message is not None
+                    else (
+                        ctx.channel
+                        if ctx.interaction is None or ctx.interaction.is_guild_integration()
+                        else ctx
+                    )
+                )
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -713,7 +769,15 @@ class EmbedUtils(DashboardIntegration, Cog):
                 stored_embeds[name]["uses"] += 1
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx
+                channel = (
+                    channel_or_message
+                    if channel_or_message is not None
+                    else (
+                        ctx.channel
+                        if ctx.interaction is None or ctx.interaction.is_guild_integration()
+                        else ctx
+                    )
+                )
                 await channel.send(embeds=embeds)
             else:
                 await channel_or_message.edit(embeds=embeds)

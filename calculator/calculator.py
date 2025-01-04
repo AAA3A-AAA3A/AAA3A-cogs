@@ -1,5 +1,5 @@
 from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
-from redbot.core import commands, Config  # isort:skip
+from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -295,6 +295,7 @@ class Calculator(Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(name="calculate", aliases=["calc"])
+    @app_commands.allowed_installs(guilds=True, users=True)
     async def _calculate(self, ctx: commands.Context, *, calculation: str = None) -> None:
         """Calculate a simple expression."""
         if calculation is not None:

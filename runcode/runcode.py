@@ -317,6 +317,10 @@ class RunCode(Cog):
                     end + begin + 2 + len(language_identifier)
                 )
             ]
+        elif _language is None:
+            raise commands.UserFeedbackCheckFailure(
+                _("Specify the language of your code with the `language` parameter.")
+            )
         else:
             _code = code
 
@@ -351,6 +355,7 @@ class RunCode(Cog):
         return _language, _code
 
     @commands.hybrid_command(aliases=["executecode"])
+    @app_commands.allowed_installs(guilds=True, users=True)
     async def runcode(
         self,
         ctx: commands.Context,

@@ -248,7 +248,7 @@ class GetDocs(DashboardIntegration, Cog):
         )
         self.config.register_global(
             default_source="discord.py",
-            caching=True,
+            caching=False,
             enabled_sources=["discord.py", "redbot", "python", "aiohttp", "discordapi"],
         )
 
@@ -309,6 +309,9 @@ class GetDocs(DashboardIntegration, Cog):
                 display_name=BASE_URLS[source].get("display_name"),
             )
             asyncio.create_task(self.documentations[source].load())
+        for param in ("source", "query"):
+            self.docs.app_command._params[param].required = True
+            self.rtfm.app_command._params[param].required = True
 
     async def cog_unload(self) -> None:
         await super().cog_unload()  # Close loops before session closing.
@@ -323,6 +326,7 @@ class GetDocs(DashboardIntegration, Cog):
         source="The name of the documentation to use.",
         query="The documentation node/query. (`random` to get a random documentation)",
     )
+    @app_commands.allowed_installs(guilds=True, users=True)
     async def docs(
         self,
         ctx: commands.Context,
@@ -384,14 +388,14 @@ class GetDocs(DashboardIntegration, Cog):
         with_std="Also display links to non-API documentation.",
         query="Your search. (`events` to get all dpy events, for `discord.py`, `redbot` and `pylav` source only)",
     )
+    @app_commands.allowed_installs(guilds=True, users=True)
     async def rtfm(
         self,
         ctx: commands.Context,
         source: typing.Optional[SourceConverter] = None,
+        query: typing.Optional[str] = "",
         limit: typing.Optional[int] = 10,
         with_std: typing.Optional[bool] = False,
-        *,
-        query: typing.Optional[str] = "",
     ) -> None:
         """
         Show all items matching your search.
@@ -527,6 +531,7 @@ class GetDocs(DashboardIntegration, Cog):
         _sorted="Whether to sort the list of sources alphabetically.",
         status="Whether to show all sources, only available sources or only disabled sources.",
     )
+    @app_commands.allowed_installs(guilds=True, users=True)
     async def _sources_list(
         self,
         ctx: commands.Context,

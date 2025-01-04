@@ -1,5 +1,5 @@
 from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
+from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -74,6 +74,7 @@ class EmbedUtils(DashboardIntegration, Cog):
     @commands.mod_or_permissions(manage_messages=True)
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_group(invoke_without_command=True, aliases=["embedutils"])
+    @app_commands.allowed_installs(guilds=True, users=True)
     async def embed(
         self,
         ctx: commands.Context,
@@ -92,12 +93,12 @@ class EmbedUtils(DashboardIntegration, Cog):
         embed: discord.Embed = discord.Embed(color=color, title=title, description=description)
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx.channel
+                channel = channel_or_message or ctx
                 await channel.send(embed=embed)
             else:
                 await channel_or_message.edit(embed=embed)
         except discord.HTTPException as error:
-            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
     @embed.command(name="json", aliases=["fromjson", "fromdata"])
     async def embed_json(
@@ -120,7 +121,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             return await self.embed_fromfile(ctx, channel_or_message=channel_or_message)
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx.channel
+                channel = channel_or_message or ctx
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -132,7 +133,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             else:
                 await channel_or_message.edit(**data)
         except discord.HTTPException as error:
-            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
     @embed.command(name="yaml", aliases=["fromyaml"])
     async def embed_yaml(
@@ -154,7 +155,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             return await self.embed_yamlfile(ctx, channel_or_message=channel_or_message)
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx.channel
+                channel = channel_or_message or ctx
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -166,7 +167,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             else:
                 await channel_or_message.edit(**data)
         except discord.HTTPException as error:
-            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
     @embed.command(name="fromfile", aliases=["jsonfile", "fromjsonfile", "fromdatafile"])
     async def embed_fromfile(
@@ -191,7 +192,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         data = await JSON_LIST_CONVERTER.convert(ctx, argument=argument)
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx.channel
+                channel = channel_or_message or ctx
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -203,7 +204,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             else:
                 await channel_or_message.edit(**data)
         except discord.HTTPException as error:
-            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
     @embed.command(name="yamlfile", aliases=["fromyamlfile"])
     async def embed_yamlfile(
@@ -224,7 +225,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         data = await YAML_LIST_CONVERTER.convert(ctx, argument=argument)
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx.channel
+                channel = channel_or_message or ctx
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -236,7 +237,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             else:
                 await channel_or_message.edit(**data)
         except discord.HTTPException as error:
-            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
     @embed.command(
         name="pastebin", aliases=["frompastebin", "gist", "fromgist", "hastebin", "fromhastebin"]
@@ -257,7 +258,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         """
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx.channel
+                channel = channel_or_message or ctx
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -269,7 +270,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             else:
                 await channel_or_message.edit(**data)
         except discord.HTTPException as error:
-            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
     @embed.command(name="message", aliases=["frommessage", "msg", "frommsg"])
     async def embed_message(
@@ -311,7 +312,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                 raise commands.UserInputError
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx.channel
+                channel = channel_or_message or ctx
                 await channel.send(
                     **data,
                     allowed_mentions=(
@@ -323,7 +324,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             else:
                 await channel_or_message.edit(**data)
         except discord.HTTPException as error:
-            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
     @commands.bot_has_permissions(attach_files=True)
     @embed.command(name="download")
@@ -449,7 +450,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         try:
             await message.edit(**data)
         except discord.HTTPException as error:
-            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
     @commands.mod_or_permissions(manage_guild=True)
     @embed.command(
@@ -546,7 +547,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         try:
             await ctx.channel.send(embed=embed)
         except discord.HTTPException as error:
-            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
         async with (
             self.config if global_level else self.config.guild(ctx.guild)
@@ -712,12 +713,12 @@ class EmbedUtils(DashboardIntegration, Cog):
                 stored_embeds[name]["uses"] += 1
         try:
             if not isinstance(channel_or_message, discord.Message):
-                channel = channel_or_message or ctx.channel
+                channel = channel_or_message or ctx
                 await channel.send(embeds=embeds)
             else:
                 await channel_or_message.edit(embeds=embeds)
         except discord.HTTPException as error:
-            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
     @commands.mod_or_permissions(manage_webhooks=True)
     @commands.bot_has_permissions(manage_webhooks=True)
@@ -771,7 +772,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                 wait=True,
             )
         except discord.HTTPException as error:
-            return await StringToEmbed.embed_convert_error(ctx, _("Embed Send Error"), error)
+            return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
     @embed.command()
     async def dashboard(

@@ -1,5 +1,5 @@
 from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands  # isort:skip
+from redbot.core import commands, app_commands  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
@@ -90,6 +90,7 @@ class PasswordsGenerator(Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["genpass"])
+    @app_commands.allowed_installs(guilds=True, users=True)
     async def generatepassword(
         self,
         ctx: commands.Context,

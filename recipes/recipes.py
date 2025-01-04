@@ -1,5 +1,5 @@
 from AAA3A_utils import Cog, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
+from redbot.core import commands, app_commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
@@ -146,6 +146,7 @@ class Recipes(Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command()
+    @app_commands.allowed_installs(guilds=True, users=True)
     async def recipe(self, ctx: commands.Context, *, query: str) -> None:
         """Show a recipe of Food52, from a query."""
         __, results = await self.get_query_results(query, limit=1)
@@ -162,6 +163,7 @@ class Recipes(Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["searchrecipe"])
+    @app_commands.allowed_installs(guilds=True, users=True)
     async def searchrecipes(
         self, ctx: commands.Context, limit: typing.Optional[int] = 15, *, query: str
     ) -> None:

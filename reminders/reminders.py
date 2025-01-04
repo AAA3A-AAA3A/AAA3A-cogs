@@ -275,6 +275,7 @@ class Reminders(DashboardIntegration, Cog):
         return reminder
 
     @commands.hybrid_command()
+    @app_commands.allowed_installs(guilds=True, users=True)
     async def remindme(
         self, ctx: commands.Context, time: str, *, message_or_text: str = None
     ) -> None:

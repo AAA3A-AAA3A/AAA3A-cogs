@@ -1089,7 +1089,10 @@ class Game:
             embeds=embeds,
             view=view,
         )
-        embeds[-1].set_footer(text=self.ctx.guild.name, icon_url=self.ctx.guild.icon)
+        embeds[-1].set_footer(
+            text=f"{self.ctx.guild.name}\n{embeds[-1].footer.text}",
+            icon_url=self.ctx.guild.icon,
+        )
 
         for player in self.players:
             new_achievements = await player.check_achievements()

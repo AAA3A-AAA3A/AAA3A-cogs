@@ -291,8 +291,8 @@ class Player:
             await role.on_game_start(self.game, self)  # For a new Executioner/Santa for example.
         except NotImplementedError:
             pass
-        if len(self.game.day_nighs) > 1 or (
-            len(self.game.day_nighs) == 1 and self in self.game.days_nights[0].targets
+        if len(self.game.days_nights) > 1 or (
+            len(self.game.days_nights) == 1 and self in self.game.days_nights[0].targets
         ):
             try:
                 await role.no_action(

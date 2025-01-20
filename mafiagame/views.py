@@ -1545,7 +1545,7 @@ class ExplainView(discord.ui.View):
                 emoji="💖",
                 label=_("Support the Dev!"),
                 style=discord.ButtonStyle.link,
-                url="https://ko-fi.com/aaa3a",
+                url="https://buymeacoffee.com/aaa3a",
             ),
         )
         if edit_message:

@@ -1081,7 +1081,7 @@ class Game:
                 emoji="💖",
                 label=_("Support the Dev!"),
                 style=discord.ButtonStyle.link,
-                url="https://ko-fi.com/aaa3a",
+                url="https://buymeacoffee.com/aaa3a",
             ),
         )
         await self.send(

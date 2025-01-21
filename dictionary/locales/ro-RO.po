@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:23\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:36\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -29,4 +29,8 @@ msgstr "Cuvânt care nu se găsește în dicționarul englez."
 #: dictionary\view.py:33
 msgid "View the source"
 msgstr "Vezi sursa"
+
+#: dictionary\view.py:46
+msgid "You are not allowed to use this interaction."
+msgstr ""
 

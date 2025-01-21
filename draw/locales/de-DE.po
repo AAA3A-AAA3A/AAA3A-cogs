@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:23\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:37\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -26,6 +26,10 @@ msgstr "Ein Rädchen zum Erstellen von Pixelkunst auf Discord!"
 msgid "This message isn't in the cache."
 msgstr "Diese Nachricht befindet sich nicht im Cache."
 
+#: draw\start_view.py:60 draw\view.py:523
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
 #: draw\start_view.py:94 draw\start_view.py:103
 msgid "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
 msgstr "Erstellen Sie eine neue Zeichentafel mit `Höhe = {height}`, `Breite = {width}` und `Hintergrund = {background}`."
@@ -46,11 +50,11 @@ msgstr "Bitte geben Sie alle Farben ein, die Sie hinzufügen möchten. Sie könn
 msgid "Please send a message containing the emojis you want to add to your palette. E.g. `😎 I like turtles 🐢`."
 msgstr "Bitte sende eine Nachricht mit den Emojis, die du zu deiner Palette hinzufügen möchtest. Z.B. `😎 Ich mag Schildkröten 🐢`."
 
-#: draw\view.py:810
+#: draw\view.py:812
 msgid "Please type the cell you want to move the cursor to. e.g. `A1`, `a1`, `A10`, `A`, `10`, etc."
 msgstr "Bitte geben Sie die Zelle ein, in die Sie den Cursor bewegen möchten, z. B. \"A1\", \"A1\", \"A10\", \"A\", \"10\" usw."
 
-#: draw\view.py:939
+#: draw\view.py:941
 msgid "Please type the cells with the main colors names. One color for each line, separated from the cell by a \":\". Example: `A1:red\n"
 "B7-C9:green`."
 msgstr "Bitte geben Sie die Zellen mit den Namen der Hauptfarben ein. Eine Farbe für jede Zeile, getrennt von der Zelle durch ein \":\". Beispiel: `A1:rot\n"

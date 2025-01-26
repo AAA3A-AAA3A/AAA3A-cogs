@@ -1,6 +1,5 @@
 from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
@@ -186,9 +185,9 @@ class TransferChannel(Cog):
             else:
                 files = []
             if way == "webhooks":
-                if not any([message.content, message.embeds, message.attachments]):
+                if not any([message.content, message.embeds, files]):
                     continue
-                for page in pagify(message.content):
+                for page in (pagify(message.content) if message.content else [None]):
                     await hook.send(
                         username=message.author.display_name,
                         avatar_url=message.author.display_avatar,

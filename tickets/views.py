@@ -675,7 +675,7 @@ class CreateTicketView(discord.ui.View):
                 await self.cog.create_ticket(
                     interaction, profile, interaction.user, category_label=category_label
                 )
-            except RuntimeError as e:
+            except commands.UserFeedbackCheckFailure as e:
                 return await interaction.followup.send(
                     f"⛔ {e}",
                     ephemeral=True,

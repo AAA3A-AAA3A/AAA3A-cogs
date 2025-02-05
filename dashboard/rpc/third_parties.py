@@ -7,7 +7,7 @@ import base64
 import inspect
 import types
 
-from redbot.core.i18n import get_locale_from_guild, set_contextual_locale, set_regional_format
+from redbot.core.i18n import get_locale_from_guild, set_contextual_locale, set_contextual_regional_format
 from werkzeug.datastructures import ImmutableMultiDict
 
 from .form import INITIAL_INIT_FIELD, Field, get_form_class
@@ -342,7 +342,7 @@ class DashboardRPC_ThirdParties:
             self.bot, guild=kwargs.get("guild")
         )
         set_contextual_locale(kwargs["lang_code"])
-        set_regional_format(kwargs["lang_code"])
+        set_contextual_regional_format(kwargs["lang_code"])
 
         (
             kwargs["Form"],

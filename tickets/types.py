@@ -1248,10 +1248,6 @@ class Ticket:
             audit_reason = _(
                 "Ticket deleted by {deleter.display_name} ({deleter.id}) (profile `{self.profile}`)"
             ).format(deleter=deleter, self=self)
-        if isinstance(self.channel, discord.Thread):
-            await self.channel.delete(reason=audit_reason)
-        else:
-            await self.channel.delete(reason=audit_reason)
 
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if (
@@ -1273,6 +1269,11 @@ class Ticket:
                 ],
                 file=await self.export() if config["transcripts"] else None,
             )
+
+        if isinstance(self.channel, discord.Thread):
+            await self.channel.delete(reason=audit_reason)
+        else:
+            await self.channel.delete(reason=audit_reason)
 
         self.bot.dispatch("ticket_deleted", self)
         if config["create_modlog_case"]:

@@ -1575,7 +1575,7 @@ class Source:
                 parameters[key] = value
 
         # Versions changes.
-        versions_changes = []
+        version_changes = []
         children = documentation.children
         for child in children:
             child: Tag = child
@@ -1611,12 +1611,12 @@ class Source:
                     version = text.strip().split(": ")[0]
                     change = " ".join(text.strip().split(": ")[1:])
                 except IndexError:
-                    versions_changes.append(f"*{text}*")
+                    version_changes.append(f"*{text}*")
                     continue
-                versions_changes.append(f"• *{version}*: *{change}*".replace("\n", " "))
-        if versions_changes:
-            versions_changes = "\n".join(versions_changes)
-            fields["Versions Changes"] = versions_changes
+                version_changes.append(f"• *{version}*: *{change}*".replace("\n", " "))
+        if version_changes:
+            version_changes = "\n".join(version_changes)
+            fields["Version Changes"] = version_changes
 
         # Attributes.
         def format_attributes(items: Tag) -> typing.List[Attribute]:

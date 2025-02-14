@@ -341,8 +341,8 @@ class DashboardRPC_ThirdParties:
         kwargs["lang_code"] = lang_code or await get_locale_from_guild(
             self.bot, guild=kwargs.get("guild")
         )
-        set_contextual_locale(kwargs["lang_code"])
-        set_contextual_regional_format(kwargs["lang_code"])
+        set_contextual_locale(kwargs["lang_code"].replace("_", "-"))
+        set_contextual_regional_format(kwargs["lang_code"].replace("_", "-"))
 
         (
             kwargs["Form"],

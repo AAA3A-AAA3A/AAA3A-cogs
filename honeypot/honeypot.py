@@ -124,6 +124,7 @@ class Honeypot(Cog):
             icon_url=message.author.display_avatar,
         )
         embed.set_thumbnail(url=message.author.display_avatar)
+        failed = None
         if action is not None:
             try:
                 if action == "mute":

@@ -629,22 +629,22 @@ class DashboardRPC:
             elif settings["avatar"] != "keep":
                 avatar = base64.b64decode(settings["avatar"])
                 await self.bot.user.edit(avatar=avatar)
-            if settings["username"] != self.bot.user.name:
+            if settings["name"] != self.bot.user.name:
                 try:
                     await asyncio.wait_for(
-                        self.bot.get_cog("Core")._name(name=settings["username"]), timeout=30
+                        self.bot.get_cog("Core")._name(name=settings["name"]), timeout=30
                     )
                 except TimeoutError:
                     return {
                         "status": 1,
-                        "error": "Changing the username timed out. Remember that you can only change it twice per hour.",
+                        "error": "Changing the name timed out. Remember that you can only change it twice per hour.",
                     }
-            if settings["description"] is not None:
+            if settings["profile_description"] is not None:
                 from discord.http import Route
 
                 await self.bot.http.request(
                     Route("PATCH", "/applications/@me"),
-                    json={"description": settings["description"]},
+                    json={"description": settings["profile_description"]},
                 )
         except discord.HTTPException as e:
             return {"status": 1, "error": str(e)}

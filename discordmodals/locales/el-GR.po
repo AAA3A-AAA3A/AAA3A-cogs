@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:18\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:37\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -101,6 +101,10 @@ msgstr "Το όρισμα `/unique_answer` πρέπει να είναι ένα b
 #, docstring
 msgid "A cog to use Discord Modals, forms with graphic interface!"
 msgstr "Ένα γρανάζι για να χρησιμοποιήσετε Discord Modals, μορφές με γραφικό περιβάλλον!"
+
+#: discordmodals\discordmodals.py:457 discordmodals\discordmodals.py:478
+msgid "You are not allowed to use this interaction."
+msgstr ""
 
 #: discordmodals\discordmodals.py:463
 msgid "This message is not in Config."

@@ -245,7 +245,7 @@ class LinkQuoter(DashboardIntegration, Cog):
             pages = list(
                 pagify(
                     "\n".join(
-                        f"[{_('*NSFW* ') if message.channel.is_nsfw() else ''}{_('*SOILER* ') if attachment.is_spoiler() else ''}{attachment.filename}]({attachment.url})"
+                        f"[{_('*NSFW* ') if message.channel.is_nsfw() else ''}{attachment.filename}]({attachment.url})"  # The file name already contains `SPOLER_` if it's a spoiler.
                         for attachment in message.attachments
                     ),
                     page_length=1024,

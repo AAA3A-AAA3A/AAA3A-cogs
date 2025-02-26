@@ -207,7 +207,7 @@ class LinkQuoter(DashboardIntegration, Cog):
         url_field: bool = True,
     ) -> discord.Embed:
         embed: discord.Embed = None
-        image = None
+        image_url = None
 
         if message.embeds:
             e = message.embeds[0]
@@ -216,7 +216,7 @@ class LinkQuoter(DashboardIntegration, Cog):
                     e.timestamp = message.created_at
                 embed = discord.Embed.from_dict(deepcopy(e.to_dict()))
             if e.type in ("image", "article"):
-                image = e.url
+                image_url = e.url
 
         if embed is None:
             embed = discord.Embed(
@@ -242,11 +242,10 @@ class LinkQuoter(DashboardIntegration, Cog):
                 embed.set_footer(text=f"#{message.channel.name}")
 
         if message.attachments:
-            image = message.attachments[0].proxy_url
             pages = list(
                 pagify(
                     "\n".join(
-                        f"[{attachment.filename}]({attachment.url})"
+                        f"[{_('*NSFW* ') if message.channel.is_nsfw() else ''}{_('*SOILER* ') if attachment.is_spoiler() else ''}{attachment.filename}]({attachment.url})"
                         for attachment in message.attachments
                     ),
                     page_length=1024,
@@ -257,18 +256,27 @@ class LinkQuoter(DashboardIntegration, Cog):
                 value=pages[0] if len(pages) == 1 else f"{pages[0]}\n...",
                 inline=False,
             )
+            attachment = message.attachments[0]
+            if (
+                image_url is None
+                and attachment.filename.split(".")[-1].lower() in ("png", "jpg", "jpeg", "gif")
+                and not message.channel.is_nsfw()
+                and not attachment.is_spoiler()
+            ):
+                image_url = attachment.proxy_url
 
-        if image is None:
-            if message.stickers:
-                for sticker in message.stickers:
-                    if sticker.url:
-                        image = str(sticker.url)
-                        embed.add_field(
-                            name=_("Stickers:"), value=f"[{sticker.name}]({image})", inline=False
-                        )
-                        break
-        else:
-            embed.set_image(url=image)
+        if message.stickers:
+            for sticker in message.stickers:
+                if sticker.url:
+                    embed.add_field(
+                        name=_("Stickers:"), value=f"[{sticker.name}]({sticker.url})", inline=False
+                    )
+                    break
+            if image_url is None:
+                image_url = message.stickers[0].url
+
+        if image_url is not None:
+            embed.set_image(url=image_url)
 
         if message.reference is not None and isinstance(
             (reference := message.reference.resolved), discord.Message

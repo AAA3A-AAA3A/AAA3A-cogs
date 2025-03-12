@@ -11,7 +11,7 @@ _: Translator = Translator("TicketTool", __file__)
 
 class ProfileConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str):
-        if len(argument) > 10:
+        if len(argument) > 20:
             raise commands.BadArgument(_("This profile does not exist."))
         profiles = await ctx.bot.get_cog("TicketTool").config.guild(ctx.guild).profiles()
         if argument.lower() not in profiles:

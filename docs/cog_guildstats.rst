@@ -22,7 +22,7 @@ A cog to generate images with messages and voice stats, for members, roles, guil
 Commands:
 ---------
 
-Here are all the commands included in this cog (25):
+Here are all the commands included in this cog (27):
 
 * ``[p]guildstats ["humans"|"bots"|"both"=humans] [show_graphic=False] <_object>``
  Generate images with messages and voice stats, for members, roles, guilds, categories, text channels, voice channels and activities.
@@ -78,6 +78,9 @@ Here are all the commands included in this cog (25):
 * ``[p]guildstats messages ["humans"|"bots"|"both"=humans] [show_graphic=False]``
  Display stats for the messages in this guild.
 
+* ``[p]guildstats monthly ["humans"|"bots"|"both"=humans] ["messages"|"voice"=messages] ["members"|"channels"=members]``
+ Display monthly stats leaderboard for voice/messages members/channels.
+
 * ``[p]guildstats purge <"all"|"messages"|"voice"|"activities">``
  Purge Config for the current guild.
 
@@ -93,11 +96,14 @@ Here are all the commands included in this cog (25):
 * ``[p]guildstats toggleactivitiesstats <state>``
  Enable or disable activities stats.
 
-* ``[p]guildstats top ["humans"|"bots"|"both"] <"messages"|"voice"> <"members"|"channels">``
- Display top stats for voice/messages members/channels.
+* ``[p]guildstats top ["humans"|"bots"|"both"=humans] ["messages"|"voice"=messages] ["members"|"channels"=members]``
+ Display top stats leaderboard for voice/messages members/channels.
 
 * ``[p]guildstats voice ["humans"|"bots"|"both"=humans] [show_graphic=False]``
  Display stats for the voice in this guild.
+
+* ``[p]guildstats weekly ["humans"|"bots"|"both"=humans] ["messages"|"voice"=messages] ["members"|"channels"=members]``
+ Display weekly stats leaderboard for voice/messages members/channels.
 
 ------------
 Installation

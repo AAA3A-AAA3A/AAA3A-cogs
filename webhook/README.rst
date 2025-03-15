@@ -22,7 +22,7 @@ Various webhook commands to create and send messages along webhooks!
 Commands:
 ---------
 
-Here are all the commands included in this cog (14):
+Here are all the commands included in this cog (15):
 
 * ``[p]webhook``
  Various webhook commands to create and send messages along webhooks.
@@ -44,6 +44,9 @@ Here are all the commands included in this cog (14):
 
 * ``[p]webhook edit <message> [content]``
  Edit a message sent by a webhook.
+
+* ``[p]webhook freverse [channel] <member> [content]``
+ 
 
 * ``[p]webhook permissions``
  Show all members in the server that have the permission `manage_webhooks`.

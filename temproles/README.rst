@@ -16,25 +16,37 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog:
 ---------------
 
-A cog to assign temporary roles to users, expiring after a set time!
+A cog to assign temporary roles to users, expiring after a set duration!
 
 ---------
 Commands:
 ---------
 
-Here are all the commands included in this cog (11):
+Here are all the commands included in this cog (18):
 
 * ``[p]temproles``
  Assign TempRoles roles to users, expiring after a set time.
 
-* ``[p]temproles addallowedselftemprole <role> [min_time=1 day, 0:00:00] [max_time=365 days, 0:00:00]``
+* ``[p]temproles addallowedselftemprole <role> [min_duration=1 day, 0:00:00] [max_duration=365 days, 0:00:00]``
  Add an allowed self Temp Role.
 
-* ``[p]temproles assign <member> <role> <time>``
+* ``[p]temproles addjoiningtemprole <role> <duration>``
+ Add a joining Temp Role.
+
+* ``[p]temproles assign <member> <role> <duration>``
  Assign/Add a TempRole to a member, for a specified duration.
 
-* ``[p]temproles edit <member> <role> <time>``
+* ``[p]temproles autoaddtemprole <role> <duration>``
+ Add an auto Temp Role.
+
+* ``[p]temproles autotemproles``
+ List the auto Temp Roles.
+
+* ``[p]temproles edit <member> <role> <duration>``
  Edit a TempRole for a member, for a specified duration.
+
+* ``[p]temproles joiningtemproles``
+ List the joining Temp Roles.
 
 * ``[p]temproles list [member] [role]``
  List active Temp Roles on this server, for optional specified member and/or role.
@@ -42,10 +54,19 @@ Here are all the commands included in this cog (11):
 * ``[p]temproles logschannel [logs_channel]``
  Set the logs channel for Temp Roles.
 
+* ``[p]temproles mylist``
+ List active Temp Roles for yourself.
+
 * ``[p]temproles removeallowedselftemprole <role>``
  Remove an allowed self Temp Role.
 
-* ``[p]temproles selfassign <role> <time>``
+* ``[p]temproles removeautoaddtemprole <role>``
+ Remove an auto Temp Role.
+
+* ``[p]temproles removejoiningtemprole <role>``
+ Remove a joining Temp Role.
+
+* ``[p]temproles selfassign <role> <duration>``
  Assign/Add an allowed self Temp Role to yourself, for a specified duration.
 
 * ``[p]temproles selflist``

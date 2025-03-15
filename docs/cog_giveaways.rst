@@ -22,7 +22,7 @@ Make incredible giveaways, moving from requirements checks to a unique user expe
 Commands:
 ---------
 
-Here are all the commands included in this cog (65):
+Here are all the commands included in this cog (66):
 
 * ``[p]giveaway``
  Make incredible giveaways, moving from requirements checks to a unique user experience.
@@ -123,6 +123,9 @@ Here are all the commands included in this cog (65):
 * ``[p]setgiveaways getdebugloopsstatus``
  Get an embed for check loop status.
 
+* ``[p]setgiveaways imageurl <profile> <image_url>``
+ Image URL for the giveaways messages.
+
 * ``[p]setgiveaways logschannel <profile> <logs_channel>``
  Channel where to log giveaways.
 
@@ -138,8 +141,8 @@ Here are all the commands included in this cog (65):
 * ``[p]setgiveaways ping <profile> <ping>``
  Ping the ping role when the giveaway starts.
 
-* ``[p]setgiveaways pingrole <profile> <role>``
- Role to ping when the giveaway starts.
+* ``[p]setgiveaways pingroles <profile> <ping_roles>``
+ Roles to ping when the giveaway starts.
 
 * ``[p]setgiveaways profileadd <profile>``
  Create a new profile with defaults settings.

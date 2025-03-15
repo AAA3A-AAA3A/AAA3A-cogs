@@ -79,7 +79,7 @@ Here are all the commands included in this cog (29):
  The channels where the bot won't react.
 
 * ``[p]setpersonalreact clearmember <member>``
- 
+ Clear a member's PersonalReact settings.
 
 * ``[p]setpersonalreact maxreactionspermember <max_reactions_per_member>``
  The maximum number of reactions a member can set for them.

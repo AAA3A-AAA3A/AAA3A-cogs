@@ -22,7 +22,7 @@ Set up an Advent Calendar for your members, with custom rewards or messages each
 Commands:
 ---------
 
-Here are all the commands included in this cog (12):
+Here are all the commands included in this cog (17):
 
 * ``[p]adventcalendar``
  Open your Advent Calendar box for the day!
@@ -42,8 +42,20 @@ Here are all the commands included in this cog (12):
 * ``[p]setadventcalendar enabled <enabled>``
  Whether the Advent Calendar is enabled in this server.
 
+* ``[p]setadventcalendar includeopenermention <include_opener_mention>``
+ Whether to include the opener's mention in all messages.
+
+* ``[p]setadventcalendar madvent [member=<you>]``
+ Get the Advent Calendar for a member.
+
 * ``[p]setadventcalendar modalconfig [confirmation=False]``
  Set all settings for the cog with a Discord Modal.
+
+* ``[p]setadventcalendar mstats [member=<you>]``
+ Get the stats of the Advent Calendar for a member.
+
+* ``[p]setadventcalendar pingalldaysmembersuntilyesterday``
+ Ping all members who have opened all boxes until yesterday and have not opened today's box.
 
 * ``[p]setadventcalendar prioritymultiplierroles <priority_multiplier_roles>``
  Roles that will have their rewards priority multiplied (set individually for each reward).
@@ -56,6 +68,9 @@ Here are all the commands included in this cog (12):
 
 * ``[p]setadventcalendar showsettings [with_dev=False]``
  Show all settings for the cog with defaults and values.
+
+* ``[p]setadventcalendar stats``
+ Get the stats of the Advent Calendar for the server.
 
 * ``[p]setadventcalendar whitelistroles <whitelist_roles>``
  Roles that can access the Advent Calendar.

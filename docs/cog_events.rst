@@ -22,7 +22,7 @@ Make incredible events, with a unique user experience to claim prizes!
 Commands:
 ---------
 
-Here are all the commands included in this cog (36):
+Here are all the commands included in this cog (38):
 
 * ``[p]event``
  Make incredible events, with a unique user experience to claim prizes!
@@ -72,6 +72,9 @@ Here are all the commands included in this cog (36):
 * ``[p]setevents creatorroles <profile> <creator_roles>``
  Roles that can create events.
 
+* ``[p]setevents defaultdescription <profile> <default_description>``
+ Default description for the events.
+
 * ``[p]setevents dmhost <profile> <dm_host>``
  DM the host when the event starts.
 
@@ -87,6 +90,9 @@ Here are all the commands included in this cog (36):
 * ``[p]setevents getdebugloopsstatus``
  Get an embed for check loop status.
 
+* ``[p]setevents imageurl <profile> <image_url>``
+ Image URL for the giveaways messages.
+
 * ``[p]setevents logschannel <profile> <logs_channel>``
  Channel where to log events.
 
@@ -99,8 +105,8 @@ Here are all the commands included in this cog (36):
 * ``[p]setevents ping <profile> <ping>``
  Ping the ping role when the event starts.
 
-* ``[p]setevents pingrole <profile> <role>``
- Role to ping when the event starts.
+* ``[p]setevents pingroles <profile> <ping_roles>``
+ Roles to ping when the event starts.
 
 * ``[p]setevents profileadd <profile>``
  Create a new profile with defaults settings.

@@ -22,7 +22,7 @@ A cog to have roles-buttons!
 Commands:
 ---------
 
-Here are all the commands included in this cog (8):
+Here are all the commands included in this cog (9):
 
 * ``[p]rolesbuttons``
  Group of commands to use RolesButtons.
@@ -35,6 +35,9 @@ Here are all the commands included in this cog (8):
 
 * ``[p]rolesbuttons clear <message>``
  Clear all roles-buttons for a message.
+
+* ``[p]rolesbuttons create [channel] [roles_buttons]...``
+ Create a message with a nice embed and roles-buttons.
 
 * ``[p]rolesbuttons list [message]``
  List all roles-buttons of this server or display the settings for a specific one.

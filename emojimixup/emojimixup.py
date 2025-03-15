@@ -5,12 +5,12 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.data_manager import bundled_data_path
-
-import aiohttp
 import io
 import json
 import random
+
+import aiohttp
+from redbot.core.data_manager import bundled_data_path
 
 # Credits:
 # General repo credits.
@@ -26,7 +26,9 @@ class UnicodeEmojiConverter(commands.Converter):
         if argument == "random":
             return random.choice(cog.emojis)
         if argument not in cog.emojis:
-            raise commands.BadArgument(_("That's not a valid Unicode emoji or it isn't supported!"))
+            raise commands.BadArgument(
+                _("That's not a valid Unicode emoji or it isn't supported!")
+            )
         return argument
 
 

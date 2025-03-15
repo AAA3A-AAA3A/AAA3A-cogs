@@ -187,7 +187,7 @@ class TransferChannel(Cog):
             if way == "webhooks":
                 if not any([message.content, message.embeds, files]):
                     continue
-                for page in (pagify(message.content) if message.content else [None]):
+                for page in pagify(message.content) if message.content else [None]:
                     await hook.send(
                         username=message.author.display_name,
                         avatar_url=message.author.display_avatar,

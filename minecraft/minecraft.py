@@ -176,7 +176,9 @@ class Minecraft(Cog):
         icon_file = None
         icon = (
             discord.File(
-                icon_file := BytesIO(base64.b64decode(status.icon.removeprefix("data:image/png;base64,"))),
+                icon_file := BytesIO(
+                    base64.b64decode(status.icon.removeprefix("data:image/png;base64,"))
+                ),
                 filename="icon.png",
             )
             if status.icon

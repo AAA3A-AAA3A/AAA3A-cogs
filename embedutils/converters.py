@@ -300,7 +300,9 @@ GITHUB_HEADERS = {"Accept": "application/vnd.github.v3.raw"}
 
 
 class PastebinMixin:
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Dict[
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Dict[
         typing.Literal["content", "embed", "embeds"],
         typing.Union[discord.Embed, typing.List[discord.Embed], str],
     ]:

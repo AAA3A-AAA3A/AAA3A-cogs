@@ -712,9 +712,9 @@ class GetDocs(DashboardIntegration, Cog):
         for _type in ("attributes", "properties", "methods"):
             if getattr(documentation.attributes, _type):
                 # result += f"{_type.capitalize()}:\n{BREAK_LINE.join([f'• {inline(attribute.name)}' for _type in ('attributes', 'properties', 'methods') for attribute in getattr(documentation.attributes, _type).values()]) or 'No attribute(s)'}.\n"
-                data[_type.capitalize()] = (
-                    f"{humanize_list([inline(attribute.name) for _type in ('attributes', 'properties', 'methods') for attribute in getattr(documentation.attributes, _type).values()])}."
-                )
+                data[
+                    _type.capitalize()
+                ] = f"{humanize_list([inline(attribute.name) for _type in ('attributes', 'properties', 'methods') for attribute in getattr(documentation.attributes, _type).values()])}."
         return [f"{key}: {value}\n" for key, value in data.items() if value is not None]
 
 
@@ -1723,13 +1723,13 @@ class Source:
                         self._docs_cache, name=parent_name
                     )
                     if parent is not None:
-                        parent.attributes.methods[documentation.name[len(parent_name) + 1 :]] = (
-                            Attribute(
-                                name=documentation.name[(len(parent_name) + 1) * 2 :],
-                                role="",
-                                url=documentation.url,
-                                description=documentation.description.split("\n")[0],
-                            )
+                        parent.attributes.methods[
+                            documentation.name[len(parent_name) + 1 :]
+                        ] = Attribute(
+                            name=documentation.name[(len(parent_name) + 1) * 2 :],
+                            role="",
+                            url=documentation.url,
+                            description=documentation.description.split("\n")[0],
                         )
         return results
 

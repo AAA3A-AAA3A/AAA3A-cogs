@@ -5,11 +5,11 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.data_manager import bundled_data_path
-
 import io
 from collections import defaultdict
+
 from PIL import Image, ImageDraw, ImageFont
+from redbot.core.data_manager import bundled_data_path
 
 from .view import Lang, WordleGameView
 
@@ -37,8 +37,12 @@ class WordleGame(Cog):
             guess_distribution=[0] * 10,
         )
 
-        self.words: typing.Dict[str, typing.Dict[int, typing.List[str]]] = defaultdict(lambda: defaultdict(list))
-        self.dictionaries: typing.Dict[str, typing.Dict[int, typing.List[str]]] = defaultdict(lambda: defaultdict(list))
+        self.words: typing.Dict[str, typing.Dict[int, typing.List[str]]] = defaultdict(
+            lambda: defaultdict(list)
+        )
+        self.dictionaries: typing.Dict[str, typing.Dict[int, typing.List[str]]] = defaultdict(
+            lambda: defaultdict(list)
+        )
         self.font: ImageFont.FreeTypeFont = None
         self.games_in_progress: typing.List[discord.Member] = []
 
@@ -47,7 +51,9 @@ class WordleGame(Cog):
         data_path = bundled_data_path(self)
         for lang in Lang:
             for dirname in ("words", "dictionaries"):
-                with (data_path / dirname / f"{lang.value}.txt").open("r", encoding="utf-8") as file:
+                with (data_path / dirname / f"{lang.value}.txt").open(
+                    "r", encoding="utf-8"
+                ) as file:
                     for word in file.read().split("\n"):
                         if word == "cancel":
                             continue
@@ -69,7 +75,7 @@ class WordleGame(Cog):
             "RGB",
             (
                 length * size + (length + 1) * between + 2 * border,
-                max_attempts * size + (max_attempts + 1) * between + 2 * border
+                max_attempts * size + (max_attempts + 1) * between + 2 * border,
             ),
             (255, 255, 255),
         )
@@ -85,8 +91,14 @@ class WordleGame(Cog):
                     color = (120, 124, 126)  # Grey
                 draw.rectangle(
                     [
-                        (border + (j + 1) * between + j * size, border + (i + 1) * between + i * size),
-                        (border + (j + 1) * between + (j + 1) * size, border + (i + 1) * between + (i + 1) * size),
+                        (
+                            border + (j + 1) * between + j * size,
+                            border + (i + 1) * between + i * size,
+                        ),
+                        (
+                            border + (j + 1) * between + (j + 1) * size,
+                            border + (i + 1) * between + (i + 1) * size,
+                        ),
                     ],
                     fill=color,
                 )
@@ -104,8 +116,18 @@ class WordleGame(Cog):
             for j in range(length):
                 draw.rectangle(
                     [
-                        (border + (j + 1) * between + j * size, border + (len(attempts) + i + 1) * between + (len(attempts) + i) * size),
-                        (border + (j + 1) * between + (j + 1) * size, border + (len(attempts) + i + 1) * between + (len(attempts) + i + 1) * size),
+                        (
+                            border + (j + 1) * between + j * size,
+                            border
+                            + (len(attempts) + i + 1) * between
+                            + (len(attempts) + i) * size,
+                        ),
+                        (
+                            border + (j + 1) * between + (j + 1) * size,
+                            border
+                            + (len(attempts) + i + 1) * between
+                            + (len(attempts) + i + 1) * size,
+                        ),
                     ],
                     outline=(211, 214, 218),
                     width=3,
@@ -118,10 +140,14 @@ class WordleGame(Cog):
     async def get_kwargs(
         self,
         ctx: commands.Context,
-        lang: Lang, word: str,
+        lang: Lang,
+        word: str,
         attempts: typing.List[str] = [],
         max_attempts: int = 6,
-    ) -> typing.Dict[typing.Literal["embed", "file", "allowed_mentions"], typing.Union[discord.Embed, discord.File, discord.AllowedMentions]]:
+    ) -> typing.Dict[
+        typing.Literal["embed", "file", "allowed_mentions"],
+        typing.Union[discord.Embed, discord.File, discord.AllowedMentions],
+    ]:
         embed: discord.Embed = discord.Embed(
             title=_("{flag} Wordle Game - {attempts}/{max_attempts} attempts").format(
                 flag=f":flag_{'gb' if lang is Lang.ENGLISH else lang.value}:",
@@ -169,7 +195,9 @@ class WordleGame(Cog):
         Available languages: `en`, `fr`, `de`, `es`, `it`, `pt`, `nl`, `cs`, `el`, `id`, `ie`, `ph`, `pl`, `ua`, `ru`, `sv` and `tr`.
         """
         if ctx.author in self.games_in_progress:
-            raise commands.UserFeedbackCheckFailure(_("You are already playing a match of Wordle game."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You are already playing a match of Wordle game.")
+            )
         self.games_in_progress.append(ctx.author)
         has_won, attempts = await WordleGameView(
             self,
@@ -193,7 +221,9 @@ class WordleGame(Cog):
         data = await self.config.member(ctx.author).all()
         embed = discord.Embed(
             title=_("Wordle Game Stats"),
-            description=_(">>> **Games played**: {games}\n**Wins**: {wins}\n**Win rate:** {win_rate:.2%}").format(
+            description=_(
+                ">>> **Games played**: {games}\n**Wins**: {wins}\n**Win rate:** {win_rate:.2%}"
+            ).format(
                 games=data["games"],
                 wins=data["wins"],
                 win_rate=data["wins"] / data["games"] if data["games"] else 0,
@@ -211,7 +241,9 @@ class WordleGame(Cog):
                 name=_("Guess distribution:"),
                 value="\n".join(
                     [
-                        _("**•** **{count}** guess{es} with {i} attempts").format(count=count, i=i+1, es="es" if count > 1 else "")
+                        _("**•** **{count}** guess{es} with {i} attempts").format(
+                            count=count, i=i + 1, es="es" if count > 1 else ""
+                        )
                         for i, count in enumerate(data["guess_distribution"], start=1)
                         if count > 0
                     ]

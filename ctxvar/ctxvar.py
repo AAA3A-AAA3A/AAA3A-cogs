@@ -380,9 +380,9 @@ class CtxVar(Cog):
                     discord.utils.SequenceProxy,
                 ),
             ):
-                result2[attr.replace("_", " ").capitalize()] = (
-                    f"{value.__class__.__name__} - {len(value)}"
-                )
+                result2[
+                    attr.replace("_", " ").capitalize()
+                ] = f"{value.__class__.__name__} - {len(value)}"
                 continue
             elif isinstance(value, datetime.datetime):
                 _time = int(value.timestamp())

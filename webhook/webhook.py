@@ -40,9 +40,9 @@ class Session:
         self.cog: commands.Cog = cog
         self.author: discord.Member = author
 
-        self.channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread] = (
-            channel
-        )
+        self.channel: typing.Union[
+            discord.TextChannel, discord.VoiceChannel, discord.Thread
+        ] = channel
         self.webhook: discord.Webhook = webhook
 
     async def initialize(self, ctx: commands.Context):

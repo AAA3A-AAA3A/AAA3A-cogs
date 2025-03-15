@@ -7,7 +7,11 @@ import base64
 import inspect
 import types
 
-from redbot.core.i18n import get_locale_from_guild, set_contextual_locale, set_contextual_regional_format
+from redbot.core.i18n import (
+    get_locale_from_guild,
+    set_contextual_locale,
+    set_contextual_regional_format,
+)  # NOQA
 from werkzeug.datastructures import ImmutableMultiDict
 
 from .form import INITIAL_INIT_FIELD, Field, get_form_class

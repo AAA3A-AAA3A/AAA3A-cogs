@@ -45,9 +45,9 @@ class Draw(Cog):
         super().__init__(bot=bot)
 
         self._session: aiohttp.ClientSession = None
-        self.cache: typing.Dict[typing.Union[str, int, typing.Tuple[int, int, int, int]]] = (
-            {}
-        )  # Unicode emojis, colors RGB and Discord custom emojis ids.
+        self.cache: typing.Dict[
+            typing.Union[str, int, typing.Tuple[int, int, int, int]]
+        ] = {}  # Unicode emojis, colors RGB and Discord custom emojis ids.
 
     async def cog_load(self) -> None:
         await super().cog_load()

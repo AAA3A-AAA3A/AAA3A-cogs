@@ -27,7 +27,9 @@ _: Translator = Translator("GuildStats", __file__)
 
 
 class ObjectConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Union[
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Union[
         discord.Member,
         discord.Role,
         typing.Literal["messages", "voice", "activities"],
@@ -586,9 +588,9 @@ class GuildStats(Cog):
                     "voice": {},
                     "voice_cache": {},
                 }
-            self.cache[after.channel.guild]["channels"][after.channel]["voice_cache"][member] = (
-                datetime.datetime.now(tz=datetime.timezone.utc)
-            )
+            self.cache[after.channel.guild]["channels"][after.channel]["voice_cache"][
+                member
+            ] = datetime.datetime.now(tz=datetime.timezone.utc)
         if before.channel is not None:
             if isinstance(after.channel, discord.StageChannel):
                 return
@@ -668,9 +670,9 @@ class GuildStats(Cog):
                         "total_activities_times": {},
                         "activities_cache": {},
                     }
-                self.cache[after.guild]["members"][after]["activities_cache"][activity.name] = (
-                    datetime.datetime.now(tz=datetime.timezone.utc)
-                )
+                self.cache[after.guild]["members"][after]["activities_cache"][
+                    activity.name
+                ] = datetime.datetime.now(tz=datetime.timezone.utc)
         if before is not None:
             ignored_users = await self.config.ignored_users()
             if before.id in ignored_users:

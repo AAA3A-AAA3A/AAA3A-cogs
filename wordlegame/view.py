@@ -4,10 +4,10 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.predicates import MessagePredicate
-
 import asyncio
 import random
+
+from redbot.core.utils.predicates import MessagePredicate
 
 _: Translator = Translator("WordleGame", __file__)
 
@@ -40,7 +40,7 @@ DIACRITIC_SYMBOLS: typing.Dict[str, str] = {
     "n": "ñ",
     "o": "òóôõö",
     "u": "ùúûü",
-    "y": "ýÿ"
+    "y": "ýÿ",
 }
 
 
@@ -64,23 +64,26 @@ class WordleGameView(discord.ui.View):
 
     async def start(self, ctx: commands.Context) -> typing.Tuple[bool, typing.List[str]]:
         self.ctx: commands.Context = ctx
-    
+
         if not (words := self.cog.words[self.lang.value][self.length]):
             raise commands.UserFeedbackCheckFailure(
-                _("There are no words in this language with {length} letters.").format(length=self.length)
+                _("There are no words in this language with {length} letters.").format(
+                    length=self.length
+                )
             )
         self.word: str = random.choice(words)
         self._message: discord.Message = await ctx.send(
             **await self.cog.get_kwargs(
                 self.ctx,
-                self.lang, self.word,
+                self.lang,
+                self.word,
                 max_attempts=self.max_attempts,
             ),
             view=self,
             reference=self.ctx.message.to_reference(fail_if_not_exists=False),
         )
         self.cog.views[self._message] = self
-    
+
         has_won, attempts = False, []
         try:
             while not has_won and len(attempts) < self.max_attempts:
@@ -89,10 +92,7 @@ class WordleGameView(discord.ui.View):
                     check=lambda message: (
                         MessagePredicate.same_context(ctx)(message)
                         and (
-                            (
-                                len(message.content) == self.length
-                                and message.content.isalpha()
-                            )
+                            (len(message.content) == self.length and message.content.isalpha())
                             or message.content.lower() == "cancel"
                         )
                     ),
@@ -100,14 +100,18 @@ class WordleGameView(discord.ui.View):
                 )
                 if guess.content.lower() == "cancel":
                     await self.ctx.send(
-                        _("You have cancelled the game. The word was: **{word}**.").format(word=self.word),
+                        _("You have cancelled the game. The word was: **{word}**.").format(
+                            word=self.word
+                        ),
                         reference=self._message.to_reference(fail_if_not_exists=False),
                         allowed_mentions=discord.AllowedMentions(replied_user=False),
                     )
                     break
 
                 attempt = guess.content.lower().translate(
-                    str.maketrans({v: key for key, value in DIACRITIC_SYMBOLS.items() for v in value})
+                    str.maketrans(
+                        {v: key for key, value in DIACRITIC_SYMBOLS.items() for v in value}
+                    )
                 )
                 if attempt not in self.cog.dictionaries[self.lang.value][self.length]:
                     await self.ctx.send(
@@ -126,7 +130,8 @@ class WordleGameView(discord.ui.View):
                 self._message: discord.Message = await ctx.send(
                     **await self.cog.get_kwargs(
                         self.ctx,
-                        self.lang, self.word,
+                        self.lang,
+                        self.word,
                         attempts=attempts,
                         max_attempts=self.max_attempts,
                     ),
@@ -166,8 +171,7 @@ class WordleGameView(discord.ui.View):
         for child in self.children:
             child: discord.ui.Item
             if hasattr(child, "disabled") and not (
-                isinstance(child, discord.ui.Button)
-                and child.style == discord.ButtonStyle.url
+                isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
             ):
                 child.disabled = True
         try:
@@ -175,8 +179,14 @@ class WordleGameView(discord.ui.View):
         except discord.HTTPException:
             pass
 
-    @discord.ui.button(label=_("Explanation"), style=discord.ButtonStyle.secondary, custom_id="WordleGameView_explanation")
-    async def explanation(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    @discord.ui.button(
+        label=_("Explanation"),
+        style=discord.ButtonStyle.secondary,
+        custom_id="WordleGameView_explanation",
+    )
+    async def explanation(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         await interaction.response.send_message(
             embed=discord.Embed(
                 title=_("Wordle Game - Explanation"),

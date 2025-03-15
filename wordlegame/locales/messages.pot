@@ -1,0 +1,97 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-03-15 23:04+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: wordlegame\view.py:70
+msgid "There are no words in this language with {length} letters."
+msgstr ""
+
+#: wordlegame\view.py:103
+msgid "You have cancelled the game. The word was: **{word}**."
+msgstr ""
+
+#: wordlegame\view.py:118
+msgid "This word is not a valid word in the dictionary."
+msgstr ""
+
+#: wordlegame\view.py:146
+msgid "You took too long to guess the word. The word was: **{word}**."
+msgstr ""
+
+#: wordlegame\view.py:165
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: wordlegame\view.py:192
+msgid "Wordle Game - Explanation"
+msgstr ""
+
+#: wordlegame\view.py:193
+msgid ""
+"The game is simple, you have to guess a word in some attempts. A word is chosen randomly from a dictionary of words in a language and with a specific length. The game ends when you guess the word or when you reach the maximum number of attempts.\n"
+"• If the letter is **🟩 Green**, it is in the correct position.\n"
+"• If the letter is **🟨 Yellow**, it is in the word but not in the correct position.\n"
+"• If the letter is **⬛ Grey**, it is not in the word.\n"
+"You can cancel the game at any time by clicking on the button or typing `cancel`.\n"
+"\n"
+"**Launch a new game by executing `{prefix}wordle`!**\n"
+"Available languages: `en`, `fr`, `de`, `es`, `it`, `pt`, `nl`, `cs`, `el`, `id`, `ie`, `ph`, `pl`, `ua`, `ru`, `sv` and `tr`."
+msgstr ""
+
+#: wordlegame\wordlegame.py:24
+#, docstring
+msgid "Play a match of Wordle game, in multiple languages and lengths!"
+msgstr ""
+
+#: wordlegame\wordlegame.py:152
+msgid "{flag} Wordle Game - {attempts}/{max_attempts} attempts"
+msgstr ""
+
+#: wordlegame\wordlegame.py:167
+msgid "You won!"
+msgstr ""
+
+#: wordlegame\wordlegame.py:167
+msgid "You lost!"
+msgstr ""
+
+#: wordlegame\wordlegame.py:168
+msgid "The word was: **{word}**."
+msgstr ""
+
+#: wordlegame\wordlegame.py:199
+msgid "You are already playing a match of Wordle game."
+msgstr ""
+
+#: wordlegame\wordlegame.py:220
+#, docstring
+msgid "Show the stats for the Wordle game."
+msgstr ""
+
+#: wordlegame\wordlegame.py:223
+msgid "Wordle Game Stats"
+msgstr ""
+
+#: wordlegame\wordlegame.py:224
+msgid ""
+">>> **Games played**: {games}\n"
+"**Wins**: {wins}\n"
+"**Win rate:** {win_rate:.2%}"
+msgstr ""
+
+#: wordlegame\wordlegame.py:241
+msgid "Guess distribution:"
+msgstr ""
+
+#: wordlegame\wordlegame.py:244
+msgid "**•** **{count}** guess{es} with {i} attempts"
+msgstr ""

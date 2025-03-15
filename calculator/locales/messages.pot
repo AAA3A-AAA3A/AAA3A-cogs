@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"POT-Creation-Date: 2025-03-15 23:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 msgid "A cog to do calculations from Discord with buttons!"
 msgstr ""
 
-#: calculator\calculator.py:214 calculator\calculator.py:387
+#: calculator\calculator.py:214 calculator\calculator.py:388
 #: calculator\view.py:207 calculator\view.py:214
 msgid "Error!"
 msgstr ""
@@ -25,22 +25,22 @@ msgstr ""
 msgid "{ctx.me.display_name}'s Calculator"
 msgstr ""
 
-#: calculator\calculator.py:477
+#: calculator\calculator.py:478
 #, docstring
 msgid "Set the default state of the react calculations."
 msgstr ""
 
-#: calculator\calculator.py:485
+#: calculator\calculator.py:486
 #, docstring
 msgid "Set the default state of the auto calculations."
 msgstr ""
 
-#: calculator\calculator.py:491
+#: calculator\calculator.py:492
 #, docstring
 msgid "Set the default state of the simple embed mode."
 msgstr ""
 
-#: calculator\calculator.py:499
+#: calculator\calculator.py:500
 #, docstring
 msgid "Set the default state of the result codeblock mode."
 msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"POT-Creation-Date: 2025-03-15 23:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,12 +37,7 @@ msgstr ""
 msgid "Embed size exceeds Discord limit of 6000 characters ({length})."
 msgstr ""
 
-#: embedutils\converters.py:153 embedutils\embedutils.py:100
-#: embedutils\embedutils.py:135 embedutils\embedutils.py:169
-#: embedutils\embedutils.py:206 embedutils\embedutils.py:239
-#: embedutils\embedutils.py:272 embedutils\embedutils.py:326
-#: embedutils\embedutils.py:452 embedutils\embedutils.py:549
-#: embedutils\embedutils.py:720 embedutils\embedutils.py:774
+#: embedutils\converters.py:153
 msgid "Embed Send Error"
 msgstr ""
 
@@ -121,7 +116,16 @@ msgstr ""
 msgid "Create, send, and store rich embeds, from Red-Dashboard too!"
 msgstr ""
 
-#: embedutils\embedutils.py:110
+#: embedutils\embedutils.py:109 embedutils\embedutils.py:152
+#: embedutils\embedutils.py:194 embedutils\embedutils.py:239
+#: embedutils\embedutils.py:280 embedutils\embedutils.py:321
+#: embedutils\embedutils.py:383 embedutils\embedutils.py:509
+#: embedutils\embedutils.py:606 embedutils\embedutils.py:785
+#: embedutils\embedutils.py:839
+msgid "Embed Sending Error"
+msgstr ""
+
+#: embedutils\embedutils.py:119
 #, docstring
 msgid ""
 "Post embeds from valid JSON.\n"
@@ -135,7 +139,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: embedutils\embedutils.py:145
+#: embedutils\embedutils.py:162
 #, docstring
 msgid ""
 "Post embeds from valid YAML.\n"
@@ -148,7 +152,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: embedutils\embedutils.py:175
+#: embedutils\embedutils.py:200
 #, docstring
 msgid ""
 "Post an embed from a valid JSON file (upload it).\n"
@@ -161,14 +165,14 @@ msgid ""
 "        "
 msgstr ""
 
-#: embedutils\embedutils.py:190 embedutils\embedutils.py:223
-#: embedutils\embedutils.py:417 embedutils\embedutils.py:427
-#: embedutils\embedutils.py:517 embedutils\embedutils.py:527
-#: embedutils\embedutils.py:843 embedutils\embedutils.py:855
+#: embedutils\embedutils.py:215 embedutils\embedutils.py:256
+#: embedutils\embedutils.py:474 embedutils\embedutils.py:484
+#: embedutils\embedutils.py:574 embedutils\embedutils.py:584
+#: embedutils\embedutils.py:908 embedutils\embedutils.py:920
 msgid "Unreadable attachment with `utf-8`."
 msgstr ""
 
-#: embedutils\embedutils.py:212
+#: embedutils\embedutils.py:245
 #, docstring
 msgid ""
 "Post an embed from a valid YAML file (upload it).\n"
@@ -177,7 +181,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: embedutils\embedutils.py:251
+#: embedutils\embedutils.py:292
 #, docstring
 msgid ""
 "Post embeds from a GitHub/Gist/Pastebin/Hastebin link containing valid JSON.\n"
@@ -189,7 +193,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: embedutils\embedutils.py:283
+#: embedutils\embedutils.py:332
 #, docstring
 msgid ""
 "Post embed(s) from an existing message.\n"
@@ -202,7 +206,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: embedutils\embedutils.py:337
+#: embedutils\embedutils.py:394
 #, docstring
 msgid ""
 "Download a JSON file for a message's embed(s).\n"
@@ -213,7 +217,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: embedutils\embedutils.py:397
+#: embedutils\embedutils.py:454
 #, docstring
 msgid ""
 "Edit a message sent by [botname].\n"
@@ -222,7 +226,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: embedutils\embedutils.py:489
+#: embedutils\embedutils.py:546
 #, docstring
 msgid ""
 "Store an embed.\n"
@@ -232,100 +236,100 @@ msgid ""
 "        "
 msgstr ""
 
-#: embedutils\embedutils.py:497 embedutils\embedutils.py:583
-#: embedutils\embedutils.py:598 embedutils\embedutils.py:630
-#: embedutils\embedutils.py:662
+#: embedutils\embedutils.py:554 embedutils\embedutils.py:640
+#: embedutils\embedutils.py:655 embedutils\embedutils.py:687
+#: embedutils\embedutils.py:719
 msgid "You can't manage global stored embeds."
 msgstr ""
 
-#: embedutils\embedutils.py:560
+#: embedutils\embedutils.py:617
 msgid ""
 "This server has reached the embed limit of {embed_limit}. You must remove an"
 " embed with `{ctx.clean_prefix}embed unstore` before you can add a new one."
 msgstr ""
 
-#: embedutils\embedutils.py:579
+#: embedutils\embedutils.py:636
 #, docstring
 msgid "Remove a stored embed."
 msgstr ""
 
-#: embedutils\embedutils.py:589 embedutils\embedutils.py:635
-#: embedutils\embedutils.py:667
+#: embedutils\embedutils.py:646 embedutils\embedutils.py:692
+#: embedutils\embedutils.py:724
 msgid "This is not a stored embed at this level."
 msgstr ""
 
-#: embedutils\embedutils.py:596 embedutils\embedutils.py:626
+#: embedutils\embedutils.py:653 embedutils\embedutils.py:683
 #, docstring
 msgid "Get info about a stored embed."
 msgstr ""
 
-#: embedutils\embedutils.py:604
+#: embedutils\embedutils.py:661
 msgid "No stored embeds is configured at this level."
 msgstr ""
 
-#: embedutils\embedutils.py:608
+#: embedutils\embedutils.py:665
 msgid "Global "
 msgstr ""
 
-#: embedutils\embedutils.py:608
+#: embedutils\embedutils.py:665
 msgid "Stored Embeds"
 msgstr ""
 
-#: embedutils\embedutils.py:658
+#: embedutils\embedutils.py:715
 #, docstring
 msgid "Download a JSON file for a stored embed."
 msgstr ""
 
-#: embedutils\embedutils.py:687
+#: embedutils\embedutils.py:744
 #, docstring
 msgid "Post stored embeds."
 msgstr ""
 
-#: embedutils\embedutils.py:709 embedutils\embedutils.py:760
+#: embedutils\embedutils.py:766 embedutils\embedutils.py:825
 msgid "`{name}` is not a stored embed at this level."
 msgstr ""
 
-#: embedutils\embedutils.py:738
+#: embedutils\embedutils.py:803
 #, docstring
 msgid "Post stored embeds with a webhook."
 msgstr ""
 
-#: embedutils\embedutils.py:805
+#: embedutils\embedutils.py:870
 #, docstring
 msgid "Get the link to the Dashboard."
 msgstr ""
 
-#: embedutils\embedutils.py:808
+#: embedutils\embedutils.py:873
 msgid ""
 "Red-Dashboard is not installed. Check <https://red-web-"
 "dashboard.readthedocs.io>."
 msgstr ""
 
-#: embedutils\embedutils.py:813
+#: embedutils\embedutils.py:878
 msgid "You can't access the Dashboard."
 msgstr ""
 
-#: embedutils\embedutils.py:819
+#: embedutils\embedutils.py:884
 msgid "This third party is disabled on the Dashboard."
 msgstr ""
 
-#: embedutils\embedutils.py:884
+#: embedutils\embedutils.py:949
 msgid "Dashboard - "
 msgstr ""
 
-#: embedutils\embedutils.py:889
+#: embedutils\embedutils.py:954
 msgid "You can create and send rich embeds directly from the Dashboard!"
 msgstr ""
 
-#: embedutils\embedutils.py:896
+#: embedutils\embedutils.py:961
 msgid "The URL is too long to be displayed."
 msgstr ""
 
-#: embedutils\embedutils.py:906
+#: embedutils\embedutils.py:971
 #, docstring
 msgid "Migrate stored embeds from EmbedUtils by Phen."
 msgstr ""
 
-#: embedutils\embedutils.py:950
+#: embedutils\embedutils.py:1015
 msgid "Data successfully migrated from EmbedUtils by Phen."
 msgstr ""

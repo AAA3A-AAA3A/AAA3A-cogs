@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"POT-Creation-Date: 2025-03-15 23:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -609,11 +609,11 @@ msgid ""
 "`{self.profile}`)"
 msgstr ""
 
-#: tickets\types.py:1265
+#: tickets\types.py:1261
 msgid "🗑 Ticket Deleted"
 msgstr ""
 
-#: tickets\types.py:1266
+#: tickets\types.py:1262
 msgid "{self.owner.mention}'s ticket has been deleted."
 msgstr ""
 

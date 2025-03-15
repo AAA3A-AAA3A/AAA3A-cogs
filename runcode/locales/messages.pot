@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"POT-Creation-Date: 2025-03-15 23:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,31 +44,35 @@ msgstr ""
 msgid "Incorrect syntax, please use Markdown's syntax for your code."
 msgstr ""
 
-#: runcode\runcode.py:389
+#: runcode\runcode.py:322
+msgid "Specify the language of your code with the `language` parameter."
+msgstr ""
+
+#: runcode\runcode.py:394
 msgid ""
 "The language of your code could not be found. Specify it with the `language`"
 " parameter."
 msgstr ""
 
-#: runcode\runcode.py:418
+#: runcode\runcode.py:423
 msgid ""
 "`{engine}` is not a correct engine for {code_language}\n"
 "To list all the available engine for it, please use `{ctx.prefix}setruncode listengines {code_language}`."
 msgstr ""
 
-#: runcode\runcode.py:431
+#: runcode\runcode.py:436
 msgid ""
 "There is no options available for compilation using `{engine}`.\n"
 "Ignoring this option."
 msgstr ""
 
-#: runcode\runcode.py:444
+#: runcode\runcode.py:449
 msgid ""
 "There is no options available for runtime execution `{engine}`.\n"
 "Ignoring this option."
 msgstr ""
 
-#: runcode\runcode.py:580
+#: runcode\runcode.py:585
 #, docstring
 msgid ""
 "\n"
@@ -76,11 +80,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: runcode\runcode.py:593
+#: runcode\runcode.py:598
 msgid "RunCode — {api} API Languages"
 msgstr ""
 
-#: runcode\runcode.py:602
+#: runcode\runcode.py:607
 #, docstring
 msgid ""
 "\n"
@@ -91,11 +95,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: runcode\runcode.py:622
+#: runcode\runcode.py:627
 msgid "RunCode — Wandbox API Engines"
 msgstr ""
 
-#: runcode\runcode.py:633
+#: runcode\runcode.py:638
 #, docstring
 msgid ""
 "\n"
@@ -103,11 +107,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: runcode\runcode.py:643
+#: runcode\runcode.py:648
 msgid "RunCode — Wandbox API Identifiers"
 msgstr ""
 
-#: runcode\runcode.py:651
+#: runcode\runcode.py:656
 #, docstring
 msgid ""
 "\n"
@@ -115,7 +119,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: runcode\runcode.py:661
+#: runcode\runcode.py:666
 msgid "Languages extensions"
 msgstr ""
 

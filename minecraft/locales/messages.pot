@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"POT-Creation-Date: 2025-03-15 23:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,110 +30,110 @@ msgid ""
 "notify for each change of a server!"
 msgstr ""
 
-#: minecraft\minecraft.py:187
+#: minecraft\minecraft.py:189
 msgid "Latency"
 msgstr ""
 
-#: minecraft\minecraft.py:189
+#: minecraft\minecraft.py:191
 msgid "Players"
 msgstr ""
 
-#: minecraft\minecraft.py:209
+#: minecraft\minecraft.py:211
 msgid "Version"
 msgstr ""
 
-#: minecraft\minecraft.py:249
+#: minecraft\minecraft.py:251
 #, docstring
 msgid "Get Minecraft Java player skin by name."
 msgstr ""
 
-#: minecraft\minecraft.py:272
+#: minecraft\minecraft.py:274
 msgid "Unable to get data from Crafatar: {}"
 msgstr ""
 
-#: minecraft\minecraft.py:284
+#: minecraft\minecraft.py:286
 msgid "Provided by Crafatar."
 msgstr ""
 
-#: minecraft\minecraft.py:290
+#: minecraft\minecraft.py:292
 #, docstring
 msgid "Get informations about a Minecraft Java server."
 msgstr ""
 
-#: minecraft\minecraft.py:296 minecraft\minecraft.py:331
+#: minecraft\minecraft.py:298 minecraft\minecraft.py:333
 msgid ""
 "No data found for this Minecraft server. Maybe it doesn't exist or its data "
 "are temporarily unavailable."
 msgstr ""
 
-#: minecraft\minecraft.py:308
+#: minecraft\minecraft.py:310
 #, docstring
 msgid "Add a Minecraft Java server in Config to get automatically new status."
 msgstr ""
 
-#: minecraft\minecraft.py:319
+#: minecraft\minecraft.py:321
 msgid ""
 "I don't have sufficient permissions in this channel to send messages with "
 "embeds."
 msgstr ""
 
-#: minecraft\minecraft.py:325
+#: minecraft\minecraft.py:327
 msgid "This server has already been added."
 msgstr ""
 
-#: minecraft\minecraft.py:339
+#: minecraft\minecraft.py:341
 msgid "Server added to this channel."
 msgstr ""
 
-#: minecraft\minecraft.py:346
+#: minecraft\minecraft.py:348
 #, docstring
 msgid "Remove a Minecraft Java server in Config."
 msgstr ""
 
-#: minecraft\minecraft.py:351
+#: minecraft\minecraft.py:353
 msgid "This server isn't in the Config."
 msgstr ""
 
-#: minecraft\minecraft.py:356
+#: minecraft\minecraft.py:358
 msgid "Server removed from this channel."
 msgstr ""
 
-#: minecraft\minecraft.py:363
+#: minecraft\minecraft.py:365
 #, docstring
 msgid "Include players joining or leaving the server in notifications."
 msgstr ""
 
-#: minecraft\minecraft.py:370
+#: minecraft\minecraft.py:372
 msgid "I will not check players for the notifications."
 msgstr ""
 
-#: minecraft\minecraft.py:372
+#: minecraft\minecraft.py:374
 msgid "I will check players for the notifications."
 msgstr ""
 
-#: minecraft\minecraft.py:379
+#: minecraft\minecraft.py:381
 #, docstring
 msgid "Edit the last message sent for changes."
 msgstr ""
 
-#: minecraft\minecraft.py:384
+#: minecraft\minecraft.py:386
 msgid "I will not edit my last message for the notifications."
 msgstr ""
 
-#: minecraft\minecraft.py:386
+#: minecraft\minecraft.py:388
 msgid "I will edit my last message for the notifications."
 msgstr ""
 
-#: minecraft\minecraft.py:391
+#: minecraft\minecraft.py:393
 #, docstring
 msgid "Force check Minecraft Java servers in Config."
 msgstr ""
 
-#: minecraft\minecraft.py:393
+#: minecraft\minecraft.py:395
 msgid "Servers checked."
 msgstr ""
 
-#: minecraft\minecraft.py:399
+#: minecraft\minecraft.py:401
 #, docstring
 msgid "Get an embed for check loop status."
 msgstr ""

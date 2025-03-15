@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"POT-Creation-Date: 2025-03-15 23:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,27 +54,31 @@ msgstr ""
 msgid "{author.display_name} said..."
 msgstr ""
 
-#: linkquoter\linkquoter.py:256
+#: linkquoter\linkquoter.py:248
+msgid "*NSFW* "
+msgstr ""
+
+#: linkquoter\linkquoter.py:255
 msgid "Attachments:"
 msgstr ""
 
-#: linkquoter\linkquoter.py:267
+#: linkquoter\linkquoter.py:272
 msgid "Stickers:"
 msgstr ""
 
-#: linkquoter\linkquoter.py:279
+#: linkquoter\linkquoter.py:287
 msgid "Replying to:"
 msgstr ""
 
-#: linkquoter\linkquoter.py:280
+#: linkquoter\linkquoter.py:288
 msgid "Click to view attachments."
 msgstr ""
 
-#: linkquoter\linkquoter.py:352
+#: linkquoter\linkquoter.py:360
 #, docstring
 msgid "Migrate config from LinkQuoter by Phen."
 msgstr ""
 
-#: linkquoter\linkquoter.py:377
+#: linkquoter\linkquoter.py:385
 msgid "Data successfully migrated from LinkQuoter by Phen."
 msgstr ""

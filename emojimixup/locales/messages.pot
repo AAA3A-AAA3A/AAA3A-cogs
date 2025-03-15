@@ -11,21 +11,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: dictionary\dictionary.py:23
+#: emojimixup\emojimixup.py:30
+msgid "That's not a valid Unicode emoji or it isn't supported!"
+msgstr ""
+
+#: emojimixup\emojimixup.py:37
 #, docstring
-msgid ""
-"A cog to search an english term/word in the dictionary! Synonyms, antonyms, "
-"phonetics (with audio)..."
+msgid "Mix and match emojis to create new ones, from Google's Emoji Kitchen!"
 msgstr ""
 
-#: dictionary\dictionary.py:87
-msgid "Word not found in English dictionary."
+#: emojimixup\emojimixup.py:70
+msgid "Sorry, this mixup isn't supported!"
 msgstr ""
 
-#: dictionary\view.py:33
-msgid "View the source"
+#: emojimixup\emojimixup.py:95
+msgid "Provided by Google."
 msgstr ""
 
-#: dictionary\view.py:46
-msgid "You are not allowed to use this interaction."
+#: emojimixup\emojimixup.py:104
+msgid "Provided by Emoji Kitchen from Google."
 msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"POT-Creation-Date: 2025-03-15 23:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,172 +26,172 @@ msgstr ""
 msgid "Merry4Christmas!"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:419
+#: adventcalendar\adventcalendar.py:421
 msgid "🎁 You've received a **new role**! 🎁"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:420
+#: adventcalendar\adventcalendar.py:422
 msgid "You've received the {role} role!"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:445
+#: adventcalendar\adventcalendar.py:447
 msgid "🎁 You've received a **temporary role**! 🎁"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:446
+#: adventcalendar\adventcalendar.py:448
 msgid "You've received the {role} role **for {duration_string}**!"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:458
+#: adventcalendar\adventcalendar.py:460
 msgid "🎁 You've received **{amount} credits**! 🎁"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:468
+#: adventcalendar\adventcalendar.py:470
 msgid "🎁 You've received **{amount} XP**! 🎁"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:483
+#: adventcalendar\adventcalendar.py:485
 msgid "Advent Calendar — {member.display_name} received a **custom reward**"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:491
+#: adventcalendar\adventcalendar.py:493
 msgid "Member:"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:492
+#: adventcalendar\adventcalendar.py:494
 msgid "Reward label:"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:518
+#: adventcalendar\adventcalendar.py:520
 msgid "🎁 You will receive **{label}**! 🎁"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:519
+#: adventcalendar\adventcalendar.py:521
 msgid "Please wait for a staff member to give you your reward."
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:526
+#: adventcalendar\adventcalendar.py:528
 msgid "🎁 Here's a **message** for you! 🎁"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:549
+#: adventcalendar\adventcalendar.py:551
 msgid ""
 "The Advent Calendar is only available in December. **Come back in "
 "{interval_string}!** 🎄"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:558
+#: adventcalendar\adventcalendar.py:560
 msgid "The Advent Calendar is not enabled in this server."
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:564
+#: adventcalendar\adventcalendar.py:566
 msgid "You don't have the required roles to access the Advent Calendar."
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:568
+#: adventcalendar\adventcalendar.py:570
 msgid "You're not allowed to access the Advent Calendar."
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:578
+#: adventcalendar\adventcalendar.py:580
 msgid ""
 "🎄 Here's your surprise for **day {today_day}** of the Advent Calendar! 🎄"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:586
+#: adventcalendar\adventcalendar.py:588
 msgid "🎄 You didn't get anything today, **come back tomorrow!** 🎄"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:590
+#: adventcalendar\adventcalendar.py:592
 msgid ""
 "You've already opened your box for the day, **come back <t:{timestamp}:R>!**"
 " 😉 Here's your current Advent Calendar!"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:607
+#: adventcalendar\adventcalendar.py:609
 msgid "🎄 You've opened all the boxes! 🎄"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:610
+#: adventcalendar\adventcalendar.py:612
 msgid " Here's your **final surprise**!"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:652
+#: adventcalendar\adventcalendar.py:654
 #, docstring
 msgid "Set up the rewards for each day of the Advent Calendar."
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:660
+#: adventcalendar\adventcalendar.py:662
 #, docstring
 msgid "Get the Advent Calendar for a member."
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:664 adventcalendar\adventcalendar.py:696
-#: adventcalendar\adventcalendar.py:732 adventcalendar\adventcalendar.py:826
+#: adventcalendar\adventcalendar.py:666 adventcalendar\adventcalendar.py:698
+#: adventcalendar\adventcalendar.py:734 adventcalendar\adventcalendar.py:828
 msgid "The Advent Calendar is only available in December."
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:668
+#: adventcalendar\adventcalendar.py:670
 msgid "Advent Calendar"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:692
+#: adventcalendar\adventcalendar.py:694
 #, docstring
 msgid "Get the stats of the Advent Calendar for a member."
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:700 adventcalendar\adventcalendar.py:742
+#: adventcalendar\adventcalendar.py:702 adventcalendar\adventcalendar.py:744
 msgid "Advent Calendar Stats"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:713
+#: adventcalendar\adventcalendar.py:715
 msgid "Opened Days:"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:728
+#: adventcalendar\adventcalendar.py:730
 #, docstring
 msgid "Get the stats of the Advent Calendar for the server."
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:751
+#: adventcalendar\adventcalendar.py:753
 msgid "Total Boxes Opened:"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:752
+#: adventcalendar\adventcalendar.py:754
 msgid "{total_boxes_opened} Boxe{s}"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:759
+#: adventcalendar\adventcalendar.py:761
 msgid "Members with All Boxes Opened:"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:760
+#: adventcalendar\adventcalendar.py:762
 msgid "{members_all_boxes_opened} Member{s}"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:768
+#: adventcalendar\adventcalendar.py:770
 msgid "Today Boxes Opened:"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:769
+#: adventcalendar\adventcalendar.py:771
 msgid "{today_boxes_opened} Boxe{s}"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:797
+#: adventcalendar\adventcalendar.py:799
 msgid "Opened Boxes"
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:822
+#: adventcalendar\adventcalendar.py:824
 #, docstring
 msgid ""
 "Ping all members who have opened all boxes until yesterday and have not "
 "opened today's box."
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:837
+#: adventcalendar\adventcalendar.py:839
 msgid "No member to ping."
 msgstr ""
 
-#: adventcalendar\adventcalendar.py:838
+#: adventcalendar\adventcalendar.py:840
 msgid ""
 "**You haven't opened your box of the 🎄 Advent Calendar 🎄 for today yet! ^^**\n"
 "\n"

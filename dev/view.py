@@ -71,7 +71,7 @@ class ExecuteView(discord.ui.View):
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self._message: discord.Message = await self.ctx.send(view=self)
         self.cog.views[self._message] = self

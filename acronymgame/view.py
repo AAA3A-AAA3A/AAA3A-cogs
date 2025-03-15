@@ -122,7 +122,7 @@ class AcronymGameView(discord.ui.View):
         self._voters: typing.Dict[discord.Member, int] = {}
         self._mode: typing.Literal["join", "vote"] = None
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.acronym: str = self.get_acronym()
         embed: discord.Embed = discord.Embed(

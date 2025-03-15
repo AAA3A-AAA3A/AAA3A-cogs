@@ -1,3 +1,4 @@
+import dis
 from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
@@ -44,7 +45,7 @@ class PermissionsView(discord.ui.View):
         self._current: int = 0
         self._pages: typing.List[discord.Embed] = []
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self._pages: typing.List[discord.Embed] = await self.cog.get_embeds(
             guild=self.guild,

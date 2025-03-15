@@ -1,3 +1,4 @@
+from dis import disco
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -25,7 +26,7 @@ class SplitOrStealGameView(discord.ui.View):
         self._message: discord.Message = None
         self._mode: typing.Literal["join", "play"] = None
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         embed: discord.Embed = discord.Embed(
             title=_("Split Or Steal Game"),

@@ -24,7 +24,7 @@ class PersonalReactView(discord.ui.View):
         self.ignore_myself.label = _("Ignore Myself")
         self.ignore_bots.label = _("Ignore Bots")
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self._message: discord.Message = await self.ctx.send(
             embed=await self.get_embed(),
@@ -494,7 +494,7 @@ class SettingsView(discord.ui.View):
         self.base_roles.label = _("Base Roles")
         self.custom_trigger_roles.label = _("Custom Trigger Roles")
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self._message: discord.Message = await ctx.send(
             embed=await self.get_embed(),

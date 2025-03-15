@@ -1,3 +1,4 @@
+from dis import disco
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -157,7 +158,7 @@ class CalculatorView(discord.ui.View):
         self.NORMAL_BUTTONS: typing.List[discord.ui.Button] = []
         self.SCIENTIST_BUTTONS: typing.List[discord.ui.Button] = []
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         for button in NORMAL_BUTTONS:
             button = button.copy()

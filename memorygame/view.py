@@ -44,7 +44,7 @@ class MemoryGameView(discord.ui.View):
 
         self._lock: asyncio.Lock = asyncio.Lock()
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self._solution, self._solution_display = self.get_emojis()
         for row, _list in enumerate(self._solution_display):

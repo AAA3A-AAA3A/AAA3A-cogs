@@ -510,7 +510,7 @@ class DrawView(discord.ui.View):
 
     async def start(
         self, ctx: commands.Context, message: typing.Optional[discord.Message] = None
-    ) -> None:
+    ) -> discord.Message:
         self.ctx: commands.Context = ctx
         self._message = message
         await self._update()

@@ -1,3 +1,4 @@
+import dis
 from AAA3A_utils import CogsUtils  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
@@ -44,7 +45,7 @@ class SimpleSanctionView(discord.ui.View):
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         embed = await self.get_embed()
         for key, value in ACTIONS_DICT.items():

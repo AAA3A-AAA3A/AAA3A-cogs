@@ -233,7 +233,7 @@ class GistsHandlerView(discord.ui.View):
         self._button_url: discord.ui.Button = None
         self._ready: asyncio.Event = asyncio.Event()
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         if self.gist is not None and self.file is None:
             self.file = self.gist.files[0]

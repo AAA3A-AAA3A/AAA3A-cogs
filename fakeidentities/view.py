@@ -1,3 +1,4 @@
+import dis
 from AAA3A_utils import Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
@@ -49,7 +50,7 @@ class FakeIdentityView(discord.ui.View):
         )
         return self.current_fake_identity
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.generate_fake_identity()
         await self._update(edit_message=False)

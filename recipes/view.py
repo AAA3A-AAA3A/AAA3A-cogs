@@ -39,7 +39,7 @@ class RecipesView(discord.ui.View):
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         embeds = self.recipe.to_embeds(embed_color=await ctx.embed_color())
         self.add_item(

@@ -27,7 +27,7 @@ class SetRewardsView(discord.ui.View):
         self.clear.label = _("Clear")
         self.clear_all.label = _("Clear All")
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         await self._update(edit_message=False)
         self._message: discord.Message = await ctx.send(

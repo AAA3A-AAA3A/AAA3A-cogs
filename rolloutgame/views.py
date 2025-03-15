@@ -1,3 +1,4 @@
+import dis
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -28,7 +29,7 @@ class JoinGameView(discord.ui.View):
         self.view_players.label = _("View Players (1)")
         self.start_button.label = _("Start Game!")
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.host: discord.Member = ctx.author
         self.players.append(ctx.author)
@@ -186,7 +187,7 @@ class RolloutGameView(discord.ui.View):
         players: typing.List[discord.Member],
         round: int = 1,
         disabled_numbers: typing.List[int] = [],
-    ) -> None:
+    ) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.host: discord.Member = ctx.author
         self.players: typing.List[discord.Member] = players

@@ -45,7 +45,7 @@ class GetDocsView(discord.ui.View):
         )
         self._ready: asyncio.Event = asyncio.Event()
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.results = await self.source.search(
             self.query, limit=25, exclude_std=True, with_raw_search=True

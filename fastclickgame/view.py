@@ -1,3 +1,4 @@
+import dis
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -39,7 +40,7 @@ class FastClickGameView(discord.ui.View):
         self.event: asyncio.Event = asyncio.Event()
         self.lock: asyncio.Lock = asyncio.Lock()
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
 
         for __ in range(self.buttons):

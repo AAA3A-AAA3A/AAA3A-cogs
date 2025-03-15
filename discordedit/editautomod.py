@@ -1,3 +1,4 @@
+from dis import disco
 from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
 from redbot.core import commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -455,7 +456,7 @@ class EditAutoModRuleView(discord.ui.View):
         self._rules_select: AutoModRulesSelect = None
         self._ready: asyncio.Event = asyncio.Event()
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         await self._update()
         await self._ready.wait()

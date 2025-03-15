@@ -32,6 +32,18 @@ class Lang(discord.Enum):
     TURKCE: str = "tr"
 
 
+DIACRITIC_SYMBOLS: typing.Dict[str, str] = {
+    "a": "àáâãäå",
+    "c": "ç",
+    "e": "èéêë",
+    "i": "ìíîï",
+    "n": "ñ",
+    "o": "òóôõö",
+    "u": "ùúûü",
+    "y": "ýÿ"
+}
+
+
 class WordleGameView(discord.ui.View):
     def __init__(
         self,
@@ -84,7 +96,7 @@ class WordleGameView(discord.ui.View):
                             or message.content.lower() == "cancel"
                         )
                     ),
-                    timeout=300,
+                    timeout=60 * 5,
                 )
                 if guess.content.lower() == "cancel":
                     await self.ctx.send(
@@ -94,7 +106,9 @@ class WordleGameView(discord.ui.View):
                     )
                     break
 
-                attempt = guess.content.lower()
+                attempt = guess.content.lower().translate(
+                    str.maketrans({v: key for key, value in DIACRITIC_SYMBOLS.items() for v in value})
+                )
                 if attempt not in self.cog.dictionaries[self.lang.value][self.length]:
                     await self.ctx.send(
                         _("This word is not a valid word in the dictionary."),

@@ -49,6 +49,8 @@ class WordleGame(Cog):
             for dirname in ("words", "dictionaries"):
                 with (data_path / dirname / f"{lang.value}.txt").open("r", encoding="utf-8") as file:
                     for word in file.read().split("\n"):
+                        if word == "cancel":
+                            continue
                         getattr(self, dirname)[lang.value][len(word)].append(word)
         self.font = ImageFont.truetype(str(data_path / "ClearSans-Bold.ttf"), 80)
 

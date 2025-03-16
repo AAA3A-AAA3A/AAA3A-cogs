@@ -7,6 +7,7 @@ import typing  # isort:skip
 import asyncio
 import random
 
+from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate
 
 _: Translator = Translator("WordleGame", __file__)
@@ -114,6 +115,8 @@ class WordleGameView(discord.ui.View):
                     )
                 )
                 if attempt not in self.cog.dictionaries[self.lang.value][self.length]:
+                    if ctx.bot_permissions.add_reactions:
+                        start_adding_reactions(guess, "❌")
                     await self.ctx.send(
                         _("This word is not a valid word in the dictionary."),
                         delete_after=3,

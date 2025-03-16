@@ -210,9 +210,14 @@ class WordleGame(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.command()
-    async def wordlestats(self, ctx: commands.Context) -> None:
+    async def wordlestats(
+        self,
+        ctx: commands.Context,
+        *,
+        member: discord.Member = commands.Author,
+    ) -> None:
         """Show the stats for the Wordle game."""
-        data = await self.config.member(ctx.author).all()
+        data = await self.config.member(member).all()
         embed = discord.Embed(
             title=_("Wordle Game Stats"),
             description=_(
@@ -226,10 +231,10 @@ class WordleGame(Cog):
             timestamp=ctx.message.created_at,
         )
         embed.set_author(
-            name=ctx.author.display_name,
-            icon_url=ctx.author.display_avatar,
+            name=member.display_name,
+            icon_url=member.display_avatar,
         )
-        embed.set_thumbnail(url=ctx.author.display_avatar)
+        embed.set_thumbnail(url=member.display_avatar)
         if data["games"]:
             embed.add_field(
                 name=_("Guess distribution:"),

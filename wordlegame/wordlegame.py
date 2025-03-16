@@ -44,7 +44,6 @@ class WordleGame(Cog):
             lambda: defaultdict(list)
         )
         self.font: ImageFont.FreeTypeFont = None
-        self.games_in_progress: typing.List[discord.Member] = []
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -179,6 +178,7 @@ class WordleGame(Cog):
             "allowed_mentions": discord.AllowedMentions(replied_user=False),
         }
 
+    @commands.max_concurrency(1, commands.BucketType.member)
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True, attach_files=True)
     @commands.hybrid_command(aliases=["wordlegame"])
@@ -194,11 +194,6 @@ class WordleGame(Cog):
         You can find the rules of the game by clicking on the button after starting the game.
         Available languages: `en`, `fr`, `de`, `es`, `it`, `pt`, `nl`, `cs`, `el`, `id`, `ie`, `ph`, `pl`, `ua`, `ru`, `sv` and `tr`.
         """
-        if ctx.author in self.games_in_progress:
-            raise commands.UserFeedbackCheckFailure(
-                _("You are already playing a match of Wordle game.")
-            )
-        self.games_in_progress.append(ctx.author)
         has_won, attempts = await WordleGameView(
             self,
             lang=lang,
@@ -211,7 +206,6 @@ class WordleGame(Cog):
             data["wins"] += 1
             data["guess_distribution"][len(attempts) - 1] += 1
         await self.config.member(ctx.author).set(data)
-        self.games_in_progress.remove(ctx.author)
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)

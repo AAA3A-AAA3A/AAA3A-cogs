@@ -135,6 +135,7 @@ class MafiaGame(Cog):
             red_economy=False,
             cost_to_play=50,
             reward_for_winning=100,
+            reward_for_winning_based_on_costs=False,
         )
         self.config.register_user(
             wins={},
@@ -303,6 +304,11 @@ class MafiaGame(Cog):
             "reward_for_winning": {
                 "converter": commands.Range[int, 1, None],
                 "description": "The reward for winning the game.",
+                "no_slash": True,
+            },
+            "reward_for_winning_based_on_costs": {
+                "converter": bool,
+                "description": "If this option is enabled, the reward for winning will be based on the costs and shared between the winners.",
                 "no_slash": True,
             },
         }

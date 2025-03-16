@@ -102,7 +102,11 @@ class JoinGameView(discord.ui.View):
             )
             embed.add_field(
                 name=_("Reward for winning:"),
-                value=f"**{self.config['reward_for_winning']}** {currency_name}",
+                value=(
+                    f"**{self.config['reward_for_winning']}** {currency_name}"
+                    if not self.config["reward_for_winning_based_on_costs"]
+                    else _("Based on the costs of the game.")
+                ),
             )
         embed.set_author(
             name=_("Hosted by {host.display_name}").format(host=self.host),

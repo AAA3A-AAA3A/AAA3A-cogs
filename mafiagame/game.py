@@ -1105,6 +1105,10 @@ class Game:
         for player in self.players:
             new_achievements = await player.check_achievements()
             if player in main_winners and self.config["red_economy"]:
+                if not self.config["reward_for_winning_based_on_costs"]:
+                    credits_to_win = self.config["credits_to_win"]
+                else:
+                    credits_to_win = (self.config["cost_to_play"] * len(self.players)) // len(main_winners)
                 try:
                     await bank.deposit_credits(player.member, self.config["credits_to_win"])
                 except BalanceTooHigh as e:
@@ -1142,7 +1146,7 @@ class Game:
                         await player.member.send(
                             embed=discord.Embed(
                                 title=_("💰 You have received **{credits}** {currency_name}! 💰").format(
-                                    credits=self.config["credits_to_win"],
+                                    credits=credits_to_win,
                                     currency_name=await bank.get_currency_name(self.ctx.guild)
                                 ),
                                 color=ACHIEVEMENTS_COLOR,

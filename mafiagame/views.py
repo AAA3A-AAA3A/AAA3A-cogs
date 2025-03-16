@@ -9,6 +9,7 @@ import functools
 import os
 import random
 
+from redbot.core import bank
 from redbot.core.utils.chat_formatting import humanize_timedelta
 
 from .constants import (
@@ -81,7 +82,7 @@ class JoinGameView(discord.ui.View):
             button.callback = self.setting_callback
             self.add_item(button)
 
-    async def start(self, ctx: commands.Context) -> None:
+    async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.host: discord.Member = ctx.author
         self.players.append(ctx.author)
@@ -91,14 +92,27 @@ class JoinGameView(discord.ui.View):
                 "Click the button below to join the party! Please note that the maximum amount of players is 25."
             ),
             color=await self.ctx.embed_color(),
-            timestamp=ctx.message.created_at,
+            timestamp=self.ctx.message.created_at,
         )
+        if self.config["red_economy"]:
+            currency_name = await bank.get_currency_name(self.ctx.guild)
+            embed.add_field(
+                name=_("Cost to play:"),
+                value=f"**{self.config['cost_to_play']}** {currency_name}",
+            )
+            embed.add_field(
+                name=_("Reward for winning:"),
+                value=f"**{self.config['reward_for_winning']}** {currency_name}",
+            )
         embed.set_author(
             name=_("Hosted by {host.display_name}").format(host=self.host),
             icon_url=self.host.display_avatar,
         )
-        embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
-        self._message: discord.Message = await ctx.send(embed=embed, view=self)
+        embed.set_footer(
+            text=self.ctx.guild.name,
+            icon_url=self.ctx.guild.icon,
+        )
+        self._message: discord.Message = await self.ctx.send(embed=embed, view=self)
         self.cog.views[self._message] = self
         return self._message
 
@@ -678,7 +692,9 @@ class SelectTargetsView(discord.ui.View):
                 else:
                     self.day_night.targets[self.player] = (target, None)
                     await interaction.response.send_message(
-                        _("You have selected {target.member.mention}! If you don't select your second target, you will perform your special action."),
+                        _(
+                            "You have selected {target.member.mention}! If you don't select your second target, you will perform your special action."
+                        ),
                         ephemeral=True,
                     )
             elif len(select.values) < self.targets_number:

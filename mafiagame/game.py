@@ -12,6 +12,8 @@ import random
 from dataclasses import dataclass, field
 
 import chat_exporter
+from redbot.core import bank
+from redbot.core.errors import BalanceTooHigh
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .anomalies import (
@@ -733,6 +735,12 @@ class Game:
         self.config: typing.Dict[str, typing.Any] = (
             self.config or await self.cog.config.guild(ctx.guild).all()
         )
+        if self.config["red_economy"]:
+            for player in self.players:
+                try:
+                    await bank.withdraw_credits(player.member, self.config["cost_to_play"])
+                except ValueError:
+                    await bank.set_balance(player.member, 0)
         if self.config["town_traitor"] and len(self.players) < 8:
             self.config["town_traitor"] = False
             await self.ctx.send(
@@ -1096,10 +1104,16 @@ class Game:
 
         for player in self.players:
             new_achievements = await player.check_achievements()
+            if player in main_winners and self.config["red_economy"]:
+                try:
+                    await bank.deposit_credits(player.member, self.config["credits_to_win"])
+                except BalanceTooHigh as e:
+                    await bank.set_balance(player.member, e.max_balance)
             if player not in failed_to_send:
                 try:
                     await player.member.send(
                         embeds=embeds,
+                        view=view,
                     )
                 except discord.HTTPException:
                     pass
@@ -1121,6 +1135,19 @@ class Game:
                             )
                     try:
                         await player.member.send(embed=achievements_embed)
+                    except discord.HTTPException:
+                        pass
+                if player in main_winners and self.config["red_economy"]:
+                    try:
+                        await player.member.send(
+                            embed=discord.Embed(
+                                title=_("💰 You have received **{credits}** {currency_name}! 💰").format(
+                                    credits=self.config["credits_to_win"],
+                                    currency_name=await bank.get_currency_name(self.ctx.guild)
+                                ),
+                                color=ACHIEVEMENTS_COLOR,
+                            ),
+                        )
                     except discord.HTTPException:
                         pass
 

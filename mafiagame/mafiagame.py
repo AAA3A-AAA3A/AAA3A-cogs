@@ -131,6 +131,10 @@ class MafiaGame(Cog):
             voting_timeout=45,
             defend_timeout=30,
             judgement_timeout=20,
+            # Red economy's integration.
+            red_economy=False,
+            cost_to_play=50,
+            reward_for_winning=100,
         )
         self.config.register_user(
             wins={},
@@ -283,6 +287,22 @@ class MafiaGame(Cog):
             "judgement_timeout": {
                 "converter": commands.Range[int, 10, 300],
                 "description": "The time in seconds to judge.",
+                "no_slash": True,
+            },
+            # Red economy's integration.
+            "red_economy": {
+                "converter": bool,
+                "description": "If this option is enabled, the cog will integrate with the Red economy.",
+                "no_slash": True,
+            },
+            "cost_to_play": {
+                "converter": commands.Range[int, 1, None],
+                "description": "The cost to play the game.",
+                "no_slash": True,
+            },
+            "reward_for_winning": {
+                "converter": commands.Range[int, 1, None],
+                "description": "The reward for winning the game.",
                 "no_slash": True,
             },
         }

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-21 15:12\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:36\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -64,6 +64,10 @@ msgstr "Secret de discorde"
 #: dashboard\dashboard.py:391
 msgid "Discord OAuth secret set."
 msgstr "Ensemble de secrets OAuth de Discord."
+
+#: dashboard\dashboard.py:414
+msgid "You are not allowed to use this interaction."
+msgstr ""
 
 #: dashboard\dashboard.py:427
 msgid "Click on the button below to set a secret for Discord OAuth."

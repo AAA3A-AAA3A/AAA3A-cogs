@@ -113,7 +113,7 @@ msgstr ""
 
 #: embedutils\embedutils.py:47
 #, docstring
-msgid "Create, send, and store rich embeds, from Red-Dashboard too!"
+msgid "Create, send, and store rich embeds, from Red-Web-Dashboard too!"
 msgstr ""
 
 #: embedutils\embedutils.py:109 embedutils\embedutils.py:152
@@ -301,7 +301,7 @@ msgstr ""
 
 #: embedutils\embedutils.py:873
 msgid ""
-"Red-Dashboard is not installed. Check <https://red-web-"
+"Red-Web-Dashboard is not installed. Check <https://red-web-"
 "dashboard.readthedocs.io>."
 msgstr ""
 

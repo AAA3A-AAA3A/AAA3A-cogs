@@ -164,7 +164,7 @@ msgstr ""
 
 #: disurlvotestracker\disurlvotestracker.py:521
 msgid ""
-"Red-Dashboard is not installed. Check <https://red-web-"
+"Red-Web-Dashboard is not installed. Check <https://red-web-"
 "dashboard.readthedocs.io>."
 msgstr ""
 

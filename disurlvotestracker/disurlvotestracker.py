@@ -49,7 +49,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
             "enabled": {
                 "converter": bool,
-                "description": "Toggle the cog. WARNING: Red-Dashboard has to be installed and started for this to work.",
+                "description": "Toggle the cog. WARNING: Red-Web-Dashboard has to be installed and started for this to work.",
             },
             "votes_channel": {
                 "converter": typing.Union[
@@ -519,7 +519,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+                    "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
                 )
             )
         if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:

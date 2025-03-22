@@ -116,8 +116,8 @@ msgstr "Mesaj(lar) başarıyla gönderildi!"
 
 #: embedutils\embedutils.py:47
 #, docstring
-msgid "Create, send, and store rich embeds, from Red-Dashboard too!"
-msgstr "Red-Dashboard'dan da zengin embedler oluşturun, gönderin ve saklayın!"
+msgid "Create, send, and store rich embeds, from Red-Web-Dashboard too!"
+msgstr "Red-Web-Dashboard'dan da zengin embedler oluşturun, gönderin ve saklayın!"
 
 #: embedutils\embedutils.py:110
 #, docstring
@@ -305,8 +305,8 @@ msgid "Get the link to the Dashboard."
 msgstr "Kontrol Paneli bağlantısını alın."
 
 #: embedutils\embedutils.py:796
-msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
-msgstr "Red-Dashboard yüklü değil. <https://red-web-dashboard.readthedocs.io> adresini kontrol edin."
+msgid "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Web-Dashboard yüklü değil. <https://red-web-dashboard.readthedocs.io> adresini kontrol edin."
 
 #: embedutils\embedutils.py:801
 msgid "You can't access the Dashboard."

@@ -16,7 +16,7 @@ Through this guide, ``[p]`` will always represent your prefix. Replace ``[p]`` w
 About this cog:
 ---------------
 
-Create, send, and store rich embeds, from Red-Dashboard too!
+Create, send, and store rich embeds, from Red-Web-Dashboard too!
 
 ---------
 Commands:

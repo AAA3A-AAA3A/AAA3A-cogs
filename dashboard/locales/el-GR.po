@@ -41,16 +41,16 @@ msgstr "Αλληλεπίδραση με το bot σας μέσω ενός πίν
 "    "
 
 #: dashboard\dashboard.py:347
-msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
-msgstr "Το Red-Dashboard δεν είναι εγκατεστημένο. Ελέγξτε το <https://red-web-dashboard.readthedocs.io>."
+msgid "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Το Red-Web-Dashboard δεν είναι εγκατεστημένο. Ελέγξτε το <https://red-web-dashboard.readthedocs.io>."
 
 #: dashboard\dashboard.py:352
 msgid "You can't access the Dashboard."
 msgstr "Δεν μπορείτε να έχετε πρόσβαση στον πίνακα ελέγχου."
 
 #: dashboard\dashboard.py:354
-msgid "Red-Dashboard"
-msgstr "Red-Dashboard"
+msgid "Red-Web-Dashboard"
+msgstr "Red-Web-Dashboard"
 
 #: dashboard\dashboard.py:374
 #, docstring

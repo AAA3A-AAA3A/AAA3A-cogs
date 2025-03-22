@@ -111,7 +111,7 @@ class DashboardRPC:
             data["ui"]["meta"]["icon"] = self.bot.user.display_avatar.url
         if data["ui"]["meta"]["description"] is None:
             data["ui"]["meta"]["description"] = _(
-                "Hello, welcome to the **Red-DiscordBot Dashboard** for {name}! "
+                "Hello, welcome to the **Red-DiscordBot web Dashboard** for {name}! "
                 "{name} is based off the popular bot **Red-DiscordBot**, an open "
                 "source, multifunctional bot. It has *tons of features* including moderation, "
                 "audio, economy, fun and more! Here, you can control and interact with "

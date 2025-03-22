@@ -179,7 +179,7 @@ class Dashboard(Cog):
         _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
             "all_in_one": {
                 "converter": bool,
-                "description": "Run the Dashboard in the bot process, without having to open another window. You have to install Red-Dashboard in your bot venv with Pip and reload the cog.",
+                "description": "Run the webserver in the bot process, without having to open another window. You have to install Red-Web-Dashboard in your bot venv with Pip and reload the cog.",
                 "hidden": True,
                 "no_slash": True,
             },
@@ -345,13 +345,13 @@ class Dashboard(Cog):
         if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+                    "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
                 )
             )
         if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(_("You can't access the Dashboard."))
         embed: discord.Embed = discord.Embed(
-            title=_("Red-Dashboard"),
+            title=_("Red-Web-Dashboard"),
             color=await ctx.embed_color(),
         )
         url = dashboard_url[0]

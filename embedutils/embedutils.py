@@ -44,7 +44,7 @@ PASTEBIN_LIST_CONVERTER = PastebinListConverter(conversion_type="json")
 
 @cog_i18n(_)
 class EmbedUtils(DashboardIntegration, Cog):
-    """Create, send, and store rich embeds, from Red-Dashboard too!"""
+    """Create, send, and store rich embeds, from Red-Web-Dashboard too!"""
 
     __authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
 
@@ -871,7 +871,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+                    "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
                 )
             )
         if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:

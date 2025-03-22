@@ -46,7 +46,7 @@ Here are all the commands included in this cog (17):
  Your Disurl authorization key, used to secure the Dashboard webhook. That's the key which you set on https://disurl.me/dashboard/server/GUILD_ID/webhooks.
 
 * ``[p]setdisurlvotestracker enabled <enabled>``
- Toggle the cog. WARNING: Red-Dashboard has to be installed and started for this to work.
+ Toggle the cog. WARNING: Red-Web-Dashboard has to be installed and started for this to work.
 
 * ``[p]setdisurlvotestracker getdebugloopsstatus``
  Get an embed for check loop status.

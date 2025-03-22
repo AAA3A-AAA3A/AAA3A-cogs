@@ -41,15 +41,15 @@ msgstr "Interagissez avec votre bot à travers un tableau de bord web !\n\n"
 "    "
 
 #: dashboard\dashboard.py:347
-msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
-msgstr "Red-Dashboard n'est pas installé. Vérifiez <https://red-web-dashboard.readthedocs.io>."
+msgid "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Web-Dashboard n'est pas installé. Vérifiez <https://red-web-dashboard.readthedocs.io>."
 
 #: dashboard\dashboard.py:352
 msgid "You can't access the Dashboard."
 msgstr "Vous ne pouvez pas accéder au tableau de bord."
 
 #: dashboard\dashboard.py:354
-msgid "Red-Dashboard"
+msgid "Red-Web-Dashboard"
 msgstr "Tableau de bord rouge"
 
 #: dashboard\dashboard.py:374

@@ -41,15 +41,15 @@ msgstr "ウェブダッシュボードを通してボットと対話する！\n\
 "    "
 
 #: dashboard\dashboard.py:347
-msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
-msgstr "Red-Dashboard がインストールされていません。<https://red-web-dashboard.readthedocs.io>を確認してください。"
+msgid "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Web-Dashboard がインストールされていません。<https://red-web-dashboard.readthedocs.io>を確認してください。"
 
 #: dashboard\dashboard.py:352
 msgid "You can't access the Dashboard."
 msgstr "ダッシュボードにアクセスできません。"
 
 #: dashboard\dashboard.py:354
-msgid "Red-Dashboard"
+msgid "Red-Web-Dashboard"
 msgstr "レッドダッシュボード"
 
 #: dashboard\dashboard.py:374

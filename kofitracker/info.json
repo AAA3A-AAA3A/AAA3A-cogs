@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "KoFiTracker",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!\nYou have to install [Red-Dashboard](https://red-web-dashboard.readthedocs.io/en/latest/) to use this cog!",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!\nYou have to install [Red-Web-Dashboard](https://red-web-dashboard.readthedocs.io/en/latest/) to use this cog!",
     "short": "Track donations, subscriptions and shop orders on KoFi!",
     "description": "Track donations, subscriptions and shop orders on KoFi!",
     "tags": [

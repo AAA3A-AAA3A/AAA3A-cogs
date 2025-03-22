@@ -149,8 +149,8 @@ msgid "Instructions on how to set up DisurlVotesTracker."
 msgstr "DisurlVotesTrackerの設定方法を説明します。"
 
 #: disurlvotestracker\disurlvotestracker.py:403
-msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
-msgstr "Red-Dashboard がインストールされていません。<https://red-web-dashboard.readthedocs.io>を確認してください。"
+msgid "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Web-Dashboard がインストールされていません。<https://red-web-dashboard.readthedocs.io>を確認してください。"
 
 #: disurlvotestracker\disurlvotestracker.py:408
 msgid "You can't access the Dashboard."

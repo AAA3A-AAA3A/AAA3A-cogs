@@ -116,8 +116,8 @@ msgstr "Сообщение(я) отправлено успешно!"
 
 #: embedutils\embedutils.py:47
 #, docstring
-msgid "Create, send, and store rich embeds, from Red-Dashboard too!"
-msgstr "Создавайте, отправляйте и храните богатые вставки, в том числе из Red-Dashboard!"
+msgid "Create, send, and store rich embeds, from Red-Web-Dashboard too!"
+msgstr "Создавайте, отправляйте и храните богатые вставки, в том числе из Red-Web-Dashboard!"
 
 #: embedutils\embedutils.py:110
 #, docstring
@@ -305,8 +305,8 @@ msgid "Get the link to the Dashboard."
 msgstr "Получите ссылку на приборную панель."
 
 #: embedutils\embedutils.py:796
-msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
-msgstr "Red-Dashboard не установлен. Проверьте <https://red-web-dashboard.readthedocs.io>."
+msgid "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Web-Dashboard не установлен. Проверьте <https://red-web-dashboard.readthedocs.io>."
 
 #: embedutils\embedutils.py:801
 msgid "You can't access the Dashboard."

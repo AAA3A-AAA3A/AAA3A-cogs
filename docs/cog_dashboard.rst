@@ -34,7 +34,7 @@ Here are all the commands included in this cog (19):
  Configure Dashboard.
 
 * ``[p]setdashboard allinone <all_in_one>``
- Run the Dashboard in the bot process, without having to open another window. You have to install Red-Dashboard in your bot venv with Pip and reload the cog.
+ Run the Dashboard in the bot process, without having to open another window. You have to install Red-Web-Dashboard in your bot venv with Pip and reload the cog.
 
 * ``[p]setdashboard allowunsecurehttprequests <allow_unsecure_http_requests>``
  Allow unsecure http requests. This is not recommended for production, but required if you can't set up a SSL certificate.

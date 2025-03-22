@@ -372,7 +372,7 @@ class KoFiTracker(Cog):
         if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+                    "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
                 )
             )
         if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:

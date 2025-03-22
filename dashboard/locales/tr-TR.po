@@ -41,16 +41,16 @@ msgstr "Botunuzla bir web Dashboard üzerinden etkileşimde bulunun!\n\n"
 "    "
 
 #: dashboard\dashboard.py:347
-msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
-msgstr "Red-Dashboard yüklü değil. <https://red-web-dashboard.readthedocs.io> adresini kontrol edin."
+msgid "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Web-Dashboard yüklü değil. <https://red-web-dashboard.readthedocs.io> adresini kontrol edin."
 
 #: dashboard\dashboard.py:352
 msgid "You can't access the Dashboard."
 msgstr "Dashboard'a erişemezsiniz."
 
 #: dashboard\dashboard.py:354
-msgid "Red-Dashboard"
-msgstr "Red-Dashboard"
+msgid "Red-Web-Dashboard"
+msgstr "Red-Web-Dashboard"
 
 #: dashboard\dashboard.py:374
 #, docstring

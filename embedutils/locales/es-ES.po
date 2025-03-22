@@ -116,8 +116,8 @@ msgstr "¡Mensaje(s) enviado(s) con éxito!"
 
 #: embedutils\embedutils.py:47
 #, docstring
-msgid "Create, send, and store rich embeds, from Red-Dashboard too!"
-msgstr "Cree, envíe y almacene incrustaciones enriquecidas, ¡también desde Red-Dashboard!"
+msgid "Create, send, and store rich embeds, from Red-Web-Dashboard too!"
+msgstr "Cree, envíe y almacene incrustaciones enriquecidas, ¡también desde Red-Web-Dashboard!"
 
 #: embedutils\embedutils.py:110
 #, docstring
@@ -305,8 +305,8 @@ msgid "Get the link to the Dashboard."
 msgstr "Obtenga el enlace al panel de control."
 
 #: embedutils\embedutils.py:796
-msgid "Red-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
-msgstr "Red-Dashboard no está instalado. Compruebe <https://red-web-dashboard.readthedocs.io>."
+msgid "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
+msgstr "Red-Web-Dashboard no está instalado. Compruebe <https://red-web-dashboard.readthedocs.io>."
 
 #: embedutils\embedutils.py:801
 msgid "You can't access the Dashboard."

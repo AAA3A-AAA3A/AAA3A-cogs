@@ -1,3 +1,4 @@
+from emoji import config
 from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -25,20 +26,29 @@ class LinkQuoterView(discord.ui.View):
         invoker: discord.Member,
         quoted_message: discord.Message,
         delete_message_button: bool = True,
+        include_linker: bool = False,
     ) -> None:
         super().__init__(timeout=60)
         self.invoker: discord.Member = invoker
         self.quoted_message: discord.Message = quoted_message
         self.add_item(
             discord.ui.Button(
-                label="Jump to Message!",
-                style=discord.ButtonStyle.url,
+                label=_("Jump to Message!"),
+                style=discord.ButtonStyle.link,
                 url=self.quoted_message.jump_url,
             )
         )
         self._message: discord.Message = None
         if not delete_message_button:
             self.remove_item(self.delete_message)
+        if include_linker:
+            self.add_item(
+                discord.ui.Button(
+                    label=_("Linked by {invoker.display_name}").format(invoker=self.invoker),
+                    style=discord.ButtonStyle.secondary,
+                    disabled=True,
+                )
+            )
 
     async def interaction_check(self, interaction: discord.Interaction[discord.Client]) -> bool:
         if interaction.user.id not in [self.invoker.id] + list(interaction.client.owner_ids):
@@ -118,6 +128,11 @@ class LinkQuoter(DashboardIntegration, Cog):
                 "converter": bool,
                 "description": "Toggle the delete message button on the quote messages.",
                 "aliases": ["delete_button"],
+            },
+            "include_linker": {
+                "converter": bool,
+                "description": "Toggle including the linker in the quote message.",
+                "aliases": ["linker"],
             },
             "whitelist_channels": {
                 "converter": commands.Greedy[discord.abc.GuildChannel],
@@ -313,10 +328,12 @@ class LinkQuoter(DashboardIntegration, Cog):
                 and isinstance((message := ctx.message.reference.resolved), discord.Message)
             ):
                 raise commands.UserInputError()
+        config = await self.config.guild(ctx.guild).all()
         view = LinkQuoterView(
             invoker=ctx.author,
             quoted_message=message,
-            delete_message_button=await self.config.guild(ctx.guild).delete_message_button(),
+            delete_message_button=config["delete_message_button"],
+            include_linker=config["include_linker"],
         )
         if await self.config.guild(ctx.guild).webhooks() and ctx.bot_permissions.manage_webhooks:
             embed = await self.message_to_embed(

@@ -94,6 +94,7 @@ class LinkQuoter(DashboardIntegration, Cog):
             delete_message=False,
             delete_after=0,
             delete_message_button=True,
+            include_linker=False,
             whitelist_channels=[],
             blacklist_channels=[],
         )

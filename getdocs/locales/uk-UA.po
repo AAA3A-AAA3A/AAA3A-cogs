@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:22\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:39\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -26,11 +26,11 @@ msgstr "Будь ласка, надайте дійсне джерело доку
 msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
 msgstr "Гвинтик для отримання та відображення деяких документів у Discord! Використовуйте `[p]listsources` для отримання списку всіх доступних джерел."
 
-#: getdocs\getdocs.py:366 getdocs\getdocs.py:1724
+#: getdocs\getdocs.py:366 getdocs\getdocs.py:1745
 msgid "RTFM caching isn't finished."
 msgstr "Кешування RTFM не завершено."
 
-#: getdocs\getdocs.py:421
+#: getdocs\getdocs.py:421 getdocs\view.py:54 getdocs\view.py:93
 msgid "No results found."
 msgstr "Результатів не знайдено."
 
@@ -73,8 +73,16 @@ msgstr "\n"
 "        Показувати статистику про всі джерела документації.\n"
 "        "
 
-#: getdocs\getdocs.py:655
+#: getdocs\getdocs.py:657
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Отримайте вбудовування для перевірки стану циклів."
+
+#: getdocs\view.py:21
+msgid "Select an option."
+msgstr "Виберіть варіант."
+
+#: getdocs\view.py:67
+msgid "You are not allowed to use this interaction."
+msgstr ""
 

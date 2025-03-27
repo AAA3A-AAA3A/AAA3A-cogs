@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:15+0200\n"
-"PO-Revision-Date: 2024-07-20 20:20\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:36\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -404,6 +404,10 @@ msgstr "Cette commande n'existe pas."
 #: simplesanction\types.py:243
 msgid "You can't execute this command, in this context."
 msgstr "Vous ne pouvez pas exécuter cette commande, dans ce contexte."
+
+#: simplesanction\view.py:67
+msgid "You are not allowed to use this interaction."
+msgstr ""
 
 #: simplesanction\view.py:101
 msgid "This tool allows you to easily sanction a server member.\n"

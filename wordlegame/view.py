@@ -142,7 +142,7 @@ class WordleGameView(discord.ui.View):
                     reference=self.ctx.message.to_reference(fail_if_not_exists=False),
                 )
                 self.cog.views[self._message] = self
-                if guess.content == self.word:
+                if attempt == self.word:
                     has_won = True
         except asyncio.TimeoutError:
             await self.ctx.send(

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:23\n"
+"POT-Creation-Date: 2025-03-15 23:04+0100\n"
+"PO-Revision-Date: 2025-04-01 16:52\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -22,11 +22,15 @@ msgstr ""
 msgid "A cog to search an english term/word in the dictionary! Synonyms, antonyms, phonetics (with audio)..."
 msgstr "Un engranaje para buscar un término/palabra en inglés en el diccionario. Sinónimos, antónimos, fonética (con audio)..."
 
-#: dictionary\dictionary.py:86
+#: dictionary\dictionary.py:87
 msgid "Word not found in English dictionary."
 msgstr "Palabra no encontrada en el diccionario inglés."
 
 #: dictionary\view.py:33
 msgid "View the source"
 msgstr "Ver la fuente"
+
+#: dictionary\view.py:46
+msgid "You are not allowed to use this interaction."
+msgstr ""
 

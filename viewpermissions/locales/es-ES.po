@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:15+0200\n"
-"PO-Revision-Date: 2024-07-20 20:25\n"
+"POT-Creation-Date: 2024-12-29 10:44+0100\n"
+"PO-Revision-Date: 2024-12-29 11:37\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,10 @@ msgstr ""
 "X-Crowdin-File: /[AAA3A-AAA3A.AAA3A-cogs] main/viewpermissions/locales/messages.pot\n"
 "X-Crowdin-File-ID: 322\n"
 "Language: es_ES\n"
+
+#: viewpermissions\view.py:73
+msgid "You are not allowed to use this interaction."
+msgstr ""
 
 #: viewpermissions\viewpermissions.py:25
 msgid "`{argument}` isn't a valid permission name"

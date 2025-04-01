@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:15+0200\n"
-"PO-Revision-Date: 2024-07-20 20:24\n"
+"POT-Creation-Date: 2025-03-15 23:04+0100\n"
+"PO-Revision-Date: 2025-04-01 16:52\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -22,21 +22,25 @@ msgstr ""
 msgid "A cog to search and show a cooking recipe!"
 msgstr "¡Un engranaje para buscar y mostrar una receta de cocina!"
 
-#: recipes\recipes.py:140 recipes\recipes.py:158
+#: recipes\recipes.py:154 recipes\recipes.py:173
 msgid "No recipe found."
 msgstr "No se ha encontrado ninguna receta."
 
-#: recipes\recipes.py:146
+#: recipes\recipes.py:160
 msgid "Error in parsing the response.\n"
 "{error}"
 msgstr "Error al analizar la respuesta.\n"
 "{error}"
 
-#: recipes\recipes.py:163
+#: recipes\recipes.py:178
 msgid "View results on Food52"
 msgstr "Ver resultados en Food52"
 
 #: recipes\view.py:47
 msgid "View recipe on Food52"
 msgstr "Ver receta en Food52"
+
+#: recipes\view.py:62
+msgid "You are not allowed to use this interaction."
+msgstr ""
 

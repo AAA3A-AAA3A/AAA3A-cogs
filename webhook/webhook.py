@@ -227,7 +227,7 @@ class Webhook(Cog):
         """
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
-        files = await Tunnel.files_from_attatch(ctx.message)
+        files = await Tunnel.files_from_attach(ctx.message)
         if not content and not files:
             raise commands.UserInputError()
         try:
@@ -261,7 +261,7 @@ class Webhook(Cog):
         """
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
-        files = await Tunnel.files_from_attatch(ctx.message)
+        files = await Tunnel.files_from_attach(ctx.message)
         if not content and not files:
             raise commands.UserInputError()
         try:
@@ -291,7 +291,7 @@ class Webhook(Cog):
     ) -> None:
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
-        files = await Tunnel.files_from_attatch(ctx.message)
+        files = await Tunnel.files_from_attach(ctx.message)
         if not content and not files:
             raise commands.UserInputError()
         try:
@@ -321,7 +321,7 @@ class Webhook(Cog):
     ) -> None:
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
-        files = await Tunnel.files_from_attatch(ctx.message)
+        files = await Tunnel.files_from_attach(ctx.message)
         if not content and not files:
             raise commands.UserInputError()
         try:
@@ -350,7 +350,7 @@ class Webhook(Cog):
     ) -> None:
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
-        files = await Tunnel.files_from_attatch(message)
+        files = await Tunnel.files_from_attach(message)
         try:
             hook = await CogsUtils.get_hook(
                 bot=ctx.bot, channel=getattr(channel, "parent", channel)
@@ -383,7 +383,7 @@ class Webhook(Cog):
         """
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
-        files = await Tunnel.files_from_attatch(ctx.message)
+        files = await Tunnel.files_from_attach(ctx.message)
         if not content and not files:
             raise commands.UserInputError()
         try:
@@ -417,7 +417,7 @@ class Webhook(Cog):
         """
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
-        files = await Tunnel.files_from_attatch(ctx.message)
+        files = await Tunnel.files_from_attach(ctx.message)
         if not content and not files:
             raise commands.UserInputError()
         try:
@@ -500,7 +500,7 @@ class Webhook(Cog):
         )
         if not webhook:
             raise commands.UserFeedbackCheckFailure(_("No webhook found for this message."))
-        files = await Tunnel.files_from_attatch(ctx.message)
+        files = await Tunnel.files_from_attach(ctx.message)
         if not content and not files:
             raise commands.UserInputError()
         try:
@@ -581,7 +581,7 @@ class Webhook(Cog):
             session: Session = self.webhook_sessions[message.channel.id]
         except KeyError:
             return
-        files = await Tunnel.files_from_attatch(message)
+        files = await Tunnel.files_from_attach(message)
         await session.send(
             message.content,
             embeds=message.embeds,

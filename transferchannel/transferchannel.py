@@ -181,7 +181,7 @@ class TransferChannel(Cog):
             )
         for message in messages:
             if destination.permissions_for(destination.guild.me).attach_files:
-                files = await Tunnel.files_from_attatch(message)
+                files = await Tunnel.files_from_attach(message)
             else:
                 files = []
             if way == "webhooks":

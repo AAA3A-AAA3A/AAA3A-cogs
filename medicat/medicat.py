@@ -760,21 +760,21 @@ class Medicat(Cog):
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @commands.bot_has_permissions(embed_links=True)
     @medicat.command(aliases=["lastventoyversion"])
-    async def getlastventoyversion(self, ctx: commands.Context) -> None:
+    async def getlatestventoyversion(self, ctx: commands.Context) -> None:
         """Get the latest version of Ventoy."""
-        await self.ventoy_updates(channel=ctx, ping_role=False, force=True)
+        await self.ventoy_updates(channel=ctx.channel, ping_role=False, force=True)
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @commands.bot_has_permissions(embed_links=True)
     @medicat.command(aliases=["ventoyversion"])
     async def getventoyversion(self, ctx: commands.Context, version: str) -> None:
         """Get a version of Ventoy."""
-        await self.ventoy_updates(channel=ctx, ping_role=False, force=True, version=version)
+        await self.ventoy_updates(channel=ctx.channel, ping_role=False, force=True, version=version)
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @commands.bot_has_permissions(embed_links=True)
     @medicat.command(aliases=["lastbootablestoolsversions"])
-    async def getlastbootablestoolsversions(self, ctx: commands.Context) -> None:
+    async def getlatestbootablestoolsversions(self, ctx: commands.Context) -> None:
         """Get the latest versions of each Medicat USB bootable tool."""
         result = {}
         for tool in BOOTABLES_TOOLS:

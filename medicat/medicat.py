@@ -431,6 +431,12 @@ class Medicat(Cog):
         last_ventoy_version_str = str(await self.config.last_ventoy_version())
         last_ventoy_version = VersionInfo.from_str(last_ventoy_version_str)
 
+        def clean_tag_name(tag_name) -> str:
+            return ".".join(
+                part.lstrip("0") or "0"
+                for part in str(tag_name).replace("v", "").replace("1.0.0", "1.0.").replace("beta", ".dev").split(".")
+            )
+
         async with self._session.get(
             "https://api.github.com/repos/ventoy/ventoy/releases", timeout=3
         ) as r:
@@ -438,10 +444,7 @@ class Medicat(Cog):
         versions = sorted(
             ventoy_tags,
             key=lambda ventoy_version: VersionInfo.from_str(
-                str(ventoy_version["tag_name"])
-                .replace("v", "")
-                .replace("1.0.0", "1.0.")
-                .replace("beta", ".dev")
+                clean_tag_name(ventoy_version["tag_name"])
             ),
         )
         if versions == []:
@@ -449,25 +452,16 @@ class Medicat(Cog):
 
         if not force:
             if last_ventoy_version >= VersionInfo.from_str(
-                str(versions[-1]["tag_name"])
-                .replace("v", "")
-                .replace("1.0.0", "1.0.")
-                .replace("beta", ".dev")
+                clean_tag_name(versions[-1]["tag_name"])
             ):
                 return
             await self.config.last_ventoy_version.set(
-                str(versions[-1]["tag_name"])
-                .replace("v", "")
-                .replace("1.0.0", "1.0.")
-                .replace("beta", ".dev")
+                clean_tag_name(versions[-1]["tag_name"])
             )
         elif version is not None:
             for v in versions:
                 if (
-                    str(v["tag_name"])
-                    .replace("v", "")
-                    .replace("1.0.0", "1.0.")
-                    .replace("beta", ".dev")
+                    clean_tag_name(v["tag_name"])
                     == version
                 ):
                     versions = [v]
@@ -481,7 +475,7 @@ class Medicat(Cog):
         for version in versions:
             ventoy_tag_name = str(version["tag_name"])
             ventoy_version_str = (
-                ventoy_tag_name.replace("v", "").replace("1.0.0", "1.0.").replace("beta", ".dev")
+                clean_tag_name(ventoy_tag_name)
             )
             ventoy_version = VersionInfo.from_str(ventoy_version_str)
             if not force and last_ventoy_version >= ventoy_version:

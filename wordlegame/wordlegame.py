@@ -51,7 +51,7 @@ class WordleGame(Cog):
         for lang in Lang:
             for dirname in ("words", "dictionaries"):
                 with (data_path / dirname / f"{lang.value}.txt").open(
-                    "r", encoding="utf-8"
+                    mode="rt", encoding="utf-8"
                 ) as file:
                     for word in file.read().split("\n"):
                         if word == "cancel":

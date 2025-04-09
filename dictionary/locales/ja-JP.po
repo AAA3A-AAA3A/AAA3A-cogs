@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:23\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:38\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -29,4 +29,8 @@ msgstr "英語の辞書に載っていない単語。"
 #: dictionary\view.py:33
 msgid "View the source"
 msgstr "ソースを見る"
+
+#: dictionary\view.py:46
+msgid "You are not allowed to use this interaction."
+msgstr ""
 

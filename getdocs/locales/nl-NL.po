@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:22\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:38\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -26,11 +26,11 @@ msgstr "Geef een geldige documentatiebron op."
 msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
 msgstr "Een tandwiel om een aantal documentaties in Discord op te halen en weer te geven! Gebruik `[p]listsources` om een lijst van alle beschikbare bronnen te krijgen."
 
-#: getdocs\getdocs.py:366 getdocs\getdocs.py:1724
+#: getdocs\getdocs.py:366 getdocs\getdocs.py:1745
 msgid "RTFM caching isn't finished."
 msgstr "RTFM caching is nog niet klaar."
 
-#: getdocs\getdocs.py:421
+#: getdocs\getdocs.py:421 getdocs\view.py:54 getdocs\view.py:93
 msgid "No results found."
 msgstr "Geen resultaten gevonden."
 
@@ -73,8 +73,16 @@ msgstr "\n"
 "        Toon statistieken over alle documentatiebronnen.\n"
 "        "
 
-#: getdocs\getdocs.py:655
+#: getdocs\getdocs.py:657
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Krijg een embed om de lusstatus te controleren."
+
+#: getdocs\view.py:21
+msgid "Select an option."
+msgstr "Selecteer een optie."
+
+#: getdocs\view.py:67
+msgid "You are not allowed to use this interaction."
+msgstr ""
 

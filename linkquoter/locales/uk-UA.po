@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:25\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:39\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -45,37 +45,41 @@ msgstr "Цей сервер не має дозволу на цитування �
 msgid "You don't have permission to read messages in that channel."
 msgstr "У вас немає дозволу на читання повідомлень у цьому каналі."
 
-#: linkquoter\linkquoter.py:56
+#: linkquoter\linkquoter.py:46
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: linkquoter\linkquoter.py:68
 #, docstring
 msgid "Quote any Discord message from its link!"
 msgstr "Процитуйте будь-яке повідомлення Discord за його посиланням!"
 
-#: linkquoter\linkquoter.py:218
+#: linkquoter\linkquoter.py:230
 msgid "{author.display_name} said..."
 msgstr "{author.display_name} сказав..."
 
-#: linkquoter\linkquoter.py:244
+#: linkquoter\linkquoter.py:256
 msgid "Attachments:"
 msgstr "Вкладення:"
 
-#: linkquoter\linkquoter.py:255
+#: linkquoter\linkquoter.py:267
 msgid "Stickers:"
 msgstr "Наклейки:"
 
-#: linkquoter\linkquoter.py:267
+#: linkquoter\linkquoter.py:279
 msgid "Replying to:"
 msgstr "Відповідаючи на:"
 
-#: linkquoter\linkquoter.py:268
+#: linkquoter\linkquoter.py:280
 msgid "Click to view attachments."
 msgstr "Клацніть, щоб переглянути вкладення."
 
-#: linkquoter\linkquoter.py:337
+#: linkquoter\linkquoter.py:352
 #, docstring
 msgid "Migrate config from LinkQuoter by Phen."
 msgstr "Перенесіть конфіг з LinkQuoter від Phen."
 
-#: linkquoter\linkquoter.py:362
+#: linkquoter\linkquoter.py:377
 msgid "Data successfully migrated from LinkQuoter by Phen."
 msgstr "Дані успішно перенесено з LinkQuoter від Phen."
 

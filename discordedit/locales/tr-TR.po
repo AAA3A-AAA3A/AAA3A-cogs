@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-21 13:27\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:39\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -173,19 +173,23 @@ msgstr "{guild.name} ({guild.id}) içindeki AutoMod kuralını {rule.name} ({rul
 msgid "Rule `{rule.name} ({rule.id})` edited."
 msgstr "Kural `{rule.name} ({rule.id})` düzenlendi."
 
-#: discordedit\editautomod.py:623
+#: discordedit\editautomod.py:467 discordedit\view.py:90
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: discordedit\editautomod.py:629
 msgid "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`."
 msgstr "AutoMod kuralı `{rule.name} ({rule.id})` için muaf tutulacak kanalları/rolleri seçin."
 
-#: discordedit\editautomod.py:645
+#: discordedit\editautomod.py:652
 msgid "Rule `{rule.name} ({rule.id})` enabled."
 msgstr "Kural `{rule.name} ({rule.id})` etkinleştirildi."
 
-#: discordedit\editautomod.py:647
+#: discordedit\editautomod.py:654
 msgid "Rule {rule.name} `{rule.id}` disabled."
 msgstr "Kural {rule.name} `{rule.id}` devre dışı bırakıldı."
 
-#: discordedit\editautomod.py:665
+#: discordedit\editautomod.py:673
 msgid "Rule `{rule.name} ({rule.id})` deleted."
 msgstr "Kural `{rule.name} ({rule.id})` silindi."
 
@@ -1183,7 +1187,7 @@ msgstr "Ses kanalı {channel.mention} ({channel.id}) gerçekten silmek istiyor m
 msgid "View and edit voice channel."
 msgstr "Ses kanalını görüntüleyin ve düzenleyin."
 
-#: discordedit\view.py:120
+#: discordedit\view.py:122
 msgid "You are not allowed to execute this command."
 msgstr "Bu komutu yürütme yetkiniz yok."
 

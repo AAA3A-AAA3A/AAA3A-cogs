@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:21\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:38\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -173,19 +173,23 @@ msgstr "{guild.name} ({guild.id}) のAutoModルール {rule.name} ({rule.id}) �
 msgid "Rule `{rule.name} ({rule.id})` edited."
 msgstr "ルール `{rule.name} ({rule.id})` を編集。"
 
-#: discordedit\editautomod.py:623
+#: discordedit\editautomod.py:467 discordedit\view.py:90
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: discordedit\editautomod.py:629
 msgid "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`."
 msgstr "AutoModルール`{rule.name} ({rule.id})`の適用除外となるチャンネル/ロールを選択します。"
 
-#: discordedit\editautomod.py:645
+#: discordedit\editautomod.py:652
 msgid "Rule `{rule.name} ({rule.id})` enabled."
 msgstr "ルール `{rule.name} ({rule.id})` が有効になりました。"
 
-#: discordedit\editautomod.py:647
+#: discordedit\editautomod.py:654
 msgid "Rule {rule.name} `{rule.id}` disabled."
 msgstr "ルール {rule.name} `{rule.id}`を無効にする。"
 
-#: discordedit\editautomod.py:665
+#: discordedit\editautomod.py:673
 msgid "Rule `{rule.name} ({rule.id})` deleted."
 msgstr "ルール `{rule.name} ({rule.id})` を削除しました。"
 
@@ -1183,7 +1187,7 @@ msgstr "音声チャンネル {channel.mention} ({channel.id}) を本当に削�
 msgid "View and edit voice channel."
 msgstr "音声チャンネルの表示と編集"
 
-#: discordedit\view.py:120
+#: discordedit\view.py:122
 msgid "You are not allowed to execute this command."
 msgstr "このコマンドの実行は許可されていません。"
 

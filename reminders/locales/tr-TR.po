@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:15+0200\n"
-"PO-Revision-Date: 2024-07-21 13:27\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:39\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -21,16 +21,16 @@ msgstr ""
 msgid "Invalid timezone provided."
 msgstr "Geçersiz saat dilimi sağlandı."
 
-#: reminders\converters.py:539 reminders\reminders.py:908
-#: reminders\reminders.py:1108
+#: reminders\converters.py:541 reminders\reminders.py:912
+#: reminders\reminders.py:1112
 msgid "You haven't any reminders."
 msgstr "Hiç hatırlatıcınız yok."
 
-#: reminders\converters.py:548
+#: reminders\converters.py:550
 msgid "Reminder ID must be an integer."
 msgstr "Hatırlatıcı kimliği bir tam sayı olmalıdır."
 
-#: reminders\converters.py:552
+#: reminders\converters.py:554
 msgid "You haven't any reminder with this id."
 msgstr "Bu kimliğe sahip bir hatırlatıcınız yok."
 
@@ -43,57 +43,57 @@ msgstr "Bu kanalda `[p]remindme` komutunu yürütme izniniz yok."
 msgid "Don't forget anything anymore! Reminders in DMs, channels, FIFO commands scheduler, say scheduler... With 'Me Too', snooze and buttons."
 msgstr "Artık hiçbir şeyi unutmayın! DM'lerde, kanallarda hatırlatıcılar, FIFO komut zamanlayıcısı, konuşma zamanlayıcısı... 'Ben de', erteleme ve düğmeler ile."
 
-#: reminders\reminders.py:302 reminders\reminders.py:443
-#: reminders\reminders.py:641 reminders\reminders.py:758
+#: reminders\reminders.py:302 reminders\reminders.py:445
+#: reminders\reminders.py:645 reminders\reminders.py:762
 msgid "You have reached the limit of {minimum_user_reminders} reminders per user."
 msgstr "Kullanıcı başına {minimum_user_reminders} hatırlatıcı limitine ulaştınız."
 
-#: reminders\reminders.py:324 reminders\reminders.py:465
+#: reminders\reminders.py:324 reminders\reminders.py:467
 msgid "You can't access this message."
 msgstr "Bu mesaja erişemezsiniz."
 
-#: reminders\reminders.py:333 reminders\reminders.py:474
-#: reminders\reminders.py:658 reminders\reminders.py:771
-#: reminders\reminders.py:1076
+#: reminders\reminders.py:333 reminders\reminders.py:476
+#: reminders\reminders.py:662 reminders\reminders.py:775
+#: reminders\reminders.py:1080
 msgid "You are not allowed to create repeating reminders."
 msgstr "Tekrarlayan hatırlatıcı oluşturma izniniz yok."
 
-#: reminders\reminders.py:347 reminders\reminders.py:488
-#: reminders\reminders.py:672 reminders\reminders.py:785
-#: reminders\reminders.py:1091
+#: reminders\reminders.py:347 reminders\reminders.py:490
+#: reminders\reminders.py:676 reminders\reminders.py:789
+#: reminders\reminders.py:1095
 msgid "The repeat timedelta must be greater than {minimum_repeat} minutes."
 msgstr "Tekrar zaman aralığı {minimum_repeat} dakikadan büyük olmalıdır."
 
-#: reminders\reminders.py:356 reminders\reminders.py:544
+#: reminders\reminders.py:356 reminders\reminders.py:546
 msgid "You must provide a message or a text."
 msgstr "Bir mesaj veya metin sağlamalısınız."
 
-#: reminders\reminders.py:380 reminders\reminders.py:568
-#: reminders\reminders.py:1003
+#: reminders\reminders.py:382 reminders\reminders.py:572
+#: reminders\reminders.py:1007
 msgid "Your reminder text is too long."
 msgstr "Hatırlatıcı metniniz çok uzun."
 
-#: reminders\reminders.py:513
+#: reminders\reminders.py:515
 msgid "You can't create a reminder in {destination}."
 msgstr "{destination} içinde hatırlatıcı oluşturamazsınız."
 
-#: reminders\reminders.py:519 reminders\reminders.py:793
+#: reminders\reminders.py:521 reminders\reminders.py:797
 msgid "I can't send messages in this channel."
 msgstr "Bu kanalda mesaj gönderemiyorum."
 
-#: reminders\reminders.py:521
+#: reminders\reminders.py:523
 msgid "I can't send embeds in this channel."
 msgstr "Bu kanalda gömme mesaj gönderemiyorum."
 
-#: reminders\reminders.py:530
+#: reminders\reminders.py:532
 msgid "Since you don't have the `mention_everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."
 msgstr "`mention_everyone` izniniz olmadığından, 3'ten fazla kişiyi veya rolü etiketleyecek bir hatırlatıcı oluşturamazsınız."
 
-#: reminders\reminders.py:536
+#: reminders\reminders.py:538
 msgid "Due to the message character limit, you can only mention a maximum of 10 users or roles."
 msgstr "Mesaj karakter sınırı nedeniyle, en fazla 10 kullanıcıyı veya rolü etiketleyebilirsiniz."
 
-#: reminders\reminders.py:626
+#: reminders\reminders.py:630
 #, docstring
 msgid "Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
@@ -110,23 +110,23 @@ msgstr "Bir FIFO/komut hatırlatıcısı oluşturun. Seçilen komut sizin çağ�
 "       - `[p]reminder fifo #destination \"at 10h every day\" ping\n"
 "        "
 
-#: reminders\reminders.py:647
+#: reminders\reminders.py:651
 msgid "You're not allowed to create FIFO/commands reminders."
 msgstr "FIFO/komut hatırlatıcıları oluşturma izniniz yok."
 
-#: reminders\reminders.py:689
+#: reminders\reminders.py:693
 msgid "This command doesn't exist."
 msgstr "Bu komut mevcut değil."
 
-#: reminders\reminders.py:696
+#: reminders\reminders.py:700
 msgid "You can't execute this command, in this context."
 msgstr "Bu bağlamda bu komutu yürütemezsiniz."
 
-#: reminders\reminders.py:700
+#: reminders\reminders.py:704
 msgid "The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command."
 msgstr "`{command.qualified_name}` komutu planlanamaz, çünkü şüpheli bir komuttur."
 
-#: reminders\reminders.py:743
+#: reminders\reminders.py:747
 #, docstring
 msgid "Create a reminder who will say/send text.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule and your text.\n"
@@ -143,16 +143,16 @@ msgstr "Metin söyleyecek/gönderecek bir hatırlatıcı oluşturun.\n\n"
 "        - `[p]reminder say #destination \"at 9h every day\" Merhaba herkese!\n"
 "        "
 
-#: reminders\reminders.py:801
+#: reminders\reminders.py:805
 msgid "You can't or I can't send messages in this channel."
 msgstr "Bu kanalda mesaj gönderemezsiniz veya gönderemem."
 
-#: reminders\reminders.py:838
+#: reminders\reminders.py:842
 #, docstring
 msgid "Show time parsing tips."
 msgstr "Zaman ayrıştırma ipuçlarını göster."
 
-#: reminders\reminders.py:839
+#: reminders\reminders.py:843
 msgid "\n"
 "            Allowed **absolutes** are:\n"
 "            • `eoy` - Remind at end of year at 17:00.\n"
@@ -210,7 +210,7 @@ msgstr "\n"
 "            • https://crontab.guru/ adresini kontrol edin.\n"
 "            "
 
-#: reminders\reminders.py:882
+#: reminders\reminders.py:886
 #, docstring
 msgid "Set your timezone for the time converter.\n\n"
 "        Timezone should be specified in the format: `Continent/City`.\n"
@@ -223,11 +223,11 @@ msgstr "Saat dönüştürücü için saat diliminizi ayarlayın.\n\n"
 "        Geçerli saat dilimlerinin bir listesini şu adreste bulabilirsiniz: https://timezonedb.com/time-zones.\n"
 "        "
 
-#: reminders\reminders.py:889
+#: reminders\reminders.py:893
 msgid "Your timezone has been set to `{timezone}`."
 msgstr "Saat diliminiz `{timezone}` olarak ayarlandı."
 
-#: reminders\reminders.py:900
+#: reminders\reminders.py:904
 #, docstring
 msgid "List your existing reminders.\n\n"
 "        Sort options:\n"
@@ -242,23 +242,23 @@ msgstr "Mevcut hatırlatıcılarınızı listeleyin.\n\n"
 "        - `id`: Bunları kimlik sırasına göre görüntüleyin.\n"
 "        "
 
-#: reminders\reminders.py:924
+#: reminders\reminders.py:928
 msgid "Your Reminders"
 msgstr "Hatırlatıcılarınız"
 
-#: reminders\reminders.py:926
+#: reminders\reminders.py:930
 msgid " (Content type `{content_type}`)"
 msgstr " (İçerik türü `{content_type}`)"
 
-#: reminders\reminders.py:930
+#: reminders\reminders.py:934
 msgid "You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder."
 msgstr "{len_reminders} hatırlatıcınız var{of_this_content_type}. Bir hatırlatıcıyı düzenlemek için `{clean_prefix}reminder edit #ID` kullanın."
 
-#: reminders\reminders.py:934
+#: reminders\reminders.py:939
 msgid " of this content type"
 msgstr " bu içerik türü"
 
-#: reminders\reminders.py:953
+#: reminders\reminders.py:957
 #, docstring
 msgid "Remove existing Reminder(s) from their IDs.\n\n"
 "        - Use `last` to remove your last created reminder.\n"
@@ -269,15 +269,15 @@ msgstr "Mevcut Hatırlatıcı(lar) ı kimliklerinden kaldırın.\n\n"
 "        - Bir sonraki tetiklenen hatırlatıcınızı kaldırmak için `next` kullanın.\n"
 "        "
 
-#: reminders\reminders.py:965
+#: reminders\reminders.py:969
 msgid "Your reminder {reminder_id} has been successfully removed."
 msgstr "{reminder_id} numaralı hatırlatıcınız başarıyla kaldırıldı."
 
-#: reminders\reminders.py:971
+#: reminders\reminders.py:975
 msgid "Your reminders {reminders_ids} have been successfully removed."
 msgstr "Hatırlatıcılarınız {reminders_ids} başarıyla kaldırıldı."
 
-#: reminders\reminders.py:979
+#: reminders\reminders.py:983
 #, docstring
 msgid "Edit an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -288,7 +288,7 @@ msgstr "Mevcut bir Hatırlatıcıyı kimliğinden düzenleyin.\n\n"
 "        - Bir sonraki tetiklenen hatırlatıcınızı düzenlemek için `next` kullanın.\n"
 "        "
 
-#: reminders\reminders.py:997
+#: reminders\reminders.py:1001
 #, docstring
 msgid "Edit the text of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -299,13 +299,13 @@ msgstr "Mevcut bir Hatırlatıcının metnini ID'sinden düzenleyin.\n\n"
 "        - Bir sonraki tetiklenen hatırlatıcınızı düzenlemek için `next` kullanın.\n"
 "        "
 
-#: reminders\reminders.py:1013 reminders\reminders.py:1037
-#: reminders\reminders.py:1098 reminders\views.py:154 reminders\views.py:378
+#: reminders\reminders.py:1017 reminders\reminders.py:1041
+#: reminders\reminders.py:1102 reminders\views.py:154 reminders\views.py:378
 #: reminders\views.py:439
 msgid "Your reminder **#{reminder_id}** has been successfully edited."
 msgstr "**#{reminder_id}** numaralı hatırlatıcınız başarıyla düzenlendi."
 
-#: reminders\reminders.py:1022
+#: reminders\reminders.py:1026
 #, docstring
 msgid "Edit the expires time of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -318,7 +318,7 @@ msgstr "Kimliğinden mevcut bir Hatırlatıcının sona erme süresini düzenley
 "        Yaratma ile aynı dönüştürücüdür, ancak tekrarlama seçeneği yoktur.\n"
 "        "
 
-#: reminders\reminders.py:1046
+#: reminders\reminders.py:1050
 #, docstring
 msgid "Edit the repeat of an existing Reminder from its ID.\n\n"
 "        - Use `last` to edit your last created reminder.\n"
@@ -347,24 +347,24 @@ msgstr "Mevcut bir Hatırlatıcının tekrarını kimliğinden düzenleyin.\n\n"
 "        • `1y 1mo 2 days -5h`\n"
 "        "
 
-#: reminders\reminders.py:1106
+#: reminders\reminders.py:1110
 #, docstring
 msgid "Clear all your existing reminders."
 msgstr "Mevcut tüm hatırlatıcılarınızı temizleyin."
 
-#: reminders\reminders.py:1111 reminders\reminders.py:1242
+#: reminders\reminders.py:1115 reminders\reminders.py:1246
 msgid "⚠️ - Reminders"
 msgstr "⚠️ - Hatırlatıcılar"
 
-#: reminders\reminders.py:1112
+#: reminders\reminders.py:1116
 msgid "Do you really want to remove ALL your reminders?"
 msgstr "Tüm hatırlatıcılarınızı gerçekten kaldırmak istiyor musunuz?"
 
-#: reminders\reminders.py:1124
+#: reminders\reminders.py:1128
 msgid "All your reminders have been successfully removed."
 msgstr "Tüm hatırlatıcılarınız başarıyla kaldırıldı."
 
-#: reminders\reminders.py:1131
+#: reminders\reminders.py:1135
 #, docstring
 msgid "Get a list of Discord timestamps for a given time. You can provide a repeat.\n\n"
 "        The specified time can be fuzzy parsed or use the kwargs `in`, `on` and `every` to find a repeat rule.\n"
@@ -377,115 +377,115 @@ msgstr "Belirli bir zaman için Discord zaman damgalarının bir listesini alın
 "        Zaman ayrıştırma ipuçlarını görüntülemek için `[p]reminder timetips` kullanın.\n"
 "        "
 
-#: reminders\reminders.py:1145
+#: reminders\reminders.py:1149
 msgid "Timestamps for {time}"
 msgstr "{time} için zaman damgaları"
 
-#: reminders\reminders.py:1237
+#: reminders\reminders.py:1241
 #, docstring
 msgid "Clear all existing reminders for a user."
 msgstr "Bir kullanıcı için mevcut tüm hatırlatıcıları temizleyin."
 
-#: reminders\reminders.py:1239
+#: reminders\reminders.py:1243
 msgid "This user haven't any reminders."
 msgstr "Bu kullanıcının hiçbir hatırlatıcısı yok."
 
-#: reminders\reminders.py:1243
+#: reminders\reminders.py:1247
 msgid "Do you really want to remove ALL {user.display_name}'s reminders?"
 msgstr "Gerçekten tüm {user.display_name} hatırlatıcılarını kaldırmak istiyor musunuz?"
 
-#: reminders\reminders.py:1257
+#: reminders\reminders.py:1261
 msgid "All user's reminders have been successfully removed."
 msgstr "Kullanıcının tüm hatırlatıcıları başarıyla kaldırıldı."
 
-#: reminders\reminders.py:1261
+#: reminders\reminders.py:1265
 #, docstring
 msgid "Get an embed to check loops status."
 msgstr "Döngü durumunu kontrol etmek için bir gömme alın."
 
-#: reminders\reminders.py:1267
+#: reminders\reminders.py:1271
 #, docstring
 msgid "Migrate Reminders from RemindMe by PhasecoreX."
 msgstr "PhasecoreX tarafından RemindMe'den Hatırlatıcıları taşıyın."
 
-#: reminders\reminders.py:1274
+#: reminders\reminders.py:1278
 msgid "RemindMe by PhasecoreX has no data in this bot."
 msgstr "PhasecoreX tarafından RemindMe bu botta veri içermiyor."
 
-#: reminders\reminders.py:1278
+#: reminders\reminders.py:1282
 msgid "RemindMe by PhasecoreX use an old/new data schema version and isn't compatible with this cog actually."
 msgstr "PhasecoreX tarafından RemindMe eski/yeni veri şeması sürümünü kullanıyor ve bu cog ile şu anda uyumlu değil."
 
-#: reminders\reminders.py:1336
+#: reminders\reminders.py:1342
 msgid "Data successfully migrated from RemindMe by PhasecoreX."
 msgstr "Veriler PhasecoreX tarafından RemindMe'den başarıyla taşındı."
 
-#: reminders\reminders.py:1340
+#: reminders\reminders.py:1346
 #, docstring
 msgid "Migrate Reminders from FIFO by Fox."
 msgstr "FIFO by Fox'tan Hatırlatıcıları taşıyın."
 
-#: reminders\reminders.py:1420
+#: reminders\reminders.py:1426
 msgid "Data successfully migrated from FIFO by Fox."
 msgstr "Veriler FIFO by Fox'tan başarıyla taşındı."
 
-#: reminders\types.py:393
+#: reminders\types.py:401
 msgid ", and then **{interval}**"
 msgstr ", ve ardından **{interval}**"
 
-#: reminders\types.py:397
+#: reminders\types.py:405
 msgid ", with **{nb_repeat_rules} repeat rules**"
 msgstr ", **{nb_repeat_rules} tekrar kuralı** ile"
 
-#: reminders\types.py:406
+#: reminders\types.py:414
 msgid "{state}Okay, I will dispatch {this} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
 msgstr "{state}Tamam, {this} **{interval_string}** ({timestamp}){and_every} göndereceğim. [Hatırlatıcı **#{reminder_id}**]"
 
-#: reminders\types.py:411
+#: reminders\types.py:419
 msgid "{state}Okay, I will execute this command{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
 msgstr "{state}Tamam, bu komutu {destination_mention} **{interval_string}** ({timestamp}){and_every} yürüteceğim. [Hatırlatıcı **#{reminder_id}**]"
 
-#: reminders\types.py:416
+#: reminders\types.py:424
 msgid "{state}Okay, I will say {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
 msgstr "{state}Tamam, {this}{destination_mention} **{interval_string}** ({timestamp}){and_every} söyleyeceğim. [Hatırlatıcı **#{reminder_id}**]"
 
-#: reminders\types.py:420
+#: reminders\types.py:428
 msgid "{state}Okay, I will remind {targets_mentions} of {this}{destination_mention} **{interval_string}** ({timestamp}){and_every}. [Reminder **#{reminder_id}**]"
 msgstr "{state}Tamam, {targets_mentions}'e {this}{destination_mention} **{interval_string}** ({timestamp}){and_every} hatırlatacağım. [Hatırlatıcı **#{reminder_id}**]"
 
-#: reminders\types.py:429
+#: reminders\types.py:438
 msgid "you"
 msgstr "sen"
 
-#: reminders\types.py:431
+#: reminders\types.py:441
 msgid "the event `{event_name}`"
 msgstr "olay `{event_name}`"
 
-#: reminders\types.py:434
+#: reminders\types.py:444
 msgid "this command"
 msgstr "bu komut"
 
-#: reminders\types.py:438
+#: reminders\types.py:448
 msgid "this message"
 msgstr "bu mesaj"
 
-#: reminders\types.py:440
+#: reminders\types.py:450
 msgid "this"
 msgstr "bu"
 
-#: reminders\types.py:445
+#: reminders\types.py:455
 msgid "that"
 msgstr "şu"
 
-#: reminders\types.py:451
+#: reminders\types.py:461
 msgid " in {destination_mention}"
 msgstr " {destination_mention} içinde"
 
-#: reminders\types.py:459
+#: reminders\types.py:469
 msgid " in {destination} (Not found.)"
 msgstr " {destination} içinde (Bulunamadı.)"
 
-#: reminders\types.py:471
+#: reminders\types.py:481
 msgid "• **Next Expires at**: {expires_at_timestamp} ({expires_in_timestamp})\n"
 "• **Created at**: {created_at_timestamp} ({created_in_timestamp})\n"
 "• **Repeat**: {repeat}\n"
@@ -505,54 +505,58 @@ msgstr "• **Sonraki Bitiş Tarihi**: {expires_at_timestamp} ({expires_in_times
 "• **Hedef**: {destination}\n"
 "• **URL**: {jump_url}\n"
 
-#: reminders\types.py:490 reminders\views.py:235 reminders\views.py:414
+#: reminders\types.py:501 reminders\views.py:235 reminders\views.py:414
 #: reminders\views.py:428 reminders\views.py:513 reminders\views.py:531
 msgid "No existing repeat rule(s)."
 msgstr "Mevcut tekrar kuralı yok."
 
-#: reminders\types.py:493
+#: reminders\types.py:504
 msgid "{nb_repeat_rules} repeat rules."
 msgstr "{nb_repeat_rules} tekrar kuralı."
 
-#: reminders\types.py:497
+#: reminders\types.py:511
 msgid "Not provided."
 msgstr "Sağlanmadı."
 
-#: reminders\types.py:510
+#: reminders\types.py:524
 msgid "No content."
 msgstr "İçerik yok."
 
-#: reminders\types.py:530
+#: reminders\types.py:543
 msgid "No target(s)."
 msgstr "Hedef(ler) yok."
 
-#: reminders\types.py:531
+#: reminders\types.py:546
 msgid "In DMs"
 msgstr "DM'lerde"
 
-#: reminders\types.py:613
+#: reminders\types.py:631
 msgid "You asked me to remind you about {this}, {interval_string}.\n\n"
 msgstr "Bana {this}'i hatırlatmamı istediniz, {interval_string}.\n\n"
 
-#: reminders\types.py:619
+#: reminders\types.py:637
 msgid "You asked me to remind you about [this message]({message_jump_url}) from {author_mention} ({author_id}), {interval_string}.\n\n"
 msgstr "{author_mention} ({author_id})'den [bu mesajı]({message_jump_url}) hatırlatmamı istediniz, {interval_string}.\n\n"
 
-#: reminders\types.py:635
+#: reminders\types.py:653
 msgid "This was supposed to send {interval_string} ago. I might be having network or server issues, or perhaps I just started up. Sorry about that!\n\n"
 msgstr "Bu {interval_string} önce gönderilmesi gerekiyordu. Ağ veya sunucu sorunları yaşıyor olabilirim veya belki de yeni başladım. Bunun için üzgünüm!\n\n"
 
-#: reminders\types.py:639
+#: reminders\types.py:657
 msgid "Next trigger in {interval_string}."
 msgstr "Sonraki tetikleme {interval_string} içinde."
 
-#: reminders\types.py:792 reminders\views.py:559
+#: reminders\types.py:825 reminders\views.py:559
 msgid "Jump to original message"
 msgstr "Orijinal mesaja atla"
 
 #: reminders\views.py:100
 msgid "The image URL must be a valid URL."
 msgstr "Resim URL'si geçerli bir URL olmalıdır."
+
+#: reminders\views.py:189 reminders\views.py:463 reminders\views.py:571
+msgid "You are not allowed to use this interaction."
+msgstr ""
 
 #: reminders\views.py:231
 msgid "Reminder #{reminder_id} Repeat Rules"

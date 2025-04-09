@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:25\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:38\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -45,37 +45,41 @@ msgstr "そのサーバーは、自分のメッセージが他のサーバーで
 msgid "You don't have permission to read messages in that channel."
 msgstr "あなたにはそのチャンネルのメッセージを読む権限がありません。"
 
-#: linkquoter\linkquoter.py:56
+#: linkquoter\linkquoter.py:46
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: linkquoter\linkquoter.py:68
 #, docstring
 msgid "Quote any Discord message from its link!"
 msgstr "Discordのメッセージをリンクから引用する！"
 
-#: linkquoter\linkquoter.py:218
+#: linkquoter\linkquoter.py:230
 msgid "{author.display_name} said..."
 msgstr "{author.display_name} とは..."
 
-#: linkquoter\linkquoter.py:244
+#: linkquoter\linkquoter.py:256
 msgid "Attachments:"
 msgstr "添付ファイル"
 
-#: linkquoter\linkquoter.py:255
+#: linkquoter\linkquoter.py:267
 msgid "Stickers:"
 msgstr "ステッカー："
 
-#: linkquoter\linkquoter.py:267
+#: linkquoter\linkquoter.py:279
 msgid "Replying to:"
 msgstr "返信する"
 
-#: linkquoter\linkquoter.py:268
+#: linkquoter\linkquoter.py:280
 msgid "Click to view attachments."
 msgstr "添付ファイルを見るにはクリックしてください。"
 
-#: linkquoter\linkquoter.py:337
+#: linkquoter\linkquoter.py:352
 #, docstring
 msgid "Migrate config from LinkQuoter by Phen."
 msgstr "PhenによるLinkQuoterからのコンフィグ移行。"
 
-#: linkquoter\linkquoter.py:362
+#: linkquoter\linkquoter.py:377
 msgid "Data successfully migrated from LinkQuoter by Phen."
 msgstr "PhenによるLinkQuoterからのデータ移行に成功。"
 

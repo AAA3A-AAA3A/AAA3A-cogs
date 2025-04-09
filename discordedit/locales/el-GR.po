@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:21\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2024-12-29 11:37\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -172,19 +172,23 @@ msgstr "Θέλετε πραγματικά να διαγράψετε τον κα�
 msgid "Rule `{rule.name} ({rule.id})` edited."
 msgstr "Κανόνας `{rule.name} ({rule.id})` επεξεργασμένος."
 
-#: discordedit\editautomod.py:623
+#: discordedit\editautomod.py:467 discordedit\view.py:90
+msgid "You are not allowed to use this interaction."
+msgstr ""
+
+#: discordedit\editautomod.py:629
 msgid "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`."
 msgstr "Επιλέξτε τα κανάλια/ρόλους που θα εξαιρεθούν από τον κανόνα AutoMod `{rule.name} ({rule.id})`."
 
-#: discordedit\editautomod.py:645
+#: discordedit\editautomod.py:652
 msgid "Rule `{rule.name} ({rule.id})` enabled."
 msgstr "Ο κανόνας `{rule.name} ({rule.id})` ενεργοποιήθηκε."
 
-#: discordedit\editautomod.py:647
+#: discordedit\editautomod.py:654
 msgid "Rule {rule.name} `{rule.id}` disabled."
 msgstr "Κανόνας {rule.name} `{rule.id}` απενεργοποιημένο."
 
-#: discordedit\editautomod.py:665
+#: discordedit\editautomod.py:673
 msgid "Rule `{rule.name} ({rule.id})` deleted."
 msgstr "Κανόνας \"{rule.name} ({rule.id})`\" διαγράφεται."
 
@@ -1182,7 +1186,7 @@ msgstr "Θέλετε πραγματικά να διαγράψετε το φων�
 msgid "View and edit voice channel."
 msgstr "Προβολή και επεξεργασία φωνητικού καναλιού."
 
-#: discordedit\view.py:120
+#: discordedit\view.py:122
 msgid "You are not allowed to execute this command."
 msgstr "Δεν επιτρέπεται η εκτέλεση αυτής της εντολής."
 

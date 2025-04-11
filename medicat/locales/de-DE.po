@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:19\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2025-04-11 20:16\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -325,8 +325,8 @@ msgstr "Holen Sie sich den Download-Link für jedes bootfähige USB-Tool von Med
 
 #: medicat\medicat.py:977
 #, docstring
-msgid "Get an embed to check loops status."
-msgstr "Holen Sie sich eine Einbettung, um den Schleifenstatus zu überprüfen."
+msgid "Get an embed to check loop status."
+msgstr ""
 
 #: medicat\medicat.py:984
 #, docstring

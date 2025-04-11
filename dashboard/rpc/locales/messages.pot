@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-12-29 10:44+0100\n"
+"POT-Creation-Date: 2025-04-11 22:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,21 +11,80 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: dashboard\rpc\__init__.py:105
+#: dashboard\rpc\__init__.py:109
 msgid "{name} Dashboard"
 msgstr ""
 
-#: dashboard\rpc\__init__.py:113
+#: dashboard\rpc\__init__.py:117
 msgid ""
-"Hello, welcome to the **Red-DiscordBot Dashboard** for {name}! {name} is "
-"based off the popular bot **Red-DiscordBot**, an open source, "
+"Hello, welcome to the **Red-DiscordBot web Dashboard** for {name}! {name} is"
+" based off the popular bot **Red-DiscordBot**, an open source, "
 "multifunctional bot. It has *tons of features* including moderation, audio, "
 "economy, fun and more! Here, you can control and interact with {name}'s "
 "settings. **So what are you waiting for? Invite it now!**"
 msgstr ""
 
-#: dashboard\rpc\__init__.py:125
+#: dashboard\rpc\__init__.py:129
 msgid "Interactive Dashboard to control and interact with {name}."
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:29
+msgid "Successfully"
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:29
+msgid "Pinned"
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:29
+msgid "successfully"
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:31
+msgid "Failed"
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:31
+msgid "Something went wrong"
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:135
+msgid "Loaded: {packs}."
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:145
+msgid "Failed to load: {packs}. Check logs for details."
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:156
+msgid ""
+"Failed with reasons:\n"
+"{reasons}"
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:169
+msgid "Unloaded: {packs}."
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:297 dashboard\rpc\cog_management.py:323
+#: dashboard\rpc\cog_management.py:349 dashboard\rpc\cog_management.py:377
+#: dashboard\rpc\cog_management.py:410 dashboard\rpc\cog_management.py:455
+#: dashboard\rpc\cog_management.py:500
+msgid "The repo name you provided does not exist."
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:356
+msgid "Repo {name} successfully removed."
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:417 dashboard\rpc\cog_management.py:462
+#: dashboard\rpc\cog_management.py:507
+msgid "The cog name you provided does not exist."
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:424 dashboard\rpc\cog_management.py:469
+#: dashboard\rpc\cog_management.py:514
+msgid "The cog you provided isn't installed from the repo you provided."
 msgstr ""
 
 #: dashboard\rpc\default_cogs.py:101

@@ -61,6 +61,8 @@ class WordleGameView(discord.ui.View):
         self.max_attempts: int = max_attempts
 
         self.word: str = None
+        self.has_won: bool = False
+        self.attempts: typing.List[str] = []
         self._message: discord.Message = None
 
     async def start(self, ctx: commands.Context) -> typing.Tuple[bool, typing.List[str]]:
@@ -85,9 +87,8 @@ class WordleGameView(discord.ui.View):
         )
         self.cog.views[self._message] = self
 
-        has_won, attempts = False, []
         try:
-            while not has_won and len(attempts) < self.max_attempts:
+            while not self.has_won and len(self.attempts) < self.max_attempts:
                 guess = await self.ctx.bot.wait_for(
                     "message",
                     check=lambda message: (
@@ -124,7 +125,7 @@ class WordleGameView(discord.ui.View):
                         allowed_mentions=discord.AllowedMentions(replied_user=False),
                     )
                     continue
-                attempts.append(attempt)
+                self.attempts.append(attempt)
 
                 try:
                     await self._message.delete()
@@ -135,7 +136,7 @@ class WordleGameView(discord.ui.View):
                         self.ctx,
                         self.lang,
                         self.word,
-                        attempts=attempts,
+                        attempts=self.attempts,
                         max_attempts=self.max_attempts,
                     ),
                     view=self,
@@ -143,7 +144,7 @@ class WordleGameView(discord.ui.View):
                 )
                 self.cog.views[self._message] = self
                 if attempt == self.word:
-                    has_won = True
+                    self.has_won = True
         except asyncio.TimeoutError:
             await self.ctx.send(
                 _("You took too long to guess the word. The word was: **{word}**.").format(
@@ -158,7 +159,7 @@ class WordleGameView(discord.ui.View):
             await self._message.edit(view=self)
         except discord.HTTPException:
             pass
-        return has_won, attempts
+        return self.has_won, self.attempts
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.data["custom_id"] == "WordleGameView_explanation":
@@ -181,6 +182,7 @@ class WordleGameView(discord.ui.View):
             await self._message.edit(view=self)
         except discord.HTTPException:
             pass
+        await self.cancel.callback(None)
 
     @discord.ui.button(
         label=_("Explanation"),
@@ -208,8 +210,13 @@ class WordleGameView(discord.ui.View):
         )
 
     @discord.ui.button(emoji="✖️", label=_("Cancel"), style=discord.ButtonStyle.danger)
-    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        await interaction.response.defer()
+    async def cancel(
+        self,
+        interaction: typing.Optional[discord.Interaction],
+        button: discord.ui.Button,
+    ) -> None:
+        if interaction is not None:
+            await interaction.response.defer()
         await CogsUtils.invoke_command(
             bot=self.ctx.bot,
             author=self.ctx.author,

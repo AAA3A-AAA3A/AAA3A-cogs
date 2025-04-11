@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-21 13:27\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2025-04-11 20:17\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -325,8 +325,8 @@ msgstr "Her Medicat USB önyüklenebilir aracının indirme bağlantısını edi
 
 #: medicat\medicat.py:977
 #, docstring
-msgid "Get an embed to check loops status."
-msgstr "Döngü durumunu kontrol etmek için bir gömme alın."
+msgid "Get an embed to check loop status."
+msgstr ""
 
 #: medicat\medicat.py:984
 #, docstring

@@ -45,7 +45,7 @@ Here are all the commands included in this cog (27):
 * ``[p]guildstats enable``
  Enable the cog in this guild/server.
 
-* ``[p]guildstats getdebugloopstatus``
+* ``[p]guildstats getdebugloopsstatus``
  Get an embed for check loop status.
 
 * ``[p]guildstats graphic ["humans"|"bots"|"both"=humans] [_object]``

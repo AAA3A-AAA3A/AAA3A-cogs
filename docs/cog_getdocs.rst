@@ -30,7 +30,7 @@ Here are all the commands included in this cog (13):
 * ``[p]listsources [_sorted=False] ["available"|"all"|"disabled"=available]``
  Shows a list of all sources, those that are available or those that are disabled.
 
-* ``[p]rtfm [source] [limit=10] [with_std=False] [query]``
+* ``[p]rtfm [source] [query] [limit=10] [with_std=False]``
  Show all items matching your search.
 
 * ``[p]setgetdocs``

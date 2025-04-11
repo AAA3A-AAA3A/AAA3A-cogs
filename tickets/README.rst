@@ -102,7 +102,7 @@ Here are all the commands included in this cog (64):
 * ``[p]settickets forumtags <profile> <forum_tags>``
  Tags that will be added to the threads in the forum channel.
 
-* ``[p]settickets getdebugloopstatus``
+* ``[p]settickets getdebugloopsstatus``
  Get an embed for check loop status.
 
 * ``[p]settickets logschannel <profile> <logs_channel>``

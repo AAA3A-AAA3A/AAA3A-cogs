@@ -30,8 +30,8 @@ Here are all the commands included in this cog (7):
 * ``[p]consolelogs addchannel <channel> [global_errors=True] [prefixed_commands_errors=True] [slash_commands_errors=True] [dpy_ignored_exceptions=False] [full_console=False] [guild_invite=True] [ignored_cogs]``
  Enable errors logging in a channel.
 
-* ``[p]consolelogs getdebugloopstatus``
- Get an embed to check loop status.
+* ``[p]consolelogs getdebugloopsstatus``
+ Get an embed to check loops status.
 
 * ``[p]consolelogs removechannel <channel>``
  Disable errors logging in a channel.

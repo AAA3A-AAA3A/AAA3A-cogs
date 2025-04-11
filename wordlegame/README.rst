@@ -27,7 +27,7 @@ Here are all the commands included in this cog (2):
 * ``[p]wordle [lang=Lang.ENGLISH] [length=5] [max_attempts=6]``
  Play a match of Wordle game.
 
-* ``[p]wordlestats``
+* ``[p]wordlestats [member=<you>]``
  Show the stats for the Wordle game.
 
 ------------

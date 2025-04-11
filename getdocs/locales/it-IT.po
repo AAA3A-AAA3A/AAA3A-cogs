@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-12-29 10:43+0100\n"
-"PO-Revision-Date: 2024-12-29 11:37\n"
+"POT-Creation-Date: 2025-03-15 23:04+0100\n"
+"PO-Revision-Date: 2025-04-11 20:16\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File-ID: 183\n"
 "Language: it_IT\n"
 
-#: getdocs\getdocs.py:226 getdocs\getdocs.py:347 getdocs\getdocs.py:410
+#: getdocs\getdocs.py:226 getdocs\getdocs.py:351 getdocs\getdocs.py:414
 msgid "Please provide a valid documentations source."
 msgstr "Si prega di fornire una fonte di documentazione valida."
 
@@ -26,15 +26,15 @@ msgstr "Si prega di fornire una fonte di documentazione valida."
 msgid "A cog to get and display some documentations in Discord! Use `[p]listsources` to get a list of all the available sources."
 msgstr "Un ingranaggio per ottenere e visualizzare alcune documentazioni in Discord! Utilizzare `[p]listsources` per ottenere un elenco di tutte le fonti disponibili."
 
-#: getdocs\getdocs.py:366 getdocs\getdocs.py:1745
+#: getdocs\getdocs.py:370 getdocs\getdocs.py:1750
 msgid "RTFM caching isn't finished."
 msgstr "La cache RTFM non è finita."
 
-#: getdocs\getdocs.py:421 getdocs\view.py:54 getdocs\view.py:93
+#: getdocs\getdocs.py:425 getdocs\view.py:54 getdocs\view.py:93
 msgid "No results found."
 msgstr "Nessun risultato trovato."
 
-#: getdocs\getdocs.py:573
+#: getdocs\getdocs.py:578
 #, docstring
 msgid "\n"
 "        Enable Documentations source(s).\n"
@@ -43,15 +43,15 @@ msgstr "\n"
 "        Abilitare le fonti di documentazione.\n"
 "        "
 
-#: getdocs\getdocs.py:580
+#: getdocs\getdocs.py:585
 msgid "The source `{source}` is already enabled."
 msgstr "La sorgente `{source}` è già abilitata."
 
-#: getdocs\getdocs.py:584 getdocs\getdocs.py:614
+#: getdocs\getdocs.py:589 getdocs\getdocs.py:619
 msgid "The source `{source}` doesn't exist."
 msgstr "La sorgente `{source}` non esiste."
 
-#: getdocs\getdocs.py:603
+#: getdocs\getdocs.py:608
 #, docstring
 msgid "\n"
 "        Disable Documentations source(s).\n"
@@ -60,11 +60,11 @@ msgstr "\n"
 "        Disattivare le fonti di documentazione.\n"
 "        "
 
-#: getdocs\getdocs.py:610
+#: getdocs\getdocs.py:615
 msgid "The source `{source}` is already disabled."
 msgstr "La sorgente `{source}` è già disabilitata."
 
-#: getdocs\getdocs.py:621
+#: getdocs\getdocs.py:626
 #, docstring
 msgid "\n"
 "        Show stats about all documentations sources.\n"
@@ -73,10 +73,10 @@ msgstr "\n"
 "        Mostra le statistiche di tutte le fonti di documentazione.\n"
 "        "
 
-#: getdocs\getdocs.py:657
+#: getdocs\getdocs.py:662
 #, docstring
-msgid "Get an embed to check loops status."
-msgstr "Ottenere un embed per controllare lo stato dei loop."
+msgid "Get an embed to check loop status."
+msgstr ""
 
 #: getdocs\view.py:21
 msgid "Select an option."

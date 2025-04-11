@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
 "POT-Creation-Date: 2025-03-15 23:04+0100\n"
-"PO-Revision-Date: 2025-04-01 16:52\n"
+"PO-Revision-Date: 2025-04-11 20:16\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -75,8 +75,8 @@ msgstr "\n"
 
 #: getdocs\getdocs.py:662
 #, docstring
-msgid "Get an embed to check loops status."
-msgstr "Obtenga una incrustación para comprobar el estado de los bucles."
+msgid "Get an embed to check loop status."
+msgstr ""
 
 #: getdocs\view.py:21
 msgid "Select an option."

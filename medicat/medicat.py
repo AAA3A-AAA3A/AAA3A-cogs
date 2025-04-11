@@ -434,7 +434,11 @@ class Medicat(Cog):
         def clean_tag_name(tag_name) -> str:
             return ".".join(
                 part.lstrip("0") or "0"
-                for part in str(tag_name).replace("v", "").replace("1.0.0", "1.0.").replace("beta", ".dev").split(".")
+                for part in str(tag_name)
+                .replace("v", "")
+                .replace("1.0.0", "1.0.")
+                .replace("beta", ".dev")
+                .split(".")
             )
 
         async with self._session.get(
@@ -455,15 +459,10 @@ class Medicat(Cog):
                 clean_tag_name(versions[-1]["tag_name"])
             ):
                 return
-            await self.config.last_ventoy_version.set(
-                clean_tag_name(versions[-1]["tag_name"])
-            )
+            await self.config.last_ventoy_version.set(clean_tag_name(versions[-1]["tag_name"]))
         elif version is not None:
             for v in versions:
-                if (
-                    clean_tag_name(v["tag_name"])
-                    == version
-                ):
+                if clean_tag_name(v["tag_name"]) == version:
                     versions = [v]
                     break
             else:
@@ -474,9 +473,7 @@ class Medicat(Cog):
 
         for version in versions:
             ventoy_tag_name = str(version["tag_name"])
-            ventoy_version_str = (
-                clean_tag_name(ventoy_tag_name)
-            )
+            ventoy_version_str = clean_tag_name(ventoy_tag_name)
             ventoy_version = VersionInfo.from_str(ventoy_version_str)
             if not force and last_ventoy_version >= ventoy_version:
                 continue
@@ -769,7 +766,9 @@ class Medicat(Cog):
     @medicat.command(aliases=["ventoyversion"])
     async def getventoyversion(self, ctx: commands.Context, version: str) -> None:
         """Get a version of Ventoy."""
-        await self.ventoy_updates(channel=ctx.channel, ping_role=False, force=True, version=version)
+        await self.ventoy_updates(
+            channel=ctx.channel, ping_role=False, force=True, version=version
+        )
 
     @commands.cooldown(rate=1, per=3600, type=commands.BucketType.member)
     @commands.bot_has_permissions(embed_links=True)

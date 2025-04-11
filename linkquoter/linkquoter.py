@@ -1,4 +1,11 @@
+from copy import deepcopy
+
 from emoji import config
+from redbot.core.utils.chat_formatting import pagify
+
+from .converters import MESSAGE_LINK_REGEX, LinkToMessageConverter
+from .dashboard_integration import DashboardIntegration
+
 from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
@@ -6,12 +13,6 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from copy import deepcopy
-
-from redbot.core.utils.chat_formatting import pagify
-
-from .converters import MESSAGE_LINK_REGEX, LinkToMessageConverter
-from .dashboard_integration import DashboardIntegration
 
 # Credits:
 # General repo credits.

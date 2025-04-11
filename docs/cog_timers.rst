@@ -42,7 +42,7 @@ Here are all the commands included in this cog (37):
 * ``[p]settimers emojicontent <profile> <emoji_content>``
  Emoji to use in the timers messages content.
 
-* ``[p]settimers getdebugloopsstatus``
+* ``[p]settimers getdebugloopstatus``
  Get an embed for check loop status.
 
 * ``[p]settimers hostautomaticjoin <profile> <host_automatic_join>``

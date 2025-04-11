@@ -400,7 +400,7 @@ msgstr "Wszystkie przypomnienia użytkownika zostały pomyślnie usunięte."
 
 #: reminders\reminders.py:1261
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Pobierz embed, aby sprawdzić status pętli."
 
 #: reminders\reminders.py:1267

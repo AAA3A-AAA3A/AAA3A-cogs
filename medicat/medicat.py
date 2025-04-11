@@ -967,8 +967,8 @@ class Medicat(Cog):
     @is_owner_or_AAA3A()
     @commands.bot_has_permissions(embed_links=True)
     @medicat.command(hidden=True)
-    async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
-        """Get an embed to check loops status."""
+    async def getdebugloopstatus(self, ctx: commands.Context) -> None:
+        """Get an embed to check loop status."""
         embeds = [loop.get_debug_embed() for loop in self.loops]
         await Menu(pages=embeds).start(ctx)
 

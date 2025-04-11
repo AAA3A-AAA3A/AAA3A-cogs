@@ -48,8 +48,8 @@ Here are all the commands included in this cog (13):
 * ``[p]setgetdocs enablesources [sources]...``
  Enable Documentations source(s).
 
-* ``[p]setgetdocs getdebugloopsstatus``
- Get an embed to check loops status.
+* ``[p]setgetdocs getdebugloopstatus``
+ Get an embed to check loop status.
 
 * ``[p]setgetdocs modalconfig [confirmation=False]``
  Set all settings for the cog with a Discord Modal.

@@ -363,7 +363,7 @@ msgstr ""
 
 #: reminders\reminders.py:1267
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr ""
 
 #: reminders\reminders.py:1273

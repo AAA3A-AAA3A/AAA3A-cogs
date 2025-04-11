@@ -89,6 +89,6 @@ msgstr "Rejestrowanie błędów wyłączone w {channel.mention}."
 
 #: consolelogs\consolelogs.py:550
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Pobierz embed, aby sprawdzić status pętli."
 

@@ -325,7 +325,7 @@ msgstr "Obțineți linkul de descărcare al fiecărui instrument de pornire Medi
 
 #: medicat\medicat.py:977
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Obțineți o inserție pentru a verifica starea buclelor."
 
 #: medicat\medicat.py:984

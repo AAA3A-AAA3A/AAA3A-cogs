@@ -400,7 +400,7 @@ msgstr "Toate memento-urile utilizatorului au fost eliminate cu succes."
 
 #: reminders\reminders.py:1261
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Obțineți o inserție pentru a verifica starea buclelor."
 
 #: reminders\reminders.py:1267

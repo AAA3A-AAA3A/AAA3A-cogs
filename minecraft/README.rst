@@ -39,7 +39,7 @@ Here are all the commands included in this cog (9):
 * ``[p]minecraft forcecheck``
  Force check Minecraft Java servers in Config.
 
-* ``[p]minecraft getdebugloopsstatus``
+* ``[p]minecraft getdebugloopstatus``
  Get an embed for check loop status.
 
 * ``[p]minecraft getplayerskin <player> [overlay=False]``

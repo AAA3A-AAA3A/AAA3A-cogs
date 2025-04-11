@@ -36,7 +36,7 @@ Here are all the commands included in this cog (10):
 * ``[p]aaa3a_utils getallfor ["all"|"ALL"] [page] [repo] [check_updates=False] [cog] [command]``
  Get all the necessary information to get support on a bot/repo/cog/command.
 
-* ``[p]aaa3a_utils getdebugloopsstatus <cog>``
+* ``[p]aaa3a_utils getdebugloopstatus <cog>``
  Get debug loops status for a cog from AAA3A-cogs.
 
 * ``[p]aaa3a_utils getlogs <cog> [level=all]``

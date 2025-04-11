@@ -400,7 +400,7 @@ msgstr "Todos os lembretes do utilizador foram removidos com sucesso."
 
 #: reminders\reminders.py:1261
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Obter uma incorporação para verificar o estado dos loops."
 
 #: reminders\reminders.py:1267

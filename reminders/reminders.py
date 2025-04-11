@@ -1263,8 +1263,8 @@ class Reminders(DashboardIntegration, Cog):
         await ctx.send(_("All user's reminders have been successfully removed."))
 
     @configuration.command(hidden=True)
-    async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
-        """Get an embed to check loops status."""
+    async def getdebugloopstatus(self, ctx: commands.Context) -> None:
+        """Get an embed to check loop status."""
         embeds = [loop.get_debug_embed() for loop in self.loops]
         await Menu(pages=embeds).start(ctx)
 

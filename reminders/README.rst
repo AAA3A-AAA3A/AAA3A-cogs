@@ -81,8 +81,8 @@ Here are all the commands included in this cog (31):
 * ``[p]setreminders fifoallowed <fifo_allowed>``
  Allow or deny commands reminders for users (except bot owners).
 
-* ``[p]setreminders getdebugloopsstatus``
- Get an embed to check loops status.
+* ``[p]setreminders getdebugloopstatus``
+ Get an embed to check loop status.
 
 * ``[p]setreminders maximumuserreminders <maximum_user_reminders>``
  Change the reminders limit for each user (except bot owners).

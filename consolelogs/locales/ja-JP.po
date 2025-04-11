@@ -89,6 +89,6 @@ msgstr "{channel.mention}でエラーロギングを無効にする。"
 
 #: consolelogs\consolelogs.py:550
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "ループの状態を確認するためのエンベデッドを取得します。"
 

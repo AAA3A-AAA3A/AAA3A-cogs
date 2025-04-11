@@ -325,7 +325,7 @@ msgstr "Verkrijg de downloadlink van elk Medicat USB opstartbaar hulpprogramma."
 
 #: medicat\medicat.py:977
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Krijg een embed om de lusstatus te controleren."
 
 #: medicat\medicat.py:984

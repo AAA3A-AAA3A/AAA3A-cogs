@@ -89,6 +89,6 @@ msgstr "Registo de erros desativado em {channel.mention}."
 
 #: consolelogs\consolelogs.py:550
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Obter uma incorporação para verificar o estado dos loops."
 

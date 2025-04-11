@@ -89,6 +89,6 @@ msgstr "{channel.mention} kanalında hata günlükleme devre dışı bırakıld�
 
 #: consolelogs\consolelogs.py:550
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Döngü durumunu kontrol etmek için bir gömme alın."
 

@@ -567,8 +567,8 @@ class ConsoleLogs(DashboardIntegration, Cog):
         await ctx.send(_("Errors logging disabled in {channel.mention}.").format(channel=channel))
 
     @consolelogs.command(hidden=True)
-    async def getdebugloopsstatus(self, ctx: commands.Context) -> None:
-        """Get an embed to check loops status."""
+    async def getdebugloopstatus(self, ctx: commands.Context) -> None:
+        """Get an embed to check loop status."""
         embeds = [loop.get_debug_embed() for loop in self.loops]
         await Menu(pages=embeds).start(ctx)
 

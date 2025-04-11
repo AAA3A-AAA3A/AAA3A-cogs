@@ -89,6 +89,6 @@ msgstr "Înregistrarea erorilor este dezactivată în {channel.mention}."
 
 #: consolelogs\consolelogs.py:550
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Obțineți o inserție pentru a verifica starea buclelor."
 

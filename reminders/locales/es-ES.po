@@ -400,7 +400,7 @@ msgstr "Se han eliminado correctamente todos los recordatorios de los usuarios."
 
 #: reminders\reminders.py:1261
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Obtenga una incrustación para comprobar el estado de los bucles."
 
 #: reminders\reminders.py:1267

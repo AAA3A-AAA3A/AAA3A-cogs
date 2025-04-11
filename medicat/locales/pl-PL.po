@@ -325,7 +325,7 @@ msgstr "Pobierz łącze do pobrania każdego narzędzia rozruchowego Medicat USB
 
 #: medicat\medicat.py:977
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Pobierz embed, aby sprawdzić status pętli."
 
 #: medicat\medicat.py:984

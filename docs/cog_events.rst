@@ -87,7 +87,7 @@ Here are all the commands included in this cog (38):
 * ``[p]setevents emojicontent <profile> <emoji_content>``
  Emoji to use in the events messages content.
 
-* ``[p]setevents getdebugloopsstatus``
+* ``[p]setevents getdebugloopstatus``
  Get an embed for check loop status.
 
 * ``[p]setevents imageurl <profile> <image_url>``

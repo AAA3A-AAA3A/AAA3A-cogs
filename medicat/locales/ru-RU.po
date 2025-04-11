@@ -325,7 +325,7 @@ msgstr "Получите ссылку на загрузку каждого за�
 
 #: medicat\medicat.py:977
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Получите вставку для проверки состояния петель."
 
 #: medicat\medicat.py:984

@@ -325,7 +325,7 @@ msgstr "Obtenha o link de download de cada ferramenta inicializável USB da Medi
 
 #: medicat\medicat.py:977
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Obter uma incorporação para verificar o estado dos loops."
 
 #: medicat\medicat.py:984

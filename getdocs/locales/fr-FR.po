@@ -75,6 +75,6 @@ msgstr "\n"
 
 #: getdocs\getdocs.py:655
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Obtenir un embed pour vérifier l'état des boucles."
 

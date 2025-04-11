@@ -89,6 +89,6 @@ msgstr "Die Fehlerprotokollierung ist in {channel.mention}deaktiviert."
 
 #: consolelogs\consolelogs.py:550
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Holen Sie sich eine Einbettung, um den Schleifenstatus zu überprüfen."
 

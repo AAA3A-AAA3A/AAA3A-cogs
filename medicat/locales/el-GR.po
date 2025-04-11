@@ -325,7 +325,7 @@ msgstr "Αποκτήστε το σύνδεσμο λήψης κάθε εργαλ�
 
 #: medicat\medicat.py:977
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Πάρτε μια ενσωμάτωση για να ελέγξετε την κατάσταση των βρόχων."
 
 #: medicat\medicat.py:984

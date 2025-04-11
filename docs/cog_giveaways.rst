@@ -120,7 +120,7 @@ Here are all the commands included in this cog (66):
 * ``[p]setgiveaways emojicontent <profile> <emoji_content>``
  Emoji to use in the giveaways messages content.
 
-* ``[p]setgiveaways getdebugloopsstatus``
+* ``[p]setgiveaways getdebugloopstatus``
  Get an embed for check loop status.
 
 * ``[p]setgiveaways imageurl <profile> <image_url>``

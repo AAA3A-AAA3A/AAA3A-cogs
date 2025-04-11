@@ -397,7 +397,7 @@ class Minecraft(Cog):
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
     @minecraft.command(hidden=True)
-    async def getdebugloopsstatus(self, ctx: commands.Context):
+    async def getdebugloopstatus(self, ctx: commands.Context):
         """Get an embed for check loop status."""
         embeds = [loop.get_debug_embed() for loop in self.loops]
         await Menu(pages=embeds).start(ctx)

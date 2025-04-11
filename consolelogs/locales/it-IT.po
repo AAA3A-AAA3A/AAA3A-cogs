@@ -89,6 +89,6 @@ msgstr "Registrazione degli errori disabilitata in {channel.mention}."
 
 #: consolelogs\consolelogs.py:550
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Ottenere un embed per controllare lo stato dei loop."
 

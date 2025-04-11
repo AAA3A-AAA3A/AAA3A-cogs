@@ -400,7 +400,7 @@ msgstr "Kullanıcının tüm hatırlatıcıları başarıyla kaldırıldı."
 
 #: reminders\reminders.py:1261
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Döngü durumunu kontrol etmek için bir gömme alın."
 
 #: reminders\reminders.py:1267

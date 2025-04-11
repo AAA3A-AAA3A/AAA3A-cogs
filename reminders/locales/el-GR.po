@@ -400,7 +400,7 @@ msgstr "Όλες οι υπενθυμίσεις του χρήστη έχουν α
 
 #: reminders\reminders.py:1261
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Πάρτε μια ενσωμάτωση για να ελέγξετε την κατάσταση των βρόχων."
 
 #: reminders\reminders.py:1267

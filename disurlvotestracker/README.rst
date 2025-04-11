@@ -48,7 +48,7 @@ Here are all the commands included in this cog (17):
 * ``[p]setdisurlvotestracker enabled <enabled>``
  Toggle the cog. WARNING: Red-Web-Dashboard has to be installed and started for this to work.
 
-* ``[p]setdisurlvotestracker getdebugloopsstatus``
+* ``[p]setdisurlvotestracker getdebugloopstatus``
  Get an embed for check loop status.
 
 * ``[p]setdisurlvotestracker instructions``

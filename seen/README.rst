@@ -39,7 +39,7 @@ Here are all the commands included in this cog (17):
 * ``[p]seen configstats``
  Get Config data stats.
 
-* ``[p]seen getdebugloopsstatus``
+* ``[p]seen getdebugloopstatus``
  Get an embed for check loop status.
 
 * ``[p]seen guild ["message"|"message_edit"|"reaction_add"|"reaction_remove"] [show_details] [guild]``

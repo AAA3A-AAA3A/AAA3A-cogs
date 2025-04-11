@@ -89,6 +89,6 @@ msgstr "La journalisation des erreurs est désactivée sur le site {channel.ment
 
 #: consolelogs\consolelogs.py:550
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Obtenir un embed pour vérifier l'état des boucles."
 

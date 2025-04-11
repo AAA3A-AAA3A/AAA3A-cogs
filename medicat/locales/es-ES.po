@@ -325,7 +325,7 @@ msgstr "Obtenga el enlace de descarga de cada herramienta de arranque USB de Med
 
 #: medicat\medicat.py:977
 #, docstring
-msgid "Get an embed to check loops status."
+msgid "Get an embed to check loop status."
 msgstr "Obtenga una incrustación para comprobar el estado de los bucles."
 
 #: medicat\medicat.py:984

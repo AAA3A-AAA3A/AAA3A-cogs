@@ -90,7 +90,7 @@ class WordleGameView(discord.ui.View):
         try:
             while not self.has_won and len(self.attempts) < self.max_attempts:
                 guess = await self.ctx.bot.wait_for(
-                    "message",
+                    "message_without_command",
                     check=lambda message: (
                         MessagePredicate.same_context(ctx)(message)
                         and (

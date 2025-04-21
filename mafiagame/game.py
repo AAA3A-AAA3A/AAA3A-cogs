@@ -195,7 +195,7 @@ class Night(DayNight):
                 player = mafia_player
             if target is not None:
                 try:
-                    for tg in [target] if not isinstance(target, typing.Tuple) else target:
+                    for i, tg in enumerate([target] if not isinstance(target, typing.Tuple) else target):
                         if not isinstance(tg, Player):
                             continue
                         for p in sorted(
@@ -214,7 +214,7 @@ class Night(DayNight):
                                 self.targets[player] = tg
                             else:
                                 t = list(self.targets[player])
-                                t[t.index(target)] = tg
+                                t[i] = tg
                                 self.targets[player] = tuple(t)
                         if tg.is_dead:
                             if player.role in (GodFather, Mafia):
@@ -547,9 +547,7 @@ class Day(DayNight):
                     )
                     if guilty_voters or innocent_voters:
                         embed.add_field(
-                            name=_("👿 GUIlTY ({len_guilty})").format(
-                                len_guilty=len(guilty_voters)
-                            )
+                            name=_("👿 GUIlTY ({len_guilty})").format(len_guilty=len(guilty_voters))
                             + (":" if guilty_voters else ""),
                             value=(
                                 "\n".join(
@@ -1108,7 +1106,9 @@ class Game:
                 if not self.config["reward_for_winning_based_on_costs"]:
                     credits_to_win = self.config["credits_to_win"]
                 else:
-                    credits_to_win = (self.config["cost_to_play"] * len(self.players)) // len(main_winners)
+                    credits_to_win = (self.config["cost_to_play"] * len(self.players)) // len(
+                        main_winners
+                    )
                 try:
                     await bank.deposit_credits(player.member, self.config["credits_to_win"])
                 except BalanceTooHigh as e:
@@ -1145,9 +1145,11 @@ class Game:
                     try:
                         await player.member.send(
                             embed=discord.Embed(
-                                title=_("💰 You have received **{credits}** {currency_name}! 💰").format(
+                                title=_(
+                                    "💰 You have received **{credits}** {currency_name}! 💰"
+                                ).format(
                                     credits=credits_to_win,
-                                    currency_name=await bank.get_currency_name(self.ctx.guild)
+                                    currency_name=await bank.get_currency_name(self.ctx.guild),
                                 ),
                                 color=ACHIEVEMENTS_COLOR,
                             ),

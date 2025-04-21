@@ -141,6 +141,16 @@ class Dashboard(Cog):
                         },
                         {
                             "pos": 6,
+                            "name": "builtin-cog-management",
+                            "icon": "fa fa-cogs text-primary",
+                            "route": "base_blueprint.cog_management",
+                            "session": True,
+                            "owner": True,
+                            "locked": True,
+                            "hidden": False,
+                        },
+                        {
+                            "pos": 7,
                             "name": "builtin-credits",
                             "icon": "ni ni-book-bookmark text-info",
                             "route": "base_blueprint.credits",
@@ -150,7 +160,7 @@ class Dashboard(Cog):
                             "hidden": False,
                         },
                         {
-                            "pos": 7,
+                            "pos": 8,
                             "name": "builtin-login",
                             "icon": "ni ni-key-25 text-success",
                             "route": "login_blueprint.login",
@@ -160,7 +170,7 @@ class Dashboard(Cog):
                             "hidden": False,
                         },
                         {
-                            "pos": 8,
+                            "pos": 9,
                             "name": "builtin-logout",
                             "icon": "ni ni-user-run text-warning",
                             "route": "login_blueprint.logout",

@@ -102,7 +102,13 @@ async def get_form_class(
             return _is_submitted()
 
         def validate_on_submit(self, extra_validators=None) -> bool:
-            if self.is_submitted() and self.validate(extra_validators=extra_validators):
+            if (
+                self.is_submitted()
+                and self.validate(extra_validators=extra_validators)
+                and any(
+                    field.data for field in self if isinstance(field, SubmitField)
+                )
+            ):
                 return True
             if any(field.data for field in self if isinstance(field, SubmitField)) and self.errors:
                 for field_name, error_messages in self.errors.items():

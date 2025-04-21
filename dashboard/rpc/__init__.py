@@ -14,6 +14,7 @@ import time
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_list
 
+from .cog_management import DashboardRPC_CogManagement
 from .default_cogs import DashboardRPC_DefaultCogs
 from .pagination import Pagination
 from .third_parties import DashboardRPC_ThirdParties
@@ -55,6 +56,9 @@ class DashboardRPC:
 
         # Initialize handlers.
         self.handlers: typing.Dict[str, typing.Any] = {}
+        self.handlers["cog_management"]: DashboardRPC_CogManagement = DashboardRPC_CogManagement(
+            self.cog
+        )
         self.handlers["default_cogs"]: DashboardRPC_DefaultCogs = DashboardRPC_DefaultCogs(
             self.cog
         )
@@ -434,7 +438,12 @@ class DashboardRPC:
         return Pagination.from_list(guilds, per_page=per_page, page=page).to_dict()
 
     @rpc_check()
-    async def get_guild(self, user_id: int, guild_id: int, for_third_parties: bool = False):
+    async def get_guild(
+        self,
+        user_id: int,
+        guild_id: int,
+        for_third_parties: bool = False,
+    ) -> typing.Dict[str, typing.Any]:
         guild = self.bot.get_guild(guild_id)
         if guild is None:
             return {"status": 1}
@@ -545,7 +554,7 @@ class DashboardRPC:
         }
 
     @rpc_check()
-    async def leave_guild(self, user_id: int, guild_id: int):
+    async def leave_guild(self, user_id: int, guild_id: int) -> typing.Dict[str, int]:
         guild = self.bot.get_guild(guild_id)
         if guild is None:
             return {"status": 1}
@@ -557,7 +566,7 @@ class DashboardRPC:
     @rpc_check()
     async def set_guild_settings(
         self, user_id: int, guild_id: int, settings: typing.Dict[str, typing.Any]
-    ):
+    ) -> typing.Dict[str, typing.Union[int, str]]:
         guild = self.bot.get_guild(guild_id)
         if guild is None:
             return {"status": 1}
@@ -620,7 +629,11 @@ class DashboardRPC:
         return {"status": 0, "change_nickname_error": change_nickname_error}
 
     @rpc_check()
-    async def set_bot_profile(self, user_id: int, settings: typing.Dict[str, typing.Any]):
+    async def set_bot_profile(
+        self,
+        user_id: int,
+        settings: typing.Dict[str, typing.Any],
+    ) -> typing.Dict[str, typing.Union[int, str]]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         try:
@@ -650,7 +663,7 @@ class DashboardRPC:
             return {"status": 1, "error": str(e)}
 
     @rpc_check()
-    async def get_dashboard_settings(self, user_id: int):
+    async def get_dashboard_settings(self, user_id: int) -> typing.Dict[str, typing.Any]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         config_group = self.cog.config.webserver.ui.meta
@@ -668,7 +681,11 @@ class DashboardRPC:
         }
 
     @rpc_check()
-    async def set_dashboard_settings(self, user_id: int, settings: typing.Dict[str, typing.Any]):
+    async def set_dashboard_settings(
+        self,
+        user_id: int,
+        settings: typing.Dict[str, typing.Any],
+    ) -> typing.Dict[str, int]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         config_group = self.cog.config.webserver.ui.meta
@@ -686,7 +703,7 @@ class DashboardRPC:
         return {"status": 0}
 
     @rpc_check()
-    async def get_bot_settings(self, user_id: int):
+    async def get_bot_settings(self, user_id: int) -> typing.Dict[str, typing.Any]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         config_group = self.bot._config
@@ -719,7 +736,11 @@ class DashboardRPC:
         }
 
     @rpc_check()
-    async def set_bot_settings(self, user_id: int, settings: typing.Dict[str, typing.Any]):
+    async def set_bot_settings(
+        self,
+        user_id: int,
+        settings: typing.Dict[str, typing.Any],
+    ) -> typing.Dict[str, int]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         config_group = self.bot._config
@@ -782,7 +803,7 @@ class DashboardRPC:
     @rpc_check()
     async def set_custom_pages(
         self, user_id: int, custom_pages: typing.List[typing.Dict[str, str]]
-    ):
+    ) -> typing.Dict[str, int]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         await self.cog.config.webserver.custom_pages.set(custom_pages)

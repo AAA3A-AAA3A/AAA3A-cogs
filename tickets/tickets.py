@@ -441,7 +441,7 @@ class Tickets(DashboardIntegration, Cog):
                 config = profiles[ticket.profile]
                 if ticket.owner is None:
                     try:
-                        await ticket.guild.fetch_member(ticket.host_id)
+                        await ticket.guild.fetch_member(ticket.owner_id)
                     except discord.NotFound:
                         if config["close_on_leave"]:
                             await ticket.close()

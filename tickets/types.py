@@ -302,12 +302,17 @@ class Ticket:
                     "{profile}", "ticket" if self.profile == "main" else self.profile
                 )
 
+        owner = (
+            self.owner
+            if self.owner is not None
+            else await self.bot.fetch_user(self.owner_id)
+        )
         return channel_name.format(
             emoji=self.emoji,
-            owner_display_name=self.owner.display_name,
-            owner_name=self.owner.name,
-            owner_mention=self.owner.mention,
-            owner_id=self.owner.id,
+            owner_display_name=owner.display_name,
+            owner_name=owner.name,
+            owner_mention=owner.mention,
+            owner_id=owner.id,
             guild_name=self.guild.name,
             guild_id=self.guild.id,
         )[:100]

@@ -792,8 +792,6 @@ class DashboardRPC:
         await config_group.invite_public.set(settings["invite_public"])
         await config_group.invite_commands_scope.set(settings["invite_commands_scope"])
         await config_group.invite_perm.set(settings["invite_perms"])
-        if settings["locale"] is None:
-            settings["locale"] = await self.bot._config.locale()
         i18n.set_contextual_locale(settings["locale"])
         await self.bot._i18n_cache.set_locale(None, settings["locale"])
         i18n.set_contextual_regional_format(settings["regional_format"])

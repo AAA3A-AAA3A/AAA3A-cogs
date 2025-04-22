@@ -1328,12 +1328,15 @@ class Spy(Role):
 
     @classmethod
     async def action(cls, night, player: Player, target: Player) -> None:
+        t = night.targets.get(target)
+        if t is not None and isinstance(t, typing.Tuple):
+            t = t[0]
         await player.send(
             embed=discord.Embed(
                 title=_("Your target, {target.member.display_name}, ").format(target=target)
                 + (
                     _(" has visited {t.member.display_name} this night.").format(t=t)
-                    if (t := night.targets.get(target)) is not None
+                    if t is not None
                     and target.role.visit_type != "Passive"
                     else _("apparently didn't visit anyone this night.")
                 )
@@ -1632,7 +1635,7 @@ class Watcher(Role):
     @classmethod
     async def action(cls, night, player: Player, target: Player) -> None:
         players = [
-            p for p, t in night.targets.items() if t == target and p.role.visit_type != "Passive"
+            p for p, t in night.targets.items() if (t == target if not isinstance(t, typing.Tuple) else target in t) and p.role.visit_type != "Passive"
         ]
         await player.send(
             embed=discord.Embed(
@@ -1734,9 +1737,7 @@ class PlagueDoctor(Role):
             night.plague_doctor_warning = True
             embed: discord.Embed = discord.Embed(
                 title=_("The **Plague Doctor** has infected everyone!"),
-                description=_(
-                    "The town has one day to lynch them, or else everyone will die!"
-                ),
+                description=_("The town has one day to lynch them, or else everyone will die!"),
                 color=cls.color(),
             )
             embed.set_image(url="attachment://plague_doctor.png")
@@ -3626,7 +3627,7 @@ class Baker(Role):
         return (
             not player.is_dead
             and len({t for t in player.game_targets if not t.is_dead})
-            >= len(player.game.players) // 5
+            >= len(player.game.players) // 3
         )
 
     @classmethod
@@ -3689,8 +3690,11 @@ class Cupid(Role):
             "description": _("Have a couple be formed by two players from the same side."),
         },
         "Pandora's Box": {
-            "check": lambda player: {player.lovers[0].role, player.lovers[1].role} == {"Mafia", "Villagers"},
-            "description": _("Have a couple be formed by a member of the Mafia and a Villagers' player."),
+            "check": lambda player: {player.lovers[0].role, player.lovers[1].role}
+            == {"Mafia", "Villagers"},
+            "description": _(
+                "Have a couple be formed by a member of the Mafia and a Villagers' player."
+            ),
         },
         "The A-team": {
             "check": lambda player: player.has_won and not player.is_dead,
@@ -4027,11 +4031,17 @@ class Necromancer(Role):
             "value": 25,
         },
         "Final Retribution": {
-            "check": lambda player: any(t[0].role is Vigilante and getattr(t[1].death_cause, "role", None) is Vigilante for t in player.game_targets),
+            "check": lambda player: any(
+                t[0].role is Vigilante and getattr(t[1].death_cause, "role", None) is Vigilante
+                for t in player.game_targets
+            ),
             "description": _("Reanimate a Vigilante and shoot someone."),
         },
         "New God Father": {
-            "check": lambda player: any(t[0].role is GodFather and getattr(t[1].death_cause, "role", None) is GodFather for t in player.game_targets),
+            "check": lambda player: any(
+                t[0].role is GodFather and getattr(t[1].death_cause, "role", None) is GodFather
+                for t in player.game_targets
+            ),
             "description": _("Reanimate a GodFather and kill someone."),
         },
     }
@@ -4054,7 +4064,9 @@ class Necromancer(Role):
             _target = target[1]
             try:
                 await target[0].role.action(
-                    night, player, _target,
+                    night,
+                    player,
+                    _target,
                 )
             except NotImplementedError:
                 pass
@@ -4068,9 +4080,9 @@ class Necromancer(Role):
             target[0].is_dead = False
             await player.game.send(
                 embed=discord.Embed(
-                    title=_("The Necromancer has revived **{target.member.display_name}**!").format(
-                        target=target[0]
-                    ),
+                    title=_(
+                        "The Necromancer has revived **{target.member.display_name}**!"
+                    ).format(target=target[0]),
                     color=cls.color(),
                 ).set_thumbnail(url=cls.image_url()),
                 file=cls.get_image(),

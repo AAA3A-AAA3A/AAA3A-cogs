@@ -656,7 +656,7 @@ class GodFather(Role):
         },
     }
 
-    perform_action = perform_action_select_targets(self_allowed=False, mafia_allowed=True)
+    perform_action = perform_action_select_targets(self_allowed=False, mafia_allowed=False)
 
     @classmethod
     async def action(cls, night, player: Player, target: Player) -> None:

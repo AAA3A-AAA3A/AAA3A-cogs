@@ -3471,7 +3471,7 @@ class Guardian(Role):
         },
     }
 
-    perform_action = perform_action_select_targets(self_allowed=False, last_target_allowed=False)
+    perform_action = perform_action_select_targets(last_target_allowed=False)
 
     @classmethod
     async def check_pt(cls, night, player: Player, p: Player, t: Player) -> Player:

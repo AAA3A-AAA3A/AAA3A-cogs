@@ -2544,7 +2544,7 @@ class Gambler(Role):
     async def action(cls, night, player: Player, target: Player) -> None:
         if (dice := night.gamblers_dices.get(player)) is None:
             return
-        dices_result = cls.get_dices_results(night, player)
+        dices_result = cls.get_dices_result(night, player)
         if dice == "red":
             if dices_result[0]:
                 dices_result[1].is_dead = False

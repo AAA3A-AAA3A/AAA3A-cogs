@@ -2482,45 +2482,45 @@ class Gambler(Role):
         )
 
     @classmethod
-    def get_dices_result(
+    def get_dice_result(
         cls, night, player: Player
     ) -> typing.Tuple[bool, typing.Optional[Player]]:
         dice = night.gamblers_dices[player]
-        if player not in night.dices_results:
+        if player not in night.gamblers_results:
             if dice == "white":
                 if random.random() >= 0.70:
-                    night.dices_results[player] = (True, None)
+                    night.gamblers_results[player] = (True, None)
                 else:
                     distracted = random.choice(
                         [p for p in night.game.alive_players if p.role.side == "Villagers"]
                     )
-                    night.dices_results[player] = (False, distracted)
+                    night.gamblers_results[player] = (False, distracted)
             elif dice == "yellow":
                 if random.random() >= 0.50:
                     p = random.choice(
                         [p for p in night.game.alive_players if p.role.side == "Villagers"]
                     )
-                    night.dices_results[player] = (True, p)
+                    night.gamblers_results[player] = (True, p)
                 else:
-                    night.dices_results[player] = (False, None)
+                    night.gamblers_results[player] = (False, None)
             elif dice == "red":
                 if random.random() >= 0.20:
                     revived = random.choice(
                         [p for p in night.game.dead_players if p.role.side == "Villagers"]
                     )
-                    night.dices_results[player] = (True, revived)
+                    night.gamblers_results[player] = (True, revived)
                 else:
-                    night.dices_results[player] = (False, None)
-        return night.dices_results[player]
+                    night.gamblers_results[player] = (False, None)
+        return night.gamblers_results[player]
 
     @classmethod
     async def check_pt(cls, night, player: Player, p: Player, t: Player) -> Player:
         if (dice := night.gamblers_dices.get(player)) is None:
             return t
-        dices_result = cls.get_dices_result(night, player)
+        dice_result = cls.get_dice_result(night, player)
         if dice == "white":
             if (
-                dices_result[0]
+                dice_result[0]
                 and t == player
                 and p.role in (GodFather, Mafia)
                 and random.random() >= 0.50
@@ -2531,7 +2531,7 @@ class Gambler(Role):
                     ),
                 )
                 raise ValueError()
-            elif not dices_result[0] and p == dices_result[1] and p.role.visit_type != "Passive":
+            elif not dice_result[0] and p == dice_result[1] and p.role.visit_type != "Passive":
                 await p.send(
                     embed=discord.Embed(
                         title=_("Sorry, you got distracted by the Gambler's dice tonight!"),
@@ -2544,11 +2544,11 @@ class Gambler(Role):
     async def action(cls, night, player: Player, target: Player) -> None:
         if (dice := night.gamblers_dices.get(player)) is None:
             return
-        dices_result = cls.get_dices_result(night, player)
+        dice_result = cls.get_dice_result(night, player)
         if dice == "red":
-            if dices_result[0]:
-                dices_result[1].is_dead = False
-                await dices_result[1].send(
+            if dice_result[0]:
+                dice_result[1].is_dead = False
+                await dice_result[1].send(
                     embed=discord.Embed(
                         title=_("You have been revived by the Gambler's dice!"),
                         description=_("You are now alive and well."),

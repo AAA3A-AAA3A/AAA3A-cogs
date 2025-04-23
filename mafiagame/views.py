@@ -974,7 +974,7 @@ class VoteView(discord.ui.View):
             player.role.name == "Gambler"
             and player in last_night.targets
             and last_night.gamblers_dices[player] == "yellow"
-            and not last_night.dices_results[player][0]
+            and not last_night.gamblers_results[player][0]
         ):
             await interaction.response.send_message(
                 _("You have **rolled a yellow dice** and lost, you can't vote today!"),
@@ -1104,7 +1104,7 @@ class JudgementView(discord.ui.View):
             player.role.name == "Gambler"
             and player in last_night.targets
             and last_night.gamblers_dices[player] == "yellow"
-            and not last_night.dices_results[player][0]
+            and not last_night.gamblers_results[player][0]
         ):
             await interaction.response.send_message(
                 _("You have **rolled a yellow dice** and lost, you can't vote today!"),

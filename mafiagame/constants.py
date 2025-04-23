@@ -77,6 +77,7 @@ TESTERS: typing.List[int] = [
     306629195948359681,  # skelitor
     406771688655552512,  # Kaen
     # One Piece Community
+    161183456896876544,  # Ult
     374623019437654016,  # grillribba
 ]
 

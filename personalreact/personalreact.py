@@ -241,7 +241,10 @@ class PersonalReact(DashboardIntegration, Cog):
                     or (data.get("user_id", False) and str(m_id) in message.content.split(" "))
                     or (
                         (custom_trigger := data.get("custom_trigger")) is not None
-                        and custom_trigger.lower() in message.content.lower().split(" ")
+                        and custom_trigger.lower() in [
+                            word.strip(".,!?;:()[]{}")
+                            for word in message.content.lower().split(" ")
+                        ]
                         and (_type := "custom_trigger")
                     )
                 )

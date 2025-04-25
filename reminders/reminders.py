@@ -22,7 +22,7 @@ from .converters import (
     TimezoneConverter,
 )  # NOQA
 from .dashboard_integration import DashboardIntegration
-from .types import Content, Data, Reminder, Repeat, RepeatRule
+from .types import Content, Reminder, Repeat, RepeatRule
 from .views import ReminderView
 
 # Credits:

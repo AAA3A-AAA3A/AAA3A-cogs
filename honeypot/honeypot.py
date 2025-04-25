@@ -126,23 +126,24 @@ class Honeypot(Cog):
         embed.set_thumbnail(url=message.author.display_avatar)
         failed = None
         if action is not None:
+            reason = "Self bot/scammer detected (message in the HoneyPot channel)."
             try:
                 if action == "mute":
                     if (mute_role_id := config["mute_role"]) is not None and (
                         mute_role := message.guild.get_role(mute_role_id)
                     ) is not None:
                         await message.author.add_roles(
-                            mute_role, reason="Self bot/scammer detected."
+                            mute_role, reason=reason
                         )
                     else:
                         failed = _(
                             "**Failed:** The mute role is not set or doesn't exist anymore."
                         )
                 elif action == "kick":
-                    await message.author.kick(reason="Self bot/scammer detected.")
+                    await message.author.kick(reason=reason)
                 elif action == "ban":
                     await message.author.ban(
-                        reason="Self bot/scammer detected.",
+                        reason=reason,
                         delete_message_days=config["ban_delete_message_days"],
                     )
             except discord.HTTPException as e:
@@ -157,7 +158,7 @@ class Honeypot(Cog):
                     action_type=action,
                     user=message.author,
                     moderator=message.guild.me,
-                    reason="Self bot/scammer detected.",
+                    reason=reason,
                 )
             embed.add_field(
                 name=_("Action:"),

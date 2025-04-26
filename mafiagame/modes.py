@@ -209,7 +209,7 @@ class Chaos(Mode):
             "choices": [(None, [Vigilante, Mayor, Spy, PrivateInvestigator, Distractor])],
         },
         (8, 9): {
-            "must": ALWAYS_MUST + [Executioner],
+            "must": ALWAYS_MUST,
             "may": [Executioner, Baiter, Bomber],
             "choices": [
                 (1, [Mafia, Framer]),
@@ -217,8 +217,8 @@ class Chaos(Mode):
             ],
         },
         10: {
-            "must": ALWAYS_MUST,
-            "may": [Executioner, Baiter, Bomber],
+            "must": ALWAYS_MUST + [Executioner],
+            "may": [Baiter, Bomber],
             "choices": [
                 (1, [Mafia, Framer]),
                 (None, [Vigilante, Mayor, Spy, PrivateInvestigator, Distractor]),

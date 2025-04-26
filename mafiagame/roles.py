@@ -447,24 +447,28 @@ class Role:
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
-        mafia_check = len(
-            [p for p in player.game.alive_players if p.role.side == "Mafia" or p.is_town_traitor]
-        ) >= len(
-            [
-                p
-                for p in player.game.alive_players
-                if p.role.side != "Mafia" and not p.is_town_traitor
-            ]
-        ) or (
-            all(p.is_dead for p in player.game.players if p.role.side == "Mafia")
-            and any(p for p in player.game.alive_players if p.is_town_traitor)
-            and player.game.current_number
-            - max(
-                p.death_day_night_number
-                for p in player.game.dead_players
-                if p.role.side == "Mafia"
+        mafia_check = (
+            len(
+                [p for p in player.game.alive_players if p.role.side == "Mafia" or p.is_town_traitor]
+            ) >= len(
+                [
+                    p
+                    for p in player.game.alive_players
+                    if p.role.side != "Mafia" and not p.is_town_traitor
+                ]
+            ) or (
+                all(p.is_dead for p in player.game.players if p.role.side == "Mafia")
+                and any(p for p in player.game.alive_players if p.is_town_traitor)
+                and player.game.current_number
+                - max(
+                    p.death_day_night_number
+                    for p in player.game.dead_players
+                    if p.role.side == "Mafia"
+                )
+                >= 3
+            ) and not any(
+                p.has_won for p in player.game.alive_players if p.role is Jester
             )
-            >= 3
         )
         if player.role.side == "Mafia" or player.is_town_traitor:
             # all(p.is_dead for p in player.game.players if p.role.side != "Mafia" and not p.is_town_traitor)

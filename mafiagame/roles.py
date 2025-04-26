@@ -2095,7 +2095,7 @@ class Mimic(Role):
 
     @classmethod
     async def check_pt(cls, night, player: Player, p: Player, t: Player) -> Player:
-        if p != night.targets.get(player) and random.random() <= 0.50:
+        if p == night.targets.get(player) and random.random() <= 0.50:
             await p.send(
                 embed=discord.Embed(
                     title=_("Sorry, you got distracted tonight!"),

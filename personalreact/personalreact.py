@@ -290,7 +290,7 @@ class PersonalReact(DashboardIntegration, Cog):
             await self.get_reactions(ctx.author, "custom_trigger")
         )[1] == 0:
             raise commands.UserFeedbackCheckFailure(
-                _("You aren't elligible for using PersonalReact.")
+                _("You aren't eligible for using PersonalReact.")
             )
         if not await self.config.member(ctx.author).reactions():
             raise commands.UserFeedbackCheckFailure(_("You don't have any reaction set."))
@@ -320,7 +320,7 @@ class PersonalReact(DashboardIntegration, Cog):
         """Set a custom trigger."""
         if (await self.get_reactions(ctx.author, "custom_trigger"))[1] == 0:
             raise commands.UserFeedbackCheckFailure(
-                _("You aren't elligible for using the custom trigger feature.")
+                _("You aren't eligible for using the custom trigger feature.")
             )
         if len(custom_trigger) < (
             min_custom_trigger_length := await self.config.guild(
@@ -343,7 +343,7 @@ class PersonalReact(DashboardIntegration, Cog):
             await self.get_reactions(ctx.author, "custom_trigger")
         )[1] == 0:
             raise commands.UserFeedbackCheckFailure(
-                _("You aren't elligible for using PersonalReact.")
+                _("You aren't eligible for using PersonalReact.")
             )
         if not reactions:
             if not await CogsUtils.ConfirmationAsk(
@@ -375,7 +375,7 @@ class PersonalReact(DashboardIntegration, Cog):
             await self.get_reactions(ctx.author, "custom_trigger")
         )[1] == 0:
             raise commands.UserFeedbackCheckFailure(
-                _("You aren't elligible for using PersonalReact.")
+                _("You aren't eligible for using PersonalReact.")
             )
         if not reactions:
             raise commands.UserFeedbackCheckFailure(

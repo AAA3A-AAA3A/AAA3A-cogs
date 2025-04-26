@@ -116,7 +116,7 @@ class PersonalReactView(discord.ui.View):
                 + (
                     _("✅ Elligible") + _(" ({amount} reactions)").format(amount=base_total_amount)
                     if base_total_amount > 0
-                    else _("❌ Not elligible")
+                    else _("❌ Not eligible")
                 )
             ),
         )
@@ -142,7 +142,7 @@ class PersonalReactView(discord.ui.View):
                     _("✅ Elligible")
                     + _(" ({amount} reactions)").format(amount=custom_trigger_total_amount)
                     if custom_trigger_total_amount > 0
-                    else _("❌ Not elligible")
+                    else _("❌ Not eligible")
                 )
             ),
         )
@@ -218,7 +218,7 @@ class PersonalReactView(discord.ui.View):
                 await self.cog.get_reactions(self.ctx.author, "custom_trigger")
             )[1] == 0:
                 await interaction.response.send_message(
-                    _("You aren't elligible for using PersonalReact."),
+                    _("You aren't eligible for using PersonalReact."),
                     ephemeral=True,
                 )
                 return
@@ -257,7 +257,7 @@ class PersonalReactView(discord.ui.View):
     ) -> None:
         if (await self.cog.get_reactions(self.ctx.author, "custom_trigger"))[1] == 0:
             await interaction.response.send_message(
-                _("You aren't elligible for using the custom trigger feature."),
+                _("You aren't eligible for using the custom trigger feature."),
                 ephemeral=True,
             )
             return

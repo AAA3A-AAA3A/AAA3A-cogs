@@ -1013,7 +1013,7 @@ class Game:
             title=_("Game Over — {side} won the game!").format(
                 side=(
                     "Mafia"
-                    if main_winners[0].role.side == "Mafia"
+                    if main_winners[0].role.side == "Mafia" or main_winners[0].is_town_traitor
                     else (
                         "Villagers"
                         if main_winners[0].role.side == "Villagers"

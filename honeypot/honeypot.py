@@ -186,6 +186,7 @@ class Honeypot(Cog):
                 else None
             ),
             embed=embed,
+            allowed_mentions=discord.AllowedMentions(roles=True),
         )
 
     @commands.guild_only()

@@ -312,7 +312,7 @@ class TempRoles(Cog):
         if (
             ctx.command.name != "selfassign"
             and ctx.author != ctx.guild.owner
-            and (member.top_role >= ctx.author.top_role or member == ctx.guild.owner)
+            and (member.top_role > ctx.author.top_role or member == ctx.guild.owner)
         ):
             raise commands.UserFeedbackCheckFailure(
                 _("You can't assign this role to this member, due to the Discord role hierarchy.")

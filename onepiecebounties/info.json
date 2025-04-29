@@ -1,0 +1,20 @@
+{
+    "author": ["AAA3A", "ultpanda"],
+    "name": "OnePieceBounties",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!",
+    "short": "Give One Piece's bounties to your members, based on their time in the server, their level and their roles, then generate their wanted posters, and also welcome them when they join!",
+    "description": "Give One Piece's bounties to your members, based on their time in the server, their level and their roles, then generate their wanted posters, and also welcome them when they join!",
+    "tags": [
+        "one",
+        "piece",
+        "bounty",
+        "level",
+        "roles",
+        "wanted",
+        "poster",
+        "welcome"
+    ],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "one-piece-wanted-poster"],
+    "min_bot_version": "3.5.0",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+}

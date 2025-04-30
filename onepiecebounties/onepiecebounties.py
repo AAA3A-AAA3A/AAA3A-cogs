@@ -375,9 +375,10 @@ class OnePieceBounties(WelcomePlugin, Cog):
         ctx: commands.Context,
         role: discord.Role,
         min_bounty: BountyConverter,
-        max_bounty: BountyConverter,
+        max_bounty: BountyConverter = None,
     ) -> None:
         """Add a bonus role to the bounty calculation."""
+        max_bounty = max_bounty or min_bounty
         if min_bounty > max_bounty:
             return await ctx.send(_("The minimum bounty can't be higher than the maximum bounty!"))
         async with self.config.guild(ctx.guild).bonus_roles() as bonus_roles:

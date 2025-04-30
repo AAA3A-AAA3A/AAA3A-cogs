@@ -284,8 +284,11 @@ class OnePieceBounties(WelcomePlugin, Cog):
         bounty = await self.get_bounty(member)
         bounty_tier = self.get_bounty_tier(bounty)
         embed: discord.Embed = discord.Embed(
-            title=_("Marine HQ has issued a bounty of **{bounty:,}** berries for **{member.display_name}**, worthy of a **{bounty_tier} Level Threat**!").format(
-                member=member, bounty=bounty, bounty_tier=bounty_tier,
+            title=_("Marine HQ has issued a bounty of **{bounty:,}** {berries} for **{member.display_name}**, worthy of a **{bounty_tier} Level Threat**!").format(
+                member=member,
+                bounty=bounty,
+                berries=_("berries") if bounty > 1 else _("berry"),
+                bounty_tier=bounty_tier,
             ),
             color=await self.bot.get_embed_color(member),
         )
@@ -331,10 +334,11 @@ class OnePieceBounties(WelcomePlugin, Cog):
         )
         description = "\n".join(
             [
-                _("**{i}.** {member.display_name}: **{bounty:,}** berries").format(
+                _("**{i}.** {member.display_name}: **{bounty:,}** {berries}").format(
                     i=i,
                     member=member,
                     bounty=bounty,
+                    berries=_("berries") if bounty > 1 else _("berry"),
                 )
                 for i, (member, bounty) in enumerate(
                     sorted(
@@ -396,9 +400,10 @@ class OnePieceBounties(WelcomePlugin, Cog):
             raise commands.UserFeedbackCheckFailure(_("There are no bonus roles."))
         description = "\n".join(
             [
-                _("{role.mention}: {min_bounty:,} - {max_bounty:,} berries").format(
+                _("{role.mention}: {min_bounty:,} - {max_bounty:,} {berries}").format(
                     role=role,
                     min_bounty=bounties[0], max_bounty=bounties[1],
+                    berries=_("berries") if abs(bounties[0]) > 1 else _("berry"),
                 )
                 for role_id, bounties in bonus_roles.items()
                 if (role := ctx.guild.get_role(int(role_id))) is not None
@@ -516,7 +521,11 @@ class OnePieceBounties(WelcomePlugin, Cog):
             raise commands.UserFeedbackCheckFailure(_("There are no bonuses."))
         description = "\n".join(
             [
-                _("{member.mention}: {bonus:,} berries").format(member=member, bonus=bonus["bonus"])
+                _("{member.mention}: {bonus:,} {berries}").format(
+                    member=member,
+                    bonus=bonus["bonus"],
+                    berries=_("berries") if abs(bonus["bonus"]) > 1 else _("berry"),
+                )
                 for member_id, bonus in bonuses.items()
                 if (
                     (member := ctx.guild.get_member(member_id)) is not None

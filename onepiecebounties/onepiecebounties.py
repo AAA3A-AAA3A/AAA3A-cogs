@@ -143,7 +143,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
             bot=self.bot,
             cog=self,
             config=self.config,
-            group=self.config.GLOBAL,
+            group=self.config.GUILD,
             settings=_settings,
             global_path=[],
             use_profiles_system=False,
@@ -177,13 +177,17 @@ class OnePieceBounties(WelcomePlugin, Cog):
                     else datetime.datetime.fromisoformat(accurate_joined_at).replace(tzinfo=datetime.timezone.utc)
                 )
             ) is not None:
-                months = (datetime.datetime.now(tz=datetime.timezone.utc) - joined_at).days // 30
-                for i in range(months):
+                months = (datetime.datetime.now(tz=datetime.timezone.utc) - joined_at).days / 30
+                for i in range(1, int(months) + 2):
                     random.seed(f"{member.id}-month-{i}")
                     year = i // 12
                     min_bounty = 4_000_000 + (year * 1_500_000)
                     max_bounty = 8_000_000 + (year * 1_500_000)
-                    bounty += random.randint(min_bounty, max_bounty)
+                    bounty += int(
+                        random.randint(min_bounty, max_bounty) * (
+                            months - i if i == int(months) else 1
+                        )
+                    )
         
         if (
             config["include_levelup_levels"]
@@ -191,7 +195,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
             and (conf := LevelUp.db.get_conf(guild)).enabled
         ):
             level = conf.get_profile(member.id).level
-            for i in range(level):
+            for i in range(1, level + 1):
                 random.seed(f"{member.id}-level-{i}")
                 l10 = i // 10
                 min_bounty = 10_000_000 + (l10 * 2_000_000)
@@ -211,16 +215,18 @@ class OnePieceBounties(WelcomePlugin, Cog):
         if bounty <= 1:
             return 1
         if bounty > 1_000_000_000:
-            return round(bounty, -6)
+            return round(bounty, -7)
         elif bounty > 100_000_000:
-            return round(bounty, -5)
+            return round(bounty, -6)
         elif bounty > 10_000_000:
-            return round(bounty, -4)
+            return round(bounty, -5)
         elif bounty > 1_000_000:
-            return round(bounty, -3)
+            return round(bounty, -4)
         elif bounty > 100_000:
-            return round(bounty, -2)
+            return round(bounty, -3)
         elif bounty > 10_000:
+            return round(bounty, -2)
+        elif bounty > 1_000:
             return round(bounty, -1)
         return bounty
 
@@ -266,7 +272,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
             (_("Grand Line"), 50_000_000),
             (_("East Blue"), 10_000_000),
             (_("Sailing Rookie"), 1_000_000),
-            (_("Sailor"), 0),
+            (_("Sailor"), 1),
         ]
 
     def get_bounty_tier(self, bounty: int) -> str:

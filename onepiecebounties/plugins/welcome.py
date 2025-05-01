@@ -147,7 +147,7 @@ class WelcomeView(discord.ui.View):
                 "*\"Your bounty doesn't determine your worth to the crew.\"*"
             ).format(
                 tiers="\n".join(
-                    f"💰 **{tier[0]}**: **+ {tier[1]:,}** berries"
+                    f"💰 **{tier[0]}**: **+ {tier[1]:,}** {_('berries') if tier[1] > 1 else _('berry')}"
                     for tier in self.cog.get_bounty_tiers()
                 )
             ),

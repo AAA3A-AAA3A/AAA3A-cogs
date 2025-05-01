@@ -25,7 +25,7 @@ class RoleConverter(commands.RoleConverter):
 
 @cog_i18n(_)
 class RumbleNotifier(Cog):
-    """Ping a role when a rumble starts, and let members suscribe or unsuscribe from the notifications!"""
+    """Ping a role when a rumble starts, and let members subscribe or unsubscribe from the notifications!"""
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -39,7 +39,7 @@ class RumbleNotifier(Cog):
             enabled=False,
             channels=[],
             role=None,
-            suscribing=False,
+            subscribing=False,
         )
 
         _settings: typing.Dict[
@@ -61,9 +61,9 @@ class RumbleNotifier(Cog):
                 "converter": RoleConverter,
                 "description": "The role that will be pinged when a rumble starts.",
             },
-            "suscribing": {
+            "subscribing": {
                 "converter": bool,
-                "description": "Enable or disable the suscribing system.",
+                "description": "Enable or disable the subscribing system.",
             },
         }
         self.settings: Settings = Settings(
@@ -120,8 +120,8 @@ class RumbleNotifier(Cog):
             )
         ):
             return
-        suscribing = (
-            config["suscribing"]
+        subscribing = (
+            config["subscribing"]
             and message.guild.me.guild_permissions.manage_roles
             and role.is_assignable()
         )
@@ -132,7 +132,7 @@ class RumbleNotifier(Cog):
             ),
             color=discord.Color.gold(),
         )
-        if suscribing:
+        if subscribing:
             embed.add_field(
                 name="\u200b",
                 value=_("Want to be notified in the future? Use the buttons below!"),
@@ -142,7 +142,7 @@ class RumbleNotifier(Cog):
         await message.channel.send(
             content=role.mention,
             embed=embed,
-            view=self.views[None] if suscribing else None,
+            view=self.views[None] if subscribing else None,
             allowed_mentions=discord.AllowedMentions(roles=True),
         )
 

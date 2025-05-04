@@ -76,7 +76,7 @@ class Player:
         return hash(self.member)
 
     def __repr__(self) -> str:
-        return f"<Player role=<{self.role.__name__} side={self.role.side!r}> member={self.member!r} is_dead={self.is_dead}>"
+        return f"<Player role=<{self.role.__name__} side={self.role.side!r}> is_town_traitor={self.is_town_traitor!r} member={self.member!r} is_dead={self.is_dead}>"
 
     async def send(
         self, *args, **kwargs
@@ -676,7 +676,7 @@ class GodFather(Role):
                 [
                     p
                     for p in player.game.alive_players
-                    if p.role.side == "Mafia" and p.role is not GodFather
+                    if p.role.side == "Mafia" or p.is_town_traitor
                 ],
                 key=lambda p: (MAFIA_HIERARCHY.index(p.role), player.game.players.index(p)),
             )

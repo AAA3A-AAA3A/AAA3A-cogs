@@ -291,6 +291,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 bounty_tier=bounty_tier,
             ),
             color=await self.bot.get_embed_color(member),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.set_footer(
             text=member.guild.name,

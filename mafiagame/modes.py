@@ -148,13 +148,13 @@ class Mode:
                 )
             ),
         )
-        roles = [role for role in specificities["must"] if role not in config["disabled_roles"]]
+        roles = [role for role in specificities["must"] if role.name not in config["disabled_roles"]]
         if len(roles) < players_number and "may" in specificities and random.random() < 0.5:
-            may = [role for role in specificities["may"] if role not in config["disabled_roles"]]
+            may = [role for role in specificities["may"] if role.name not in config["disabled_roles"]]
             roles.append(random.choice(may))
         if "choices" in specificities:
             for amount, choices in specificities["choices"]:
-                choices = [role for role in choices if role not in config["disabled_roles"]]
+                choices = [role for role in choices if role.name not in config["disabled_roles"]]
                 if amount is not None:
                     if not isinstance(amount, typing.Tuple):
                         roles.extend(random.sample(choices, k=amount))
@@ -482,7 +482,7 @@ class Random(Mode):
             role
             for role in ROLES
             if (
-                role not in config["disabled_roles"]
+                role.name not in config["disabled_roles"]
                 and (
                     config["more_roles"]
                     or role not in MORE_ROLES

@@ -250,7 +250,7 @@ class MembersView(discord.ui.View):
         embed: discord.Embed = discord.Embed(
             title=_("{total} Member{s}").format(
                 total=len(self.ticket.members_ids),
-                s="s" if len(self.ticket.members_ids) > 1 else "",
+                s="s" if len(self.ticket.members_ids) != 1 else "",
             ),
             color=await self.cog.bot.get_embed_color(self.ticket.channel),
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),

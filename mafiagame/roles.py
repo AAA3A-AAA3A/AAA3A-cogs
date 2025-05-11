@@ -3748,6 +3748,8 @@ class Cupid(Role):
     @classmethod
     async def on_death(cls, player: Player) -> None:
         for lover in player.cupid_lovers:
+            if lover.is_dead:
+                continue
             await lover.change_role(
                 Killer,
                 reason=_(

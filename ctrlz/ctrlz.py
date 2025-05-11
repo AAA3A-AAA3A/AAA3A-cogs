@@ -100,6 +100,14 @@ def create_overwrite_method(audit_log: discord.AuditLogEntry) -> None:
     )
 
 
+def create_role_method(audit_log: discord.AuditLogEntry) -> None:
+    kwargs = dict(audit_log.before)
+    kwargs.pop("colors", None)
+    return audit_log.guild.create_role(
+        **kwargs, reason=REASON
+    )
+
+
 def create_invite_method(audit_log: discord.AuditLogEntry) -> None:
     kwargs = dict(audit_log.before)
     return kwargs.pop("channel").create_invite(**kwargs, reason=REASON)
@@ -171,9 +179,7 @@ REVERT_METHODS: typing.Dict[
         discord.AuditLogAction.unban: lambda audit_log: audit_log.guild.ban(
             audit_log.target, reason=REASON
         ),
-        discord.AuditLogAction.role_delete: lambda audit_log: audit_log.guild.create_role(
-            **dict(audit_log.before), reason=REASON
-        ),
+        discord.AuditLogAction.role_delete: create_role_method,
         discord.AuditLogAction.invite_delete: create_invite_method,
         discord.AuditLogAction.webhook_delete: create_webhook_method,
         discord.AuditLogAction.message_unpin: lambda audit_log: audit_log.extra.channel.get_partial_message(

@@ -3686,11 +3686,11 @@ class Cupid(Role):
             "value": 25,
         },
         "Easy Passion": {
-            "check": lambda player: player.lovers[0].role == player.lovers[1].role,
+            "check": lambda player: player.cupid_lovers[0].role == player.cupid_lovers[1].role,
             "description": _("Have a couple be formed by two players from the same side."),
         },
         "Pandora's Box": {
-            "check": lambda player: {player.lovers[0].role, player.lovers[1].role}
+            "check": lambda player: {player.cupid_lovers[0].role, player.cupid_lovers[1].role}
             == {"Mafia", "Villagers"},
             "description": _(
                 "Have a couple be formed by a member of the Mafia and a Villagers' player."
@@ -3704,7 +3704,7 @@ class Cupid(Role):
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
-        return all(not lover.is_dead for lover in player.cupid_lovers)
+        return player.cupid_lovers and all(not lover.is_dead for lover in player.cupid_lovers)
 
     perform_action = perform_action_select_targets(targets_number=2)
 

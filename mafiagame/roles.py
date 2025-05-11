@@ -672,7 +672,7 @@ class GodFather(Role):
                 [
                     p
                     for p in player.game.alive_players
-                    if p.role.side == "Mafia" or p.is_town_traitor
+                    if (p.role.side == "Mafia" or p.is_town_traitor) and p != player
                 ],
                 key=lambda p: (MAFIA_HIERARCHY.index(p.role), player.game.players.index(p)),
             )

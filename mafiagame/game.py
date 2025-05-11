@@ -520,7 +520,7 @@ class Day(DayNight):
                         file=get_image("defend"),
                         view=suicide_view,
                     )
-                    for _ in range(self.game.config["defend_timeout"]):
+                    for __ in range(self.game.config["defend_timeout"]):
                         if target.is_dead:
                             break
                         await asyncio.sleep(1)

@@ -100,8 +100,6 @@ class Player:
         ] = "Mafia",
         reason: str = None,
     ) -> None:
-        _: Translator = Translator("MafiaGame", __file__)
-
         try:
             await self.role.on_death(self)
         except NotImplementedError:
@@ -401,7 +399,6 @@ class Role:
     def get_kwargs(
         cls, player: Player = None, change: bool = False
     ) -> typing.Dict[str, typing.Union[discord.Embed, discord.File]]:
-        _: Translator = Translator("MafiaGame", __file__)
         embed: discord.Embed = discord.Embed(
             title=_("You are {now}{the_or_a} **{name}**!").format(
                 name=cls.name,
@@ -668,7 +665,6 @@ class GodFather(Role):
 
     @classmethod
     async def on_death(cls, player: Player) -> None:
-        _: Translator = Translator("MafiaGame", __file__)
         if any(p for p in player.game.alive_players if p.role is GodFather and p != player):
             return
         if not (
@@ -2334,7 +2330,7 @@ class Silencer(Role):
         },
     }
 
-    perform_action = perform_action_select_targets(self_allowed=False, mafia_allowed=False)
+    perform_action = perform_action_select_targets(self_allowed=False, mafia_allowed=False, last_target_allowed=False)
 
 
 class Shaman(Role):
@@ -4324,3 +4320,6 @@ for i, achievements in enumerate([ACHIEVEMENTS] + [role.achievements for role in
                 data["description"] = _("Win the game{as_role} without dying.").format(
                     as_role=_(" as {role.name}").format(role=role) if role is not None else ""
                 )
+
+
+_: Translator = Translator("MafiaGame", __file__)

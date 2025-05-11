@@ -609,7 +609,8 @@ class SelectTargetsView(discord.ui.View):
         for select in [self.select] + ([self.second_select] if self.two_selects else []):
             for target in (
                 self.day_night.game.alive_players
-                if select is not self.select or self.player.role.name not in ("Mortician", "Necromancer")
+                if select is not self.select
+                or self.player.role.name not in ("Mortician", "Necromancer")
                 else self.day_night.game.dead_players
             ):
                 if (
@@ -1055,6 +1056,46 @@ class VoteView(discord.ui.View):
             await interaction.followup.send(_("You can't perform any day action!"), ephemeral=True)
         except RuntimeError as error:
             await interaction.followup.send(str(error), ephemeral=True)
+
+
+class SuicideView(discord.ui.View):
+    def __init__(self, player) -> None:
+        super().__init__(timeout=300)
+        self.player = player
+        self._message: discord.Message = None
+
+        self.suicide.label = _("Suicide")
+
+    async def on_timeout(self) -> None:
+        try:
+            await self._message.edit(view=None)
+        except discord.HTTPException:
+            pass
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if (player := self.player.game.get_player(interaction.user)) is None:
+            await interaction.response.send_message(
+                _("You are not a player in this game!"), ephemeral=True
+            )
+            return False
+        if player != self.player:
+            await interaction.response.send_message(
+                _("You can't perform this action at this time!"), ephemeral=True
+            )
+            return False
+        if player.is_dead:
+            await interaction.response.send_message(
+                _("You are dead, you can't perform this action anymore!"), ephemeral=True
+            )
+            return False
+        return True
+
+    @discord.ui.button(emoji="🩸", label="Suicide", style=discord.ButtonStyle.secondary)
+    async def suicide(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
+        await interaction.response.defer(ephemeral=True, thinking=True)
+        await self.player.kill(cause="suicide")
 
 
 class JudgementView(discord.ui.View):

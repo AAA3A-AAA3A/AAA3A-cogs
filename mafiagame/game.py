@@ -55,7 +55,7 @@ from .roles import (
     VillagerAlchemist,
 )  # NOQA
 from .utils import get_image
-from .views import JudgementView, PerformActionView, SpectateView, StartMessageView, VoteView
+from .views import JudgementView, PerformActionView, SpectateView, StartMessageView, SuicideView, VoteView
 
 _: Translator = Translator("MafiaGame", __file__)
 
@@ -496,6 +496,8 @@ class Day(DayNight):
                 and (len(votes) == 1 or len_votes[result[1]] != len_votes[result[0]])
             ):
                 target: Player = result[0]
+                if target.is_dead:  # Because of Judge...
+                    continue
                 if (
                     self.game.config["defend_judgement"]
                     and len(remaining_players) != 2
@@ -511,12 +513,20 @@ class Day(DayNight):
                         color=VOTING_AND_JUDGEMENT_COLOR,
                     )
                     embed.set_image(url="attachment://defend.png")
+                    suicide_view: SuicideView = SuicideView(target)
                     await self.game.send(
                         content=target.member.mention,
                         embed=embed,
                         file=get_image("defend"),
+                        view=suicide_view,
                     )
-                    await asyncio.sleep(self.game.config["defend_timeout"])
+                    for _ in range(self.game.config["defend_timeout"]):
+                        if target.is_dead:
+                            break
+                        await asyncio.sleep(1)
+                    await suicide_view.on_timeout()
+                    if target.is_dead:
+                        continue
                     embed: discord.Embed = discord.Embed(
                         title=_(
                             "It's judgement time! The town has now {judgement_timeout} seconds to vote."

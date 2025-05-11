@@ -3706,7 +3706,7 @@ class Cupid(Role):
     def has_won(cls, player: Player) -> bool:
         return player.cupid_lovers and all(not lover.is_dead for lover in player.cupid_lovers)
 
-    perform_action = perform_action_select_targets(targets_number=2)
+    perform_action = perform_action_select_targets(targets_number=2, self_allowed=False)
 
     @classmethod
     async def action(

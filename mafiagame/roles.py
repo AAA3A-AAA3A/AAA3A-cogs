@@ -96,7 +96,7 @@ class Player:
     async def kill(
         self,
         cause: typing.Union[
-            typing.Literal["Mafia", "voting", "suicide", "afk", "scorching_sun"], "Player"
+            typing.Literal["Mafia", "voting", "suicide", "suicide_during_judgement", "afk", "scorching_sun"], "Player"
         ] = "Mafia",
         reason: str = None,
     ) -> None:
@@ -154,7 +154,7 @@ class Player:
                             _("{member.display_name} has killed **themselves**!").format(
                                 member=self.member
                             )
-                            if cause == "suicide"
+                            if cause in ("suicide", "suicide_during_judgement")
                             else (
                                 _("{member.display_name} has been considered as **AFK**!").format(
                                     member=self.member
@@ -1092,13 +1092,13 @@ class Executioner(Role):
         },
         "Quick Execution": {
             "check": lambda player: player.global_target.is_dead
-            and player.global_target.death_cause == "voting"
+            and player.global_target.death_cause in ("voting", "suicide_during_judgement")
             and player.global_target.death_day_night_number == 1,
             "description": _("Get your target lynched on day 1."),
         },
         "Patience, Jackass, Patience": {
             "check": lambda player: player.global_target.is_dead
-            and player.global_target.death_cause == "voting"
+            and player.global_target.death_cause in ("voting", "suicide_during_judgement")
             and player.global_target.death_day_night_number >= 10,
             "description": _("Get your target lynched on day 10 or later."),
         },
@@ -1106,7 +1106,7 @@ class Executioner(Role):
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
-        return player.global_target.is_dead and player.global_target.death_cause == "voting"
+        return player.global_target.is_dead and player.global_target.death_cause in ("voting", "suicide_during_judgement")
 
     @classmethod
     async def on_game_start(cls, game, player: Player) -> None:
@@ -1134,7 +1134,7 @@ class Executioner(Role):
     async def on_other_player_death(cls, player: Player, other: Player) -> None:
         if other != player.global_target:
             return
-        if other.death_cause != "voting":
+        if other.death_cause not in ("voting", "suicide_during_judgement"):
             await player.change_role(
                 Jester,
                 reason=_(
@@ -1713,7 +1713,7 @@ class PlagueDoctor(Role):
                         for p in player.game.dead_players
                         if p.role is not PlagueDoctor
                         and not p.infected
-                        and p.death_cause == "voting"
+                        and p.death_cause in ("voting", "suicide_during_judgement")
                         and p.death_day_night_number == player.game.days_nights[-1].number
                     )
                 )
@@ -2987,7 +2987,7 @@ class Manipulator(Role):
                 for p in player.game.dead_players
                 if p.role is Mayor
                 and p.revealed
-                and p.death_cause == "voting"
+                and p.death_cause in ("voting", "suicide_during_judgement")
                 and player
                 in next(
                     (
@@ -3005,7 +3005,7 @@ class Manipulator(Role):
                 p
                 for p in player.game.dead_players
                 if p.role is Judge
-                and p.death_cause == "voting"
+                and p.death_cause in ("voting", "suicide_during_judgement")
                 and player
                 in next(
                     (

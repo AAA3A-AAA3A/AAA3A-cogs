@@ -1095,7 +1095,29 @@ class SuicideView(discord.ui.View):
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
-        await self.player.kill(cause="suicide")
+        embed: discord.Embed = discord.Embed(
+            title=_("Hey! Do you really want to kill yourself?"),
+        )
+        fake_context = type(
+            "FakeContext",
+            (),
+            {
+                "interaction": interaction,
+                "bot": interaction.client,
+                "guild": interaction.guild,
+                "channel": interaction.channel,
+                "author": interaction.user,
+                "message": interaction.message,
+                "send": functools.partial(interaction.followup.send, wait=True),
+            },
+        )()
+        if await CogsUtils.ConfirmationAsk(
+            fake_context, embed=embed, ephemeral=True, timeout_message=None
+        ):
+            await self.player.kill(
+                cause="suicide_during_judgement",
+                reason=_("They felt threatened by judgement and decided to take their own life."),
+            )
 
 
 class JudgementView(discord.ui.View):

@@ -574,7 +574,7 @@ class MafiaGame(Cog):
                     in user_achievements.get(str(None) if role is None else role.name, [])
                     else f"🔒 {achievement}"
                     + (
-                        f" ({(len(user_data[data['check']].values()) if role is None else user_data[data['check']].get(role.name, 0))}/{data['value']})"
+                        f" ({(sum(user_data[data['check']].values()) if role is None else user_data[data['check']].get(role.name, 0))}/{data['value']})"
                         if data["check"] in ("games", "wins")
                         else ""
                     )

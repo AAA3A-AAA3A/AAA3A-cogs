@@ -514,7 +514,7 @@ class Day(DayNight):
                     )
                     embed.set_image(url="attachment://defend.png")
                     suicide_view: SuicideView = SuicideView(target)
-                    await self.game.send(
+                    suicide_view._message = await self.game.send(
                         content=target.member.mention,
                         embed=embed,
                         file=get_image("defend"),

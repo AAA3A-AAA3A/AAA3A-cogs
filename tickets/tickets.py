@@ -452,7 +452,7 @@ class Tickets(DashboardIntegration, Cog):
                     and datetime.datetime.now(tz=datetime.timezone.utc) - ticket.closed_at
                     > datetime.timedelta(hours=config["auto_delete_on_close"])
                 ):
-                    await ticket.delete_action()
+                    await ticket.delete_channel(None)  # That's a setting, so no deleter.
 
     def is_support(ignore_owner=False):
         async def predicate(ctx: typing.Union[commands.Context, discord.Interaction]) -> bool:

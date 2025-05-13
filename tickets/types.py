@@ -610,10 +610,10 @@ class Ticket:
             self.owner: discord.PermissionOverwrite(
                 read_messages=True,
                 read_message_history=True,
-                send_messages=True,
-                add_reactions=True,
-                embed_links=True,
-                attach_files=True,
+                send_messages=not self.is_closed,
+                add_reactions=not self.is_closed,
+                embed_links=not self.is_closed,
+                attach_files=not self.is_closed,
             ),
         }
         for support_role_id in config["support_roles"]:
@@ -621,10 +621,10 @@ class Ticket:
                 overwrites[support_role] = discord.PermissionOverwrite(
                     read_messages=True,
                     read_message_history=True,
-                    send_messages=True,
-                    add_reactions=True,
-                    embed_links=True,
-                    attach_files=True,
+                    send_messages=not self.is_closed,
+                    add_reactions=not self.is_closed,
+                    embed_links=not self.is_closed,
+                    attach_files=not self.is_closed,
                 )
         for view_role_id in config["view_roles"]:
             if (view_role := self.guild.get_role(view_role_id)) is not None:
@@ -635,6 +635,16 @@ class Ticket:
                     add_reactions=True,
                     embed_links=False,
                     attach_files=False,
+                )
+        for member_id in self.members_ids:
+            if (member := self.guild.get_member(member_id)) is not None:
+                overwrites[member] = discord.PermissionOverwrite(
+                    read_messages=True,
+                    read_message_history=True,
+                    send_messages=not self.is_closed,
+                    add_reactions=not self.is_closed,
+                    embed_links=not self.is_closed,
+                    attach_files=not self.is_closed,
                 )
         return overwrites
 
@@ -693,6 +703,7 @@ class Ticket:
                     )
                     else self.channel.category
                 ),
+                overwrites=await self.get_channel_overwrites(),
                 reason=audit_reason,
             )
         view = self.cog.views[self.message]
@@ -786,6 +797,7 @@ class Ticket:
                     )
                     else self.channel.category
                 ),
+                overwrites=await self.get_channel_overwrites(),
                 reason=audit_reason,
             )
         view = self.cog.views[self.message]
@@ -1079,14 +1091,8 @@ class Ticket:
         if isinstance(self.channel, discord.Thread):
             await self.channel.add_user(member)
         else:
-            await self.channel.set_permissions(
-                member,
-                read_messages=True,
-                read_message_history=True,
-                send_messages=True,
-                add_reactions=True,
-                embed_links=True,
-                attach_files=True,
+            await self.channel.edit(
+                overwrites=await self.get_channel_overwrites(),
                 reason=audit_reason,
             )
 
@@ -1141,9 +1147,10 @@ class Ticket:
         if isinstance(self.channel, discord.Thread):
             await self.channel.remove_user(member)
         else:
-            await self.channel.set_permissions(
-                member,
-                overwrite=None,
+            overwrites = await self.get_channel_overwrites()
+            overwrites.pop(member, None)
+            await self.channel.edit(
+                overwrites=overwrites,
                 reason=audit_reason,
             )
 

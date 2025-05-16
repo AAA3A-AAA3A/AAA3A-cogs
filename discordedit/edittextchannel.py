@@ -274,7 +274,7 @@ class EditTextChannel(Cog):
         """Edit text channel position.
 
         Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.
-        Channels cannot be moved to a position that takes them out of their current category.
+        Channels can't be moved to a position that takes them out of their current category.
         """
         if channel is None:
             if isinstance(ctx.channel, discord.TextChannel):
@@ -556,9 +556,9 @@ class EditTextChannel(Cog):
         #         )
         #         >= ctx.author.top_role
         #     ):
-        #         raise commands.UserFeedbackCheckFailure(_("You cannot change the permissions of a role/member higher up the hierarchy than your top role."))
+        #         raise commands.UserFeedbackCheckFailure(_("You can't change the permissions of a role/member higher up the hierarchy than your top role."))
         #     if (target if isinstance(target, discord.Role) else target.top_role) >= ctx.me.top_role:
-        #         raise commands.UserFeedbackCheckFailure(_("I cannot change the permissions of a role/member higher up the hierarchy than my top role."))
+        #         raise commands.UserFeedbackCheckFailure(_("I can't change the permissions of a role/member higher up the hierarchy than my top role."))
         if not permissions:
             raise commands.UserFeedbackCheckFailure(
                 _("You need to provide at least one permission.")
@@ -567,7 +567,7 @@ class EditTextChannel(Cog):
         for permission in permissions:
             if not getattr(channel_permissions, permission):
                 raise commands.UserFeedbackCheckFailure(
-                    _("You don't have the permission {permission_name} in this channel.").format(
+                    _("You don't have the permission `{permission_name}` in this channel.").format(
                         permission_name=permission
                     )
                 )
@@ -592,7 +592,7 @@ class EditTextChannel(Cog):
             and getattr(new_channel_permissions, permission) is False
         ]:
             raise commands.UserFeedbackCheckFailure(
-                _("You cannot remove permissions from you in this channel.")
+                _("You can't remove permissions from you in this channel.")
             )
         new_bot_channel_permissions = fake_channel_object.permissions_for(ctx.me)
         if [
@@ -602,7 +602,7 @@ class EditTextChannel(Cog):
             and getattr(new_bot_channel_permissions, permission) is False
         ]:
             raise commands.UserFeedbackCheckFailure(
-                _("You cannot remove permissions from the bot in this channel.")
+                _("You can't remove permissions from the bot in this channel.")
             )
         try:
             await channel.edit(

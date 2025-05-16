@@ -353,7 +353,7 @@ class EditRole(Cog):
         for permission in permissions:
             if not getattr(ctx.author.guild_permissions, permission):
                 raise commands.UserFeedbackCheckFailure(
-                    _("You don't have the permission {permission_name} in this guild.").format(
+                    _("You don't have the permission `{permission_name}` in this guild.").format(
                         permission_name=permission
                     )
                 )

@@ -11,7 +11,7 @@ import io
 from dataclasses import _is_dataclass_instance, dataclass, field, fields
 
 import chat_exporter
-from redbot.core.utils.chat_formatting import bold, humanize_list
+from redbot.core.utils.chat_formatting import bold, humanize_list, box
 
 from .views import ClosedTicketControls, TicketView
 
@@ -77,6 +77,9 @@ class Ticket:
     locked_at_timestamp: int = None
     unlocked_by_id: typing.Optional[int] = None
     unlocked_at_timestamp: int = None
+    appeal_approved: bool = False
+    appeal_approved_by_id: typing.Optional[int] = None
+    appeal_approved_at_timestamp: int = None
 
     members_ids: typing.List[int] = field(default_factory=list)
 
@@ -262,6 +265,33 @@ class Ticket:
         self.unlocked_at_timestamp = None if unlocked_at is None else int(unlocked_at.timestamp())
 
     @property
+    def appeal_approved_by(self) -> typing.Optional[discord.Member]:
+        if (guild := self.guild) is None:
+            return None
+        return guild.get_member(self.appeal_approved_by_id)
+
+    @appeal_approved_by.setter
+    def appeal_approved_by(self, appeal_approved_by: typing.Optional[discord.Member]) -> None:
+        if appeal_approved_by is None:
+            self.appeal_approved_by_id = None
+        else:
+            self.appeal_approved_by_id = appeal_approved_by.id
+
+    @property
+    def appeal_approved_at(self) -> typing.Optional[datetime.datetime]:
+        if self.appeal_approved_at_timestamp is None:
+            return None
+        return datetime.datetime.fromtimestamp(
+            self.appeal_approved_at_timestamp, tz=datetime.timezone.utc
+        )
+
+    @appeal_approved_at.setter
+    def appeal_approved_at(self, appeal_approved_at: typing.Optional[datetime.datetime]) -> None:
+        self.appeal_approved_at_timestamp = (
+            None if appeal_approved_at is None else int(appeal_approved_at.timestamp())
+        )
+
+    @property
     def members(self) -> typing.List[discord.Member]:
         if (guild := self.guild) is None:
             return []
@@ -277,6 +307,8 @@ class Ticket:
 
     @property
     def emoji(self) -> str:
+        if self.appeal_approved:
+            return "🛡️"
         return "🔒" if self.is_closed else ("👥" if self.is_claimed else "❓")
 
     async def channel_name(self, forum_channel: typing.Optional[bool] = None) -> str:
@@ -503,6 +535,20 @@ class Ticket:
                 raise RuntimeError(
                     _("You have reached the maximum number of open tickets for this profile.")
                 )
+            if (
+                config.get("appeals", {"enabled": False})["enabled"]
+                and (appeals_for_guild := self.bot.get_guild(config["appeals"]["guild_id"])) is not None
+            ):
+                try:
+                    await appeals_for_guild.fetch_ban(self.owner_id)
+                except discord.NotFound:
+                    raise RuntimeError(
+                        _(
+                            "You are not banned from the server, so you can't create a ticket."
+                        )
+                    )
+                except discord.HTTPException:
+                    pass
 
         audit_reason = _(
             "Ticket creation for {ticket.owner.display_name} ({ticket.owner.id}) (profile `{ticket.profile}`)"
@@ -1040,6 +1086,91 @@ class Ticket:
                 action_type="ticket_unlocked",
                 user=self.owner,
                 moderator=unlocker,
+                channel=self.channel,
+            )
+
+    async def approve_appeal(self, approver: typing.Optional[discord.Member] = None) -> None:
+        if self.appeal_approved:
+            raise RuntimeError(_("This ticket appeal is already approved."))
+        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        if not config["appeals"]["enabled"]:
+            raise RuntimeError(_("Appeals are not enabled for this profile."))
+        if (guild := self.bot.get_guild(config["appeals"]["guild_id"])) is None:
+            raise RuntimeError(_("The server is not available."))
+        if not guild.me.guild_permissions.ban_members:
+            raise RuntimeError(_("I don't have the required permissions to unban users in the server."))
+        self.appeal_approved = True
+        self.appeal_approved_by = approver
+        self.appeal_approved_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        await self.save()
+
+        if approver is None:
+            audit_reason = _(
+                "Ticket appeal approved (profile `{self.profile}`)"
+            ).format(self=self)
+        else:
+            audit_reason = _(
+                "Ticket appeal approved by {approver.display_name} ({approver.id}) (profile `{self.profile}`)"
+            ).format(approver=approver, self=self)
+
+        try:
+            await guild.unban(
+                self.owner,
+                reason=audit_reason,
+            )
+        except discord.NotFound:
+            await self.channel.send(
+                embed=discord.Embed(
+                    title=_("❌ The user has already been unbanned."),
+                    color=discord.Color.red(),
+                ),
+            )
+        except discord.HTTPException as e:
+            raise RuntimeError(
+                _("I couldn't unban the user.\n{error}").format(error=box(str(e), lang="py"))
+            )
+        await self.channel.send(
+            _(
+                "## 🛡️ **Congratulations!** Your appeal request got approved by our staff!\n\n"
+                "You can use the invite url below to join the server again:\n"
+                "https://discord.gg/{invite_code}\n"
+                "*If you still encounter any issues to join the server, try restarting your Discord client.*\n\n"
+                "Then, please close this ticket. Thank you!"
+            ).format(
+                invite_code=config["appeals"]["invite_code"],
+            ),
+        )
+
+        if isinstance(self.channel, discord.Thread):
+            await self.channel.edit(
+                name=await self.channel_name(),
+                reason=audit_reason,
+            )
+        else:
+            await self.channel.edit(
+                name=await self.channel_name(),
+                reason=audit_reason,
+            )
+        view = self.cog.views[self.message]
+        await view._update()
+        await self.message.edit(
+            embeds=await self.get_embeds(),
+            view=view,
+        )
+
+        self.bot.dispatch("ticket_appeal_approved", self)
+        # await self.log_action(
+        #     approver,
+        #     action=_("🛡️ Ticket Appeal Approved"),
+        # )
+        if config["create_modlog_case"]:
+            await modlog.create_case(
+                bot=self.bot,
+                guild=self.guild,
+                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+                action_type="ticket_appeal_approved",
+                user=self.owner,
+                moderator=self.guild.me,
                 channel=self.channel,
             )
 

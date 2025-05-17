@@ -110,7 +110,14 @@ class Tickets(DashboardIntegration, Cog):
                     "unlock": "🔓",
                     "transcript": "📜",
                     "delete": "🗑️",
+                    "approve_appeal": "🛡️",
                 },
+                # Appeal feature.
+                "appeals": {
+                    "enabled": False,
+                    "guild_id": None,
+                    "invite_code": None,
+                }
             },
             buttons_dropdowns={},
         )
@@ -304,6 +311,12 @@ class Tickets(DashboardIntegration, Cog):
                 "path": ["emojis", "delete"],
                 "converter": Emoji,
                 "description": "Emoji of the `Delete` button.",
+                "no_slash": True,
+            },
+            "emoji_approve_appeal": {
+                "path": ["emojis", "approve_appeal"],
+                "converter": Emoji,
+                "description": "Emoji of the `Approve Appeal` button.",
                 "no_slash": True,
             },
         }
@@ -1337,6 +1350,77 @@ class Tickets(DashboardIntegration, Cog):
             self.views.pop(message).stop()
         await message.edit(view=None)
         await self.config.guild(ctx.guild).buttons_dropdowns.set(buttons_dropdowns)
+
+    @settickets.command(with_app_command=False)
+    async def configureappeals(
+        self,
+        ctx: commands.Context,
+        profile: typing.Optional[ProfileConverter],
+        guild_id: int,
+        invite_code: str,
+        moderator_role: typing.Optional[discord.Role] = None,
+        category_open: typing.Optional[discord.CategoryChannel] = None,
+        category_closed: typing.Optional[discord.CategoryChannel] = None,
+        button_channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]] = None,
+    ) -> None:
+        """Configure the appeal feature."""
+        profile = profile or "main"
+        if (guild := self.bot.get_guild(guild_id)) is None:
+            raise commands.UserFeedbackCheckFailure(_("This guild doesn't exist or the bot isn't in it."))
+        if guild.id == ctx.guild.id:
+            raise commands.UserFeedbackCheckFailure(_("You can't configure appeal tickets for the same guild."))
+        if (member := guild.get_member(ctx.author.id)) is None:
+            raise commands.UserFeedbackCheckFailure(
+                _("You must be in the guild to configure the appeal feature.")
+            )
+        if not member.guild_permissions.manage_guild or not member.guild_permissions.ban_members:
+            raise commands.UserFeedbackCheckFailure(
+                _("You must have the `Manage Server` and `Ban Members` permissions in the guild to configure the appeal feature.")
+            )
+        if not guild.me.guild_permissions.ban_members:
+            raise commands.UserFeedbackCheckFailure(
+                _("I need the `Ban Members` permission in the guild to unban users.")
+            )
+        if (invite := await self.bot.fetch_invite(invite_code.removeprefix("https://").removeprefix("discord.gg/"))) is None:
+            raise commands.UserFeedbackCheckFailure(_("This invite doesn't exist."))
+        if invite.guild.id != guild.id:
+            raise commands.UserFeedbackCheckFailure(_("This invite doesn't belong to the guild."))
+        config = await self.config.guild(ctx.guild).profiles.get_raw(profile)
+        config["enabled"] = True
+        if moderator_role is not None:
+            config["support_roles"].append(moderator_role.id)
+            config["ping_roles"].append(moderator_role.id)
+        if category_open is not None:
+            config["category_open"] = category_open.id
+            category_closed = category_closed or category_open
+            config["category_closed"] = category_closed.id
+        config["max_open_tickets_by_member"] = 1
+        config["owner_close_confirmation"] = False
+        config["owner_can_reopen"] = False
+        config["close_on_leave"] = True
+        config["appeals"] = {
+            "enabled": True,
+            "guild_id": guild.id,
+            "invite_code": invite.code,
+        }
+        await self.config.guild(ctx.guild).profiles.set_raw(profile, value=config)
+        if button_channel is not None:
+            embed: discord.Embed = discord.Embed(
+                title=_("Appeal Ticket"),
+                description=_(
+                    "Click the button below to create an appeal ticket. If our team accepts your appeal, you will be unbanned from the server."
+                ),
+                color=discord.Color.red(),
+            )
+            message = await button_channel.send(embed=embed)
+            await self.addbutton(
+                ctx,
+                message=message,
+                profile=profile,
+                emoji="🛡️",
+                style="4",
+                label=_("Appeal"),
+            )
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)

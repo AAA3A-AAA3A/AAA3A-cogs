@@ -27,10 +27,9 @@ class TicketView(discord.ui.View):
                 ephemeral=True,
             )
             return False
-        if interaction.data["custom_id"].split("_")[
-            -1
-        ] == "claim" and not await self.cog.is_support.__func__(ignore_owner=True).predicate(
-            interaction
+        if (
+            interaction.data["custom_id"].removeprefix(f"Tickets_#{self.ticket.id}_") in ("lock", "claim", "approve_appeal")
+            and not await self.cog.is_support.__func__(ignore_owner=True).predicate(interaction)
         ):
             await interaction.response.send_message(
                 _("⛔ You aren't allowed to claim or unclaim this ticket!"),
@@ -135,6 +134,23 @@ class TicketView(discord.ui.View):
             self.close.label = _("Reopen")
             self.close.style = discord.ButtonStyle.secondary
         self.close.custom_id = f"Tickets_#{self.ticket.id}_close"
+        if config.get("appeals", {"enabled": False})["enabled"]:
+            try:
+                int(config["emojis"]["approve_appeal"])
+            except ValueError:
+                e = config["emojis"]["approve_appeal"]
+            else:
+                e = (
+                    str(e)
+                    if (e := self.cog.bot.get_emoji(int(config["emojis"]["approve_appeal"]))) is not None
+                    else None
+                )
+            self.approve_appeal.emoji = e
+            self.approve_appeal.label = _("Approve Appeal")
+            self.approve_appeal.disabled = self.ticket.appeal_approved
+            self.approve_appeal.custom_id = f"Tickets_#{self.ticket.id}_approve_appeal"
+        else:
+            self.remove_item(self.approve_appeal)
         if edit_message:
             try:
                 await self._message.edit(view=self)
@@ -153,7 +169,7 @@ class TicketView(discord.ui.View):
 
     @discord.ui.button(label="Lock", style=discord.ButtonStyle.secondary)
     async def lock(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True, thinking=True)
         try:
             if not self.ticket.is_locked:
                 await self.ticket.lock(interaction.user)
@@ -173,7 +189,7 @@ class TicketView(discord.ui.View):
 
     @discord.ui.button(label="Claim", style=discord.ButtonStyle.secondary)
     async def claim(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True, thinking=True)
         try:
             if not self.ticket.is_claimed:
                 await self.ticket.claim(interaction.user)
@@ -229,6 +245,25 @@ class TicketView(discord.ui.View):
             await interaction.response.send_modal(modal)
         else:
             await modal.on_submit(interaction)
+
+    @discord.ui.button(emoji="🛡️", label="Approve Appeal", style=discord.ButtonStyle.success)
+    async def approve_appeal(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
+        await interaction.response.defer(ephemeral=True, thinking=True)
+        try:
+            await self.ticket.approve_appeal(interaction.user)
+            await interaction.followup.send(
+                _("✅ This ticket's appeal has been approved!"), ephemeral=True
+            )
+        except RuntimeError as e:
+            return await interaction.followup.send(
+                f"⛔ {e}",
+                ephemeral=True,
+            )
+        if not self.ticket.is_closed:
+            view: OwnerCloseConfirmation = OwnerCloseConfirmation(self.cog)
+            await view.start(self.ticket)
 
 
 class MembersView(discord.ui.View):

@@ -1468,8 +1468,8 @@ class Baiter(Role):
 
     @classmethod
     async def check_pt(cls, night, player: Player, p: Player, t: Player) -> Player:
-        if p.role.visit_type != "Passive" and player == t:
-            await player.kill(cause=player, reason=_("They have visited them."))
+        if p.role.visit_type != "Passive" and t == player:
+            await p.kill(cause=player, reason=_("They have visited them."))
             raise ValueError()
         return t
 

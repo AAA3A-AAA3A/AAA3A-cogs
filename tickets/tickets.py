@@ -1412,6 +1412,7 @@ class Tickets(DashboardIntegration, Cog):
                 ),
                 color=discord.Color.red(),
             )
+            embed.set_footer(text=guild.name, icon_url=guild.icon)
             message = await button_channel.send(embed=embed)
             await self.addbutton(
                 ctx,

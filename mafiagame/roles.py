@@ -1555,10 +1555,9 @@ class Bomber(Role):
 
     @classmethod
     async def on_death(cls, player: Player) -> None:
-        bomb_planted_players = [p for p in player.game.alive_players if p.bomb_planted]
-        if bomb_planted_players:
+        if (bomb_planted_players := [p for p in player.game.alive_players if p.bomb_planted]):
             choiced = random.choice(bomb_planted_players)
-            choiced.kill(
+            await choiced.kill(
                 cause=player, reason=_("The Bomber has died, and one of their bombs has exploded!")
             )
             bomb_planted_players.remove(choiced)
@@ -3492,7 +3491,7 @@ class Guardian(Role):
                     cause=player,
                     reason=_("They have attacked a player protected by the Guardian."),
                 )
-                player.kill(
+                await player.kill(
                     cause="suicide", reason=_("They have protected a player from an attack.")
                 )
             raise ValueError()

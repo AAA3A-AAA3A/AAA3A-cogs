@@ -385,7 +385,7 @@ class Ticket:
                 claimed_by=(
                     self.claimed_by
                     if self.claimed_by is not None
-                    else type("", (), {"mention": _("[Unknown]"), "id": self.claimed_by_id})
+                    else type("", (), {"mention": f"<@{self.appeal_approved_by_id}>", "id": self.claimed_by_id})
                 ),
                 claimed_at=int(self.claimed_at.timestamp()),
             )
@@ -399,11 +399,25 @@ class Ticket:
                 closed_by=(
                     self.closed_by
                     if self.closed_by is not None
-                    else type("", (), {"mention": _("[Unknown]"), "id": self.closed_by_id})
+                    else type("", (), {"mention": f"<@{self.appeal_approved_by_id}>", "id": self.closed_by_id})
                 ),
                 closed_at=int(self.closed_at.timestamp()),
             )
             if self.is_closed
+            else ""
+        ) + (
+            _(
+                "\nAppeal approved by: {appeal_approved_by.mention}"
+                "\nAppeal approved at: <t:{appeal_approved_at}:F> (<t:{appeal_approved_at}:R>)"
+            ).format(
+                appeal_approved_by=(
+                    self.appeal_approved_by
+                    if self.appeal_approved_by is not None
+                    else type("", (), {"mention": f"<@{self.appeal_approved_by_id}>", "id": self.appeal_approved_by_id})
+                ),
+                appeal_approved_at=int(self.appeal_approved_at.timestamp()),
+            )
+            if self.appeal_approved
             else ""
         )
         if self.reason is not None:
@@ -1129,6 +1143,10 @@ class Ticket:
             raise RuntimeError(
                 _("I couldn't unban the user.\n{error}").format(error=box(str(e), lang="py"))
             )
+        await self.log_action(
+            approver,
+            action=_("🛡️ Ticket Appeal Approved"),
+        )
         await self.channel.send(
             _(
                 "## 🛡️ **Congratulations!** Your appeal request got approved by our staff!\n\n"
@@ -1159,10 +1177,6 @@ class Ticket:
         )
 
         self.bot.dispatch("ticket_appeal_approved", self)
-        # await self.log_action(
-        #     approver,
-        #     action=_("🛡️ Ticket Appeal Approved"),
-        # )
         if config["create_modlog_case"]:
             await modlog.create_case(
                 bot=self.bot,

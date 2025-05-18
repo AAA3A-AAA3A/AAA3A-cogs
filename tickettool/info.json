@@ -3,7 +3,7 @@
     "name": "TicketTool",
     "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!",
     "short": "A cog to manage a Tickets system!",
-    "description": "Have you ever wanted to set up a Tickets system, with many options for the user and the support team, on your server? Then this cog is for you! It has many settings, buttons, a reaction to create the ticket, many commands working in the ticket channel, different roles with access to different options... There is also a system of panels!",
+    "description": "Have you ever wanted to set up a Tickets system, with many options for the user and the support team, on your server? Then this cog is for you! It has many settings, buttons, a reaction to create the ticket, many commands working in the ticket channel, different roles with access to different options... There is also a system of panels!\n\n**Note: The Tickets cog on my repo is a rewrite of TicketTool with a better layout and new features, you should use it instead!**",
     "tags": [
         "tickets",
         "tool",
@@ -11,5 +11,6 @@
     ],
     "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "chat-exporter", "emoji"],
     "min_bot_version": "3.5.0",
-    "end_user_data_statement": "This cog records all the data needed to operate the ticket system. It records the reason for the ticket, the open/close dates, the members who have opened/closed/claimed a ticket. Apart from deleting the ticket with `[p]ticket delete`, this cog is not configured to delete this operational data. The reason for a user's tickets can be communicated to OpenAI if the user requests informations about their own open tickets with the Vert's Assistant cog."
+    "end_user_data_statement": "This cog records all the data needed to operate the ticket system. It records the reason for the ticket, the open/close dates, the members who have opened/closed/claimed a ticket. Apart from deleting the ticket with `[p]ticket delete`, this cog is not configured to delete this operational data. The reason for a user's tickets can be communicated to OpenAI if the user requests informations about their own open tickets with the Vert's Assistant cog.",
+    "hidden": true
 }

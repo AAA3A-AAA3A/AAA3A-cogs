@@ -14,7 +14,7 @@ from .dashboard_integration import DashboardIntegration
 
 _: Translator = Translator("KarutaDropLeaderboard", __file__)
 
-KARUTA_ID: int = 646937666251915264
+KARUTA_BOT_ID: int = 646937666251915264
 
 
 @cog_i18n(_)
@@ -69,7 +69,7 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
     ) -> None:
         if message.guild is None:
             return
-        if not message.author.bot or message.author.id != KARUTA_ID:
+        if not message.author.bot or message.author.id != KARUTA_BOT_ID:
             return
         if "is dropping" not in message.content or not message.attachments:
             return

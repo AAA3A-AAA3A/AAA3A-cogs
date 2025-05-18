@@ -415,7 +415,6 @@ class Role:
             ),
             color=cls.color(),
         )
-        image = cls.name.lower().replace(" ", "_")
         embed.set_image(url=cls.image_url())
         embed.add_field(name=_("Ability: 🔪"), value=_(cls.ability), inline=False)
         embed.add_field(name=_("Side: 👀"), value=cls.side)
@@ -987,7 +986,7 @@ class Mayor(Role):
             title=_("Hey Mayor! Would you like to reveal yourself to the town the next morning?"),
             color=cls.color(),
         )
-        embed.set_image(url="attachment://mayor.png")
+        embed.set_image(url=cls.image_url())
         fake_context = type(
             "FakeContext",
             (),
@@ -1532,7 +1531,10 @@ class Bomber(Role):
     def has_won(cls, player: Player) -> bool:
         return all(p.is_dead for p in player.game.players if p.role is not Bomber)
 
-    perform_action = perform_action_select_targets(self_allowed=False)
+    perform_action = perform_action_select_targets(
+        self_allowed=False,
+        condition=lambda player, target: not target.bomb_planted,
+    )
 
     @classmethod
     async def action(cls, night, player: Player, target: typing.Optional[Player] = None) -> None:
@@ -1740,7 +1742,7 @@ class PlagueDoctor(Role):
                 description=_("The town has one day to lynch them, or else everyone will die!"),
                 color=cls.color(),
             )
-            embed.set_image(url="attachment://plague_doctor.png")
+            embed.set_image(url=cls.image_url())
             await night.game.send(
                 embed=embed,
                 file=get_image("plague_doctor"),
@@ -2039,7 +2041,7 @@ class Link(Role):
                         "You have been linked to {other_tg.member.display_name}! Their side is **{other_tg.role.side}**."
                     ).format(other_tg=other_tg),
                     color=other_tg.role.color(),
-                ).set_image(url="attachment://link.png"),
+                ).set_image(url=cls.image_url())
                 file=get_image(os.path.join("roles", "link")),
             )
         await player.send(
@@ -2471,7 +2473,7 @@ class Gambler(Role):
             title=_("Hey Gambler! What dice do you want to throw tonight?"),
             color=cls.color(),
         )
-        embed.set_image(url="attachment://gambler.png")
+        embed.set_image(url=cls.image_url())
         view: GamblerView = GamblerView(night, player)
         view._message = await interaction.followup.send(
             embed=embed,

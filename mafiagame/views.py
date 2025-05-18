@@ -663,6 +663,7 @@ class SelectTargetsView(discord.ui.View):
 
         if self.player.role.name == "Bomber":
             self.boom.label = _("BOOM!")
+            self.boom.disabled = all([not p.bomb_planted for p in self.day_night.game.alive_players])
         else:
             self.remove_item(self.boom)
         if self.player.role.name == "Starspawn":
@@ -1031,7 +1032,7 @@ class VoteView(discord.ui.View):
     ) -> None:
         if (
             starspawn := next(
-                (t is None for p, t in self.day.targets.items() if p.role.name == "Starspawn"),
+                (t is None for p, t in self.day.game.days_nights[-2].targets.items() if p.role.name == "Starspawn"),
                 None,
             )
         ) is not None:

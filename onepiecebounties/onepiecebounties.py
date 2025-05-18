@@ -82,6 +82,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
             random_base_bounty=True,
             include_months_since_joining=True,
             include_levelup_levels=True,
+            include_cautions=True,
             bonus_roles={},
             only_roles={},
             plugins={
@@ -116,6 +117,10 @@ class OnePieceBounties(WelcomePlugin, Cog):
             "include_levelup_levels": {
                 "converter": bool,
                 "description": "Include LevelUp levels in bounty calculation.",
+            },
+            "include_cautions": {
+                "converter": bool,
+                "description": "Include cautions in bounty calculation. (You need to use Ult's cog for that.)",
             },
             # Welcome plugin.
             "welcome_enabled": {
@@ -201,6 +206,15 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 min_bounty = 10_000_000 + (l10 * 2_000_000)
                 max_bounty = 20_000_000 + (l10 * 2_000_000)
                 bounty += random.randint(min_bounty, max_bounty)
+
+        if (
+            config["include_cautions"]
+            and (Cautions := self.bot.get_cog("Cautions")) is not None
+            and hasattr(Cautions, "warn_member")
+        ):
+            total_points = await Cautions.config.member(member).total_points()
+            if total_points > 0:
+                bounty -= total_points * 100_000_000
         
         if config["bonus_roles"]:
             for role in member.roles:

@@ -1388,8 +1388,10 @@ class Tickets(DashboardIntegration, Cog):
         config = await self.config.guild(ctx.guild).profiles.get_raw(profile)
         config["enabled"] = True
         if moderator_role is not None:
-            config["support_roles"].append(moderator_role.id)
-            config["ping_roles"].append(moderator_role.id)
+            if moderator_role.id not in config["support_roles"]:
+                config["support_roles"].append(moderator_role.id)
+            if moderator_role.id not in config["ping_roles"]:
+                config["ping_roles"].append(moderator_role.id)
         if category_open is not None:
             config["category_open"] = category_open.id
             category_closed = category_closed or category_open

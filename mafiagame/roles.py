@@ -2040,7 +2040,7 @@ class Link(Role):
                         "You have been linked to {other_tg.member.display_name}! Their side is **{other_tg.role.side}**."
                     ).format(other_tg=other_tg),
                     color=other_tg.role.color(),
-                ).set_image(url=cls.image_url())
+                ).set_image(url=cls.image_url()),
                 file=get_image(os.path.join("roles", "link")),
             )
         await player.send(

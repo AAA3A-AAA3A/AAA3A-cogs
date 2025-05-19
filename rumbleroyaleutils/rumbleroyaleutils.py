@@ -115,15 +115,16 @@ class RumbleRoyaleUtils(Cog):
                     ).users()
                     if not member.bot
                 ]
-                await message.reply(
-                    embed=discord.Embed(
-                        title=_("Quick Tip"),
-                        description=_(
-                            "You can check if you are dead or not by sending `Am I dead?`/`Dead` in this channel."
+                if config["am_i_dead"]:
+                    await message.reply(
+                        embed=discord.Embed(
+                            title=_("Quick Tip"),
+                            description=_(
+                                "You can check if you are dead or not by sending `Am I dead?`/`Dead` in this channel."
+                            ),
+                            color=await self.bot.get_embed_color(message.channel),
                         ),
-                        color=await self.bot.get_embed_color(message.channel),
-                    ),
-                )
+                    )
             elif rumble.is_started:
                 if "Round " in embed.title:
                     round_number = int(embed.title.strip("*_").split(" ")[1])

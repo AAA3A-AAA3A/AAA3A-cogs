@@ -900,7 +900,7 @@ class Tickets(DashboardIntegration, Cog):
         ctx: commands.Context,
         short: bool = False,
         claimed: bool = False,
-        status: typing.Literal["all", "open", "claimed", "unclaimed", "closed"] = "open",
+        status: typing.Literal["all", "open", "claimed", "unclaimed", "closed", "appeal_approved"] = "open",
         *,
         owner: typing.Optional[discord.Member] = None,
     ) -> None:
@@ -927,6 +927,8 @@ class Tickets(DashboardIntegration, Cog):
             elif status == "unclaimed" and (ticket.is_closed or ticket.is_claimed):
                 continue
             elif status == "closed" and not ticket.is_closed:
+                continue
+            elif status == "appeal_approved" and not ticket.is_appeal_approved:
                 continue
             tickets_to_display.append(ticket)
         if not short:
@@ -1078,6 +1080,27 @@ class Tickets(DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         try:
             await ticket.unlock(ctx.author)
+        except RuntimeError as e:
+            raise commands.UserFeedbackCheckFailure(str(e))
+
+    @is_support(ignore_owner=True)
+    @ticket.command()
+    async def approveappeal(
+        self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None
+    ) -> None:
+        """Approve an appeal."""
+        if (
+            ticket is None
+            and (
+                ticket := discord.utils.get(
+                    self.tickets.get(ctx.guild.id, {}).values(), channel=ctx.channel
+                )
+            )
+            is None
+        ):
+            raise commands.UserFeedbackCheckFailure(_("No ticket found."))
+        try:
+            await ticket.approve_appeal(ctx.author)
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
 
@@ -1387,6 +1410,36 @@ class Tickets(DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(_("This invite doesn't belong to the guild."))
         config = await self.config.guild(ctx.guild).profiles.get_raw(profile)
         config["enabled"] = True
+        config["max_open_tickets_by_member"] = 1
+        config["creating_modal"] = [
+            {
+                "label": "Why were you banned?",
+                "style": 2,
+                "required": True,
+                "default": "",
+                "placeholder": "",
+                "min_length": None,
+                "max_length": None,
+            },
+            {
+                "label": "Why should we unban you?",
+                "style": 2,
+                "required": True,
+                "default": "",
+                "placeholder": "",
+                "min_length": None,
+                "max_length": None,
+            },
+            {
+                "label": "How can you guarantee it won't happen again?",
+                "style": 2,
+                "required": True,
+                "default": "",
+                "placeholder": "",
+                "min_length": None,
+                "max_length": None,
+            },
+        ]
         if moderator_role is not None:
             if moderator_role.id not in config["support_roles"]:
                 config["support_roles"].append(moderator_role.id)
@@ -1396,7 +1449,6 @@ class Tickets(DashboardIntegration, Cog):
             config["category_open"] = category_open.id
             category_closed = category_closed or category_open
             config["category_closed"] = category_closed.id
-        config["max_open_tickets_by_member"] = 1
         config["owner_close_confirmation"] = False
         config["owner_can_reopen"] = False
         config["close_on_leave"] = True

@@ -1144,8 +1144,8 @@ class Ticket:
                 _("I couldn't unban the user.\n{error}").format(error=box(str(e), lang="py"))
             )
         await self.log_action(
-            approver,
             action=_("🛡️ Ticket Appeal Approved"),
+            author=approver,
         )
         await self.channel.send(
             _(

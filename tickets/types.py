@@ -554,7 +554,7 @@ class Ticket:
                 and (appeals_for_guild := self.bot.get_guild(config["appeals"]["guild_id"])) is not None
             ):
                 try:
-                    await appeals_for_guild.fetch_ban(self.owner_id)
+                    await appeals_for_guild.fetch_ban(self.owner)
                 except discord.NotFound:
                     raise RuntimeError(
                         _(

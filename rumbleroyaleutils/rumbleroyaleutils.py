@@ -22,7 +22,7 @@ RUMBLE_BOT_ID: int = 693167035068317736
 @dataclass
 class RumbleRoyale:
     first_message: discord.Message
-    host: discord.Member
+    host: discord.User
     players: typing.List[discord.Member] = field(default_factory=list)
     dead_players: typing.Dict[discord.Member, typing.Dict[str, typing.Union[typing.Literal["round_number", "killer", "cause", "message"], typing.Optional[discord.Member], str, discord.Message]]] = field(default_factory=dict)
 
@@ -95,11 +95,13 @@ class RumbleRoyaleUtils(Cog):
         if not message.embeds:
             return
         embed = message.embeds[0]
+        if embed.title is None:
+            return
         config = await self.config.guild(message.guild).all()
         if message.application_id is not None and "Rumble Royale hosted by " in embed.title:
             self.rumbles[message.channel] = RumbleRoyale(
                 first_message=message,
-                host=message.interaction.user,
+                host=message.interaction_metadata.user,
             )
         elif (rumble := self.rumbles.get(message.channel)) is not None:
             if "Started a new Rumble Royale session" in embed.title:

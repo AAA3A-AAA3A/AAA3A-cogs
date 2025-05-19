@@ -1384,6 +1384,7 @@ class Tickets(DashboardIntegration, Cog):
         moderator_role: typing.Optional[discord.Role] = None,
         category_open: typing.Optional[discord.CategoryChannel] = None,
         category_closed: typing.Optional[discord.CategoryChannel] = None,
+        logs_channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]] = None,
         button_channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]] = None,
     ) -> None:
         """Configure the appeal feature."""
@@ -1452,6 +1453,9 @@ class Tickets(DashboardIntegration, Cog):
         config["owner_close_confirmation"] = False
         config["owner_can_reopen"] = False
         config["close_on_leave"] = True
+        config["transcripts"] = True
+        if logs_channel is not None:
+            config["logs_channel"] = logs_channel.id
         config["appeals"] = {
             "enabled": True,
             "guild_id": guild.id,

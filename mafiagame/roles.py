@@ -3968,7 +3968,7 @@ class Ritualist(Role):
         },
         "Too Easy": {
             "check": lambda player: any(
-                p.side == "Villagers" for p in player.game.dead_players if p.death_cause == player
+                p.role.side == "Villagers" for p in player.game.dead_players if p.death_cause == player
             ),
             "description": _("Perform all 3 rituals on Villagers' players."),
         },

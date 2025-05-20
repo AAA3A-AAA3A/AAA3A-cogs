@@ -3707,14 +3707,16 @@ class Cupid(Role):
     def has_won(cls, player: Player) -> bool:
         return player.cupid_lovers and all(not lover.is_dead for lover in player.cupid_lovers)
 
-    perform_action = perform_action_select_targets(targets_number=2, self_allowed=False)
+    @classmethod
+    async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
+        if night.number != 1:
+            raise RuntimeError(_("You can only use your ability on the first night."))
+        await perform_action_select_targets(targets_number=2, self_allowed=False)
 
     @classmethod
     async def action(
         cls, night, player: Player, target: typing.Optional[typing.Tuple[Player, Player]]
     ) -> None:
-        if night.number != 1:
-            raise RuntimeError(_("You can only use your ability on the first night."))
         lovers = target or tuple(random.sample([p for p in night.game.players if p != player], 2))
         player.cupid_lovers = lovers
         for lover in lovers:

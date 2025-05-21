@@ -6,6 +6,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 from redbot.core.data_manager import bundled_data_path
+from redbot.core.utils.menus import start_adding_reactions
 
 import asyncio
 import random
@@ -95,7 +96,8 @@ class BlackTeaGame(Cog):
             async def task() -> None:
                 await asyncio.sleep(7)
                 for reaction in ("3️⃣", "2️⃣", "1️⃣"):
-                    await message.add_reaction(reaction)
+                    start_adding_reactions(message, (reaction,))
+                    await asyncio.sleep(1)
             _task = asyncio.create_task(task())
             try:
                 def check(m: discord.Message) -> bool:
@@ -114,13 +116,14 @@ class BlackTeaGame(Cog):
                         used_words.append(word)
                         return True
                     return False
-                await self.bot.wait_for(
+                m = await self.bot.wait_for(
                     "message_without_command",
                     timeout=10,
                     check=check,
                 )
+                start_adding_reactions(m, ("✅",))
             except asyncio.TimeoutError:
-                await message.add_reaction("💥")
+                start_adding_reactions(message, ("💥",))
                 players[player] -= 1
                 await ctx.send(
                     _("💥 Time's up: -1 HP (Left: **{left}** HP)").format(

@@ -435,7 +435,7 @@ class Tickets(DashboardIntegration, Cog):
     async def check_tickets(self) -> None:
         for guild_id, tickets in self.tickets.copy().items():
             profiles = await self.config.guild_from_id(guild_id).profiles()
-            for ticket_id, ticket in tickets.copy().items():
+            for ticket in tickets.copy().values():
                 if ticket.guild is None:
                     try:
                         await self.bot.fetch_guild(guild_id)
@@ -452,13 +452,15 @@ class Tickets(DashboardIntegration, Cog):
                     await ticket.delete()
                     continue
                 config = profiles[ticket.profile]
-                if ticket.owner is None:
+                if (
+                    not ticket.is_closed
+                    and ticket.owner is None
+                    and config["close_on_leave"]
+                ):
                     try:
                         await ticket.guild.fetch_member(ticket.owner_id)
                     except discord.NotFound:
-                        if config["close_on_leave"]:
-                            await ticket.close()
-                    continue
+                        await ticket.close()
                 if (
                     ticket.is_closed
                     and config["auto_delete_on_close"] is not None

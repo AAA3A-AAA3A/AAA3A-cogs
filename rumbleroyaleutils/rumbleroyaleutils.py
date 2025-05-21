@@ -105,6 +105,7 @@ class RumbleRoyaleUtils(Cog):
             )
         elif (rumble := self.rumbles.get(message.channel)) is not None:
             if "Started a new Rumble Royale session" in embed.title:
+                rumble.first_message = await message.channel.fetch_message(rumble.first_message.id)
                 rumble.players = [
                     member
                     async for member in next(
@@ -112,7 +113,7 @@ class RumbleRoyaleUtils(Cog):
                             reaction
                             for reaction in rumble.first_message.reactions
                             if isinstance(reaction.emoji, discord.PartialEmoji)
-                            and reaction.emoji.id == 1371131643569635348
+                            and reaction.emoji.id in (1371131643569635348, 1374771017569800233)
                         )
                     ).users()
                     if not member.bot

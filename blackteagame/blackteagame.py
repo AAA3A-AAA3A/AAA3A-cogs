@@ -34,7 +34,7 @@ DIACRITIC_SYMBOLS: typing.Dict[str, str] = {
 
 @cog_i18n(_)
 class BlackTeaGame(Cog):
-    """Play the Black Tea game!"""
+    """Play the Black Tea game, in multiple languages!"""
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -64,7 +64,7 @@ class BlackTeaGame(Cog):
         lang: Lang = Lang.ENGLISH,
         base_hp: commands.Range[int, 1, 20] = 2,
     ) -> None:
-        """Play the Black Tea game."""
+        """Play the Black Tea game, in multiple languages."""
         join_view: JoinGameView = JoinGameView(self, lang=lang)
         await join_view.start(ctx)
         await join_view.wait()

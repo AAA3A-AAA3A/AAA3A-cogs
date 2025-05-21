@@ -87,7 +87,7 @@ class JoinGameView(discord.ui.View):
         self.host: discord.Member = ctx.author
         self.players.append(ctx.author)
         embed: discord.Embed = discord.Embed(
-            title=_("Mafia Game"),
+            title=_("🔪 Mafia Game 🔪"),
             description=_(
                 "Click the button below to join the party! Please note that the maximum amount of players is 25."
             ),
@@ -242,9 +242,14 @@ class JoinGameView(discord.ui.View):
 
     @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger)
     async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        if interaction.user != self.host:
+        if not (
+            interaction.user == self.host
+            or await self.ctx.bot.is_admin(interaction.user)
+            or interaction.user.guild_permissions.manage_guild
+            or interaction.user.id in interaction.client.owner_ids
+        ):
             await interaction.response.send_message(
-                _("Only the host can cancel the game!"), ephemeral=True
+                _("You can't cancel the game!"), ephemeral=True
             )
             return
         try:

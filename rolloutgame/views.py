@@ -41,7 +41,7 @@ class JoinGameView(discord.ui.View):
             timestamp=ctx.message.created_at,
         )
         embed.add_field(
-            name=_("Instructions:"),
+            name=_("Rules:"),
             value=_(
                 "**•** At each round, select a number between 1 and 25 within 30 seconds.\n"
                 "**•** If the bot rolls the number you selected, you lose.\n"
@@ -155,9 +155,14 @@ class JoinGameView(discord.ui.View):
 
     @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger)
     async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        if interaction.user != self.host:
+        if not (
+            interaction.user == self.host
+            or await self.ctx.bot.is_admin(interaction.user)
+            or interaction.user.guild_permissions.manage_guild
+            or interaction.user.id in interaction.client.owner_ids
+        ):
             await interaction.response.send_message(
-                _("Only the host can cancel the game!"), ephemeral=True
+                _("You can't cancel the game!"), ephemeral=True
             )
             return
         try:

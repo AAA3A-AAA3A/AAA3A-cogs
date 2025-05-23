@@ -72,7 +72,7 @@ class BotSaysGame(Cog):
                 await start_adding_reactions(
                     message, reactions
                 )
-            for i in range(20):
+            for i in range(20 if round < 10 else 15):
                 await asyncio.sleep(1)
                 if len(test.success) + len(test.fail) == len(players):
                     break

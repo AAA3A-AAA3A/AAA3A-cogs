@@ -229,11 +229,15 @@ class ReactionTest(Test):
 class EnglishWordTest(Test):
     async def initialize(self) -> typing.Tuple[str, typing.Optional[discord.ui.View], typing.List[str]]:
         view: BaseView = BaseView(self)
-        @discord.ui.button(label=_("Submit!"), style=discord.ButtonStyle.secondary)
+        button: discord.ui.Button = discord.ui.Button(
+            label=_("Submit!"),
+            style=discord.ButtonStyle.secondary,
+        )
         async def callback(interaction: discord.Interaction) -> None:
             await interaction.response.defer()
             await interaction.response.send_modal(BaseModal(self))
-        view.add_item(callback)
+        button.callback = callback
+        view.add_item(button)
         return _("Click the button then provide one ENGLISH word between five and ten letters in the box provided."), view, []
 
     async def answer_check(self, player: discord.Member, answer: str) -> None:

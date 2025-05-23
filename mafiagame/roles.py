@@ -466,17 +466,20 @@ class Role:
                 p.has_won for p in player.game.alive_players if p.role is Jester
             )
         )
+        villager_check = (
+            all(
+                p.is_dead
+                for p in player.game.players
+                if p.role.side == "Mafia" or p.role is Bomber or p.is_town_traitor
+            )
+        ) or (mafia_check and any(p for p in player.game.alive_players if p.is_town_vip))
         if player.role.side == "Mafia" or player.is_town_traitor:
             # all(p.is_dead for p in player.game.players if p.role.side != "Mafia" and not p.is_town_traitor)
             return mafia_check and not any(p for p in player.game.alive_players if p.is_town_vip)
         elif player.role.side == "Villagers":
-            return (
-                all(
-                    p.is_dead
-                    for p in player.game.players
-                    if p.role.side == "Mafia" or p.role is Bomber or p.is_town_traitor
-                )
-            ) or (mafia_check and any(p for p in player.game.alive_players if p.is_town_vip))
+            return villager_check
+        elif player.role is Starspawn:
+            return not villager_check
         return False
 
     @classmethod

@@ -1787,4 +1787,5 @@ class PollView(JoinGameView):
             self.stop()
             await self.on_timeout()
             self.ctx.players = self.players
+            await self.ctx.command.reset_cooldown(self.ctx)
             await self.cog.start(self.ctx)

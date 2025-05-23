@@ -148,15 +148,12 @@ class BaseModal(discord.ui.Modal):
 
 class ColorButtonTest(Test):
     async def initialize(self) -> typing.Tuple[str, typing.Optional[discord.ui.View], typing.List[str]]:
-        BUTTON_STYLES: typing.Dict[discord.ButtonStyle, str] = {
-            discord.ButtonStyle.success: "green",
-            discord.ButtonStyle.danger: "red",
-            discord.ButtonStyle.primary: "blue",
-            discord.ButtonStyle.secondary: "dark",
-        }
-        self.answer = random.choice(list(BUTTON_STYLES.values()))
+        colors = ["green", "red", "blue", "dark"]
+        self.answer = random.choice(colors)
+        styles = [discord.ButtonStyle.success, discord.ButtonStyle.danger, discord.ButtonStyle.primary, discord.ButtonStyle.secondary]
+        random.shuffle(styles)
         view: BaseView = BaseView(self)
-        for style, color in BUTTON_STYLES.items():
+        for style, color in zip(styles, colors):
             button: discord.ui.Button = discord.ui.Button(
                 label=color.title(),
                 style=style,
@@ -167,7 +164,7 @@ class ColorButtonTest(Test):
                 await self.check(interaction.user, interaction.data["custom_id"])
             button.callback = callback
             view.add_item(button)
-        return _("Press the {color} button.").format(color=self.answer.upper()), view, []
+        return _("Press the {color} button.").format(color=self.answer.title()), view, []
 
 
 class SelectionTest(Test):

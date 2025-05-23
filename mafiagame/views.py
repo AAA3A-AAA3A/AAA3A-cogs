@@ -1732,6 +1732,8 @@ class PollView(JoinGameView):
         self.add_item(self.view_players)
         self.view_players.label = _("View Players (1)")
 
+        self.started: bool = False
+
     async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.host: discord.Member = ctx.author
@@ -1780,7 +1782,8 @@ class PollView(JoinGameView):
             await self._message.edit(view=self)
         except discord.HTTPException:
             pass
-        if len(self.players) >= self.threshold:
+        if len(self.players) >= self.threshold and not self.started:
+            self.started = True
             self.stop()
             await self.on_timeout()
             self.ctx.players = self.players

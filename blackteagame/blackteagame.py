@@ -142,7 +142,7 @@ class BlackTeaGame(Cog):
                 _task.cancel()
 
         winner = list(players)[0]
-        embed = discord.Embed(
+        embed: discord.Embed = discord.Embed(
             title=_("Congratulations **{winner.display_name}**! You won the game!").format(
                 winner=winner
             ),

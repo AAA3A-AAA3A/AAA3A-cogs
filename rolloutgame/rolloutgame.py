@@ -129,7 +129,7 @@ class RolloutGame(Cog):
                 await bank.set_balance(winner, e.max_balance)
 
         if winner is not None:
-            embed = discord.Embed(
+            embed: discord.Embed = discord.Embed(
                 title=_("Congratulations **{winner.display_name}**! You won the game!").format(
                     winner=winner
                 ),
@@ -140,7 +140,7 @@ class RolloutGame(Cog):
             embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
             await ctx.send(content=winner.mention, embed=embed)
         else:
-            embed = discord.Embed(
+            embed: discord.Embed = discord.Embed(
                 title=_("It's a tie! No one won the game."),
                 color=await ctx.embed_color(),
                 timestamp=ctx.message.created_at,

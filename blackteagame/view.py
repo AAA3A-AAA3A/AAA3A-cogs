@@ -33,9 +33,9 @@ class JoinGameView(discord.ui.View):
         self.cog: commands.Cog = cog
         self.lang: Lang = lang
 
-        self._message: discord.Message = None
         self.host: discord.Member = None
         self.players: typing.List[discord.Member] = []
+        self._message: discord.Message = None
 
         self.cancelled: bool = True
 
@@ -87,7 +87,7 @@ class JoinGameView(discord.ui.View):
         except discord.HTTPException:
             pass
 
-    @discord.ui.button(label="Join Game", emoji="🎮", style=discord.ButtonStyle.success)
+    @discord.ui.button(emoji="🎮", label="Join Game", style=discord.ButtonStyle.success)
     async def join(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user in self.players:
             await interaction.response.send_message(

@@ -1738,7 +1738,9 @@ class PollView(JoinGameView):
         self.players.append(self.host)
         embed: discord.Embed = discord.Embed(
             title=_("Poll to start a Mafia game!"),
-            description=_("Click the button below to join the poll."),
+            description=_("Click the button below to join the poll. You have to be **at least {threshold} players** to actually start the game.").format(
+                threshold=self.threshold
+            ),
             color=await self.ctx.embed_color(),
             timestamp=ctx.message.created_at,
         )

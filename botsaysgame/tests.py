@@ -56,7 +56,7 @@ def get_on_message_without_command_listener(test: "Test") -> typing.Callable:
             and message.author in test.players
             and message.channel == test.ctx.channel
         ):
-            await test.check(message.author, message.content.strip())
+            await test.check(message.author, message.content.lower().strip())
     return on_message_without_command
 
 

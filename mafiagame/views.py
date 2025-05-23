@@ -88,6 +88,9 @@ class JoinGameView(discord.ui.View):
         self.players.append(self.host)
         if hasattr(ctx, "players"):
             self.players = ctx.players
+            self.view_players.label = _("View Players ({len_players})").format(
+                len_players=len(self.players)
+            )
         embed: discord.Embed = discord.Embed(
             title=_("🔪 Mafia Game 🔪"),
             description=_(
@@ -127,6 +130,7 @@ class JoinGameView(discord.ui.View):
             ),
             embed=embed,
             view=self,
+            allowed_mentions=discord.AllowedMentions(roles=True),
         )
         self.cog.views[self._message] = self
         return self._message

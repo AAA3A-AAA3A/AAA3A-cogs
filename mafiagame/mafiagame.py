@@ -439,6 +439,7 @@ class MafiaGame(Cog):
         """Play the Mafia game, with many roles (Mafia/Villagers/Neutral), modes (including Random and Custom), anomalies..."""
         pass
 
+    @commands.max_concurrency(1, per=commands.BucketType.channel)
     @commands.admin_or_permissions(manage_guild=True)
     # commands.bot_has_permissions(manage_channels=True)
     @mafia.command()
@@ -711,8 +712,8 @@ class MafiaGame(Cog):
         await player.kill(cause="afk")
         await ctx.send(_("This player has been **killed** from the Mafia game in this server."))
 
-    @commands.max_concurrency(1, commands.BucketType.guild, wait=False)
-    @commands.cooldown(1, 3600, commands.BucketType.guild)
+    @commands.max_concurrency(1, per=commands.BucketType.guild)
+    @commands.cooldown(1, 3600, per=commands.BucketType.guild)
     @mafia.command()
     async def poll(self, ctx: commands.Context) -> None:
         """Create a poll for the game."""

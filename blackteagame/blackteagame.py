@@ -55,6 +55,7 @@ class BlackTeaGame(Cog):
         return self.views
 
     @commands.guild_only()
+    @commands.max_concurrency(1, per=commands.BucketType.channel)
     @commands.mod_or_permissions(manage_messages=True)
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["blackteagame"])

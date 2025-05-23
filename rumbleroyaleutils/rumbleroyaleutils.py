@@ -221,12 +221,21 @@ class RumbleRoyaleUtils(Cog):
                     view=view,
                     delete_after=3,
                 )
-            else:
+            elif message.author in rumble.players:
                 start_adding_reactions(message, ["❌"])
                 await message.reply(
                     embed=discord.Embed(
                         title=_("You are alive!"),
                         description=_("You are not dead."),
+                        color=await self.bot.get_embed_color(message.channel),
+                    ),
+                    delete_after=3,
+                )
+            else:
+                start_adding_reactions(message, ["💥"])
+                await message.reply(
+                    embed=discord.Embed(
+                        title=_("You are not in the game!"),
                         color=await self.bot.get_embed_color(message.channel),
                     ),
                     delete_after=3,

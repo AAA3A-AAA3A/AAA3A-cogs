@@ -13,12 +13,12 @@ from copy import deepcopy
 from redbot.core.utils.chat_formatting import humanize_timedelta
 
 from .anomalies import ANOMALIES, Anomaly
-from .constants import ACHIEVEMENTS_COLOR, DEVELOPER, HELPERS, TESTERS, SUPPORTERS
+from .constants import ACHIEVEMENTS_COLOR, DEVELOPER, HELPERS, SUPPORTERS, TESTERS
 from .game import Game
 from .modes import MODES, Mode
 from .roles import ACHIEVEMENTS, ROLES, GodFather, Role, Villager
 from .utils import get_image
-from .views import ExplainView, JoinGameView
+from .views import ExplainView, JoinGameView, PollView
 
 # Credits:
 # General repo credits.
@@ -109,6 +109,8 @@ class MafiaGame(Cog):
             afk_temp_ban_duration=None,
             channel_auto_delete=False,
             game_logs=False,
+            ping_role=None,
+            poll_threshold=None,
             # Game settings.
             show_dead_role=True,
             dying_message=False,
@@ -200,6 +202,16 @@ class MafiaGame(Cog):
             "game_logs": {
                 "converter": bool,
                 "description": "If this option is enabled, the cog will log the game in an HTML file.",
+            },
+            "ping_role": {
+                "converter": discord.Role,
+                "description": "The role that will be pinged when the game starts.",
+                "no_slash": True,
+            },
+            "poll_threshold": {
+                "converter": commands.Range[int, 5, 25],
+                "description": "The votes needed to start the game.",
+                "no_slash": True,
             },
             # Game settings.
             "show_dead_role": {
@@ -698,6 +710,21 @@ class MafiaGame(Cog):
             )
         await player.kill(cause="afk")
         await ctx.send(_("This player has been **killed** from the Mafia game in this server."))
+
+    @commands.max_concurrency(1, commands.BucketType.guild, wait=False)
+    @commands.cooldown(1, 3600, commands.BucketType.guild)
+    @mafia.command()
+    async def poll(self, ctx: commands.Context) -> None:
+        """Create a poll for the game."""
+        if self.games.get(ctx.guild) is not None:
+            raise commands.UserFeedbackCheckFailure(_("A game is already running in this guild."))
+        if (threshold := await self.config.guild(ctx.guild).poll_threshold()) is None:
+            raise commands.UserFeedbackCheckFailure(
+                _("The poll threshold is not set in this server.")
+            )
+        poll_view: PollView = PollView(self, threshold)
+        await poll_view.start(ctx)
+        await poll_view.wait()
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)

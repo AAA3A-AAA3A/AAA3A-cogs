@@ -43,9 +43,9 @@ class JoinGameView(discord.ui.View):
         self.mode: typing.Any = mode
         self.config: typing.Dict[str, typing.Any] = config
 
-        self._message: discord.Message = None
         self.host: discord.Member = None
         self.players: typing.List[discord.Member] = []
+        self._message: discord.Message = None
 
         self.cancelled: bool = True
 
@@ -85,7 +85,9 @@ class JoinGameView(discord.ui.View):
     async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.host: discord.Member = ctx.author
-        self.players.append(ctx.author)
+        self.players.append(self.host)
+        if hasattr(ctx, "players"):
+            self.players = ctx.players
         embed: discord.Embed = discord.Embed(
             title=_("🔪 Mafia Game 🔪"),
             description=_(
@@ -116,7 +118,16 @@ class JoinGameView(discord.ui.View):
             text=self.ctx.guild.name,
             icon_url=self.ctx.guild.icon,
         )
-        self._message: discord.Message = await self.ctx.send(embed=embed, view=self)
+        self._message: discord.Message = await self.ctx.send(
+            (
+                ping_role.mention
+                if (ping_role_id := self.config["ping_role"]) is not None
+                and (ping_role := self.ctx.guild.get_role(ping_role_id)) is not None
+                else None
+            ),
+            embed=embed,
+            view=self,
+        )
         self.cog.views[self._message] = self
         return self._message
 
@@ -132,7 +143,7 @@ class JoinGameView(discord.ui.View):
         except discord.HTTPException:
             pass
 
-    @discord.ui.button(label="Join Game", emoji="🎮", style=discord.ButtonStyle.success)
+    @discord.ui.button(emoji="🎮", label="Join Game", style=discord.ButtonStyle.success)
     async def join(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user in self.players:
             await interaction.response.send_message(
@@ -1697,3 +1708,74 @@ class ExplainView(discord.ui.View):
                 kwargs["embeds"].append(discord.Embed(title="\u200b"))
             del kwargs["view"]
             await interaction.channel.send(**kwargs)
+
+
+class PollView(JoinGameView):
+    def __init__(self, cog: commands.Cog, threshold: int = 5) -> None:
+        discord.ui.View.__init__(self, timeout=20 * 60)
+        self.ctx: commands.Context = None
+        self.cog: commands.Cog = cog
+        self.threshold: int = threshold
+
+        self.host: discord.Member = None
+        self.players: typing.List[discord.Member] = []
+        self._message: discord.Message = None
+
+        for item in self.children:
+            self.remove_item(item)
+        self.add_item(self.sure)
+        self.sure.label = _("Sure!")
+        self.add_item(self.view_players)
+        self.view_players.label = _("View Players (1)")
+
+    async def start(self, ctx: commands.Context) -> discord.Message:
+        self.ctx: commands.Context = ctx
+        self.host: discord.Member = ctx.author
+        self.players.append(self.host)
+        embed: discord.Embed = discord.Embed(
+            title=_("Poll to start a Mafia game!"),
+            description=_("Click the button below to join the poll."),
+            color=await self.ctx.embed_color(),
+            timestamp=ctx.message.created_at,
+        )
+        embed.set_author(
+            name=_("Created by {host.display_name}").format(host=self.host),
+            icon_url=self.host.display_avatar,
+        )
+        embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
+        self._message: discord.Message = await self.ctx.send(embed=embed, view=self)
+        self.cog.views[self._message] = self
+        return self._message
+
+    async def on_timeout(self) -> None:
+        for child in self.children:
+            child: discord.ui.Item
+            if hasattr(child, "disabled") and not (
+                isinstance(child, discord.ui.Button) and child.style == discord.ButtonStyle.url
+            ):
+                child.disabled = True
+        try:
+            await self._message.edit(view=self)
+        except discord.HTTPException:
+            pass
+
+    @discord.ui.button(emoji="🎮", label="Sure!", style=discord.ButtonStyle.success)
+    async def sure(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        if interaction.user not in self.players:
+            self.players.append(interaction.user)
+            await interaction.response.send_message(_("You have joined the poll!"), ephemeral=True)
+        else:
+            self.players.remove(interaction.user)
+            await interaction.response.send_message(_("You have left the poll!"), ephemeral=True)
+        self.view_players.label = _("View Players ({len_players})").format(
+            len_players=len(self.players)
+        )
+        try:
+            await self._message.edit(view=self)
+        except discord.HTTPException:
+            pass
+        if len(self.players) >= self.threshold:
+            self.stop()
+            await self.on_timeout()
+            self.ctx.players = self.players
+            await self.cog.start(self.ctx)

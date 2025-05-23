@@ -234,7 +234,6 @@ class EnglishWordTest(Test):
             style=discord.ButtonStyle.secondary,
         )
         async def callback(interaction: discord.Interaction) -> None:
-            await interaction.response.defer()
             await interaction.response.send_modal(BaseModal(self))
         button.callback = callback
         view.add_item(button)

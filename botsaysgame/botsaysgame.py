@@ -54,6 +54,12 @@ class BotSaysGame(Cog):
             if isinstance(test, EnglishWordTest):
                 test.previously_used_words = used_words
             request, view, reactions = await test.initialize()
+            time = (
+                (
+                    20 if round < 10 else 15
+                ) if not test.lowered_time
+                else 7
+            )
             embed.description = _(
                 "-# Remaining players...\n"
                 "{players}\n\n"
@@ -66,7 +72,7 @@ class BotSaysGame(Cog):
                 ),
                 bot=ctx.guild.me,
                 request=request,
-                timestamp=f"<t:{int((datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=20)).timestamp())}:R>",
+                timestamp=f"<t:{int((datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=time)).timestamp())}:R>",
             )
             message = await ctx.send(embed=embed, view=view)
             if view is not None:
@@ -75,12 +81,7 @@ class BotSaysGame(Cog):
                 await start_adding_reactions(
                     message, reactions
                 )
-            for i in range(
-                (
-                    20 if round < 10 else 15
-                ) if test.lowered_time
-                else 7
-            ):
+            for __ in range(time):
                 await asyncio.sleep(1)
                 if len(test.success) + len(test.fail) == len(players):
                     break

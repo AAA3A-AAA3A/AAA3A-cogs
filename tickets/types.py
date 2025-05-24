@@ -1399,8 +1399,13 @@ class Ticket:
             bot=self.bot,
             attachment_handler=AttachmentHandler(),
         )
+        owner = (
+            self.owner
+            if self.owner is not None
+            else await self.bot.fetch_user(self.owner_id)
+        )
         return discord.File(
-            filename=f"ticket-{self.id}-{self.owner.name}.html",
+            filename=f"ticket-{self.id}-{owner.name}.html",
             fp=io.BytesIO(transcript.encode()),
         )
 

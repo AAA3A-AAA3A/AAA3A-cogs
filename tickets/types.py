@@ -341,7 +341,11 @@ class Ticket:
         )
         return channel_name.format(
             emoji=self.emoji,
-            owner_display_name=owner.display_name,
+            owner_display_name=(
+                owner.display_name
+                if owner is not None
+                else (await self.bot.fetch_user(self.owner_id)).display_name
+            ),
             owner_name=owner.name,
             owner_mention=owner.mention,
             owner_id=owner.id,
@@ -880,7 +884,7 @@ class Ticket:
                 guild=self.guild,
                 created_at=self.reopened_at,
                 action_type="ticket_reopened",
-                user=self.owner,
+                user=self.owner or self.owner_id,
                 moderator=reopener,
                 reason=reason,
                 channel=self.channel,

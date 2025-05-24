@@ -1416,7 +1416,7 @@ class Ticket:
                 embeds=[
                     discord.Embed(
                         title=_("🗑 Ticket Deleted"),
-                        description=_("{self.owner.mention}'s ticket has been deleted.").format(
+                        description=_("<@{self.owner_id}>'s ticket has been deleted.").format(
                             self=self
                         ),
                         color=discord.Color.red(),
@@ -1439,7 +1439,7 @@ class Ticket:
                 guild=self.guild,
                 created_at=datetime.datetime.now(tz=datetime.timezone.utc),
                 action_type="ticket_deleted",
-                user=self.owner,
+                user=self.owner or self.owner_id,
                 moderator=deleter,
                 channel=self.channel,
             )

@@ -713,7 +713,7 @@ class MafiaGame(Cog):
         await ctx.send(_("This player has been **killed** from the Mafia game in this server."))
 
     @commands.max_concurrency(1, per=commands.BucketType.guild)
-    @commands.cooldown(1, 3600, per=commands.BucketType.guild)
+    @commands.cooldown(1, 3600, type=commands.BucketType.guild)
     @mafia.command()
     async def poll(self, ctx: commands.Context) -> None:
         """Create a poll for the game."""

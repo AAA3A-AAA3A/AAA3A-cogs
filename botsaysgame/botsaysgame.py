@@ -11,7 +11,7 @@ import asyncio
 import datetime
 import random
 
-from .tests import TESTS
+from .tests import TESTS, EnglishWordTest
 from .view import JoinGameView
 
 # Credits:
@@ -29,7 +29,7 @@ class BotSaysGame(Cog):
         return self.views
 
     @commands.guild_only()
-    @commands.max_concurrency(1, per=commands.BucketType.channel)
+    # @commands.max_concurrency(1, per=commands.BucketType.channel)
     @commands.mod_or_permissions(manage_messages=True)
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["botsaysgame"])
@@ -43,6 +43,7 @@ class BotSaysGame(Cog):
         players = join_view.players
 
         round = 0
+        used_words = []
         while len(players) > 1:
             round += 1
             embed: discord.Embed = discord.Embed(
@@ -50,6 +51,8 @@ class BotSaysGame(Cog):
                 color=await ctx.embed_color(),
             )
             test = random.choice(TESTS)(ctx, players)
+            if isinstance(test, EnglishWordTest):
+                test.previously_used_words = used_words
             request, view, reactions = await test.initialize()
             embed.description = _(
                 "-# Remaining players...\n"
@@ -72,13 +75,20 @@ class BotSaysGame(Cog):
                 await start_adding_reactions(
                     message, reactions
                 )
-            for i in range(20 if round < 10 else 15):
+            for i in range(
+                (
+                    20 if round < 10 else 15
+                ) if test.lowered_time
+                else 7
+            ):
                 await asyncio.sleep(1)
                 if len(test.success) + len(test.fail) == len(players):
                     break
             if view is not None:
                 await view.on_timeout()
             eliminated = await test.get_eliminated_players()
+            if isinstance(test, EnglishWordTest):
+                used_words.extend(test.used_words)
             if len(eliminated) == len(players):
                 await ctx.send(
                     embed=discord.Embed(

@@ -64,6 +64,7 @@ class Test:
     def __init__(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
         self.ctx: commands.Context = ctx
         self.players: discord.Member = players
+        self.lowered_time: bool = False
 
         self.answer: typing.Optional[str] = None
         self.listener: typing.Optional[typing.Callable] = None
@@ -150,21 +151,32 @@ class ColorButtonTest(Test):
     async def initialize(self) -> typing.Tuple[str, typing.Optional[discord.ui.View], typing.List[str]]:
         colors = ["green", "red", "blue", "dark"]
         self.answer = random.choice(colors)
+        type = random.choice(["label", "style"])
         styles = [discord.ButtonStyle.success, discord.ButtonStyle.danger, discord.ButtonStyle.primary, discord.ButtonStyle.secondary]
         random.shuffle(styles)
         view: BaseView = BaseView(self)
-        for style, color in zip(styles, colors):
+        for label, style in zip(colors, styles):
             button: discord.ui.Button = discord.ui.Button(
-                label=color.title(),
+                label=label.title(),
                 style=style,
-                custom_id=color,
+                custom_id=(
+                    label
+                    if type == "label" else
+                    {
+                        discord.ButtonStyle.success: "green",
+                        discord.ButtonStyle.danger: "red",
+                        discord.ButtonStyle.primary: "blue",
+                        discord.ButtonStyle.secondary: "dark",
+                    }[style]
+                ),
             )
             async def callback(interaction: discord.Interaction) -> None:
                 await interaction.response.defer()
                 await self.check(interaction.user, interaction.data["custom_id"])
             button.callback = callback
             view.add_item(button)
-        return _("Press the {color} button.").format(color=self.answer.title()), view, []
+        self.lowered_time = True
+        return _("Press the {color} {type} button.").format(color=self.answer.title(), type=type), view, []
 
 
 class SelectionTest(Test):
@@ -181,6 +193,7 @@ class SelectionTest(Test):
             await self.check(interaction.user, interaction.data["values"][0])
         select.callback = callback
         view.add_item(select)
+        self.lowered_time = True
         return _("Select {word} from the menu below.").format(word=self.answer), view, []
 
 
@@ -206,9 +219,16 @@ class QuickMath(Test):
         a = random.randint(1, 100)
         b = random.randint(1, 100)
         self.answer = str(a - b)
-        self.listener = get_on_message_without_command_listener(self)
-        self.ctx.bot.add_listener(self.listener)
-        return _("Quick Math! {a} - {b} = ??").format(a=a, b=b), None, []
+        view: BaseView = BaseView(self)
+        button: discord.ui.Button = discord.ui.Button(
+            label=_("Submit!"),
+            style=discord.ButtonStyle.secondary,
+        )
+        async def callback(interaction: discord.Interaction) -> None:
+            await interaction.response.send_modal(BaseModal(self))
+        button.callback = callback
+        view.add_item(button)
+        return _("Quick Math! {a} - {b} = ??").format(a=a, b=b), view, []
 
 
 class ReactionTest(Test):
@@ -220,10 +240,16 @@ class ReactionTest(Test):
                 await self.check(user, reaction.emoji)
         self.listener = on_reaction_add
         self.ctx.bot.add_listener(self.listener)
-        return _("React to this message with {emoji}.").format(emoji=self.answer), None, (reactions if random.random() < 0.5 else [])
+        self.lowered_time = random.random() < 0.5
+        return _("React to this message with {emoji}.").format(emoji=self.answer), None, (reactions if self.lowered_time else [])
 
 
 class EnglishWordTest(Test):
+    def __init__(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
+        super().__init__(ctx, players)
+        self.previously_used_words: typing.List[str] = []
+        self.used_words: typing.List[str] = []
+
     async def initialize(self) -> typing.Tuple[str, typing.Optional[discord.ui.View], typing.List[str]]:
         view: BaseView = BaseView(self)
         button: discord.ui.Button = discord.ui.Button(
@@ -234,20 +260,17 @@ class EnglishWordTest(Test):
             await interaction.response.send_modal(BaseModal(self))
         button.callback = callback
         view.add_item(button)
-        return _("Click the button then provide one ENGLISH word between five and ten letters in the box provided."), view, []
+        return _("Click the button then provide one ENGLISH word between five and ten letters in the box provided. You can only use each word once."), view, []
 
     async def answer_check(self, player: discord.Member, answer: str) -> None:
         if len(answer) < 5 or len(answer) > 10:
             return False
         if not answer.isalpha():
             return False
+        if answer in self.previously_used_words:
+            return False
+        self.used_words.append(answer)
         return True
 
 
-
 TESTS: typing.List[typing.Type[Test]] = [ColorButtonTest, SelectionTest, WriteWordTest, PingMemberTest, QuickMath, ReactionTest, EnglishWordTest]
-
-
-"""
-- english word
-"""

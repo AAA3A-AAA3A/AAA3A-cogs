@@ -439,9 +439,9 @@ class MafiaGame(Cog):
         """Play the Mafia game, with many roles (Mafia/Villagers/Neutral), modes (including Random and Custom), anomalies..."""
         pass
 
-    @commands.max_concurrency(1, per=commands.BucketType.channel)
+    # @commands.max_concurrency(1, per=commands.BucketType.channel)
     @commands.admin_or_permissions(manage_guild=True)
-    # commands.bot_has_permissions(manage_channels=True)
+    @commands.bot_has_permissions(manage_channels=True)
     @mafia.command()
     async def start(
         self, ctx: commands.Context, mode: typing.Optional[ModeConverter] = None

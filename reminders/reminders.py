@@ -92,6 +92,7 @@ class Reminders(DashboardIntegration, Cog):
             creation_view=True,
             snooze_view=True,
             seconds_allowed=True,
+            replies=True,
         )
         self.config.register_user(
             timezone=None,
@@ -135,6 +136,10 @@ class Reminders(DashboardIntegration, Cog):
             "seconds_allowed": {
                 "converter": bool,
                 "description": "Check reminders every 30 seconds instead of every 1 minute, to allow reminders with precise duration.",
+            },
+            "replies": {
+                "converter": bool,
+                "description": "Allow the bot to reply to commands that create reminders.",
             },
         }
         self.settings: Settings = Settings(
@@ -294,7 +299,8 @@ class Reminders(DashboardIntegration, Cog):
         - `[p]remindme in 1 hour <message_link>`
         - `[p]remindme at 10h to add some feature to my codes`
         """
-        minimum_user_reminders = await self.config.maximum_user_reminders()
+        config = await self.config.all()
+        minimum_user_reminders = config["maximum_user_reminders"]
         if (
             len(self.cache.get(ctx.author.id, {})) > minimum_user_reminders
             and ctx.author.id not in ctx.bot.owner_ids
@@ -329,7 +335,7 @@ class Reminders(DashboardIntegration, Cog):
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if repeat is not None:
-            if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
+            if not config["repeat_allowed"] and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
@@ -339,7 +345,7 @@ class Reminders(DashboardIntegration, Cog):
                     _repeat_dict.pop("years", None)
                     _repeat_dict.pop("months", None)
                     repeat_delta = datetime.timedelta(**_repeat_dict)
-                    minimum_repeat = await self.config.minimum_repeat()
+                    minimum_repeat = config["minimum_repeat"]
                     if (
                         repeat_delta < datetime.timedelta(minutes=minimum_repeat)
                         and ctx.author.id not in ctx.bot.owner_ids
@@ -399,8 +405,8 @@ class Reminders(DashboardIntegration, Cog):
             expires_at=expires_at,
             repeat=repeat,
         )
-        if await self.config.creation_view():
-            view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
+        if config["creation_view"]:
+            view = ReminderView(cog=self, reminder=reminder, me_too=config["me_too"])
         else:
             view = None
         message = await ctx.send(
@@ -408,7 +414,7 @@ class Reminders(DashboardIntegration, Cog):
             view=view,
             reference=ctx.message.to_reference(
                 fail_if_not_exists=False
-            ),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            ) if config["replies"] else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
         if view is not None:
@@ -437,7 +443,8 @@ class Reminders(DashboardIntegration, Cog):
         Examples:
         - `[p]remind #destination @user1 @user2 @user2 in 2 hours to buy a gift`
         """
-        minimum_user_reminders = await self.config.maximum_user_reminders()
+        config = await self.config.all()
+        minimum_user_reminders = config["maximum_user_reminders"]
         if (
             len(self.cache.get(ctx.author.id, {})) > minimum_user_reminders
             and ctx.author.id not in ctx.bot.owner_ids
@@ -472,7 +479,7 @@ class Reminders(DashboardIntegration, Cog):
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if repeat is not None:
-            if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
+            if not config["repeat_allowed"] and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
@@ -482,7 +489,7 @@ class Reminders(DashboardIntegration, Cog):
                     _repeat_dict.pop("years", None)
                     _repeat_dict.pop("months", None)
                     repeat_delta = datetime.timedelta(**_repeat_dict)
-                    minimum_repeat = await self.config.minimum_repeat()
+                    minimum_repeat = config["minimum_repeat"]
                     if (
                         repeat_delta < datetime.timedelta(minutes=minimum_repeat)
                         and ctx.author.id not in ctx.bot.owner_ids
@@ -592,8 +599,8 @@ class Reminders(DashboardIntegration, Cog):
             destination=destination.id,
             targets=[{"id": target.id, "mention": target.mention} for target in targets],
         )
-        if await self.config.creation_view():
-            view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
+        if config["creation_view"]:
+            view = ReminderView(cog=self, reminder=reminder, me_too=False)
         else:
             view = None
         message = await ctx.send(
@@ -601,7 +608,7 @@ class Reminders(DashboardIntegration, Cog):
             view=view,
             reference=ctx.message.to_reference(
                 fail_if_not_exists=False
-            ),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            ) if config["replies"] else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(
                 everyone=False, users=False, roles=False, replied_user=False
             ),
@@ -637,7 +644,8 @@ class Reminders(DashboardIntegration, Cog):
         Examples:
         - `[p]reminder fifo #destination "at 10h every day" ping
         """
-        minimum_user_reminders = await self.config.maximum_user_reminders()
+        config = await self.config.all()
+        minimum_user_reminders = config["maximum_user_reminders"]
         if (
             len(self.cache.get(ctx.author.id, {})) > minimum_user_reminders
             and ctx.author.id not in ctx.bot.owner_ids
@@ -647,7 +655,7 @@ class Reminders(DashboardIntegration, Cog):
                     "You have reached the limit of {minimum_user_reminders} reminders per user."
                 ).format(minimum_user_reminders=minimum_user_reminders)
             )
-        if not await self.config.fifo_allowed() and ctx.author.id not in ctx.bot.owner_ids:
+        if not config["fifo_allowed"] and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(
                 _("You're not allowed to create FIFO/commands reminders.")
             )
@@ -658,7 +666,7 @@ class Reminders(DashboardIntegration, Cog):
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if repeat is not None:
-            if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
+            if not config["repeat_allowed"] and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
@@ -668,7 +676,7 @@ class Reminders(DashboardIntegration, Cog):
                     _repeat_dict.pop("years", None)
                     _repeat_dict.pop("months", None)
                     repeat_delta = datetime.timedelta(**_repeat_dict)
-                    minimum_repeat = await self.config.minimum_repeat()
+                    minimum_repeat = config["minimum_repeat"]
                     if (
                         repeat_delta < datetime.timedelta(minutes=minimum_repeat)
                         and ctx.author.id not in ctx.bot.owner_ids
@@ -716,8 +724,8 @@ class Reminders(DashboardIntegration, Cog):
             repeat=repeat,
             destination=destination.id,
         )
-        if await self.config.creation_view():
-            view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
+        if config["creation_view"]:
+            view = ReminderView(cog=self, reminder=reminder, me_too=False)
         else:
             view = None
         message = await ctx.send(
@@ -725,7 +733,7 @@ class Reminders(DashboardIntegration, Cog):
             view=view,
             reference=ctx.message.to_reference(
                 fail_if_not_exists=False
-            ),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            ) if config["replies"] else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
         if view is not None:
@@ -754,7 +762,8 @@ class Reminders(DashboardIntegration, Cog):
         Examples:
         - `[p]reminder say #destination "at 9h every day" Hello everyone!
         """
-        minimum_user_reminders = await self.config.maximum_user_reminders()
+        config = await self.config.all()
+        minimum_user_reminders = config["maximum_user_reminders"]
         if (
             len(self.cache.get(ctx.author.id, {})) > minimum_user_reminders
             and ctx.author.id not in ctx.bot.owner_ids
@@ -771,7 +780,7 @@ class Reminders(DashboardIntegration, Cog):
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if repeat is not None:
-            if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
+            if not config["repeat_allowed"] and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
                     _("You are not allowed to create repeating reminders.")
                 )
@@ -781,7 +790,7 @@ class Reminders(DashboardIntegration, Cog):
                     _repeat_dict.pop("years", None)
                     _repeat_dict.pop("months", None)
                     repeat_delta = datetime.timedelta(**_repeat_dict)
-                    minimum_repeat = await self.config.minimum_repeat()
+                    minimum_repeat = config["minimum_repeat"]
                     if (
                         repeat_delta < datetime.timedelta(minutes=minimum_repeat)
                         and ctx.author.id not in ctx.bot.owner_ids
@@ -821,8 +830,8 @@ class Reminders(DashboardIntegration, Cog):
             repeat=repeat,
             destination=destination.id,
         )
-        if await self.config.creation_view():
-            view = ReminderView(cog=self, reminder=reminder, me_too=await self.config.me_too())
+        if config["creation_view"]:
+            view = ReminderView(cog=self, reminder=reminder, me_too=False)
         else:
             view = None
         message = await ctx.send(
@@ -830,7 +839,7 @@ class Reminders(DashboardIntegration, Cog):
             view=view,
             reference=ctx.message.to_reference(
                 fail_if_not_exists=False
-            ),  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            ) if config["replies"] else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
         if view is not None:

@@ -257,6 +257,7 @@ class ReminderView(discord.ui.View):
                 _("Reminder **#{reminder_id}** deleted.").format(reminder_id=reminder.id),
                 ephemeral=True,
             )
+            return
         reminder_id = 1
         while reminder_id in self.cog.cache.get(interaction.user.id, {}):
             reminder_id += 1

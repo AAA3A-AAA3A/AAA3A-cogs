@@ -667,15 +667,16 @@ class Ticket:
                 embed_links=True,
                 attach_files=True,
             ),
-            self.owner: discord.PermissionOverwrite(
+        }
+        if self.owner is not None:
+            overwrites[self.owner] = discord.PermissionOverwrite(
                 read_messages=True,
                 read_message_history=True,
                 send_messages=not self.is_closed,
                 add_reactions=not self.is_closed,
                 embed_links=not self.is_closed,
                 attach_files=not self.is_closed,
-            ),
-        }
+            )
         for support_role_id in config["support_roles"]:
             if (support_role := self.guild.get_role(support_role_id)) is not None:
                 overwrites[support_role] = discord.PermissionOverwrite(

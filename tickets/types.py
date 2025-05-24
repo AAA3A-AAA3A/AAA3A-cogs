@@ -638,7 +638,7 @@ class Ticket:
                 guild=self.guild,
                 created_at=self.opened_at,
                 action_type="ticket_created",
-                user=self.owner,
+                user=self.owner or self.owner_id,
                 moderator=self.guild.me,
                 channel=self.channel,
             )
@@ -793,7 +793,7 @@ class Ticket:
                 guild=self.guild,
                 created_at=self.closed_at,
                 action_type="ticket_closed",
-                user=self.owner,
+                user=self.owner or self.owner_id,
                 moderator=closer,
                 reason=reason,
                 channel=self.channel,
@@ -926,7 +926,7 @@ class Ticket:
                 guild=self.guild,
                 created_at=self.claimed_at,
                 action_type="ticket_claimed",
-                user=self.owner,
+                user=self.owner or self.owner_id,
                 moderator=claimer,
                 channel=self.channel,
             )
@@ -963,7 +963,7 @@ class Ticket:
                 guild=self.guild,
                 created_at=datetime.datetime.now(tz=datetime.timezone.utc),
                 action_type="ticket_unclaimed",
-                user=self.owner,
+                user=self.owner or self.owner_id,
                 moderator=self.guild.me,
                 channel=self.channel,
             )
@@ -1033,7 +1033,7 @@ class Ticket:
                 guild=self.guild,
                 created_at=self.locked_at,
                 action_type="ticket_locked",
-                user=self.owner,
+                user=self.owner or self.owner_id,
                 moderator=locker,
                 channel=self.channel,
             )
@@ -1104,7 +1104,7 @@ class Ticket:
                 guild=self.guild,
                 created_at=self.unlocked_at,
                 action_type="ticket_unlocked",
-                user=self.owner,
+                user=self.owner or self.owner_id,
                 moderator=unlocker,
                 channel=self.channel,
             )
@@ -1189,7 +1189,7 @@ class Ticket:
                 guild=self.guild,
                 created_at=datetime.datetime.now(tz=datetime.timezone.utc),
                 action_type="ticket_appeal_approved",
-                user=self.owner,
+                user=self.owner or self.owner_id,
                 moderator=self.guild.me,
                 channel=self.channel,
             )

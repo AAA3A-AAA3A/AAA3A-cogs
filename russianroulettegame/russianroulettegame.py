@@ -80,7 +80,7 @@ class RussianRouletteGame(Cog):
                         )
                         players.remove(p)
                         await ctx.send(
-                            _("**💥 BANG!** {player.mention} made a mistake and put their gun in the wrong direction, shooting {p.mention}").format(
+                            _("**💥 BANG!** {player.mention} made a mistake and put their gun in the wrong direction, shooting {p.mention}.").format(
                                 player=player,
                                 p=p,
                             )

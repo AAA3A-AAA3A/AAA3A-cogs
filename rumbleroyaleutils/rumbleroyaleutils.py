@@ -130,16 +130,16 @@ class RumbleRoyaleUtils(Cog):
                     )
             elif rumble.is_started:
                 if "Round " in embed.title:
-                    round_number = int(embed.title.strip("*_").split(" ")[1])
+                    round_number = int(embed.title.replace("*", "").replace("_", "").strip().split(" ")[1])
                     deaths = embed.description.split("\n\n")[0].split("\n")
                     round_victims = []
                     for death in deaths:
                         try:
-                            victim_name = death.split("~~**")[1].split("**~~")[0]
+                            victim_name = death.split("~~**")[1].split("**~~")[0].split(" ")[0]
                         except IndexError:
                             victim_name = None
                         try:
-                            killer_name = death.replace("~~**", "....").split("**")[1].split("**")[0]
+                            killer_name = death.replace("~~**", "....").split("**")[1].split("**")[0].split(" ")[0]
                         except IndexError:
                             killer_name = None
                         killer = discord.utils.get(rumble.players, name=killer_name) if killer_name is not None else None

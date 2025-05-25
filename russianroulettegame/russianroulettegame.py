@@ -43,6 +43,7 @@ class RussianRouletteGame(Cog):
             await ctx.send(
                 embed=discord.Embed(
                     title=_("Round {round}").format(round=round),
+                    description=_("There are {count} players left.").format(count=len(players)),
                     color=await ctx.embed_color(),
                 ),
             )
@@ -51,7 +52,7 @@ class RussianRouletteGame(Cog):
             for i, player in enumerate(players):
                 view: ShotView = ShotView(self, player)
                 view._message = await ctx.send(
-                    _("{player.mention}, it's your turn to shot!").format(player=player),
+                    _("{player.mention}, it's your turn to shoot!").format(player=player),
                     view=view,
                 )
                 if await view.wait():

@@ -153,6 +153,7 @@ class ColorButtonTest(Test):
         self.answer = random.choice(colors)
         type = random.choice(["label", "style"])
         styles = [discord.ButtonStyle.success, discord.ButtonStyle.danger, discord.ButtonStyle.primary, discord.ButtonStyle.secondary]
+        random.shuffle(colors)
         random.shuffle(styles)
         view: BaseView = BaseView(self)
         for label, style in zip(colors, styles):

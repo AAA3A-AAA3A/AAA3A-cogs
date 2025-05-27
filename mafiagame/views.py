@@ -1814,7 +1814,7 @@ class PollView(JoinGameView):
 
     @discord.ui.button(emoji="🎮", label="Sure!", style=discord.ButtonStyle.success)
     async def sure(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        if any(interaction.user.get_role(role_id) for role_id in self.config["blacklisted_roles"]):
+        if any(interaction.user.get_role(role_id) for role_id in await self.cog.config.guild(interaction.guild).blacklisted_roles()):
             await interaction.response.send_message(
                 _("You aren't allowed to join a Mafia game in this server because you have a blacklisted role!"),
             )

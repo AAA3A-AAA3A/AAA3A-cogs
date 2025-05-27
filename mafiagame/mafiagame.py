@@ -729,6 +729,31 @@ class MafiaGame(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The poll threshold is not set in this server.")
             )
+        if any(ctx.author.get_role(role_id) for role_id in await self.config.guild(ctx.guild).blacklisted_roles()):
+            raise commands.UserFeedbackCheckFailure(
+                _("You aren't allowed to join a Mafia game in this server because you have a blacklisted role!"),
+            )
+        if (
+            temp_banned_until := await self.config.member(ctx.author).temp_banned_until()
+        ) is not None:
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "You are **temporarily banned for {duration}** from joining Mafia games in this server!"
+                ).format(
+                    duration=humanize_timedelta(
+                        timedelta=temp_banned_until
+                        - datetime.datetime.now(tz=datetime.timezone.utc)
+                    )
+                ),
+            )
+        if any(
+            game
+            for game in self.games.values()
+            if game.get_player(ctx.author) is not None
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _("You are already in a game of Mafia in another server!")
+            )
         poll_view: PollView = PollView(self, threshold)
         await poll_view.start(ctx)
         await poll_view.wait()

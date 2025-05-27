@@ -162,6 +162,7 @@ class JoinGameView(discord.ui.View):
         if any(interaction.user.get_role(role_id) for role_id in self.config["blacklisted_roles"]):
             await interaction.response.send_message(
                 _("You aren't allowed to join a Mafia game in this server because you have a blacklisted role!"),
+                ephemeral=True,
             )
             return
         if (
@@ -1817,6 +1818,7 @@ class PollView(JoinGameView):
         if any(interaction.user.get_role(role_id) for role_id in await self.cog.config.guild(interaction.guild).blacklisted_roles()):
             await interaction.response.send_message(
                 _("You aren't allowed to join a Mafia game in this server because you have a blacklisted role!"),
+                ephemeral=True,
             )
             return
         if (

@@ -2383,7 +2383,7 @@ class Shaman(Role):
 
     @classmethod
     async def perform_action(
-        cls, night, player: Player, interaction: discord.Interaction[discord.Client]
+        cls, night, player: Player, interaction: discord.Interaction
     ) -> None:
         if player.voodoo_doll_vanished:
             raise RuntimeError(_("Your voodoo doll has vanished for the rest of the game."))
@@ -2689,7 +2689,7 @@ class Lawyer(Role):
 
     @classmethod
     async def perform_day_action(
-        cls, day, player: Player, interaction: discord.Interaction, target: Player
+        cls, day, player: Player, target: Player, interaction: discord.Interaction
     ) -> None:
         embed: discord.Embed = discord.Embed(
             title=_(
@@ -4061,7 +4061,7 @@ class Necromancer(Role):
             self_allowed=False,
             condition=lambda player, target: not any(t[0] is target for t in player.game_targets),
             two_selects=True,
-            second_select_optional=not player.use_amount,
+            second_select_optional=not player.uses_amount,
         )(night, player, interaction)
 
     @classmethod

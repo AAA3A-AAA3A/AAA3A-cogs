@@ -118,7 +118,7 @@ class WelcomeView(discord.ui.View):
     async def log_pose(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         channels = [
             channel
-            for channel_id in await self.cog.config.guild(interaction.guild).welcome_log_pose_channels()
+            for channel_id in await self.cog.config.guild(interaction.guild).plugins.Welcome.log_pose_channels()
             if (channel := interaction.guild.get_channel(channel_id)) is not None
         ]
         await interaction.response.send_message(

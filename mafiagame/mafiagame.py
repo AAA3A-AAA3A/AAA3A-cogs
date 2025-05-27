@@ -110,8 +110,8 @@ class MafiaGame(Cog):
             channel_auto_delete=False,
             game_logs=False,
             ping_role=None,
-            poll_threshold=None,
             blacklisted_roles=[],
+            poll_threshold=None,
             # Game settings.
             show_dead_role=True,
             dying_message=False,
@@ -207,16 +207,15 @@ class MafiaGame(Cog):
             "ping_role": {
                 "converter": discord.Role,
                 "description": "The role that will be pinged when the game starts.",
-                "no_slash": True,
+            },
+            "blacklisted_roles": {
+                "converter": commands.Greedy[discord.Role],
+                "description": "The roles that will be blacklisted from the game.",
             },
             "poll_threshold": {
                 "converter": commands.Range[int, 5, 25],
                 "description": "The votes needed to start the game.",
                 "no_slash": True,
-            },
-            "blacklisted_roles": {
-                "converter": commands.Greedy[discord.Role],
-                "description": "The roles that will be blacklisted from the game.",
             },
             # Game settings.
             "show_dead_role": {
@@ -254,11 +253,13 @@ class MafiaGame(Cog):
             "anomalies": {
                 "converter": bool,
                 "description": "If this option is enabled, the anomalies will be enabled.",
+                "no_slash": True,
             },
             "disabled_anomalies": {
                 "converter": commands.Greedy[AnomalyNameConverter],
                 "description": "The anomalies that will be disabled.",
                 "aliases": ["danomalies"],
+                "no_slash": True,
             },
             # Roles settings.
             "vigilante_shoot_night_1": {

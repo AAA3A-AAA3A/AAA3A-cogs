@@ -1245,16 +1245,19 @@ class Game:
         self.cog.games.pop(self.ctx.guild, None)
         self.cog.last_games[self.ctx.guild] = self
         if self.channel.permissions_for(self.ctx.guild.me).manage_channels:
-            await asyncio.sleep(10)
-            if not self.config["channel_auto_delete"] and not await CogsUtils.ConfirmationAsk(
-                self.ctx,
-                _("{host.mention} Do you want to delete the Mafia channel?").format(
-                    host=self.ctx.author
-                ),
-                timeout=600,
-                timeout_message=None,
-            ):
-                return
+            if not self.config["channel_auto_delete"]:
+                await asyncio.sleep(10)
+                if not await CogsUtils.ConfirmationAsk(
+                    self.ctx,
+                    _("{host.mention} Do you want to delete the Mafia channel?").format(
+                        host=self.ctx.author
+                    ),
+                    timeout=600,
+                    timeout_message=None,
+                ):
+                    return
+            else:
+                await asyncio.sleep(90)
             try:
                 await self.channel.delete()
             except discord.HTTPException:

@@ -111,6 +111,7 @@ class MafiaGame(Cog):
             game_logs=False,
             ping_role=None,
             poll_threshold=None,
+            blacklisted_roles=[],
             # Game settings.
             show_dead_role=True,
             dying_message=False,
@@ -212,6 +213,10 @@ class MafiaGame(Cog):
                 "converter": commands.Range[int, 5, 25],
                 "description": "The votes needed to start the game.",
                 "no_slash": True,
+            },
+            "blacklisted_roles": {
+                "converter": commands.Greedy[discord.Role],
+                "description": "The roles that will be blacklisted from the game.",
             },
             # Game settings.
             "show_dead_role": {

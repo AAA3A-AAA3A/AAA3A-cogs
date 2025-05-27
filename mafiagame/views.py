@@ -159,12 +159,17 @@ class JoinGameView(discord.ui.View):
                 _("The game is full, you can't join!"), ephemeral=True
             )
             return
+        if any(interaction.user.get_role(role_id) for role_id in self.config["blacklisted_roles"]):
+            await interaction.response.send_message(
+                _("You aren't allowed to join a Mafia game in this server because you have a blacklisted role!"),
+            )
+            return
         if (
             temp_banned_until := await self.cog.config.member(interaction.user).temp_banned_until()
         ) is not None:
             await interaction.response.send_message(
                 _(
-                    "You are **temporarily banned for {duration}** from joining Mafia games!"
+                    "You are **temporarily banned for {duration}** from joining Mafia games in this server!"
                 ).format(
                     duration=humanize_timedelta(
                         timedelta=temp_banned_until
@@ -1809,6 +1814,35 @@ class PollView(JoinGameView):
 
     @discord.ui.button(emoji="🎮", label="Sure!", style=discord.ButtonStyle.success)
     async def sure(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        if any(interaction.user.get_role(role_id) for role_id in self.config["blacklisted_roles"]):
+            await interaction.response.send_message(
+                _("You aren't allowed to join a Mafia game in this server because you have a blacklisted role!"),
+            )
+            return
+        if (
+            temp_banned_until := await self.cog.config.member(interaction.user).temp_banned_until()
+        ) is not None:
+            await interaction.response.send_message(
+                _(
+                    "You are **temporarily banned for {duration}** from joining Mafia games in this server!"
+                ).format(
+                    duration=humanize_timedelta(
+                        timedelta=temp_banned_until
+                        - datetime.datetime.now(tz=datetime.timezone.utc)
+                    )
+                ),
+                ephemeral=True,
+            )
+            return
+        if any(
+            game
+            for game in self.cog.games.values()
+            if game.get_player(interaction.user) is not None
+        ):
+            await interaction.response.send_message(
+                _("You are already in a game of Mafia in another server!"), ephemeral=True
+            )
+            return
         if interaction.user not in self.players:
             self.players.append(interaction.user)
             await interaction.response.send_message(_("You have joined the poll!"), ephemeral=True)

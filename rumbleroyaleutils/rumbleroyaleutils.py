@@ -98,10 +98,10 @@ class RumbleRoyaleUtils(Cog):
         if embed.title is None:
             return
         config = await self.config.guild(message.guild).all()
-        if message.application_id is not None and "Rumble Royale hosted by " in embed.title:
+        if "Rumble Royale hosted by " in embed.title:
             self.rumbles[message.channel] = RumbleRoyale(
                 first_message=message,
-                host=message.interaction_metadata.user,
+                host=discord.utils.get(message.guild.members, name=embed.title.split(" ")[-1]),
             )
         elif (rumble := self.rumbles.get(message.channel)) is not None:
             if "Started a new Rumble Royale session" in embed.title:
@@ -157,7 +157,11 @@ class RumbleRoyaleUtils(Cog):
                         round_victims.append(victim)
                     if config["ping_players_on_death"]:
                         await message.channel.send(
-                            _("{victims} are dead!").format(
+                            (
+                                _("{victims} are dead!")
+                                if len(round_victims) > 1
+                                else _("{victims} is dead!")
+                            ).format(
                                 victims=humanize_list(
                                     [
                                         victim.mention
@@ -192,7 +196,7 @@ class RumbleRoyaleUtils(Cog):
             return
         if not rumble.is_started:
             return
-        if message.content.lower().rstrip("?") in ["am i dead?", "dead"]:
+        if message.content.lower().rstrip("?") in ["am i dead", "dead"]:
             if not await self.config.guild(message.guild).am_i_dead():
                 return
             if message.author in rumble.dead_players:

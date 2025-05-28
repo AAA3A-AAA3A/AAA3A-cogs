@@ -135,11 +135,11 @@ class RumbleRoyaleUtils(Cog):
                     round_victims = []
                     for death in deaths:
                         try:
-                            victim_name = death.split("~~**")[1].split("**~~")[0].split(" ")[0]
+                            victim_name = death.split("~~**")[1].split("**~~")[0].split(" ")[0].replace("\\", "")
                         except IndexError:
                             victim_name = None
                         try:
-                            killer_name = death.replace("~~**", "....").split("**")[1].split("**")[0].split(" ")[0]
+                            killer_name = death.replace("~~**", "....").split("**")[1].split("**")[0].split(" ")[0].replace("\\", "")
                         except IndexError:
                             killer_name = None
                         killer = discord.utils.get(rumble.players, name=killer_name) if killer_name is not None else None

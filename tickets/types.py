@@ -570,7 +570,7 @@ class Ticket:
                     pass
 
         audit_reason = _(
-            "Ticket creation for {ticket.owner.display_name} ({ticket.owner.id}) (profile `{ticket.profile}`)"
+            "Ticket creation for {ticket.owner.display_name} ({ticket.owner.id}) (profile `{ticket.profile}`)."
         ).format(ticket=self)
         if (
             (ticket_role_id := config.get("ticket_role")) is not None
@@ -745,10 +745,10 @@ class Ticket:
         await self.save()
 
         if closer is None:
-            audit_reason = _("Ticket closed (profile `{self.profile}`)").format(self=self)
+            audit_reason = _("Ticket closed (profile `{self.profile}`).").format(self=self)
         else:
             audit_reason = _(
-                "Ticket closed by {closer.display_name} ({closer.id}) (profile `{self.profile}`)"
+                "Ticket closed by {closer.display_name} ({closer.id}) (profile `{self.profile}`)."
             ).format(closer=closer, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
@@ -840,10 +840,10 @@ class Ticket:
         await self.save()
 
         if reopener is None:
-            audit_reason = _("Ticket reopened (profile `{self.profile}`)").format(self=self)
+            audit_reason = _("Ticket reopened (profile `{self.profile}.`)").format(self=self)
         else:
             audit_reason = _(
-                "Ticket reopened by {reopener.display_name} ({reopener.id}) (profile `{self.profile}`)"
+                "Ticket reopened by {reopener.display_name} ({reopener.id}) (profile `{self.profile}`)."
             ).format(reopener=reopener, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
@@ -901,7 +901,7 @@ class Ticket:
         await self.save()
 
         audit_reason = _(
-            "Ticket claimed by {claimer.display_name} ({claimer.id}) (profile `{self.profile}`)"
+            "Ticket claimed by {claimer.display_name} ({claimer.id}) (profile `{self.profile}`)."
         ).format(claimer=claimer, self=self)
         await self.channel.edit(
             name=await self.channel_name(),
@@ -940,7 +940,7 @@ class Ticket:
         # self.claimed_at = None
         await self.save()
 
-        audit_reason = _("Ticket unclaimed (profile `{self.profile}`)").format(self=self)
+        audit_reason = _("Ticket unclaimed (profile `{self.profile}`).").format(self=self)
         await self.channel.edit(
             name=await self.channel_name(),
             reason=audit_reason,
@@ -993,10 +993,10 @@ class Ticket:
         await self.save()
 
         if locker is None:
-            audit_reason = _("Ticket locked (profile `{self.profile}`)").format(self=self)
+            audit_reason = _("Ticket locked (profile `{self.profile}`).").format(self=self)
         else:
             audit_reason = _(
-                "Ticket locked by {locker.display_name} ({locker.id}) (profile `{self.profile}`)"
+                "Ticket locked by {locker.display_name} ({locker.id}) (profile `{self.profile}`)."
             ).format(locker=locker, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
@@ -1064,10 +1064,10 @@ class Ticket:
         await self.save()
 
         if unlocker is not None:
-            audit_reason = _("Ticket unlocked (profile `{self.profile}`)").format(self=self)
+            audit_reason = _("Ticket unlocked (profile `{self.profile}`).").format(self=self)
         else:
             audit_reason = _(
-                "Ticket unlocked by {unlocker.display_name} ({unlocker.id}) (profile `{self.profile}`)"
+                "Ticket unlocked by {unlocker.display_name} ({unlocker.id}) (profile `{self.profile}`)."
             ).format(unlocker=unlocker, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
@@ -1126,11 +1126,11 @@ class Ticket:
 
         if approver is None:
             audit_reason = _(
-                "Ticket appeal approved (profile `{self.profile}`)"
+                "Ticket appeal approved."
             ).format(self=self)
         else:
             audit_reason = _(
-                "Ticket appeal approved by {approver.display_name} ({approver.id}) (profile `{self.profile}`)"
+                "Ticket appeal approved by {approver.display_name} ({approver.id})."
             ).format(approver=approver, self=self)
 
         try:
@@ -1233,11 +1233,11 @@ class Ticket:
 
         if author is None:
             audit_reason = _(
-                "Member added to the ticket: {member.display_name} ({member.id})"
+                "Member added to the ticket: {member.display_name} ({member.id})."
             ).format(member=member)
         else:
             audit_reason = _(
-                "Member added to the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id})"
+                "Member added to the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id})."
             ).format(author=author, member=member)
         if isinstance(self.channel, discord.Thread):
             await self.channel.add_user(member)
@@ -1289,11 +1289,11 @@ class Ticket:
 
         if author is None:
             audit_reason = _(
-                "Member removed from the ticket: {member.display_name} ({member.id})"
+                "Member removed from the ticket: {member.display_name} ({member.id})."
             ).format(member=member)
         else:
             audit_reason = _(
-                "Member removed from the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id})"
+                "Member removed from the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id})."
             ).format(author=author, member=member)
         if isinstance(self.channel, discord.Thread):
             await self.channel.remove_user(member)
@@ -1411,10 +1411,10 @@ class Ticket:
 
     async def delete_channel(self, deleter: typing.Optional[discord.Member] = None) -> None:
         if deleter is None:
-            audit_reason = _("Ticket deleted (profile `{self.profile}`)").format(self=self)
+            audit_reason = _("Ticket deleted (profile `{self.profile}`).").format(self=self)
         else:
             audit_reason = _(
-                "Ticket deleted by {deleter.display_name} ({deleter.id}) (profile `{self.profile}`)"
+                "Ticket deleted by {deleter.display_name} ({deleter.id}) (profile `{self.profile}`)."
             ).format(deleter=deleter, self=self)
 
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)

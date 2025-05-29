@@ -74,7 +74,7 @@ class DayNight:
             color=NIGHT_COLOR if isinstance(self, Night) else DAY_COLOR,
         )
         embed.add_field(
-            name=_("Currently alive:"),
+            name=_("Currently alive ({len_alive}):").format(len_alive=len(self.game.alive_players)),
             value="\n".join(
                 [
                     f"😃 {player.member.mention}"
@@ -84,7 +84,7 @@ class DayNight:
             ),
         )
         embed.add_field(
-            name=_("Currently dead:"),
+            name=_("Currently dead ({len_dead}):").format(len_dead=len(self.game.dead_players)),
             value="\n".join(
                 [
                     f"☠️ {player.member.mention}"

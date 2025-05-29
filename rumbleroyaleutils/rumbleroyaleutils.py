@@ -155,7 +155,7 @@ class RumbleRoyaleUtils(Cog):
                             "message": message,
                         }
                         round_victims.append(victim)
-                    if config["ping_players_on_death"]:
+                    if config["ping_players_on_death"] and round_victims:
                         await message.channel.send(
                             (
                                 _("{victims} are dead!")

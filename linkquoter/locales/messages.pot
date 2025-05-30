@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-04-11 22:17+0200\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,52 +41,52 @@ msgstr ""
 msgid "You don't have permission to read messages in that channel."
 msgstr ""
 
-#: linkquoter\linkquoter.py:36
+#: linkquoter\linkquoter.py:37
 msgid "Jump to Message!"
 msgstr ""
 
-#: linkquoter\linkquoter.py:47
+#: linkquoter\linkquoter.py:48
 msgid "Linked by {invoker.display_name}"
 msgstr ""
 
-#: linkquoter\linkquoter.py:56
+#: linkquoter\linkquoter.py:57
 msgid "You are not allowed to use this interaction."
 msgstr ""
 
-#: linkquoter\linkquoter.py:78
+#: linkquoter\linkquoter.py:79
 #, docstring
 msgid "Quote any Discord message from its link!"
 msgstr ""
 
-#: linkquoter\linkquoter.py:246
+#: linkquoter\linkquoter.py:247
 msgid "{author.display_name} said..."
 msgstr ""
 
-#: linkquoter\linkquoter.py:264
+#: linkquoter\linkquoter.py:265
 msgid "*NSFW* "
 msgstr ""
 
-#: linkquoter\linkquoter.py:271
+#: linkquoter\linkquoter.py:272
 msgid "Attachments:"
 msgstr ""
 
-#: linkquoter\linkquoter.py:288
+#: linkquoter\linkquoter.py:289
 msgid "Stickers:"
 msgstr ""
 
-#: linkquoter\linkquoter.py:303
+#: linkquoter\linkquoter.py:304
 msgid "Replying to:"
 msgstr ""
 
-#: linkquoter\linkquoter.py:304
+#: linkquoter\linkquoter.py:305
 msgid "Click to view attachments."
 msgstr ""
 
-#: linkquoter\linkquoter.py:378
+#: linkquoter\linkquoter.py:379
 #, docstring
 msgid "Migrate config from LinkQuoter by Phen."
 msgstr ""
 
-#: linkquoter\linkquoter.py:403
+#: linkquoter\linkquoter.py:404
 msgid "Data successfully migrated from LinkQuoter by Phen."
 msgstr ""

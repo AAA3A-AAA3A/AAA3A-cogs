@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-04-11 22:17+0200\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,7 +60,7 @@ msgid ""
 msgstr ""
 
 #: rolloutgame\views.py:44
-msgid "Instructions:"
+msgid "Rules:"
 msgstr ""
 
 #: rolloutgame\views.py:45
@@ -114,67 +114,67 @@ msgstr ""
 msgid "You need at least 2 players to start the game!"
 msgstr ""
 
-#: rolloutgame\views.py:160
-msgid "Only the host can cancel the game!"
+#: rolloutgame\views.py:165
+msgid "You can't cancel the game!"
 msgstr ""
 
-#: rolloutgame\views.py:196
+#: rolloutgame\views.py:201
 msgid "Rollout Game — Round {round}"
 msgstr ""
 
-#: rolloutgame\views.py:197
+#: rolloutgame\views.py:202
 msgid "Select a number between 1 and 25. Choose is limited to 30 seconds."
 msgstr ""
 
-#: rolloutgame\views.py:240
+#: rolloutgame\views.py:245
 msgid "You are not in this game!"
 msgstr ""
 
-#: rolloutgame\views.py:244
+#: rolloutgame\views.py:249
 msgid "You have already selected a number!"
 msgstr ""
 
-#: rolloutgame\views.py:276
+#: rolloutgame\views.py:281
 msgid "You have selected the number {number}!"
 msgstr ""
 
-#: rolloutgame\views.py:288
+#: rolloutgame\views.py:293
 msgid "Round {round} — Results"
 msgstr ""
 
-#: rolloutgame\views.py:305
+#: rolloutgame\views.py:310
 msgid "No one has answered in time. The game ends..."
 msgstr ""
 
-#: rolloutgame\views.py:311
+#: rolloutgame\views.py:316
 msgid ""
 "The bot has rolled the number {number}! However, since all remaining players"
 " have been eliminated, the round will be restarted."
 msgstr ""
 
-#: rolloutgame\views.py:318
+#: rolloutgame\views.py:323
 msgid "No player left in the game."
 msgstr ""
 
-#: rolloutgame\views.py:321
+#: rolloutgame\views.py:326
 msgid "The bot has rolled the number {number}!"
 msgstr ""
 
-#: rolloutgame\views.py:323
+#: rolloutgame\views.py:328
 msgid ""
 "\n"
 "\n"
 "**No one has been eliminated this round.**"
 msgstr ""
 
-#: rolloutgame\views.py:326
+#: rolloutgame\views.py:331
 msgid ""
 "\n"
 "\n"
 "**{number} players have been eliminated this round:**"
 msgstr ""
 
-#: rolloutgame\views.py:330
+#: rolloutgame\views.py:335
 msgid ""
 "\n"
 "\n"

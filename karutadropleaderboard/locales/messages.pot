@@ -1,0 +1,38 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: karutadropleaderboard\karutadropleaderboard.py:22
+#, docstring
+msgid "Get a leaderboard of Karuta drops in your server!"
+msgstr ""
+
+#: karutadropleaderboard\karutadropleaderboard.py:97
+msgid "No one has dropped cards yet."
+msgstr ""
+
+#: karutadropleaderboard\karutadropleaderboard.py:108
+msgid "Leaderboard of Karuta drops"
+msgstr ""
+
+#: karutadropleaderboard\karutadropleaderboard.py:117
+msgid "drops"
+msgstr ""
+
+#: karutadropleaderboard\karutadropleaderboard.py:117
+msgid "drop"
+msgstr ""
+
+#: karutadropleaderboard\karutadropleaderboard.py:136
+#, docstring
+msgid "Reset leaderboard in the guild."
+msgstr ""

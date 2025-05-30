@@ -1,0 +1,145 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: russianroulettegame\russianroulettegame.py:20
+#, docstring
+msgid "Play the Russian Roulette game!"
+msgstr ""
+
+#: russianroulettegame\russianroulettegame.py:45
+msgid "Round {round}"
+msgstr ""
+
+#: russianroulettegame\russianroulettegame.py:46
+msgid "There are {count} players left."
+msgstr ""
+
+#: russianroulettegame\russianroulettegame.py:55
+msgid "{player.mention}, it's your turn to shoot!"
+msgstr ""
+
+#: russianroulettegame\russianroulettegame.py:61
+msgid "I got tired of waiting, so I decided to shoot {player.mention} myself."
+msgstr ""
+
+#: russianroulettegame\russianroulettegame.py:67
+msgid ""
+"{player.mention} put the gun up to their head and pulled the trigger..."
+msgstr ""
+
+#: russianroulettegame\russianroulettegame.py:76
+msgid "**💥 BANG!** {player.mention} is dead."
+msgstr ""
+
+#: russianroulettegame\russianroulettegame.py:82
+msgid ""
+"**💥 BANG!** {player.mention} made a mistake and put their gun in the wrong "
+"direction, shooting {p.mention}."
+msgstr ""
+
+#: russianroulettegame\russianroulettegame.py:91
+msgid "Click. Nothing happened."
+msgstr ""
+
+#: russianroulettegame\russianroulettegame.py:95
+msgid "Congratulations **{winner.display_name}**! You won the game!"
+msgstr ""
+
+#: russianroulettegame\views.py:21
+msgid "Join Game"
+msgstr ""
+
+#: russianroulettegame\views.py:22
+msgid "Leave"
+msgstr ""
+
+#: russianroulettegame\views.py:23
+msgid "View Players (1)"
+msgstr ""
+
+#: russianroulettegame\views.py:24
+msgid "Start Game!"
+msgstr ""
+
+#: russianroulettegame\views.py:31
+msgid "💥 Russian Roulette Game 🔫"
+msgstr ""
+
+#: russianroulettegame\views.py:32
+msgid ""
+"Click the button below to join the party! Please note that the maximum "
+"amount of players is 30."
+msgstr ""
+
+#: russianroulettegame\views.py:39
+msgid "Rules:"
+msgstr ""
+
+#: russianroulettegame\views.py:40
+msgid ""
+"**•** When its your turn, you will be asked to shoot.\n"
+"**•** If you shoot, you may die or survive. One player die each round.\n"
+"**•** Each player has 5 seconds to shoot, they die otherwise.**•** The game ends when only one player is left."
+msgstr ""
+
+#: russianroulettegame\views.py:48 russianroulettegame\views.py:121
+msgid "Hosted by {host.display_name}"
+msgstr ""
+
+#: russianroulettegame\views.py:72
+msgid "You have already joined the game!"
+msgstr ""
+
+#: russianroulettegame\views.py:77
+msgid "The game is full, you can't join!"
+msgstr ""
+
+#: russianroulettegame\views.py:81 russianroulettegame\views.py:98
+msgid "View Players ({len_players})"
+msgstr ""
+
+#: russianroulettegame\views.py:88
+msgid "You have joined the game!"
+msgstr ""
+
+#: russianroulettegame\views.py:94
+msgid "You have not joined the game!"
+msgstr ""
+
+#: russianroulettegame\views.py:105
+msgid "You have left the game!"
+msgstr ""
+
+#: russianroulettegame\views.py:113
+msgid "No one has joined the game yet!"
+msgstr ""
+
+#: russianroulettegame\views.py:117
+msgid "Russian Roulette Game — Players"
+msgstr ""
+
+#: russianroulettegame\views.py:140
+msgid "You can't start the game!"
+msgstr ""
+
+#: russianroulettegame\views.py:144
+msgid "You need at least 2 players to start the game!"
+msgstr ""
+
+#: russianroulettegame\views.py:161
+msgid "You can't cancel the game!"
+msgstr ""
+
+#: russianroulettegame\views.py:187
+msgid "You can't shoot for someone else!"
+msgstr ""

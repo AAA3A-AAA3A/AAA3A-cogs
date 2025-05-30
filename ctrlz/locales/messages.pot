@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-04-11 22:17+0200\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,207 +29,207 @@ msgstr ""
 msgid "The target of the audit log was not found."
 msgstr ""
 
-#: ctrlz\ctrlz.py:194
+#: ctrlz\ctrlz.py:198
 #, docstring
 msgid "Revert some actions in servers, from the audit logs!"
 msgstr ""
 
-#: ctrlz\ctrlz.py:248
+#: ctrlz\ctrlz.py:252
 msgid "Channel Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:249
+#: ctrlz\ctrlz.py:253
 msgid "Overwrite Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:250
+#: ctrlz\ctrlz.py:254
 msgid "Ban"
 msgstr ""
 
-#: ctrlz\ctrlz.py:251
+#: ctrlz\ctrlz.py:255
 msgid "Bot Add"
 msgstr ""
 
-#: ctrlz\ctrlz.py:252
+#: ctrlz\ctrlz.py:256
 msgid "Role Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:253
+#: ctrlz\ctrlz.py:257
 msgid "Invite Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:254
+#: ctrlz\ctrlz.py:258
 msgid "Webhook Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:255
+#: ctrlz\ctrlz.py:259
 msgid "Emoji Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:256
+#: ctrlz\ctrlz.py:260
 msgid "Message Pin"
 msgstr ""
 
-#: ctrlz\ctrlz.py:257
+#: ctrlz\ctrlz.py:261
 msgid "Integration Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:258
+#: ctrlz\ctrlz.py:262
 msgid "Stage Instance Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:259
+#: ctrlz\ctrlz.py:263
 msgid "Sticker Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:260
+#: ctrlz\ctrlz.py:264
 msgid "Scheduled Event Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:261
+#: ctrlz\ctrlz.py:265
 msgid "Thread Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:262
+#: ctrlz\ctrlz.py:266
 msgid "Automod Rule Create"
 msgstr ""
 
-#: ctrlz\ctrlz.py:265
+#: ctrlz\ctrlz.py:269
 msgid "Guild Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:266
+#: ctrlz\ctrlz.py:270
 msgid "Channel Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:267
+#: ctrlz\ctrlz.py:271
 msgid "Overwrite Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:268
+#: ctrlz\ctrlz.py:272
 msgid "Member Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:269
+#: ctrlz\ctrlz.py:273
 msgid "Member Role Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:270
+#: ctrlz\ctrlz.py:274
 msgid "Role Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:271
+#: ctrlz\ctrlz.py:275
 msgid "Webhook Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:272
+#: ctrlz\ctrlz.py:276
 msgid "Emoji Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:273
+#: ctrlz\ctrlz.py:277
 msgid "Stage Instance Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:274
+#: ctrlz\ctrlz.py:278
 msgid "Sticker Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:275
+#: ctrlz\ctrlz.py:279
 msgid "Scheduled Event Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:276
+#: ctrlz\ctrlz.py:280
 msgid "Thread Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:277
+#: ctrlz\ctrlz.py:281
 msgid "Automod Rule Update"
 msgstr ""
 
-#: ctrlz\ctrlz.py:280
+#: ctrlz\ctrlz.py:284
 msgid "Channel Delete"
 msgstr ""
 
-#: ctrlz\ctrlz.py:281
+#: ctrlz\ctrlz.py:285
 msgid "Overwrite Delete"
 msgstr ""
 
-#: ctrlz\ctrlz.py:282
+#: ctrlz\ctrlz.py:286
 msgid "Unban"
 msgstr ""
 
-#: ctrlz\ctrlz.py:283
+#: ctrlz\ctrlz.py:287
 msgid "Role Delete"
 msgstr ""
 
-#: ctrlz\ctrlz.py:284
+#: ctrlz\ctrlz.py:288
 msgid "Invite Delete"
 msgstr ""
 
-#: ctrlz\ctrlz.py:285
+#: ctrlz\ctrlz.py:289
 msgid "Webhook Delete"
 msgstr ""
 
-#: ctrlz\ctrlz.py:286
+#: ctrlz\ctrlz.py:290
 msgid "Message Unpin"
 msgstr ""
 
-#: ctrlz\ctrlz.py:287
+#: ctrlz\ctrlz.py:291
 msgid "Scheduled Event Delete"
 msgstr ""
 
-#: ctrlz\ctrlz.py:288
+#: ctrlz\ctrlz.py:292
 msgid "Automod Rule Delete"
 msgstr ""
 
-#: ctrlz\ctrlz.py:310 ctrlz\ctrlz.py:394
+#: ctrlz\ctrlz.py:314 ctrlz\ctrlz.py:398
 msgid "Unknown audit log action."
 msgstr ""
 
-#: ctrlz\ctrlz.py:312
+#: ctrlz\ctrlz.py:316
 msgid "Audit Log — {label}"
 msgstr ""
 
-#: ctrlz\ctrlz.py:322
+#: ctrlz\ctrlz.py:326
 msgid "Target:"
 msgstr ""
 
-#: ctrlz\ctrlz.py:336
+#: ctrlz\ctrlz.py:340
 msgid "Reason:"
 msgstr ""
 
-#: ctrlz\ctrlz.py:357
+#: ctrlz\ctrlz.py:361
 msgid "Before:"
 msgstr ""
 
-#: ctrlz\ctrlz.py:373
+#: ctrlz\ctrlz.py:377
 msgid "After:"
 msgstr ""
 
-#: ctrlz\ctrlz.py:396
+#: ctrlz\ctrlz.py:400
 msgid "The audit log has already been reverted."
 msgstr ""
 
-#: ctrlz\ctrlz.py:403
+#: ctrlz\ctrlz.py:407
 msgid ""
 "I don't have the necessary permissions or the target of the audit log is "
 "higher than me."
 msgstr ""
 
-#: ctrlz\ctrlz.py:409
+#: ctrlz\ctrlz.py:413
 msgid "An error occurred while reverting the audit log:\n"
 msgstr ""
 
-#: ctrlz\ctrlz.py:448
+#: ctrlz\ctrlz.py:452
 #, docstring
 msgid "View the audit logs that can be reverted."
 msgstr ""
 
-#: ctrlz\ctrlz.py:457 ctrlz\ctrlz.py:483
+#: ctrlz\ctrlz.py:461 ctrlz\ctrlz.py:487
 msgid "No audit logs found."
 msgstr ""
 
-#: ctrlz\ctrlz.py:471
+#: ctrlz\ctrlz.py:475
 #, docstring
 msgid ""
 "Revert all the audit logs that can be reverted.\n"

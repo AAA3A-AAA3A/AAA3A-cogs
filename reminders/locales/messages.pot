@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-04-11 22:17+0200\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,8 +15,8 @@ msgstr ""
 msgid "Invalid timezone provided."
 msgstr ""
 
-#: reminders\converters.py:541 reminders\reminders.py:914
-#: reminders\reminders.py:1114
+#: reminders\converters.py:541 reminders\reminders.py:923
+#: reminders\reminders.py:1123
 msgid "You haven't any reminders."
 msgstr ""
 
@@ -40,62 +40,62 @@ msgid ""
 "scheduler, say scheduler... With 'Me Too', snooze and buttons."
 msgstr ""
 
-#: reminders\reminders.py:303 reminders\reminders.py:446
-#: reminders\reminders.py:646 reminders\reminders.py:763
+#: reminders\reminders.py:309 reminders\reminders.py:453
+#: reminders\reminders.py:654 reminders\reminders.py:772
 msgid ""
 "You have reached the limit of {minimum_user_reminders} reminders per user."
 msgstr ""
 
-#: reminders\reminders.py:325 reminders\reminders.py:468
+#: reminders\reminders.py:331 reminders\reminders.py:475
 msgid "You can't access this message."
 msgstr ""
 
-#: reminders\reminders.py:334 reminders\reminders.py:477
-#: reminders\reminders.py:663 reminders\reminders.py:776
-#: reminders\reminders.py:1082
+#: reminders\reminders.py:340 reminders\reminders.py:484
+#: reminders\reminders.py:671 reminders\reminders.py:785
+#: reminders\reminders.py:1091
 msgid "You are not allowed to create repeating reminders."
 msgstr ""
 
-#: reminders\reminders.py:348 reminders\reminders.py:491
-#: reminders\reminders.py:677 reminders\reminders.py:790
-#: reminders\reminders.py:1097
+#: reminders\reminders.py:354 reminders\reminders.py:498
+#: reminders\reminders.py:685 reminders\reminders.py:799
+#: reminders\reminders.py:1106
 msgid "The repeat timedelta must be greater than {minimum_repeat} minutes."
 msgstr ""
 
-#: reminders\reminders.py:357 reminders\reminders.py:547
+#: reminders\reminders.py:363 reminders\reminders.py:554
 msgid "You must provide a message or a text."
 msgstr ""
 
-#: reminders\reminders.py:383 reminders\reminders.py:573
-#: reminders\reminders.py:1009
+#: reminders\reminders.py:389 reminders\reminders.py:580
+#: reminders\reminders.py:1018
 msgid "Your reminder text is too long."
 msgstr ""
 
-#: reminders\reminders.py:516
+#: reminders\reminders.py:523
 msgid "You can't create a reminder in {destination}."
 msgstr ""
 
-#: reminders\reminders.py:522 reminders\reminders.py:798
+#: reminders\reminders.py:529 reminders\reminders.py:807
 msgid "I can't send messages in this channel."
 msgstr ""
 
-#: reminders\reminders.py:524
+#: reminders\reminders.py:531
 msgid "I can't send embeds in this channel."
 msgstr ""
 
-#: reminders\reminders.py:533
+#: reminders\reminders.py:540
 msgid ""
 "Since you don't have the `mention_everyone` permission, you can't create a "
 "reminder that will mention more than 3 people or mention role(s)."
 msgstr ""
 
-#: reminders\reminders.py:539
+#: reminders\reminders.py:546
 msgid ""
 "Due to the message character limit, you can only mention a maximum of 10 "
 "users or roles."
 msgstr ""
 
-#: reminders\reminders.py:631
+#: reminders\reminders.py:638
 #, docstring
 msgid ""
 "Create a FIFO/command reminder. The chosen command will be executed with you as invoker. Don't provide the prefix.\n"
@@ -109,25 +109,25 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:652
+#: reminders\reminders.py:660
 msgid "You're not allowed to create FIFO/commands reminders."
 msgstr ""
 
-#: reminders\reminders.py:694
+#: reminders\reminders.py:702
 msgid "This command doesn't exist."
 msgstr ""
 
-#: reminders\reminders.py:701
+#: reminders\reminders.py:709
 msgid "You can't execute this command, in this context."
 msgstr ""
 
-#: reminders\reminders.py:705
+#: reminders\reminders.py:713
 msgid ""
 "The command `{command.qualified_name}` can't be scheduled, because it's a "
 "suspicious command."
 msgstr ""
 
-#: reminders\reminders.py:748
+#: reminders\reminders.py:756
 #, docstring
 msgid ""
 "Create a reminder who will say/send text.\n"
@@ -141,16 +141,16 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:806
+#: reminders\reminders.py:815
 msgid "You can't or I can't send messages in this channel."
 msgstr ""
 
-#: reminders\reminders.py:843
+#: reminders\reminders.py:852
 #, docstring
 msgid "Show time parsing tips."
 msgstr ""
 
-#: reminders\reminders.py:844
+#: reminders\reminders.py:853
 msgid ""
 "\n"
 "            Allowed **absolutes** are:\n"
@@ -187,11 +187,11 @@ msgid ""
 "            "
 msgstr ""
 
-#: reminders\reminders.py:880
+#: reminders\reminders.py:889
 msgid "Time Parsing Tips"
 msgstr ""
 
-#: reminders\reminders.py:888
+#: reminders\reminders.py:897
 #, docstring
 msgid ""
 "Set your timezone for the time converter.\n"
@@ -202,11 +202,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:895
+#: reminders\reminders.py:904
 msgid "Your timezone has been set to `{timezone}`."
 msgstr ""
 
-#: reminders\reminders.py:906
+#: reminders\reminders.py:915
 #, docstring
 msgid ""
 "List your existing reminders.\n"
@@ -218,25 +218,25 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:930
+#: reminders\reminders.py:939
 msgid "Your Reminders"
 msgstr ""
 
-#: reminders\reminders.py:932
+#: reminders\reminders.py:941
 msgid " (Content type `{content_type}`)"
 msgstr ""
 
-#: reminders\reminders.py:936
+#: reminders\reminders.py:945
 msgid ""
 "You have {len_reminders} reminders{of_this_content_type}. Use "
 "`{clean_prefix}reminder edit #ID` to edit a reminder."
 msgstr ""
 
-#: reminders\reminders.py:941
+#: reminders\reminders.py:950
 msgid " of this content type"
 msgstr ""
 
-#: reminders\reminders.py:959
+#: reminders\reminders.py:968
 #, docstring
 msgid ""
 "Remove existing Reminder(s) from their IDs.\n"
@@ -246,15 +246,15 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:971
+#: reminders\reminders.py:980
 msgid "Your reminder {reminder_id} has been successfully removed."
 msgstr ""
 
-#: reminders\reminders.py:977
+#: reminders\reminders.py:986
 msgid "Your reminders {reminders_ids} have been successfully removed."
 msgstr ""
 
-#: reminders\reminders.py:985
+#: reminders\reminders.py:994
 #, docstring
 msgid ""
 "Edit an existing Reminder from its ID.\n"
@@ -264,7 +264,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:1003
+#: reminders\reminders.py:1012
 #, docstring
 msgid ""
 "Edit the text of an existing Reminder from its ID.\n"
@@ -274,13 +274,13 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:1019 reminders\reminders.py:1043
-#: reminders\reminders.py:1104 reminders\views.py:154 reminders\views.py:378
-#: reminders\views.py:439
+#: reminders\reminders.py:1028 reminders\reminders.py:1052
+#: reminders\reminders.py:1113 reminders\views.py:154 reminders\views.py:379
+#: reminders\views.py:440
 msgid "Your reminder **#{reminder_id}** has been successfully edited."
 msgstr ""
 
-#: reminders\reminders.py:1028
+#: reminders\reminders.py:1037
 #, docstring
 msgid ""
 "Edit the expires time of an existing Reminder from its ID.\n"
@@ -291,7 +291,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:1052
+#: reminders\reminders.py:1061
 #, docstring
 msgid ""
 "Edit the repeat of an existing Reminder from its ID.\n"
@@ -312,24 +312,24 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:1112
+#: reminders\reminders.py:1121
 #, docstring
 msgid "Clear all your existing reminders."
 msgstr ""
 
-#: reminders\reminders.py:1117 reminders\reminders.py:1248
+#: reminders\reminders.py:1126 reminders\reminders.py:1257
 msgid "⚠️ - Reminders"
 msgstr ""
 
-#: reminders\reminders.py:1118
+#: reminders\reminders.py:1127
 msgid "Do you really want to remove ALL your reminders?"
 msgstr ""
 
-#: reminders\reminders.py:1130
+#: reminders\reminders.py:1139
 msgid "All your reminders have been successfully removed."
 msgstr ""
 
-#: reminders\reminders.py:1137
+#: reminders\reminders.py:1146
 #, docstring
 msgid ""
 "Get a list of Discord timestamps for a given time. You can provide a repeat.\n"
@@ -340,57 +340,57 @@ msgid ""
 "        "
 msgstr ""
 
-#: reminders\reminders.py:1151
+#: reminders\reminders.py:1160
 msgid "Timestamps for {time}"
 msgstr ""
 
-#: reminders\reminders.py:1243
+#: reminders\reminders.py:1252
 #, docstring
 msgid "Clear all existing reminders for a user."
 msgstr ""
 
-#: reminders\reminders.py:1245
+#: reminders\reminders.py:1254
 msgid "This user haven't any reminders."
 msgstr ""
 
-#: reminders\reminders.py:1249
+#: reminders\reminders.py:1258
 msgid "Do you really want to remove ALL {user.display_name}'s reminders?"
 msgstr ""
 
-#: reminders\reminders.py:1263
+#: reminders\reminders.py:1272
 msgid "All user's reminders have been successfully removed."
 msgstr ""
 
-#: reminders\reminders.py:1267
+#: reminders\reminders.py:1276
 #, docstring
 msgid "Get an embed to check loop status."
 msgstr ""
 
-#: reminders\reminders.py:1273
+#: reminders\reminders.py:1282
 #, docstring
 msgid "Migrate Reminders from RemindMe by PhasecoreX."
 msgstr ""
 
-#: reminders\reminders.py:1280
+#: reminders\reminders.py:1289
 msgid "RemindMe by PhasecoreX has no data in this bot."
 msgstr ""
 
-#: reminders\reminders.py:1284
+#: reminders\reminders.py:1293
 msgid ""
 "RemindMe by PhasecoreX use an old/new data schema version and isn't "
 "compatible with this cog actually."
 msgstr ""
 
-#: reminders\reminders.py:1344
+#: reminders\reminders.py:1353
 msgid "Data successfully migrated from RemindMe by PhasecoreX."
 msgstr ""
 
-#: reminders\reminders.py:1348
+#: reminders\reminders.py:1357
 #, docstring
 msgid "Migrate Reminders from FIFO by Fox."
 msgstr ""
 
-#: reminders\reminders.py:1428
+#: reminders\reminders.py:1437
 msgid "Data successfully migrated from FIFO by Fox."
 msgstr ""
 
@@ -473,8 +473,8 @@ msgid ""
 "• **Jump URL**: {jump_url}\n"
 msgstr ""
 
-#: reminders\types.py:501 reminders\views.py:235 reminders\views.py:414
-#: reminders\views.py:428 reminders\views.py:513 reminders\views.py:531
+#: reminders\types.py:501 reminders\views.py:235 reminders\views.py:415
+#: reminders\views.py:429 reminders\views.py:514 reminders\views.py:532
 msgid "No existing repeat rule(s)."
 msgstr ""
 
@@ -520,7 +520,7 @@ msgstr ""
 msgid "Next trigger in {interval_string}."
 msgstr ""
 
-#: reminders\types.py:825 reminders\views.py:559
+#: reminders\types.py:825 reminders\views.py:560
 msgid "Jump to original message"
 msgstr ""
 
@@ -528,7 +528,7 @@ msgstr ""
 msgid "The image URL must be a valid URL."
 msgstr ""
 
-#: reminders\views.py:189 reminders\views.py:463 reminders\views.py:571
+#: reminders\views.py:189 reminders\views.py:464 reminders\views.py:572
 msgid "You are not allowed to use this interaction."
 msgstr ""
 
@@ -536,18 +536,18 @@ msgstr ""
 msgid "Reminder #{reminder_id} Repeat Rules"
 msgstr ""
 
-#: reminders\views.py:257 reminders\views.py:299 reminders\views.py:716
+#: reminders\views.py:257 reminders\views.py:300 reminders\views.py:717
 msgid "Reminder **#{reminder_id}** deleted."
 msgstr ""
 
-#: reminders\views.py:421
+#: reminders\views.py:422
 msgid "No existing repeat rule found with this index number."
 msgstr ""
 
-#: reminders\views.py:497
+#: reminders\views.py:498
 msgid "A maximum of 10 repeat rules per reminder is supported."
 msgstr ""
 
-#: reminders\views.py:536
+#: reminders\views.py:537
 msgid "Reminder **#{reminder_id}** edited."
 msgstr ""

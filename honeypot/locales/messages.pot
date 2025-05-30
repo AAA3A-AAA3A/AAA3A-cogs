@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-04-11 22:17+0200\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,29 +22,29 @@ msgstr ""
 msgid "Honeypot — Self Bot/Scammer Detected!"
 msgstr ""
 
-#: honeypot\honeypot.py:138
+#: honeypot\honeypot.py:137
 msgid "**Failed:** The mute role is not set or doesn't exist anymore."
 msgstr ""
 
-#: honeypot\honeypot.py:149
+#: honeypot\honeypot.py:148
 msgid ""
 "**Failed:** An error occurred while trying to take action against the "
 "member:\n"
 msgstr ""
 
-#: honeypot\honeypot.py:163
+#: honeypot\honeypot.py:162
 msgid "Action:"
 msgstr ""
 
-#: honeypot\honeypot.py:166
+#: honeypot\honeypot.py:165
 msgid "The member has been muted."
 msgstr ""
 
-#: honeypot\honeypot.py:169
+#: honeypot\honeypot.py:168
 msgid "The member has been kicked."
 msgstr ""
 
-#: honeypot\honeypot.py:171
+#: honeypot\honeypot.py:170
 msgid "The member has been banned."
 msgstr ""
 

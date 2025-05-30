@@ -1,0 +1,118 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: blackteagame\blackteagame.py:37
+#, docstring
+msgid "Play the Black Tea game, in multiple languages!"
+msgstr ""
+
+#: blackteagame\blackteagame.py:84
+msgid "☕ {player.mention}, type a word containing: **{letters}**"
+msgstr ""
+
+#: blackteagame\blackteagame.py:125
+msgid "💥 Time's up: -1 HP (Left: **{left}** HP)"
+msgstr ""
+
+#: blackteagame\blackteagame.py:129
+msgid "🚪 **{player.mention} eliminated!**"
+msgstr ""
+
+#: blackteagame\blackteagame.py:135
+msgid "Congratulations **{winner.display_name}**! You won the game!"
+msgstr ""
+
+#: blackteagame\view.py:42
+msgid "Join Game"
+msgstr ""
+
+#: blackteagame\view.py:43
+msgid "Leave"
+msgstr ""
+
+#: blackteagame\view.py:44
+msgid "View Players (1)"
+msgstr ""
+
+#: blackteagame\view.py:45
+msgid "Start Game!"
+msgstr ""
+
+#: blackteagame\view.py:52
+msgid "{flag} Black Tea Game ☕"
+msgstr ""
+
+#: blackteagame\view.py:55
+msgid ""
+"Click the button below to join the party! Please note that the maximum "
+"amount of players is 50."
+msgstr ""
+
+#: blackteagame\view.py:62
+msgid "Rules:"
+msgstr ""
+
+#: blackteagame\view.py:63
+msgid ""
+"**•** Each time the bot asks you, you have a few seconds to respond with a word containing the 3 provided letters. Already used words are not allowed.\n"
+"**•** If you fail to respond in time, you lose 1 HP. If you lose all your HP, you are out of the game.\n"
+"**•** The last player remaining wins the game!\n"
+msgstr ""
+
+#: blackteagame\view.py:70 blackteagame\view.py:143
+msgid "Hosted by {host.display_name}"
+msgstr ""
+
+#: blackteagame\view.py:94
+msgid "You have already joined the game!"
+msgstr ""
+
+#: blackteagame\view.py:99
+msgid "The game is full, you can't join!"
+msgstr ""
+
+#: blackteagame\view.py:103 blackteagame\view.py:120
+msgid "View Players ({len_players})"
+msgstr ""
+
+#: blackteagame\view.py:110
+msgid "You have joined the game!"
+msgstr ""
+
+#: blackteagame\view.py:116
+msgid "You have not joined the game!"
+msgstr ""
+
+#: blackteagame\view.py:127
+msgid "You have left the game!"
+msgstr ""
+
+#: blackteagame\view.py:135
+msgid "No one has joined the game yet!"
+msgstr ""
+
+#: blackteagame\view.py:139
+msgid "Black Tea Game — Players"
+msgstr ""
+
+#: blackteagame\view.py:162
+msgid "You can't start the game!"
+msgstr ""
+
+#: blackteagame\view.py:166
+msgid "You need at least 2 players to start the game!"
+msgstr ""
+
+#: blackteagame\view.py:183
+msgid "You can't cancel the game!"
+msgstr ""

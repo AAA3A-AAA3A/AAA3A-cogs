@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-04-11 22:17+0200\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,140 +18,140 @@ msgid ""
 "custom trigger, based on roles perks!"
 msgstr ""
 
-#: personalreact\personalreact.py:280
+#: personalreact\personalreact.py:284
 #, docstring
 msgid "View your PersonalReact settings."
 msgstr ""
 
-#: personalreact\personalreact.py:285
+#: personalreact\personalreact.py:289
 #, docstring
 msgid "Enable PersonalReact for you."
 msgstr ""
 
-#: personalreact\personalreact.py:290 personalreact\personalreact.py:343
-#: personalreact\personalreact.py:375 personalreact\views.py:221
-msgid "You aren't elligible for using PersonalReact."
+#: personalreact\personalreact.py:294 personalreact\personalreact.py:347
+#: personalreact\personalreact.py:379 personalreact\views.py:221
+msgid "You aren't eligible for using PersonalReact."
 msgstr ""
 
-#: personalreact\personalreact.py:293 personalreact\views.py:227
+#: personalreact\personalreact.py:297 personalreact\views.py:227
 msgid "You don't have any reaction set."
 msgstr ""
 
-#: personalreact\personalreact.py:298
+#: personalreact\personalreact.py:302
 #, docstring
 msgid "Disable PersonalReact for you."
 msgstr ""
 
-#: personalreact\personalreact.py:303
+#: personalreact\personalreact.py:307
 #, docstring
 msgid "Allow the bot to react on the messages which ping you in replies."
 msgstr ""
 
-#: personalreact\personalreact.py:306
+#: personalreact\personalreact.py:310
 msgid "This server doesn't allow the replies trigger."
 msgstr ""
 
-#: personalreact\personalreact.py:312
+#: personalreact\personalreact.py:316
 #, docstring
 msgid "Allow the bot to react on the messages which contain your user ID."
 msgstr ""
 
-#: personalreact\personalreact.py:317
+#: personalreact\personalreact.py:321
 #, docstring
 msgid "Set a custom trigger."
 msgstr ""
 
-#: personalreact\personalreact.py:320 personalreact\views.py:260
-msgid "You aren't elligible for using the custom trigger feature."
+#: personalreact\personalreact.py:324 personalreact\views.py:260
+msgid "You aren't eligible for using the custom trigger feature."
 msgstr ""
 
-#: personalreact\personalreact.py:328
+#: personalreact\personalreact.py:332
 msgid ""
 "The custom trigger must be at least {min_custom_trigger_length} characters "
 "long."
 msgstr ""
 
-#: personalreact\personalreact.py:333 personalreact\views.py:345
+#: personalreact\personalreact.py:337 personalreact\views.py:345
 msgid "The custom trigger can't have spaces."
 msgstr ""
 
-#: personalreact\personalreact.py:338
+#: personalreact\personalreact.py:342
 #, docstring
 msgid "Set your reactions."
 msgstr ""
 
-#: personalreact\personalreact.py:348
+#: personalreact\personalreact.py:352
 msgid "You didn't provide any reaction. Do you want to clear your reactions?"
 msgstr ""
 
-#: personalreact\personalreact.py:360 personalreact\personalreact.py:392
+#: personalreact\personalreact.py:364 personalreact\personalreact.py:396
 #: personalreact\views.py:400
 msgid "You can't have more than {max_reactions_per_member} reactions."
 msgstr ""
 
-#: personalreact\personalreact.py:370
+#: personalreact\personalreact.py:374
 #, docstring
 msgid "Add reaction(s)."
 msgstr ""
 
-#: personalreact\personalreact.py:379 personalreact\personalreact.py:405
+#: personalreact\personalreact.py:383 personalreact\personalreact.py:409
 msgid "You need to provide at least one reaction."
 msgstr ""
 
-#: personalreact\personalreact.py:402
+#: personalreact\personalreact.py:406
 #, docstring
 msgid "Remove reaction(s)."
 msgstr ""
 
-#: personalreact\personalreact.py:416
+#: personalreact\personalreact.py:420
 #, docstring
 msgid "Ignore yourself."
 msgstr ""
 
-#: personalreact\personalreact.py:421
+#: personalreact\personalreact.py:425
 #, docstring
 msgid "Ignore bots."
 msgstr ""
 
-#: personalreact\personalreact.py:434
+#: personalreact\personalreact.py:438
 #, docstring
 msgid "Set the roles requirements."
 msgstr ""
 
-#: personalreact\personalreact.py:446
+#: personalreact\personalreact.py:450
 #, docstring
 msgid "Add base roles requirements."
 msgstr ""
 
-#: personalreact\personalreact.py:448 personalreact\personalreact.py:468
-#: personalreact\personalreact.py:484 personalreact\personalreact.py:508
+#: personalreact\personalreact.py:452 personalreact\personalreact.py:472
+#: personalreact\personalreact.py:488 personalreact\personalreact.py:512
 msgid "You need to provide at least one role."
 msgstr ""
 
-#: personalreact\personalreact.py:454
+#: personalreact\personalreact.py:458
 msgid "You can't have more than 25 base roles requirements."
 msgstr ""
 
-#: personalreact\personalreact.py:466
+#: personalreact\personalreact.py:470
 #, docstring
 msgid "Remove base roles requirements."
 msgstr ""
 
-#: personalreact\personalreact.py:482
+#: personalreact\personalreact.py:486
 #, docstring
 msgid "Add custom trigger roles requirements."
 msgstr ""
 
-#: personalreact\personalreact.py:492
+#: personalreact\personalreact.py:496
 msgid "You can't have more than 25 custom trigger roles requirements."
 msgstr ""
 
-#: personalreact\personalreact.py:506
+#: personalreact\personalreact.py:510
 #, docstring
 msgid "Remove custom trigger roles requirements."
 msgstr ""
 
-#: personalreact\personalreact.py:521
+#: personalreact\personalreact.py:525
 #, docstring
 msgid "Clear a member's PersonalReact settings."
 msgstr ""
@@ -214,7 +214,7 @@ msgid " ({amount} reactions)"
 msgstr ""
 
 #: personalreact\views.py:119 personalreact\views.py:145
-msgid "❌ Not elligible"
+msgid "❌ Not eligible"
 msgstr ""
 
 #: personalreact\views.py:124

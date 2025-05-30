@@ -1,0 +1,233 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: onepiecebounties\onepiecebounties.py:38
+msgid "The bounty must be a number or a number with a suffix (`k`, `m`, `b`)."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:44
+msgid "The bounty can't be higher than 100 billion."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:57
+msgid ""
+"LabelChannel must be a label followed by a channel separated by either `;`, "
+"`,`, `|`, or `-`."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:62
+msgid "The label must be between 1 and 50 characters long."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:64
+msgid "The link must start with `https://`."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:70
+#, docstring
+msgid ""
+"Give One Piece's bounties to your members, based on their time in the "
+"server, their level and their roles, then generate their wanted posters, and"
+" also welcome them when they join!"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:295
+msgid "Pirate King"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:296
+msgid "Emperor"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:297
+msgid "Yonko Commander"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:298
+msgid "Supernova"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:299
+msgid "Grand Line"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:300
+msgid "East Blue"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:301
+msgid "Sailing Rookie"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:302
+msgid "Sailor"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:314
+msgid ""
+"Marine HQ has issued a bounty of **{bounty:,}** {berries} for "
+"**{member.display_name}**, worthy of a **{bounty_tier} Level Threat**!"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:319
+#: onepiecebounties\onepiecebounties.py:371
+#: onepiecebounties\onepiecebounties.py:440
+#: onepiecebounties\onepiecebounties.py:567
+msgid "berries"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:319
+#: onepiecebounties\onepiecebounties.py:371
+#: onepiecebounties\onepiecebounties.py:440
+#: onepiecebounties\onepiecebounties.py:567
+msgid "berry"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:349
+#: onepiecebounties\onepiecebounties.py:526
+#: onepiecebounties\onepiecebounties.py:541
+#: onepiecebounties\onepiecebounties.py:553
+msgid "Bots don't have a bounty!"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:358
+msgid "🏴‍☠️ Bounty Leaderboard 🏴‍☠️"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:367
+msgid "**{i}.** {member.display_name}: **{bounty:,}** {berries}"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:388
+msgid "There are no bounties."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:410
+#, docstring
+msgid "Add a bonus role to the bounty calculation."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:413
+msgid "The minimum bounty can't be higher than the maximum bounty!"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:419
+#, docstring
+msgid "Remove a bonus role from the bounty calculation."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:425
+msgid "This role is not in the list of bonus roles."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:430
+#, docstring
+msgid "List all bonus roles."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:433
+msgid "There are no bonus roles."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:436
+msgid "{role.mention}: {min_bounty:,} - {max_bounty:,} {berries}"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:447
+msgid "Bonus Roles"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:448
+msgid "The following roles give a bonus to the bounty calculation:"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:469
+#, docstring
+msgid "Add a role to the only roles list."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:473
+msgid "This role is already in the list of only roles."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:479
+#, docstring
+msgid "Remove a role from the only roles list."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:485
+msgid "This role is not in the list of only roles."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:490
+#, docstring
+msgid "List all only roles."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:493
+msgid "There are no only roles."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:496
+msgid "{role.mention}: ONLY {only}"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:502
+msgid "Only Roles"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:523
+#, docstring
+msgid "Add a bonus to a member's bounty."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:538
+#, docstring
+msgid "Remove a bonus from a member's bounty."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:550
+#, docstring
+msgid "Clear a member's bonus."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:558
+#, docstring
+msgid "List all bonuses."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:561
+msgid "There are no bonuses."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:564
+msgid "{member.mention}: {bonus:,} {berries}"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:574
+msgid "Bonuses"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:575
+msgid "The following members have a bonus to their bounty:"
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:596
+#, docstring
+msgid ""
+"Set the accurate joined at date of a member in the format `YYYY-MM-DD`."
+msgstr ""
+
+#: onepiecebounties\onepiecebounties.py:601
+msgid "Please provide a date in the format `YYYY-MM-DD`."
+msgstr ""

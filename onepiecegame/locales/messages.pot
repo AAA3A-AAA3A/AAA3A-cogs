@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-04-11 22:17+0200\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,120 +11,150 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: onepiecegame\onepiecegame.py:30
+#: onepiecegame\onepiecegame.py:41
 #, docstring
 msgid ""
 "Guess One Piece characters from their characteristics, their devil fruit, or"
 " their blury wanted poster!"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:349
+#: onepiecegame\onepiecegame.py:394
 msgid "One Piece Game - {mode}"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:351
+#: onepiecegame\onepiecegame.py:396
 msgid "Classic mode"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:352
+#: onepiecegame\onepiecegame.py:397
 msgid "Devil Fruit mode"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:353
+#: onepiecegame\onepiecegame.py:398
 msgid "Wanted Poster mode"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:357
+#: onepiecegame\onepiecegame.py:402
 msgid ""
 "Guess the character from its characteristics! Make a guess to reveal more of"
 " the character."
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:358
+#: onepiecegame\onepiecegame.py:405
 msgid "Guess the character from its devil fruit name!"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:359
+#: onepiecegame\onepiecegame.py:406
 msgid ""
 "Use the blurry wanted poster to guess the character! Each guess will reveal "
 "more of the poster."
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:395
+#: onepiecegame\onepiecegame.py:446
 msgid "You guessed it!"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:396
+#: onepiecegame\onepiecegame.py:447
 msgid "The character was: **{character.name}**."
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:423
+#: onepiecegame\onepiecegame.py:474
 msgid "First Apparition hint"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:425
+#: onepiecegame\onepiecegame.py:476
 msgid "Chapter {manga} / Episode {anime}"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:430
+#: onepiecegame\onepiecegame.py:481
 msgid "Devil Fruit hint"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:432
+#: onepiecegame\onepiecegame.py:485
 msgid "Unknown"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:437
+#: onepiecegame\onepiecegame.py:490
 msgid "Type hint"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:444
+#: onepiecegame\onepiecegame.py:494
+msgid "Translation hint"
+msgstr ""
+
+#: onepiecegame\onepiecegame.py:501
 msgid "Bounty hint"
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:460
+#: onepiecegame\onepiecegame.py:517
 #, docstring
 msgid ""
 "Play the **Classic mode** of the game: guess the character from its "
 "characteristics."
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:465
+#: onepiecegame\onepiecegame.py:522
 #, docstring
 msgid ""
 "Play the **Devil Fruit mode** of the game: guess the character from its "
 "devil fruit."
 msgstr ""
 
-#: onepiecegame\onepiecegame.py:470
+#: onepiecegame\onepiecegame.py:527
 #, docstring
 msgid ""
 "Play the **Wanted Poster** mode of the game: guess the character from its "
 "blurry wanted poster."
 msgstr ""
 
-#: onepiecegame\view.py:184
-msgid "Each attempt decreases blurry level"
+#: onepiecegame\onepiecegame.py:552
+#, docstring
+msgid "Autocomplete a character name."
 msgstr ""
 
-#: onepiecegame\view.py:190
-msgid "Show colors"
-msgstr ""
-
-#: onepiecegame\view.py:236
-msgid "You have cancelled the game. The character was: **{character.name}**."
-msgstr ""
-
-#: onepiecegame\view.py:248
+#: onepiecegame\onepiecegame.py:555 onepiecegame\view.py:124
 msgid "This character does not exist or is not supported by the game."
 msgstr ""
 
-#: onepiecegame\view.py:285
+#: onepiecegame\onepiecegame.py:563
+#, docstring
+msgid "Display the list of arcs in the game."
+msgstr ""
+
+#: onepiecegame\onepiecegame.py:565
+msgid "Arcs"
+msgstr ""
+
+#: onepiecegame\onepiecegame.py:566
+msgid "The following arcs are available in the game:"
+msgstr ""
+
+#: onepiecegame\onepiecegame.py:576
+msgid "Chapters **{start}** to **{end}**"
+msgstr ""
+
+#: onepiecegame\onepiecegame.py:577
+msgid "ongoing"
+msgstr ""
+
+#: onepiecegame\view.py:62
+msgid "Each attempt decreases blurry level"
+msgstr ""
+
+#: onepiecegame\view.py:68
+msgid "Show colors"
+msgstr ""
+
+#: onepiecegame\view.py:112
+msgid "You have cancelled the game. The character was: **{character.name}**."
+msgstr ""
+
+#: onepiecegame\view.py:163
 msgid ""
 "You took too long to guess the character. The character was: "
 "**{character.name}**."
 msgstr ""
 
-#: onepiecegame\view.py:302
+#: onepiecegame\view.py:182
 msgid "You are not allowed to use this interaction."
 msgstr ""

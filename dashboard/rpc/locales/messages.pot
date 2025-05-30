@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-04-11 22:17+0200\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,63 +28,87 @@ msgstr ""
 msgid "Interactive Dashboard to control and interact with {name}."
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:29
+#: dashboard\rpc\cog_management.py:31
 msgid "Successfully"
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:29
+#: dashboard\rpc\cog_management.py:31
 msgid "Pinned"
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:29
+#: dashboard\rpc\cog_management.py:31
+msgid "Enabled"
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:31
+msgid "Disabled"
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:32
 msgid "successfully"
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:31
+#: dashboard\rpc\cog_management.py:36
 msgid "Failed"
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:31
+#: dashboard\rpc\cog_management.py:36
 msgid "Something went wrong"
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:135
+#: dashboard\rpc\cog_management.py:37
+msgid "Couldn't"
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:38
+msgid "could not be found"
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:158
 msgid "Loaded: {packs}."
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:145
+#: dashboard\rpc\cog_management.py:168
 msgid "Failed to load: {packs}. Check logs for details."
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:156
+#: dashboard\rpc\cog_management.py:184
 msgid ""
 "Failed with reasons:\n"
 "{reasons}"
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:169
+#: dashboard\rpc\cog_management.py:198
 msgid "Unloaded: {packs}."
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:297 dashboard\rpc\cog_management.py:323
-#: dashboard\rpc\cog_management.py:349 dashboard\rpc\cog_management.py:377
-#: dashboard\rpc\cog_management.py:410 dashboard\rpc\cog_management.py:455
-#: dashboard\rpc\cog_management.py:500
+#: dashboard\rpc\cog_management.py:344 dashboard\rpc\cog_management.py:374
+#: dashboard\rpc\cog_management.py:404 dashboard\rpc\cog_management.py:435
+#: dashboard\rpc\cog_management.py:470 dashboard\rpc\cog_management.py:519
+#: dashboard\rpc\cog_management.py:568
 msgid "The repo name you provided does not exist."
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:356
+#: dashboard\rpc\cog_management.py:412
 msgid "Repo {name} successfully removed."
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:417 dashboard\rpc\cog_management.py:462
-#: dashboard\rpc\cog_management.py:507
+#: dashboard\rpc\cog_management.py:477 dashboard\rpc\cog_management.py:526
+#: dashboard\rpc\cog_management.py:575
 msgid "The cog name you provided does not exist."
 msgstr ""
 
-#: dashboard\rpc\cog_management.py:424 dashboard\rpc\cog_management.py:469
-#: dashboard\rpc\cog_management.py:514
+#: dashboard\rpc\cog_management.py:484 dashboard\rpc\cog_management.py:533
+#: dashboard\rpc\cog_management.py:582
 msgid "The cog you provided isn't installed from the repo you provided."
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:652
+msgid "Failed to sync commands: {error}"
+msgstr ""
+
+#: dashboard\rpc\cog_management.py:659
+msgid "Synced {count} commands."
 msgstr ""
 
 #: dashboard\rpc\default_cogs.py:101

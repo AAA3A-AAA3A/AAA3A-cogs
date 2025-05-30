@@ -5,11 +5,11 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import humanize_list
-from redbot.core.utils.menus import start_adding_reactions
-
 import asyncio
 from dataclasses import dataclass, field
+
+from redbot.core.utils.chat_formatting import humanize_list
+from redbot.core.utils.menus import start_adding_reactions
 
 # Credits:
 # General repo credits.
@@ -24,7 +24,18 @@ class RumbleRoyale:
     first_message: discord.Message
     host: discord.User
     players: typing.List[discord.Member] = field(default_factory=list)
-    dead_players: typing.Dict[discord.Member, typing.Dict[str, typing.Union[typing.Literal["round_number", "killer", "cause", "message"], typing.Optional[discord.Member], str, discord.Message]]] = field(default_factory=dict)
+    dead_players: typing.Dict[
+        discord.Member,
+        typing.Dict[
+            str,
+            typing.Union[
+                typing.Literal["round_number", "killer", "cause", "message"],
+                typing.Optional[discord.Member],
+                str,
+                discord.Message,
+            ],
+        ],
+    ] = field(default_factory=dict)
 
     @property
     def is_started(self) -> bool:
@@ -85,7 +96,9 @@ class RumbleRoyaleUtils(Cog):
 
     @commands.Cog.listener(name="on_message_without_command")
     async def on_message_without_command_1(self, message: discord.Message) -> None:
-        if message.guild is None or await self.bot.cog_disabled_in_guild(cog=self, guild=message.guild):
+        if message.guild is None or await self.bot.cog_disabled_in_guild(
+            cog=self, guild=message.guild
+        ):
             return
         if not message.author.bot or message.author.id != RUMBLE_BOT_ID:
             return
@@ -130,19 +143,36 @@ class RumbleRoyaleUtils(Cog):
                     )
             elif rumble.is_started:
                 if "Round " in embed.title:
-                    round_number = int(embed.title.replace("*", "").replace("_", "").strip().split(" ")[1])
+                    round_number = int(
+                        embed.title.replace("*", "").replace("_", "").strip().split(" ")[1]
+                    )
                     deaths = embed.description.split("\n\n")[0].split("\n")
                     round_victims = []
                     for death in deaths:
                         try:
-                            victim_name = death.split("~~**")[1].split("**~~")[0].split(" ")[0].replace("\\", "")
+                            victim_name = (
+                                death.split("~~**")[1]
+                                .split("**~~")[0]
+                                .split(" ")[0]
+                                .replace("\\", "")
+                            )
                         except IndexError:
                             victim_name = None
                         try:
-                            killer_name = death.replace("~~**", "....").split("**")[1].split("**")[0].split(" ")[0].replace("\\", "")
+                            killer_name = (
+                                death.replace("~~**", "....")
+                                .split("**")[1]
+                                .split("**")[0]
+                                .split(" ")[0]
+                                .replace("\\", "")
+                            )
                         except IndexError:
                             killer_name = None
-                        killer = discord.utils.get(rumble.players, name=killer_name) if killer_name is not None else None
+                        killer = (
+                            discord.utils.get(rumble.players, name=killer_name)
+                            if killer_name is not None
+                            else None
+                        )
                         if victim_name is not None:
                             victim = discord.utils.get(rumble.players, name=victim_name)
                         else:
@@ -163,10 +193,7 @@ class RumbleRoyaleUtils(Cog):
                                 else _("{victims} is dead!")
                             ).format(
                                 victims=humanize_list(
-                                    [
-                                        victim.mention
-                                        for victim in round_victims
-                                    ]
+                                    [victim.mention for victim in round_victims]
                                 ),
                             )
                         )
@@ -185,10 +212,9 @@ class RumbleRoyaleUtils(Cog):
             return
         if message.guild is None:
             return
-        if (
-            await self.bot.cog_disabled_in_guild(cog=self, guild=message.guild)
-            or not await self.bot.allowed_by_whitelist_blacklist(who=message.author)
-        ):
+        if await self.bot.cog_disabled_in_guild(
+            cog=self, guild=message.guild
+        ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
             return
         if message.author.bot:
             return
@@ -213,11 +239,11 @@ class RumbleRoyaleUtils(Cog):
                         title=_("You are dead!"),
                         description=_("- You died in **round {round_number}**.").format(
                             round_number=rumble.dead_players[message.author]["round_number"],
-                        ) + (
-                            _(
-                                "\n- Killed by {killer.mention}."
-                            ).format(killer=killer)
-                            if (killer := rumble.dead_players[message.author]["killer"]) is not None
+                        )
+                        + (
+                            _("\n- Killed by {killer.mention}.").format(killer=killer)
+                            if (killer := rumble.dead_players[message.author]["killer"])
+                            is not None
                             else ""
                         ),
                         color=await self.bot.get_embed_color(message.channel),

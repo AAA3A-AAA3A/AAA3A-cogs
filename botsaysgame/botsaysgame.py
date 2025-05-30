@@ -4,12 +4,12 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import humanize_list
-from redbot.core.utils.menus import start_adding_reactions
-
 import asyncio
 import datetime
 import random
+
+from redbot.core.utils.chat_formatting import humanize_list
+from redbot.core.utils.menus import start_adding_reactions
 
 from .tests import TESTS, EnglishWordTest
 from .view import JoinGameView
@@ -54,12 +54,7 @@ class BotSaysGame(Cog):
             if isinstance(test, EnglishWordTest):
                 test.previously_used_words = used_words
             request, view, reactions = await test.initialize()
-            time = (
-                (
-                    20 if round < 10 else 15
-                ) if not test.lowered_time
-                else 7
-            )
+            time = (20 if round < 10 else 15) if not test.lowered_time else 7
             embed.description = _(
                 "-# Remaining players...\n"
                 "{players}\n\n"
@@ -67,9 +62,7 @@ class BotSaysGame(Cog):
                 "> # {request}\n\n"
                 "-# Time ends {timestamp}"
             ).format(
-                players=humanize_list(
-                    [player.mention for player in players]
-                ),
+                players=humanize_list([player.mention for player in players]),
                 bot=ctx.guild.me,
                 request=request,
                 timestamp=f"<t:{int((datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=time)).timestamp())}:R>",
@@ -78,9 +71,7 @@ class BotSaysGame(Cog):
             if view is not None:
                 view._message = message
             if reactions:
-                await start_adding_reactions(
-                    message, reactions
-                )
+                await start_adding_reactions(message, reactions)
             for __ in range(time):
                 await asyncio.sleep(1)
                 if len(test.success) + len(test.fail) == len(players):
@@ -93,7 +84,9 @@ class BotSaysGame(Cog):
             if len(eliminated) == len(players):
                 await ctx.send(
                     embed=discord.Embed(
-                        title=_("All players would be eliminated this round! I let you continue..."),
+                        title=_(
+                            "All players would be eliminated this round! I let you continue..."
+                        ),
                         color=await ctx.embed_color(),
                     )
                 )
@@ -110,10 +103,7 @@ class BotSaysGame(Cog):
             await ctx.send(
                 embed=discord.Embed(
                     title=_("Eliminated players this round..."),
-                    description="\n".join(
-                        f"**•** {player.mention}"
-                        for player in eliminated
-                    ),
+                    description="\n".join(f"**•** {player.mention}" for player in eliminated),
                     color=await ctx.embed_color(),
                 ),
             )

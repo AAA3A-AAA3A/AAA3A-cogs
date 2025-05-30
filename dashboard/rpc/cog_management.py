@@ -4,9 +4,9 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import humanize_list, inline
-
 from unittest.mock import patch
+
+from redbot.core.utils.chat_formatting import humanize_list, inline
 
 from .utils import rpc_check
 
@@ -27,12 +27,17 @@ class FakeContext:
         for line in content.split("\n"):
             if not line:
                 continue
-            elif line.startswith((_("Successfully"), _("Pinned"), _("Enabled"), _("Disabled"))) or _("successfully") in line:
+            elif (
+                line.startswith((_("Successfully"), _("Pinned"), _("Enabled"), _("Disabled")))
+                or _("successfully") in line
+            ):
                 notifications.append({"message": line, "category": "success"})
             elif (
                 line.startswith((_("Failed"), _("Something went wrong")))
-                or _("Couldn't") in line or _("could not be found") in line
-                or "reached" in line or "exceeding" in line
+                or _("Couldn't") in line
+                or _("could not be found") in line
+                or "reached" in line
+                or "exceeding" in line
             ):
                 notifications.append({"message": line, "category": "danger"})
             elif line.lstrip().startswith(("-", "**", "`")):
@@ -213,10 +218,7 @@ class DashboardRPC_CogManagement:
         if not include_data:
             return {
                 "status": 0,
-                "repos": [
-                    repo.name
-                    for repo in Downloader._repo_manager.repos
-                ],
+                "repos": [repo.name for repo in Downloader._repo_manager.repos],
             }
         return {
             "status": 0,
@@ -600,22 +602,30 @@ class DashboardRPC_CogManagement:
 
     @rpc_check()
     async def get_application_commands(
-        self, user_id: int,
-    ) -> typing.Dict[str, typing.Union[int, typing.Dict[str, typing.List[typing.Dict[typing.Literal["type", "name"], str]]]]]:
+        self,
+        user_id: int,
+    ) -> typing.Dict[
+        str,
+        typing.Union[
+            int, typing.Dict[str, typing.List[typing.Dict[typing.Literal["type", "name"], str]]]
+        ],
+    ]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         command = self.bot.get_command("slash list")
         callback = command.callback
         content = ""
+
         async def fake_menu(ctx, pages):
             nonlocal content
             content = "\n".join([page[8:-4] for page in pages])
+
         with patch.dict(callback.__globals__, {"menu": fake_menu}):
             await callback(command.cog, FakeContext(self.bot))
         return {
             "status": 0,
             "application_commands": {
-                    module.split("\n")[0]: [
+                module.split("\n")[0]: [
                     {
                         "type": element.split("|")[0][1:].strip(),
                         "name": element.split("|")[1].strip(),
@@ -629,7 +639,8 @@ class DashboardRPC_CogManagement:
 
     @rpc_check()
     async def sync_application_commands(
-        self, user_id: int,
+        self,
+        user_id: int,
     ) -> typing.Dict[str, typing.Union[int, str]]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
@@ -660,23 +671,30 @@ class DashboardRPC_CogManagement:
     ) -> typing.Dict[str, typing.Union[int, str]]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
-        application_commands = (await self.get_application_commands(user_id))["application_commands"]
+        application_commands = (await self.get_application_commands(user_id))[
+            "application_commands"
+        ]
         Core = self.bot.get_cog("Core")
         fake_ctx = FakeContext(self.bot)
         for module, elements in commands.items():
-            if all(
-                element["enabled"] for element in elements
-            ) and any(not element["enabled"] for element in application_commands[module]):
+            if all(element["enabled"] for element in elements) and any(
+                not element["enabled"] for element in application_commands[module]
+            ):
                 await Core.slash_enablecog(fake_ctx, module)
-            elif all(
-                not element["enabled"] for element in elements
-            ) and any(element["enabled"] for element in application_commands[module]):
+            elif all(not element["enabled"] for element in elements) and any(
+                element["enabled"] for element in application_commands[module]
+            ):
                 await Core.slash_disablecog(fake_ctx, module)
             else:
                 for element in elements:
                     if (
                         current_state := next(
-                            (x for x in application_commands[module] if x["name"] == element["name"]), None
+                            (
+                                x
+                                for x in application_commands[module]
+                                if x["name"] == element["name"]
+                            ),
+                            None,
                         )
                     ) is None:
                         continue
@@ -685,9 +703,7 @@ class DashboardRPC_CogManagement:
                     elif not element["enabled"] and current_state["enabled"]:
                         await Core.slash_disable(fake_ctx, element["name"], element["type"])
         notifications = fake_ctx.get_notifications()
-        status = int(
-            any(notification["category"] == "danger" for notification in notifications)
-        )
+        status = int(any(notification["category"] == "danger" for notification in notifications))
         return {
             "status": status,
             "notifications": notifications,

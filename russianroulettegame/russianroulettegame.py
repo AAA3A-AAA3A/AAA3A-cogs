@@ -58,15 +58,15 @@ class RussianRouletteGame(Cog):
                 if await view.wait():
                     players.remove(player)
                     await ctx.send(
-                        _("I got tired of waiting, so I decided to shoot {player.mention} myself.").format(
-                            player=player
-                        )
+                        _(
+                            "I got tired of waiting, so I decided to shoot {player.mention} myself."
+                        ).format(player=player)
                     )
                     continue
                 await ctx.send(
-                    _("{player.mention} put the gun up to their head and pulled the trigger...").format(
-                        player=player
-                    )
+                    _(
+                        "{player.mention} put the gun up to their head and pulled the trigger..."
+                    ).format(player=player)
                 )
                 await asyncio.sleep(2)
                 if i == bullet:
@@ -76,12 +76,12 @@ class RussianRouletteGame(Cog):
                             _("**💥 BANG!** {player.mention} is dead.").format(player=player)
                         )
                     else:
-                        p = random.choice(
-                            [p for p in players if p != player]
-                        )
+                        p = random.choice([p for p in players if p != player])
                         players.remove(p)
                         await ctx.send(
-                            _("**💥 BANG!** {player.mention} made a mistake and put their gun in the wrong direction, shooting {p.mention}.").format(
+                            _(
+                                "**💥 BANG!** {player.mention} made a mistake and put their gun in the wrong direction, shooting {p.mention}."
+                            ).format(
                                 player=player,
                                 p=p,
                             )

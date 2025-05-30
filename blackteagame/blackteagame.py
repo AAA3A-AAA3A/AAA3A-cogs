@@ -5,14 +5,14 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.data_manager import bundled_data_path
-from redbot.core.utils.menus import start_adding_reactions
-
 import asyncio
 import random
 from collections import defaultdict
 
-from .view import Lang, JoinGameView
+from redbot.core.data_manager import bundled_data_path
+from redbot.core.utils.menus import start_adding_reactions
+
+from .view import JoinGameView, Lang
 
 # Credits:
 # General repo credits.
@@ -44,9 +44,7 @@ class BlackTeaGame(Cog):
         await super().cog_load()
         data_path = bundled_data_path(self)
         for lang in Lang:
-            with (data_path / f"{lang.value}.txt").open(
-                mode="rt", encoding="utf-8"
-            ) as file:
+            with (data_path / f"{lang.value}.txt").open(mode="rt", encoding="utf-8") as file:
                 for word in file.read().split("\n"):
                     self.dictionaries[lang.value].append(word)
 
@@ -71,36 +69,32 @@ class BlackTeaGame(Cog):
         await join_view.wait()
         if join_view.cancelled:
             return
-        players = {
-            player: base_hp
-            for player in join_view.players
-        }
+        players = {player: base_hp for player in join_view.players}
 
         used_words: typing.List[str] = []
         player = None
         while len(players) > 1:
-            player = random.choice(
-                [p for p in players if p != player]
-            )
+            player = random.choice([p for p in players if p != player])
             random_word = None
             while random_word is None or len(random_word) < 3:
-                random_word = random.choice(
-                    self.dictionaries[lang.value]
-                )
+                random_word = random.choice(self.dictionaries[lang.value])
             i = random.randint(0, len(random_word) - 3)
-            letters = random_word[i:i + 3].upper()
+            letters = random_word[i : i + 3].upper()
             message = await ctx.send(
                 _("☕ {player.mention}, type a word containing: **{letters}**").format(
                     player=player, letters=letters
                 )
             )
+
             async def task() -> None:
                 await asyncio.sleep(7)
                 for reaction in ("3️⃣", "2️⃣", "1️⃣"):
                     start_adding_reactions(message, (reaction,))
                     await asyncio.sleep(1)
+
             _task = asyncio.create_task(task())
             try:
+
                 def check(m: discord.Message) -> bool:
                     word = m.content.lower().translate(
                         str.maketrans(
@@ -117,6 +111,7 @@ class BlackTeaGame(Cog):
                         used_words.append(word)
                         return True
                     return False
+
                 m = await self.bot.wait_for(
                     "message_without_command",
                     timeout=10,
@@ -127,17 +122,11 @@ class BlackTeaGame(Cog):
                 start_adding_reactions(message, ("💥",))
                 players[player] -= 1
                 await ctx.send(
-                    _("💥 Time's up: -1 HP (Left: **{left}** HP)").format(
-                        left=players[player]
-                    )
+                    _("💥 Time's up: -1 HP (Left: **{left}** HP)").format(left=players[player])
                 )
                 if players[player] == 0:
                     del players[player]
-                    await ctx.send(
-                        _("🚪 **{player.mention} eliminated!**").format(
-                            player=player
-                        )
-                    )
+                    await ctx.send(_("🚪 **{player.mention} eliminated!**").format(player=player))
             else:
                 _task.cancel()
 

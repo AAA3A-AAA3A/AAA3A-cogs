@@ -199,7 +199,8 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                 [
                     vote
                     for vote in member_data["votes"]
-                    if datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc) >= start_month
+                    if datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc)
+                    >= start_month
                 ]
             )
             + 1

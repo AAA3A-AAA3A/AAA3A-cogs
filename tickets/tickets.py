@@ -117,7 +117,7 @@ class Tickets(DashboardIntegration, Cog):
                     "enabled": False,
                     "guild_id": None,
                     "invite_code": None,
-                }
+                },
             },
             buttons_dropdowns={},
         )
@@ -452,11 +452,7 @@ class Tickets(DashboardIntegration, Cog):
                     await ticket.delete()
                     continue
                 config = profiles[ticket.profile]
-                if (
-                    not ticket.is_closed
-                    and ticket.owner is None
-                    and config["close_on_leave"]
-                ):
+                if not ticket.is_closed and ticket.owner is None and config["close_on_leave"]:
                     try:
                         await ticket.guild.fetch_member(ticket.owner_id)
                     except discord.NotFound:
@@ -902,7 +898,9 @@ class Tickets(DashboardIntegration, Cog):
         ctx: commands.Context,
         short: bool = False,
         claimed: bool = False,
-        status: typing.Literal["all", "open", "claimed", "unclaimed", "closed", "appeal_approved"] = "open",
+        status: typing.Literal[
+            "all", "open", "claimed", "unclaimed", "closed", "appeal_approved"
+        ] = "open",
         *,
         owner: typing.Optional[discord.Member] = None,
     ) -> None:
@@ -1386,28 +1384,42 @@ class Tickets(DashboardIntegration, Cog):
         moderator_role: typing.Optional[discord.Role] = None,
         category_open: typing.Optional[discord.CategoryChannel] = None,
         category_closed: typing.Optional[discord.CategoryChannel] = None,
-        logs_channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]] = None,
-        button_channel: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]] = None,
+        logs_channel: typing.Optional[
+            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+        ] = None,
+        button_channel: typing.Optional[
+            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+        ] = None,
     ) -> None:
         """Configure the appeal feature."""
         profile = profile or "main"
         if (guild := self.bot.get_guild(guild_id)) is None:
-            raise commands.UserFeedbackCheckFailure(_("This guild doesn't exist or the bot isn't in it."))
+            raise commands.UserFeedbackCheckFailure(
+                _("This guild doesn't exist or the bot isn't in it.")
+            )
         if guild.id == ctx.guild.id:
-            raise commands.UserFeedbackCheckFailure(_("You can't configure appeal tickets for the same guild."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You can't configure appeal tickets for the same guild.")
+            )
         if (member := guild.get_member(ctx.author.id)) is None:
             raise commands.UserFeedbackCheckFailure(
                 _("You must be in the guild to configure the appeal feature.")
             )
         if not member.guild_permissions.manage_guild or not member.guild_permissions.ban_members:
             raise commands.UserFeedbackCheckFailure(
-                _("You must have the `Manage Server` and `Ban Members` permissions in the guild to configure the appeal feature.")
+                _(
+                    "You must have the `Manage Server` and `Ban Members` permissions in the guild to configure the appeal feature."
+                )
             )
         if not guild.me.guild_permissions.ban_members:
             raise commands.UserFeedbackCheckFailure(
                 _("I need the `Ban Members` permission in the guild to unban users.")
             )
-        if (invite := await self.bot.fetch_invite(invite_code.removeprefix("https://").removeprefix("discord.gg/"))) is None:
+        if (
+            invite := await self.bot.fetch_invite(
+                invite_code.removeprefix("https://").removeprefix("discord.gg/")
+            )
+        ) is None:
             raise commands.UserFeedbackCheckFailure(_("This invite doesn't exist."))
         if invite.guild.id != guild.id:
             raise commands.UserFeedbackCheckFailure(_("This invite doesn't belong to the guild."))

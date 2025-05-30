@@ -5,13 +5,13 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import pagify
-
 import datetime
 import random
 import re
 from io import BytesIO
-from wantedposter.wantedposter import WantedPoster, CaptureCondition
+
+from redbot.core.utils.chat_formatting import pagify
+from wantedposter.wantedposter import CaptureCondition, WantedPoster
 
 from .plugins.welcome import WelcomePlugin
 
@@ -46,7 +46,9 @@ class BountyConverter(commands.Converter):
 
 
 class LabelLinkConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.List[typing.Union[str, int]]:
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.List[typing.Union[str, int]]:
         arg_split = re.split(r"[;,|\-]", argument)
         try:
             label, link = arg_split
@@ -129,12 +131,16 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 "path": ["plugins", "Welcome", "enabled"],
             },
             "welcome_channel": {
-                "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+                "converter": typing.Union[
+                    discord.TextChannel, discord.VoiceChannel, discord.Thread
+                ],
                 "description": "Set the welcome channel.",
                 "path": ["plugins", "Welcome", "channel"],
             },
             "welcome_log_pose_channels": {
-                "converter": commands.Greedy[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]],
+                "converter": commands.Greedy[
+                    typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+                ],
                 "description": "Set the log pose channels for the welcome message.",
                 "path": ["plugins", "Welcome", "log_pose_channels"],
             },
@@ -173,13 +179,18 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 bounty += random.randint(1_000_000, 10_000_000)
             else:
                 bounty += random.randint(10_000_000, 20_000_000)
-        
+
         if config["include_months_since_joining"]:
             if (
                 joined_at := (
                     member.joined_at
-                    if (accurate_joined_at := await self.config.member(member).accurate_joined_at()) is None
-                    else datetime.datetime.fromisoformat(accurate_joined_at).replace(tzinfo=datetime.timezone.utc)
+                    if (
+                        accurate_joined_at := await self.config.member(member).accurate_joined_at()
+                    )
+                    is None
+                    else datetime.datetime.fromisoformat(accurate_joined_at).replace(
+                        tzinfo=datetime.timezone.utc
+                    )
                 )
             ) is not None:
                 months = (datetime.datetime.now(tz=datetime.timezone.utc) - joined_at).days / 30
@@ -189,11 +200,10 @@ class OnePieceBounties(WelcomePlugin, Cog):
                     min_bounty = 4_000_000 + (year * 1_500_000)
                     max_bounty = 8_000_000 + (year * 1_500_000)
                     bounty += int(
-                        random.randint(min_bounty, max_bounty) * (
-                            months - i if i == int(months) else 1
-                        )
+                        random.randint(min_bounty, max_bounty)
+                        * (months - i if i == int(months) else 1)
                     )
-        
+
         if (
             config["include_levelup_levels"]
             and (LevelUp := self.bot.get_cog("LevelUp")) is not None
@@ -215,15 +225,16 @@ class OnePieceBounties(WelcomePlugin, Cog):
             total_points = await Cautions.config.member(member).total_points()
             if total_points > 0:
                 bounty -= total_points * 100_000_000
-        
+
         if config["bonus_roles"]:
             for role in member.roles:
                 if str(role.id) in config["bonus_roles"]:
                     random.seed(f"{member.id}-role-{role.id}")
                     bounty += random.randint(
-                        config["bonus_roles"][str(role.id)][0], config["bonus_roles"][str(role.id)][1]
+                        config["bonus_roles"][str(role.id)][0],
+                        config["bonus_roles"][str(role.id)][1],
                     )
-        
+
         bounty += await self.config.member(member).bonus()
 
         if bounty <= 1:
@@ -244,7 +255,9 @@ class OnePieceBounties(WelcomePlugin, Cog):
             return round(bounty, -1)
         return bounty
 
-    async def generate_wanted_poster(self, member: discord.Member, bounty: int = None) -> discord.File:
+    async def generate_wanted_poster(
+        self, member: discord.Member, bounty: int = None
+    ) -> discord.File:
         names = ["display_name", "global_name", "name"]
         for attr in names:
             value = getattr(member, attr)
@@ -290,15 +303,17 @@ class OnePieceBounties(WelcomePlugin, Cog):
         ]
 
     def get_bounty_tier(self, bounty: int) -> str:
-        return next(
-            (tier for tier, min_bounty in self.get_bounty_tiers() if bounty >= min_bounty)
-        )
+        return next((tier for tier, min_bounty in self.get_bounty_tiers() if bounty >= min_bounty))
 
-    async def get_kwargs(self, member: discord.Member) -> typing.Dict[str, typing.Union[discord.Embed, discord.File]]:
+    async def get_kwargs(
+        self, member: discord.Member
+    ) -> typing.Dict[str, typing.Union[discord.Embed, discord.File]]:
         bounty = await self.get_bounty(member)
         bounty_tier = self.get_bounty_tier(bounty)
         embed: discord.Embed = discord.Embed(
-            title=_("Marine HQ has issued a bounty of **{bounty:,}** {berries} for **{member.display_name}**, worthy of a **{bounty_tier} Level Threat**!").format(
+            title=_(
+                "Marine HQ has issued a bounty of **{bounty:,}** {berries} for **{member.display_name}**, worthy of a **{bounty_tier} Level Threat**!"
+            ).format(
                 member=member,
                 bounty=bounty,
                 berries=_("berries") if bounty > 1 else _("berry"),
@@ -406,7 +421,9 @@ class OnePieceBounties(WelcomePlugin, Cog):
             if str(role.id) in bonus_roles:
                 del bonus_roles[str(role.id)]
             else:
-                raise commands.UserFeedbackCheckFailure(_("This role is not in the list of bonus roles."))
+                raise commands.UserFeedbackCheckFailure(
+                    _("This role is not in the list of bonus roles.")
+                )
 
     @setonepiecebounties.command(aliases=["listbr"])
     async def listbonusroles(self, ctx: commands.Context) -> None:
@@ -418,7 +435,8 @@ class OnePieceBounties(WelcomePlugin, Cog):
             [
                 _("{role.mention}: {min_bounty:,} - {max_bounty:,} {berries}").format(
                     role=role,
-                    min_bounty=bounties[0], max_bounty=bounties[1],
+                    min_bounty=bounties[0],
+                    max_bounty=bounties[1],
                     berries=_("berries") if abs(bounties[0]) > 1 else _("berry"),
                 )
                 for role_id, bounties in bonus_roles.items()
@@ -451,7 +469,9 @@ class OnePieceBounties(WelcomePlugin, Cog):
         """Add a role to the only roles list."""
         async with self.config.guild(ctx.guild).only_roles() as only_roles:
             if str(role.id) in only_roles:
-                raise commands.UserFeedbackCheckFailure(_("This role is already in the list of only roles."))
+                raise commands.UserFeedbackCheckFailure(
+                    _("This role is already in the list of only roles.")
+                )
             only_roles[str(role.id)] = only
 
     @setonepiecebounties.command(aliases=["removeor"])
@@ -461,7 +481,9 @@ class OnePieceBounties(WelcomePlugin, Cog):
             if str(role.id) in only_roles:
                 del only_roles[str(role.id)]
             else:
-                raise commands.UserFeedbackCheckFailure(_("This role is not in the list of only roles."))
+                raise commands.UserFeedbackCheckFailure(
+                    _("This role is not in the list of only roles.")
+                )
 
     @setonepiecebounties.command(aliases=["listor"])
     async def listonlyroles(self, ctx: commands.Context) -> None:
@@ -522,7 +544,9 @@ class OnePieceBounties(WelcomePlugin, Cog):
         await self.config.member(member).bonus.set(current_bonus)
 
     @setonepiecebounties.command(aliases=["clearb"])
-    async def clearbonus(self, ctx: commands.Context, member: typing.Optional[discord.Member]) -> None:
+    async def clearbonus(
+        self, ctx: commands.Context, member: typing.Optional[discord.Member]
+    ) -> None:
         """Clear a member's bonus."""
         member = member or ctx.author
         if member.bot:
@@ -543,10 +567,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
                     berries=_("berries") if abs(bonus["bonus"]) > 1 else _("berry"),
                 )
                 for member_id, bonus in bonuses.items()
-                if (
-                    (member := ctx.guild.get_member(member_id)) is not None
-                    and bonus["bonus"] > 0
-                )
+                if ((member := ctx.guild.get_member(member_id)) is not None and bonus["bonus"] > 0)
             ]
         )
         embed: discord.Embed = discord.Embed(
@@ -576,5 +597,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
         try:
             accurate_joined_at = datetime.datetime.strptime(date, "%Y-%m-%d")
         except ValueError:
-            raise commands.UserFeedbackCheckFailure(_("Please provide a date in the format `YYYY-MM-DD`."))
+            raise commands.UserFeedbackCheckFailure(
+                _("Please provide a date in the format `YYYY-MM-DD`.")
+            )
         await self.config.member(member).accurate_joined_at.set(accurate_joined_at.isoformat())

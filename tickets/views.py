@@ -27,10 +27,11 @@ class TicketView(discord.ui.View):
                 ephemeral=True,
             )
             return False
-        if (
-            interaction.data["custom_id"].removeprefix(f"Tickets_#{self.ticket.id}_") in ("lock", "claim", "approve_appeal")
-            and not await self.cog.is_support.__func__(ignore_owner=True).predicate(interaction)
-        ):
+        if interaction.data["custom_id"].removeprefix(f"Tickets_#{self.ticket.id}_") in (
+            "lock",
+            "claim",
+            "approve_appeal",
+        ) and not await self.cog.is_support.__func__(ignore_owner=True).predicate(interaction):
             await interaction.response.send_message(
                 _("⛔ You aren't allowed to claim or unclaim this ticket!"),
                 ephemeral=True,
@@ -142,7 +143,8 @@ class TicketView(discord.ui.View):
             else:
                 e = (
                     str(e)
-                    if (e := self.cog.bot.get_emoji(int(config["emojis"]["approve_appeal"]))) is not None
+                    if (e := self.cog.bot.get_emoji(int(config["emojis"]["approve_appeal"])))
+                    is not None
                     else None
                 )
             self.approve_appeal.emoji = e

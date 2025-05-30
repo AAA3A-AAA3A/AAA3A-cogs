@@ -412,9 +412,9 @@ class Reminders(DashboardIntegration, Cog):
         message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message.to_reference(
-                fail_if_not_exists=False
-            ) if config["replies"] else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            reference=ctx.message.to_reference(fail_if_not_exists=False)
+            if config["replies"]
+            else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
         if view is not None:
@@ -606,9 +606,9 @@ class Reminders(DashboardIntegration, Cog):
         message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message.to_reference(
-                fail_if_not_exists=False
-            ) if config["replies"] else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            reference=ctx.message.to_reference(fail_if_not_exists=False)
+            if config["replies"]
+            else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(
                 everyone=False, users=False, roles=False, replied_user=False
             ),
@@ -731,9 +731,9 @@ class Reminders(DashboardIntegration, Cog):
         message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message.to_reference(
-                fail_if_not_exists=False
-            ) if config["replies"] else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            reference=ctx.message.to_reference(fail_if_not_exists=False)
+            if config["replies"]
+            else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
         if view is not None:
@@ -837,9 +837,9 @@ class Reminders(DashboardIntegration, Cog):
         message = await ctx.send(
             reminder.__str__(utc_now=utc_now),
             view=view,
-            reference=ctx.message.to_reference(
-                fail_if_not_exists=False
-            ) if config["replies"] else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
+            reference=ctx.message.to_reference(fail_if_not_exists=False)
+            if config["replies"]
+            else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
         if view is not None:

@@ -7,9 +7,9 @@ import typing  # isort:skip
 
 import io
 import json
+from pathlib import Path
 
 from fuzzywuzzy import process
-from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 from redbot.core.data_manager import bundled_data_path
 from redbot.core.utils.chat_formatting import box
@@ -542,10 +542,7 @@ class OnePieceGame(Cog):
         return [
             app_commands.Choice(name=character_name, value=character_name)
             for character_name in self.character_autocomplete_data
-            if any(
-                part.startswith(lowered_current)
-                for part in character_name.lower().split(" ")
-            )
+            if any(part.startswith(lowered_current) for part in character_name.lower().split(" "))
         ][:25]
 
     @onepiece.command()
@@ -576,9 +573,9 @@ class OnePieceGame(Cog):
                 embeds.append(embed)
             embed.add_field(
                 name=f"{i}. {arc}",
-                value=_(
-                    "Chapters **{start}** to **{end}**"
-                ).format(start=start, end=end if end is not None else _("ongoing")),
-                inline=True
+                value=_("Chapters **{start}** to **{end}**").format(
+                    start=start, end=end if end is not None else _("ongoing")
+                ),
+                inline=True,
             )
         await Menu(pages=[{"embeds": embeds}]).start(ctx)

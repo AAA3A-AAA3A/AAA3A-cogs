@@ -11,7 +11,7 @@ import io
 from dataclasses import _is_dataclass_instance, dataclass, field, fields
 
 import chat_exporter
-from redbot.core.utils.chat_formatting import bold, humanize_list, box
+from redbot.core.utils.chat_formatting import bold, box, humanize_list
 
 from .views import ClosedTicketControls, TicketView
 
@@ -334,11 +334,7 @@ class Ticket:
                     "{profile}", "ticket" if self.profile == "main" else self.profile
                 )
 
-        owner = (
-            self.owner
-            if self.owner is not None
-            else await self.bot.fetch_user(self.owner_id)
-        )
+        owner = self.owner if self.owner is not None else await self.bot.fetch_user(self.owner_id)
         return channel_name.format(
             emoji=self.emoji,
             owner_display_name=owner.display_name,
@@ -378,47 +374,72 @@ class Ticket:
                 )
         embed.set_thumbnail(url=self.guild.icon)
         embed.description = (
-            _(
-                "Claimed by: {claimed_by.mention}"
-                "\nClaimed at: <t:{claimed_at}:F> (<t:{claimed_at}:R>)"
-            ).format(
-                claimed_by=(
-                    self.claimed_by
-                    if self.claimed_by is not None
-                    else type("", (), {"mention": f"<@{self.appeal_approved_by_id}>", "id": self.claimed_by_id})
-                ),
-                claimed_at=int(self.claimed_at.timestamp()),
+            (
+                _(
+                    "Claimed by: {claimed_by.mention}"
+                    "\nClaimed at: <t:{claimed_at}:F> (<t:{claimed_at}:R>)"
+                ).format(
+                    claimed_by=(
+                        self.claimed_by
+                        if self.claimed_by is not None
+                        else type(
+                            "",
+                            (),
+                            {
+                                "mention": f"<@{self.appeal_approved_by_id}>",
+                                "id": self.claimed_by_id,
+                            },
+                        )
+                    ),
+                    claimed_at=int(self.claimed_at.timestamp()),
+                )
+                if self.is_claimed
+                else _("Not claimed.")
             )
-            if self.is_claimed
-            else _("Not claimed.")
-        ) + (
-            _(
-                "\nClosed by: {closed_by.mention}"
-                "\nClosed at: <t:{closed_at}:F> (<t:{closed_at}:R>)"
-            ).format(
-                closed_by=(
-                    self.closed_by
-                    if self.closed_by is not None
-                    else type("", (), {"mention": f"<@{self.appeal_approved_by_id}>", "id": self.closed_by_id})
-                ),
-                closed_at=int(self.closed_at.timestamp()),
+            + (
+                _(
+                    "\nClosed by: {closed_by.mention}"
+                    "\nClosed at: <t:{closed_at}:F> (<t:{closed_at}:R>)"
+                ).format(
+                    closed_by=(
+                        self.closed_by
+                        if self.closed_by is not None
+                        else type(
+                            "",
+                            (),
+                            {
+                                "mention": f"<@{self.appeal_approved_by_id}>",
+                                "id": self.closed_by_id,
+                            },
+                        )
+                    ),
+                    closed_at=int(self.closed_at.timestamp()),
+                )
+                if self.is_closed
+                else ""
             )
-            if self.is_closed
-            else ""
-        ) + (
-            _(
-                "\nAppeal approved by: {appeal_approved_by.mention}"
-                "\nAppeal approved at: <t:{appeal_approved_at}:F> (<t:{appeal_approved_at}:R>)"
-            ).format(
-                appeal_approved_by=(
-                    self.appeal_approved_by
-                    if self.appeal_approved_by is not None
-                    else type("", (), {"mention": f"<@{self.appeal_approved_by_id}>", "id": self.appeal_approved_by_id})
-                ),
-                appeal_approved_at=int(self.appeal_approved_at.timestamp()),
+            + (
+                _(
+                    "\nAppeal approved by: {appeal_approved_by.mention}"
+                    "\nAppeal approved at: <t:{appeal_approved_at}:F> (<t:{appeal_approved_at}:R>)"
+                ).format(
+                    appeal_approved_by=(
+                        self.appeal_approved_by
+                        if self.appeal_approved_by is not None
+                        else type(
+                            "",
+                            (),
+                            {
+                                "mention": f"<@{self.appeal_approved_by_id}>",
+                                "id": self.appeal_approved_by_id,
+                            },
+                        )
+                    ),
+                    appeal_approved_at=int(self.appeal_approved_at.timestamp()),
+                )
+                if self.appeal_approved
+                else ""
             )
-            if self.appeal_approved
-            else ""
         )
         if self.reason is not None:
             embed.add_field(
@@ -452,9 +473,7 @@ class Ticket:
             embeds.append(embed)
         if config["custom_message"] is not None:
             owner = (
-                self.owner
-                if self.owner is not None
-                else await self.bot.fetch_user(self.owner_id)
+                self.owner if self.owner is not None else await self.bot.fetch_user(self.owner_id)
             )
             embeds.append(
                 discord.Embed(
@@ -556,15 +575,14 @@ class Ticket:
                 )
             if (
                 config.get("appeals", {"enabled": False})["enabled"]
-                and (appeals_for_guild := self.bot.get_guild(config["appeals"]["guild_id"])) is not None
+                and (appeals_for_guild := self.bot.get_guild(config["appeals"]["guild_id"]))
+                is not None
             ):
                 try:
                     await appeals_for_guild.fetch_ban(self.owner)
                 except discord.NotFound:
                     raise RuntimeError(
-                        _(
-                            "You are not banned from the server, so you can't create a ticket."
-                        )
+                        _("You are not banned from the server, so you can't create a ticket.")
                     )
                 except discord.HTTPException:
                     pass
@@ -1118,16 +1136,16 @@ class Ticket:
         if (guild := self.bot.get_guild(config["appeals"]["guild_id"])) is None:
             raise RuntimeError(_("The server is not available."))
         if not guild.me.guild_permissions.ban_members:
-            raise RuntimeError(_("I don't have the required permissions to unban users in the server."))
+            raise RuntimeError(
+                _("I don't have the required permissions to unban users in the server.")
+            )
         self.appeal_approved = True
         self.appeal_approved_by = approver
         self.appeal_approved_at = datetime.datetime.now(tz=datetime.timezone.utc)
         await self.save()
 
         if approver is None:
-            audit_reason = _(
-                "Ticket appeal approved."
-            ).format(self=self)
+            audit_reason = _("Ticket appeal approved.").format(self=self)
         else:
             audit_reason = _(
                 "Ticket appeal approved by {approver.display_name} ({approver.id})."
@@ -1399,11 +1417,7 @@ class Ticket:
             bot=self.bot,
             attachment_handler=AttachmentHandler(),
         )
-        owner = (
-            self.owner
-            if self.owner is not None
-            else await self.bot.fetch_user(self.owner_id)
-        )
+        owner = self.owner if self.owner is not None else await self.bot.fetch_user(self.owner_id)
         return discord.File(
             filename=f"ticket-{self.id}-{owner.name}.html",
             fp=io.BytesIO(transcript.encode()),

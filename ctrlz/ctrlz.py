@@ -103,9 +103,7 @@ def create_overwrite_method(audit_log: discord.AuditLogEntry) -> None:
 def create_role_method(audit_log: discord.AuditLogEntry) -> None:
     kwargs = dict(audit_log.before)
     kwargs.pop("colors", None)
-    return audit_log.guild.create_role(
-        **kwargs, reason=REASON
-    )
+    return audit_log.guild.create_role(**kwargs, reason=REASON)
 
 
 def create_invite_method(audit_log: discord.AuditLogEntry) -> None:

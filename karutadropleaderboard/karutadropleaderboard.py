@@ -43,7 +43,9 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
                 "description": "Enable or disable the feature.",
             },
             "channels": {
-                "converter": commands.Greedy[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]],
+                "converter": commands.Greedy[
+                    typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+                ],
                 "description": "List of channels to track.",
             },
         }
@@ -64,9 +66,7 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
         await self.settings.add_commands()
 
     @commands.Cog.listener()
-    async def on_message_without_command(
-        self, message: discord.Message
-    ) -> None:
+    async def on_message_without_command(self, message: discord.Message) -> None:
         if message.guild is None:
             return
         if not message.author.bot or message.author.id != KARUTA_BOT_ID:

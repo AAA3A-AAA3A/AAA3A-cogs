@@ -61,7 +61,9 @@ class Character:
     origin: str
 
     bounty: typing.Optional[int]
-    devil_fruit: typing.Optional[typing.Dict[typing.Literal["name", "translated_name", "type"], str]]
+    devil_fruit: typing.Optional[
+        typing.Dict[typing.Literal["name", "translated_name", "type"], str]
+    ]
     haki: typing.List[str]
 
     status: str
@@ -122,7 +124,7 @@ class Character:
             img = Image.open(io.BytesIO(self.cog.brook_wanted_poster))
             img = img.convert("RGBA")
             if blurry_level > 0:
-                img = img.filter(ImageFilter.GaussianBlur(radius=blurry_level*2))
+                img = img.filter(ImageFilter.GaussianBlur(radius=blurry_level * 2))
             if not show_colors:
                 img = img.convert("L")
         img = img.resize((img.width * 3, img.height * 3))

@@ -132,9 +132,7 @@ class Honeypot(Cog):
                     if (mute_role_id := config["mute_role"]) is not None and (
                         mute_role := message.guild.get_role(mute_role_id)
                     ) is not None:
-                        await message.author.add_roles(
-                            mute_role, reason=reason
-                        )
+                        await message.author.add_roles(mute_role, reason=reason)
                     else:
                         failed = _(
                             "**Failed:** The mute role is not set or doesn't exist anymore."

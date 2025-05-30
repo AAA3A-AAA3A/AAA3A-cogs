@@ -181,9 +181,7 @@ class ShotView(discord.ui.View):
             pass
 
     @discord.ui.button(emoji="🔫", label="Shoot!", style=discord.ButtonStyle.danger)
-    async def shoot(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def shoot(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user != self.player:
             await interaction.response.send_message(
                 _("You can't shoot for someone else!"), ephemeral=True

@@ -86,10 +86,12 @@ class WelcomeView(discord.ui.View):
             return
         if interaction.user == self.member:
             await interaction.response.send_message(_("You can't toast yourself!"), ephemeral=True)
+            return 
         if interaction.user in self.toasters:
             await interaction.response.send_message(
                 _("You've already toasted this member!"), ephemeral=True
             )
+            return  
         toasts = [
             _('{user.mention} grins widely: "To {new_member.mention} joining our grand voyage!"'),
             _('{user.mention} raises a flag: "Another brave soul for our pirate crew!"'),

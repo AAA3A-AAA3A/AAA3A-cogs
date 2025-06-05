@@ -150,6 +150,12 @@ CUSTOM_COMMANDS = {
             "You must download an additional plugin/file and place it in the `USB\\ventoy\\` folder (create it if necessary).\n\n**WimBoot Plugin (https://ventoy.net/en/plugin_wimboot.html):**\n- Download `ventoy_wimboot.img` file from <https://github.com/ventoy/wimiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy partition` of the USB stick, that is `/ventoy/ventoy_wimboot.img` and that's all.\n\n**VhdBoot Plugin (<https://ventoy.net/en/plugin_vhdboot.html>):**\n- Download `ventoy_vhdboot.img` file from <https://github.com/ventoy/vhdiso/releases>.\n- Put the file under `ventoy` directory in the `ventoy` partition of the USB stick, that is `/ventoy/ventoy_vhdboot.img` and that's all."
         ),
     },
+    "bitlocker": {
+        "title": _("Can Medicat USB help bypass or recover BitLocker encryption?"),
+        "description": _(
+            "No. If you could bypass BitLocker with a bootable tool, it would defeat the purpose of BitLocker entirely. BitLocker is designed to protect your data with strong encryption to prevent theft and tampering. You need the recovery key to access the drive. If it was encrypted with TPM, you can't even crack it with specialized tools, which would require significant GPU power anyway.\nTo get your recovery key, visit https://aka.ms/myrecoverykey and sign in with your Microsoft account. If you cannot access your Microsoft account, unfortunately, the data is not recoverable. There is no legitimate tool that can break BitLocker encryption."
+        ),
+    },
     "xy": {
         "title": _("X & Y"),
         "description": _(
@@ -827,7 +833,7 @@ class Medicat(Cog):
             await ctx.send(embed=embed, view=view)
 
     @is_owner_or_AAA3A()
-    @medicat.command(hidden=True)
+    @medicat.command(hidden=True, with_app_command=False)
     async def debugbootabletoolversion(self, ctx: commands.Context, *, url: str) -> None:
         """Get the debug for a FCportables's tool."""
         result = {
@@ -904,7 +910,7 @@ class Medicat(Cog):
 
     @is_owner_or_AAA3A()
     @commands.bot_has_permissions(embed_links=True)
-    @medicat.command(aliases=["bootablestoolsdownloadlinks"])
+    @medicat.command(aliases=["bootablestoolsdownloadlinks"], with_app_command=False)
     async def getbootablestoolsdownloadlinks(self, ctx: commands.Context) -> None:
         """Get the download link of each Medicat USB bootable tool."""
         result = {}
@@ -965,14 +971,14 @@ class Medicat(Cog):
 
     @is_owner_or_AAA3A()
     @commands.bot_has_permissions(embed_links=True)
-    @medicat.command(hidden=True)
+    @medicat.command(hidden=True, with_app_command=False)
     async def getdebugloopstatus(self, ctx: commands.Context) -> None:
         """Get an embed to check loop status."""
         embeds = [loop.get_debug_embed() for loop in self.loops]
         await Menu(pages=embeds).start(ctx)
 
     @is_owner_or_AAA3A()
-    @medicat.command(hidden=True)
+    @medicat.command(hidden=True, with_app_command=False)
     async def update(self, ctx: commands.Context) -> None:
         """Update Medicat cog directly."""
         try:

@@ -534,7 +534,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                 "**3.** Set the votes channel where vote notifications will be sent.\n"
                 "**4.** Set the optional the voters role that will be assigned to voters.\n"
                 "**5.** Optionally, toggle the vote reminder.\n"
-                "**6.** Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`."
+                "**6.** Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`.\n"
                 "**7.** Enable the cog."
             ).format(guild_id=ctx.guild.id, webhook_url=f"{dashboard_url[0]}/api/webhook"),
         )

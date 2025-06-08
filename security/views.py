@@ -655,14 +655,14 @@ class SettingsView(discord.ui.View):
         member = select.values[0]
         if await self.cog.is_owner_or_higher(member):
             await interaction.followup.send(
-                _("This member is higher than Extra Owners."), ephemeral=True
+                _("⚠️ This member is higher than Extra Owners."), ephemeral=True
             )
             return
         level = await self.cog.config.member(member).level()
         if level == Levels.EXTRA_OWNER.name:
             await self.cog.config.member(member).level.clear()
             await interaction.followup.send(
-                _("Member {member.mention} **is no longer an Extra Owner**.").format(
+                _("✅ Member {member.mention} **is no longer an Extra Owner**.").format(
                     member=member
                 ),
                 ephemeral=True,
@@ -678,12 +678,12 @@ class SettingsView(discord.ui.View):
             >= 5
         ):
             await interaction.followup.send(
-                _("You can't add more than **5 Extra Owners**."), ephemeral=True
+                _("⚠️ You can't add more than **5 Extra Owners**."), ephemeral=True
             )
         else:
             await self.cog.config.member(member).level.set(Levels.EXTRA_OWNER.name)
             await interaction.followup.send(
-                _("Member {member.mention} **is now an Extra Owner**.").format(member=member),
+                _("✅ Member {member.mention} **is now an Extra Owner**.").format(member=member),
                 ephemeral=True,
             )
         await self._message.edit(embed=await self.get_embed(), view=self)
@@ -701,14 +701,14 @@ class SettingsView(discord.ui.View):
         member = select.values[0]
         if await self.cog.is_owner_or_higher(member):
             await interaction.followup.send(
-                _("This member is higher than Extra Owners."), ephemeral=True
+                _("⚠️ This member is higher than Extra Owners."), ephemeral=True
             )
             return
         level = await self.cog.config.member(member).level()
         if level == Levels.TRUSTED_ADMIN.name:
             await self.cog.config.member(member).level.clear()
             await interaction.followup.send(
-                _("Member {member.mention} **is no longer a Trusted Admin**.").format(
+                _("✅ Member {member.mention} **is no longer a Trusted Admin**.").format(
                     member=member
                 ),
                 ephemeral=True,
@@ -724,12 +724,12 @@ class SettingsView(discord.ui.View):
             >= 8
         ):
             await interaction.followup.send(
-                _("You can't add more than **8 Trusted Admins**."), ephemeral=True
+                _("⚠️ You can't add more than **8 Trusted Admins**."), ephemeral=True
             )
         else:
             await self.cog.config.member(member).level.set(Levels.TRUSTED_ADMIN.name)
             await interaction.followup.send(
-                _("Member {member.mention} **is now a Trusted Admin**.").format(member=member),
+                _("✅ Member {member.mention} **is now a Trusted Admin**.").format(member=member),
                 ephemeral=True,
             )
         await self._message.edit(embed=await self.get_embed(), view=self)
@@ -753,7 +753,7 @@ class ToggleModuleButton(discord.ui.Button):
         self.enabled = not self.enabled
         await self.module.config_value(self.guild).enabled.set(self.enabled)
         await interaction.followup.send(
-            _("Module **{module}** has been **{status}**.").format(
+            _("✅ Module **{module}** has been **{status}**.").format(
                 module=self.module.name,
                 status=_("enabled") if self.enabled else _("disabled"),
             ),
@@ -975,7 +975,7 @@ class ActionsView(discord.ui.View):
                 context_message=self._message,
             )
         await interaction.followup.send(
-            _("Action **{action}** has been successfully performed on {member.mention}.").format(
+            _("✅ Action **{action}** has been successfully performed on {member.mention}.").format(
                 action=action["name"],
                 member=self.member,
             ),

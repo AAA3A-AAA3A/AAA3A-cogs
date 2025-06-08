@@ -282,7 +282,7 @@ AUTO_MOD_FILTERS: typing.Dict[str, typing.Dict[typing.Literal["name", "emoji", "
                             url
                             for url in re.findall(URL_RE, message.content)
                             if any(
-                                nsfw_link in url.lower()
+                                nsfw_link in f"{url[0]}://{url[1]}"
                                 for nsfw_link in NSFW_LINKS
                             )
                         ]
@@ -318,7 +318,7 @@ AUTO_MOD_FILTERS: typing.Dict[str, typing.Dict[typing.Literal["name", "emoji", "
                         [
                             url for url in re.findall(URL_RE, message.content)
                             if any(
-                                urllib.parse.urlparse(url).netloc.endswith(domain)
+                                urllib.parse.urlparse(f"{url[0]}://{url[1]}").netloc.endswith(domain)
                                 for domain in filter_config["blacklisted_domains"]
                             )
                         ]
@@ -673,7 +673,7 @@ class AutoModModule(Module):
             reason = filter["reason"]()
             audit_log_reason = f"Security's Auto Mod: {filter['name']}."
             filter_config = config["filters"][category_value][filter["value"]]
-            if False and await self.cog.is_moderator_or_higher(message.author):  # An administrator can't be timed out, and we don't want to get the staff kicked/banned.
+            if await self.cog.is_moderator_or_higher(message.author):  # An administrator can't be timed out, and we don't want to get the staff kicked/banned.
                 await self.cog.quarantine_member(
                     member=message.author,
                     reason=reason,
@@ -1001,7 +1001,7 @@ class ConfigureFilterCategoryView(discord.ui.View):
         )
         filter_config = (await self.module.config_value(self.guild)())["filters"][self.category][filter["value"]]
         await interaction.response.send_modal(
-            ConfigureFilterModal(self.module, self.guild, self.parent_view, self.category, filter, filter_config)
+            ConfigureFilterModal(self.module, self.guild, self.parent_view, self, self.category, filter, filter_config)
         )
 
 
@@ -1011,6 +1011,7 @@ class ConfigureFilterModal(discord.ui.Modal):
         module: AutoModModule,
         guild: discord.Guild,
         view: discord.ui.View,
+        category_view: discord.ui.View,
         category: str,
         filter: dict,
         filter_config: dict,
@@ -1018,6 +1019,7 @@ class ConfigureFilterModal(discord.ui.Modal):
         self.module: AutoModModule = module
         self.guild: discord.Guild = guild
         self.view: discord.ui.View = view
+        self.category_view: discord.ui.View = category_view
         self.category: str = category
         self.filter = filter
         self.filter_config = filter_config
@@ -1079,8 +1081,7 @@ class ConfigureFilterModal(discord.ui.Modal):
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
         await interaction.response.defer()
-        enabled = self.enabled.value.lower() in ("true", "yes", "1")
-        self.filter_config["enabled"] = enabled
+        self.filter_config["enabled"] = self.enabled.value.lower() in ("true", "yes", "1")
         if "added_heat" in self.filter_config:
             try:
                 self.filter_config["added_heat"] = float(self.added_heat.value)
@@ -1143,6 +1144,13 @@ class ConfigureFilterModal(discord.ui.Modal):
         else:
             self.filter_config["action"] = action_value
         await self.module.config_value(self.guild).filters.set_raw(
-            self.category, "filters", self.filter["value"], value=self.filter_config
+            self.category, self.filter["value"], value=self.filter_config
         )
+        try:
+            await self.category_view._message.edit(
+                embed=await self.category_view.get_embed(),
+                view=self.category_view,
+            )
+        except discord.HTTPException:
+            pass
         await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)

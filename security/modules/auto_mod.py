@@ -427,7 +427,6 @@ class AutoModModule(Module):
             for category, data in AUTO_MOD_FILTERS.items()
         },
     }
-    configurable_by_trusted_admins = False
 
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)

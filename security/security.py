@@ -536,6 +536,7 @@ class Security(Cog):
                 )
                 else None
             ),
+            allowed_mentions=discord.AllowedMentions(roles=True),
             **kwargs,
         )
 

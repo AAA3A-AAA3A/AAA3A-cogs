@@ -596,10 +596,10 @@ class SettingsView(discord.ui.View):
         await interaction.response.defer()
         if select.values:
             modlog_channel = select.values[0]
-            permissions = modlog_channel.permissions_for(self.ctx.guild.me)
+            permissions = interaction.guild.get_channel(modlog_channel.id).permissions_for(self.ctx.guild.me)
             if not (
-                modlog_channel.permissions_for(guild.me).view_channel
-                and modlog_channel.permissions_for(guild.me).send_messages
+                permissions.view_channel
+                and permissions.send_messages
             ):
                 await interaction.followup.send(
                     _(

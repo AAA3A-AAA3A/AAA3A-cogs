@@ -209,7 +209,7 @@ AUTO_MOD_FILTERS: typing.Dict[str, typing.Dict[typing.Literal["name", "emoji", "
                 "name": "@member Mentions (each)",
                 "emoji": Emojis.PING.value,
                 "value": "member_mentions",
-                "default_added_heat": 15,
+                "default_added_heat": 20,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"] * len([member for member in message.mentions if member != message.author and not member.bot])
                 ),
@@ -219,7 +219,7 @@ AUTO_MOD_FILTERS: typing.Dict[str, typing.Dict[typing.Literal["name", "emoji", "
                 "name": "@role Mentions (each)",
                 "emoji": Emojis.PING.value,
                 "value": "role_mentions",
-                "default_added_heat": 20,
+                "default_added_heat": 30,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"] * len(
                         [role for role in message.role_mentions if not role.is_default() and len(role.members) < 0.1 * len(message.guild.members)]
@@ -605,8 +605,6 @@ class AutoModModule(Module):
             return
         config = await self.config_value(message.guild)()
         if not config["enabled"]:
-            return
-        if message.author.bot:
             return
         if await self.cog.is_trusted_admin_or_higher(message.author):
             return

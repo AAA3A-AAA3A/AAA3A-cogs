@@ -1021,9 +1021,10 @@ class ConfigureFilterModal(discord.ui.Modal):
         self.category: str = category
         self.filter = filter
         self.filter_config = filter_config
+        title = f"{self.filter['emoji']} {self.filter['name']}"
         super().__init__(
             title=_("Configure {filter}").format(
-                filter=f"{self.filter['emoji']} {self.filter['name']}"
+                filter=title if len(title) <= 45 else title.split(" (")[0],
             )
         )
         self.enabled: discord.ui.TextInput = discord.ui.TextInput(

@@ -585,15 +585,16 @@ class AutoModModule(Module):
 
     async def update_heats_cache(self, guild: discord.Guild, member: discord.Member) -> None:
         heats = self.heats_cache[guild][member]
-        degradation = await self.config_value(guild).heats.degradation()
-        to_remove = degradation * (datetime.datetime.now(tz=datetime.timezone.utc) - heats[0][0]).total_seconds()
-        while to_remove > 0 and heats:
-            if heats[0][2] <= to_remove:
-                to_remove -= heats[0][2]
-                heats.pop(0)
-            else:
-                heats[0] = (heats[0][0], heats[0][1], heats[0][2] - to_remove, heats[0][3])
-                to_remove = 0
+        if heats:
+            degradation = await self.config_value(guild).heats.degradation()
+            to_remove = degradation * (datetime.datetime.now(tz=datetime.timezone.utc) - heats[0][0]).total_seconds()
+            while to_remove > 0 and heats:
+                if heats[0][2] <= to_remove:
+                    to_remove -= heats[0][2]
+                    heats.pop(0)
+                else:
+                    heats[0] = (heats[0][0], heats[0][1], heats[0][2] - to_remove, heats[0][3])
+                    to_remove = 0
         if not heats:
             del self.heats_cache[guild][member]
         if not self.heats_cache[guild]:
@@ -918,7 +919,7 @@ class ConfigureFilterCategoryView(discord.ui.View):
                 category_name=category["name"],
             ),
             description="\n".join(
-                f"**{'✅' if (filter_config := config['filters'][self.category]['filters'][filter['value']])['enabled'] else '❌'} {filter['emoji']} {filter['name']}**"
+                f"**{'✅' if (filter_config := config['filters'][self.category][filter['value']])['enabled'] else '❌'} {filter['emoji']} {filter['name']}**"
                 + (
                     _("\n- Added Heat: **{added_heat}%**").format(added_heat=filter_config["added_heat"])
                     if "added_heat" in filter_config

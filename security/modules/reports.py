@@ -207,23 +207,23 @@ class ReportsModule(Module):
             )
             return
         member = target if isinstance(target, discord.Member) else target.author
-        # if member.bot:
-        #     await interaction.response.send_message(_("You can't report a bot."), ephemeral=True)
-        #     return
+        if member.bot:
+            await interaction.response.send_message(_("You can't report a bot."), ephemeral=True)
+            return
         if member == interaction.user:
             await interaction.response.send_message(
                 _("You can't report yourself."), ephemeral=True
             )
             return
-        # if (
-        #     await self.cog.is_whitelisted(member, "reports")
-        #     if isinstance(target, discord.Member)
-        #     else await self.cog.is_message_whitelisted(target, "reports")
-        # ):
-        #     await interaction.response.send_message(
-        #         _("You can't report this target."), ephemeral=True
-        #     )
-        #     return
+        if (
+            await self.cog.is_whitelisted(member, "reports")
+            if isinstance(target, discord.Member)
+            else await self.cog.is_message_whitelisted(target, "reports")
+        ):
+            await interaction.response.send_message(
+                _("You can't report this target."), ephemeral=True
+            )
+            return
         await interaction.response.send_modal(ReasonModal(self, interaction.guild, target))
 
 

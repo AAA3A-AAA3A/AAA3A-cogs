@@ -513,9 +513,8 @@ class SettingsView(discord.ui.View):
             await self.cog.send_recovery_key(self.ctx.guild)
         except RuntimeError as e:
             await interaction.followup.send(
-                _("Failed to reset recovery key: {error}").format(error=str(e)), ephemeral=True
+                _("⚠️ Failed to reset recovery key: {error}").format(error=str(e)), ephemeral=True
             )
-            return
 
     @discord.ui.button(label="Create Quarantine Role", style=discord.ButtonStyle.primary)
     async def create_quarantine_role(
@@ -526,11 +525,11 @@ class SettingsView(discord.ui.View):
             await self.cog.create_or_update_quarantine_role(self.ctx.guild)
         except RuntimeError as e:
             await interaction.followup.send(
-                _("Failed to create quarantine role: {error}").format(error=str(e)), ephemeral=True
+                _("⚠️ Failed to create quarantine role: {error}").format(error=str(e)), ephemeral=True
             )
             return
         await interaction.followup.send(
-            _("Quarantine role has been created successfully."), ephemeral=True
+            _("✅ Quarantine role has been created successfully."), ephemeral=True
         )
         await self._message.edit(embed=await self.get_embed(), view=self)
 
@@ -543,11 +542,11 @@ class SettingsView(discord.ui.View):
             await self.cog.create_modlog_channel(self.ctx.guild)
         except RuntimeError as e:
             await interaction.followup.send(
-                _("Failed to create modlog channel: {error}").format(error=str(e)), ephemeral=True
+                _("⚠️ Failed to create modlog channel: {error}").format(error=str(e)), ephemeral=True
             )
             return
         await interaction.followup.send(
-            _("Modlog channel has been created successfully."), ephemeral=True
+            _("✅ Modlog channel has been created successfully."), ephemeral=True
         )
         await self._message.edit(embed=await self.get_embed(), view=self)
 
@@ -557,7 +556,7 @@ class SettingsView(discord.ui.View):
     async def quarantine_role_select(
         self, interaction: discord.Interaction, select: discord.ui.Select
     ) -> None:
-        await interaction.response.defer()
+        await interaction.response.defer(thinking=True, ephemeral=True)
         if select.values:
             quarantine_role = select.values[0]
             if not quarantine_role.is_assignable():
@@ -578,7 +577,7 @@ class SettingsView(discord.ui.View):
         else:
             await self.cog.config.guild(self.ctx.guild).quarantine_role.clear()
             await interaction.followup.send(
-                _("⚠️ Quarantine role will be created when needed."),
+                _("✅ Quarantine role will be created when needed."),
                 ephemeral=True,
             )
         await self._message.edit(embed=await self.get_embed(), view=self)
@@ -593,7 +592,7 @@ class SettingsView(discord.ui.View):
     async def modlog_channel_select(
         self, interaction: discord.Interaction, select: discord.ui.Select
     ) -> None:
-        await interaction.response.defer()
+        await interaction.response.defer(thinking=True, ephemeral=True)
         if select.values:
             modlog_channel = select.values[0]
             permissions = interaction.guild.get_channel(modlog_channel.id).permissions_for(self.ctx.guild.me)
@@ -609,6 +608,10 @@ class SettingsView(discord.ui.View):
                 )
                 return
             await self.cog.config.guild(self.ctx.guild).modlog_channel.set(modlog_channel.id)
+            await interaction.followup.send(
+                _("✅ Modlog channel is now set."),
+                ephemeral=True,
+            )
         else:
             await self.cog.config.guild(self.ctx.guild).modlog_channel.clear()
             await interaction.followup.send(
@@ -626,11 +629,17 @@ class SettingsView(discord.ui.View):
     async def modlog_ping_role_select(
         self, interaction: discord.Interaction, select: discord.ui.Select
     ) -> None:
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
         if select.values:
             await self.cog.config.guild(self.ctx.guild).modlog_ping_role.set(select.values[0].id)
+            await interaction.followup.send(
+                _("✅ Modlog ping role is now set."), ephemeral=True
+            )
         else:
             await self.cog.config.guild(self.ctx.guild).modlog_ping_role.clear()
+            await interaction.followup.send(
+                _("⚠️ Modlog ping role removed.")
+            )
         await self._message.edit(embed=await self.get_embed(), view=self)
 
     @discord.ui.select(

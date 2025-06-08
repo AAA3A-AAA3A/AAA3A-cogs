@@ -1,0 +1,516 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: security\modules\join_gate.py:29
+msgid "Invalid regex pattern: {error}"
+msgstr ""
+
+#: security\modules\join_gate.py:138 security\modules\reports.py:56
+msgid "Disabled"
+msgstr ""
+
+#: security\modules\join_gate.py:138
+msgid "Join Gate is currently disabled."
+msgstr ""
+
+#: security\modules\join_gate.py:140
+msgid "No Enabled Options"
+msgstr ""
+
+#: security\modules\join_gate.py:140
+msgid "There are no Join Gate option enabled."
+msgstr ""
+
+#: security\modules\join_gate.py:160 security\modules\lockdown.py:113
+#: security\modules\protected_roles.py:37
+msgid "Missing Permissions"
+msgstr ""
+
+#: security\modules\join_gate.py:161 security\modules\lockdown.py:114
+msgid "I need the {permissions} permission{s} to function properly."
+msgstr ""
+
+#: security\modules\join_gate.py:168 security\modules\lockdown.py:121
+#: security\modules\protected_roles.py:40 security\modules\reports.py:59
+msgid "Enabled"
+msgstr ""
+
+#: security\modules\join_gate.py:168
+msgid "Join Gate is enabled and configured correctly."
+msgstr ""
+
+#: security\modules\join_gate.py:173
+msgid "Security — {emoji} Join Gate {status}"
+msgstr ""
+
+#: security\modules\join_gate.py:176
+msgid ""
+"This module allows you to manage Join Gate options to protect your server "
+"from unwanted members/bots."
+msgstr ""
+
+#: security\modules\join_gate.py:193
+msgid ""
+"{description}\n"
+"**Enabled:** {enabled}\n"
+"**Action:** {action}"
+msgstr ""
+
+#: security\modules\join_gate.py:208
+msgid "Configure Join Gate Options"
+msgstr ""
+
+#: security\modules\join_gate.py:266
+msgid "**Join Gate** - Triggered by {option}."
+msgstr ""
+
+#: security\modules\join_gate.py:267
+msgid "{member.mention} ({member}) joined the server."
+msgstr ""
+
+#: security\modules\join_gate.py:293
+msgid "Join Gate - {option}"
+msgstr ""
+
+#: security\modules\join_gate.py:298
+msgid "Enabled:"
+msgstr ""
+
+#: security\modules\join_gate.py:305
+msgid "Action ({actions}):"
+msgstr ""
+
+#: security\modules\join_gate.py:332
+msgid "Invalid action: {action}. Possible actions are: {actions}"
+msgstr ""
+
+#: security\modules\join_gate.py:344
+msgid "Invalid parameter value: {error}"
+msgstr ""
+
+#: security\modules\lockdown.py:27
+msgid ""
+"Prevent members from sending messages in all channels or specific channels."
+msgstr ""
+
+#: security\modules\lockdown.py:35
+msgid "Prevent members from adding or removing roles to/from members."
+msgstr ""
+
+#: security\modules\lockdown.py:41
+msgid "Prevent members from creating new invites."
+msgstr ""
+
+#: security\modules\lockdown.py:47
+msgid "Kick new members who joined while the server is in lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:53
+msgid "Ban new members who joined while the server is in lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:59
+msgid "Quarantine all members with dangerous permissions."
+msgstr ""
+
+#: security\modules\lockdown.py:98
+msgid "No Enabled Modes"
+msgstr ""
+
+#: security\modules\lockdown.py:98
+msgid "There are no lockdown modes enabled."
+msgstr ""
+
+#: security\modules\lockdown.py:121
+msgid "Lockdown is enabled and configured correctly."
+msgstr ""
+
+#: security\modules\lockdown.py:126
+msgid "Security — {emoji} Lockdown {status}"
+msgstr ""
+
+#: security\modules\lockdown.py:129
+msgid ""
+"This module allows you to manage lockdown modes to protect your server "
+"during raids or emergencies. Members who try to bypass these modes several "
+"times after a warning will be quarantined, if the bot has the permission to "
+"do so."
+msgstr ""
+
+#: security\modules\lockdown.py:141
+msgid ""
+"{description}\n"
+"**Enabled:** {enabled}"
+msgstr ""
+
+#: security\modules\lockdown.py:151
+msgid "Lockdown Modes"
+msgstr ""
+
+#: security\modules\lockdown.py:187
+msgid "⚠️ Are you sure you want to enable **{mode}** mode?"
+msgstr ""
+
+#: security\modules\lockdown.py:219
+msgid ""
+"**Lockdown** - Quarantined for having dangerous permissions during lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:223
+msgid "{member.mention} ({member}) has dangerous permissions during lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:243
+msgid ""
+"**Lockdown** - Unquarantined after disabling dangerous permissions lockdown "
+"mode."
+msgstr ""
+
+#: security\modules\lockdown.py:254
+msgid "✅ **{mode}** mode has been {status}."
+msgstr ""
+
+#: security\modules\lockdown.py:256
+msgid "enabled"
+msgstr ""
+
+#: security\modules\lockdown.py:256
+msgid "disabled"
+msgstr ""
+
+#: security\modules\lockdown.py:266
+msgid "Specific Channels"
+msgstr ""
+
+#: security\modules\lockdown.py:284
+msgid "✅ Specific channels have been updated."
+msgstr ""
+
+#: security\modules\lockdown.py:311 security\modules\lockdown.py:359
+#: security\modules\lockdown.py:442
+msgid "{emoji} Lockdown Warning"
+msgstr ""
+
+#: security\modules\lockdown.py:312
+msgid ""
+"A lockdown is currently active in this server. You are not allowed to send "
+"messages in any channel. **Please do not attempt to bypass this "
+"restriction.**"
+msgstr ""
+
+#: security\modules\lockdown.py:319
+msgid ""
+"{author.mention} ({author}) sent a message in {channel.mention} during "
+"lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:329 security\modules\lockdown.py:464
+msgid "**Lockdown** - Several actions during lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:350
+msgid "Security Lockdown: Role change during lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:362
+msgid ""
+"A lockdown is currently active in this server. You are not allowed to change"
+" roles of members. **Please do not attempt to bypass this restriction.**"
+msgstr ""
+
+#: security\modules\lockdown.py:371
+msgid ""
+"Member {member.mention} [{member}] tried to {action} to/from the member "
+"{quarantined_member.mention} [{quarantined_member}] during lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:379
+msgid "add the role{s} {roles}"
+msgstr ""
+
+#: security\modules\lockdown.py:404
+msgid "remove the role{s} {roles}"
+msgstr ""
+
+#: security\modules\lockdown.py:433
+msgid "Security Lockdown: Invite created during lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:445
+msgid ""
+"A lockdown is currently active in this server. You are not allowed to create"
+" invites. **Please do not attempt to bypass this restriction.**"
+msgstr ""
+
+#: security\modules\lockdown.py:454
+msgid "{user.mention} ({user}) created an invite during lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:475 security\modules\lockdown.py:487
+msgid "Security Lockdown: New member joined during lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:479
+msgid "**Lockdown** - Kicked for joining during lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:481 security\modules\lockdown.py:493
+msgid "{member.mention} ({member}) joined the server during lockdown."
+msgstr ""
+
+#: security\modules\lockdown.py:491
+msgid "**Lockdown** - Banned for joining during lockdown."
+msgstr ""
+
+#: security\modules\protected_roles.py:33
+msgid "No Protected Roles"
+msgstr ""
+
+#: security\modules\protected_roles.py:33
+msgid "There are no protected roles configured."
+msgstr ""
+
+#: security\modules\protected_roles.py:38
+msgid "I need the `Manage Roles` permission to manage protected roles."
+msgstr ""
+
+#: security\modules\protected_roles.py:40
+msgid "Protected roles are enabled and configured."
+msgstr ""
+
+#: security\modules\protected_roles.py:46
+msgid "Security — {emoji} Protected Roles ({count}/25) {status}"
+msgstr ""
+
+#: security\modules\protected_roles.py:49
+msgid ""
+"ℹ*If someone tries to add one of these roles to an unwhitelisted member, it "
+"will be removed automatically and the author will be quarantined. If a "
+"trusted admin does this, the member will be whitelisted instead.*\n"
+msgstr ""
+
+#: security\modules\protected_roles.py:59
+msgid ""
+"\n"
+"**•** {role.mention} (`{role.name}`) - {count} whitelisted member{s}"
+msgstr ""
+
+#: security\modules\protected_roles.py:69
+msgid "Add Protected Role."
+msgstr ""
+
+#: security\modules\protected_roles.py:77
+msgid "This role is already protected."
+msgstr ""
+
+#: security\modules\protected_roles.py:82
+msgid "This role can't be protected because it is not assignable."
+msgstr ""
+
+#: security\modules\protected_roles.py:88
+msgid "Protected role {role.mention} (`{role.name}`) added."
+msgstr ""
+
+#: security\modules\protected_roles.py:97
+msgid "Manage Protected Role."
+msgstr ""
+
+#: security\modules\protected_roles.py:141
+msgid "Protected Role `{role.name}` - {count} Whitelisted Members"
+msgstr ""
+
+#: security\modules\protected_roles.py:152
+msgid "**•** {member_id} (unknown)"
+msgstr ""
+
+#: security\modules\protected_roles.py:156
+msgid "No whitelisted members."
+msgstr ""
+
+#: security\modules\protected_roles.py:191
+msgid "Protected role removal by Security due to unauthorized addition."
+msgstr ""
+
+#: security\modules\protected_roles.py:199
+msgid "Unauthorized addition of protected role."
+msgstr ""
+
+#: security\modules\protected_roles.py:201
+msgid ""
+"Added the protected role {role.mention} (`{role.name}`) to "
+"{entry.target.mention} (`{entry.target}`) without permission."
+msgstr ""
+
+#: security\modules\protected_roles.py:209
+msgid "Protected role added without permission."
+msgstr ""
+
+#: security\modules\protected_roles.py:211
+msgid ""
+"The protected role {role.mention} (`{role.name}`) was added to them by "
+"{entry.user.mention} (`{entry.user}`) without permission."
+msgstr ""
+
+#: security\modules\protected_roles.py:228
+msgid "Select members to add/remove from whitelist..."
+msgstr ""
+
+#: security\modules\protected_roles.py:261
+msgid "✅ Added to protected role's whitelist: {members}"
+msgstr ""
+
+#: security\modules\protected_roles.py:270
+msgid "❌ Removed from protected role's whitelist: {members}"
+msgstr ""
+
+#: security\modules\protected_roles.py:279
+msgid "🛡️ Trusted admins and higher not added: {members}"
+msgstr ""
+
+#: security\modules\protected_roles.py:300
+msgid "Remove from Protected Roles"
+msgstr ""
+
+#: security\modules\protected_roles.py:314
+msgid "Protected role {role.mention} (`{role.name}`) removed."
+msgstr ""
+
+#: security\modules\reports.py:56 security\modules\reports.py:198
+msgid "Reports are currently disabled."
+msgstr ""
+
+#: security\modules\reports.py:58
+msgid "No Channel Set"
+msgstr ""
+
+#: security\modules\reports.py:58
+msgid "Please set a channel for reports."
+msgstr ""
+
+#: security\modules\reports.py:59
+msgid "Reports are enabled and configured."
+msgstr ""
+
+#: security\modules\reports.py:65
+msgid "Security — {emoji} Reports {status}"
+msgstr ""
+
+#: security\modules\reports.py:68
+msgid "Configure how users can report other members and messages to staff."
+msgstr ""
+
+#: security\modules\reports.py:87
+msgid "Anonymous Reporting:"
+msgstr ""
+
+#: security\modules\reports.py:92
+msgid "Staff Can Act on Reports:"
+msgstr ""
+
+#: security\modules\reports.py:97
+msgid "Channel:"
+msgstr ""
+
+#: security\modules\reports.py:100 security\modules\reports.py:107
+msgid "Not set"
+msgstr ""
+
+#: security\modules\reports.py:104
+msgid "Ping Role:"
+msgstr ""
+
+#: security\modules\reports.py:115
+msgid "Anonymous Reporting"
+msgstr ""
+
+#: security\modules\reports.py:132
+msgid "Staff Actions"
+msgstr ""
+
+#: security\modules\reports.py:149
+msgid "Select report channel"
+msgstr ""
+
+#: security\modules\reports.py:160
+msgid "Report channel updated."
+msgstr ""
+
+#: security\modules\reports.py:169
+msgid "Select ping role"
+msgstr ""
+
+#: security\modules\reports.py:180
+msgid "Ping role updated."
+msgstr ""
+
+#: security\modules\reports.py:205
+msgid "Report channel is not set."
+msgstr ""
+
+#: security\modules\reports.py:210
+msgid "You can't report a bot."
+msgstr ""
+
+#: security\modules\reports.py:214
+msgid "You can't report yourself."
+msgstr ""
+
+#: security\modules\reports.py:223
+msgid "You can't report this member."
+msgstr ""
+
+#: security\modules\reports.py:237
+msgid "Report"
+msgstr ""
+
+#: security\modules\reports.py:239
+msgid "Member"
+msgstr ""
+
+#: security\modules\reports.py:239
+msgid "Message"
+msgstr ""
+
+#: security\modules\reports.py:245 security\modules\reports.py:291
+msgid "Reason:"
+msgstr ""
+
+#: security\modules\reports.py:257
+msgid "{member.display_name} has been reported! {emoji}"
+msgstr ""
+
+#: security\modules\reports.py:264
+msgid "👤 **Member:** {member.mention} (`{member}`) {member_emojis}"
+msgstr ""
+
+#: security\modules\reports.py:272
+msgid ""
+"\n"
+"🛡️ **Reporter:** {reporter.mention} (`{reporter}`) {reporter_emojis}"
+msgstr ""
+
+#: security\modules\reports.py:279
+msgid ""
+"\n"
+"💬 **Message:** [Jump to Message]({jump_url})"
+msgstr ""
+
+#: security\modules\reports.py:285
+msgid ""
+"\n"
+"- **Attachments:**"
+msgstr ""
+
+#: security\modules\reports.py:319
+msgid "Your report has been submitted successfully. Thank you!"
+msgstr ""

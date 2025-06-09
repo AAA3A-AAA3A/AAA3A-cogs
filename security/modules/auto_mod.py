@@ -8,10 +8,10 @@ from redbot.core.utils.chat_formatting import humanize_list, text_to_file
 from redbot.core.utils.common_filters import INVITE_URL_RE, URL_RE
 
 import datetime
-import fuzzywuzzy
 import urllib
 import re
 from collections import defaultdict
+from fuzzywuzzy import StringMatcher
 try:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
 except ImportError:
@@ -29,7 +29,7 @@ EMOJIS = set(EMOJI_DATA) | {"🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "�
 def similarity_ratio_check(last_content: str, content: str, similarity_ratio: float) -> bool:
     if not last_content or not content:
         return False
-    return fuzzywuzzy.StringMatcher.ratio(last_content, content) >= similarity_ratio
+    return StringMatcher.ratio(last_content, content) >= similarity_ratio
 def get_emoji_count(content: str) -> int:
     return (
         sum(content.count(emoji) for emoji in EMOJIS)

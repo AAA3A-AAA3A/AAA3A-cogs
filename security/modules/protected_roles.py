@@ -58,7 +58,7 @@ class ProtectedRolesModule(Module):
             emoji=self.emoji, name=self.name, status=(await self.get_status(guild))[0], count=len(protected_roles)
         )
         description = _(
-            "ℹ*If someone tries to add one of these roles to an unwhitelisted member, it will be removed automatically and the author will be quarantined."
+            "*If someone tries to add one of these roles to an unwhitelisted member, it will be removed automatically and the author will be quarantined."
             " If a trusted admin does this, the member will be whitelisted instead.*\n"
         )
         status = await self.get_status(guild)
@@ -316,7 +316,7 @@ class RemoveButton(discord.ui.Button):
         self.initial_view: discord.ui.View = view
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        await self.module.config_value(self.guild).protected_roles.protected_roles.clear(
+        await self.module.config_value(self.guild).protected_roles.clear(
             str(self.role.id)
         )
         await interaction.message.delete()

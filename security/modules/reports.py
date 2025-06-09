@@ -65,7 +65,7 @@ class ReportsModule(Module):
         title = _("Security — {emoji} {name} {status}").format(
             emoji=self.emoji, name=self.name, status=(await self.get_status(guild))[0]
         )
-        description = _("Configure how users can report other members and messages to staff.")
+        description = _("Configure how members can report other members and messages to staff.")
         status = await self.get_status(guild)
         if status[0] == "⚠️":
             description += f"\n{status[0]} **{status[1]}**: {status[2]}\n"

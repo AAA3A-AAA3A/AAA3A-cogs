@@ -326,7 +326,7 @@ POSSIBLE_ACTIONS: typing.List[
 ]
 
 
-DANGEROUS_PERMISSIONS = [
+DANGEROUS_PERMISSIONS: typing.List[str] = [
     "administrator",
     "manage_guild",
     "manage_roles",

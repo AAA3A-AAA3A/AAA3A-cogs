@@ -114,8 +114,8 @@ class UnauthorizedTextChannelDeletionsModule(Module):
                 if (channel := guild.get_channel(channel_id)) is not None
             ],
         )
-        async def specific_channels_callback(interaction: discord.Interaction, selected_channels: typing.List[discord.TextChannel]):
-            config["specific_channels"] = [channel.id for channel in selected_channels]
+        async def specific_channels_callback(interaction: discord.Interaction):
+            config["specific_channels"] = [channel.id for channel in specific_channels_select.values]
             await self.config_value(guild).specific_channels.set(config["specific_channels"])
             await interaction.response.send_message(
                 _("✅ Specific channels have been updated."),

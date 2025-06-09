@@ -327,7 +327,7 @@ class SettingsView(discord.ui.View):
             timestamp=self.ctx.message.created_at,
         )
         embed.set_author(
-            name=_("Invoked by {author.display_name}").format(author=self.ctx.author),
+            name=_("Invoked by {author.display_name} ({author.id})").format(author=self.ctx.author),
             icon_url=self.ctx.author.display_avatar,
         )
         embed.set_footer(text=self.ctx.guild.name, icon_url=self.ctx.guild.icon)

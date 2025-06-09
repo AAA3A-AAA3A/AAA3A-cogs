@@ -20,6 +20,7 @@ class ProtectedRolesModule(Module):
         "enabled": True,
         "protected_roles": {},
     }
+    configurable_by_trusted_admins = False
 
     async def load(self) -> None:
         self.cog.bot.add_listener(self.on_audit_log_entry_create)
@@ -184,7 +185,7 @@ class ProtectedRolesModule(Module):
                 continue
             if entry.target.id in protected_roles[str(role.id)]:
                 continue
-            if await self.cog.is_immune(entry.target, "protected_roles"):
+            if await self.cog.is_whitelisted(entry.target, "protected_roles"):
                 continue
             if (
                 await self.cog.is_whitelisted(entry.user, "protected_roles")

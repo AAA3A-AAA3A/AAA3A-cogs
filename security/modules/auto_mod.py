@@ -1022,7 +1022,7 @@ class ConfigureFilterModal(discord.ui.Modal):
         self.filter = filter
         self.filter_config = filter_config
         super().__init__(
-            title=f"{self.filter['emoji']} {self.filter['name']}"{:45},
+            title=f"{self.filter['emoji']} {self.filter['name']}"[:45],
         )
         self.enabled: discord.ui.TextInput = discord.ui.TextInput(
             label=_("Enabled:"),

@@ -300,7 +300,7 @@ AUTO_MOD_FILTERS: typing.Dict[str, typing.Dict[typing.Literal["name", "emoji", "
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"] * len(
                         re.findall(
-                            r"\*?\[.*?\]\(.*?\)|\*.*?\[.*?\]\(.*?\)|\[.*?\]\(.*?\)\*|\[.*?\]\(.*?\)|\*%64%69%73%63%6f%72%64%2e%67%67\*",
+                            rf"\[{URL_RE.pattern}\]\({URL_RE.pattern}\)",
                             message.content,
                         )
                     )

@@ -210,7 +210,7 @@ class ProtectedRolesModule(Module):
                 logs=[
                     _(
                         "Added the protected role {role.mention} (`{role.name}`) to {entry.target.mention} (`{entry.target}`) without permission."
-                    ).format(role=role, entry=entry.target)
+                    ).format(role=role, entry=entry)
                     for role in to_remove
                 ],
             )

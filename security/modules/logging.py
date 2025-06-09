@@ -950,6 +950,7 @@ class ConfigureEventCategoryView(discord.ui.View):
                 category_name=LOGGING_EVENTS[self.category]["name"],
                 channel=channel,
             ),
+            ephemeral=True,
         )
         await self._message.edit(
             embed=await self.get_embed(),

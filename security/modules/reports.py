@@ -282,7 +282,7 @@ class ReasonModal(discord.ui.Modal):
                 emoji=Emojis.CHANNEL.value,
                 channel=self.target.channel,
             )
-            embed.description += _("\n{emoji} **Message:** [Jump to Message]({jump_url})").format(
+            embed.description += _("\n{emoji} **Message:** {jump_url}").format(
                 emoji=Emojis.MESSAGE.value, jump_url=self.target.jump_url
             )
             if self.target.content:

@@ -138,8 +138,8 @@ class UnauthorizedTextChannelDeletionsModule(Module):
             return
         if config["specific_channels"] and channel.id not in config["specific_channels"]:
             return
-        # if await self.cog.is_trusted_admin_or_higher(responsible):
-        #     return
+        if await self.cog.is_trusted_admin_or_higher(responsible):
+            return
         messages = (
             self.messages_cache[channel]
             or sorted(

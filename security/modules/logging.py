@@ -497,7 +497,7 @@ class LoggingModule(Module):
                     thread=target,
                 )
             elif isinstance(target, discord.Message):
-                embed.description += "\n" + _("{emoji} **Target Message:** [`Jump to Message`]({message.jump_url})").format(
+                embed.description += "\n" + _("{emoji} **Target Message:** {message.jump_url}").format(
                     emoji=Emojis.MESSAGE.value,
                     message=target
                 )

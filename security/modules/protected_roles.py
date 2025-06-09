@@ -316,7 +316,7 @@ class RemoveButton(discord.ui.Button):
         self.initial_view: discord.ui.View = view
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        await self.module.config_value(self.guild).protected_roles.clear(
+        await self.module.config_value(self.guild).protected_roles.clear_raw(
             str(self.role.id)
         )
         await interaction.message.delete()

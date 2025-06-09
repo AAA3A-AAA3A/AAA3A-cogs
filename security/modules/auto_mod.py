@@ -618,7 +618,7 @@ class AutoModModule(Module):
                     whitelist_type = "auto_mod_spam"
                 elif category == "anti_advertising":
                     whitelist_type = "auto_mod_advertising"
-                elif filter["value"] in ("user_mentions", "role_mentions"):
+                elif filter["value"] in ("member_mentions", "role_mentions"):
                     whitelist_type = "auto_mod_mentions"
                 elif filter["value"] == "everyone_here_mentions":
                     whitelist_type = "auto_mod_everyone_here_mentions"

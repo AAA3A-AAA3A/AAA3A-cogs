@@ -750,15 +750,15 @@ class LoggingModule(Module):
             return f"`{value}`"
         added_permissions, removed_permissions = [], []
         if entry.action != discord.AuditLogAction.member_role_update:
-            entry_before = any(getattr(entry.before, key) for key in entry.before.__dict__.keys())
-            entry_after = any(getattr(entry.after, key) for key in entry.after.__dict__.keys())
+            entry_before = any(entry.before.__dict__)
+            entry_after = any(entry.after.__dict__)
             if not entry_before and entry_after:
                 embed.add_field(
                     name=_("Settings:"),
                     value="\n".join(
                         f"- **{key.replace('_', ' ').title()}**: {get_formatting(value)}"
                         for key, value in entry.after.__dict__.items()
-                        if key == "colour"
+                        if key != "colour"
                     ),
                 )
             elif entry_before and not entry_after:
@@ -767,7 +767,7 @@ class LoggingModule(Module):
                     value="\n".join(
                         f"- **{key.replace('_', ' ').title()}**: {get_formatting(value)}"
                         for key, value in entry.before.__dict__.items()
-                        if key == "colour"
+                        if key != "colour"
                     ),
                 )
             elif entry_before and entry_after:
@@ -776,7 +776,7 @@ class LoggingModule(Module):
                     value="\n".join(
                         f"- **{key.replace('_', ' ').title()}**: {get_formatting(before)} ➡️ {get_formatting(after)}"
                         for key, after in entry.after.__dict__.items()
-                        if hasattr(entry.before, key) and after != (before := getattr(entry.before, key)) and key == "colour"
+                        if hasattr(entry.before, key) and after != (before := getattr(entry.before, key)) and key != "colour"
                     ),
                 )
             if hasattr(entry.after, "permissions"):

@@ -278,6 +278,10 @@ class ReasonModal(discord.ui.Modal):
                 reporter_emojis=await self.module.cog.get_member_emojis(interaction.user),
             )
         if isinstance(self.target, discord.Message):
+            embed.description += _("\n{emoji} **Channel:** {channel.mention} (`{channel}`)").format(
+                emoji=Emojis.CHANNEL.value,
+                channel=self.target.channel,
+            )
             embed.description += _("\n{emoji} **Message:** [Jump to Message]({jump_url})").format(
                 emoji=Emojis.MESSAGE.value, jump_url=self.target.jump_url
             )

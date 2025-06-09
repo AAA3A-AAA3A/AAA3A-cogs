@@ -258,13 +258,13 @@ AUTO_MOD_FILTERS: typing.Dict[str, typing.Dict[typing.Literal["name", "emoji", "
                     filter_config["added_heat"] * (
                         len(
                             re.findall(
-                                r"https?://(?!discord(?:\.com/gifts|\.gift))([a-zA-Z0-9-]+\.)*discord[a-zA-Z0-9-]*gift[a-zA-Z0-9-]*\.[a-z]{2,}(?:/\S*)?",
-                                message.content.lower(),
+                                re.compile(r"https?://(?!discord(?:\.com/gifts|\.gift))([a-zA-Z0-9-]+\.)*discord[a-zA-Z0-9-]*gift[a-zA-Z0-9-]*\.[a-z]{2,}(?:/\S*)?", re.IGNORECASE),
+                                message.content,
                             )
                         ) + len(
                             re.findall(
-                                r"https?://(?!www\.steamcommunity\.com/gift)(?:[a-zA-Z0-9-]+\.)*steam[a-zA-Z0-9-]*gift[a-zA-Z0-9-]*\.[a-z]{2,}(?:/\S*)?",
-                                message.content.lower(),
+                                re.compile(r"https?://(?!www\.steamcommunity\.com/gift)(?:[a-zA-Z0-9-]+\.)*steam[a-zA-Z0-9-]*gift[a-zA-Z0-9-]*\.[a-z]{2,}(?:/\S*)?", re.IGNORECASE),
+                                message.content,
                             )
                         )
                     )
@@ -337,14 +337,12 @@ AUTO_MOD_FILTERS: typing.Dict[str, typing.Dict[typing.Literal["name", "emoji", "
                 "name": "Premade Bad Word Lists",
                 "emoji": Emojis.WORD_LISTS.value,
                 "value": "premade_bad_word_lists",
-                "default_added_heat": 50,
+                "default_added_heat": 100,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"] * len(
                         [
-                            word for word in re.findall(
-                                r"\w+(?:\s\w+)*", message.content
-                            )
-                            if word.lower() in BAD_WORDS
+                            re.compile(rf"\b{bad_word}\b", re.IGNORECASE).search(message.content)
+                            for bad_word in BAD_WORDS
                         ]
                     )
                 ),

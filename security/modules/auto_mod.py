@@ -339,9 +339,9 @@ AUTO_MOD_FILTERS: typing.Dict[str, typing.Dict[typing.Literal["name", "emoji", "
                 "value": "premade_bad_word_lists",
                 "default_added_heat": 100,
                 "check": lambda message, filter_config: (
-                    filter_config["added_heat"] * len(
+                    filter_config["added_heat"] * sum(
                         [
-                            re.compile(rf"\b{bad_word}\b", re.IGNORECASE).search(message.content)
+                            len(re.compile(rf"\b{bad_word}\b", re.IGNORECASE).findall(message.content))
                             for bad_word in BAD_WORDS
                         ]
                     )

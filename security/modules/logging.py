@@ -758,6 +758,7 @@ class LoggingModule(Module):
                     value="\n".join(
                         f"- **{key.replace('_', ' ').title()}**: {get_formatting(value)}"
                         for key, value in entry.after.__dict__.items()
+                        if key == "colour"
                     ),
                 )
             elif entry_before and not entry_after:
@@ -766,6 +767,7 @@ class LoggingModule(Module):
                     value="\n".join(
                         f"- **{key.replace('_', ' ').title()}**: {get_formatting(value)}"
                         for key, value in entry.before.__dict__.items()
+                        if key == "colour"
                     ),
                 )
             elif entry_before and entry_after:
@@ -774,7 +776,7 @@ class LoggingModule(Module):
                     value="\n".join(
                         f"- **{key.replace('_', ' ').title()}**: {get_formatting(before)} ➡️ {get_formatting(after)}"
                         for key, after in entry.after.__dict__.items()
-                        if hasattr(entry.before, key) and after != (before := getattr(entry.before, key))
+                        if hasattr(entry.before, key) and after != (before := getattr(entry.before, key)) and key == "colour"
                     ),
                 )
             if hasattr(entry.after, "permissions"):

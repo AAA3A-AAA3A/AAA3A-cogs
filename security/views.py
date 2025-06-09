@@ -73,22 +73,12 @@ class WhitelistView(discord.ui.View):
             whitelist_type
             for whitelist_type in WHITELIST_TYPES
             if (
-                isinstance(_object, discord.Member)
+                isinstance(_object, (discord.Member, discord.Role))
                 or (isinstance(_object, (discord.TextChannel, discord.VoiceChannel, discord.Webhook)) and whitelist_type["channels"])
                 or (isinstance(_object, discord.CategoryChannel) and whitelist_type["categories"])
                 or (isinstance(_object, discord.Webhook) and whitelist_type["webhooks"])
             )
         ]
-        for whitelist_type in self.whitelist_types:
-            self.select.options.append(
-                discord.SelectOption(
-                    label=whitelist_type["name"],
-                    emoji=whitelist_type["emoji"],
-                    description=whitelist_type["description"],
-                    value=whitelist_type["value"],
-                )
-            )
-        self.select.max_values = len(self.select.options)
         self.remove_item(self.protected_roles_whitelist_select)
         if isinstance(self._object, discord.Member):
             embed.description = _(
@@ -156,6 +146,17 @@ class WhitelistView(discord.ui.View):
                 ),
             )
         self.whitelist = await self.config_value()
+        for whitelist_type in self.whitelist_types:
+            self.select.options.append(
+                discord.SelectOption(
+                    label=whitelist_type["name"],
+                    emoji=whitelist_type["emoji"],
+                    description=whitelist_type["description"],
+                    value=whitelist_type["value"],
+                    default=self.whitelist[whitelist_type["value"]],
+                )
+            )
+        self.select.max_values = len(self.select.options)
         self._message: discord.Message = await ctx.send(embed=embed, view=self)
         self.cog.views[self._message] = self
         if not await self.wait():

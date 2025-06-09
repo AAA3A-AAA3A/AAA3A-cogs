@@ -948,7 +948,7 @@ class ConfigureEventCategoryView(discord.ui.View):
         await interaction.response.send_message(
             _("✅ All {category_name} events will now be logged in {channel.mention}.").format(
                 category_name=LOGGING_EVENTS[self.category]["name"],
-                channel=channel.mention,
+                channel=channel,
             ),
         )
         await self._message.edit(
@@ -1071,7 +1071,7 @@ class ConfigureEventView(discord.ui.View):
         await interaction.response.send_message(
             _("✅ {event_name} events will now be logged in {channel.mention}.").format(
                 event_name=self.event["name"],
-                channel=channel.mention,
+                channel=channel,
             ),
             ephemeral=True,
         )

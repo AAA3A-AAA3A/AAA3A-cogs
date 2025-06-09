@@ -202,7 +202,7 @@ class JoinGateModule(Module):
 
         components = [ToggleModuleButton(self, guild, view, config["enabled"])]
         configure_option_select = discord.ui.Select(
-            placeholder=_("Configure Join Gate Options"),
+            placeholder=_("Configure Option"),
             options=[
                 discord.SelectOption(
                     emoji=option["emoji"], label=option["name"], value=option["value"]

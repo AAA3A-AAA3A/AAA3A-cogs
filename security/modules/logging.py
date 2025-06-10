@@ -755,8 +755,8 @@ class LoggingModule(Module):
             return f"`{value}`"
         added_permissions, removed_permissions = [], []
         if entry.action != discord.AuditLogAction.member_role_update:
-            entry_before = any(entry.before.__dict__)
-            entry_after = any(entry.after.__dict__)
+            entry_before = any(value is not None for value in entry.before.__dict__.values())
+            entry_after = any(value is not None for value in entry.after.__dict__.values())
             if not entry_before and entry_after:
                 embed.add_field(
                     name=_("Settings:"),

@@ -7,6 +7,7 @@ from redbot.core.data_manager import bundled_data_path
 from redbot.core.utils.chat_formatting import humanize_list, text_to_file
 from redbot.core.utils.common_filters import INVITE_URL_RE, URL_RE
 
+import asyncio
 import datetime
 import urllib
 import re
@@ -431,6 +432,7 @@ class AutoModModule(Module):
         self.heats_cache: typing.Dict[discord.Guild, typing.Dict[discord.Member, typing.List[typing.Tuple[datetime.datetime, str, float, discord.Message]]]] = defaultdict(lambda: defaultdict(list))
         self.strikes_cache: typing.Dict[discord.Guild, typing.Dict[discord.Member, int]] = defaultdict(lambda: defaultdict(lambda: 0))
         self.previous_messages_cache: typing.Dict[discord.Guild, typing.Dict[discord.Member, discord.Message]] = defaultdict(lambda: defaultdict(lambda: None))
+        self.strikes_locks: typing.Dict[discord.Guild, typing.Dict[discord.Member, asyncio.Lock]] = defaultdict(lambda: defaultdict(asyncio.Lock))
 
     async def load(self) -> None:
         data_path = bundled_data_path(self.cog)
@@ -639,6 +641,12 @@ class AutoModModule(Module):
                             message,
                         )
                     )
+        number = self.strikes_cache[message.guild][message.author]
+        lock = self.strikes_locks[message.guild][message.author]
+        await lock.acquire()
+        if self.strikes_cache[message.guild][message.author] > number:
+            lock.release()
+            return
         await self.update_heats_cache(message.guild, message.author)
         total_heat = sum(heat[2] for heat in heats)
         if total_heat >= config["heats"]["max"]:
@@ -667,6 +675,7 @@ class AutoModModule(Module):
                     await message.delete()
                 except discord.HTTPException:
                     pass
+            self.strikes_cache[message.guild][message.author] += 1
             reason = filter["reason"]()
             audit_log_reason = f"Security's Auto Mod: {filter['name']}."
             filter_config = config["filters"][category_value][filter["value"]]
@@ -677,7 +686,6 @@ class AutoModModule(Module):
                     file=file,
                 )
             elif (action := filter_config["action"]) is None:
-                self.strikes_cache[message.guild][message.author] += 1
                 if self.strikes_cache[message.guild][message.author] < 3:
                     duration = await DurationConverter.convert(
                         None, config["strike_durations"]["regular"]
@@ -740,6 +748,7 @@ class AutoModModule(Module):
                         member=message.author,
                         reason=reason,
                     )
+        lock.release()
 
 
 class ConfigureHeatModal(discord.ui.Modal):

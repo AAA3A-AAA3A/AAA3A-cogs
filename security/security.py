@@ -564,7 +564,8 @@ class Security(Cog):
             await current_ctx.channel.send(embed=embed)
         view: ActionsView = ActionsView(self, member, context_message=context_message)
         await view.populate(
-            include_actions=action not in ("unquarantine", "untimeout", "unmute")
+            include_actions=action not in ("unquarantine", "untimeout", "unmute"),
+            action=action,
         )
         view._message = await self.send_in_modlog_channel(
             member.guild,

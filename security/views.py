@@ -805,18 +805,21 @@ class ActionsView(discord.ui.View):
         except discord.HTTPException:
             pass
 
-    async def populate(self, include_actions: bool = True) -> None:
+    async def populate(self, include_actions: bool = True, action: typing.Optional[str] = None) -> None:
         self.clear_items()
         if include_actions and self.member.guild.get_member(self.member.id) is not None:
-            self.is_quarantined = await self.cog.is_quarantined(self.member)
-            self.is_timed_out = self.member.is_timed_out()
+            self.is_quarantined = await self.cog.is_quarantined(self.member) or (action is not None and action == "quarantine")
+            self.is_timed_out = self.member.is_timed_out() or (action is not None and action == "timeout")
             mute_check = (Mutes := self.cog.bot.get_cog("Mutes")) is not None and hasattr(
                 Mutes, "mute_user"
             )
             self.is_muted = (
                 mute_check
                 and hasattr(self.member, "_server_mutes")
-                and self.member.id in Mutes._server_mutes[self.member.guild.id]
+                and (
+                    self.member.id in Mutes._server_mutes[self.member.guild.id]
+                    or (action is not None and action == "mute")
+                )
             )
             for action in POSSIBLE_ACTIONS:
                 unquarantine = action["value"] == "quarantine" and self.is_quarantined

@@ -655,10 +655,6 @@ class AutoModModule(Module):
             )
             if config["heats"]["reset_after_punishment"]:
                 heats.clear()
-            try:
-                await message.delete()
-            except discord.HTTPException:
-                pass
             filter_value = sorted(
                 {heat[1]: sum(h[2] for h in heats if h[1] == heat[1]) for heat in heats}.items(),
                 key=lambda item: item[1],
@@ -666,6 +662,11 @@ class AutoModModule(Module):
             category_value, filter = next(
                 ((category, f) for category, data in AUTO_MOD_FILTERS.items() for f in data["filters"] if f["value"] == filter_value[0]),
             )
+            if config["filters"][category_value][filter["value"]].get("added_heat", 0) >= 50:
+                try:
+                    await message.delete()
+                except discord.HTTPException:
+                    pass
             reason = filter["reason"]()
             audit_log_reason = f"Security's Auto Mod: {filter['name']}."
             filter_config = config["filters"][category_value][filter["value"]]

@@ -174,7 +174,8 @@ class ExportChannel(Cog):
             )
 
         file = discord.File(
-            io.BytesIO(transcript.encode(encoding="utf-8")), filename=f"transcript-{channel.id}.{mode}"
+            io.BytesIO(transcript.encode(encoding="utf-8")),
+            filename=f"transcript-{channel.id}.{mode}",
         )
         return count_messages, messages, file
 

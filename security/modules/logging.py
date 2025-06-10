@@ -471,6 +471,11 @@ class LoggingModule(Module):
                     (target.icon if isinstance(target, discord.Role) else None)
                 ),
             )
+            if isinstance(target, discord.Object) and target.type in (discord.Member, discord.User):
+                try:
+                    target = await self.cog.bot.fetch_user(target.id)
+                except discord.HTTPException:
+                    pass
             if isinstance(target, discord.Member):
                 embed.description += "\n" + _(
                     "{emoji} **Target Member:** {member.mention} (`{member}`) {member_emojis} - `{member.id}`"

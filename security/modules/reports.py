@@ -278,7 +278,9 @@ class ReasonModal(discord.ui.Modal):
                 reporter_emojis=await self.module.cog.get_member_emojis(interaction.user),
             )
         if isinstance(self.target, discord.Message):
-            embed.description += _("\n{emoji} **Channel:** {channel.mention} (`{channel}`)").format(
+            embed.description += _(
+                "\n{emoji} **Channel:** {channel.mention} (`{channel}`)"
+            ).format(
                 emoji=Emojis.CHANNEL.value,
                 channel=self.target.channel,
             )
@@ -288,7 +290,9 @@ class ReasonModal(discord.ui.Modal):
             if self.target.content:
                 embed.description += f"\n{box(self.target.content)}"
             if self.target.attachments:
-                embed.description += _("\n{emoji} **Attachments:**").format(emoji=Emojis.ATTACHMENTS.value) + "\n".join(
+                embed.description += _("\n{emoji} **Attachments:**").format(
+                    emoji=Emojis.ATTACHMENTS.value
+                ) + "\n".join(
                     f" - [{attachment.filename}]({attachment.url})"
                     for attachment in self.target.attachments
                 )

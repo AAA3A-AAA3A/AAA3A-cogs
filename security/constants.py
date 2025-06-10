@@ -3,7 +3,6 @@ import typing  # isort:skip
 
 from enum import Enum
 
-
 # delete/dismiss in Reports
 
 
@@ -103,7 +102,9 @@ class Emojis(Enum):
 
 WHITELIST_TYPES: typing.List[
     typing.Dict[
-        typing.Literal["name", "emoji", "description", "value", "channels", "categories", "staff_allowed"],
+        typing.Literal[
+            "name", "emoji", "description", "value", "channels", "categories", "staff_allowed"
+        ],
         typing.Union[str, bool],
     ]
 ] = [

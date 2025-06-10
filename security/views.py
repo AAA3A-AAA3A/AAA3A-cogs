@@ -74,7 +74,12 @@ class WhitelistView(discord.ui.View):
             for whitelist_type in WHITELIST_TYPES
             if (
                 isinstance(_object, (discord.Member, discord.Role))
-                or (isinstance(_object, (discord.TextChannel, discord.VoiceChannel, discord.Webhook)) and whitelist_type["channels"])
+                or (
+                    isinstance(
+                        _object, (discord.TextChannel, discord.VoiceChannel, discord.Webhook)
+                    )
+                    and whitelist_type["channels"]
+                )
                 or (isinstance(_object, discord.CategoryChannel) and whitelist_type["categories"])
                 or (isinstance(_object, discord.Webhook) and whitelist_type["webhooks"])
             )
@@ -116,7 +121,9 @@ class WhitelistView(discord.ui.View):
                 )
                 self.add_item(self.protected_roles_whitelist_select)
         elif isinstance(self._object, discord.Role):
-            embed.description = _("{emoji} **Target:** {role.mention} (`{role}`)").format(emoji=Emojis.ROLE.value, role=_object)
+            embed.description = _("{emoji} **Target:** {role.mention} (`{role}`)").format(
+                emoji=Emojis.ROLE.value, role=_object
+            )
             self.config_value = self.cog.config.role(self._object).whitelist
         elif isinstance(self._object, discord.Webhook):
             embed.description = _("{emoji} **Target:** {webhook.name} (`{webhook.id}`)").format(
@@ -130,7 +137,9 @@ class WhitelistView(discord.ui.View):
                 channel=_object,
             )
             self.config_value = self.cog.config.channel(self._object).whitelist
-        if isinstance(self._object, discord.Member) and await self.cog.is_moderator_or_higher(self._object):
+        if isinstance(self._object, discord.Member) and await self.cog.is_moderator_or_higher(
+            self._object
+        ):
             embed.add_field(
                 name="\u200B",
                 value=_(
@@ -328,7 +337,9 @@ class SettingsView(discord.ui.View):
             timestamp=self.ctx.message.created_at,
         )
         embed.set_author(
-            name=_("Invoked by {author.display_name} ({author.id})").format(author=self.ctx.author),
+            name=_("Invoked by {author.display_name} ({author.id})").format(
+                author=self.ctx.author
+            ),
             icon_url=self.ctx.author.display_avatar,
         )
         embed.set_footer(text=self.ctx.guild.name, icon_url=self.ctx.guild.icon)
@@ -437,7 +448,10 @@ class SettingsView(discord.ui.View):
             embed.add_field(
                 name=_("Extra Owners ({count}/5):").format(count=len(extra_owners)),
                 value="\n".join(
-                    [f"- {member.mention} (`{member}`) {await self.cog.get_member_emojis(member)}" for member in extra_owners]
+                    [
+                        f"- {member.mention} (`{member}`) {await self.cog.get_member_emojis(member)}"
+                        for member in extra_owners
+                    ]
                 )
                 + ("\n" if extra_owners else "")
                 + _(
@@ -448,7 +462,10 @@ class SettingsView(discord.ui.View):
             embed.add_field(
                 name=_("Trusted Admins ({count}/8):").format(count=len(trusted_admins)),
                 value="\n".join(
-                    [f"- {member.mention} (`{member}`) {await self.cog.get_member_emojis(member)}" for member in trusted_admins]
+                    [
+                        f"- {member.mention} (`{member}`) {await self.cog.get_member_emojis(member)}"
+                        for member in trusted_admins
+                    ]
                 )
                 + ("\n" if trusted_admins else "")
                 + _("⚙️ *They can change **most settings** of Security.*"),
@@ -526,7 +543,8 @@ class SettingsView(discord.ui.View):
             await self.cog.create_or_update_quarantine_role(self.ctx.guild)
         except RuntimeError as e:
             await interaction.followup.send(
-                _("⚠️ Failed to create quarantine role: {error}").format(error=str(e)), ephemeral=True
+                _("⚠️ Failed to create quarantine role: {error}").format(error=str(e)),
+                ephemeral=True,
             )
             return
         await interaction.followup.send(
@@ -543,7 +561,8 @@ class SettingsView(discord.ui.View):
             await self.cog.create_modlog_channel(self.ctx.guild)
         except RuntimeError as e:
             await interaction.followup.send(
-                _("⚠️ Failed to create modlog channel: {error}").format(error=str(e)), ephemeral=True
+                _("⚠️ Failed to create modlog channel: {error}").format(error=str(e)),
+                ephemeral=True,
             )
             return
         await interaction.followup.send(
@@ -596,11 +615,10 @@ class SettingsView(discord.ui.View):
         await interaction.response.defer(thinking=True, ephemeral=True)
         if select.values:
             modlog_channel = select.values[0]
-            permissions = interaction.guild.get_channel(modlog_channel.id).permissions_for(self.ctx.guild.me)
-            if not (
-                permissions.view_channel
-                and permissions.send_messages
-            ):
+            permissions = interaction.guild.get_channel(modlog_channel.id).permissions_for(
+                self.ctx.guild.me
+            )
+            if not (permissions.view_channel and permissions.send_messages):
                 await interaction.followup.send(
                     _(
                         "⚠️ The selected channel is not accessible by the bot. Please select a channel that the bot can access."
@@ -633,14 +651,10 @@ class SettingsView(discord.ui.View):
         await interaction.response.defer(ephemeral=True)
         if select.values:
             await self.cog.config.guild(self.ctx.guild).modlog_ping_role.set(select.values[0].id)
-            await interaction.followup.send(
-                _("✅ Modlog ping role is now set."), ephemeral=True
-            )
+            await interaction.followup.send(_("✅ Modlog ping role is now set."), ephemeral=True)
         else:
             await self.cog.config.guild(self.ctx.guild).modlog_ping_role.clear()
-            await interaction.followup.send(
-                _("⚠️ Modlog ping role removed.")
-            )
+            await interaction.followup.send(_("⚠️ Modlog ping role removed."))
         await self._message.edit(embed=await self.get_embed(), view=self)
 
     @discord.ui.select(
@@ -737,9 +751,7 @@ class SettingsView(discord.ui.View):
 
 
 class ToggleModuleButton(discord.ui.Button):
-    def __init__(
-        self, module, guild: discord.Guild, view: discord.ui.View, enabled: bool
-    ) -> None:
+    def __init__(self, module, guild: discord.Guild, view: discord.ui.View, enabled: bool) -> None:
         super().__init__(
             label=_("Disable") if enabled else _("Enable"),
             style=discord.ButtonStyle.danger if enabled else discord.ButtonStyle.success,
@@ -805,11 +817,17 @@ class ActionsView(discord.ui.View):
         except discord.HTTPException:
             pass
 
-    async def populate(self, include_actions: bool = True, action: typing.Optional[str] = None) -> None:
+    async def populate(
+        self, include_actions: bool = True, action: typing.Optional[str] = None
+    ) -> None:
         self.clear_items()
         if include_actions and self.member.guild.get_member(self.member.id) is not None:
-            self.is_quarantined = await self.cog.is_quarantined(self.member) or (action is not None and action == "quarantine")
-            self.is_timed_out = self.member.is_timed_out() or (action is not None and action == "timeout")
+            self.is_quarantined = await self.cog.is_quarantined(self.member) or (
+                action is not None and action == "quarantine"
+            )
+            self.is_timed_out = self.member.is_timed_out() or (
+                action is not None and action == "timeout"
+            )
             mute_check = (Mutes := self.cog.bot.get_cog("Mutes")) is not None and hasattr(
                 Mutes, "mute_user"
             )

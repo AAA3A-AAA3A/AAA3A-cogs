@@ -218,9 +218,9 @@ class Security(Cog):
             raise ValueError("Invalid whitelist type: `{whitelist_type}`.")
         _type = _object.__class__ if not isinstance(_object, discord.Object) else _object.type
         if (
-            (_type in (discord.TextChannel, discord.VoiceChannel) and not _whitelist_type["channels"])
-            or (_type is discord.CategoryChannel and not _whitelist_type["categories"])
-        ):
+            _type in (discord.TextChannel, discord.VoiceChannel)
+            and not _whitelist_type["channels"]
+        ) or (_type is discord.CategoryChannel and not _whitelist_type["categories"]):
             raise ValueError(
                 f"Whitelist type `{whitelist_type}` is not applicable to {_object.__class__.__name__}."
             )
@@ -235,21 +235,18 @@ class Security(Cog):
         elif _type is discord.Role:
             return await self.config.role(_object).whitelist.get_raw(whitelist_type)
         elif _type in (discord.TextChannel, discord.VoiceChannel):
-            return (
-                await self.config.channel(_object).whitelist.get_raw(whitelist_type)
-                or (
-                    _object.category is not None
-                    and await self.is_whitelisted(_object.category, whitelist_type)
-                )
+            return await self.config.channel(_object).whitelist.get_raw(whitelist_type) or (
+                _object.category is not None
+                and await self.is_whitelisted(_object.category, whitelist_type)
             )
         elif _type is discord.CategoryChannel:
             return await self.config.channel(_object).whitelist.get_raw(whitelist_type)
         elif _type is discord.Webhook:
-            return (
-                await self.config.custom("webhook", _object.id).whitelist.get_raw(
-                    whitelist_type
-                )
-                or (hasattr(_object, "channel") and await self.is_whitelisted(_object.channel, whitelist_type))
+            return await self.config.custom("webhook", _object.id).whitelist.get_raw(
+                whitelist_type
+            ) or (
+                hasattr(_object, "channel")
+                and await self.is_whitelisted(_object.channel, whitelist_type)
             )
 
     async def is_message_whitelisted(
@@ -331,7 +328,8 @@ class Security(Cog):
             member=member,
             issued_by=issued_by,
             reason=reason,
-            logs=logs, file=file,
+            logs=logs,
+            file=file,
             context_message=context_message or (current_ctx.message if current_ctx else None),
             current_ctx=current_ctx,
         )
@@ -444,7 +442,8 @@ class Security(Cog):
             member=member,
             issued_by=issued_by,
             reason=reason,
-            logs=logs, file=file,
+            logs=logs,
+            file=file,
             context_message=context_message or (current_ctx.message if current_ctx else None),
             current_ctx=current_ctx,
         )
@@ -501,7 +500,9 @@ class Security(Cog):
         )
         embed.set_thumbnail(url=member.display_avatar)
         embed.set_footer(text=member.guild.name, icon_url=member.guild.icon)
-        description = _("{emoji} **Member:** {member.mention} (`{member}`) {member_emojis}").format(
+        description = _(
+            "{emoji} **Member:** {member.mention} (`{member}`) {member_emojis}"
+        ).format(
             emoji=Emojis.MEMBER.value,
             member=member,
             member_emojis=await self.get_member_emojis(member),
@@ -515,24 +516,27 @@ class Security(Cog):
                 issued_by_emojis=await self.get_member_emojis(issued_by),
             )
         description += _("\n{emoji} **Reason:** *{reason}*").format(
-            emoji=Emojis.REASON.value,
-            reason=reason or _("No reason provided.")
+            emoji=Emojis.REASON.value, reason=reason or _("No reason provided.")
         )
         if logs:
-            description += f"\n{Emojis.LOGS.value} **Logs:**\n" + "\n".join(f"- {log}" for log in logs)
+            description += f"\n{Emojis.LOGS.value} **Logs:**\n" + "\n".join(
+                f"- {log}" for log in logs
+            )
         embed.description = description
         return embed
 
-    async def send_in_modlog_channel(self, guild: discord.Guild, **kwargs) -> discord.Message:
+    async def send_in_modlog_channel(
+        self, guild: discord.Guild, ping_role: bool = True, **kwargs
+    ) -> discord.Message:
         modlog_channel: discord.TextChannel = await self.create_modlog_channel(guild=guild)
         return await modlog_channel.send(
             (
                 modlog_ping_role.mention
                 if (
-                    (modlog_ping_role_id := await self.config.guild(guild).modlog_ping_role())
+                    ping_role
+                    and (modlog_ping_role_id := await self.config.guild(guild).modlog_ping_role())
                     is not None
-                    and (modlog_ping_role := guild.get_role(modlog_ping_role_id))
-                    is not None
+                    and (modlog_ping_role := guild.get_role(modlog_ping_role_id)) is not None
                 )
                 else None
             ),
@@ -562,14 +566,18 @@ class Security(Cog):
         )
         if current_ctx is not None:
             await current_ctx.channel.send(embed=embed)
+        unaction = action in ("unquarantine", "untimeout", "unmute")
         view: ActionsView = ActionsView(self, member, context_message=context_message)
         await view.populate(
-            include_actions=action not in ("unquarantine", "untimeout", "unmute"),
+            include_actions=not unaction,
             action=action,
         )
         view._message = await self.send_in_modlog_channel(
             member.guild,
-            embed=embed, file=file, view=view,
+            ping_role=not unaction,
+            embed=embed,
+            file=file,
+            view=view,
         )
         self.views[view._message] = view
         await modlog.create_case(
@@ -582,12 +590,12 @@ class Security(Cog):
         )
         if issued_by is None and not member.bot:
             embed.title = {
-                "quarantine": _("{member.display_name}, you have been quarantined! {emoji}").format(
-                    emoji=Emojis.QUARANTINE.value, member=member
-                ),
-                "unquarantine": _("{member.display_name}, you have been unquarantined! {emoji}").format(
-                    emoji=Emojis.UNQUARANTINE.value, member=member
-                ),
+                "quarantine": _(
+                    "{member.display_name}, you have been quarantined! {emoji}"
+                ).format(emoji=Emojis.QUARANTINE.value, member=member),
+                "unquarantine": _(
+                    "{member.display_name}, you have been unquarantined! {emoji}"
+                ).format(emoji=Emojis.UNQUARANTINE.value, member=member),
                 "timeout": _(
                     "{member.display_name}, you have been timed out for {duration}! {emoji}"
                 ).format(
@@ -598,7 +606,9 @@ class Security(Cog):
                 "untimeout": _("{member.display_name}, you have been untimed out! {emoji}").format(
                     emoji=Emojis.TIMEOUT.value, member=member
                 ),
-                "mute": _("{member.display_name}, you have been muted for {duration}! {emoji}").format(
+                "mute": _(
+                    "{member.display_name}, you have been muted for {duration}! {emoji}"
+                ).format(
                     emoji=Emojis.MUTE.value,
                     member=member,
                     duration=CogsUtils.get_interval_string(duration),
@@ -812,22 +822,26 @@ class Security(Cog):
         )
 
     @commands.Cog.listener()
-    async def on_command_completion(self, ctx: commands.Context) -> None:  # Handle commands to find the right responsible of an action.
+    async def on_command_completion(
+        self, ctx: commands.Context
+    ) -> None:  # Handle commands to find the right responsible of an action.
         if ctx.guild is None:
             return
         if not ctx.guild.me.guild_permissions.view_audit_log:
             return
         if ctx.command.name == "addrole":
-            action, target, role = discord.AuditLogAction.member_role_update, ctx.kwargs["user"] or ctx.author, ctx.args[2]
+            action, target, role = (
+                discord.AuditLogAction.member_role_update,
+                ctx.kwargs["user"] or ctx.author,
+                ctx.args[2],
+            )
         elif ctx.command.name == "kick":
             action, target, role = discord.AuditLogAction.kick, ctx.args[2], None
         elif ctx.command.name == "ban":
             action, target, role = discord.AuditLogAction.ban, ctx.args[2], None
         else:
             return
-        async for entry in ctx.guild.audit_logs(
-            action=action, user=ctx.guild.me, limit=3
-        ):
+        async for entry in ctx.guild.audit_logs(action=action, user=ctx.guild.me, limit=3):
             if entry.target.id == target.id and (role is None or role.id in entry.after.roles):
                 entry.user = ctx.author  # Set the user to the command author.
                 for name, module in self.modules.items():
@@ -905,7 +919,16 @@ class Security(Cog):
         self,
         ctx: commands.Context,
         page: typing.Literal[
-            "overview", "authority_members", "join_gate", "auto_mod", "reports", "logging", "anti_nuke", "protected_roles", "lockdown", "unauthorized_text_channel_deletions"
+            "overview",
+            "authority_members",
+            "join_gate",
+            "auto_mod",
+            "reports",
+            "logging",
+            "anti_nuke",
+            "protected_roles",
+            "lockdown",
+            "unauthorized_text_channel_deletions",
         ] = "overview",
     ) -> None:
         """Manage Security settings."""

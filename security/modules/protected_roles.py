@@ -56,7 +56,10 @@ class ProtectedRolesModule(Module):
         config = await self.config_value(guild)()
         protected_roles = config["protected_roles"]
         title = _("Security — {emoji} {name} ({count}/25) {status}").format(
-            emoji=self.emoji, name=self.name, status=(await self.get_status(guild))[0], count=len(protected_roles)
+            emoji=self.emoji,
+            name=self.name,
+            status=(await self.get_status(guild))[0],
+            count=len(protected_roles),
         )
         description = _(
             "*If someone tries to add one of these roles to an unwhitelisted member, it will be removed automatically and the author will be quarantined."
@@ -217,7 +220,9 @@ class ProtectedRolesModule(Module):
             if entry.target != entry.user:
                 await self.cog.quarantine_member(
                     entry.target,
-                    reason=_("**Protected Roles** - Was given a protected role without permission."),
+                    reason=_(
+                        "**Protected Roles** - Was given a protected role without permission."
+                    ),
                     logs=[
                         _(
                             "The protected role {role.mention} (`{role.name}`) was added to them by {entry.user.mention} (`{entry.user}`) without permission."
@@ -317,9 +322,7 @@ class RemoveButton(discord.ui.Button):
         self.initial_view: discord.ui.View = view
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        await self.module.config_value(self.guild).protected_roles.clear_raw(
-            str(self.role.id)
-        )
+        await self.module.config_value(self.guild).protected_roles.clear_raw(str(self.role.id))
         await interaction.message.delete()
         await interaction.response.send_message(
             _("Protected role {role.mention} (`{role.name}`) removed.").format(role=self.role),

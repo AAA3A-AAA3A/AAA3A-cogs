@@ -3,11 +3,12 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import chat_exporter
 from collections import defaultdict, deque
 from io import BytesIO
 
-from ..constants import Levels, Colors, Emojis
+import chat_exporter
+
+from ..constants import Colors, Emojis, Levels
 from ..views import ToggleModuleButton
 from .module import Module
 
@@ -17,7 +18,9 @@ _: Translator = Translator("Security", __file__)
 class UnauthorizedTextChannelDeletionsModule(Module):
     name = "Unauthorized Text Channel Deletions"
     emoji = Emojis.UNAUTHORIZED_TEXT_CHANNEL_DELETIONS.value
-    description = "Get the last messages from a text channel when it is deleted without authorization."
+    description = (
+        "Get the last messages from a text channel when it is deleted without authorization."
+    )
     default_config = {
         "enabled": False,
         "cache_messages": False,
@@ -28,7 +31,9 @@ class UnauthorizedTextChannelDeletionsModule(Module):
 
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)
-        self.messages_cache: typing.Dict[discord.TextChannel, typing.List[discord.Message]] = defaultdict(lambda: deque(maxlen=30))
+        self.messages_cache: typing.Dict[
+            discord.TextChannel, typing.List[discord.Message]
+        ] = defaultdict(lambda: deque(maxlen=30))
 
     async def load(self) -> None:
         self.cog.bot.add_listener(self.on_audit_log_entry_create)
@@ -44,7 +49,11 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         config = await self.config_value(guild)()
         if not config["enabled"]:
             return "❎", _("Disabled"), _("This module is currently disabled.")
-        return "✅", _("Enabled"), _("This module is enabled and monitoring unauthorized channel deletions.")
+        return (
+            "✅",
+            _("Enabled"),
+            _("This module is enabled and monitoring unauthorized channel deletions."),
+        )
 
     async def get_settings(
         self, guild: discord.Guild, view: discord.ui.View
@@ -53,7 +62,9 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         title = _("Security — {emoji} {name} {status}").format(
             emoji=self.emoji, name=self.name, status=(await self.get_status(guild))[0]
         )
-        description = _("This module monitors unauthorized text channel deletions and retrieves the last messages from the deleted channel.")
+        description = _(
+            "This module monitors unauthorized text channel deletions and retrieves the last messages from the deleted channel."
+        )
         status = await self.get_status(guild)
         if status[0] == "⚠️":
             description += f"\n{status[0]} **{status[1]}**: {status[2]}\n"
@@ -80,48 +91,63 @@ class UnauthorizedTextChannelDeletionsModule(Module):
 
         cache_button: discord.ui.Button = discord.ui.Button(
             label=_("Cache Last Messages"),
-            style=discord.ButtonStyle.success if config["cache_messages"] else discord.ButtonStyle.danger,
+            style=discord.ButtonStyle.success
+            if config["cache_messages"]
+            else discord.ButtonStyle.danger,
             emoji="💾",
         )
+
         async def cache_callback(interaction: discord.Interaction):
             await interaction.response.defer()
             config["cache_messages"] = not config["cache_messages"]
             await self.config_value(guild).cache_messages.set(config["cache_messages"])
             await view._message.edit(embed=await view.get_embed(), view=view)
+
         cache_button.callback = cache_callback
         components.append(cache_button)
 
         dm_button: discord.ui.Button = discord.ui.Button(
             label=_("DM Extra Owners and higher"),
-            style=discord.ButtonStyle.success if config["dm_extra_owners_and_higher"] else discord.ButtonStyle.danger,
+            style=discord.ButtonStyle.success
+            if config["dm_extra_owners_and_higher"]
+            else discord.ButtonStyle.danger,
             emoji="📬",
         )
+
         async def dm_callback(interaction: discord.Interaction):
             await interaction.response.defer()
             config["dm_extra_owners_and_higher"] = not config["dm_extra_owners_and_higher"]
-            await self.config_value(guild).dm_extra_owners_and_higher.set(config["dm_extra_owners_and_higher"])
+            await self.config_value(guild).dm_extra_owners_and_higher.set(
+                config["dm_extra_owners_and_higher"]
+            )
             await view._message.edit(embed=await view.get_embed(), view=view)
+
         dm_button.callback = dm_callback
         components.append(dm_button)
 
         specific_channels_select: discord.ui.ChannelSelect = discord.ui.ChannelSelect(
             placeholder=_("Select Specific Channels..."),
             channel_types=[discord.ChannelType.text],
-            min_values=0, max_values=25,
+            min_values=0,
+            max_values=25,
             default_values=[
                 channel
                 for channel_id in config["specific_channels"]
                 if (channel := guild.get_channel(channel_id)) is not None
             ],
         )
+
         async def specific_channels_callback(interaction: discord.Interaction):
-            config["specific_channels"] = [channel.id for channel in specific_channels_select.values]
+            config["specific_channels"] = [
+                channel.id for channel in specific_channels_select.values
+            ]
             await self.config_value(guild).specific_channels.set(config["specific_channels"])
             await interaction.response.send_message(
                 _("✅ Specific channels have been updated."),
                 ephemeral=True,
             )
             await view._message.edit(embed=await view.get_embed(), view=view)
+
         specific_channels_select.callback = specific_channels_callback
         components.append(specific_channels_select)
 
@@ -143,7 +169,11 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         messages = (
             self.messages_cache[channel]
             or sorted(
-                [message for message in self.cog.bot.cached_messages if message.channel.id == channel.id],
+                [
+                    message
+                    for message in self.cog.bot.cached_messages
+                    if message.channel.id == channel.id
+                ],
                 key=lambda m: m.created_at,
                 reverse=True,
             )[:30]
@@ -171,7 +201,9 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         if messages:
             embed.add_field(
                 name="\u200b",
-                value=_("You can find the last {count} messages in this channel in the transcript.").format(count=len(messages)),
+                value=_(
+                    "You can find the last {count} messages in this channel in the transcript."
+                ).format(count=len(messages)),
             )
 
             class Transcript(chat_exporter.construct.transcript.TranscriptDAO):
@@ -217,7 +249,8 @@ class UnauthorizedTextChannelDeletionsModule(Module):
                 bot=self.cog.bot,
             )
             file = discord.File(
-                BytesIO(transcript.encode(encoding="utf-8")), filename=f"transcript-{channel.id}.html"
+                BytesIO(transcript.encode(encoding="utf-8")),
+                filename=f"transcript-{channel.id}.html",
             )
         else:
             embed.add_field(
@@ -228,7 +261,8 @@ class UnauthorizedTextChannelDeletionsModule(Module):
 
         await self.cog.send_in_modlog_channel(
             entry.guild,
-            embed=embed, file=file,
+            embed=embed,
+            file=file,
         )
         if config["dm_extra_owners_and_higher"]:
             extra_owners_and_higher = [entry.guild.owner] + [
@@ -244,7 +278,11 @@ class UnauthorizedTextChannelDeletionsModule(Module):
                     continue
 
     async def on_message(self, message: discord.Message) -> None:
-        if not message.guild or not message.channel or not isinstance(message.channel, discord.TextChannel):
+        if (
+            not message.guild
+            or not message.channel
+            or not isinstance(message.channel, discord.TextChannel)
+        ):
             return
         config = await self.config_value(message.guild)()
         if not config["enabled"] or not config["cache_messages"]:

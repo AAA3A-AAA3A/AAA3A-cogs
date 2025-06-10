@@ -103,7 +103,9 @@ class LockdownModule(Module):
             missing_permissions.append("manage_roles")
         if config["modes"]["server_invites"] and not guild.me.guild_permissions.manage_guild:
             missing_permissions.append("manage_guild")
-        if (config["modes"]["server_roles"] or config["modes"]["server_invites"]) and not guild.me.guild_permissions.view_audit_log:
+        if (
+            config["modes"]["server_roles"] or config["modes"]["server_invites"]
+        ) and not guild.me.guild_permissions.view_audit_log:
             missing_permissions.append("view_audit_log")
         if config["modes"]["kick_new_members"] and not guild.me.guild_permissions.kick_members:
             missing_permissions.append("kick_members")

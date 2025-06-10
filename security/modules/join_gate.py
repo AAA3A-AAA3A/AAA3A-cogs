@@ -10,7 +10,7 @@ import re
 from redbot.core.utils.chat_formatting import humanize_list
 
 from ..constants import POSSIBLE_ACTIONS, Emojis
-from ..views import ToggleModuleButton, DurationConverter
+from ..views import DurationConverter, ToggleModuleButton
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
@@ -210,6 +210,7 @@ class JoinGateModule(Module):
                 for option in JOIN_GATE_OPTIONS
             ],
         )
+
         async def configure_option_select_callback(interaction: discord.Interaction) -> None:
             option = next(
                 (
@@ -221,6 +222,7 @@ class JoinGateModule(Module):
             await interaction.response.send_modal(
                 ConfigureOptionModal(self, guild, view, option, config["options"][option["value"]])
             )
+
         configure_option_select.callback = configure_option_select_callback
         components.append(configure_option_select)
 
@@ -228,6 +230,7 @@ class JoinGateModule(Module):
             label=_("Set Timeout/Mute Duration"),
             style=discord.ButtonStyle.secondary,
         )
+
         async def timeout_mute_duration_callback(interaction: discord.Interaction) -> None:
             modal: discord.ui.Modal = discord.ui.Modal(
                 title=_("Timeout/Mute Duration"),
@@ -241,6 +244,7 @@ class JoinGateModule(Module):
             )
             modal.add_item(duration_input)
             duration, argument = None, None
+
             async def on_submit(modal_interaction: discord.Interaction) -> None:
                 await modal_interaction.response.defer()
                 nonlocal duration, argument
@@ -251,16 +255,22 @@ class JoinGateModule(Module):
                     await modal_interaction.followup.send(
                         _("Invalid duration: {error}").format(error=str(e)), ephemeral=True
                     )
+
             modal.on_submit = on_submit
             await interaction.response.send_modal(modal)
             if await modal.wait() or duration is None:
                 return
             config["timeout_mute_duration"] = argument
-            await self.config_value(guild).timeout_mute_duration.set(config["timeout_mute_duration"])
+            await self.config_value(guild).timeout_mute_duration.set(
+                config["timeout_mute_duration"]
+            )
             await interaction.followup.send(
-                _("Timeout/Mute duration set to {duration}.").format(duration=CogsUtils.get_interval_string(duration)),
+                _("Timeout/Mute duration set to {duration}.").format(
+                    duration=CogsUtils.get_interval_string(duration)
+                ),
                 ephemeral=True,
             )
+
         timeout_mute_duration_button.callback = timeout_mute_duration_callback
         components.append(timeout_mute_duration_button)
 
@@ -296,24 +306,27 @@ class JoinGateModule(Module):
                     continue
             triggered.append((option, option_config))
         if triggered:
-            option, option_config = sorted(triggered, key=lambda x: POSSIBLE_ACTIONS.index(x[1]["action"]), reverse=True)[0]
+            option, option_config = sorted(
+                triggered, key=lambda x: POSSIBLE_ACTIONS.index(x[1]["action"]), reverse=True
+            )[0]
             action = option_config["action"]
             if action in ("timeout", "mute"):
-                duration = await DurationConverter.convert(
-                    None, config["timeout_mute_duration"]
-                )
+                duration = await DurationConverter.convert(None, config["timeout_mute_duration"])
             else:
                 duration = None
-            reason = (
-                _("**Join Gate** - Triggered by {option}.").format(option=option["name"])
-                + (
-                    _("\n- Account Age: {account_age}\n- Minimum Age: {minimum_days} days").format(
-                        account_age=CogsUtils.get_interval_string(
-                            datetime.timedelta(days=(datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at).days)
-                        ),
-                        minimum_days=option_config["minimum_days"],
-                    ) if option["value"] == "account_age" else ""
+            reason = _("**Join Gate** - Triggered by {option}.").format(option=option["name"]) + (
+                _("\n- Account Age: {account_age}\n- Minimum Age: {minimum_days} days").format(
+                    account_age=CogsUtils.get_interval_string(
+                        datetime.timedelta(
+                            days=(
+                                datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at
+                            ).days
+                        )
+                    ),
+                    minimum_days=option_config["minimum_days"],
                 )
+                if option["value"] == "account_age"
+                else ""
             )
             logs = [_("{member.mention} ({member}) joined the server.").format(member=member)]
             if action != "quarantine":

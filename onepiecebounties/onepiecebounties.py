@@ -169,16 +169,17 @@ class OnePieceBounties(WelcomePlugin, Cog):
     async def get_bounty(self, member: discord.Member) -> int:
         guild = member.guild
         config = await self.config.guild(guild).all()
+        random_obj: random.Random = random.Random()
 
         bounty = config["base_bounty"]
         if config["random_base_bounty"]:
-            random.seed(f"{member.id}-base-1")
-            larger = random.random() < 0.1
-            random.seed(f"{member.id}-base-2")
+            random_obj.seed(f"{member.id}-base-1")
+            larger = random_obj.random() < 0.1
+            random_obj.seed(f"{member.id}-base-2")
             if larger:
-                bounty += random.randint(1_000_000, 10_000_000)
+                bounty += random_obj.randint(1_000_000, 10_000_000)
             else:
-                bounty += random.randint(10_000_000, 20_000_000)
+                bounty += random_obj.randint(10_000_000, 20_000_000)
 
         if config["include_months_since_joining"]:
             if (
@@ -195,12 +196,12 @@ class OnePieceBounties(WelcomePlugin, Cog):
             ) is not None:
                 months = (datetime.datetime.now(tz=datetime.timezone.utc) - joined_at).days / 30
                 for i in range(1, int(months) + 2):
-                    random.seed(f"{member.id}-month-{i}")
+                    random_obj.seed(f"{member.id}-month-{i}")
                     year = i // 12
                     min_bounty = 4_000_000 + (year * 1_500_000)
                     max_bounty = 8_000_000 + (year * 1_500_000)
                     bounty += int(
-                        random.randint(min_bounty, max_bounty)
+                        random_obj.randint(min_bounty, max_bounty)
                         * (months - i if i == int(months) else 1)
                     )
 
@@ -211,11 +212,20 @@ class OnePieceBounties(WelcomePlugin, Cog):
         ):
             level = conf.get_profile(member.id).level
             for i in range(1, level + 1):
-                random.seed(f"{member.id}-level-{i}")
+                random_obj.seed(f"{member.id}-level-{i}")
                 l10 = i // 10
                 min_bounty = 10_000_000 + (l10 * 2_000_000)
                 max_bounty = 20_000_000 + (l10 * 2_000_000)
-                bounty += random.randint(min_bounty, max_bounty)
+                bounty += random_obj.randint(min_bounty, max_bounty)
+
+        if config["bonus_roles"]:
+            for role in member.roles:
+                if str(role.id) in config["bonus_roles"]:
+                    random_obj.seed(f"{member.id}-role-{role.id}")
+                    bounty += random_obj.randint(
+                        config["bonus_roles"][str(role.id)][0],
+                        config["bonus_roles"][str(role.id)][1],
+                    )
 
         if (
             config["include_cautions"]
@@ -225,15 +235,6 @@ class OnePieceBounties(WelcomePlugin, Cog):
             total_points = await Cautions.config.member(member).total_points()
             if total_points > 0:
                 bounty -= total_points * 100_000_000
-
-        if config["bonus_roles"]:
-            for role in member.roles:
-                if str(role.id) in config["bonus_roles"]:
-                    random.seed(f"{member.id}-role-{role.id}")
-                    bounty += random.randint(
-                        config["bonus_roles"][str(role.id)][0],
-                        config["bonus_roles"][str(role.id)][1],
-                    )
 
         bounty += await self.config.member(member).bonus()
 

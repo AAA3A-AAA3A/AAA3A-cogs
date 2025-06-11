@@ -849,8 +849,8 @@ class Security(Cog):
                         await module.on_audit_log_entry_create(entry)
                 break
 
-    @commands.guild_only()
     @is_trusted_admin_or_higher_level()
+    @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["q"])
     async def quarantine(
@@ -871,8 +871,8 @@ class Security(Cog):
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
 
-    @commands.guild_only()
     @is_trusted_admin_or_higher_level()
+    @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["uq"])
     async def unquarantine(
@@ -893,8 +893,8 @@ class Security(Cog):
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
 
-    @commands.guild_only()
     @is_trusted_admin_or_higher_level()
+    @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["swl"])
     async def swhitelist(
@@ -911,8 +911,8 @@ class Security(Cog):
             )
         await WhitelistView(self).start(ctx, _object)
 
-    @commands.guild_only()
     @is_trusted_admin_or_higher_level()
+    @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command()
     async def security(

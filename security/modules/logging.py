@@ -976,7 +976,7 @@ class LoggingModule(Module):
             return possible_invite
         if "VANITY_URL" in member.guild.features and member.guild.vanity_url is not None:
             possible_invite = _("- {vanity_url} (Vanity URL)").format(
-                vanity_url=f"https://discord.gg/{member.guild.vanity_url}"
+                vanity_url=member.guild.vanity_url
             )
         if self.invites_cache[member.guild] and manage_guild:
             invites = self.invites_cache[member.guild].copy()

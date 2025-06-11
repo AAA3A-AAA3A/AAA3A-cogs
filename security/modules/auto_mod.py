@@ -835,6 +835,7 @@ class AutoModModule(Module):
                     member=message.author,
                     reason=reason,
                     file=file,
+                    context_message=message,
                 )
             elif (action := filter_config["action"]) is None:
                 if self.strikes_cache[message.guild][message.author] < 3:
@@ -852,8 +853,9 @@ class AutoModModule(Module):
                     member=message.author,
                     reason=reason,
                     duration=duration,
-                    current_ctx=message,
                     file=file,
+                    context_message=message,
+                    current_ctx=message,
                 )
                 if message.guild.me.guild_permissions.moderate_members:
                     await message.author.timeout(duration, reason=audit_log_reason)
@@ -871,6 +873,7 @@ class AutoModModule(Module):
                         reason=reason,
                         duration=duration,
                         file=file,
+                        context_message=message,
                         current_ctx=message,
                     )
                 if action == "timeout" and message.guild.me.guild_permissions.moderate_members:
@@ -899,6 +902,9 @@ class AutoModModule(Module):
                     await self.cog.quarantine_member(
                         member=message.author,
                         reason=reason,
+                        file=file,
+                        context_message=message,
+                        current_ctx=message,
                     )
         lock.release()
 

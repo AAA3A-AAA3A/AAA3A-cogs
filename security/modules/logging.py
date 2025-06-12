@@ -558,12 +558,34 @@ class LoggingModule(Module):
                     fields[-1]["value"] += _("\n**Channel:** None")
             else:
                 fields[-1]["value"] += "\n**Channel:** 🔀 (Different Channels)"
+            first_ignore_bots = list(category_config.values())[0]["ignore_bots"]
+            if all(
+                event["ignore_bots"] == first_ignore_bots for event in category_config.values()
+            ):
+                fields[-1]["value"] += _("\n**Ignore Bots:** {state}").format(
+                    state="✅" if first_ignore_bots else "❌"
+                )
+            else:
+                fields[-1]["value"] += "\n**Ignore Bots:** 🔀 (Different States)"
 
         components = [ToggleModuleButton(self, guild, view, config["enabled"])]
+
         toggle_all_button: discord.ui.Button = discord.ui.Button(
             label=_("Toggle All Events"),
             style=discord.ButtonStyle.secondary,
         )
+        first_state = list(list(config["events"].values())[0].values())[0]["enabled"]
+        if all(
+            event["enabled"] == first_state
+            for events in config["events"].values()
+            for event in events.values()
+        ):
+            if first_state:
+                toggle_all_button.label = _("Disable All Events")
+                toggle_all_button.style = discord.ButtonStyle.danger
+            else:
+                toggle_all_button.label = _("Enable All Events")
+                toggle_all_button.style = discord.ButtonStyle.success
 
         async def toggle_all_callback(interaction: discord.Interaction) -> None:
             new_state = not list(list(config["events"].values())[0].values())[0]["enabled"]
@@ -581,6 +603,41 @@ class LoggingModule(Module):
 
         toggle_all_button.callback = toggle_all_callback
         components.append(toggle_all_button)
+
+        ignore_bots_button: discord.ui.Button = discord.ui.Button(
+            label=_("Ignore Bots"),
+            style=discord.ButtonStyle.secondary,
+        )
+        first_ignore_bots = list(list(config["events"].values())[0].values())[0]["ignore_bots"]
+        if all(
+            event["ignore_bots"] == first_ignore_bots
+            for events in config["events"].values()
+            for event in events.values()
+        ):
+            if first_ignore_bots:
+                ignore_bots_button.label = _("Ignore Bots")
+                ignore_bots_button.style = discord.ButtonStyle.success
+            else:
+                ignore_bots_button.label = _("Ignore Bots")
+                ignore_bots_button.style = discord.ButtonStyle.danger
+
+        async def ignore_bots_callback(interaction: discord.Interaction) -> None:
+            new_state = not list(list(config["events"].values())[0].values())[0]["ignore_bots"]
+            for events in config["events"].values():
+                for event in events.values():
+                    event["ignore_bots"] = new_state
+            await self.config_value(guild).events.set(config["events"])
+            await interaction.response.send_message(
+                _("✅ All logging events will now **{state}** bots.").format(
+                    state=_("ignore") if new_state else _("log")
+                ),
+                ephemeral=True,
+            )
+            await view._message.edit(embed=await view.get_embed(), view=view)
+
+        ignore_bots_button.callback = ignore_bots_callback
+        components.append(ignore_bots_button)
+
         channel_all_select: discord.ui.ChannelSelect = discord.ui.ChannelSelect(
             channel_types=[discord.ChannelType.text],
             placeholder=_("Select a channel for all events..."),
@@ -646,7 +703,7 @@ class LoggingModule(Module):
             config["enabled"] = True
             for category, events in config["events"].items():
                 channel = await category_channel.create_text_channel(
-                    name=_("📁・{category}-logs").format(category=category.replace('_', '-')),
+                    name=_("📁・{category}-logs").format(category=category.replace("_", "-")),
                     topic=_("This channel is used for logging {category} events.").format(
                         category=LOGGING_EVENTS[category]["name"]
                     ),
@@ -1284,6 +1341,7 @@ class ConfigureEventCategoryView(discord.ui.View):
         self._message: discord.Message = None
 
         self.select_logging_channel.placeholder = _("Select a channel to log events...")
+        self.ignore_bots.label = _("Ignore Bots")
         self.configure_event_select.placeholder = _("Select an event to configure...")
         self.configure_event_select.options = [
             discord.SelectOption(
@@ -1304,7 +1362,7 @@ class ConfigureEventCategoryView(discord.ui.View):
         self.module.cog.views[self._message] = self
 
     async def get_embed(self) -> discord.Embed:
-        config = await self.module.config_value(self.guild)()
+        category_config = await self.module.config_value(self.guild).events.get_raw(self.category)
         category = LOGGING_EVENTS[self.category]
         embed: discord.Embed = discord.Embed(
             title=_("Configure {emoji} {category_name} Events").format(
@@ -1312,14 +1370,23 @@ class ConfigureEventCategoryView(discord.ui.View):
                 category_name=category["name"],
             ),
             description="\n".join(
-                f"{'✅' if config['events'][self.category][event['value']]['enabled'] else '❌'} {event['emoji']} {event['name']}{f' - {channel.mention} (`{channel}`)' if (channel_id := config['events'][self.category][event['value']]['channel']) is not None and (channel := self.guild.get_channel(channel_id)) is not None else ''}"
+                f"{'✅' if category_config[event['value']]['enabled'] else '❌'} {event['emoji']} {event['name']}\n"
+                + _("\n- Channel: {channel}").format(
+                    channel=(
+                        f"{channel.mention} (`{channel}`)"
+                        if (channel_id := category_config[event["value"]]["channel"]) is not None
+                        and (channel := self.guild.get_channel(channel_id)) is not None
+                        else _("None")
+                    ),
+                )
+                + _("\n- Ignore Bots: {ignore_bots}").format(
+                    ignore_bots="✅" if category_config[event["value"]]["ignore_bots"] else "❌"
+                )
                 for event in LOGGING_EVENTS[self.category]["events"]
             ),
         )
-        first_state = list(config["events"][self.category].values())[0]["enabled"]
-        if all(
-            event["enabled"] == first_state for event in config["events"][self.category].values()
-        ):
+        first_state = list(category_config.values())[0]["enabled"]
+        if all(event["enabled"] == first_state for event in category_config.values()):
             self.toggle_event_category.label = (
                 _("Enable All") if not first_state else _("Disable All")
             )
@@ -1330,7 +1397,7 @@ class ConfigureEventCategoryView(discord.ui.View):
             self.toggle_event_category.label = _("Toggle All")
             self.toggle_event_category.style = discord.ButtonStyle.secondary
         first_channel_id = next(
-            (event["channel"] for event in config["events"][self.category].values()),
+            (event["channel"] for event in category_config.values()),
         )
         if (
             first_channel_id is not None
@@ -1339,6 +1406,13 @@ class ConfigureEventCategoryView(discord.ui.View):
             self.select_logging_channel.default_values = [channel]
         else:
             self.select_logging_channel.default_values = []
+        first_ignore_bots = list(category_config.values())[0]["ignore_bots"]
+        if all(event["ignore_bots"] == first_ignore_bots for event in category_config.values()):
+            self.ignore_bots.style = (
+                discord.ButtonStyle.success if first_ignore_bots else discord.ButtonStyle.danger
+            )
+        else:
+            self.ignore_bots.style = discord.ButtonStyle.secondary
         return embed
 
     async def on_timeout(self) -> None:
@@ -1351,15 +1425,44 @@ class ConfigureEventCategoryView(discord.ui.View):
     async def toggle_event_category(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        config = await self.module.config_value(self.guild)()
-        new_state = not list(config["events"][self.category].values())[0]["enabled"]
-        for event in config["events"][self.category].values():
+        category_config = await self.module.config_value(self.guild).events.get_raw(self.category)
+        new_state = not list(category_config.values())[0]["enabled"]
+        for event in category_config.values():
             event["enabled"] = new_state
-        await self.module.config_value(self.guild).set(config)
+        await self.module.config_value(self.guild).events.set_raw(
+            self.category, value=category_config
+        )
         await interaction.response.send_message(
             _("✅ All {category_name} events have been {state}.").format(
                 category_name=LOGGING_EVENTS[self.category]["name"],
                 state=_("enabled") if new_state else _("disabled"),
+            ),
+            ephemeral=True,
+        )
+        await self._message.edit(
+            embed=await self.get_embed(),
+            view=self,
+        )
+        await self.parent_view._message.edit(
+            embed=await self.parent_view.get_embed(),
+            view=self.parent_view,
+        )
+
+    @discord.ui.button(label="Ignore Bots")
+    async def ignore_bots(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
+        category_config = await self.module.config_value(self.guild).events.get_raw(self.category)
+        new_state = not list(category_config.values())[0]["ignore_bots"]
+        for event in category_config.values():
+            event["ignore_bots"] = new_state
+        await self.module.config_value(self.guild).events.set_raw(
+            self.category, value=category_config
+        )
+        await interaction.response.send_message(
+            _("✅ All {category_name} events will now {state} bots.").format(
+                category_name=LOGGING_EVENTS[self.category]["name"],
+                state=_("ignore") if new_state else _("log"),
             ),
             ephemeral=True,
         )
@@ -1380,11 +1483,13 @@ class ConfigureEventCategoryView(discord.ui.View):
     async def select_logging_channel(
         self, interaction: discord.Interaction, select: discord.ui.Select
     ) -> None:
-        config = await self.module.config_value(self.guild)()
+        category_config = await self.module.config_value(self.guild).events.get_raw(self.category)
         channel = select.values[0]
-        for event in config["events"][self.category].values():
+        for event in category_config.values():
             event["channel"] = channel.id
-        await self.module.config_value(self.guild).set(config)
+        await self.module.config_value(self.guild).events.set_raw(
+            self.category, value=category_config
+        )
         await interaction.response.send_message(
             _("✅ All {category_name} events will now be logged in {channel.mention}.").format(
                 category_name=LOGGING_EVENTS[self.category]["name"],
@@ -1433,8 +1538,8 @@ class ConfigureEventView(discord.ui.View):
         self.category_view: ConfigureEventCategoryView = category_view
         self._message: discord.Message = None
 
-        self.toggle_event.label = _("Toggle {event_name}").format(event_name=self.event["name"])
         self.channel_select.placeholder = _("Select a channel to log this event...")
+        self.ignore_bots.label = _("Ignore Bots")
 
     async def start(self, interaction: discord.Interaction) -> None:
         self._message: discord.Message = await interaction.followup.send(
@@ -1446,12 +1551,12 @@ class ConfigureEventView(discord.ui.View):
         self.module.cog.views[self._message] = self
 
     async def get_embed(self) -> discord.Embed:
-        config = await self.module.config_value(self.guild)()
-        state = config["events"][self.category][self.event["value"]]["enabled"]
+        event_config = await self.module.config_value(self.guild).events.get_raw(
+            self.category, self.event["value"]
+        )
         channel = (
             channel
-            if (channel_id := config["events"][self.category][self.event["value"]]["channel"])
-            is not None
+            if (channel_id := event_config["channel"]) is not None
             and (channel := self.guild.get_channel(channel_id)) is not None
             else None
         )
@@ -1461,18 +1566,26 @@ class ConfigureEventView(discord.ui.View):
                 event_name=self.event["name"],
             ),
             description=_(
-                "This event is currently **{state}**.\n**Logging Channel:** {channel}"
+                "This event is currently **{state}**.\n**Logging Channel:** {channel}\n**Ignore Bots:** {ignore_bots}"
             ).format(
-                state=_("enabled") if state else _("disabled"),
+                state=_("enabled") if event_config["enabled"] else _("disabled"),
                 channel=f"{channel.mention} (`{channel}`)" if channel is not None else _("None"),
+                ignore_bots="✅" if event_config["ignore_bots"] else "❌",
             ),
         )
-        self.toggle_event.label = _("Enable") if not state else _("Disable")
+        self.toggle_event.label = _("Enable") if not event_config["enabled"] else _("Disable")
         self.toggle_event.style = (
-            discord.ButtonStyle.success if not state else discord.ButtonStyle.danger
+            discord.ButtonStyle.success
+            if not event_config["enabled"]
+            else discord.ButtonStyle.danger
         )
         if channel is not None:
             self.channel_select.default_values = [channel]
+        self.ignore_bots.style = (
+            discord.ButtonStyle.success
+            if event_config["ignore_bots"]
+            else discord.ButtonStyle.danger
+        )
         return embed
 
     async def on_timeout(self) -> None:
@@ -1485,14 +1598,52 @@ class ConfigureEventView(discord.ui.View):
     async def toggle_event(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        config = await self.module.config_value(self.guild)()
-        new_state = not config["events"][self.category][self.event["value"]]["enabled"]
-        config["events"][self.category][self.event["value"]]["enabled"] = new_state
-        await self.module.config_value(self.guild).set(config)
+        event_config = await self.module.config_value(self.guild).events.get_raw(
+            self.category, self.event["value"]
+        )
+        new_state = not event_config["enabled"]
+        event_config["enabled"] = new_state
+        await self.module.config_value(self.guild).events.set_raw(
+            self.category, self.event["value"], value=event_config
+        )
         await interaction.response.send_message(
             _("✅ {event_name} has been {state}.").format(
                 event_name=self.event["name"],
                 state=_("enabled") if new_state else _("disabled"),
+            ),
+            ephemeral=True,
+        )
+        await self._message.edit(
+            embed=await self.get_embed(),
+            view=self,
+        )
+        try:
+            await self.category_view._message.edit(
+                embed=await self.category_view.get_embed(),
+                view=self.category_view,
+            )
+        except discord.HTTPException:
+            pass
+        await self.parent_view._message.edit(
+            embed=await self.parent_view.get_embed(),
+            view=self.parent_view,
+        )
+
+    @discord.ui.button(label="Ignore Bots")
+    async def ignore_bots(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
+        event_config = await self.module.config_value(self.guild).events.get_raw(
+            self.category, self.event["value"]
+        )
+        event_config["ignore_bots"] = not event_config["ignore_bots"]
+        await self.module.config_value(self.guild).events.set_raw(
+            self.category, self.event["value"], value=event_config
+        )
+        await interaction.response.send_message(
+            _("✅ {event_name} will now {state} bots.").format(
+                event_name=self.event["name"],
+                state=_("ignore") if event_config["ignore_bots"] else _("log"),
             ),
             ephemeral=True,
         )
@@ -1520,10 +1671,14 @@ class ConfigureEventView(discord.ui.View):
     async def channel_select(
         self, interaction: discord.Interaction, select: discord.ui.Select
     ) -> None:
-        config = await self.module.config_value(self.guild)()
+        event_config = await self.module.config_value(self.guild).events.get_raw(
+            self.category, self.event["value"]
+        )
         channel = select.values[0]
-        config["events"][self.category][self.event["value"]]["channel"] = channel.id
-        await self.module.config_value(self.guild).set(config)
+        event_config["channel"] = channel.id
+        await self.module.config_value(self.guild).events.set_raw(
+            self.category, self.event["value"], value=event_config
+        )
         await interaction.response.send_message(
             _("✅ {event_name} events will now be logged in {channel.mention}.").format(
                 event_name=self.event["name"],

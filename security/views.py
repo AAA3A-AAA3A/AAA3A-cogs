@@ -956,7 +956,7 @@ class ActionsView(discord.ui.View):
                 duration=duration,
                 context_message=self._message,
             )
-        audit_log_reason = f"Security Actions View: issued by {interaction.user.display_name} ({interaction.user.id})"
+        audit_log_reason = f"Security Actions View: issued by {interaction.user.display_name} ({interaction.user.id})."
         if action == "timeout":
             await self.member.timeout(duration, reason=audit_log_reason)
         elif action == "untimeout":

@@ -778,6 +778,14 @@ class Ticket:
             audit_reason = _(
                 "Ticket closed by {closer.display_name} ({closer.id}) (profile `{self.profile}`)."
             ).format(closer=closer, self=self)
+        view = self.cog.views[self.message]
+        await view._update()
+        await self.message.edit(
+            embeds=await self.get_embeds(),
+            view=view,
+        )
+        view: ClosedTicketControls = ClosedTicketControls(cog=self.cog)
+        await view.start(self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
                 name=await self.channel_name(),
@@ -800,12 +808,6 @@ class Ticket:
                 overwrites=await self.get_channel_overwrites(),
                 reason=audit_reason,
             )
-        view = self.cog.views[self.message]
-        await view._update()
-        await self.message.edit(
-            embeds=await self.get_embeds(),
-            view=view,
-        )
 
         self.bot.dispatch("ticket_closed", self)
         await self.log_action(
@@ -813,8 +815,6 @@ class Ticket:
             author=closer,
             reason=reason,
         )
-        view: ClosedTicketControls = ClosedTicketControls(cog=self.cog)
-        await view.start(self)
         if config["create_modlog_case"]:
             await modlog.create_case(
                 bot=self.bot,

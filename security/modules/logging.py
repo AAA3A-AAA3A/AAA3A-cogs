@@ -566,7 +566,7 @@ class LoggingModule(Module):
         )
 
         async def toggle_all_callback(interaction: discord.Interaction) -> None:
-            new_state = not list(config["events"].values())[0]["enabled"]
+            new_state = not list(list(config["events"].values())[0].values())[0]["enabled"]
             for events in config["events"].values():
                 for event in events.values():
                     event["enabled"] = new_state

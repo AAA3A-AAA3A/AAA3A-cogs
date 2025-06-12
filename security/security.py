@@ -973,7 +973,7 @@ class Security(Cog):
         buffer = BytesIO()
         result.save(buffer, format="PNG")
         buffer.seek(0)
-        file = discord.File(buffer, filename="recovery_key.png")
+        file = discord.File(buffer, filename="recovery_key.png", spoiler=True)
         embed: discord.Embed = discord.Embed(
             title=_("Security Recovery Key"),
             description=_(

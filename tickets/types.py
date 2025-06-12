@@ -710,6 +710,16 @@ class Ticket:
                     embed_links=not self.is_closed,
                     attach_files=not self.is_closed,
                 )
+        for speak_role_id in config["speak_roles"]:
+            if (speak_role := self.guild.get_role(speak_role_id)) is not None:
+                overwrites[speak_role] = discord.PermissionOverwrite(
+                    read_messages=True,
+                    read_message_history=True,
+                    send_messages=not self.is_closed,
+                    add_reactions=not self.is_closed,
+                    embed_links=not self.is_closed,
+                    attach_files=not self.is_closed,
+                )
         for view_role_id in config["view_roles"]:
             if (view_role := self.guild.get_role(view_role_id)) is not None:
                 overwrites[view_role] = discord.PermissionOverwrite(

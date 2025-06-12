@@ -83,6 +83,7 @@ class Tickets(DashboardIntegration, Cog):
                 # Roles.
                 "support_roles": [],
                 "ping_roles": [],
+                "speak_roles": [],
                 "view_roles": [],
                 "whitelist_roles": [],
                 "blacklist_roles": [],
@@ -186,6 +187,11 @@ class Tickets(DashboardIntegration, Cog):
             "ping_roles": {
                 "converter": commands.Greedy[discord.Role],
                 "description": "Roles that will be pinged when a ticket is created.",
+            },
+            "speak_roles": {
+                "converter": commands.Greedy[discord.Role],
+                "description": "Roles that can speak in the ticket channel.",
+                "no_slash": True,
             },
             "view_roles": {
                 "converter": commands.Greedy[discord.Role],
@@ -746,6 +752,7 @@ class Tickets(DashboardIntegration, Cog):
                     "**•** Always Include Item Label: {always_include_item_label}\n\n"
                     "**•** Support Roles: {support_roles}\n"
                     "**•** Ping Roles: {ping_roles}\n"
+                    "**•** Speak Roles: {speak_roles}\n"
                     "**•** View Roles: {view_roles}\n"
                     "**•** Whitelist Roles: {whitelist_roles}\n"
                     "**•** Blacklist Roles: {blacklist_roles}\n\n"
@@ -796,6 +803,13 @@ class Tickets(DashboardIntegration, Cog):
                         ]
                     )
                     or "...",
+                    speak_roles=humanize_list(
+                        [
+                            role.mention
+                            for role_id in config["speak_roles"]
+                            if (role := ctx.guild.get_role(role_id)) is not None
+                        ]
+                    ) or "...",
                     view_roles=humanize_list(
                         [
                             role.mention

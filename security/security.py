@@ -844,8 +844,8 @@ class Security(Cog):
         async for entry in ctx.guild.audit_logs(action=action, user=ctx.guild.me, limit=3):
             if entry.target.id == target.id and (role is None or role.id in entry.after.roles):
                 entry.user = ctx.author  # Set the user to the command author.
-                for name, module in self.modules.items():
-                    if name != "Logging" and hasattr(module, "on_audit_log_entry_create"):
+                for key, module in self.modules.items():
+                    if key != "logging" and hasattr(module, "on_audit_log_entry_create"):
                         await module.on_audit_log_entry_create(entry)
                 break
 

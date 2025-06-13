@@ -104,8 +104,8 @@ AUTO_MOD_FILTERS: typing.Dict[
                     ],
                     typing.Union[
                         str,
-                        int,
-                        typing.Dict[str, int],
+                        float,
+                        typing.Dict[str, float],
                         typing.List[typing.Tuple[str, typing.Any]],
                         typing.Callable,
                     ],
@@ -123,7 +123,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Regular Message",
                 "emoji": Emojis.MESSAGE.value,
                 "value": "regular_message",
-                "default_added_heat": 15,
+                "default_added_heat": 15.0,
                 "check": lambda message, filter_config: filter_config["added_heat"],
                 "reason": lambda: _("**Auto Mod** - Spam of messages detected."),
             },
@@ -131,7 +131,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Similar Message (similarity ratio)",
                 "emoji": "🔄",
                 "value": "similar_message",
-                "default_added_heat": 22,
+                "default_added_heat": 22.0,
                 "params": [("similarity_ratio", 0.8)],
                 "check": lambda message, filter_config, previous_message: (
                     filter_config["added_heat"]
@@ -149,7 +149,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Emojis (each)",
                 "emoji": Emojis.EMOJI.value,
                 "value": "emojis",
-                "default_added_heat": 9,
+                "default_added_heat": 9.0,
                 "check": lambda message, filter_config: filter_config["added_heat"]
                 * get_emoji_count(message.content),
                 "reason": lambda: _("**Auto Mod** - Spam of emojis detected."),
@@ -158,7 +158,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "New Lines (each)",
                 "emoji": Emojis.NEW_LINES.value,
                 "value": "new_lines",
-                "default_added_heat": 5,
+                "default_added_heat": 5.0,
                 "check": lambda message, filter_config: filter_config["added_heat"]
                 * message.content.count("\n"),
                 "reason": lambda: _("**Auto Mod** - Spam of new lines detected."),
@@ -199,7 +199,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Embed (at least one)",
                 "emoji": "📎",
                 "value": "embed",
-                "default_added_heat": 20,
+                "default_added_heat": 20.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"] if message.embeds else 0
                 ),
@@ -209,7 +209,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Image/Video (at least one)",
                 "emoji": Emojis.IMAGE_VIDEO.value,
                 "value": "image_video",
-                "default_added_heat": 30,
+                "default_added_heat": 30.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
                     if any(
@@ -225,7 +225,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "File (at least one)",
                 "emoji": Emojis.FILE.value,
                 "value": "file",
-                "default_added_heat": 20,
+                "default_added_heat": 20.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
                     if any(
@@ -241,7 +241,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Links (each)",
                 "emoji": Emojis.LINK.value,
                 "value": "links",
-                "default_added_heat": 15,
+                "default_added_heat": 15.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"] * len(re.findall(URL_RE, message.content))
                 ),
@@ -251,7 +251,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Stickers (each)",
                 "emoji": Emojis.STICKER.value,
                 "value": "stickers",
-                "default_added_heat": 20,
+                "default_added_heat": 20.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"] * len(message.stickers)
                 ),
@@ -268,7 +268,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Invite Links (each)",
                 "emoji": Emojis.LINK.value,
                 "value": "invite_links",
-                "default_added_heat": 100,
+                "default_added_heat": 100.0,
                 "check": check_invite_links,
                 "reason": lambda: _("**Auto Mod** - Advertising of Discord invites detected."),
             },
@@ -283,7 +283,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "@member Mentions (each)",
                 "emoji": Emojis.PING.value,
                 "value": "member_mentions",
-                "default_added_heat": 20,
+                "default_added_heat": 20.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
                     * len(
@@ -300,7 +300,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "@role Mentions (each)",
                 "emoji": Emojis.PING.value,
                 "value": "role_mentions",
-                "default_added_heat": 30,
+                "default_added_heat": 30.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
                     * len(
@@ -318,7 +318,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "@everyone, @here and main roles Mentions (each)",
                 "emoji": Emojis.EVERYONE_HERE.value,
                 "value": "everyone_here_mentions",
-                "default_added_heat": 100,
+                "default_added_heat": 100.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
                     * (
@@ -348,7 +348,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Discord/Steam Scam Links (each)",
                 "emoji": Emojis.STEAM_SCAM_LINK.value,
                 "value": "discord_steam_scam_links",
-                "default_added_heat": 100,
+                "default_added_heat": 100.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
                     * (
@@ -378,7 +378,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "NSFW Links in SFW channels (each)",
                 "emoji": Emojis.NSFW.value,
                 "value": "nsfw_links",
-                "default_added_heat": 100,
+                "default_added_heat": 100.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
                     * len(
@@ -397,7 +397,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Disguised Links (each)",
                 "emoji": Emojis.DISGUISED_LINK.value,
                 "value": "disguised_links",
-                "default_added_heat": 100,
+                "default_added_heat": 100.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
                     * len(
@@ -413,7 +413,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Blacklisted Domains (each)",
                 "emoji": Emojis.BLACKLISTED_LINK.value,
                 "value": "blacklisted_domains",
-                "default_added_heat": 100,
+                "default_added_heat": 100.0,
                 "params": [("blacklisted_domains", [])],
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
@@ -443,7 +443,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Premade Bad Word Lists",
                 "emoji": Emojis.WORD_LISTS.value,
                 "value": "premade_bad_word_lists",
-                "default_added_heat": 100,
+                "default_added_heat": 100.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
                     * sum(
@@ -463,7 +463,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Blacklisted Words (each)",
                 "emoji": Emojis.BLACKLISTED_WORD.value,
                 "value": "blacklisted_words",
-                "default_added_heat": 100,
+                "default_added_heat": 100.0,
                 "params": [("strict", []), ("wildcard", [])],
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]

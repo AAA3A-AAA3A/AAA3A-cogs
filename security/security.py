@@ -451,7 +451,7 @@ class Security(Cog):
     async def get_modlog_embed(
         self,
         action: typing.Literal[
-            "quarantine", "unquarantine", "timeout", "mute", "kick", "ban", "notify"
+            "quarantine", "unquarantine", "timeout", "untimeout", "mute", "umute", "kick", "ban", "notify"
         ],
         member: discord.Member,
         issued_by: typing.Optional[discord.Member] = None,
@@ -495,7 +495,7 @@ class Security(Cog):
                     emoji=Emojis.NOTIFY.value, member=member
                 ),
             }[action],
-            color=getattr(Colors, action.upper()).value,
+            color=getattr(Colors, action.upper().removeprefix("UN")).value,
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.set_thumbnail(url=member.display_avatar)
@@ -546,7 +546,9 @@ class Security(Cog):
 
     async def send_modlog(
         self,
-        action: str,
+        action: typing.Literal[
+            "quarantine", "unquarantine", "timeout", "untimeout", "mute", "umute", "kick", "ban", "notify"
+        ],
         member: discord.Member,
         issued_by: typing.Optional[discord.Member] = None,
         reason: typing.Optional[str] = None,

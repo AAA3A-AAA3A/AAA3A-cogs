@@ -73,6 +73,10 @@ async def check_invite_links(
     count = 0
     for invite_url in re.findall(INVITE_URL_RE, message.content):
         try:
+            discord.utils.resolve_invite(invite_url[1])
+        except ValueError:
+            continue
+        try:
             invite = await message._state._get_client().fetch_invite(invite_url[1])
             if invite.guild == message.guild:
                 continue
@@ -746,6 +750,11 @@ class AutoModModule(Module):
         config = await self.config_value(message.guild)()
         if not config["enabled"]:
             return
+        if not isinstance(message.author, discord.Member):
+            try:
+                message.author = await message.guild.fetch_member(message.author.id)
+            except discord.HTTPException:
+                return
         if await self.cog.is_trusted_admin_or_higher(message.author):
             return
         heats = self.heats_cache[message.guild][message.author]

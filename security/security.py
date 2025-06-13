@@ -135,6 +135,12 @@ class Security(Cog):
                     "case_str": _("Timed Out"),
                 },
                 {
+                    "name": "untimeout",
+                    "default_setting": True,
+                    "image": Emojis.TIMEOUT.value,
+                    "case_str": _("Untimed Out"),
+                },
+                {
                     "name": "notify",
                     "default_setting": True,
                     "image": Emojis.NOTIFY.value,
@@ -709,7 +715,7 @@ class Security(Cog):
     async def create_modlog_channel(
         self,
         guild: discord.Guild,
-        channel_name: str = "security-modlog",
+        channel_name: str = "🛡️・security-modlog",
         channel_category: typing.Optional[discord.CategoryChannel] = None,
     ) -> discord.TextChannel:
         if (
@@ -767,6 +773,11 @@ class Security(Cog):
     async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
         if entry.action != discord.AuditLogAction.member_role_update:
             return
+        if not isinstance(entry.target, discord.Member):
+            try:
+                entry.target = await entry.guild.fetch_member(entry.target.id)
+            except discord.HTTPException:
+                return
         if not await self.is_quarantined(entry.target):
             return
         if await self.is_whitelisted(entry.user, "quarantine"):

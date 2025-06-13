@@ -1163,7 +1163,7 @@ class LoggingModule(Module):
         embed.description += f"\n{box('- ' + message.content, 'diff')}" if message.content else ""
         if message.attachments:
             embed.description += "\n" + _("{emoji} **Attachments:**").format(
-                emoji=Emojis.ATTACHMENTS.value
+                emoji=Emojis.FILE.value
             )
             for attachment in message.attachments:
                 embed.description += f"\n- [{attachment.filename}]({attachment.url})"

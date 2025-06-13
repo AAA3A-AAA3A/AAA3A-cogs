@@ -1370,7 +1370,7 @@ class ConfigureEventCategoryView(discord.ui.View):
                 category_name=category["name"],
             ),
             description="\n".join(
-                f"{'✅' if category_config[event['value']]['enabled'] else '❌'} {event['emoji']} {event['name']}\n"
+                f"**{'✅' if category_config[event['value']]['enabled'] else '❌'} {event['emoji']} {event['name']}**"
                 + _("\n- Channel: {channel}").format(
                     channel=(
                         f"{channel.mention} (`{channel}`)"

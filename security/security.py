@@ -451,7 +451,7 @@ class Security(Cog):
     async def get_modlog_embed(
         self,
         action: typing.Literal[
-            "quarantine", "unquarantine", "timeout", "untimeout", "mute", "umute", "kick", "ban", "notify"
+            "quarantine", "unquarantine", "timeout", "untimeout", "mute", "unmute", "kick", "ban", "notify"
         ],
         member: discord.Member,
         issued_by: typing.Optional[discord.Member] = None,
@@ -547,7 +547,7 @@ class Security(Cog):
     async def send_modlog(
         self,
         action: typing.Literal[
-            "quarantine", "unquarantine", "timeout", "untimeout", "mute", "umute", "kick", "ban", "notify"
+            "quarantine", "unquarantine", "timeout", "untimeout", "mute", "unmute", "kick", "ban", "notify"
         ],
         member: discord.Member,
         issued_by: typing.Optional[discord.Member] = None,

@@ -1210,7 +1210,7 @@ class LoggingModule(Module):
                 result = ""
                 for target, overwrite in value:
                     if (member := entry.guild.get_member(target.id)) is not None:
-                        target_display = f"{member.display_name} (`{member}`) - `{member.id}`"
+                        target_display = f"{member.mention} (`{member}`) - `{member.id}`"
                     elif (role := entry.guild.get_role(target.id)) is not None:
                         target_display = f"{role.mention} (`{role.name}`) - `{role.id}`"
                     else:

@@ -71,7 +71,7 @@ class Emojis(Enum):
     ROLE = "🎭"
     CHANNEL = "#️⃣"
     THREAD = "🧵"
-    WEBHOOK = "🌐"
+    WEBHOOK = "🪝"
     MESSAGE = "💬"
     EMOJI = "😀"
     STICKER = "🏷️"

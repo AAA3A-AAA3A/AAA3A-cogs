@@ -50,7 +50,7 @@ LOGGING_EVENTS: typing.Dict[
     },
     "member": {
         "name": "Members",
-        "emoji": "🧑",
+        "emoji": Emojis.MEMBER.value,
         "events": [
             {"name": "Ban", "emoji": "🔨", "color": discord.Color.red(), "value": "ban"},
             {"name": "Unban", "emoji": "🔓", "color": discord.Color.green(), "value": "unban"},
@@ -95,7 +95,7 @@ LOGGING_EVENTS: typing.Dict[
     },
     "channel": {
         "name": "Channels",
-        "emoji": "📺",
+        "emoji": "🌐",  # The # looks bad in channel names.
         "events": [
             {
                 "name": "Channel Create",
@@ -191,7 +191,7 @@ LOGGING_EVENTS: typing.Dict[
     },
     "message": {
         "name": "Messages",
-        "emoji": "💬",
+        "emoji": Emojis.MESSAGE.value,
         "events": [
             {
                 "name": "Message Edit",
@@ -241,7 +241,7 @@ LOGGING_EVENTS: typing.Dict[
     },
     "role": {
         "name": "Roles",
-        "emoji": "🏷️",
+        "emoji": Emojis.ROLE.value,
         "events": [
             {
                 "name": "Role Create",
@@ -265,7 +265,7 @@ LOGGING_EVENTS: typing.Dict[
     },
     "server": {
         "name": "Server",
-        "emoji": "🛡️",
+        "emoji": "🏰",
         "events": [
             {
                 "name": "Guild Update",
@@ -703,7 +703,10 @@ class LoggingModule(Module):
             config["enabled"] = True
             for category, events in config["events"].items():
                 channel = await category_channel.create_text_channel(
-                    name=_("📁・{category}-logs").format(category=category.replace("_", "-")),
+                    name=_("{emoji}・{category}-logs").format(
+                        emoji=LOGGING_EVENTS[category]["emoji"],
+                        category=category.replace("_", "-"),
+                    ),
                     topic=_("This channel is used for logging {category} events.").format(
                         category=LOGGING_EVENTS[category]["name"]
                     ),

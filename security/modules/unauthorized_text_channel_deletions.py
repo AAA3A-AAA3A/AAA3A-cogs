@@ -202,8 +202,8 @@ class UnauthorizedTextChannelDeletionsModule(Module):
             embed.add_field(
                 name="\u200b",
                 value=_(
-                    "You can find the last {count} messages in this channel in the transcript."
-                ).format(count=len(messages)),
+                    "You can find the last {count} message{s} in this channel in the transcript."
+                ).format(count=len(messages), s="" if len(messages) == 1 else "s")
             )
 
             class Transcript(chat_exporter.construct.transcript.TranscriptDAO):

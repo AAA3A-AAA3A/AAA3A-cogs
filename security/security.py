@@ -15,7 +15,7 @@ import onetimepass
 import qrcode
 from PIL import Image, ImageDraw
 from redbot.core import modlog
-from redbot.core.utils.chat_formatting import humanize_list
+from redbot.core.utils.chat_formatting import humanize_list, box, text_to_file
 
 from .constants import WHITELIST_TYPES, Colors, Emojis, Levels, MemberEmojis
 from .modules import MODULES, Module
@@ -266,7 +266,7 @@ class Security(Cog):
             or (
                 message.webhook_id is not None
                 and await self.is_whitelisted(
-                    await self.bot.fetch_webhook(message.webhook_id), whitelist_type
+                    discord.Object(message.webhook_id, type=discord.Webhook), whitelist_type
                 )
             )
         )
@@ -281,8 +281,8 @@ class Security(Cog):
                 if (
                     member_config["level"] is not None or any(member_config["whitelist"].values())
                 ) and guild.get_member(member_id) is None:
-                    await self.config.member_from_id(member_id).level.set(None)
-                    await self.config.member_from_id(member_id).whitelist.clear()
+                    await self.config.member_from_ids(guild.id, member_id).level.clear()
+                    await self.config.member_from_ids(guild.id, member_id).whitelist.clear()
             if protected_role_ids := await self.config.guild(
                 guild
             ).modules.protected_roles.protected_roles():
@@ -298,7 +298,7 @@ class Security(Cog):
         issued_by: typing.Optional[discord.Member] = None,
         reason: typing.Optional[str] = None,
         logs: typing.List[str] = None,
-        file: typing.Optional[discord.File] = None,
+        trigger_messages: typing.List[discord.Message] = [],
         current_ctx: typing.Optional[commands.Context] = None,
         context_message: typing.Optional[discord.Message] = None,
     ) -> None:
@@ -335,7 +335,7 @@ class Security(Cog):
             issued_by=issued_by,
             reason=reason,
             logs=logs,
-            file=file,
+            trigger_messages=trigger_messages,
             context_message=context_message or (current_ctx.message if current_ctx else None),
             current_ctx=current_ctx,
         )
@@ -382,7 +382,7 @@ class Security(Cog):
         issued_by: typing.Optional[discord.Member] = None,
         reason: typing.Optional[str] = None,
         logs: typing.List[str] = None,
-        file: typing.Optional[discord.File] = None,
+        trigger_messages: typing.List[discord.Message] = [],
         context_message: typing.Optional[discord.Message] = None,
         current_ctx: typing.Optional[commands.Context] = None,
     ) -> None:
@@ -449,7 +449,7 @@ class Security(Cog):
             issued_by=issued_by,
             reason=reason,
             logs=logs,
-            file=file,
+            trigger_messages=trigger_messages,
             context_message=context_message or (current_ctx.message if current_ctx else None),
             current_ctx=current_ctx,
         )
@@ -560,7 +560,7 @@ class Security(Cog):
         reason: typing.Optional[str] = None,
         logs: typing.List[str] = None,
         duration: typing.Optional[datetime.timedelta] = None,
-        file: typing.Optional[discord.File] = None,
+        trigger_messages: typing.List[discord.Message] = [],
         context_message: typing.Optional[discord.Message] = None,
         current_ctx: typing.Optional[typing.Union[commands.Context, discord.Message]] = None,
     ) -> None:
@@ -574,6 +574,26 @@ class Security(Cog):
         )
         if current_ctx is not None:
             await current_ctx.channel.send(embed=embed)
+        if trigger_messages:
+            raw_trigger_messages = [
+                f"[{message.created_at.strftime('%Y-%m-%d %H:%M:%S')} (UTC)] #{message.channel.name}: {message.content}"
+                for message in trigger_messages
+            ]
+            file = text_to_file(
+                "\n".join(raw_trigger_messages),
+                filename="auto_mod_trigger_messages.txt",
+            )
+            embed.description += _("\n{emoji} **Trigger Message{s}:**\n").format(
+                emoji=Emojis.MESSAGE.value,
+                s="" if len(trigger_messages) == 1 else "s",
+            )
+            to_include = [raw_trigger_messages[-1]]
+            for message in reversed(raw_trigger_messages[:-1]):
+                if len(embed.description) + 8 + sum(map(len, to_include)) + len(message) <= 4000:
+                    to_include.insert(-2, message)
+            embed.description += box("\n".join(to_include))
+        else:
+            file = None
         unaction = action in ("unquarantine", "untimeout", "unmute")
         view: ActionsView = ActionsView(self, member, context_message=context_message)
         await view.populate(

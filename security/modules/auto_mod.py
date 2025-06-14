@@ -11,7 +11,7 @@ from collections import defaultdict
 
 from fuzzywuzzy import StringMatcher
 from redbot.core.data_manager import bundled_data_path
-from redbot.core.utils.chat_formatting import humanize_list, text_to_file
+from redbot.core.utils.chat_formatting import humanize_list
 from redbot.core.utils.common_filters import INVITE_URL_RE, URL_RE
 
 try:
@@ -807,13 +807,6 @@ class AutoModModule(Module):
                 {heat[3] for heat in heats},
                 key=lambda m: m.created_at,
             )
-            file = text_to_file(
-                "\n".join(
-                    f"[{message.created_at.strftime('%Y-%m-%d %H:%M:%S')} (UTC)] #{message.channel.name}: {message.content}"
-                    for message in trigger_messages
-                ),
-                filename="auto_mod_trigger_messages.txt",
-            )
             if config["heats"]["reset_after_punishment"]:
                 heats.clear()
             filter_value = sorted(
@@ -843,7 +836,7 @@ class AutoModModule(Module):
                 await self.cog.quarantine_member(
                     member=message.author,
                     reason=reason,
-                    file=file,
+                    trigger_messages=trigger_messages,
                     context_message=message,
                 )
             elif (action := filter_config["action"]) is None:
@@ -862,7 +855,7 @@ class AutoModModule(Module):
                     member=message.author,
                     reason=reason,
                     duration=duration,
-                    file=file,
+                    trigger_messages=trigger_messages,
                     context_message=message,
                     current_ctx=message,
                 )
@@ -881,7 +874,7 @@ class AutoModModule(Module):
                         member=message.author,
                         reason=reason,
                         duration=duration,
-                        file=file,
+                        trigger_messages=trigger_messages,
                         context_message=message,
                         current_ctx=message,
                     )
@@ -911,7 +904,7 @@ class AutoModModule(Module):
                     await self.cog.quarantine_member(
                         member=message.author,
                         reason=reason,
-                        file=file,
+                        trigger_messages=trigger_messages,
                         context_message=message,
                         current_ctx=message,
                     )

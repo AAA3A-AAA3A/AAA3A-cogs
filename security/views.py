@@ -258,8 +258,8 @@ class WhitelistView(discord.ui.View):
 
 class SettingsView(discord.ui.View):
     def __init__(self, cog: commands.Cog) -> None:
-        view_children_items = self.__view_children_items__
-        self.__view_children_items__ = []
+        view_children_items = self.__view_children_items__.copy()
+        self.__view_children_items__.clear()
         super().__init__(timeout=5 * 60)
         self.__view_children_items__ = view_children_items
         self._init_children()

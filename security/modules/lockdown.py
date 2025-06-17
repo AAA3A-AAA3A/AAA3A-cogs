@@ -312,8 +312,14 @@ class LockdownModule(Module):
             await message.channel.send(
                 embed=discord.Embed(
                     title=_("{emoji} Lockdown Warning").format(emoji=Emojis.LOCKDOWN.value),
-                    description=_(
-                        "A lockdown is currently active in this server. You are not allowed to send messages in any channel. **Please do not attempt to bypass this restriction.**"
+                    description=(
+                        _(
+                            "A lockdown is currently active in this server. You are not allowed to send messages in any channel. **Please do not attempt to bypass this restriction.**"
+                        )
+                        if not config["specific_channels"] else
+                        _(
+                            "A lockdown is currently active in specific channels of this server. You are not allowed to send messages in this channel. **Please do not attempt to bypass this restriction.**"
+                        )
                     ),
                     color=discord.Color.red(),
                 ).set_footer(text=message.guild.name, icon_url=message.guild.icon),

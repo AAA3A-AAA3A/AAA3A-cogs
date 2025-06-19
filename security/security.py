@@ -698,38 +698,37 @@ class Security(Cog):
                     raise RuntimeError(
                         _("Failed to update the quarantine role: {error}").format(error=str(e))
                     )
-        for channel in guild.text_channels:
+        for channel in guild.channels:
             if quarantine_role not in channel.overwrites:
-                try:
-                    await channel.set_permissions(
-                        quarantine_role,
-                        view_channel=False,
-                        send_messages=False,
-                        read_message_history=False,
-                        create_public_threads=False,
-                        create_private_threads=False,
-                        send_messages_in_threads=False,
-                        reason="Setting quarantine role permissions in text channels.",
+                overwrites = {
+                    "view_channel": False,
+                    "create_instant_invite": False,
+                    "create_public_threads": False,
+                    "create_private_threads": False,
+                    "send_messages_in_threads": False,
+                }
+                if not isinstance(channel, discord.ForumChannel):
+                    overwrites.update(
+                        {
+                            "send_messages": False,
+                            "read_message_history": False,
+                            "add_reactions": False,
+                            "embed_links": False,
+                        }
                     )
-                except discord.HTTPException as e:
-                    pass
-        for channel in guild.voice_channels:
-            if quarantine_role not in channel.overwrites:
-                try:
-                    await channel.set_permissions(
-                        quarantine_role,
-                        view_channel=False,
-                        connect=False,
-                        speak=False,
-                        send_messages=False,
-                        read_message_history=False,
-                        create_public_threads=False,
-                        create_private_threads=False,
-                        send_messages_in_threads=False,
-                        reason="Setting quarantine role permissions in voice channels.",
+                if isinstance(channel, (discord.VoiceChannel, discord.CategoryChannel)):
+                    overwrites.update(
+                        {
+                            "connect": False,
+                            "speak": False,
+                            "stream": False,
+                        }
                     )
-                except discord.HTTPException as e:
-                    pass
+                await channel.set_permissions(
+                    quarantine_role,
+                    overwrite=discord.PermissionOverwrite(**overwrites),
+                    reason="Updating the quarantine role overwrites in the channel used by Security.",
+                )
         return quarantine_role
 
     async def create_modlog_channel(
@@ -853,6 +852,15 @@ class Security(Cog):
                 ),
             ],
         )
+
+    @commands.Cog.listener()
+    async def on_guild_channel_create(self, channel: discord.abc.GuildChannel) -> None:
+        if (
+            (quarantine_role_id := await self.config.guild(channel.guild).quarantine_role()) is None
+            or (quarantine_role := channel.guild.get_role(quarantine_role_id)) is None
+        ):
+            return
+        await self.create_or_update_quarantine_role(channel.guild)
 
     @commands.Cog.listener()
     async def on_command_completion(

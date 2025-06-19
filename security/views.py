@@ -262,7 +262,7 @@ class SettingsView(discord.ui.View):
         self.__view_children_items__.clear()
         super().__init__(timeout=5 * 60)
         self.__view_children_items__ = view_children_items
-        self._init_children()
+        self._children = self._init_children()
         self.ctx: commands.Context = None
         self.cog: commands.Cog = cog
 
@@ -978,18 +978,18 @@ class ActionsView(discord.ui.View):
                 user=self.member,
                 reason=reason,
             )
-        elif action["value"] == "kick":
+        elif action == "kick":
             await self.member.kick(reason=audit_log_reason)
-        elif action["value"] == "ban":
+        elif action == "ban":
             await self.member.ban(reason=audit_log_reason)
-        elif action["value"] == "quarantine":
+        elif action == "quarantine":
             await self.cog.quarantine_member(
                 member=self.member,
                 issued_by=interaction.user,
                 reason=reason,
                 context_message=self._message,
             )
-        elif action["value"] == "unquarantine":
+        elif action == "unquarantine":
             await self.cog.unquarantine_member(
                 member=self.member,
                 issued_by=interaction.user,

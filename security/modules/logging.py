@@ -1167,6 +1167,12 @@ class LoggingModule(Module):
             )
             for attachment in message.attachments:
                 embed.description += f"\n- [{attachment.filename}]({attachment.url})"
+        if message.stickers:
+            embed.description += "\n" + _("{emoji} **Stickers:**").format(
+                emoji=Emojis.STICKER.value
+            )
+            for sticker in message.stickers:
+                embed.description += f"\n- [{sticker.name}]({sticker.url}) (`{sticker.id}`)"
         if message.reference is not None and message.reference.resolved is not None:
             jump_link = (
                 message.reference.resolved.jump_url

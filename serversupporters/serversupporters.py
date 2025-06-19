@@ -265,9 +265,8 @@ class ServerSupporters(Cog):
         """Force update the roles of all members in the guild."""
         if not await self.config.guild(ctx.guild).enabled():
             raise commands.UserFeedbackCheckFailure(_("The Server Supporters system is not enabled."))
+        retrieve, after = 1000, discord.guild.OLDEST_OBJECT
         while True:
-            retrieve = 1000
-            after = after or discord.guild.OLDEST_OBJECT
             after_id = after.id if after else None
             data = await ctx.bot.http.get_members(self.id, retrieve, after_id)
             if not data:

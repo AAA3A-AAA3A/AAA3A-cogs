@@ -189,8 +189,6 @@ class ServerSupporters(Cog):
             return
         if after.bot:
             return
-        if after.status == discord.Status.offline:  # Ignore offline members.
-            return
         if (
             not await self.config.guild(after.guild).enabled()
             or await self.bot.cog_disabled_in_guild(self, after.guild)

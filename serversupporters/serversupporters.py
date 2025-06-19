@@ -110,12 +110,12 @@ class ServerSupporters(Cog):
         if (role := await self.get_role(member, _type)) is not None:  # If I decide to remove the requirement of having a role set...
             if enabled:
                 embed.description = _(
-                    "They have been given the **{role.mention}** role for being a server supporter."
-                ).format(role=role, _type=_type)
+                    "{member.mention} has been given the **{role.mention}** role for being a server supporter."
+                ).format(member=member, role=role, _type=_type)
             else:
                 embed.description = _(
-                    "They have been removed from the **{role.mention}** role for no longer being a server supporter."
-                ).format(role=role, _type=_type)
+                    "{member.mention} has been removed from the **{role.mention}** role for no longer being a server supporter."
+                ).format(member=member, role=role, _type=_type)
         embed.set_footer(text=member.guild.name, icon_url=member.guild.icon)
         return embed
 

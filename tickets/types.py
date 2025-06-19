@@ -536,12 +536,12 @@ class Ticket:
             raise RuntimeError(_("The creation of tickets is disabled for this profile."))
         forum_channel = (
             self.guild.get_channel(forum_channel_id)
-            if (forum_channel_id := config.get("forum_channel")) is not None
+            if (forum_channel_id := config["forum_channel"]) is not None
             else None
         )
         category_open = (
             self.guild.get_channel(category_open_id)
-            if (category_open_id := config.get("category_open")) is not None
+            if (category_open_id := config["category_open"]) is not None
             else None
         )
         if forum_channel is None and category_open is None:
@@ -591,7 +591,7 @@ class Ticket:
             "Ticket creation for {ticket.owner.display_name} ({ticket.owner.id}) (profile `{ticket.profile}`)."
         ).format(ticket=self)
         if (
-            (ticket_role_id := config.get("ticket_role")) is not None
+            (ticket_role_id := config["ticket_role"]) is not None
             and (ticket_role := self.guild.get_role(ticket_role_id)) is not None
             and ticket_role not in self.owner.roles
         ):
@@ -613,10 +613,16 @@ class Ticket:
                         "I don't have the required permissions to create private threads in the forum/text channel configured."
                     )
                 )
+            applied_tags = [
+                    tag
+                    for tag_id in config["forum_tags"]
+                    if (tag := forum_channel.get_tag(tag_id)) is not None
+                ]
             if isinstance(forum_channel, discord.ForumChannel):
                 thread_message = await forum_channel.create_thread(
                     name=await self.channel_name(forum_channel=True),
                     auto_archive_duration=10080,
+                    applied_tags=applied_tags,
                     reason=audit_reason,
                     **kwargs,
                 )
@@ -626,6 +632,7 @@ class Ticket:
                     name=await self.channel_name(forum_channel=True),
                     auto_archive_duration=10080,
                     invitable=False,
+                    applied_tags=applied_tags,
                     reason=audit_reason,
                 )
                 view._message = await self.channel.send(**kwargs)
@@ -804,7 +811,7 @@ class Ticket:
                 category=(
                     category_closed
                     if (
-                        (category_closed_id := config.get("category_closed")) is not None
+                        (category_closed_id := config["category_closed"]) is not None
                         and (category_closed := self.guild.get_channel(category_closed_id))
                         is not None
                     )
@@ -886,7 +893,7 @@ class Ticket:
                 category=(
                     category_open
                     if (
-                        (category_open_id := config.get("category_open")) is not None
+                        (category_open_id := config["category_open"]) is not None
                         and (category_open := self.guild.get_channel(category_open_id)) is not None
                     )
                     else self.channel.category

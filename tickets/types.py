@@ -772,6 +772,11 @@ class Ticket:
         self.closed_at = datetime.datetime.now(tz=datetime.timezone.utc)
         await self.save()
 
+        await self.log_action(
+            action=_("❌ Ticket Closed"),
+            author=closer,
+            reason=reason,
+        )
         if closer is None:
             audit_reason = _("Ticket closed (profile `{self.profile}`).").format(self=self)
         else:
@@ -810,11 +815,6 @@ class Ticket:
             )
 
         self.bot.dispatch("ticket_closed", self)
-        await self.log_action(
-            action=_("❌ Ticket Closed"),
-            author=closer,
-            reason=reason,
-        )
         if config["create_modlog_case"]:
             await modlog.create_case(
                 bot=self.bot,

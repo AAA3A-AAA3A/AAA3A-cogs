@@ -268,7 +268,7 @@ class ServerSupporters(Cog):
         retrieve, after = 1000, discord.guild.OLDEST_OBJECT
         while True:
             after_id = after.id if after else None
-            data = await ctx.bot.http.get_members(self.id, retrieve, after_id)
+            data = await ctx.bot.http.get_members(ctx.guild.id, retrieve, after_id)
             if not data:
                 break
             after = discord.Object(id=int(data[-1]["user"]["id"]))

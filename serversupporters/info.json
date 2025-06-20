@@ -1,7 +1,7 @@
 {
     "author": ["AAA3A"],
     "name": "ServerSupporters",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!\nYou have to install [Red-Web-Dashboard](https://red-web-dashboard.readthedocs.io/en/latest/) to use this cog!\n⚠️ As the server tags aren't supported by dpy yet, this cog will make extra API calls to Discord when members are updated. This may cause rate limits if you have a lot of members in your server.",
+    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description. If you enjoy my work, please consider donating on [Buy Me a Coffee](<https://www.buymeacoffee.com/aaa3a>) or [Ko-Fi](<https://ko-fi.com/aaa3a>)!\n⚠️ As the server tags aren't supported by dpy yet, this cog will make extra API calls to Discord when members are updated. This may cause rate limits if you have a lot of members in your server.",
     "short": "Track and give roles to supporters, members using the server tag or having a server invite link in their status!",
     "description": "Track and give roles to supporters, members using the server tag or having a server invite link in their status!",
     "tags": [

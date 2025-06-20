@@ -460,8 +460,8 @@ class Role:
                     for p in player.game.alive_players
                     if p.role.side != "Mafia" and not p.is_town_traitor
                 ]
-            ) or (
             )
+            or (
                 all(p.is_dead for p in player.game.players if p.role.side == "Mafia")
                 and any(p for p in player.game.alive_players if p.is_town_traitor)
                 and player.game.current_number
@@ -1650,6 +1650,9 @@ class Watcher(Role):
     async def action(cls, night, player: Player, target: Player) -> None:
         players = [
             p
+            for p, t in night.targets.items()
+            if (t == target if not isinstance(t, typing.Tuple) else target in t)
+            and p.role.visit_type != "Passive"
         ]
         await player.send(
             embed=discord.Embed(
@@ -2344,8 +2347,9 @@ class Silencer(Role):
         },
     }
 
-    perform_action = perform_action_select_targets(self_allowed=False, mafia_allowed=False, last_target_allowed=False)
+    perform_action = perform_action_select_targets(
         self_allowed=False, mafia_allowed=False, last_target_allowed=False
+    )
 
 
 class Shaman(Role):

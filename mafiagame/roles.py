@@ -96,7 +96,10 @@ class Player:
     async def kill(
         self,
         cause: typing.Union[
-            typing.Literal["Mafia", "voting", "suicide", "suicide_during_judgement", "afk", "scorching_sun"], "Player"
+            typing.Literal[
+                "Mafia", "voting", "suicide", "suicide_during_judgement", "afk", "scorching_sun"
+            ],
+            "Player",
         ] = "Mafia",
         reason: str = None,
     ) -> None:
@@ -445,14 +448,20 @@ class Role:
     def has_won(cls, player: Player) -> bool:
         mafia_check = (
             len(
-                [p for p in player.game.alive_players if p.role.side == "Mafia" or p.is_town_traitor]
-            ) >= len(
+                [
+                    p
+                    for p in player.game.alive_players
+                    if p.role.side == "Mafia" or p.is_town_traitor
+                ]
+            )
+            >= len(
                 [
                     p
                     for p in player.game.alive_players
                     if p.role.side != "Mafia" and not p.is_town_traitor
                 ]
             ) or (
+            )
                 all(p.is_dead for p in player.game.players if p.role.side == "Mafia")
                 and any(p for p in player.game.alive_players if p.is_town_traitor)
                 and player.game.current_number
@@ -462,9 +471,8 @@ class Role:
                     if p.role.side == "Mafia"
                 )
                 >= 3
-            ) and not any(
-                p.has_won for p in player.game.alive_players if p.role is Jester
             )
+            and not any(p.has_won for p in player.game.alive_players if p.role is Jester)
         )
         villager_check = (
             all(
@@ -1108,7 +1116,10 @@ class Executioner(Role):
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
-        return player.global_target.is_dead and player.global_target.death_cause in ("voting", "suicide_during_judgement")
+        return player.global_target.is_dead and player.global_target.death_cause in (
+            "voting",
+            "suicide_during_judgement",
+        )
 
     @classmethod
     async def on_game_start(cls, game, player: Player) -> None:
@@ -1338,8 +1349,7 @@ class Spy(Role):
                 title=_("Your target, {target.member.display_name}, ").format(target=target)
                 + (
                     _(" has visited {t.member.display_name} this night.").format(t=t)
-                    if t is not None
-                    and target.role.visit_type != "Passive"
+                    if t is not None and target.role.visit_type != "Passive"
                     else _("apparently didn't visit anyone this night.")
                 )
             ),
@@ -1639,7 +1649,7 @@ class Watcher(Role):
     @classmethod
     async def action(cls, night, player: Player, target: Player) -> None:
         players = [
-            p for p, t in night.targets.items() if (t == target if not isinstance(t, typing.Tuple) else target in t) and p.role.visit_type != "Passive"
+            p
         ]
         await player.send(
             embed=discord.Embed(
@@ -2335,6 +2345,7 @@ class Silencer(Role):
     }
 
     perform_action = perform_action_select_targets(self_allowed=False, mafia_allowed=False, last_target_allowed=False)
+        self_allowed=False, mafia_allowed=False, last_target_allowed=False
 
 
 class Shaman(Role):
@@ -2382,9 +2393,7 @@ class Shaman(Role):
         return not player.is_dead
 
     @classmethod
-    async def perform_action(
-        cls, night, player: Player, interaction: discord.Interaction
-    ) -> None:
+    async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
         if player.voodoo_doll_vanished:
             raise RuntimeError(_("Your voodoo doll has vanished for the rest of the game."))
         await perform_action_select_targets(self_allowed=False)(night, player, interaction)
@@ -2486,9 +2495,7 @@ class Gambler(Role):
         )
 
     @classmethod
-    def get_dice_result(
-        cls, night, player: Player
-    ) -> typing.Tuple[bool, typing.Optional[Player]]:
+    def get_dice_result(cls, night, player: Player) -> typing.Tuple[bool, typing.Optional[Player]]:
         dice = night.gamblers_dices[player]
         if player not in night.gamblers_results:
             if dice == "white":
@@ -3193,7 +3200,7 @@ class Magician(Role):
         },
     }
 
-    perform_action = perform_action_select_targets(self_allowed=False)
+    perform_action = perform_action_select_targets(targets_number=2, self_allowed=False)
 
     @classmethod
     async def next_end_day_action(
@@ -3973,7 +3980,9 @@ class Ritualist(Role):
         },
         "Too Easy": {
             "check": lambda player: any(
-                p.role.side == "Villagers" for p in player.game.dead_players if p.death_cause == player
+                p.role.side == "Villagers"
+                for p in player.game.dead_players
+                if p.death_cause == player
             ),
             "description": _("Perform all 3 rituals on Villagers' players."),
         },

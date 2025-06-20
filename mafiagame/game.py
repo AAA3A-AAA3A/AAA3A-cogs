@@ -74,7 +74,9 @@ class DayNight:
             color=NIGHT_COLOR if isinstance(self, Night) else DAY_COLOR,
         )
         embed.add_field(
-            name=_("Currently alive ({len_alive}):").format(len_alive=len(self.game.alive_players)),
+            name=_("Currently alive ({len_alive}):").format(
+                len_alive=len(self.game.alive_players)
+            ),
             value="\n".join(
                 [
                     f"😃 {player.member.mention}"
@@ -195,7 +197,9 @@ class Night(DayNight):
                 player = mafia_player
             if target is not None:
                 try:
-                    for i, tg in enumerate([target] if not isinstance(target, typing.Tuple) else target):
+                    for i, tg in enumerate(
+                        [target] if not isinstance(target, typing.Tuple) else target
+                    ):
                         if not isinstance(tg, Player):
                             continue
                         for p in sorted(
@@ -245,14 +249,14 @@ class Night(DayNight):
                 except ValueError:
                     self.targets.pop(player, None)
                     continue
-            if player.role is not Doctor or target in [
-                t for p, t in self.targets.items() if p.role is GodFather
-            ]:
-                player.game_targets.append(target)
             try:
                 await player.role.action(self, player, target)
             except NotImplementedError:
                 pass
+            if player.role is not Doctor or target in [
+                t for p, t in self.targets.items() if p.role is GodFather
+            ]:
+                player.game_targets.append(target)
         if (afk_days_before_kick := self.game.config["afk_days_before_kick"]) is not None:
             for player, days in self.game.afk_players.copy().items():
                 if days >= afk_days_before_kick:

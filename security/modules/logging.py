@@ -1210,6 +1210,8 @@ class LoggingModule(Module):
                 return f"`#{value.value:06X}`"
             elif isinstance(value, discord.Permissions):
                 return f"`Permissions({value.value})`"
+            elif isinstance(value, (discord.Member, discord.User, discord.Role)):
+                return f"{value.mention} (`{value}`) - `{value.id}`"
             elif (
                 isinstance(value, typing.List)
                 and value
@@ -1219,9 +1221,9 @@ class LoggingModule(Module):
                 result = ""
                 for target, overwrite in value:
                     if (member := entry.guild.get_member(target.id)) is not None:
-                        target_display = f"{member.mention} (`{member}`) - `{member.id}`"
+                        target_display = get_formatting(member)
                     elif (role := entry.guild.get_role(target.id)) is not None:
-                        target_display = f"{role.mention} (`{role.name}`) - `{role.id}`"
+                        target_display = get_formatting(role)
                     else:
                         target_display = f"{target.type.__name__} `{target.id}`"
                     result += f"\n  - {target_display} - `PermissionOverwrite({len(overwrite._values)} permissions)`"

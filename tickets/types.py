@@ -717,7 +717,7 @@ class Ticket:
                     embed_links=not self.is_closed,
                     attach_files=not self.is_closed,
                 )
-        for speak_role_id in config["speak_roles"]:
+        for speak_role_id in config.get("speak_roles", []):
             if (speak_role := self.guild.get_role(speak_role_id)) is not None:
                 overwrites[speak_role] = discord.PermissionOverwrite(
                     read_messages=True,

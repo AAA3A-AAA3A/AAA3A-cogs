@@ -806,7 +806,7 @@ class Tickets(DashboardIntegration, Cog):
                     speak_roles=humanize_list(
                         [
                             role.mention
-                            for role_id in config["speak_roles"]
+                            for role_id in config.get("speak_roles", [])
                             if (role := ctx.guild.get_role(role_id)) is not None
                         ]
                     ) or "...",

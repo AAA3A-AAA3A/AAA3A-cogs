@@ -1,9 +1,11 @@
-from AAA3A_utils import Cog, Settings  # isort:skip
+from AAA3A_utils import Cog, Settings, Menu  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
+
+from redbot.core.utils.chat_formatting import pagify
 
 import datetime
 import re
@@ -136,13 +138,14 @@ class ServerSupporters(Cog):
             if (
                 (tag_abandon_channel_id := await self.config.guild(member.guild).tag_abandon_channel()) is None
                 or (tag_abandon_channel := member.guild.get_channel(tag_abandon_channel_id)) is None
+                or (tag_supporter_role := await self.get_role(member, "tag")) is None
             ):
                 return
             try:
                 await tag_abandon_channel.send(
                     _(
-                        "Hello {member.mention}! By taking the **{member.guild.name}** tag off, you will lose access to the **Tag Supporter** role and its perks..."
-                    ).format(member=member)
+                        "Hello {member.mention}! By taking the **{member.guild.name}** tag off, you will lose access to the {tag_supporter_role.mention} role and its perks..."
+                    ).format(member=member, tag_supporter_role=tag_supporter_role)
                 )
             except discord.HTTPException as e:
                 self.logger.error(
@@ -181,7 +184,37 @@ class ServerSupporters(Cog):
                     if invite.code == invite_link[1]:
                         return True
         return False
-        
+
+    async def check(
+        self,
+        member: discord.Member,
+        _type: typing.Literal["tag", "status"],
+        user_payload: typing.Optional[typing.Dict[str, typing.Any]] = None,
+    ) -> bool:
+        if _type == "tag":
+            if user_payload is None:
+                try:
+                    user_payload = await self.bot.http.request(
+                        discord.http.Route(
+                            "GET",
+                            "/users/{user_id}",
+                            user_id=member.id,
+                        )
+                    )
+                except discord.HTTPException:
+                    return False
+            return (
+                user_payload["clan"] is not None
+                and user_payload["clan"]["identity_enabled"]
+                and user_payload["clan"]["identity_guild_id"] == str(member.guild.id)
+            )
+        elif _type == "status":
+            return (
+                bool(member.activities)
+                and (status := next((a for a in member.activities if isinstance(a, discord.CustomActivity)), None)) is not None
+                and await self.check_invites_in_status(member.guild, status.name)
+            )
+        return False
 
     @commands.Cog.listener()
     async def on_presence_update(self, before: discord.Member, after: discord.Member) -> None:
@@ -199,13 +232,10 @@ class ServerSupporters(Cog):
             return
         self.cache[after] = True
 
-        async def status_check(member: discord.Member) -> bool:
-            return (
-                bool(member.activities)
-                and (status := next((a for a in member.activities if isinstance(a, discord.CustomActivity)), None)) is not None
-                and await self.check_invites_in_status(member.guild, status.name)
-            )
-        before_status_enabled, after_status_enabled = await status_check(before), await status_check(after)
+        before_status_enabled, after_status_enabled = (
+            await self.check(before, "status"),
+            await self.check(after, "status"),
+        )
         await self.update_roles(after, "status", after_status_enabled)
         if before_status_enabled != after_status_enabled:
             await self.log(after, "status", after_status_enabled)
@@ -229,23 +259,7 @@ class ServerSupporters(Cog):
         self.cache[after] = True
 
         before_tag_enabled = tag_supporter_role in before.roles
-        if user_payload is None:
-            try:
-                user_payload = await self.bot.http.request(
-                    discord.http.Route(
-                        "GET",
-                        "/users/{user_id}",
-                        user_id=after.id,
-                    )
-                )
-            except discord.HTTPException:
-                await self.locks_cache[after].release()
-                return
-        after_tag_enabled = (
-            user_payload["clan"] is not None
-            and user_payload["clan"]["identity_enabled"]
-            and user_payload["clan"]["identity_guild_id"] == str(after.guild.id)
-        )
+        after_tag_enabled = await self.check(after, "tag", user_payload)
         await self.update_roles(after, "tag", after_tag_enabled)
         if before_tag_enabled != after_tag_enabled:
             await self.log(after, "tag", after_tag_enabled)
@@ -257,6 +271,52 @@ class ServerSupporters(Cog):
     async def setserversupporters(self, ctx: commands.Context) -> None:
         """Settings for the Server Supporters system."""
         pass
+
+    @setserversupporters.command(aliases=["list"])
+    async def listsupporters(self, ctx: commands.Context, _type: typing.Literal["tag", "status"]) -> None:
+        """List all members with the status supporter role."""
+        if _type == "tag":
+            retrieve, after = 1000, discord.guild.OLDEST_OBJECT
+            members = []
+            while True:
+                after_id = after.id if after else None
+                data = await ctx.bot.http.get_members(ctx.guild.id, retrieve, after_id)
+                if not data:
+                    break
+                after = discord.Object(id=int(data[-1]["user"]["id"]))
+                for raw_member in reversed(data):
+                    member = discord.Member(data=raw_member, guild=ctx.guild, state=ctx.guild._state)
+                    if member.bot:
+                        continue
+                    if await self.check(member, "tag", raw_member["user"]):
+                        members.append(member)
+                if len(data) < 1000:
+                    break
+        else:
+            members = [
+                member for member in ctx.guild.members
+                if await self.check(member, "status")
+            ]
+        embed: discord.Embed = discord.Embed(
+            title=_("{count} Server {_type} Supporter{s}").format(
+                count=len(members),
+                _type=_("Tag") if _type == "tag" else _("Status"),
+                s="" if len(members) == 1 else "s",
+            ),
+            color=await ctx.embed_color(),
+            timestamp=ctx.message.created_at,
+        )
+        embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
+        description = "\n".join(
+            f"- {member.mention}"
+            for member in members
+        )
+        embeds = []
+        for page in pagify(description, page_length=2000):
+            e = embed.copy()
+            e.description = page
+            embeds.append(e)
+        await Menu(pages=embeds).start(ctx)
 
     @setserversupporters.command()
     async def forceupdate(self, ctx: commands.Context) -> None:
@@ -274,7 +334,9 @@ class ServerSupporters(Cog):
                 member = discord.Member(data=raw_member, guild=ctx.guild, state=ctx.guild._state)
                 if member.bot:
                     continue
-                await self.on_presence_update(member, member)
-                await self.on_member_update(member, member, user_payload=raw_member["user"])
+                if await self.check(member, "tag", raw_member["user"]):
+                    await self.update_roles(member, "tag", True)
+                if await self.check(member, "status"):
+                    await self.update_roles(member, "status", True)
             if len(data) < 1000:
                 break

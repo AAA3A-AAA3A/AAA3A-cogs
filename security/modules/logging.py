@@ -721,6 +721,7 @@ class LoggingModule(Module):
                 ),
                 ephemeral=True,
             )
+            await view._message.edit(embed=await view.get_embed(), view=view)
 
         create_a_logging_category_button.callback = create_logging_category_callback
         components.append(create_a_logging_category_button)
@@ -779,6 +780,7 @@ class LoggingModule(Module):
                 ),
                 ephemeral=True,
             )
+            await view._message.edit(embed=await view.get_embed(), view=view)
 
         create_a_logging_channel_button.callback = create_logging_channel_callback
         components.append(create_a_logging_channel_button)

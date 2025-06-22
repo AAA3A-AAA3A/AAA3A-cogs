@@ -288,6 +288,16 @@ WHITELIST_TYPES: typing.List[
         "webhooks": True,
         "staff_allowed": False,
     },
+    {
+        "name": "Unauthorized Text Channel Deletions Whitelist",
+        "emoji": Emojis.UNAUTHORIZED_TEXT_CHANNEL_DELETIONS.value,
+        "description": "CAUTION Be able to delete text channels without being logged.",
+        "value": "unauthorized_text_channel_deletions",
+        "channels": True,
+        "categories": False,  # A member could change the category of a channel...
+        "webhooks": False,
+        "staff_allowed": False,
+    },
 ]
 
 

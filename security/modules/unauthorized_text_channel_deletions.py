@@ -164,7 +164,13 @@ class UnauthorizedTextChannelDeletionsModule(Module):
             return
         if config["specific_channels"] and channel.id not in config["specific_channels"]:
             return
-        if await self.cog.is_trusted_admin_or_higher(responsible):
+        if (
+            await self.cog.is_whitelisted(responsible, "unauthorized_text_channel_deletions")
+            or await self.cog.is_whitelisted(
+                discord.Object(id=channel.id, type=discord.TextChannel),
+                "unauthorized_text_channel_deletions",
+            )
+        ):
             return
         messages = (
             self.messages_cache[channel]

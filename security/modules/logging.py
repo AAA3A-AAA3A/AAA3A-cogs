@@ -1037,7 +1037,7 @@ class LoggingModule(Module):
             possible_invite = _("- {vanity_url} (Vanity URL)").format(
                 vanity_url=member.guild.vanity_url
             )
-        elif
+        else:
             possible_invite = None
         if self.invites_cache[member.guild] and manage_guild:
             invites = self.invites_cache[member.guild].copy()

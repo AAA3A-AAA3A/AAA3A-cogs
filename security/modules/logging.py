@@ -716,7 +716,7 @@ class LoggingModule(Module):
                     event["channel"] = channel.id
             await self.config_value(guild).set(config)
             await interaction.followup.send(
-                _("✅ A new logging category has been created: {category.name}.").format(
+                _("✅ A new logging category has been created: {category_channel.name}.").format(
                     category=category
                 ),
                 ephemeral=True,

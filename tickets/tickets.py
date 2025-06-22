@@ -87,6 +87,7 @@ class Tickets(DashboardIntegration, Cog):
                 "view_roles": [],
                 "whitelist_roles": [],
                 "blacklist_roles": [],
+                "ticket_role": None,
                 # Channels.
                 "forum_channel": None,
                 "forum_tags": [],

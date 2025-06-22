@@ -857,7 +857,7 @@ class Security(Cog):
     async def on_guild_channel_create(self, channel: discord.abc.GuildChannel) -> None:
         if (
             (quarantine_role_id := await self.config.guild(channel.guild).quarantine_role()) is None
-            or (quarantine_role := channel.guild.get_role(quarantine_role_id)) is None
+            or channel.guild.get_role(quarantine_role_id) is None
         ):
             return
         await self.create_or_update_quarantine_role(channel.guild)

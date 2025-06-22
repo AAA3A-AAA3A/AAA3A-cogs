@@ -1018,8 +1018,7 @@ class LoggingModule(Module):
                 for invite in invites
             }
 
-    async def get_invite(self, member: discord.Member) -> typing.Optional[str]:
-        possible_invite = None
+    async def get_join_method(self, member: discord.Member) -> typing.Optional[str]:
         view_audit_logs, manage_guild = (
             member.guild.me.guild_permissions.view_audit_log,
             member.guild.me.guild_permissions.manage_guild,
@@ -1033,11 +1032,13 @@ class LoggingModule(Module):
                         return _("- Added by {user.mention} (`{user}`) - `{user.id}`").format(
                             user=entry.user
                         )
-            return possible_invite
+            return None
         if "VANITY_URL" in member.guild.features and member.guild.vanity_url is not None:
             possible_invite = _("- {vanity_url} (Vanity URL)").format(
                 vanity_url=member.guild.vanity_url
             )
+        elif
+            possible_invite = None
         if self.invites_cache[member.guild] and manage_guild:
             invites = self.invites_cache[member.guild].copy()
             guild_invites = await member.guild.invites()
@@ -1096,8 +1097,12 @@ class LoggingModule(Module):
             count=member.guild.member_count,
             bots=len([m for m in member.guild.members if m.bot]),
         )
-        if (invite := await self.get_invite(member)) is not None:
-            embed.add_field(name=_("🔗 Used Invite Link:"), value=invite, inline=False)
+        if (join_method := await self.get_join_method(member)) is not None:
+            embed.add_field(
+                name=_("🔗 Join Method:"),
+                value=join_method,
+                inline=False,
+            )
         await channel.send(embed=embed)
 
     async def on_member_remove(self, member: discord.Member) -> None:

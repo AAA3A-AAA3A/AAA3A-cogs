@@ -253,6 +253,7 @@ class WhitelistMembersSelect(discord.ui.UserSelect):
         self.menu: Menu = menu
 
     async def callback(self, interaction: discord.Interaction) -> None:
+        await interaction.response.defer(ephemeral=True, thinking=True)
         protected_roles = await self.module.config_value(self.guild).protected_roles()
         whitelisted = protected_roles[str(self.role.id)]
         added, removed, trusted_admins = [], [], []
@@ -261,10 +262,10 @@ class WhitelistMembersSelect(discord.ui.UserSelect):
                 trusted_admins.append(member)
             elif member.id not in whitelisted:
                 whitelisted.append(member.id)
-                removed.append(member)
+                added.append(member)
             else:
                 whitelisted.remove(member.id)
-                added.append(member)
+                removed.append(member)
         protected_roles[str(self.role.id)] = whitelisted
         await self.module.config_value(self.guild).protected_roles.set(protected_roles)
         self.menu.pages = await self.module.get_whitelisted_members_embeds(self.guild, self.role)
@@ -274,7 +275,7 @@ class WhitelistMembersSelect(discord.ui.UserSelect):
         await self.initial_view._message.edit(
             embed=await self.initial_view.get_embed(), view=self.initial_view
         )
-        await interaction.response.send_message(
+        await interaction.followup.send(
             "\n".join(
                 (
                     [
@@ -327,7 +328,7 @@ class RemoveButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction) -> None:
         await self.module.config_value(self.guild).protected_roles.clear_raw(str(self.role.id))
-        await interaction.message.delete()
+        await self.view._message.delete()
         await interaction.response.send_message(
             _("Protected role {role.mention} (`{role.name}`) removed.").format(role=self.role),
             ephemeral=True,

@@ -1,7 +1,8 @@
 from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands  # isort:skip
+from redbot.core import commands, app_commands  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
+import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
@@ -42,6 +43,22 @@ from .view import FakeIdentityView
 # General repo credits.
 
 _: Translator = Translator("FakeIdentities", __file__)
+
+
+class GenderConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> Gender:
+        for gender in Gender:
+            if argument.lower() == gender.value.lower():
+                return gender
+        raise commands.BadArgument(_("Unknown gender: {argument}.").format(argument=argument))
+
+
+class LocaleConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> Locale:
+        for locale in LOCALES:
+            if argument.lower() == locale.value.lower():
+                return locale
+        raise commands.BadArgument(_("Unknown locale: {argument}.").format(argument=argument))
 
 
 @cog_i18n(_)
@@ -273,14 +290,33 @@ class FakeIdentities(Cog):
         self.fake_identities.append(fake_identity)
         return fake_identity
 
+    async def gender_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> typing.List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=gender.value, value=gender.value)
+            for gender in Gender
+            if gender.value.lower().startswith(current.lower())
+        ][:25]
+
+    async def locale_autocomplete(
+        self, interaction: discord.Interaction, current: str
+    ) -> typing.List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=locale.value, value=locale.value)
+            for locale in LOCALES
+            if locale.value.lower().startswith(current.lower())
+        ][:25]
+
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["fakeid"])
+    @app_commands.autocomplete(gender=gender_autocomplete, nationality=locale_autocomplete, location=locale_autocomplete)
     async def fakeidentity(
         self,
         ctx: commands.Context,
-        gender: typing.Optional[Gender] = None,
-        nationality: typing.Optional[Locale] = None,
-        location: typing.Optional[Locale] = None,
+        gender: typing.Optional[GenderConverter] = None,
+        nationality: typing.Optional[LocaleConverter] = None,
+        location: typing.Optional[LocaleConverter] = None,
         seed: typing.Optional[int] = None,
     ) -> None:
         """Generate a fake identity."""

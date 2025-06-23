@@ -115,6 +115,7 @@ class ProtectedRolesModule(Module):
                     for role_id in protected_roles
                     if (role := guild.get_role(int(role_id))) is not None
                 ],
+                custom_id="manage_protected_roles_select",
             )
 
             async def manage_select_callback(interaction: discord.Interaction) -> None:
@@ -138,8 +139,11 @@ class ProtectedRolesModule(Module):
                 menu.extra_items.extend(
                     [
                         WhitelistMembersSelect(self, guild, role, view, menu),
-                        RemoveButton(self, guild, role, view),
-                    ]
+                    ] + (
+                        [RemoveButton(self, guild, role, view)]
+                        if await self.cog.is_extra_owner_or_higher(interaction.user)
+                        else []
+                    )
                 )
                 await menu.start(fake_context)
 

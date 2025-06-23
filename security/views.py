@@ -490,6 +490,7 @@ class SettingsView(discord.ui.View):
                 if (
                     not module.configurable_by_trusted_admins
                     and not await self.cog.is_extra_owner_or_higher(self.ctx.author)
+                    and (self.page != "protected_roles" or component.custom_id != "manage_protected_roles_select")
                 ):
                     continue
                 self.add_item(component)

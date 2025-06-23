@@ -28,7 +28,7 @@ class RTFSResults:
         self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         description = "\n".join(
-            f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results
+            f"- [**`{name}`**]({url})" for name, _, url, __ in self.results
         )
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed = discord.Embed(color=embed_color)
@@ -61,7 +61,7 @@ class SearchResults:
         self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         description = "\n".join(
-            f"**•** [**`{name}`**]({url})" for name, _, url, __ in self.results
+            f"- [**`{name}`**]({url})" for name, _, url, __ in self.results
         )
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed = discord.Embed(color=embed_color)
@@ -182,7 +182,7 @@ class Attributes:
             description: typing.Optional[str],
             show_description: typing.Optional[bool] = True,
         ):
-            formatted_attribute = "**•** "
+            formatted_attribute = "- "
             if role is not None:
                 formatted_attribute += f"{role} "
             formatted_attribute += f"[**{name}**]({url})" + (f" ({type})" if type else "")

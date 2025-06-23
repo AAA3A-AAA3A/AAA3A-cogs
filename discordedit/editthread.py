@@ -170,7 +170,7 @@ class EditThread(Cog):
         """List all threads in the current guild."""
         description = "\n".join(
             [
-                f"**•** {thread.mention} ({thread.id}) - {len(await thread.fetch_members())} members"
+                f"- {thread.mention} ({thread.id}) - {len(await thread.fetch_members())} members"
                 for thread in ctx.guild.threads
             ]
         )

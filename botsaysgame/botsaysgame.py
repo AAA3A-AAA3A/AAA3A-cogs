@@ -103,7 +103,7 @@ class BotSaysGame(Cog):
             await ctx.send(
                 embed=discord.Embed(
                     title=_("Eliminated players this round..."),
-                    description="\n".join(f"**•** {player.mention}" for player in eliminated),
+                    description="\n".join(f"- {player.mention}" for player in eliminated),
                     color=await ctx.embed_color(),
                 ),
             )

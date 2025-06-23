@@ -149,7 +149,7 @@ class EditRole(Cog):
     ) -> None:
         """List all roles in the current guild."""
         description = "".join(
-            f"\n**•** **{len(ctx.guild.roles) - role.position}** - {role.mention} ({role.id}) - {len(role.members)} members"
+            f"\n- **{len(ctx.guild.roles) - role.position}** - {role.mention} ({role.id}) - {len(role.members)} members"
             for role in sorted(ctx.guild.roles, key=lambda x: x.position, reverse=True)
         )
         embed: discord.Embed = discord.Embed(color=await ctx.embed_color())

@@ -159,7 +159,7 @@ class EditAutoMod(Cog):
     ) -> None:
         """List all AutoMod rules in the current guild."""
         description = "".join(
-            f"\n**•** **{rule.name} ({rule.id})**: {rule.trigger.type}"
+            f"\n- **{rule.name} ({rule.id})**: {rule.trigger.type}"
             for rule in await ctx.guild.fetch_automod_rules()
         )
         embed: discord.Embed = discord.Embed(color=await ctx.embed_color())

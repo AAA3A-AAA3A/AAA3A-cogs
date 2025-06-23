@@ -499,7 +499,7 @@ class TempRoles(Cog):
             else:
                 description = "\n".join(
                     [
-                        f"**•** {temp_role.mention} ({temp_role_id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)"
+                        f"- {temp_role.mention} ({temp_role_id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)"
                         for temp_role_id, end_time in temp_roles.items()
                         if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None
                     ]
@@ -519,7 +519,7 @@ class TempRoles(Cog):
             else:
                 description = "\n".join(
                     [
-                        f"**•** {member.mention} ({member.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)"
+                        f"- {member.mention} ({member.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)"
                         for member, end_time in temp_roles_members.items()
                     ]
                 )
@@ -535,7 +535,7 @@ class TempRoles(Cog):
                     if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None
                 }:
                     description.append(
-                        f"**•** {member.mention} ({member.id}): {humanize_list([f'{temp_role.mention} ({temp_role.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)' for temp_role, end_time in member_temp_roles.items()])}."
+                        f"- {member.mention} ({member.id}): {humanize_list([f'{temp_role.mention} ({temp_role.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)' for temp_role, end_time in member_temp_roles.items()])}."
                     )
             if description:
                 description = "\n".join(description)
@@ -672,7 +672,7 @@ class TempRoles(Cog):
             ).items()
             if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None
         }:
-            description += f"**Your current Temp Roles:**\n{BREAK_LINE.join([f'**•** {temp_role.mention} ({temp_role.id}) - Expires <t:{int(end_time)}:R>.' for temp_role, end_time in member_temp_roles.items()])}\n\n"
+            description += f"**Your current Temp Roles:**\n{BREAK_LINE.join([f'- {temp_role.mention} ({temp_role.id}) - Expires <t:{int(end_time)}:R>.' for temp_role, end_time in member_temp_roles.items()])}\n\n"
         if allowed_self_temp_roles := {
             role: (data["min_time"], data["max_time"])
             for role_id, data in (
@@ -680,7 +680,7 @@ class TempRoles(Cog):
             ).items()
             if (role := ctx.guild.get_role(int(role_id))) is not None
         }:
-            description += f"**Allowed self Temp Roles on this server:**\n{BREAK_LINE.join([f'**•** {role.mention} ({role.id}) - Min duration `{CogsUtils.get_interval_string(min_duration) if min_duration is not None else None}`. - Max duration `{CogsUtils.get_interval_string(max_duration) if max_duration is not None else None}`.' for role, (min_duration, max_duration) in allowed_self_temp_roles.items()])}"
+            description += f"**Allowed self Temp Roles on this server:**\n{BREAK_LINE.join([f'- {role.mention} ({role.id}) - Min duration `{CogsUtils.get_interval_string(min_duration) if min_duration is not None else None}`. - Max duration `{CogsUtils.get_interval_string(max_duration) if max_duration is not None else None}`.' for role, (min_duration, max_duration) in allowed_self_temp_roles.items()])}"
         embeds = []
         pages = list(pagify(description, page_length=3000))
         for page in pages:
@@ -739,7 +739,7 @@ class TempRoles(Cog):
             return
         description = "\n".join(
             [
-                f"**•** {role.mention} ({role.id}) - {CogsUtils.get_interval_string(duration)}."
+                f"- {role.mention} ({role.id}) - {CogsUtils.get_interval_string(duration)}."
                 for role_id, duration in joining_temp_roles.items()
                 if (role := ctx.guild.get_role(int(role_id))) is not None
             ]
@@ -802,7 +802,7 @@ class TempRoles(Cog):
             return
         description = "\n".join(
             [
-                f"**•** {role.mention} ({role.id}) - {CogsUtils.get_interval_string(duration)}."
+                f"- {role.mention} ({role.id}) - {CogsUtils.get_interval_string(duration)}."
                 for role_id, duration in auto_temp_roles.items()
                 if (role := ctx.guild.get_role(int(role_id))) is not None
             ]

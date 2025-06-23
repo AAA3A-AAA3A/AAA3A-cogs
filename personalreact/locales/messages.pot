@@ -232,25 +232,25 @@ msgid "Triggers:"
 msgstr ""
 
 #: personalreact\views.py:153
-msgid "**•** Your mention"
+msgid "- Your mention"
 msgstr ""
 
 #: personalreact\views.py:155
 msgid ""
 "\n"
-"**•** {emoji}Replies (with @)"
+"- {emoji}Replies (with @)"
 msgstr ""
 
 #: personalreact\views.py:167
 msgid ""
 "\n"
-"**•** Your User ID"
+"- Your User ID"
 msgstr ""
 
 #: personalreact\views.py:169
 msgid ""
 "\n"
-"**•** {emoji}Custom Trigger"
+"- {emoji}Custom Trigger"
 msgstr ""
 
 #: personalreact\views.py:179 personalreact\views.py:549

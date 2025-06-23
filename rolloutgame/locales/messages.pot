@@ -65,9 +65,9 @@ msgstr ""
 
 #: rolloutgame\views.py:45
 msgid ""
-"**•** At each round, select a number between 1 and 25 within 30 seconds.\n"
-"**•** If the bot rolls the number you selected, you lose.\n"
-"**•** The last player standing wins the game!"
+"- At each round, select a number between 1 and 25 within 30 seconds.\n"
+"- If the bot rolls the number you selected, you lose.\n"
+"- The last player standing wins the game!"
 msgstr ""
 
 #: rolloutgame\views.py:52 rolloutgame\views.py:125

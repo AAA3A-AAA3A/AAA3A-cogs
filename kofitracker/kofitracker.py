@@ -164,7 +164,7 @@ class KoFiTracker(Cog):
                         name=_("Shop Items:"),
                         value="\n".join(
                             [
-                                f"**•** **{item['quantity']}x** {item['variation_name']}"
+                                f"- **{item['quantity']}x** {item['variation_name']}"
                                 for item in payload["shop_items"]
                             ]
                         ),
@@ -358,7 +358,7 @@ class KoFiTracker(Cog):
             e = embed.copy()
             e.description = "\n".join(
                 [
-                    f"**•** **[{kofi_page_url}](https://ko-fi.com/{kofi_page_url})**\n> {data}"
+                    f"- **[{kofi_page_url}](https://ko-fi.com/{kofi_page_url})**\n> {data}"
                     for kofi_page_url, data in k_pages
                 ]
             )

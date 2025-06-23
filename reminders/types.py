@@ -262,7 +262,7 @@ class Repeat:
 
     def get_info(self) -> str:
         return "\n".join(
-            [f"**•** **{i}.** - {rule.get_info()}" for i, rule in enumerate(self.rules, start=1)]
+            [f"- **{i}.** - {rule.get_info()}" for i, rule in enumerate(self.rules, start=1)]
         )
 
 

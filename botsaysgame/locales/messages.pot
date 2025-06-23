@@ -137,10 +137,10 @@ msgstr ""
 
 #: botsaysgame\view.py:40
 msgid ""
-"**•** Each time the bot says something, you have to do it.\n"
-"**•** If you don't do it, you will be eliminated.\n"
-"**•** If you do it, you will be safe.\n"
-"**•** The last player remaining wins.\n"
+"- Each time the bot says something, you have to do it.\n"
+"- If you don't do it, you will be eliminated.\n"
+"- If you do it, you will be safe.\n"
+"- The last player remaining wins.\n"
 msgstr ""
 
 #: botsaysgame\view.py:48 botsaysgame\view.py:121

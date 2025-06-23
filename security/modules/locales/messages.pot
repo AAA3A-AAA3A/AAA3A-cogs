@@ -302,7 +302,7 @@ msgstr ""
 #: security\modules\protected_roles.py:59
 msgid ""
 "\n"
-"**•** {role.mention} (`{role.name}`) - {count} whitelisted member{s}"
+"- {role.mention} (`{role.name}`) - {count} whitelisted member{s}"
 msgstr ""
 
 #: security\modules\protected_roles.py:69
@@ -330,7 +330,7 @@ msgid "Protected Role `{role.name}` - {count} Whitelisted Members"
 msgstr ""
 
 #: security\modules\protected_roles.py:152
-msgid "**•** {member_id} (unknown)"
+msgid "- {member_id} (unknown)"
 msgstr ""
 
 #: security\modules\protected_roles.py:156

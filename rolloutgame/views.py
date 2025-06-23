@@ -43,9 +43,9 @@ class JoinGameView(discord.ui.View):
         embed.add_field(
             name=_("Rules:"),
             value=_(
-                "**•** At each round, select a number between 1 and 25 within 30 seconds.\n"
-                "**•** If the bot rolls the number you selected, you lose.\n"
-                "**•** The last player standing wins the game!"
+                "- At each round, select a number between 1 and 25 within 30 seconds.\n"
+                "- If the bot rolls the number you selected, you lose.\n"
+                "- The last player standing wins the game!"
             ),
         )
         embed.set_author(
@@ -127,7 +127,7 @@ class JoinGameView(discord.ui.View):
         )
         embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
         embed.description = "\n".join(
-            f"**•** {player.mention} ({player.id})" for player in self.players
+            f"- {player.mention} ({player.id})" for player in self.players
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -337,13 +337,13 @@ class RolloutGameView(discord.ui.View):
             for eleminated in eleminated_players_wrong_number:
                 embed.description += _(
                     _(
-                        "\n**•** **{eleminated.display_name}** - Selected the number {number}."
+                        "\n- **{eleminated.display_name}** - Selected the number {number}."
                     ).format(eleminated=eleminated, number=number)
                 ).format(eleminated=eleminated)
             for eleminated in eliminated_players_timeout:
                 embed.description += _(
                     _(
-                        "\n**•** **{eleminated.display_name}** - Did not select a number in time."
+                        "\n- **{eleminated.display_name}** - Did not select a number in time."
                     ).format(eleminated=eleminated)
                 ).format(eleminated=eleminated)
         await self.ctx.send(

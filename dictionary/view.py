@@ -85,7 +85,7 @@ class DictionaryView(discord.ui.View):
             [
                 (
                     (
-                        f"**•** [**`{phonetic['text'] or 'Name not provided'}`**]({phonetic['audio_url']})"
+                        f"- [**`{phonetic['text'] or 'Name not provided'}`**]({phonetic['audio_url']})"
                         + (
                             f" ({phonetic['audio_url'].split('/')[-1]})"
                             if phonetic["audio_url"]
@@ -93,7 +93,7 @@ class DictionaryView(discord.ui.View):
                         )
                     )
                     if phonetic["audio_url"]
-                    else f"**•** **`{phonetic['text']}`**"
+                    else f"- **`{phonetic['text']}`**"
                 )
                 for phonetic in self.word.phonetics
             ]

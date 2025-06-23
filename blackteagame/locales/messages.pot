@@ -64,9 +64,9 @@ msgstr ""
 
 #: blackteagame\view.py:63
 msgid ""
-"**•** Each time the bot asks you, you have a few seconds to respond with a word containing the 3 provided letters. Already used words are not allowed.\n"
-"**•** If you fail to respond in time, you lose 1 HP. If you lose all your HP, you are out of the game.\n"
-"**•** The last player remaining wins the game!\n"
+"- Each time the bot asks you, you have a few seconds to respond with a word containing the 3 provided letters. Already used words are not allowed.\n"
+"- If you fail to respond in time, you lose 1 HP. If you lose all your HP, you are out of the game.\n"
+"- The last player remaining wins the game!\n"
 msgstr ""
 
 #: blackteagame\view.py:70 blackteagame\view.py:143

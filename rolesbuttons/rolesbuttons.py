@@ -384,7 +384,7 @@ class RolesButtons(Cog):
         message = await channel.send(
             embed=discord.Embed(
                 description="\n".join(
-                    [f"**•** {emoji} - {role.mention}" for emoji, role in roles_buttons]
+                    [f"- {emoji} - {role.mention}" for emoji, role in roles_buttons]
                 ),
                 color=await ctx.embed_color(),
             ),

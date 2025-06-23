@@ -365,7 +365,7 @@ class CtrlZ(Cog):
                 ),
                 # value="\n".join(
                 #     [
-                #         f"**•** `{key}` -> `{value if isinstance(value, (str, int)) else repr(value)}`"
+                #         f"- `{key}` -> `{value if isinstance(value, (str, int)) else repr(value)}`"
                 #         for key, value in dict(audit_log.changes.before).items()
                 #     ]
                 # ),

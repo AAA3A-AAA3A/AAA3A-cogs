@@ -1279,7 +1279,7 @@ class Source:
                         field_value = (
                             "".join(
                                 (
-                                    f"**•** **{line.strip()}**\n"
+                                    f"- **{line.strip()}**\n"
                                     if i % 2 == 0
                                     else f"> {line.split(' - ')[0].strip()}{' - ' if line.split(' - ')[1:] else ''}{' - '.join(line.split(' - ')[1:]).strip()}\n"
                                 )

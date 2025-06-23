@@ -150,9 +150,9 @@ class PersonalReactView(discord.ui.View):
         embed.add_field(
             name=_("Triggers:"),
             value=(
-                _("**•** Your mention")
+                _("- Your mention")
                 + (
-                    _("\n**•** {emoji}Replies (with @)").format(
+                    _("\n- {emoji}Replies (with @)").format(
                         emoji=(
                             "❌ "
                             if not await self.cog.config.guild(
@@ -164,9 +164,9 @@ class PersonalReactView(discord.ui.View):
                     if data["replies"]
                     else ""
                 )
-                + (_("\n**•** Your User ID") if data["user_id"] else "")
+                + (_("\n- Your User ID") if data["user_id"] else "")
                 + (
-                    _("\n**•** {emoji}Custom Trigger").format(
+                    _("\n- {emoji}Custom Trigger").format(
                         emoji="❌ " if custom_trigger_total_amount == 0 else ""
                     )
                     if data["custom_trigger"] is not None
@@ -539,7 +539,7 @@ class SettingsView(discord.ui.View):
         embed.add_field(
             name=_("Base:"),
             value="\n".join(
-                f"**•** **{'+' if use_amounts_sum else '•'} {amount}** — {role.mention}"
+                f"- **{'+' if use_amounts_sum else '•'} {amount}** — {role.mention}"
                 for role_id, amount in base_roles_requirements.items()
                 if (role := self.ctx.guild.get_role(int(role_id)))
             )
@@ -548,7 +548,7 @@ class SettingsView(discord.ui.View):
         embed.add_field(
             name=_("Custom Trigger:"),
             value="\n".join(
-                f"**•** **{'+' if use_amounts_sum else '•'} {amount}** — {role.mention}"
+                f"- **{'+' if use_amounts_sum else '•'} {amount}** — {role.mention}"
                 for role_id, amount in custom_trigger_roles_requirements.items()
                 if (role := self.ctx.guild.get_role(int(role_id)))
             )

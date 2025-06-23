@@ -382,7 +382,7 @@ class CtrlZMassView(BaseView):
                 )
                 errors.append(
                     (
-                        f"**•** **{audit_logs_actions[action][audit_log.action]}** — {getattr(audit_log.target, 'mention', getattr(audit_log.target, 'name', repr(audit_log.target)))} ({audit_log.target.id})"
+                        f"- **{audit_logs_actions[action][audit_log.action]}** — {getattr(audit_log.target, 'mention', getattr(audit_log.target, 'name', repr(audit_log.target)))} ({audit_log.target.id})"
                         if not isinstance(audit_log.target, discord.Object)
                         else f"Unknown ({audit_log.target.id})"
                         + (

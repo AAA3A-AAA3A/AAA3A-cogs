@@ -87,9 +87,9 @@ msgstr ""
 
 #: russianroulettegame\views.py:40
 msgid ""
-"**•** When its your turn, you will be asked to shoot.\n"
-"**•** If you shoot, you may die or survive. One player die each round.\n"
-"**•** Each player has 5 seconds to shoot, they die otherwise.**•** The game ends when only one player is left."
+"- When its your turn, you will be asked to shoot.\n"
+"- If you shoot, you may die or survive. One player die each round.\n"
+"- Each player has 5 seconds to shoot, they die otherwise.- The game ends when only one player is left."
 msgstr ""
 
 #: russianroulettegame\views.py:48 russianroulettegame\views.py:121

@@ -61,9 +61,9 @@ class JoinGameView(discord.ui.View):
         embed.add_field(
             name=_("Rules:"),
             value=_(
-                "**•** Each time the bot asks you, you have a few seconds to respond with a word containing the 3 provided letters. Already used words are not allowed.\n"
-                "**•** If you fail to respond in time, you lose 1 HP. If you lose all your HP, you are out of the game.\n"
-                "**•** The last player remaining wins the game!\n"
+                "- Each time the bot asks you, you have a few seconds to respond with a word containing the 3 provided letters. Already used words are not allowed.\n"
+                "- If you fail to respond in time, you lose 1 HP. If you lose all your HP, you are out of the game.\n"
+                "- The last player remaining wins the game!\n"
             ),
         )
         embed.set_author(
@@ -145,7 +145,7 @@ class JoinGameView(discord.ui.View):
         )
         embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
         embed.description = "\n".join(
-            f"**•** {player.mention} ({player.id})" for player in self.players
+            f"- {player.mention} ({player.id})" for player in self.players
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
 

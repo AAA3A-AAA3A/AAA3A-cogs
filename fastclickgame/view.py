@@ -132,7 +132,7 @@ class FastClickGameView(discord.ui.View):
         embed.add_field(
             name=_("🖱️ Clicks"),
             value="\n".join(
-                f"**•** {winner.mention}: {counter[winner]} {_('click')}{'s' if counter[winner] > 1 else ''} ({humanize_list([f'`{self.times[i]}s`' for i, w in enumerate(self.winners) if w == winner])}s)"
+                f"- {winner.mention}: {counter[winner]} {_('click')}{'s' if counter[winner] > 1 else ''} ({humanize_list([f'`{self.times[i]}s`' for i, w in enumerate(self.winners) if w == winner])}s)"
                 for winner in counter
             ),
         )

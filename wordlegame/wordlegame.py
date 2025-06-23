@@ -240,7 +240,7 @@ class WordleGame(Cog):
                 name=_("Guess distribution:"),
                 value="\n".join(
                     [
-                        _("**•** **{count}** guess{es} with {i} attempts").format(
+                        _("- **{count}** guess{es} with {i} attempts").format(
                             count=count, i=i + 1, es="es" if count > 1 else ""
                         )
                         for i, count in enumerate(data["guess_distribution"], start=1)

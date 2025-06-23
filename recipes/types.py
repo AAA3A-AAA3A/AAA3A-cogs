@@ -21,7 +21,7 @@ class SearchResults:
         self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
         description = "\n".join(
-            f"**•** [**`{name}`**]({url})" for name, url in self.results.items()
+            f"- [**`{name}`**]({url})" for name, url in self.results.items()
         )
         embeds = []
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
@@ -78,7 +78,7 @@ class Recipe:
                 value=f"{self.rating['value']}/5 with {self.rating['count']} votes",
                 inline=True,
             )
-        ingredients = "\n".join([f"**•** {ingredient}" for ingredient in self.ingredients])
+        ingredients = "\n".join([f"- {ingredient}" for ingredient in self.ingredients])
         embed.add_field(
             name="Ingredients:",
             value=f"{ingredients[:1020]}\n..." if len(ingredients) > 1024 else ingredients,

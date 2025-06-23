@@ -38,10 +38,10 @@ class JoinGameView(discord.ui.View):
         embed.add_field(
             name=_("Rules:"),
             value=_(
-                "**•** When its your turn, you will be asked to shoot.\n"
-                "**•** If you shoot, you may die or survive. One player die each round.\n"
-                "**•** Each player has 5 seconds to shoot, they die otherwise."
-                "**•** The game ends when only one player is left."
+                "- When its your turn, you will be asked to shoot.\n"
+                "- If you shoot, you may die or survive. One player die each round.\n"
+                "- Each player has 5 seconds to shoot, they die otherwise."
+                "- The game ends when only one player is left."
             ),
         )
         embed.set_author(
@@ -123,7 +123,7 @@ class JoinGameView(discord.ui.View):
         )
         embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
         embed.description = "\n".join(
-            f"**•** {player.mention} ({player.id})" for player in self.players
+            f"- {player.mention} ({player.id})" for player in self.players
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
 

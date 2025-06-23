@@ -38,10 +38,10 @@ class JoinGameView(discord.ui.View):
         embed.add_field(
             name=_("Rules:"),
             value=_(
-                "**•** Each time the bot says something, you have to do it.\n"
-                "**•** If you don't do it, you will be eliminated.\n"
-                "**•** If you do it, you will be safe.\n"
-                "**•** The last player remaining wins.\n"
+                "- Each time the bot says something, you have to do it.\n"
+                "- If you don't do it, you will be eliminated.\n"
+                "- If you do it, you will be safe.\n"
+                "- The last player remaining wins.\n"
             ),
         )
         embed.set_author(
@@ -123,7 +123,7 @@ class JoinGameView(discord.ui.View):
         )
         embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
         embed.description = "\n".join(
-            f"**•** {player.mention} ({player.id})" for player in self.players
+            f"- {player.mention} ({player.id})" for player in self.players
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
 

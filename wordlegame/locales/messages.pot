@@ -89,5 +89,5 @@ msgid "Guess distribution:"
 msgstr ""
 
 #: wordlegame\wordlegame.py:243
-msgid "**•** **{count}** guess{es} with {i} attempts"
+msgid "- **{count}** guess{es} with {i} attempts"
 msgstr ""

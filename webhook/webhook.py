@@ -29,6 +29,24 @@ class WebhookLinkConverter(commands.Converter):
             raise commands.BadArgument(str(e)) from e
 
 
+class ChannelOrWebhookLinkConverter(commands.Converter):
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread, discord.Webhook]:
+        for converter in (
+            commands.TextChannelConverter,
+            commands.VoiceChannelConverter,
+            commands.ThreadConverter,
+            WebhookLinkConverter,
+        ):
+            try:
+                return await converter().convert(ctx, argument)
+            except commands.BadArgument:
+                pass
+        raise commands.BadArgument(
+            _("That doesn't look like a valid channel or webhook link. Please provide a valid channel or webhook link.")
+        )
+
 class Session:
     def __init__(
         self,
@@ -36,14 +54,20 @@ class Session:
         author: discord.Member,
         channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
         webhook: discord.Webhook,
+        admin: bool = False,
+        username: typing.Optional[str] = None,
+        avatar_url: typing.Optional[str] = None,
     ) -> None:
         self.cog: commands.Cog = cog
         self.author: discord.Member = author
-
         self.channel: typing.Union[
             discord.TextChannel, discord.VoiceChannel, discord.Thread
         ] = channel
         self.webhook: discord.Webhook = webhook
+
+        self.admin: bool = admin
+        self.username: typing.Optional[str] = username
+        self.avatar_url: typing.Optional[str] = avatar_url
 
     async def initialize(self, ctx: commands.Context):
         embed: discord.Embed = discord.Embed(
@@ -53,21 +77,22 @@ class Session:
             ),
             color=await ctx.embed_color(),
         )
-        try:
-            await self.webhook.send(
-                embed=embed,
-                username="Webhook Session",
-                avatar_url="https://imgur.com/BMeddyn.png",
-            )
-        except (ValueError, discord.HTTPException):
-            raise commands.UserFeedbackCheckFailure(
-                _("Session initialization failed as provided webhook link was invalid.")
-            )
+        if not self.admin:
+            try:
+                await self.webhook.send(
+                    embed=embed,
+                    username="Webhook Session",
+                    avatar_url="https://imgur.com/BMeddyn.png",
+                )
+            except (ValueError, discord.HTTPException):
+                raise commands.UserFeedbackCheckFailure(
+                    _("Session initialization failed as provided webhook link was invalid.")
+                )
         else:
             self.cog.webhook_sessions[self.channel.id] = self
             await self.channel_send(
                 _(
-                    "I will send all messages in this channel to the webhook until the session is closed with `{ctx.clean_prefix}webhook session close` or there are 2 minutes of inactivity."
+                    "I will send all messages in this channel to the webhook until the session is closed with `{ctx.clean_prefix}webhook closesession` or there are 2 minutes of inactivity."
                 ).format(ctx=ctx),
                 embed=embed,
             )
@@ -289,6 +314,7 @@ class Webhook(Cog):
         *,
         content: commands.Range[str, 1, 2000] = None,
     ) -> None:
+        """Sends a message in a channel as a webhook using the reversed display name and the avatar of a specified member."""
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
         files = await Tunnel.files_from_attach(ctx.message)
@@ -319,6 +345,7 @@ class Webhook(Cog):
         *,
         content: commands.Range[str, 1, 2000] = None,
     ) -> None:
+        """Sends a message in a channel as a webhook using the reversed display name and the avatar of a specified member, and reverses the content."""
         channel = channel or ctx.channel
         await self.check_channel(ctx, channel=channel)
         files = await Tunnel.files_from_attach(ctx.message)
@@ -345,10 +372,10 @@ class Webhook(Cog):
         channel: typing.Optional[
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
-        *,
         message: discord.Message,
     ) -> None:
-        channel = channel or ctx.channel
+        """Sends a message in a channel as a webhook using the reversed display name and the avatar of the author of a specified message, and reverses the content of this message."""
+        channel = channel or message.channel
         await self.check_channel(ctx, channel=channel)
         files = await Tunnel.files_from_attach(message)
         try:
@@ -548,20 +575,64 @@ class Webhook(Cog):
 
     @commands.max_concurrency(1, commands.BucketType.channel)
     @webhook.command(name="session")
-    async def webhook_session(self, ctx: commands.Context, webhook_link: WebhookLinkConverter):
-        """Initiate a session within this channel sending messages to a specified webhook link."""
+    async def webhook_session(
+        self,
+        ctx: commands.Context,
+        channel_or_webhook: ChannelOrWebhookLinkConverter,
+    ) -> None:
+        """Initiate a session within this channel sending messages to a specified channel or webhook link."""
         if ctx.channel.id in self.webhook_sessions:
-            return await ctx.send(
+            raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This channel already has an ongoing session. Use `{ctx.clean_prefix}webhook session close` to close it."
+                    "This channel already has an ongoing webhook session. Close it with `{ctx.clean_prefix}webhook closesession`."
                 ).format(ctx=ctx)
             )
-        session = Session(cog=self, author=ctx.author, channel=ctx.channel, webhook=webhook_link)
+        if not isinstance(channel_or_webhook, discord.Webhook):
+            await self.check_channel(ctx, channel=channel_or_webhook)
+            channel_or_webhook = await CogsUtils.get_hook(
+                bot=ctx.bot, channel=getattr(channel_or_webhook, "parent", channel_or_webhook)
+            )
+        session = Session(
+            cog=self, author=ctx.author,
+            channel=ctx.channel, webhook=channel_or_webhook,
+        )
+        await session.initialize(ctx)
+
+    @commands.max_concurrency(1, commands.BucketType.channel)
+    @webhook.command(name="adminsession")
+    async def webhook_adminsession(
+        self,
+        ctx: commands.Context,
+        channel_or_webhook: ChannelOrWebhookLinkConverter,
+        member_to_sudo: typing.Optional[discord.Member] = None,
+        username: typing.Optional[str] = None,
+        avatar_url: typing.Optional[str] = None,
+    ) -> None:
+        """Initiate a session within this channel sending messages to a specified channel or webhook link."""
+        if ctx.channel.id in self.webhook_sessions:
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "This channel already has an ongoing webhook session. Close it with `{ctx.clean_prefix}webhook closesession`."
+                ).format(ctx=ctx)
+            )
+        if not isinstance(channel_or_webhook, discord.Webhook):
+            await self.check_channel(ctx, channel=channel_or_webhook)
+            channel_or_webhook = await CogsUtils.get_hook(
+                bot=ctx.bot, channel=getattr(channel_or_webhook, "parent", channel_or_webhook)
+            )
+        if member_to_sudo is not None:
+            username = member_to_sudo.display_name if username is None else username
+            avatar_url = member_to_sudo.display_avatar.url if avatar_url is None else avatar_url
+        session = Session(
+            cog=self, author=ctx.author, admin=True,
+            channel=ctx.channel, webhook=channel_or_webhook,
+            username=username, avatar_url=avatar_url,
+        )
         await session.initialize(ctx)
 
     @webhook.command(name="closesession", aliases=["sessionclose"])
     async def webhook_closesession(
-        self, ctx: commands.Context, channel: discord.TextChannel = None
+        self, ctx: commands.Context, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread] = None
     ):
         """Close an ongoing webhook session in a channel."""
         channel = channel or ctx.channel
@@ -586,7 +657,7 @@ class Webhook(Cog):
             message.content,
             embeds=message.embeds,
             files=files,
-            username=message.author.display_name,
-            avatar_url=message.author.display_avatar,
+            username=session.username or message.author.display_name,
+            avatar_url=session.avatar_url or message.author.display_avatar.url,
             allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False),
         )

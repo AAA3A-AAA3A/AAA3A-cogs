@@ -895,7 +895,7 @@ class LoggingModule(Module):
             embed.set_thumbnail(
                 url=(
                     target.display_avatar
-                    if isinstance(target, discord.Member, discord.User)
+                    if isinstance(target, (discord.Member, discord.User))
                     else (target.icon if isinstance(target, discord.Role) else None)
                 ),
             )
@@ -917,7 +917,7 @@ class LoggingModule(Module):
                 )
             elif isinstance(target, discord.User):
                 embed.description += "\n" + _(
-                    "{emoji} **Target User:** {user.mention} (`{user}`) {user_emojis} - `{user.id}`"
+                    "{emoji} **Target User:** {user.mention} (`{user}`) - `{user.id}`"
                 ).format(emoji=Emojis.MEMBER.value, user=target)
             elif isinstance(target, discord.Role):
                 embed.description += "\n" + _(

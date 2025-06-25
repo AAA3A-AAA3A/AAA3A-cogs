@@ -999,7 +999,7 @@ class ActionsView(discord.ui.View):
             )
         await interaction.followup.send(
             _("✅ Action **{action}** has been successfully performed on {member.mention}.").format(
-                action=action["name"],
+                action=action,
                 member=self.member,
             ),
             ephemeral=True,

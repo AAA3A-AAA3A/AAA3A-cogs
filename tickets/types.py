@@ -591,7 +591,7 @@ class Ticket:
             "Ticket creation for {ticket.owner.display_name} ({ticket.owner.id}) (profile `{ticket.profile}`)."
         ).format(ticket=self)
         if (
-            (ticket_role_id := config["ticket_role"]) is not None
+            (ticket_role_id := config.get("ticket_role")) is not None
             and (ticket_role := self.guild.get_role(ticket_role_id)) is not None
             and ticket_role not in self.owner.roles
         ):

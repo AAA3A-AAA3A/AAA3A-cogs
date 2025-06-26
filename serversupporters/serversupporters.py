@@ -218,8 +218,6 @@ class ServerSupporters(Cog):
 
     @commands.Cog.listener()
     async def on_presence_update(self, before: discord.Member, after: discord.Member) -> None:
-        if after.id != 829612600059887649:
-            return
         if after.bot:
             return
         if (

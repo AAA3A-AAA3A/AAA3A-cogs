@@ -1284,13 +1284,13 @@ class LoggingModule(Module):
                     if not value and getattr(entry.before.permissions, permission, False)
                 )
             else:
-                if hasattr(entry.after, "allow"):
+                if getattr(entry.after, "allow", None) is not None:
                     added_permissions.extend(
                         permission.replace("_", " ").title()
                         for permission, value in entry.after.allow
                         if value
                     )
-                if hasattr(entry.after, "deny"):
+                if getattr(entry.after, "deny", None) is not None:
                     removed_permissions.extend(
                         permission.replace("_", " ").title()
                         for permission, value in entry.after.deny

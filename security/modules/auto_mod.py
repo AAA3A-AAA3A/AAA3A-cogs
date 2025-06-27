@@ -864,7 +864,7 @@ class AutoModModule(Module):
             else:
                 if action in ("timeout", "mute"):
                     duration = await DurationConverter.convert(
-                        None, config["timeout_mute_duration"]
+                        None, config["strike_durations"]["individual_timeout_mute"]
                     )
                 else:
                     duration = None

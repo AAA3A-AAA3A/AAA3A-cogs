@@ -612,7 +612,7 @@ class Security(Cog):
             bot=self.bot,
             guild=member.guild,
             created_at=datetime.datetime.now(tz=datetime.timezone.utc),
-            action_type=action,
+            action_type=action if action not in ("mute", "unmute") else f"s{action}",  # server mute/unmute
             user=member,
             moderator=issued_by,
         )

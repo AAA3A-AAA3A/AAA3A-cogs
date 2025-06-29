@@ -67,7 +67,7 @@ JOIN_GATE_OPTIONS: typing.List[
         "action": "kick",
         "param": ("minimum_days", int, 7),
         "value": "account_age",
-        "check": lambda member, minimum_days: (discord.utils.utcnow() - member.created_at).days
+        "check": lambda member, minimum_days: (datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at).days
         < minimum_days,
     },
     {

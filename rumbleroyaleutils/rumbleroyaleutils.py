@@ -60,9 +60,7 @@ class RumbleRoyaleUtils(Cog):
             ping_host_on_end=False,
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: typing.Dict[str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]] = {
             "am_i_dead": {
                 "converter": bool,
                 "description": "Enable or disable the am I dead feature.",
@@ -119,18 +117,20 @@ class RumbleRoyaleUtils(Cog):
         elif (rumble := self.rumbles.get(message.channel)) is not None:
             if "Started a new Rumble Royale session" in embed.title:
                 rumble.first_message = await message.channel.fetch_message(rumble.first_message.id)
-                rumble.players = [
-                    member
-                    async for member in next(
-                        (
-                            reaction
-                            for reaction in rumble.first_message.reactions
-                            if isinstance(reaction.emoji, discord.PartialEmoji)
-                            and reaction.emoji.id in (1371131643569635348, 1374771017569800233)
-                        )
-                    ).users()
-                    if not member.bot
-                ]
+                reaction = next(
+                    (
+                        reaction
+                        for reaction in rumble.first_message.reactions
+                        if isinstance(reaction.emoji, discord.PartialEmoji)
+                        and reaction.emoji.id in (1371131643569635348, 1374771017569800233)
+                    ),
+                    None,
+                )
+
+                if reaction is not None:
+                    rumble.players = [member async for member in reaction.users() if not member.bot]
+                else:
+                    rumble.players = []
                 if config["am_i_dead"]:
                     await message.reply(
                         embed=discord.Embed(
@@ -192,9 +192,7 @@ class RumbleRoyaleUtils(Cog):
                                 if len(round_victims) > 1
                                 else _("{victims} is dead!")
                             ).format(
-                                victims=humanize_list(
-                                    [victim.mention for victim in round_victims]
-                                ),
+                                victims=humanize_list([victim.mention for victim in round_victims]),
                             )
                         )
                 elif "WINNER!" in embed.title:
@@ -242,8 +240,7 @@ class RumbleRoyaleUtils(Cog):
                         )
                         + (
                             _("\n- Killed by {killer.mention}.").format(killer=killer)
-                            if (killer := rumble.dead_players[message.author]["killer"])
-                            is not None
+                            if (killer := rumble.dead_players[message.author]["killer"]) is not None
                             else ""
                         ),
                         color=await self.bot.get_embed_color(message.channel),

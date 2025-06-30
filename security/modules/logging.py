@@ -1165,7 +1165,7 @@ class LoggingModule(Module):
         async for entry in message.guild.audit_logs(
             limit=3, action=discord.AuditLogAction.message_delete, oldest_first=False
         ):
-            if entry.target.id == message.id:
+            if entry.target.id == message.author.id:
                 responsible = entry.user
                 break
         embed: discord.Embed = await self.get_embed(message.guild, event, responsible, message)

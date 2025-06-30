@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-12-29 10:43+0100\n"
-"PO-Revision-Date: 2025-04-11 20:16\n"
+"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"PO-Revision-Date: 2025-06-30 14:21\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -266,69 +266,69 @@ msgstr "hat das bei Ihnen funktioniert?"
 msgid "This cog will only work on x server and therefore cannot be used by the general public!"
 msgstr "Dieses Zahnrad funktioniert nur auf Server x und kann daher nicht von der Allgemeinheit verwendet werden!"
 
-#: medicat\medicat.py:476
+#: medicat\medicat.py:469
 msgid "This Ventoy version doesn't exists."
 msgstr "Diese Ventoy-Version gibt es nicht."
 
-#: medicat\medicat.py:512
+#: medicat\medicat.py:503
 msgid "Ventoy v{ventoy_version_str} has been released!"
 msgstr "Ventoy v{ventoy_version_str} wurde veröffentlicht!"
 
-#: medicat\medicat.py:515
+#: medicat\medicat.py:506
 msgid "New features:"
 msgstr "Neue Funktionen:"
 
-#: medicat\medicat.py:520
+#: medicat\medicat.py:511
 msgid "Download this version:"
 msgstr "Diese Version herunterladen:"
 
-#: medicat\medicat.py:528
+#: medicat\medicat.py:519
 msgid "View on Ventoy Official Website"
 msgstr "Ansicht auf der offiziellen Website von Ventoy"
 
-#: medicat\medicat.py:612
+#: medicat\medicat.py:603
 msgid "{tool} now has a new version!"
 msgstr "{tool} hat jetzt eine neue Version!"
 
-#: medicat\medicat.py:626
+#: medicat\medicat.py:617
 msgid "View on FCportables Official Website"
 msgstr "Ansicht auf der offiziellen Website von FCportables"
 
-#: medicat\medicat.py:770
+#: medicat\medicat.py:761
 #, docstring
 msgid "Get the latest version of Ventoy."
 msgstr "Holen Sie sich die neueste Version von Ventoy."
 
-#: medicat\medicat.py:777
+#: medicat\medicat.py:768
 #, docstring
 msgid "Get a version of Ventoy."
 msgstr "Holen Sie sich eine Version von Ventoy."
 
-#: medicat\medicat.py:784
+#: medicat\medicat.py:777
 #, docstring
 msgid "Get the latest versions of each Medicat USB bootable tool."
 msgstr "Holen Sie sich die neuesten Versionen der einzelnen bootfähigen Medicat-USB-Tools."
 
-#: medicat\medicat.py:820 medicat\medicat.py:957
+#: medicat\medicat.py:813 medicat\medicat.py:950
 msgid "View FCportables Official Website"
 msgstr "Offizielle Website von FCportables ansehen"
 
-#: medicat\medicat.py:839
+#: medicat\medicat.py:832
 #, docstring
 msgid "Get the debug for a FCportables's tool."
 msgstr "Holen Sie sich das Debugging für ein FCportables-Werkzeug."
 
-#: medicat\medicat.py:916
+#: medicat\medicat.py:909
 #, docstring
 msgid "Get the download link of each Medicat USB bootable tool."
 msgstr "Holen Sie sich den Download-Link für jedes bootfähige USB-Tool von Medicat."
 
-#: medicat\medicat.py:977
+#: medicat\medicat.py:970
 #, docstring
 msgid "Get an embed to check loop status."
 msgstr ""
 
-#: medicat\medicat.py:984
+#: medicat\medicat.py:977
 #, docstring
 msgid "Update Medicat cog directly."
 msgstr "Aktualisieren Sie das Medicat-Zahnrad direkt."

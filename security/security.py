@@ -225,7 +225,7 @@ class Security(Cog):
             raise ValueError("Invalid whitelist type: `{whitelist_type}`.")
         _type = _object.__class__ if not isinstance(_object, discord.Object) else _object.type
         if (
-            _type in (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel, discord.ThreadChannel)
+            _type in (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel, discord.Thread)
             and not _whitelist_type["channels"]
         ) or (_type is discord.CategoryChannel and not _whitelist_type["categories"]):
             raise ValueError(

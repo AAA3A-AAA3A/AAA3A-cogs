@@ -20,6 +20,7 @@ OBJECT_TYPING = typing.Union[
     discord.TextChannel,
     discord.VoiceChannel,
     discord.CategoryChannel,
+    discord.ForumChannel,
     discord.Webhook,
 ]
 
@@ -76,7 +77,7 @@ class WhitelistView(discord.ui.View):
                 isinstance(_object, (discord.Member, discord.Role))
                 or (
                     isinstance(
-                        _object, (discord.TextChannel, discord.VoiceChannel, discord.Webhook)
+                        _object, (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel, discord.Webhook)
                     )
                     and whitelist_type["channels"]
                 )

@@ -37,6 +37,7 @@ class ObjectConverter(commands.Converter):
             commands.TextChannelConverter,
             commands.VoiceChannelConverter,
             commands.CategoryChannelConverter,
+            commands.ForumChannelConverter,
         ):
             try:
                 return await converter().convert(ctx, argument)
@@ -224,7 +225,7 @@ class Security(Cog):
             raise ValueError("Invalid whitelist type: `{whitelist_type}`.")
         _type = _object.__class__ if not isinstance(_object, discord.Object) else _object.type
         if (
-            _type in (discord.TextChannel, discord.VoiceChannel)
+            _type in (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel, discord.ThreadChannel)
             and not _whitelist_type["channels"]
         ) or (_type is discord.CategoryChannel and not _whitelist_type["categories"]):
             raise ValueError(
@@ -240,13 +241,15 @@ class Security(Cog):
             )
         elif _type is discord.Role:
             return await self.config.role(_object).whitelist.get_raw(whitelist_type)
-        elif _type in (discord.TextChannel, discord.VoiceChannel):
+        elif _type in (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel):
             return await self.config.channel(_object).whitelist.get_raw(whitelist_type) or (
                 _object.category is not None
                 and await self.is_whitelisted(_object.category, whitelist_type)
             )
         elif _type is discord.CategoryChannel:
             return await self.config.channel(_object).whitelist.get_raw(whitelist_type)
+        elif _type is discord.Thread:
+            return await self.is_whitelisted(_object.parent, whitelist_type)
         elif _type is discord.Webhook:
             return await self.config.custom("webhook", _object.id).whitelist.get_raw(
                 whitelist_type

@@ -677,36 +677,38 @@ class Reminder:
                 await self.save()
             else:
                 self.next_expires_at = None
-        try:
-            user: discord.User = await self.cog.bot.fetch_user(self.user_id)
-            if not user.mutual_guilds:
-                raise ValueError(user)
-        except (discord.NotFound, ValueError):
-            if not testing:
-                await self.delete()
-            raise RuntimeError(
-                f"User {self.user_id} not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
-            )
-        except discord.HTTPException:
-            raise RuntimeError(
-                f"An error occurred while fetching the user {self.user_id} for the reminder {self.user_id}#{self.id}@{self.content['type']}."
-            )
-        if self.destination is None:
-            destination: discord.abc.Messageable = await user.create_dm()
-        else:
+        if (user := self.cog.bot.get_user(self.user_id)) is None:
             try:
-                destination = await self.cog.bot.fetch_channel(self.destination)
-            except (discord.NotFound, discord.Forbidden):
+                user: discord.User = await self.cog.bot.fetch_user(self.user_id)
+                if not user.mutual_guilds:
+                    raise ValueError(user)
+            except (discord.NotFound, ValueError):
                 if not testing:
                     await self.delete()
                 raise RuntimeError(
-                    f"Destination {self.destination} not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
+                    f"User {self.user_id} not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
                 )
             except discord.HTTPException:
                 raise RuntimeError(
-                    f"An error occurred while fetching the destination channel for the reminder {self.user_id}#{self.id}@{self.content['type']}."
+                    f"An error occurred while fetching the user {self.user_id} for the reminder {self.user_id}#{self.id}@{self.content['type']}."
                 )
-            if destination.guild is not None:
+        if self.destination is None:
+            destination: discord.abc.Messageable = await user.create_dm()
+        else:
+            if (destination := self.cog.bot.get_channel(self.destination)) is None:
+                try:
+                    destination = await self.cog.bot.fetch_channel(self.destination)
+                except (discord.NotFound, discord.Forbidden):
+                    if not testing:
+                        await self.delete()
+                    raise RuntimeError(
+                        f"Destination {self.destination} not found for the reminder {self.user_id}#{self.id}@{self.content['type']}. The reminder has been deleted."
+                    )
+                except discord.HTTPException:
+                    raise RuntimeError(
+                        f"An error occurred while fetching the destination channel for the reminder {self.user_id}#{self.id}@{self.content['type']}."
+                    )
+            if destination.guild is not None and (member := destination.guild.get_member(user.id)) is None:
                 try:
                     member: discord.Member = await destination.guild.fetch_member(user.id)
                 except discord.NotFound:
@@ -741,9 +743,12 @@ class Reminder:
 
         elif self.content["type"] == "command":
             try:
-                invoker = await self.cog.bot.fetch_user(self.content["command_invoker"])
                 if getattr(destination, "guild", None) is not None:
-                    invoker = await destination.guild.fetch_member(invoker.id)
+                    if (invoker := destination.guild.get_member(self.content["command_invoker"])) is None:
+                        invoker = await destination.guild.fetch_member(self.content["command_invoker"])
+                else:
+                    if (invoker := self.cog.bot.get_user(self.content["command_invoker"])) is None:
+                        invoker = await self.cog.bot.fetch_user(self.content["command_invoker"])
             except discord.NotFound:
                 if not testing:
                     await self.delete()

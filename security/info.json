@@ -12,7 +12,7 @@
         "nuke",
         "logging"
     ],
-    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "onetimepass", "qrcode", "pillow", "numpy", "fuzzywuzzy", "emoji", "chat-exporter"],
+    "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "onetimepass", "qrcode", "pillow", "numpy", "fuzzywuzzy", "Levenshtein", "emoji", "chat-exporter"],
     "min_bot_version": "3.5.3",
     "end_user_data_statement": "This cog does not persistently store data or metadata about users."
 }

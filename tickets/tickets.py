@@ -148,17 +148,17 @@ class Tickets(DashboardIntegration, Cog):
             },
             "channel_name": {
                 "converter": commands.Range[str, 1, 500],
-                "description": "Name of the channel where the tickets will be created, reduced to 100 characters. You can use the following placeholders: `{emoji}`, `{owner_display_name}`, `{owner_name}`, `{owner_mention}`, `{owner_id}`, `{guild_name}` and `{guild_id}`.",
+                "description": "Name of the channel where the tickets will be created, reduced to 100 characters. You can use the following placeholders: `{id}`, `{emoji}`, `{owner_display_name}`, `{owner_name}`, `{owner_mention}`, `{owner_id}`, `{guild_name}` and `{guild_id}`.",
                 "no_slash": True,
             },
             "welcome_message": {
                 "converter": commands.Range[str, 1, 1000],
-                "description": "Welcome message that will be sent when a ticket is created. You can use the following placeholders: `{owner_display_name}`, `{owner_name}`, `{owner_mention}`, `{owner_id}`, `{guild_name}` and `{guild_id}`.",
+                "description": "Welcome message that will be sent when a ticket is created. You can use the following placeholders: `{id}`, `{emoji}`, `{owner_display_name}`, `{owner_name}`, `{owner_mention}`, `{owner_id}`, `{guild_name}` and `{guild_id}`.",
                 "no_slash": True,
             },
             "custom_message": {
                 "converter": commands.Range[str, 1, 3000],
-                "description": "Custom message that will be sent when a ticket is created. You can use the following placeholders: `{owner_display_name}`, `{owner_name}`, `{owner_mention}`, `{owner_id}`, `{guild_name}` and `{guild_id}`.",
+                "description": "Custom message that will be sent when a ticket is created. You can use the following placeholders: `{id}`, `{emoji}`, `{owner_display_name}`, `{owner_name}`, `{owner_mention}`, `{owner_id}`, `{guild_name}` and `{guild_id}`.",
             },
             "close_reopen_reason_modal": {
                 "converter": bool,

@@ -307,7 +307,9 @@ class JoinGateModule(Module):
             triggered.append((option, option_config))
         if triggered:
             option, option_config = sorted(
-                triggered, key=lambda x: POSSIBLE_ACTIONS.index(x[1]["action"]), reverse=True
+                triggered,
+                key=lambda opt: next((i for i, possible_action in enumerate(POSSIBLE_ACTIONS) if possible_action["value"] == opt[1]["action"])),
+                reverse=True,
             )[0]
             action = option_config["action"]
             if action in ("timeout", "mute"):

@@ -160,7 +160,7 @@ class RepeatRule:
                 return None
             while next_expires_at == last_expires_at or next_expires_at < utc_now:
                 next_expires_at = cron_trigger.get_next_fire_time(
-                    previous_fire_time=last_expires_at, now=utc_now.astimezone(tz=tz)
+                    previous_fire_time=next_expires_at, now=utc_now.astimezone(tz=tz)
                 )
                 if next_expires_at is None:
                     return None

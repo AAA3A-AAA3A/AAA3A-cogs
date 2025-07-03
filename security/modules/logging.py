@@ -859,7 +859,7 @@ class LoggingModule(Module):
                 await self.cog.is_whitelisted(
                     responsible, "logging_channel_update_overwrites_log"
                 )
-                or await self.cog.is_message_whitelisted(
+                or await self.cog.is_whitelisted(
                     target, "logging_channel_update_overwrites_log"
                 )
             )

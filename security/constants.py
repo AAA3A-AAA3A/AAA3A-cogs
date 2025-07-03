@@ -361,8 +361,10 @@ DANGEROUS_PERMISSIONS: typing.List[str] = [
 
 
 def get_non_animated_asset(asset: typing.Optional[discord.Asset] = None) -> typing.Optional[str]:
-    if asset is None or not asset.is_animated():
+    if asset is None:
         return None
+    if not asset.is_animated():
+        return asset
     return discord.Asset(
         asset._state,
         url=asset.url.replace("/a_", "/").replace(".gif", ".png"),

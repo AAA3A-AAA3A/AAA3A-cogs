@@ -9,7 +9,7 @@ from collections import defaultdict
 
 from redbot.core.utils.chat_formatting import humanize_list
 
-from ..constants import Emojis
+from ..constants import Emojis, get_non_animated_asset
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
@@ -322,7 +322,7 @@ class LockdownModule(Module):
                         )
                     ),
                     color=discord.Color.red(),
-                ).set_footer(text=message.guild.name, icon_url=message.guild.icon),
+                ).set_footer(text=message.guild.name, icon_url=get_non_animated_asset(message.guild.icon)),
             )
         self.action_cache[message.author].append(
             _(
@@ -370,7 +370,7 @@ class LockdownModule(Module):
                                 "A lockdown is currently active in this server. You are not allowed to change roles of members. **Please do not attempt to bypass this restriction.**"
                             ),
                             color=discord.Color.red(),
-                        ).set_footer(text=entry.guild.name, icon_url=entry.guild.icon),
+                        ).set_footer(text=entry.guild.name, icon_url=get_non_animated_asset(entry.guild.icon)),
                     )
                 except discord.HTTPException:
                     pass
@@ -453,7 +453,7 @@ class LockdownModule(Module):
                                 "A lockdown is currently active in this server. You are not allowed to create invites. **Please do not attempt to bypass this restriction.**"
                             ),
                             color=discord.Color.red(),
-                        ).set_footer(text=entry.guild.name, icon_url=entry.guild.icon),
+                        ).set_footer(text=entry.guild.name, icon_url=get_non_animated_asset(entry.guild.icon))
                     )
                 except discord.HTTPException:
                     pass

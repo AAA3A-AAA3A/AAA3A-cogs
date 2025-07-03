@@ -8,7 +8,7 @@ from io import BytesIO
 
 import chat_exporter
 
-from ..constants import Colors, Emojis, Levels
+from ..constants import Colors, Emojis, Levels, get_non_animated_asset
 from ..views import ToggleModuleButton
 from .module import Module
 
@@ -192,7 +192,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         )
         embed.set_author(
             name=responsible.display_name,
-            icon_url=responsible.display_avatar,
+            icon_url=get_non_animated_asset(responsible.display_avatar),
         )
         embed.description = _(
             "🛡️ **Responsible:** {responsible.mention} (`{responsible}`) {responsible_emojis} - `{responsible.id}`\n"
@@ -203,7 +203,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
             channel_name=entry.before.name,
             channel=channel,
         )
-        embed.set_footer(text=entry.guild.name, icon_url=entry.guild.icon)
+        embed.set_footer(text=entry.guild.name, icon_url=get_non_animated_asset(entry.guild.icon))
         if messages:
             embed.add_field(
                 name="\u200b",

@@ -10,7 +10,7 @@ from collections import defaultdict
 
 from redbot.core.utils.chat_formatting import box, humanize_list
 
-from ..constants import Emojis
+from ..constants import Emojis, get_non_animated_asset
 from ..views import ToggleModuleButton
 from .module import Module
 
@@ -882,7 +882,7 @@ class LoggingModule(Module):
         )
         embed.set_author(
             name=responsible.display_name,
-            icon_url=responsible.display_avatar,
+            icon_url=get_non_animated_asset(responsible.display_avatar),
         )
         embed.description = _(
             "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) {responsible_emojis} - `{responsible.id}`"
@@ -893,7 +893,7 @@ class LoggingModule(Module):
         )
         if target is not None:
             embed.set_thumbnail(
-                url=(
+                url=get_non_animated_asset(
                     target.display_avatar
                     if isinstance(target, (discord.Member, discord.User))
                     else (target.icon if isinstance(target, discord.Role) else None)
@@ -986,7 +986,7 @@ class LoggingModule(Module):
                         "🗑️ **Target:** `{target}` - `{target.id}`"
                     ).format(target=target)
         elif event["value"] in ("member_join", "member_leave"):
-            embed.set_thumbnail(url=responsible.display_avatar)
+            embed.set_thumbnail(url=get_non_animated_asset(responsible.display_avatar))
         if extra is not None:
             if isinstance(extra, discord.Member):
                 embed.description += _(
@@ -1000,7 +1000,7 @@ class LoggingModule(Module):
             embed.description += _("\n{emoji} **Reason:**\n>>> {reason}").format(
                 emoji=Emojis.REASON.value, reason=reason
             )
-        embed.set_footer(text=guild.name, icon_url=guild.icon)
+        embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
         return embed
 
     async def cache_invites(self) -> None:

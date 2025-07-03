@@ -17,7 +17,7 @@ from PIL import Image, ImageDraw
 from redbot.core import modlog
 from redbot.core.utils.chat_formatting import humanize_list, box, text_to_file
 
-from .constants import WHITELIST_TYPES, Colors, Emojis, Levels, MemberEmojis
+from .constants import WHITELIST_TYPES, Colors, Emojis, Levels, MemberEmojis, get_non_animated_asset
 from .modules import MODULES, Module
 from .views import OBJECT_TYPING, ActionsView, SettingsView, WhitelistView
 
@@ -508,7 +508,7 @@ class Security(Cog):
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.set_thumbnail(url=member.display_avatar)
-        embed.set_footer(text=member.guild.name, icon_url=member.guild.icon)
+        embed.set_footer(text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon))
         description = _(
             "{emoji} **Member:** {member.mention} (`{member}`) {member_emojis}"
         ).format(
@@ -671,9 +671,11 @@ class Security(Cog):
         role_name: str = "Security Quarantine",
         color: discord.Color = Colors.QUARANTINE.value,
     ) -> discord.Role:
-        if (quarantine_role_id := await self.config.guild(guild).quarantine_role()) is None or (
-            quarantine_role := guild.get_role(quarantine_role_id)
-        ) is None:
+        if (
+            (quarantine_role_id := await self.config.guild(guild).quarantine_role()) is None
+            or (quarantine_role := guild.get_role(quarantine_role_id)) is None
+            or not quarantine_role.is_assignable()
+        ):
             try:
                 quarantine_role = await guild.create_role(
                     name=role_name,
@@ -690,17 +692,16 @@ class Security(Cog):
                 raise RuntimeError(
                     _("Failed to create the quarantine role: {error}").format(error=str(e))
                 )
-        else:
-            if quarantine_role._permissions:
-                try:
-                    await quarantine_role.edit(
-                        permissions=discord.Permissions.none(),
-                        reason="Updating the quarantine role used by Security.",
-                    )
-                except discord.HTTPException as e:
-                    raise RuntimeError(
-                        _("Failed to update the quarantine role: {error}").format(error=str(e))
-                    )
+        elif quarantine_role._permissions:
+            try:
+                await quarantine_role.edit(
+                    permissions=discord.Permissions.none(),
+                    reason="Updating the quarantine role used by Security.",
+                )
+            except discord.HTTPException as e:
+                raise RuntimeError(
+                    _("Failed to update the quarantine role: {error}").format(error=str(e))
+                )
         for channel in guild.channels:
             if quarantine_role not in channel.overwrites:
                 overwrites = {
@@ -1034,7 +1035,7 @@ class Security(Cog):
             value=f"||`{recovery_key}`||",
         )
         embed.set_image(url="attachment://recovery_key.png")
-        embed.set_footer(text=guild.name, icon_url=guild.icon)
+        embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
         await guild.owner.send(
             embed=embed,
             file=file,

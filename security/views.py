@@ -9,7 +9,7 @@ import functools
 
 from redbot.core.utils.chat_formatting import humanize_list
 
-from .constants import POSSIBLE_ACTIONS, WHITELIST_TYPES, Colors, Emojis, Levels
+from .constants import POSSIBLE_ACTIONS, WHITELIST_TYPES, Colors, Emojis, Levels, get_non_animated_asset
 
 _: Translator = Translator("Security", __file__)
 
@@ -63,13 +63,15 @@ class WhitelistView(discord.ui.View):
             timestamp=ctx.message.created_at,
         )
         embed.set_thumbnail(
-            url=self._object.display_avatar
-            if isinstance(self._object, discord.Member)
-            else self._object.guild.icon
-            if isinstance(self._object, discord.Role)
-            else None
+            url=get_non_animated_asset(
+                self._object.display_avatar
+                if isinstance(self._object, discord.Member)
+                else self._object.guild.icon
+                if isinstance(self._object, discord.Role)
+                else None
+            )
         )
-        embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
+        embed.set_footer(text=ctx.guild.name, icon_url=get_non_animated_asset(ctx.guild.icon))
         self.whitelist_types = [
             whitelist_type
             for whitelist_type in WHITELIST_TYPES
@@ -341,9 +343,9 @@ class SettingsView(discord.ui.View):
             name=_("Invoked by {author.display_name} ({author.id})").format(
                 author=self.ctx.author
             ),
-            icon_url=self.ctx.author.display_avatar,
+            icon_url=get_non_animated_asset(self.ctx.author.display_avatar),
         )
-        embed.set_footer(text=self.ctx.guild.name, icon_url=self.ctx.guild.icon)
+        embed.set_footer(text=self.ctx.guild.name, icon_url=get_non_animated_asset(self.ctx.guild.icon))
         self.clear_items()
         self.add_item(self.select)
         for option in self.select.options:

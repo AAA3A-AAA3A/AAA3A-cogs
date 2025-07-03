@@ -7,7 +7,7 @@ import datetime
 
 from redbot.core.utils.chat_formatting import box
 
-from ..constants import Colors, Emojis
+from ..constants import Colors, Emojis, get_non_animated_asset
 from ..views import ActionsView, ToggleModuleButton
 from .module import Module
 
@@ -268,7 +268,7 @@ class ReasonModal(discord.ui.Modal):
         if not config["anonymous"]:
             embed.set_author(
                 name=interaction.user.display_name,
-                icon_url=interaction.user.display_avatar,
+                icon_url=get_non_animated_asset(interaction.user.display_avatar),
             )
             embed.description += _(
                 "\n{emoji} **Reporter:** {reporter.mention} (`{reporter}`) {reporter_emojis}"
@@ -296,14 +296,14 @@ class ReasonModal(discord.ui.Modal):
                     f" - [{attachment.filename}]({attachment.url})"
                     for attachment in self.target.attachments
                 )
-        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.set_thumbnail(url=get_non_animated_asset(member.display_avatar))
         embed.add_field(
             name=_("Reason:"),
             value=f">>> {self.reason.value}",
         )
         embed.set_footer(
             text=self.guild.name,
-            icon_url=self.guild.icon,
+            icon_url=get_non_animated_asset(self.guild.icon),
         )
         channel = self.guild.get_channel(config["channel"])
         ping_role = (

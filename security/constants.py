@@ -348,3 +348,14 @@ DANGEROUS_PERMISSIONS: typing.List[str] = [
     "manage_threads",
     "moderate_members",
 ]
+
+
+def get_non_animated_asset(asset: typing.Optional[discord.Asset] = None) -> typing.Optional[str]:
+    if asset is None or not asset.is_animated():
+        return None
+    return discord.Asset(
+        asset._state,
+        url=asset.url.replace("/a_", "/").replace(".gif", ".png"),
+        key=asset.key.removeprefix("a_"),
+        animated=False,
+    )

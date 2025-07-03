@@ -5,7 +5,7 @@ import typing  # isort:skip
 
 from redbot.core.utils.chat_formatting import humanize_list, pagify
 
-from ..constants import Emojis
+from ..constants import Emojis, get_non_animated_asset
 from ..views import ToggleModuleButton
 from .module import Module
 
@@ -162,7 +162,7 @@ class ProtectedRolesModule(Module):
             ),
             color=discord.Color.gold(),
         )
-        embed.set_footer(text=guild.name, icon_url=guild.icon)
+        embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
         description = "\n".join(
             [
                 (

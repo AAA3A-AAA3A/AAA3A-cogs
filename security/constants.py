@@ -159,6 +159,16 @@ WHITELIST_TYPES: typing.List[
         "staff_allowed": False,
     },
     {
+        "name": "Logging - Channel Update & Overwrites Log Whitelist",
+        "emoji": Emojis.CHANNEL.value,
+        "description": "Edit channels and their overwrites without being logged.",
+        "value": "logging_channel_update_overwrites_log",
+        "channels": True,
+        "categories": True,
+        "webhooks": False,
+        "staff_allowed": False,
+    },
+    {
         "name": "Reports Whitelist",
         "emoji": Emojis.REPORTS.value,
         "description": "Can't be reported on the reports system.",

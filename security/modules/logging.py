@@ -834,14 +834,35 @@ class LoggingModule(Module):
         guild: discord.Guild,
         event: typing.Dict[str, typing.Any],
         responsible: discord.Member,
+        target=None,
     ) -> discord.TextChannel:
         config = await self.config_value(guild)()
         if not config["enabled"] or not event["enabled"]:
             return False
         if event.get("ignore_bots", False) and responsible.bot:
             return False
-        if event["value"] in ("message_edit", "message_delete") and await self.cog.is_whitelisted(
-            responsible, "logging_message_log"
+        if (
+            event["value"] in ("message_edit", "message_delete")
+            and (
+                await self.cog.is_whitelisted(
+                    responsible, "logging_message_log"
+                )
+                or await self.cog.is_message_whitelisted(
+                    target, "logging_message_log"
+                )
+            )
+        ):
+            return False
+        elif (
+            event["value"] in ("channel_update", "overwrite_create", "overwrite_delete", "overwrite_update")
+            and (
+                await self.cog.is_whitelisted(
+                    responsible, "logging_channel_update_overwrites_log"
+                )
+                or await self.cog.is_message_whitelisted(
+                    target, "logging_channel_update_overwrites_log"
+                )
+            )
         ):
             return False
         if (
@@ -1136,7 +1157,7 @@ class LoggingModule(Module):
         if before.content == after.content:
             return
         event = await self.get_event(after.guild, "message_edit")
-        if not (channel := await self.check_config(after.guild, event, after.author)):
+        if not (channel := await self.check_config(after.guild, event, after.author, after)):
             return
         embed: discord.Embed = await self.get_embed(after.guild, event, after.author, after)
         embed.description += f"\n{box('- ' + before.content, 'diff')}"
@@ -1159,7 +1180,7 @@ class LoggingModule(Module):
         if message.guild is None:
             return
         event = await self.get_event(message.guild, "message_delete")
-        if not (channel := await self.check_config(message.guild, event, message.author)):
+        if not (channel := await self.check_config(message.guild, event, message.author, message)):
             return
         responsible = message.author
         async for entry in message.guild.audit_logs(
@@ -1198,7 +1219,7 @@ class LoggingModule(Module):
     async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
         if (event := await self.get_event(entry.guild, entry.action.name)) is None:
             return
-        if not (channel := await self.check_config(entry.guild, event, entry.user)):
+        if not (channel := await self.check_config(entry.guild, event, entry.user, entry.target)):
             return
         embed: discord.Embed = await self.get_embed(
             entry.guild,

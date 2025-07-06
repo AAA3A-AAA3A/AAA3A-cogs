@@ -94,7 +94,8 @@ class ProtectedRolesModule(Module):
                 return
             if not role.is_assignable():
                 await interaction.response.send_message(
-                    _("This role can't be protected because it is not assignable."), ephemeral=True
+                    _("This role can't be protected because it is not assignable or is higher than my top role."),
+                    ephemeral=True,
                 )
                 return
             protected_roles[str(role.id)] = []

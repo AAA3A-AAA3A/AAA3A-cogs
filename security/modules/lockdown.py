@@ -340,12 +340,12 @@ class LockdownModule(Module):
             )
 
     async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
-        if entry.user.bot or entry.guild is None:
-            return
         if entry.action not in (
             discord.AuditLogAction.member_role_update,
             discord.AuditLogAction.invite_create,
         ):
+            return
+        if entry.user.bot:
             return
         if await self.cog.is_whitelisted(entry.user, "lockdown"):
             return

@@ -270,7 +270,8 @@ ANTI_NUKE_OPTIONS: typing.List[
                 or len(entry.extra.members) >= len(entry.guild.members) * 0.1
             )
             and any(
-                getattr(entry.after.allow, dangerous_permission)
+                hasattr(entry.after, "allow")
+                and getattr(entry.after.allow, dangerous_permission)
                 and not getattr(entry.before.allow, dangerous_permission)
                 for dangerous_permission in DANGEROUS_PERMISSIONS
             )
@@ -300,7 +301,7 @@ ANTI_NUKE_OPTIONS: typing.List[
         ),
         "revert": lambda entry: entry.target.set_permissions(
             entry.extra,
-            overwrite=discord.PermissionOverwrite.from_pair(entry.before.allow, entry.before.deny),
+            overwrite=discord.PermissionOverwrite.from_pair(entry.before.allow, getattr(entry.before, "deny", discord.Permissions.none())),
             reason=REVERT_AUDIT_LOG_REASON,
         ),
     },
@@ -805,6 +806,8 @@ class AntiNukeModule(Module):
         guild = entry.guild
         config = await self.config_value(guild)()
         if not config["enabled"]:
+            return
+        if entry.user is None:
             return
         if await self.cog.is_trusted_admin_or_higher(entry.user):
             return

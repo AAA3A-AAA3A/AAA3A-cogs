@@ -855,13 +855,8 @@ class LoggingModule(Module):
             return False
         elif (
             event["value"] in ("channel_update", "overwrite_create", "overwrite_delete", "overwrite_update")
-            and (
-                await self.cog.is_whitelisted(
-                    responsible, "logging_channel_update_overwrites_log"
-                )
-                or await self.cog.is_whitelisted(
-                    target, "logging_channel_update_overwrites_log"
-                )
+            and await self.cog.is_whitelisted(
+                target, "logging_channel_update_overwrites_log"
             )
         ):
             return False
@@ -905,13 +900,18 @@ class LoggingModule(Module):
             name=responsible.display_name,
             icon_url=get_non_animated_asset(responsible.display_avatar),
         )
-        embed.description = _(
-            "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) {responsible_emojis} - `{responsible.id}`"
-        ).format(
-            emoji=Emojis.ISSUED_BY.value,
-            responsible=responsible,
-            responsible_emojis=await self.cog.get_member_emojis(responsible),
-        )
+        if isinstance(responsible, discord.Member):
+            embed.description = _(
+                "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) {responsible_emojis} - `{responsible.id}`"
+            ).format(
+                emoji=Emojis.ISSUED_BY.value,
+                responsible=responsible,
+                responsible_emojis=await self.cog.get_member_emojis(responsible),
+            )
+        elif isinstance(responsible, discord.User):
+            embed.description = _(
+                "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) - `{responsible.id}`"
+            ).format(emoji=Emojis.ISSUED_BY.value, responsible=responsible)
         if target is not None:
             embed.set_thumbnail(
                 url=get_non_animated_asset(
@@ -1217,7 +1217,11 @@ class LoggingModule(Module):
         await channel.send(embed=embed)
 
     async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
+        if entry.user is None:
+            return
         if (event := await self.get_event(entry.guild, entry.action.name)) is None:
+            return
+        if event["value"] == "message_delete":
             return
         if not (channel := await self.check_config(entry.guild, event, entry.user, entry.target)):
             return

@@ -81,14 +81,14 @@ class Security(Cog):
         )
         self.config.register_member(
             level=None,
-            whitelist={whitelist_type["value"]: False for whitelist_type in WHITELIST_TYPES},
+            whitelist={whitelist_type["value"]: False for whitelist_type in WHITELIST_TYPES if whitelist_type["value"] != "logging_channel_update_overwrites_log"},
             # Quarantine.
             quarantined=False,
             roles_before_quarantine=[],
             integration_role_permissions_before_quarantine=None,
         )
         self.config.register_role(
-            whitelist={whitelist_type["value"]: False for whitelist_type in WHITELIST_TYPES},
+            whitelist={whitelist_type["value"]: False for whitelist_type in WHITELIST_TYPES if whitelist_type["value"] != "logging_channel_update_overwrites_log"},
         )
         self.config.register_channel(
             whitelist={
@@ -243,18 +243,21 @@ class Security(Cog):
             return await self.config.role(_object).whitelist.get_raw(whitelist_type)
         elif _type in (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel):
             return await self.config.channel(_object).whitelist.get_raw(whitelist_type) or (
-                _object.category is not None
+                getattr(_object, "category", None) is not None
                 and await self.is_whitelisted(_object.category, whitelist_type)
             )
         elif _type is discord.CategoryChannel:
             return await self.config.channel(_object).whitelist.get_raw(whitelist_type)
         elif _type is discord.Thread:
-            return await self.is_whitelisted(_object.parent, whitelist_type)
+            return (
+                getattr(_object, "parent", None) is not None
+                and await self.is_whitelisted(_object.parent, whitelist_type)
+            )
         elif _type is discord.Webhook:
             return await self.config.custom("webhook", _object.id).whitelist.get_raw(
                 whitelist_type
             ) or (
-                hasattr(_object, "channel")
+                getattr(_object, "channel", None) is not None
                 and await self.is_whitelisted(_object.channel, whitelist_type)
             )
 
@@ -796,11 +799,6 @@ class Security(Cog):
     async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
         if entry.action != discord.AuditLogAction.member_role_update:
             return
-        if not isinstance(entry.target, discord.Member):
-            try:
-                entry.target = await entry.guild.fetch_member(entry.target.id)
-            except discord.HTTPException:
-                return
         if not await self.is_quarantined(entry.target):
             return
         if await self.is_whitelisted(entry.user, "quarantine"):

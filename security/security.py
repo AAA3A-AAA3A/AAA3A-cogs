@@ -864,33 +864,63 @@ class Security(Cog):
             return
         await self.create_or_update_quarantine_role(channel.guild)
 
-    @commands.Cog.listener()
-    async def on_command_completion(
-        self, ctx: commands.Context
-    ) -> None:  # Handle commands to find the right responsible of an action.
-        if ctx.guild is None:
+    @commands.Cog.listener("on_audit_log_entry_create")
+    async def on_me_entry(self, entry: discord.AuditLogEntry) -> None:  # Handle commands to find the right responsible of an action.
+        if entry.user != entry.guild.me:
             return
-        if not ctx.guild.me.guild_permissions.view_audit_log:
+        if entry.action not in (
+            discord.AuditLogAction.kick,
+            discord.AuditLogAction.ban,
+            discord.AuditLogAction.member_role_update,
+        ):
             return
-        if ctx.command.name == "addrole":
-            action, target, role = (
-                discord.AuditLogAction.member_role_update,
-                ctx.kwargs["user"] or ctx.author,
-                ctx.args[2],
-            )
-        elif ctx.command.name == "kick":
-            action, target, role = discord.AuditLogAction.kick, ctx.args[2], None
-        elif ctx.command.name == "ban":
-            action, target, role = discord.AuditLogAction.ban, ctx.args[2], None
-        else:
+        if (
+            entry.reason is None
+            or not entry.reason.startswith("Action requested by")   
+        ):
             return
-        async for entry in ctx.guild.audit_logs(action=action, user=ctx.guild.me, limit=3):
-            if entry.target.id == target.id and (role is None or role.id in entry.after.roles):
-                entry.user = ctx.author  # Set the user to the command author.
-                for key, module in self.modules.items():
-                    if key != "logging" and hasattr(module, "on_audit_log_entry_create"):
-                        await module.on_audit_log_entry_create(entry)
-                break
+        try:
+            member_id = int(entry.reason.split("ID ")[1].split(")")[0])
+        except (ValueError, IndexError):
+            return
+        member = entry.guild.get_member(member_id)
+        if member is None:
+            try:
+                member = await entry.guild.fetch_member(member_id)
+            except discord.HTTPException:
+                return
+        entry.user = member  # Set the user to the member who requested the action.
+        for key, module in self.modules.items():
+            if key != "logging" and hasattr(module, "on_audit_log_entry_create"):
+                await module.on_audit_log_entry_create(entry)
+
+    # @commands.Cog.listener()
+    # async def on_command_completion(
+    #     self, ctx: commands.Context
+    # ) -> None:  # Handle commands to find the right responsible of an action.
+    #     if ctx.guild is None:
+    #         return
+    #     if not ctx.guild.me.guild_permissions.view_audit_log:
+    #         return
+    #     if ctx.command.name == "addrole":
+    #         action, target, role = (
+    #             discord.AuditLogAction.member_role_update,
+    #             ctx.kwargs["user"] or ctx.author,
+    #             ctx.args[2],
+    #         )
+    #     elif ctx.command.name == "kick":
+    #         action, target, role = discord.AuditLogAction.kick, ctx.args[2], None
+    #     elif ctx.command.name == "ban":
+    #         action, target, role = discord.AuditLogAction.ban, ctx.args[2], None
+    #     else:
+    #         return
+    #     async for entry in ctx.guild.audit_logs(action=action, user=ctx.guild.me, limit=3):
+    #         if entry.target.id == target.id and (role is None or role.id in entry.after.roles):
+    #             entry.user = ctx.author  # Set the user to the command author.
+    #             for key, module in self.modules.items():
+    #                 if key != "logging" and hasattr(module, "on_audit_log_entry_create"):
+    #                     await module.on_audit_log_entry_create(entry)
+    #             break
 
     @is_trusted_admin_or_higher_level()
     @commands.guild_only()

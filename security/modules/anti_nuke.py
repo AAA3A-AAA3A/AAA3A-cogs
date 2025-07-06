@@ -114,7 +114,7 @@ ANTI_NUKE_OPTIONS: typing.List[
         "emoji": Emojis.KICK.value,
         "description": "Detect when someone prunes members and react accordingly.",
         "value": "detect_member_prunes",
-        "default_enabled": False,
+        "default_enabled": True,
         "check": lambda entry: entry.action == discord.AuditLogAction.member_prune,
         "log": lambda entry: _(
             "{user.mention} (`{user}`) **pruned** {members_removed} members ({delete_member_days} days) {timestamp}."
@@ -132,7 +132,7 @@ ANTI_NUKE_OPTIONS: typing.List[
         "emoji": Emojis.MEMBER.value,
         "description": "Prevent unauthorized admins given dangerous permissions to members if they don't have them already.",
         "value": "strict_member_role_addition",
-        "default_enabled": False,
+        "default_enabled": True,
         "check": lambda entry: (
             entry.action == discord.AuditLogAction.member_role_update
             and any(
@@ -260,7 +260,7 @@ ANTI_NUKE_OPTIONS: typing.List[
         "emoji": Emojis.CHANNEL.value,
         "description": "Prevent @everyone and main roles from getting dangerous permissions in channels.",
         "value": "protect_everyone_and_main_roles_in_channels",
-        "default_enabled": False,
+        "default_enabled": True,
         "check": lambda entry: (
             entry.action
             in (discord.AuditLogAction.overwrite_create, discord.AuditLogAction.overwrite_update)
@@ -310,7 +310,7 @@ ANTI_NUKE_OPTIONS: typing.List[
         "emoji": Emojis.ONBOARDING.value,
         "description": "Prevent adding roles with dangerous permissions to Discord's onboarding.",
         "value": "protect_onboarding",
-        "default_enabled": False,
+        "default_enabled": True,
         "check": lambda entry: (
             entry.action.value
             in (163, 164)  # 163: `onboarding_question_create`, 164: `onboarding_question_update`
@@ -462,7 +462,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "emoji": Emojis.ROLE.value,
         "description": "Limit the number of roles created in a given time frame.",
         "value": "role_creation",
-        "default_enabled": False,
+        "default_enabled": True,
         "default_minute_limit": 5,
         "default_hour_limit": 15,
         "actions": [discord.AuditLogAction.role_create],
@@ -498,7 +498,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "emoji": Emojis.CHANNEL.value,
         "description": "Limit the number of channels created in a given time frame.",
         "value": "channel_creation",
-        "default_enabled": False,
+        "default_enabled": True,
         "default_minute_limit": 4,
         "default_hour_limit": 12,
         "actions": [discord.AuditLogAction.channel_create],
@@ -534,7 +534,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "emoji": Emojis.WEBHOOK.value,
         "description": "Limit the number of webhooks created in a given time frame.",
         "value": "webhook_creation",
-        "default_enabled": False,
+        "default_enabled": True,
         "default_minute_limit": 3,
         "default_hour_limit": 10,
         "actions": [discord.AuditLogAction.webhook_create],
@@ -552,7 +552,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "emoji": Emojis.WEBHOOK.value,
         "description": "Limit the number of webhooks deleted in a given time frame.",
         "value": "webhook_deletion",
-        "default_enabled": False,
+        "default_enabled": True,
         "default_minute_limit": 3,
         "default_hour_limit": 8,
         "actions": [discord.AuditLogAction.webhook_delete],

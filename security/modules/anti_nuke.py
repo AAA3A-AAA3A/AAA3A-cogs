@@ -96,9 +96,9 @@ ANTI_NUKE_OPTIONS: typing.List[
         "check": lambda entry: entry.action == discord.AuditLogAction.guild_update
         and entry.before.vanity_url_code != entry.after.vanity_url_code,
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **changed** the vanity URL from `{before.vanity_url_code}` to `{after.vanity_url_code}` {timestamp}."
+            "{member.mention} (`{member}`) **changed** the vanity URL from `{before.vanity_url_code}` to `{after.vanity_url_code}` {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             before=entry.before,
             after=entry.after,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
@@ -117,9 +117,9 @@ ANTI_NUKE_OPTIONS: typing.List[
         "default_enabled": True,
         "check": lambda entry: entry.action == discord.AuditLogAction.member_prune,
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **pruned** {members_removed} members ({delete_member_days} days) {timestamp}."
+            "{member.mention} (`{member}`) **pruned** {members_removed} members ({delete_member_days} days) {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             members_removed=entry.extra.members_removed,
             delete_member_days=entry.extra.delete_member_days,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
@@ -146,9 +146,9 @@ ANTI_NUKE_OPTIONS: typing.List[
             )
         ),
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **added** {roles} to {target.mention} (`{target}`) that grant dangerous permissions {timestamp}."
+            "{member.mention} (`{member}`) **added** {roles} to {target.mention} (`{target}`) that grant dangerous permissions {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             target=entry.target,
             roles=humanize_list(
                 [
@@ -229,9 +229,9 @@ ANTI_NUKE_OPTIONS: typing.List[
             )
         ),
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **updated** the permissions of {target.mention} (`{target}`) to include dangerous permissions {timestamp}."
+            "{member.mention} (`{member}`) **updated** the permissions of {target.mention} (`{target}`) to include dangerous permissions {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             target=entry.target,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         )
@@ -277,9 +277,9 @@ ANTI_NUKE_OPTIONS: typing.List[
             )
         ),
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **updated** the permissions of {extra.mention} (`{extra}`) in {target.mention} (`{target}`) to include dangerous permissions {timestamp}."
+            "{member.mention} (`{member}`) **updated** the permissions of {extra.mention} (`{extra}`) in {target.mention} (`{target}`) to include dangerous permissions {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             extra=entry.extra,
             target=entry.target,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
@@ -325,9 +325,9 @@ ANTI_NUKE_OPTIONS: typing.List[
             )
         ),
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **added** the role{s} {roles} with dangerous permissions to Discord's onboarding {timestamp}."
+            "{member.mention} (`{member}`) **added** the role{s} {roles} with dangerous permissions to Discord's onboarding {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             roles=humanize_list(
                 (
                     roles := [
@@ -387,9 +387,9 @@ ANTI_NUKE_OPTIONS: typing.List[
             )
         ),
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **updated** the permissions of {target.mention} (`{target}`) to include dangerous permissions {timestamp}."
+            "{member.mention} (`{member}`) **updated** the permissions of {target.mention} (`{target}`) to include dangerous permissions {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             target=entry.target,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         )
@@ -448,9 +448,9 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 15,
         "actions": [discord.AuditLogAction.kick, discord.AuditLogAction.ban],
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **{action}** `{target.name}` {timestamp}."
+            "{member.mention} (`{member}`) **{action}** `{target.name}` {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             action=_("kicked") if entry.action == discord.AuditLogAction.kick else _("banned"),
             target=entry.target,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
@@ -467,9 +467,9 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 15,
         "actions": [discord.AuditLogAction.role_create],
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **created** {target.mention} (`{target.name}`) {timestamp}."
+            "{member.mention} (`{member}`) **created** {target.mention} (`{target.name}`) {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             target=entry.target,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
@@ -485,9 +485,9 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 10,
         "actions": [discord.AuditLogAction.role_delete],
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **deleted** `{target_name}` {timestamp}."
+            "{member.mention} (`{member}`) **deleted** `{target_name}` {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             target_name=entry.before.name,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
@@ -503,9 +503,9 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 12,
         "actions": [discord.AuditLogAction.channel_create],
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **created** {target.mention} (`{target.name}`) {timestamp}."
+            "{member.mention} (`{member}`) **created** {target.mention} (`{target.name}`) {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             target=entry.target,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
@@ -521,9 +521,9 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 8,
         "actions": [discord.AuditLogAction.channel_delete],
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **deleted** `{target_name}` {timestamp}."
+            "{member.mention} (`{member}`) **deleted** `{target_name}` {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             target_name=entry.before.name,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
@@ -539,9 +539,9 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 10,
         "actions": [discord.AuditLogAction.webhook_create],
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **created** {target.mention} (`{target.name}`) {timestamp}."
+            "{member.mention} (`{member}`) **created** {target.mention} (`{target.name}`) {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             target=entry.target,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
@@ -557,9 +557,9 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 8,
         "actions": [discord.AuditLogAction.webhook_delete],
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **deleted** `{target_id}` {timestamp}."
+            "{member.mention} (`{member}`) **deleted** `{target_id}` {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             target_id=entry.target.id,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
@@ -575,9 +575,9 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 15,
         "actions": [discord.AuditLogAction.emoji_create],
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **created** {target} (`{target.name}`) {timestamp}."
+            "{member.mention} (`{member}`) **created** {target} (`{target.name}`) {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             target=entry.target,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
@@ -593,9 +593,9 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 10,
         "actions": [discord.AuditLogAction.emoji_delete],
         "log": lambda entry: _(
-            "{user.mention} (`{user}`) **deleted** `{target_name}` {timestamp}."
+            "{member.mention} (`{member}`) **deleted** `{target_name}` {timestamp}."
         ).format(
-            user=entry.user,
+            member=entry.user,
             target_name=entry.before.name,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
@@ -853,8 +853,10 @@ class AntiNukeModule(Module):
                         "anti_nuke_filter_channel_deletion",
                     ):
                         continue
-                    elif filter["value"] == "webhook_creation" and await self.cog.is_whitelisted(
-                        entry.target.channel, "anti_nuke_filter_webhook_creation"
+                    elif (
+                        filter["value"] == "webhook_creation"
+                        and getattr(entry.target, "channel", None) is not None
+                        and await self.cog.is_whitelisted(entry.target.channel, "anti_nuke_filter_webhook_creation")
                     ):
                         continue
                     elif filter["value"] == "webhook_deletion" and await self.cog.is_whitelisted(

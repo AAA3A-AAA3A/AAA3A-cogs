@@ -600,7 +600,7 @@ class Security(Cog):
             embed.description += box("\n".join(to_include))
         else:
             file = None
-        unaction = action in ("unquarantine", "untimeout", "unmute")
+        unaction = action in ("unquarantine", "untimeout", "unmute", "kick", "ban")
         view: ActionsView = ActionsView(self, member, context_message=context_message)
         await view.populate(
             include_actions=not unaction,
@@ -1000,6 +1000,7 @@ class Security(Cog):
             "logging",
             "anti_nuke",
             "protected_roles",
+            "dank_pool_protection",
             "lockdown",
             "unauthorized_text_channel_deletions",
         ] = "overview",

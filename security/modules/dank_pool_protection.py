@@ -22,7 +22,7 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[typing.Dict[typing.Literal["name", "em
         "description": "Prevent members from paying themselves.",
         "value": "self_payment",
         "check": lambda message, raw_message, config: (
-            message.interaction.name == "serverevents payout"
+            message._interaction.name == "serverevents payout"
             and "Pending Confirmation" in raw_message["components"][0]["components"][0]["content"]
             and int(raw_message["components"][0]["components"][2]["content"].split("<@")[1].split(">")[0]) == message.interaction_metadata.user.id
         ),
@@ -34,7 +34,7 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[typing.Dict[typing.Literal["name", "em
         "description": "Prevent members from making payments over a certain amount.",
         "value": "high_amount_payment",
         "check": lambda message, raw_message, config: (
-            message.interaction.name == "serverevents payout"
+            message._interaction.name == "serverevents payout"
             and "Pending Confirmation" in raw_message["components"][0]["components"][0]["content"]
             and int(raw_message["components"][0]["components"][2]["content"].split("**\u23e3 ")[1].split("**")[0].replace(",", "")) > config["high_amount_limit"]
         ),
@@ -60,7 +60,7 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[typing.Dict[typing.Literal["name", "em
         "description": "Detect members who try to execute payout command without permission.",
         "value": "unauthorized_payout",
         "check": lambda message, raw_message, config: (
-            message.interaction.name == "serverevents payout"
+            message._interaction.name == "serverevents payout"
             and "Only event managers can payout from the server's pool!" in raw_message["components"][0]["components"][0]["content"]
         ),
         "reason": lambda: _("**Dank Pool Protection** - Attempted to execute payout command without permission."),
@@ -71,7 +71,7 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[typing.Dict[typing.Literal["name", "em
         "description": "Detect members who try to execute event command without permission.",
         "value": "unauthorized_event",
         "check": lambda message, raw_message, config: (
-            message.interaction.name.startswith("serverevents run")
+            message._interaction.name.startswith("serverevents run")
             and "Only event managers can run events!" in raw_message["components"][0]["components"][0]["content"]
         ),
         "reason": lambda: _("**Dank Pool Protection** - Attempted to execute event command without permission."),
@@ -236,19 +236,19 @@ class DankPoolProtectionModule(Module):
             return
         if (member := message.guild.get_member(message.interaction_metadata.user.id)) is None:
             try:
-                member = await message.guild.fetch_member(message.interaction.user.id)
+                member = await message.guild.fetch_member(message.interaction_metadata.user.id)
             except discord.HTTPException:
                 return
         log = _(
             "{member.mention} (`{member}`) executed `/{slash_name}` ({jump_url}) {timestamp}."
         ).format(
             member=member,
-            slash_name=message.interaction.name,
+            slash_name=message._interaction.name,
             jump_url=message.jump_url,
             timestamp=f"<t:{int(message.created_at.timestamp())}:R>",
         )
         if (
-            message.interaction.name == "serverevents payout"
+            message._interaction.name == "serverevents payout"
             and "Pending Confirmation" in raw_message["components"][0]["components"][0]["content"]
         ):
             self.payouts_cache[message.guild][member].append((message.created_at, log))

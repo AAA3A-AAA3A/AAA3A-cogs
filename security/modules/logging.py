@@ -1297,7 +1297,7 @@ class LoggingModule(Module):
                         and key != "colour"
                     ),
                 )
-            if len(embed.fields[-1].value) > 1024:
+            if embed.fields and len(embed.fields[-1].value) > 1024:
                 embed.fields[-1].value = embed.fields[-1].value[:1020] + "\n..."
             if hasattr(entry.after, "permissions"):
                 added_permissions.extend(

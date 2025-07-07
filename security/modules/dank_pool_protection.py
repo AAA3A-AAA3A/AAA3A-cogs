@@ -81,7 +81,7 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[typing.Dict[typing.Literal["name", "em
 
 class DankPoolProtectionModule(Module):
     name = "Dank Pool Protection"
-    emoji = "💰"
+    emoji = Emojis.DANK_POOL_PROTECTION.value
     description = "Protect your server's Dank Memer pool from abuse."
     default_config = {
         "enabled": False,
@@ -225,6 +225,8 @@ class DankPoolProtectionModule(Module):
             return
         config = await self.config_value(message.guild)()
         if not config["enabled"]:
+            return
+        if await self.cog.is_message_whitelisted(message, "dank_pool_protection"):
             return
         try:
             raw_message = await self.cog.bot.http.get_message(message.channel.id, message.id)
@@ -385,8 +387,8 @@ class ConfigureValuesModal(discord.ui.Modal):
             if hour_limit < 1:
                 raise ValueError(_("Hour limit must be at least **1**."))
             payout_cooldown = int(self.payout_cooldown.value)
-            if payout_cooldown < 1:
-                raise ValueError(_("Payout cooldown must be at least **1**."))
+            if payout_cooldown < 2:
+                raise ValueError(_("Payout cooldown must be at least **2 seconds**."))
         except ValueError as e:
             await interaction.followup.send(
                 _("Invalid value: {error}").format(error=str(e)),

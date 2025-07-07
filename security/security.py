@@ -81,14 +81,14 @@ class Security(Cog):
         )
         self.config.register_member(
             level=None,
-            whitelist={whitelist_type["value"]: False for whitelist_type in WHITELIST_TYPES if whitelist_type["value"] != "logging_channel_update_overwrites_log"},
+            whitelist={whitelist_type["value"]: False for whitelist_type in WHITELIST_TYPES if whitelist_type["members_roles"]},
             # Quarantine.
             quarantined=False,
             roles_before_quarantine=[],
             integration_role_permissions_before_quarantine=None,
         )
         self.config.register_role(
-            whitelist={whitelist_type["value"]: False for whitelist_type in WHITELIST_TYPES if whitelist_type["value"] != "logging_channel_update_overwrites_log"},
+            whitelist={whitelist_type["value"]: False for whitelist_type in WHITELIST_TYPES if whitelist_type["members_roles"]},
         )
         self.config.register_channel(
             whitelist={

@@ -76,7 +76,7 @@ class WhitelistView(discord.ui.View):
             whitelist_type
             for whitelist_type in WHITELIST_TYPES
             if (
-                (isinstance(_object, (discord.Member, discord.Role)) and whitelist_type["value"] != "logging_channel_update_overwrites_log")
+                (isinstance(_object, (discord.Member, discord.Role)) and whitelist_type["members_roles"])
                 or (
                     isinstance(
                         _object, (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel, discord.Webhook)

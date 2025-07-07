@@ -1118,13 +1118,13 @@ class Game:
             new_achievements = await player.check_achievements()
             if player in main_winners and self.config["red_economy"]:
                 if not self.config["reward_for_winning_based_on_costs"]:
-                    credits_to_win = self.config["credits_to_win"]
+                    reward_for_winning = self.config["reward_for_winning"]
                 else:
                     credits_to_win = (self.config["cost_to_play"] * len(self.players)) // len(
                         main_winners
                     )
                 try:
-                    await bank.deposit_credits(player.member, self.config["credits_to_win"])
+                    await bank.deposit_credits(player.member, reward_for_winning)
                 except BalanceTooHigh as e:
                     await bank.set_balance(player.member, e.max_balance)
             if player not in failed_to_send:

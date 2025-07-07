@@ -187,18 +187,15 @@ class ProtectedRolesModule(Module):
         config = await self.config_value(entry.guild)()
         if not config["enabled"] or not (protected_roles := config["protected_roles"]):
             return
+        if entry.user == entry.guild.me or await self.cog.is_whitelisted(entry.target, "protected_roles"):
+            return
         to_remove = []
         for role in entry.after.roles:
             if str(role.id) not in protected_roles:
                 continue
             if entry.target.id in protected_roles[str(role.id)]:
                 continue
-            if await self.cog.is_whitelisted(entry.target, "protected_roles"):
-                continue
-            if (
-                await self.cog.is_whitelisted(entry.user, "protected_roles")
-                and entry.user != entry.guild.me
-            ):
+            if await self.cog.is_whitelisted(entry.user, "protected_roles"):
                 protected_roles[str(role.id)].append(entry.target.id)
                 await self.config_value(entry.guild).protected_roles.set(protected_roles)
                 continue

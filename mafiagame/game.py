@@ -1120,7 +1120,7 @@ class Game:
                 if not self.config["reward_for_winning_based_on_costs"]:
                     reward_for_winning = self.config["reward_for_winning"]
                 else:
-                    credits_to_win = (self.config["cost_to_play"] * len(self.players)) // len(
+                    reward_for_winning = (self.config["cost_to_play"] * len(self.players)) // len(
                         main_winners
                     )
                 try:
@@ -1162,7 +1162,7 @@ class Game:
                                 title=_(
                                     "💰 You have received **{credits}** {currency_name}! 💰"
                                 ).format(
-                                    credits=credits_to_win,
+                                    credits=reward_for_winning,
                                     currency_name=await bank.get_currency_name(self.ctx.guild),
                                 ),
                                 color=ACHIEVEMENTS_COLOR,

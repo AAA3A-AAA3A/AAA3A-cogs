@@ -1198,7 +1198,7 @@ class Game:
                         channel.guild = guild
 
                     class AttachmentHandler(
-                        chat_exporter.construct.attachment_handlers.AttachmentHandler
+                        chat_exporter.construct.attachment_handler.AttachmentHandler
                     ):
                         async def process_asset(
                             self, attachment: discord.Attachment

@@ -5,6 +5,8 @@ import typing  # isort:skip
 
 from redbot.core.utils.chat_formatting import humanize_list
 
+import datetime
+
 from ..constants import Emojis
 from ..views import ToggleModuleButton
 from .module import Module
@@ -154,16 +156,14 @@ class SentinelRelayModule(Module):
                     await self.config_value(guild).triggered.set(True)
                     for module_name in config["modules_to_enable"]:
                         await self.cog.modules[module_name].config_value(guild).enabled.set(True)
+                    main_bot = main_bot or await self.cog.bot.fetch_user(main_bot_id)
                     embed: discord.Embed = discord.Embed(
                         title=_("Sentinel Relay Triggered!"),
-                        description=_("The main bot is offline, triggering the relay."),
-                        color=discord.Color.red()
+                        description=_("The main bot ({mention}) is offline, triggering the relay.").format(mention=main_bot.mention),
+                        color=discord.Color.red(),
+                        timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                     )
-                    if main_bot is not None:
-                        embed.set_author(name=main_bot.display_name, icon_url=main_bot.display_avatar)
-                    else:
-                        user = await self.cog.bot.fetch_user(main_bot_id)
-                        embed.set_author(name=user.display_name, icon_url=user.display_avatar)
+                    embed.set_author(name=main_bot.display_name, icon_url=main_bot.display_avatar)
                     embed.add_field(
                         name=_("Enabled Modules:"),
                         value="\n".join(
@@ -184,8 +184,9 @@ class SentinelRelayModule(Module):
                             await module.config_value(guild).enabled.set(False)
                     embed: discord.Embed = discord.Embed(
                         title=_("Sentinel Relay Untriggered!"),
-                        description=_("The main bot is back online, untriggering the relay."),
-                        color=discord.Color.green()
+                        description=_("The main bot ({mention}) is back online, untriggering the relay.").format(mention=main_bot.mention),
+                        color=discord.Color.green(),
+                        timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                     )
                     embed.set_author(name=main_bot.display_name, icon_url=main_bot.display_avatar)
                     embed.add_field(

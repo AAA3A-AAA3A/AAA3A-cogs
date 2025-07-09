@@ -892,7 +892,7 @@ class Detective(Role):
                         target=target
                     )
                 ),
-                color=MAFIA_COLOR if target.role.side == "Mafia" else VILLAGERS_COLOR,
+                color=MAFIA_COLOR if is_mafia_side else VILLAGERS_COLOR,
             ),
         )
 

@@ -50,6 +50,10 @@ class Anomaly:
         }
 
     @classmethod
+    def is_possible(cls, game) -> bool:
+        return True
+
+    @classmethod
     async def start(cls, game) -> None:
         if cls.message is not None:
             for player in game.current_anomaly_players or game.alive_players:
@@ -127,6 +131,10 @@ class TalkingDead(Anomaly):
     message: str = _("You suddenly feel a surge of energy, and you can talk to the living!")
 
     @classmethod
+    def is_possible(cls, game) -> bool:
+        return bool(game.dead_players)
+
+    @classmethod
     async def start(cls, game) -> None:
         game.current_anomaly_players = random.sample(
             game.dead_players, k=random.randint(1, len(game.dead_players))
@@ -172,6 +180,7 @@ class LightningRound(Anomaly):
     name: str = "Lightning Round"
     emoji: str = "⚡"
     description: str = _("The town has only 10 seconds to talk and 10 seconds to vote!")
+    message: str = _("Hurry up! You have 10 seconds to talk and 10 seconds to vote!")
 
 
 class FoggyMist(Anomaly):
@@ -216,6 +225,10 @@ class LivingDead(Anomaly):
     name: str = "Living Dead"
     emoji: str = "💀"
     description: str = _("A random dead player gets revived!")
+
+    @classmethod
+    def is_possible(cls, game) -> bool:
+        return bool(game.dead_players)
 
     @classmethod
     async def start(cls, game) -> None:

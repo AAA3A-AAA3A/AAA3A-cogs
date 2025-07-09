@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .constants import (
+    HORSEMEN_OF_THE_APOCALYPSE_COLOR,
     MAFIA_COLOR,
     NEUTRAL_COLOR,
     VILLAGERS_COLOR,
@@ -59,6 +60,7 @@ class Player:
 
     is_town_traitor: bool = False
     is_town_vip: bool = False
+    first_role_night_number: int = 0
 
     revealed: bool = False
     extra_votes: int = 0
@@ -71,6 +73,10 @@ class Player:
     submissor_attacker: typing.Optional["Player"] = None
     guardian_successfully_protected_players: typing.List["Player"] = field(default_factory=list)
     cupid_lovers: typing.Tuple["Player"] = field(default_factory=tuple)
+    duelist_special_attack: bool = False
+    builder_bricks: int = 0
+    farmer_plants: int = 0
+    developer_role_in_use: typing.Optional[typing.Type["Role"]] = None
 
     def __hash__(self) -> int:
         return hash(self.member)
@@ -134,7 +140,7 @@ class Player:
         if self.game.days_nights and self.game.days_nights[-1].__class__.__name__ == "Night":
             silencer = next(
                 (
-                    t
+                    p
                     for p, t in self.game.days_nights[-1].targets.items()
                     if p.role is Silencer and self == t
                 ),
@@ -169,10 +175,10 @@ class Player:
                                     ).format(member=self.member)
                                     if cause == "scorching_sun"
                                     else _(
-                                        "{member.display_name} has been killed by {the_or_a} **{cause}**!"
+                                        "{member.display_name} has been killed by {the_or_a}**{cause}**!"
                                     ).format(
                                         member=self.member,
-                                        cause=cause.role.name,
+                                        cause=cause.role.display_name(self.game),
                                         the_or_a=cause.role.the_or_a(self.game),
                                     )
                                 )
@@ -189,8 +195,8 @@ class Player:
             if self.game.config["show_dead_role"]:
                 embed: discord.Embed = discord.Embed(
                     title=(
-                        _("They were {the_or_a} **{player.role.name}**!").format(
-                            player=self, the_or_a=self.role.the_or_a(self.game)
+                        _("They were {the_or_a}**{role_name}**!").format(
+                            player=self, the_or_a=self.role.the_or_a(self.game), role_name=self.role.display_name(self.game)
                         )
                         if silencer is None
                         else _("They were **???**!")
@@ -235,7 +241,7 @@ class Player:
                 files=(
                     [get_image("you_died")]
                     + (
-                        [self.role.get_image()]
+                        [self.role.get_image(self.game)]
                         if self.game.config["show_dead_role"] and silencer is None
                         else []
                     )
@@ -249,12 +255,11 @@ class Player:
             if self.game.config["show_dead_role"]:
                 embed: discord.Embed = discord.Embed(
                     title=_(
-                        "{player.member.display_name} were {the_or_a} **{player.role.name}**!"
-                    ).format(player=self, the_or_a=self.role.the_or_a(self.game)),
+                        "{player.member.display_name} were {the_or_a}**{role_name}**!"
+                    ).format(player=self, the_or_a=self.role.the_or_a(self.game), role_name=self.role.display_name(self.game)),
                     color=self.role.color(),
                 )
-                image = self.role.name.lower().replace(" ", "_")
-                embed.set_image(url=f"attachment://{image}.png")
+                embed.set_image(url=self.role.image_url())
                 embeds.append(embed)
             if self.dying_message is not None:
                 embeds.append(
@@ -267,7 +272,7 @@ class Player:
             if embeds:
                 await silencer.send(
                     embeds=embeds,
-                    files=[self.role.get_image()] if self.game.config["show_dead_role"] else [],
+                    files=[self.role.get_image(self.game)] if self.game.config["show_dead_role"] else [],
                 )
 
         for player in self.game.alive_players:
@@ -288,6 +293,11 @@ class Player:
             **role.get_kwargs(self, change=True),
         )
         self.uses_amount = 0
+        self.first_role_night_number = (
+            self.game.days_nights[-1].number
+            if self.game.days_nights
+            else 0
+        )
         try:
             await role.on_game_start(self.game, self)  # For a new Executioner/Santa for example.
         except NotImplementedError:
@@ -374,6 +384,15 @@ class Role:
             ],
         ],
     ] = {}
+    theme_names: typing.Dict[str, str] = {}
+
+    @classmethod
+    def display_name(cls, game=None, theme: typing.Optional[str] = discord.utils.MISSING) -> str:
+        if theme is discord.utils.MISSING and game is not None:
+            theme = game.config["theme"]
+        if theme in cls.theme_names:
+            return f"{cls.theme_names[theme]} [{cls.name}]"
+        return cls.name
 
     @classmethod
     def image_name(cls) -> str:
@@ -384,7 +403,14 @@ class Role:
         return f"attachment://{cls.image_name()}.png"
 
     @classmethod
-    def get_image(cls) -> discord.File:
+    def get_image(cls, game=None, theme: typing.Optional[str] = discord.utils.MISSING) -> discord.File:
+        if theme is discord.utils.MISSING and game is not None:
+            theme = game.config["theme"]
+        if  theme in cls.theme_names:
+            try:
+                return get_image(os.path.join("roles", theme, cls.image_name()))
+            except FileNotFoundError:
+                pass
         return get_image(os.path.join("roles", cls.image_name()))
 
     @classmethod
@@ -397,15 +423,18 @@ class Role:
             return VILLAGERS_COLOR
         elif cls.side == "Neutral":
             return NEUTRAL_COLOR
+        return HORSEMEN_OF_THE_APOCALYPSE_COLOR
 
     @classmethod
     def get_kwargs(
-        cls, player: Player = None, change: bool = False
+        cls, player: Player = None, change: bool = False, theme: typing.Optional[str] = discord.utils.MISSING
     ) -> typing.Dict[str, typing.Union[discord.Embed, discord.File]]:
+        if theme is discord.utils.MISSING and player is not None:
+            theme = player.game.config["theme"]
         embed: discord.Embed = discord.Embed(
-            title=_("You are {now}{the_or_a} **{name}**!").format(
-                name=cls.name,
-                the_or_a=cls.the_or_a(player.game if player is not None else None),
+            title=_("You are {now}{the_or_a}**{name}**!").format(
+                name=cls.display_name(theme=theme),
+                the_or_a=cls.the_or_a(player.game if player is not None else None, theme=theme),
                 now="now " if change else "",
             ),
             description=_(cls.description)
@@ -434,15 +463,21 @@ class Role:
             )
         return {
             "embed": embed,
-            "file": cls.get_image(),
+            "file": cls.get_image(theme=theme),
         }
 
     @classmethod
-    def the_or_a(cls, game=None) -> str:
+    def the_or_a(cls, game=None, theme: typing.Optional[str] = discord.utils.MISSING) -> str:
+        if theme is discord.utils.MISSING and game is not None:
+            theme = game.config["theme"]
+        if (
+            theme is not None
+            and theme in cls.theme_names
+        ):
+            return ""
         if game is None:
-            return _("the")
-        game = getattr(cls, "game", game)
-        return _("the") if len([p for p in game.players if p.role is cls]) <= 1 else _("a")
+            return _("the ")
+        return _("the ") if len([p for p in game.players if p.role is cls]) <= 1 else _("a ")
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
@@ -478,16 +513,13 @@ class Role:
             all(
                 p.is_dead
                 for p in player.game.players
-                if p.role.side == "Mafia" or p.role is Bomber or p.is_town_traitor
+                if p.role.side == "Mafia" or p.is_town_traitor or p.role is Bomber or p.role.side == "Horsemen of the Apocalypse"
             )
         ) or (mafia_check and any(p for p in player.game.alive_players if p.is_town_vip))
-        if player.role.side == "Mafia" or player.is_town_traitor:
-            # all(p.is_dead for p in player.game.players if p.role.side != "Mafia" and not p.is_town_traitor)
+        if cls.side == "Mafia" or player.is_town_traitor:
             return mafia_check and not any(p for p in player.game.alive_players if p.is_town_vip)
-        elif player.role.side == "Villagers":
+        elif cls.side == "Villagers":
             return villager_check
-        elif player.role is Starspawn:
-            return not villager_check
         return False
 
     @classmethod
@@ -666,6 +698,7 @@ class GodFather(Role):
             "check": "win_without_dying",
         },
     }
+    theme_names = {"one-piece": "Kaido"}
 
     perform_action = perform_action_select_targets(self_allowed=False, mafia_allowed=False)
 
@@ -684,7 +717,7 @@ class GodFather(Role):
                     for p in player.game.alive_players
                     if (p.role.side == "Mafia" or p.is_town_traitor) and p != player
                 ],
-                key=lambda p: (MAFIA_HIERARCHY.index(p.role), player.game.players.index(p)),
+                key=lambda p: (MAFIA_HIERARCHY.index(p.role) if p.role in MAFIA_HIERARCHY else len(MAFIA_HIERARCHY), player.game.players.index(p)),
             )
         ):
             return
@@ -734,6 +767,7 @@ class Mafia(Role):
             "description": _("Be promoted to the God Father."),
         },
     }
+    theme_names = {"one-piece": "Don Quixote Doflamingo"}
 
     @classmethod
     async def action(cls, night, player: Player, target: Player) -> None:
@@ -797,6 +831,7 @@ class Doctor(Role):
             "description": _("Heal yourself after being attacked."),
         },
     }
+    theme_names = {"one-piece": "Tony Tony Chopper"}
 
     perform_action = perform_action_select_targets(last_target_allowed=False)
 
@@ -838,6 +873,7 @@ class Detective(Role):
             "description": _("Investigate someone who is on the Mafia's side."),
         },
     }
+    theme_names = {"one-piece": "Smoker"}
 
     perform_action = perform_action_select_targets(self_allowed=False)
 
@@ -890,6 +926,7 @@ class Villager(Role):
             "description": _("Stay alive until the end of the game."),
         },
     }
+    theme_names = {"one-piece": "Usopp"}
 
 
 CLASSIC_ROLES: typing.List[typing.Type["Role"]] = [GodFather, Mafia, Doctor, Detective, Villager]
@@ -938,20 +975,32 @@ class Vigilante(Role):
             "description": _("Shoot yourself at night."),
         },
     }
+    theme_names = {"one-piece": "Nico Robin"}
 
     @classmethod
     async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
         if night.number == 1 and not night.game.config["vigilante_shoot_night_1"]:
             raise RuntimeError(_("The Vigilante can't shoot on Night 1."))
+        if any(t for t in player.game_targets if t.side == "Villagers"):
+            raise RuntimeError(_("You can't use your ability anymore, as you have killed someone on the villagers' side (even if they were a Town Traitor)."))
         await perform_action_select_targets(self_allowed=False)(night, player, interaction)
 
     @classmethod
     async def action(cls, night, player: Player, target: Player) -> None:
         await target.kill(cause=player)
         if target.role.side == "Villagers":
-            await player.kill(
-                cause="suicide", reason=_("They killed someone on the villagers' side.")
-            )
+            if not player.is_town_traitor and not target.is_town_traitor:
+                await player.kill(
+                    cause="suicide", reason=_("They killed someone on the villagers' side.")
+                )
+            else:
+                await player.send(
+                    embed=discord.Embed(
+                        title=_("You killed someone on the villagers' side!"),
+                        description=_("You will not die, but you won't be able to use your ability again."),
+                        color=VILLAGERS_COLOR,
+                    )
+                )
 
 
 class Mayor(Role):
@@ -988,6 +1037,7 @@ class Mayor(Role):
             "description": _("Reveal yourself as Mayor on day 1."),
         },
     }
+    theme_names = {"one-piece": "Monkey D. Luffy"}
 
     @classmethod
     async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
@@ -1014,7 +1064,7 @@ class Mayor(Role):
         if await CogsUtils.ConfirmationAsk(
             fake_context,
             embed=embed,
-            file=get_image(os.path.join("roles", "mayor")),
+            file=cls.get_image(night.game),
             ephemeral=True,
             timeout_message=None,
         ):
@@ -1069,6 +1119,7 @@ class Framer(Role):
             "description": _("Frame a member of the Mafia."),
         },
     }
+    theme_names = {"one-piece": "Crocodile"}
 
     perform_action = perform_action_select_targets(mafia_allowed=False)
 
@@ -1113,6 +1164,7 @@ class Executioner(Role):
             "description": _("Get your target lynched on day 10 or later."),
         },
     }
+    theme_names = {"one-piece": "Sakazuki (Akainu)"}
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
@@ -1194,6 +1246,7 @@ class Jester(Role):
             "description": _("Get lynched on day 10 or later."),
         },
     }
+    theme_names = {"one-piece": "Buggy the Clown"}
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
@@ -1249,6 +1302,7 @@ class PrivateInvestigator(Role):
             "description": _("Investigate yourself."),
         },
     }
+    theme_names = {"one-piece": "Koala"}
 
     perform_action = perform_action_select_targets(targets_number=2)
 
@@ -1336,6 +1390,7 @@ class Spy(Role):
             "description": _("Spy on the same player 3 times and see them visiting."),
         },
     }
+    theme_names = {"one-piece": "Don Quixote Rosinante (Corazon)"}
 
     perform_action = perform_action_select_targets()
 
@@ -1395,6 +1450,7 @@ class Distractor(Role):
             "description": _("Successfully distract someone."),
         },
     }
+    theme_names = {"one-piece": "Perona"}
 
     perform_action = perform_action_select_targets()
 
@@ -1470,6 +1526,7 @@ class Baiter(Role):
             "description": _("Have no one get killed by you the whole game."),
         },
     }
+    theme_names = {"one-piece": "Foxy"}
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
@@ -1539,10 +1596,16 @@ class Bomber(Role):
             "description": _("Explode a God Father."),
         },
     }
+    theme_names = {"one-piece": "Mr. 5"}
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
-        return all(p.is_dead for p in player.game.players if p.role is not Bomber)
+        if all(p.is_dead for p in player.game.players if p.role is not Bomber):
+            for p in player.game.alive_players:
+                if p.bomb_planted:
+                    p.is_dead = True
+            return True
+        return False
 
     perform_action = perform_action_select_targets(
         self_allowed=False,
@@ -1643,6 +1706,7 @@ class Watcher(Role):
             "description": _("Have 4 or more people visit your target in one night."),
         },
     }
+    theme_names = {"one-piece": "Koby"}
 
     perform_action = perform_action_select_targets()
 
@@ -1711,9 +1775,10 @@ class PlagueDoctor(Role):
             "description": _("Have all the living players be infected on day 5 or earlier."),
         },
     }
+    theme_names = {"one-piece": "Magellan"}
 
     @classmethod
-    async def has_won(cls, player: Player) -> bool:
+    def has_won(cls, player: Player) -> bool:
         if (
             not player.is_dead
             and player.game.days_nights
@@ -1723,16 +1788,13 @@ class PlagueDoctor(Role):
                 (
                     len(player.game.days_nights) >= 2
                     and player.game.days_nights[-2].plague_doctor_warning
-                )
-                or (
-                    any(
-                        p
-                        for p in player.game.dead_players
-                        if p.role is not PlagueDoctor
-                        and not p.infected
-                        and p.death_cause in ("voting", "suicide_during_judgement")
-                        and p.death_day_night_number == player.game.days_nights[-1].number
-                    )
+                ) or any(
+                    p
+                    for p in player.game.dead_players
+                    if p.role is not PlagueDoctor
+                    and not p.infected
+                    and p.death_cause in ("voting", "suicide_during_judgement")
+                    and p.death_day_night_number == player.game.days_nights[-1].number
                 )
             )
         ):
@@ -1760,7 +1822,7 @@ class PlagueDoctor(Role):
             embed.set_image(url=cls.image_url())
             await night.game.send(
                 embed=embed,
-                file=get_image("plague_doctor"),
+                file=cls.get_image(night.game),
             )
 
     @classmethod
@@ -1819,6 +1881,7 @@ class Hoarder(Role):
             "description": _("Hoard and kill at least 5 players."),
         },
     }
+    theme_names = {"one-piece": "Trebol"}
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
@@ -1889,6 +1952,7 @@ class Hacker(Role):
             "description": _("Find a Baiter."),
         },
     }
+    theme_names = {"one-piece": "Rob Lucci"}
 
     perform_action = perform_action_select_targets(self_allowed=False, mafia_allowed=False)
 
@@ -1901,7 +1965,7 @@ class Hacker(Role):
             (Baiter, Executioner, Distractor),
             (Link, Villager, Santa),
             (Watcher, Alchemist, Gambler, Isekai),
-            (Guardian, Mortician, Baker, Cupid),
+            (BodyGuard, Mortician, Baker, Cupid),
             (Killer, Oracle, Ritualist, Judge),
             (Lawyer, Politician, Magician, Starspawn),
             (Thief, Manager, Shaman),
@@ -1913,7 +1977,7 @@ class Hacker(Role):
         await player.send(
             embed=discord.Embed(
                 title=_("Possible roles for {target.member.display_name}:").format(target=target),
-                description=humanize_list([role.name for role in possible_roles]),
+                description=humanize_list([role.display_name(night.game) for role in possible_roles]),
             ),
         )
 
@@ -1973,6 +2037,7 @@ class Goose(Role):
             "description": _("Force 2 villagers to die to a Baiter in the same game."),
         },
     }
+    theme_names = {"one-piece": "Spandam"}
 
     perform_action = perform_action_select_targets(
         self_allowed=False,
@@ -2043,6 +2108,7 @@ class Link(Role):
             "description": _("Link yourself."),
         },
     }
+    theme_names = {"one-piece": "Jinbe"}
 
     perform_action = perform_action_select_targets(targets_number=2, self_allowed=False)
 
@@ -2057,7 +2123,7 @@ class Link(Role):
                     ).format(other_tg=other_tg),
                     color=other_tg.role.color(),
                 ).set_image(url=cls.image_url()),
-                file=get_image(os.path.join("roles", "link")),
+                file=cls.get_image(night.game),
             )
         await player.send(
             embed=discord.Embed(
@@ -2103,6 +2169,7 @@ class Mimic(Role):
             "description": _("Mimic the same player 3 times in one game."),
         },
     }
+    theme_names = {"one-piece": "Kuro"}
 
     perform_action = perform_action_select_targets(self_allowed=False, mafia_allowed=False)
 
@@ -2168,6 +2235,7 @@ class Alchemist(Role):
             "description": _("Make your team members invisible 5 times."),
         },
     }
+    theme_names = {"one-piece": "Caesar Clown"}
 
     @classmethod
     async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
@@ -2225,6 +2293,7 @@ class Isekai(Role):
         "The Isekai has no ability at the start of the game. However, once they die, the next night they are given three role choices to reincarnate as."
     )
     objective: str = _("Die, so you can be useful. :P")
+    theme_names = {"one-piece": "Trafalgar D. Water Law"}
 
     @classmethod
     async def on_death(cls, player: Player) -> None:
@@ -2280,6 +2349,7 @@ class Santa(Role):
             "description": _("Win even after you're dead."),
         },
     }
+    theme_names = {"one-piece": "Dr. Kureha"}
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
@@ -2346,6 +2416,7 @@ class Silencer(Role):
             "description": _("Win the game without silencing anyone."),
         },
     }
+    theme_names = {"one-piece": "Imu"}
 
     perform_action = perform_action_select_targets(
         self_allowed=False, mafia_allowed=False, last_target_allowed=False
@@ -2391,6 +2462,7 @@ class Shaman(Role):
             "description": _("Have your doll redirect an attack."),
         },
     }
+    theme_names = {"one-piece": "Hogback"}
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
@@ -2438,7 +2510,7 @@ class Gambler(Role):
         "An addict to the evil abyss of gambling, the Gambler is willing to bet anything to feel the rush of gambling. Armed with sets of magical dice, the Gambler is well aware of the risks and rewards the dice could reap."
     )
     ability: str = _(
-        "Each night, the Gambler has up to 3 dice options to throw one of them.\n- **White Dice**, *70% chance* of success. If successful, you gain a 50% chance of surviving a Mafia's attack. Otherwise, a random villager is distracted.\n- **Yellow Dice**, *50% chance* of success. If successful, a random villager is given an extra vote for the day. Otherwise, you lose one vote for the day.\n- **Red Dice**, *20% chance* of success. If successful, a random dead villager is revived. Otherwise, you die. This option only appears when at least one village side role is dead."
+        "Each night, the Gambler has up to 3 dice options to throw one of them.\n- **White Dice**, *70% chance* of success. If successful, you gain a 50% chance of surviving a Mafia's attack. Otherwise, a random villager is distracted.\n- **Yellow Dice**, *50% chance* of success. If successful, a random villager is given an extra vote for the day. Otherwise, you lose one vote for the day.\n- **Red Dice**, *20% chance* of success. If successful, a random dead villager is revived. Otherwise, you die. This option only appears when at least one Villagers' side role is dead."
     )
     objective: str = _("Make good gambling decisions that won't doom the town.")
     achievements = {
@@ -2460,27 +2532,30 @@ class Gambler(Role):
         },
         "Hand-made Shield": {
             "check": lambda player: any(
-                p for p, t in player.game_targets if t == player and p.role is not Gambler
+                night.gamblers_dices.get(player) == "white"
+                and night.gamblers_results.get(player, (False, None))[0]
+                for night in player.game.days_nights if night.__class__.__name__ == "Night"
             ),
             "description": _("Heal yourself by rolling the White Dice."),
         },
         "Helping Hand": {
             "check": lambda player: any(
-                p
-                for p, t in player.game_targets
-                if t == player and p.role is not Gambler and p.role.side == "Mafia"
+                night.gamblers_dices.get(player) == "yellow"
+                and night.gamblers_results.get(player, (False, None))[0]
+                for night in player.game.days_nights if night.__class__.__name__ == "Night"
             ),
             "description": _("Give a villager an extra vote from the Yellow Dice."),
         },
         "Chance Manipulator": {
             "check": lambda player: any(
-                p
-                for p, t in player.game_targets
-                if t == player and p.role is not Gambler and p.role.side == "Neutral"
+                night.gamblers_dices.get(player) == "red"
+                and night.gamblers_results.get(player, (False, None))[0]
+                for night in player.game.days_nights if night.__class__.__name__ == "Night"
             ),
             "description": _("Successfully revive someone from the Red Dice."),
         },
     }
+    theme_names = {"one-piece": "Bellamy"}
 
     @classmethod
     async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
@@ -2492,7 +2567,7 @@ class Gambler(Role):
         view: GamblerView = GamblerView(night, player)
         view._message = await interaction.followup.send(
             embed=embed,
-            file=get_image(os.path.join("roles", "gambler")),
+            file=cls.get_image(night.game),
             view=view,
             ephemeral=True,
             wait=True,
@@ -2554,6 +2629,7 @@ class Gambler(Role):
                     ),
                 )
                 raise ValueError()
+        return t
 
     @classmethod
     async def action(cls, night, player: Player, target: Player) -> None:
@@ -2623,6 +2699,7 @@ class Judge(Role):
             "description": _("Prosecute a Jester."),
         },
     }
+    theme_names = {"one-piece": "Sengoku"}
 
     @classmethod
     async def perform_day_action(
@@ -2638,7 +2715,7 @@ class Judge(Role):
         view: JudgeView = JudgeView(day, player)
         view._message = await interaction.followup.send(
             embed=embed,
-            file=cls.get_image(),
+            file=cls.get_image(day.game),
             view=view,
             ephemeral=True,
             wait=True,
@@ -2697,6 +2774,7 @@ class Lawyer(Role):
             "description": _("Acquit a Jester."),
         },
     }
+    theme_names = {"one-piece": "Shanks"}
 
     @classmethod
     async def perform_day_action(
@@ -2723,7 +2801,7 @@ class Lawyer(Role):
             },
         )()
         if await CogsUtils.ConfirmationAsk(
-            fake_context, embed=embed, file=cls.get_image(), ephemeral=True, timeout_message=None
+            fake_context, embed=embed, file=cls.get_image(day.game), ephemeral=True, timeout_message=None
         ):
             day.targets[player] = None
             await interaction.followup.send(
@@ -2745,7 +2823,7 @@ class Blackmailer(Role):
     side: str = "Mafia"
     description: str = _("The Blackmailer is a master of threatening and silencing.")
     ability: str = _(
-        "Every night, the Blackmailer can select a player to blackmail. Blackmailed players won't be able to speak nor vote for that day. You cannot blackmail the same player twice a row."
+        "Every night, the Blackmailer can select a player to blackmail. Blackmailed players won't be able to speak nor vote for that day. You can't blackmail the same player twice a row."
     )
     visit_type: str = "Active"
     objective: str = _("Help the Mafia win.")
@@ -2781,6 +2859,7 @@ class Blackmailer(Role):
             "description": _("Blackmail the same person 3 times in the same game."),
         },
     }
+    theme_names = {"one-piece": "Kaku"}
 
     perform_action = perform_action_select_targets(self_allowed=False, mafia_allowed=False)
 
@@ -2845,6 +2924,7 @@ class Harbinger(Role):
             "description": _("Assasinate a Bomber."),
         },
     }
+    theme_names = {"one-piece": "Marshall D. Teach"}
 
     perform_action = perform_action_select_targets(self_allowed=False, mafia_allowed=False)
 
@@ -2853,15 +2933,15 @@ class Harbinger(Role):
         if t == night.targets.get(player) and p.role.visit_type == "Active" and p != player:
             await p.send(
                 embed=discord.Embed(
-                    title=_("{player.member.display_name} is {the_or_a} **{role_name}**!").format(
-                        player=player, the_or_a=cls.the_or_a(night.game), role_name=cls.name
+                    title=_("{player.member.display_name} is {the_or_a}**{role_name}**!").format(
+                        player=player, the_or_a=cls.the_or_a(night.game), role_name=cls.display_name(night.game)
                     ),
                     description=_("They were hiding with {player.member.display_name}.").format(
                         player=player
                     ),
                     color=cls.color(),
-                ).set_image(url=cls.get_image()),
-                file=cls.get_image(),
+                ).set_image(url=cls.image_url()),
+                file=cls.get_image(night.game),
             )
             possible_p = [
                 p2
@@ -2921,6 +3001,7 @@ class Submissor(Role):
             "description": _("Submit yourself to a Neutral player."),
         },
     }
+    theme_names = {"one-piece": "Fujitora"}
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
@@ -2941,17 +3022,17 @@ class Submissor(Role):
                 ).format(p=p),
                 color=p.role.color(),
             ).set_image(url=cls.image_url()),
-            file=cls.get_image(),
+            file=cls.get_image(night.game),
         )
         await p.member.send(
             content=player.member.mention,
             embed=discord.Embed(
                 title=_(
-                    "You have been joined by {player.member.display_name}, {the_or_a} **{role_name}**!"
-                ).format(player=player, the_or_a=cls.the_or_a(night.game), role_name=cls.name),
+                    "You have been joined by {player.member.display_name}, {the_or_a}**{role_name}**!"
+                ).format(player=player, the_or_a=cls.the_or_a(night.game), role_name=cls.display_name(night.game)),
                 color=cls.color(),
             ).set_image(url=cls.image_url()),
-            file=cls.get_image(),
+            file=cls.get_image(night.game),
         )
         raise ValueError()
 
@@ -3034,6 +3115,7 @@ class Manipulator(Role):
             "description": _("Lynch a Judge with your manipulated votes."),
         },
     }
+    theme_names = {"one-piece": "Hody Jones"}
 
     @classmethod
     async def perform_day_action(
@@ -3060,7 +3142,7 @@ class Manipulator(Role):
             },
         )()
         if await CogsUtils.ConfirmationAsk(
-            fake_context, embed=embed, file=cls.get_image(), ephemeral=True, timeout_message=None
+            fake_context, embed=embed, file=cls.get_image(day.game), ephemeral=True, timeout_message=None
         ):
             day.targets[player] = None
             await interaction.followup.send(
@@ -3114,6 +3196,7 @@ class Politician(Role):
             "description": _("Protest and reveal a member of the Mafia."),
         },
     }
+    theme_names = {"one-piece": "Monkey D. Dragon"}
 
     perform_day_action = perform_action_select_targets(self_allowed=False)
 
@@ -3121,11 +3204,10 @@ class Politician(Role):
     async def day_action(cls, day, player: Player, target: Player) -> None:
         player.uses_amount += 1
         player.game_targets.append(target)
-        image = target.role.name.lower().replace(" ", "_")
         await day.game.send(
             embeds=[
                 discord.Embed(
-                    title=_("{the_or_a} Politician has interrupted the voting phase!").format(
+                    title=_("{the_or_a}Politician has interrupted the voting phase!").format(
                         the_or_a=cls.the_or_a(day.game).capitalize()
                     ),
                     description=_(
@@ -3135,14 +3217,14 @@ class Politician(Role):
                 ).set_image(url=cls.image_url()),
                 discord.Embed(
                     title=_(
-                        "**{target.member.display_name}** is {the_or_a} **{role_name}**!"
+                        "**{target.member.display_name}** is {the_or_a}**{role_name}**!"
                     ).format(
-                        target=target, the_or_a=cls.the_or_a(day.game), role_name=target.role.name
+                        target=target, the_or_a=cls.the_or_a(day.game), role_name=target.role.display_name(day.game)
                     ),
                     color=target.role.color(),
                 ).set_image(url=target.role.image_url()),
             ],
-            files=[cls.get_image(), target.role.get_image()],
+            files=[cls.get_image(day.game), target.role.get_image(day.game)],
         )
 
 
@@ -3203,6 +3285,7 @@ class Magician(Role):
             "description": _("Swap a Vigilante with a Neutral player."),
         },
     }
+    theme_names = {"one-piece": "Basil Hawkins"}
 
     perform_action = perform_action_select_targets(targets_number=2, self_allowed=False)
 
@@ -3285,6 +3368,14 @@ class Starspawn(Role):
             "description": _("Make the same player invisible 5 times in the same game."),
         },
     }
+    theme_names = {"one-piece": "Enel"}
+
+    @classmethod
+    def has_won(cls, player: Player) -> bool:
+        return (
+            any(p.has_won for p in player.game.players if p.role is not Starspawn)
+            and not Villager.has_won(player)
+        )
 
     perform_action = perform_action_select_targets(last_target_allowed=False)
 
@@ -3331,6 +3422,7 @@ class Thief(Role):
             "description": _("Steal the Lawyer's ability."),
         },
     }
+    theme_names = {"one-piece": "Nami"}
 
     perform_action = perform_action_select_targets()
 
@@ -3345,7 +3437,7 @@ class Thief(Role):
                     ).format(target=target),
                     color=cls.color(),
                 ).set_image(url=cls.image_url()),
-                file=cls.get_image(),
+                file=cls.get_image(night.game),
             )
         else:
             await player.send(
@@ -3358,16 +3450,16 @@ class Thief(Role):
                     ).set_image(url=cls.image_url()),
                     discord.Embed(
                         title=_(
-                            "**{target.member.display_name}** is {the_or_a} **{role_name}**!"
+                            "**{target.member.display_name}** is {the_or_a}**{role_name}**!"
                         ).format(
                             target=target,
                             the_or_a=cls.the_or_a(night.game),
-                            role_name=target.role.name,
+                            role_name=target.role.display_name(night.game),
                         ),
                         color=target.role.color(),
                     ).set_image(url=target.role.image_url()),
                 ],
-                files=[cls.get_image(), target.role.get_image()],
+                files=[cls.get_image(night.game), target.role.get_image(night.game)],
             )
 
 
@@ -3407,6 +3499,7 @@ class Manager(Role):
             "description": _("Manage a player without limited usages."),
         },
     }
+    theme_names = {"one-piece": "Iceburg"}
 
     perform_action = perform_action_select_targets(
         self_allowed=False,
@@ -3425,7 +3518,7 @@ class Manager(Role):
                     ).format(target=target),
                     color=cls.color(),
                 ).set_image(url=cls.image_url()),
-                file=cls.get_image(),
+                file=cls.get_image(night.game),
             )
         else:
             target.extra_votes += 1
@@ -3436,16 +3529,16 @@ class Manager(Role):
                     ).format(target=target),
                     color=cls.color(),
                 ).set_image(url=cls.image_url()),
-                file=cls.get_image(),
+                file=cls.get_image(night.game),
             )
 
 
-class Guardian(Role):
-    name: str = "Guardian"
+class BodyGuard(Role):
+    name: str = "Body Guard"
     side: str = "Villagers"
-    description: str = _("The Guardian is a protector of the innocent and a defender of the weak.")
+    description: str = _("The Body Guard is a protector of the innocent and a defender of the weak.")
     ability: str = _(
-        "Each night, the Guardian can select a player to protect. If that player is attacked, the Guardian will block the attack and kill the attacker instead, dying alongside with them. If the Guardian protects themselves, they will not die, but will not kill the attacker either. They cannot protect the same player twice a row."
+        "Each night, the Body Guard can select a player to protect. If that player is attacked, the Body Guard will block the attack and kill the attacker instead, dying alongside with them. If the BodyGuard protects themselves, they will not die, but will not kill the attacker either. They cannot protect the same player twice a row."
     )
     visit_type: str = "Active"
     objective: str = _("Help the village protect their allies.")
@@ -3485,6 +3578,7 @@ class Guardian(Role):
             "description": _("Take down the Godfather as you die."),
         },
     }
+    theme_names = {"one-piece": "Sanji"}
 
     perform_action = perform_action_select_targets(last_target_allowed=False)
 
@@ -3503,7 +3597,7 @@ class Guardian(Role):
             if t != player:
                 await p.kill(
                     cause=player,
-                    reason=_("They have attacked a player protected by the Guardian."),
+                    reason=_("They have attacked a player protected by the Body Guard."),
                 )
                 await player.kill(
                     cause="suicide", reason=_("They have protected a player from an attack.")
@@ -3556,17 +3650,43 @@ class Mortician(Role):
             "description": _("Autopsy a body that was killed by the Bomber."),
         },
     }
+    theme_names = {"one-piece": "Silvers Rayleigh"}
 
     perform_action = perform_action_select_targets(
         self_allowed=False,
-        condition=lambda player, target: not getattr(target.death_cause, "is_dead", False),
+        condition=lambda player, target: (
+            (
+                target.death_cause == "Mafia"
+                and any(p.role.side == "Mafia" for p in player.game.alive_players)
+            ) or (
+                isinstance(target.death_cause, Player)
+                and not target.death_cause.is_dead
+            )
+        ),
     )
 
     @classmethod
     async def action(cls, night, player: Player, target: Player) -> None:
-        suspects = [target.death_cause] + random.sample(
-            [p for p in player.game.alive_players if p != target.death_cause], 2
+        if target.death_cause == "Mafia":
+            suspects = [
+                sorted(
+                    [p for p in player.game.alive_players if p.role.side == "Mafia"],
+                    key=lambda p: (not p.role is Mafia, not p.role is GodFather),
+                )[0]
+            ]
+        else:
+            suspects = [target.death_cause]
+        suspects.extend(
+            random.sample(
+                [
+                    p
+                    for p in player.game.alive_players
+                    if p != suspects[0]
+                ],
+                2,
+            )
         )
+        random.shuffle(suspects)
         await player.send(
             embed=discord.Embed(
                 title=_("Investigation Results"),
@@ -3636,6 +3756,7 @@ class Baker(Role):
             "description": _("Have all of your breads give positive effects to players."),
         },
     }
+    theme_names = {"one-piece": "Charlotte Linlin"}
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
@@ -3665,8 +3786,8 @@ class Baker(Role):
                     title=_("Sorry, you got distracted by the bread you received!"),
                     description=_("You were unable to perform your action."),
                     color=cls.color(),
-                ).set_image(url=cls.get_image()),
-                file=cls.get_image(),
+                ).set_image(url=cls.get_image(night.game)),
+                file=cls.get_image(night.game),
             )
             raise ValueError()
         return t
@@ -3716,6 +3837,7 @@ class Cupid(Role):
             "description": _("Win a game where you and your couple are both alive."),
         },
     }
+    theme_names = {"one-piece": "Boa Hancock"}
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
@@ -3725,13 +3847,13 @@ class Cupid(Role):
     async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
         if night.number != 1:
             raise RuntimeError(_("You can only use your ability on the first night."))
-        await perform_action_select_targets(targets_number=2, self_allowed=False)
+        await perform_action_select_targets(targets_number=2, self_allowed=False)(night, player, interaction)
 
     @classmethod
     async def action(
         cls, night, player: Player, target: typing.Optional[typing.Tuple[Player, Player]]
     ) -> None:
-        lovers = target or tuple(random.sample([p for p in night.game.players if p != player], 2))
+        lovers = target or tuple(random.sample([p for p in night.game.alive_players if p != player], 2))
         player.cupid_lovers = lovers
         for lover in lovers:
             await lover.member.send(
@@ -3742,7 +3864,7 @@ class Cupid(Role):
                     ).format(other_lover=lovers[1] if lover == lovers[0] else lovers[0]),
                     color=cls.color(),
                 ).set_image(url=cls.image_url()),
-                file=cls.get_image(),
+                file=cls.get_image(night.game),
             )
         await player.member.send(
             embed=discord.Embed(
@@ -3754,7 +3876,7 @@ class Cupid(Role):
                 ),
                 color=cls.color(),
             ).set_image(url=cls.image_url()),
-            file=cls.get_image(),
+            file=cls.get_image(night.game),
         )
 
     @classmethod
@@ -3829,6 +3951,7 @@ class Killer(Role):
             "description": _("Kill at least 3 players in the same game."),
         },
     }
+    theme_names = {"one-piece": "Killer"}
 
     @classmethod
     def has_won(cls, player: Player) -> bool:
@@ -3924,6 +4047,7 @@ class Oracle(Role):
             "description": _("Successfully make 5 different players invisible in the same game."),
         },
     }
+    theme_names = {"one-piece": "Madame Shyarly"}
 
     perform_action = perform_action_select_roles(
         mafia_allowed=False,
@@ -3991,6 +4115,7 @@ class Ritualist(Role):
             "description": _("Perform all 3 rituals on Villagers' players."),
         },
     }
+    theme_names = {"one-piece": "Stussy"}
 
     perform_action = perform_action_guess_targets_roles(self_allowed=False, mafia_allowed=False)
 
@@ -4019,7 +4144,7 @@ class Ritualist(Role):
                         color=cls.color(),
                     ).set_image(url=cls.image_url()),
                 ],
-                file=cls.get_image(),
+                file=cls.get_image(night.game),
             )
 
 
@@ -4030,7 +4155,7 @@ class Necromancer(Role):
         "The Necromancer is a master of the dark arts, able to reanimate the dead."
     )
     ability: str = _(
-        "Every night, the Necromancer can select a dead player to reanimate, and a living player to target. Any feedback that the dead player would receive will instead be redirected to the Necromancer. If the dead player requires multiple inputs, they will not respond. The Necromancer can't reanimate corpses that they have used before. Additionally, once a game, they may revive a dead player that they have not used as a corpse. That player will only be revived at the end of the day if the Necromancer is alive."
+        "Every night, the Necromancer can select a dead player to reanimate, and a living player to target. Any feedback that the dead player would receive will instead be redirected to the Necromancer. If the dead player requires multiple inputs, they will not respond. The Necromancer can't reanimate corpses that they have used before. Additionally, once a game, they may revive a dead player that they have not used as a corpse. That player will only be revived at the end of the day if the Necromancer is still alive."
     )
     visit_type: str = "Active"
     objective: str = _("Help the Mafia win.")
@@ -4066,6 +4191,7 @@ class Necromancer(Role):
             "description": _("Reanimate a GodFather and kill someone."),
         },
     }
+    theme_names = {"one-piece": "Gecko Moria"}
 
     @classmethod
     async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
@@ -4106,8 +4232,218 @@ class Necromancer(Role):
                     ).format(target=target[0]),
                     color=cls.color(),
                 ).set_thumbnail(url=cls.image_url()),
-                file=cls.get_image(),
+                file=cls.get_image(day.game),
             )
+
+
+class Duelist(Role):
+    name: str = "Duelist"
+    side: str = "Villagers"
+    description: str = _("A master swordsman seeking the strongest opponents.")
+    ability: str = _("On Night 1, the Duelist selects a global target. Each night, they have a 25% chance to kill their target in a duel. If they succeed, they get their **Sanzen Sekai special attack**, which is made when the night starts and can't be redirected/cancelled, to use once. If their target is killed by someone else, they die of shame.")
+    visit_type: str = "Active"
+    objective: str = _("Help the village win.")
+    achievements = {
+        "First Duel": {
+            "check": "wins",
+            "value": 1,
+        },
+        "Swordmaster": {
+            "check": "wins",
+            "value": 5,
+        },
+        "Unstoppable": {
+            "check": "wins",
+            "value": 10,
+        },
+        "Shameful End": {
+            "check": lambda player: player.is_dead and player.death_cause == "suicide",
+            "description": _("Die of shame because their target was killed by someone else."),
+        },
+        "Victory by Blade": {
+            "check": lambda player: player.global_target is not None and player.global_target.is_dead and player.global_target.death_cause == player,
+            "description": _("Defeat their target in a duel."),
+        },
+    }
+    theme_names = {"one-piece": "Roronoa Zoro"}
+
+    @classmethod
+    async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
+        if night.number == 1 or player.duelist_special_attack:
+            await perform_action_select_targets(self_allowed=False)(night, player, interaction)
+        else:
+            await interaction.followup.send(
+                _("You have already chosen your target. Wait for the duel results each night."),
+                ephemeral=True,
+            )
+
+    @classmethod
+    async def action(cls, night, player: Player, target: Player) -> None:
+        if night.number == 1:
+            player.global_target = target or random.choice(
+                [p for p in night.game.alive_players if p != player]
+            )
+            await player.send(
+                embed=discord.Embed(
+                    title=_("You have chosen {target.member.display_name} as your target.").format(target=player.global_target),
+                    description=_("You will duel them each night, with a 20% chance to win, and gain their **Sanzen Sekai special attack** to use once if you succeed."),
+                    color=cls.color(),
+                )
+            )
+            await night.game.send(
+                embed=discord.Embed(
+                    title=_("The Duelist has chosen their target."),
+                    description=_("They will duel them each night, with a 20% chance to win, and gain their **Sanzen Sekai special attack** to use once if they succeed."),
+                    color=cls.color(),
+                ).set_image(url=cls.image_url()),
+                file=cls.get_image(night.game),
+            )
+        elif player.duelist_special_attack:
+            await target.kill(
+                cause=player,
+                reason=_("The Duelist has used their **Sanzen Sekai special attack**!"),
+            )
+            player.duelist_special_attack = False
+        else:
+            if random.random() < 0.25:
+                await target.kill(
+                    cause=player,
+                    reason=_("The Duelist has defeated them in a duel!"),
+                )
+                player.duelist_special_attack = True
+                await player.send(
+                    embed=discord.Embed(
+                        title=_("You have defeated {target.member.display_name} in a duel!").format(target=target),
+                        description=_("You can now use your **Sanzen Sekai special attack** once."),
+                        color=cls.color(),
+                    ),
+                )
+            else:
+                await player.send(
+                    embed=discord.Embed(
+                        title=_("You have failed to defeat {target.member.display_name} in a duel. Wait for the next night...").format(target=target),
+                        color=cls.color(),
+                    ),
+                )
+
+    @classmethod
+    async def no_action(cls, night, player: Player) -> None:
+        if night.number == 1:
+            await cls.action(night, player, None)
+
+    @classmethod
+    async def on_other_player_death(cls, player: Player, other: Player) -> None:
+        if other == player.global_target and not player.is_dead and other.death_cause != player:
+            await player.kill(
+                cause="suicide",
+                reason=_("Their target was killed by someone else, and they died of shame."),
+            )
+
+
+class Builder(Role):
+    name: str = "Builder"
+    side: str = "Neutral"
+    description: str = _("At the start of the game, a number of bricks equal to the number of players minus 2 are distributed among the players (each can have 0, 1, or 2). Each night, the Builder can visit a player to collect their bricks. When a player dies, their killer receives their bricks, or a random alive player receives them in other cases.")
+    ability: str = _("Each night, visit a player to take their bricks.")
+    visit_type: str = "Active"
+    objective: str = _("Collect all the bricks.")
+    objective_secondary: bool = True
+    achievements = {
+        "Brick Collector": {
+            "check": "wins",
+            "value": 1,
+        },
+        "Brick Hoarder": {
+            "check": "wins",
+            "value": 5,
+        },
+        "Mason": {
+            "check": "wins",
+            "value": 10,
+        },
+        "Architect": {
+            "check": "wins",
+            "value": 25,
+        },
+        "Brick Thief": {
+            "check": lambda player: any(
+                t.builder_bricks == 0 for t in player.game_targets
+            ),
+            "description": _("Try collecting bricks from a player who had none."),
+        },
+        "Master Builder": {
+            "check": lambda player: player.builder_bricks >= 5,
+            "description": _("Collect at least 5 bricks in the same game."),
+        },
+        "Brick by Brick": {
+            "check": lambda player: len(player.game_targets) >= 5,
+            "description": _("Collect bricks from at least 5 different players in the same game."),
+        },
+    }
+    theme_names = {"one-piece": "Franky"}
+
+    @classmethod
+    def has_won(cls, player: Player) -> bool:
+        total_bricks = sum(p.builder_bricks for p in player.game.players)
+        return not player.is_dead and player.builder_bricks == total_bricks
+
+    @classmethod
+    async def on_game_start(cls, game, player: Player) -> None:
+        total_bricks = len(game.alive_players) - 2
+        if random.random() < 0.95:
+            bricks = [0] * len(game.alive_players)
+            for i in range(total_bricks):
+                bricks[random.randint(0, len(game.alive_players) - 1)] += 1
+            for p, b in zip(game.alive_players, bricks):
+                p.builder_bricks = b
+        else:
+            random.choice(game.alive_players).builder_bricks = total_bricks
+        await player.send(
+            embed=discord.Embed(
+                title=_("You have received **{bricks} brick{s}** to start with.").format(
+                    bricks=player.builder_bricks, s="" if player.builder_bricks == 1 else "s"
+                ),
+                color=cls.color(),
+            )
+        )
+
+    perform_action = perform_action_select_targets(self_allowed=False)
+
+    @classmethod
+    async def action(cls, night, player: Player, target: Player) -> None:
+        if (bricks := target.builder_bricks) > 0:
+            player.builder_bricks += bricks
+            target.builder_bricks = 0
+            await player.send(
+                embed=discord.Embed(
+                    title=_("You have collected **{bricks} brick{s}** from {target.member.display_name}.").format(
+                        bricks=bricks, s="" if bricks == 1 else "s", target=target
+                    ),
+                    color=cls.color(),
+                )
+            )
+        else:
+            await player.send(
+                embed=discord.Embed(
+                    title=_("{target.member.display_name} has **no bricks** to collect.").format(target=target),
+                    color=cls.color(),
+                )
+            )
+
+    @classmethod
+    async def on_other_player_death(cls, player: Player, other: Player) -> None:
+        if (bricks := other.builder_bricks) > 0:
+            if other.death_cause == "Mafia":
+                killer = sorted(
+                    [p for p in player.game.alive_players if p.role.side == "Mafia"],
+                    key=lambda p: (not p.role is Mafia, not p.role is GodFather),
+                )[0]
+            elif isinstance(other.death_cause, Player):
+                killer = other.death_cause
+            else:
+                killer = random.choice(player.game.alive_players)
+            killer.builder_bricks += bricks
+            other.builder_bricks = 0
 
 
 MORE_ROLES: typing.List[typing.Type["Role"]] = [
@@ -4122,7 +4458,7 @@ MORE_ROLES: typing.List[typing.Type["Role"]] = [
     Starspawn,
     Thief,
     Manager,
-    Guardian,
+    BodyGuard,
     Mortician,
     Baker,
     Cupid,
@@ -4130,7 +4466,407 @@ MORE_ROLES: typing.List[typing.Type["Role"]] = [
     Oracle,
     Ritualist,
     Necromancer,
+    Duelist,
+    Builder,
 ]
+
+
+class GraveRobber(Role):
+    name: str = "Grave Robber"
+    side: str = "Neutral"
+    description: str = _("The Grave Robber is a master of collecting souls.")
+    ability: str = _(
+        "Each night, the Grave Robber can select a player. If that player dies, the Grave Robber will collect their soul. Once they have collected the required number of souls, they will transform into **Death, Horseman of the Apocalypse**."
+    )
+    objective: str = _("Transform into Death, Horseman of the Apocalypse.")
+    achievements = {
+        "Death Itself": {
+            "check": lambda player: player.role is Death,
+            "description": _("Transform into Death, Horseman of the Apocalypse."),
+        },
+    }
+    theme_names = {"one-piece": "Brook"}
+
+    perform_action = perform_action_select_targets(self_allowed=False)
+
+    @classmethod
+    async def action(cls, night, player: Player, target: Player) -> None:
+        if target.is_dead:
+            player.grave_robber_souls += 1
+            if player.grave_robber_souls == 5:
+                await player.change_role(
+                    Death,
+                    reason=_(
+                        "You have collected the required number of souls... You have transformed into **Death, Horseman of the Apocalypse**!"
+                    ),
+                )
+
+
+class Death(Role):
+    name: str = "Death"
+    side: str = "Horsemen of the Apocalypse"
+    description: str = _(
+        "Death, Horseman of the Apocalypse, is a bringer of death and destruction."
+    )
+    ability: str = _(
+        "You have no ability. Instead, the town has one day to lynch you before their lives come to an end."
+    )
+    objective: str = _("Be the last one standing.")
+    achievements = {
+        "Extinction": {
+            "check": "wins",
+            "value": 1,
+        },
+        "Oblivion": {
+            "check": "wins",
+            "value": 5,
+        },
+        "Grim Repaer": {
+            "check": "wins",
+            "value": 10,
+        },
+        "Shinigami": {
+            "check": "wins",
+            "value": 25,
+        },
+        "Total Obliteration": {
+            "check": lambda player: len(
+                [p.death_cause == player for p in player.game.dead_players if p != player]
+            ),
+            "description": _("Kill 6 or more players after you transform into Death."),
+        },
+    }
+    theme_names = {"one-piece": "Dracule Mihawk"}
+
+    @classmethod
+    def has_won(cls, player: Player) -> bool:
+        if (
+            not player.is_dead
+            and player.game.days_nights[-1].__class__.__name__ == "Day"
+            and player.game.days_nights[-1].number >= player.first_role_night_number
+        ):
+            for p in player.game.alive_players:
+                if p.role is not Death:
+                    p.is_dead = True
+            return True
+        return False
+
+    @classmethod
+    async def on_game_start(cls, game, player: Player) -> None:
+        await player.game.send(
+            embed=discord.Embed(
+                title=_("**Death, Horseman of the Apocalypse** has arrived!"),
+                description=_(
+                    "The town has one day to lynch them, before their lives come to an end!"
+                ),
+                color=cls.color(),
+            ).set_image(url=cls.image_url()),
+            file=cls.get_image(game),
+        )
+
+
+class Farmer(Role):
+    name: str = "Farmer"
+    side: str = "Neutral"
+    description: str = _("The Farmer is a master of plants and agriculture.")
+    ability: str = _(
+        "Each night, the Farmer can choose to plant a seed or give a plant to a player. When they plant a seed, that seed will become a plant the next day. If they give a plant to a player, the player's role will change to their base team role: Villagers will turn into Villager, Mafia's members will turn into Mafia and Neutral's players will turn into Jester. Once they have given a plant to a player from each team, they will transform into **Famine, Horseman of the Apocalypse**."
+    )
+    objective: str = _("Transform into Famine, Horseman of the Apocalypse.")
+    achievements = {
+        "Lucky Transformation": {
+            "check": lambda player: player.role is Famine,
+            "description": _("Transform into Famine, Horseman of the Apocalypse."),
+        },
+    }
+    theme_names = {"one-piece": "Kurozumi Kanjuro"}
+
+    @classmethod
+    async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
+        if not player.farmer_plants:
+            await interaction.followup.send(
+                _("You don't have any plants to give!"),
+                ephemeral=True,
+            )
+            return
+        await perform_action_select_targets(
+            self_allowed=False,
+            last_target_allowed=False,
+            condition=lambda player, target: target not in player.targets,
+        )(night, player, interaction)
+
+    @classmethod
+    async def action(cls, night, player: Player, target: Player) -> None:
+        player.farmer_plants -= 1
+        if target.role.side == "Villagers":
+            target.role = Villager
+        elif target.role.side == "Mafia":
+            target.role = random.choice(MAFIA_HIERARCHY)
+        else:
+            target.role = Jester
+        if len({p.role.side for p in player.farmer_plants}) == 3:
+            await player.change_role(
+                Famine,
+                reason=_(
+                    "You gave a plant to a player from each team... You have transformed into **Famine, Horseman of the Apocalypse**!"
+                ),
+            )
+
+    @classmethod
+    async def no_action(cls, night, player: Player) -> None:
+        player.farmer_plants += 1
+
+
+APOCALYPSES: typing.List[str] = [
+    _("Swap all living players with dead players. You'll appear as a dead player for 1 day."),
+    _("Kill 2 random players."),
+    _("Permanently remove the vote of a player."),
+    _("Revive a player of your choice."),
+    _("Change a random player's role into any neutral role available."),
+    _("Control a player of your choice to visit any target of your choice."),
+    _("Permanently distract a player of your choice."),
+    _("Change the votes required to be 0 for one day."),
+]
+
+
+class Famine(Role):
+    name: str = "Famine"
+    side: str = "Horsemen of the Apocalypse"
+    description: str = _(
+        "Famine, Horseman of the Apocalypse, is a bringer of hunger and starvation."
+    )
+    ability: str = _(
+        "Each night, Famine can choose to bring forth an apocalypse. They have 8 apocalypses to choose from. Once they have chosen an apocalypse, they can no longer use the same apocalypse until they use every other apocalypse."
+    )
+    visit_type: str = "Active"
+    objective: str = _("Be the last one standing.")
+    starting: bool = False
+    achievements = {
+        "Droughtbringer": {
+            "check": "wins",
+            "value": 1,
+        },
+        "Starvation": {
+            "check": "wins",
+            "value": 5,
+        },
+        "Apocalyptic Death": {
+            "check": "wins",
+            "value": 10,
+        },
+        "Grain Shortage": {
+            "check": "wins",
+            "value": 25,
+        },
+    }
+    theme_names = {"one-piece": "Kurozumi Orochi"}
+
+    @classmethod
+    def has_won(cls, player: Player) -> bool:
+        return not player.is_dead and all(
+            p.is_dead for p in player.game.alive_players if p != player
+        )
+
+    @classmethod
+    async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
+        await interaction.followup.send(
+            embed=discord.Embed(
+                title=_("Choose an apocalypse to bring forth:"),
+                description="\n".join(
+                    [
+                        f"- {apocalypse}"
+                        for apocalypse in set(APOCALYPSES) - set(player.famine_used_apocalypses)
+                    ]
+                ),
+                color=cls.color(),
+            ),
+        )
+
+    @classmethod
+    async def action(
+        cls, night, player: Player, target: typing.Tuple[int, typing.Optional[Player]]
+    ) -> None:
+        apocalypse = APOCALYPSES[int(target[0]) - 1]
+        await player.send(
+            embed=discord.Embed(
+                title=_("You have brought forth the **{apocalypse}** apocalypse!").format(
+                    apocalypse=apocalypse
+                ),
+                color=cls.color(),
+            ),
+        )
+        player.famine_used_apocalypses[apocalypse] = target[1]
+
+
+class Doomsayer(Role):
+    name: str = "Doomsayer"
+    side: str = "Neutral"
+    description: str = _("The Doomsayer is a prophet of the end times.")
+    ability: str = _(
+        "Each night, the Doomsayer can select 3 players to guess their roles. If they guess all 3 roles correctly, they will kill the players and transform into **War, Horseman of the Apocalypse**."
+    )
+    objective: str = _("Transform into War, Horseman of the Apocalypse.")
+    achievements = {
+        "The Third Horseman": {
+            "check": lambda player: player.role is War,
+            "description": _("Transform into War, Horseman of the Apocalypse."),
+        },
+    }
+    theme_names = {"one-piece": "Charlotte Katakuri"}
+
+    perform_action = perform_action_guess_targets_roles(targets_number=3, self_allowed=False)
+
+    @classmethod
+    async def action(
+        cls, night, player: Player, targets: typing.List[typing.Tuple[Player, typing.Type[Role]]]
+    ) -> None:
+        if all(target[0].role is target[1] for target in targets):
+            for target in targets:
+                await target[0].kill(
+                    cause=player,
+                    reason=_("The Doomsayer has guessed their role correctly."),
+                )
+            await player.change_role(
+                Famine,
+                reason=_(
+                    "Your guesses were correct... You have transformed into **War, Horseman of the Apocalypse**!"
+                ),
+            )
+        else:
+            await player.send(
+                embed=discord.Embed(
+                    title=_("You have guessed wrong! Retry next night..."),
+                ),
+            )
+
+
+class War(Role):
+    name: str = "War"
+    side: str = "Horsemen of the Apocalypse"
+    description: str = _("War, Horseman of the Apocalypse, is a bringer of chaos and destruction.")
+    ability: str = _(
+        "Each night, War can select players to kill. The amount of players they can kill each night increases by one every day."
+    )
+    visit_type: str = "Active"
+    objective: str = _("KILL EVERYONE!")
+    starting: bool = False
+    achievements = {
+        "Master of Doom": {
+            "check": "wins",
+            "value": 1,
+        },
+        "Eyes above all": {
+            "check": "wins",
+            "value": 5,
+        },
+        "Stop Claiming!": {
+            "check": "wins",
+            "value": 10,
+        },
+        "Guessing Expert": {
+            "check": "wins",
+            "value": 25,
+        },
+        "Mafia's Nightmare": {
+            "check": lambda player: len([t for t in player.game_targets if t.role.side == "Mafia"])
+            >= 3,
+            "description": _("Kill 3 Mafia members in the same game."),
+        },
+        "Goodbye Town": {
+            "check": lambda player: len([t for t in player.game_targets if t.role.side == "Villagers"])
+            >= 3,
+            "description": _("Kill 3 Villagers' players in the same game."),
+        },
+        "Backstabber": {
+            "check": lambda player: len([t for t in player.game_targets if t.role.side == "Neutral"])
+            >= 3,
+            "description": _("Kill 3 Neutral players in the same game."),
+        },
+        "Transformation Chaos": {
+            "check": lambda player: len(
+                [p for p in player.game.players if p.role.side == "Horsemen of the Apocalypse"]
+            )
+            >= 3,
+            "description": _(
+                "Have at least 3 Horsemen from the Apocalypse, including yourself, in the same game."
+            ),
+        },
+        "The End": {
+            "check": lambda player: (player.game.current_number - player.first_role_night_number)
+            >= 5,
+            "description": _("Have the ability to kill 5 or more players."),
+        },
+    }
+    theme_names = {"one-piece": "Monkey D. Garp"}
+
+    @classmethod
+    def has_won(cls, player: Player) -> bool:
+        return not player.is_dead and all(
+            p.is_dead for p in player.game.alive_players if p != player
+        )
+
+    @classmethod
+    async def perform_action(cls, night, player: Player, interaction: discord.Interaction) -> None:
+        await perform_action_select_targets(
+            targets_number=night.number - player.first_role_night_number,
+            self_allowed=False,
+        )(night, player, interaction)
+
+    @classmethod
+    async def action(cls, night, player: Player, target: typing.Tuple[Player]) -> None:
+        for t in target if isinstance(target, typing.Tuple) else (target,):
+            await t.kill(cause=player)
+
+
+HORSEMEN_OF_THE_APOCALYPSE_ROLES: typing.List[typing.Type["Role"]] = [
+    GraveRobber,
+    Death,
+    # Farmer,
+    # Famine,
+    Doomsayer,
+    War,
+]
+
+
+class Developer(Role):
+    name: str = "Developer"
+    side: str = "Coding"
+    description: str = _(
+        "The Developer is a master of coding and testing. They have all the powers and resist to all night abilities."
+    )
+    ability: str = _(
+        "Each night and day, the Developer can select a role to use their ability, then select or not a player to target with that ability."
+    )
+    objective: str = _("Test things.")
+    starting: bool = False
+    theme_names = {"one-piece": "Vegapunk"}
+
+    perform_action = perform_action_select_roles(
+        self_allowed=False,
+        condition=lambda player, role: role.perform_action is not Role.perform_action,
+    )
+
+    @classmethod
+    async def check_pt(cls, night, player: Player, p: Player, t: Player) -> Player:
+        if p.role is Developer:
+            return t
+        raise ValueError()
+
+    @classmethod
+    async def action(cls, night, player: Player, target: TARGET_TYPE_HINT) -> None:
+        await player.developer_role_in_use.action(night, player, target)
+
+    perform_day_action = perform_action_select_roles(
+        self_allowed=False,
+        condition=lambda player, role: (
+            role.perform_day_action is not Role.perform_day_action
+            and role not in (Lawyer, Manipulator)
+        ),
+    )
+
+    @classmethod
+    async def day_action(cls, day, player: Player, target: TARGET_TYPE_HINT):
+        await player.developer_role_in_use.day_action(day, player, target)
 
 
 ROLES: typing.List[typing.Type["Role"]] = (
@@ -4141,11 +4877,16 @@ ROLES: typing.List[typing.Type["Role"]] = (
     + CRIMSON_ROLES
     + PREMIUM_ROLES
     + MORE_ROLES
+    + HORSEMEN_OF_THE_APOCALYPSE_ROLES
+    + [Developer]
 )
 
 ROLES_PRIORITY: typing.List[typing.Type["Role"]] = [
+    Developer,
     Submissor,
+    Duelist,
     Gambler,
+    Famine,
     Oracle,
     Shaman,
     Goose,
@@ -4158,7 +4899,7 @@ ROLES_PRIORITY: typing.List[typing.Type["Role"]] = [
     Silencer,
     Framer,
     Baiter,
-    Guardian,
+    BodyGuard,
     Jester,
     Executioner,
     Alchemist,
@@ -4172,9 +4913,15 @@ ROLES_PRIORITY: typing.List[typing.Type["Role"]] = [
     Killer,
     Hoarder,
     Vigilante,
+    "Conquest",
+    War,
+    Doomsayer,
     Ritualist,
     Cupid,
+    Farmer,
     Mayor,
+    "Duskweaver",
+    GraveRobber,
     Blackmailer,
     Mortician,
     Detective,
@@ -4186,14 +4933,13 @@ ROLES_PRIORITY: typing.List[typing.Type["Role"]] = [
     Manager,
     Magician,
     Thief,
+    Builder,
     PlagueDoctor,
-    Isekai,
-] + [Judge, Lawyer, Manipulator, Politician, Villager]
+] + [Death, Isekai, Judge, Lawyer, Manipulator, Politician, Villager]
 MAFIA_HIERARCHY: typing.List[typing.Type["Role"]] = [
     GodFather,
     Mafia,
     Manipulator,
-    Politician,
     Ritualist,
     Framer,
     Hacker,

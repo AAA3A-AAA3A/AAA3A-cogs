@@ -16,7 +16,7 @@ from .anomalies import ANOMALIES, Anomaly
 from .constants import ACHIEVEMENTS_COLOR, DEVELOPER, HELPERS, SUPPORTERS, TESTERS
 from .game import Game
 from .modes import MODES, Mode
-from .roles import ACHIEVEMENTS, ROLES, GodFather, Role, Villager
+from .roles import ACHIEVEMENTS, ROLES, Developer, GodFather, Role, Villager
 from .utils import get_image
 from .views import ExplainView, JoinGameView, PollView
 
@@ -26,6 +26,7 @@ from .views import ExplainView, JoinGameView, PollView
 # Thanks to the existing Mafia bots for the inspiration!
 # A part of the text for the roles' `description` and `ability` fields has been taken from the Mafia Wiki (https://mafiabot.fandom.com/wiki/Roles)!
 # All the images have been generated with Microsoft Copilot (https://copilot.microsoft.com/)!
+# Thanks to the https://onepiece.fandom.com/ wiki for the One Piece theme's images!
 
 _: Translator = Translator("MafiaGame", __file__)
 
@@ -39,7 +40,8 @@ class RoleConverter(commands.Converter):
                     raise commands.BadArgument(
                         _("You can't disable the GodFather or the Villager role.")
                     )
-                return role
+                if role is not Developer or ctx.author.id == DEVELOPER:
+                    return role
         raise commands.BadArgument(_("Invalid Mafia role."))
 
 
@@ -112,6 +114,7 @@ class MafiaGame(Cog):
             ping_role=None,
             blacklisted_roles=[],
             poll_threshold=None,
+            theme=None,
             # Game settings.
             show_dead_role=True,
             dying_message=False,
@@ -215,6 +218,11 @@ class MafiaGame(Cog):
             "poll_threshold": {
                 "converter": commands.Range[int, 5, 25],
                 "description": "The votes needed to start the game.",
+                "no_slash": True,
+            },
+            "theme": {
+                "converter": typing.Literal["one-piece"],
+                "description": "The theme of the game.",
                 "no_slash": True,
             },
             # Game settings.
@@ -415,7 +423,7 @@ class MafiaGame(Cog):
                     ):  # and p != player
                         try:
                             await p.member.send(
-                                f"📨 **{player.member.display_name} ({player.role.name}{_(' - Town Traitor') if player.is_town_traitor else ''})**: {message.content}"
+                                f"📨 **{player.member.display_name} ({player.role.display_name(game)}{_(' - Town Traitor') if player.is_town_traitor else ''})**: {message.content}"
                             )
                         except discord.HTTPException:
                             pass
@@ -506,13 +514,15 @@ class MafiaGame(Cog):
     @mafia.command()
     async def role(self, ctx: commands.Context, *, role: RoleConverter) -> None:
         """Show the informations about a specific role."""
-        await Menu(pages=[role.get_kwargs()]).start(ctx)
+        theme = await self.config.guild(ctx.guild).theme()
+        await Menu(pages=[role.get_kwargs(theme=theme)]).start(ctx)
 
     @mafia.command()
     async def roles(self, ctx: commands.Context) -> None:
-        """Show the different roles of the Mafia game"""
+        """Show the different roles of the Mafia game."""
+        theme = await self.config.guild(ctx.guild).theme()
         await Menu(
-            pages=[role.get_kwargs() for role in ROLES],
+            pages=[role.get_kwargs(theme=theme) for role in ROLES],
         ).start(ctx)
 
     @mafia.command()
@@ -576,11 +586,12 @@ class MafiaGame(Cog):
         achievements = ACHIEVEMENTS if role is None else role.achievements
         user_data = await self.config.user(user).all()
         user_achievements = user_data["achievements"]
+        theme = await self.config.guild(ctx.guild).theme()
         embed: discord.Embed = discord.Embed(
             title=(
                 _("General Achievements")
                 if role is None
-                else _("Achievements — {role.name}").format(role=role)
+                else _("Achievements — {role_name}").format(role_name=role.display_name(theme=theme))
             ),
             color=ACHIEVEMENTS_COLOR,
         )
@@ -646,7 +657,7 @@ class MafiaGame(Cog):
             pages=[
                 {
                     "embed": embed,
-                    "file": get_image(os.path.join("roles", image)) if role is not None else None,
+                    "file": role.get_image(theme=theme),
                 }
             ],
         ).start(ctx)
@@ -729,9 +740,14 @@ class MafiaGame(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The poll threshold is not set in this server.")
             )
-        if any(ctx.author.get_role(role_id) for role_id in await self.config.guild(ctx.guild).blacklisted_roles()):
+        if any(
+            ctx.author.get_role(role_id)
+            for role_id in await self.config.guild(ctx.guild).blacklisted_roles()
+        ):
             raise commands.UserFeedbackCheckFailure(
-                _("You aren't allowed to join a Mafia game in this server because you have a blacklisted role!"),
+                _(
+                    "You aren't allowed to join a Mafia game in this server because you have a blacklisted role!"
+                ),
             )
         if (
             temp_banned_until := await self.config.member(ctx.author).temp_banned_until()
@@ -746,11 +762,7 @@ class MafiaGame(Cog):
                     )
                 ),
             )
-        if any(
-            game
-            for game in self.games.values()
-            if game.get_player(ctx.author) is not None
-        ):
+        if any(game for game in self.games.values() if game.get_player(ctx.author) is not None):
             raise commands.UserFeedbackCheckFailure(
                 _("You are already in a game of Mafia in another server!")
             )

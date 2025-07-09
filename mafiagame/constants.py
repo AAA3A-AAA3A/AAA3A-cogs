@@ -8,6 +8,7 @@ VOTING_AND_JUDGEMENT_COLOR: discord.Color = discord.Color.magenta()
 MAFIA_COLOR: discord.Color = discord.Color.red()
 VILLAGERS_COLOR: discord.Color = discord.Color.green()
 NEUTRAL_COLOR: discord.Color = discord.Color.orange()
+HORSEMEN_OF_THE_APOCALYPSE_COLOR: discord.Color = discord.Color.dark_orange()
 MODES_COLOR: discord.Color = discord.Color.blue()
 ANOMALIES_COLOR: discord.Color = discord.Color.purple()
 ACHIEVEMENTS_COLOR: discord.Color = discord.Color.gold()
@@ -81,6 +82,7 @@ TESTERS: typing.List[int] = [
     313794590215766016,  # Mike
     374623019437654016,  # grillribba
     343068848712581120,  # argnavis
+    1018154987127316601,  # Lobster
 ]
 
 

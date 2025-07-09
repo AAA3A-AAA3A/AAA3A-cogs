@@ -22,7 +22,7 @@ Play the Mafia game, with many roles (Mafia/Villagers/Neutral), modes (including
 Commands:
 ---------
 
-Here are all the commands included in this cog (49):
+Here are all the commands included in this cog (53):
 
 * ``[p]mafia``
  Play the Mafia game, with many roles (Mafia/Villagers/Neutral), modes (including Random and Custom), anomalies...
@@ -99,6 +99,9 @@ Here are all the commands included in this cog (49):
 * ``[p]setmafia channelautodelete <channel_auto_delete>``
  If this option is enabled, the channel will be automatically deleted after the game.
 
+* ``[p]setmafia costtoplay <cost_to_play>``
+ The cost to play the game.
+
 * ``[p]setmafia customroles <custom_roles>``
  The roles that will be assigned at the beginning of the game, if the mode is `Custom`.
 
@@ -147,8 +150,17 @@ Here are all the commands included in this cog (49):
 * ``[p]setmafia performactiontimeout <perform_action_timeout>``
  The time in seconds to perform an action.
 
+* ``[p]setmafia redeconomy <red_economy>``
+ If this option is enabled, the cog will integrate with the Red economy.
+
 * ``[p]setmafia resetsetting <setting>``
  Reset a setting.
+
+* ``[p]setmafia rewardforwinning <reward_for_winning>``
+ The reward for winning the game.
+
+* ``[p]setmafia rewardforwinningbasedoncosts <reward_for_winning_based_on_costs>``
+ If this option is enabled, the reward for winning will be based on the costs and shared between the winners.
 
 * ``[p]setmafia showdeadrole <show_dead_role>``
  If this option is enabled, the cog will show the dead role to the players.

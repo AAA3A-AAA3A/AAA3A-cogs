@@ -8,6 +8,7 @@ from redbot.core.utils.chat_formatting import humanize_list
 
 from .constants import MODES_COLOR
 from .roles import (
+    HORSEMEN_OF_THE_APOCALYPSE_ROLES,
     MORE_ROLES,
     ROLES,
     Alchemist,
@@ -70,15 +71,15 @@ class Mode:
 
         if hasattr(cls, "roles"):
             for players_range, roles in cls.roles.items():
-                value = _("**•** **Must:** {must}").format(
+                value = _("- **Must:** {must}").format(
                     must=humanize_list([role.name for role in roles["must"]]),
                 )
                 if "may" in roles:
-                    value += _("\n**•** **May (1):** {may}").format(
+                    value += _("\n- **May (1):** {may}").format(
                         may=humanize_list([role.name for role in roles["may"]]),
                     )
                 if "choices" in roles:
-                    value += _("\n**•** **Choices:**")
+                    value += _("\n- **Choices:**")
                     for amount, choices in roles["choices"]:
                         value += _("\n  **{amount}** from {choices}").format(
                             amount=(
@@ -112,9 +113,9 @@ class Mode:
                 embed.add_field(
                     name=_("{players_number} Players").format(players_number=players_number),
                     value=_(
-                        "**•** Villagers: {villagers}\n"
-                        "**•** Mafia: {mafia}\n"
-                        "**•** Neutral: {neutral}"
+                        "- Villagers: {villagers}\n"
+                        "- Mafia: {mafia}\n"
+                        "- Neutral: {neutral}"
                     ).format(
                         villagers=amounts["villagers"],
                         mafia=amounts["mafia"],
@@ -148,9 +149,13 @@ class Mode:
                 )
             ),
         )
-        roles = [role for role in specificities["must"] if role.name not in config["disabled_roles"]]
+        roles = [
+            role for role in specificities["must"] if role.name not in config["disabled_roles"]
+        ]
         if len(roles) < players_number and "may" in specificities and random.random() < 0.5:
-            may = [role for role in specificities["may"] if role.name not in config["disabled_roles"]]
+            may = [
+                role for role in specificities["may"] if role.name not in config["disabled_roles"]
+            ]
             roles.append(random.choice(may))
         if "choices" in specificities:
             for amount, choices in specificities["choices"]:
@@ -485,7 +490,7 @@ class Random(Mode):
                 role.name not in config["disabled_roles"]
                 and (
                     config["more_roles"]
-                    or role not in MORE_ROLES
+                    or role not in (MORE_ROLES + HORSEMEN_OF_THE_APOCALYPSE_ROLES)
                 )
                 and role != GodFather
                 and role.starting

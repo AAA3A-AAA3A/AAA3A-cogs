@@ -657,7 +657,7 @@ class MafiaGame(Cog):
             pages=[
                 {
                     "embed": embed,
-                    "file": role.get_image(theme=theme),
+                    "file": None if role is None else role.get_image(theme=theme),
                 }
             ],
         ).start(ctx)

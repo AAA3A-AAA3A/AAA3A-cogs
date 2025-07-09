@@ -27,7 +27,7 @@ class Module:
         raise NotImplementedError()
 
     async def get_status(
-        self, guild: discord.Guild
+        self, guild: discord.Guild, check_enabled: bool = True
     ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
         raise NotImplementedError()
 

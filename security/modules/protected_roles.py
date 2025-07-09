@@ -29,12 +29,12 @@ class ProtectedRolesModule(Module):
         self.cog.bot.remove_listener(self.on_audit_log_entry_create)
 
     async def get_status(
-        self, guild: discord.Guild
+        self, guild: discord.Guild, check_enabled: bool = True
     ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
-        if not await self.config_value(guild).enabled():
+        config = await self.config_value(guild)()
+        if not config["enabled"] and check_enabled:
             return "❌", _("Disabled"), _("Protected roles are currently disabled.")
-        protected_roles = await self.config_value(guild).protected_roles()
-        if not protected_roles:
+        if not config["protected_roles"]:
             return "❎", _("No Protected Roles"), _("There are no protected roles configured.")
         if not guild.me.guild_permissions.view_audit_log:
             return (

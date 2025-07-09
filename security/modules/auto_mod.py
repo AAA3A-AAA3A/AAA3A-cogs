@@ -572,10 +572,10 @@ class AutoModModule(Module):
         self.cog.bot.remove_listener(self.on_message)
 
     async def get_status(
-        self, guild: discord.Guild
+        self, guild: discord.Guild, check_enabled: bool = True
     ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
         config = await self.config_value(guild)()
-        if not config["enabled"]:
+        if not config["enabled"] and check_enabled:
             return "❌", _("Disabled"), _("Auto Mod is currently disabled.")
         if all(
             not filter["enabled"]

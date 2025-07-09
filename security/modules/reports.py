@@ -49,12 +49,12 @@ class ReportsModule(Module):
         self.cog.bot.tree.remove_command(report_message.name)
 
     async def get_status(
-        self, guild: discord.Guild
+        self, guild: discord.Guild, check_enabled: bool = True
     ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
         config = await self.config_value(guild)()
-        if not config["enabled"]:
+        if not config["enabled"] and check_enabled:
             return "❎", _("Disabled"), _("Reports are currently disabled.")
-        if not config["channel"]:
+        if config["channel"] is None:
             return "⚠️", _("No Channel Set"), _("Please set a channel for reports.")
         return "✅", _("Enabled"), _("Reports are enabled and configured.")
 

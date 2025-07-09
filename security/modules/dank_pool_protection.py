@@ -111,9 +111,9 @@ class DankPoolProtectionModule(Module):
     async def unload(self) -> None:
         self.cog.bot.remove_listener(self.on_message_without_command)
 
-    async def get_status(self, guild: discord.Guild) -> typing.Tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
+    async def get_status(self, guild: discord.Guild, check_enabled: bool = True) -> typing.Tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
         config = await self.config_value(guild)()
-        if not config["enabled"]:
+        if not config["enabled"] and check_enabled:
             return "❌", "Disabled", "Dank Pool Protection is currently disabled."
         if not guild.me.guild_permissions.manage_messages:
             return (

@@ -641,10 +641,10 @@ class AntiNukeModule(Module):
         self.cog.bot.remove_listener(self.on_audit_log_entry_create)
 
     async def get_status(
-        self, guild: discord.Guild
+        self, guild: discord.Guild, check_enabled: bool = True
     ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
         config = await self.config_value(guild)()
-        if not config["enabled"]:
+        if not config["enabled"] and check_enabled:
             return "❌", _("Disabled"), _("Anti Nuke is currently disabled.")
         if not any(config["options"].values()) and all(
             not filter["enabled"] for filter in config["filters"].values()

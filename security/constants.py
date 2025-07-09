@@ -67,6 +67,7 @@ class Emojis(Enum):
     DANK_POOL_PROTECTION = "💰"
     LOCKDOWN = "🔒"
     UNAUTHORIZED_TEXT_CHANNEL_DELETIONS = "🚫"
+    SENTINEL_RELAY = "🛰️"
 
     MEMBER = "👤"
     ROLE = "🎭"

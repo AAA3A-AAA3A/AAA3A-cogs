@@ -91,7 +91,7 @@ class LockdownModule(Module):
         self.cog.bot.remove_listener(self.on_member_join)
 
     async def get_status(
-        self, guild: discord.Guild
+        self, guild: discord.Guild, check_enabled: bool = True
     ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
         config = await self.config_value(guild)()
         if all(not enabled for enabled in config["modes"].values()):

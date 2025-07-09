@@ -127,10 +127,10 @@ class JoinGateModule(Module):
         self.cog.bot.remove_listener(self.on_member_join)
 
     async def get_status(
-        self, guild: discord.Guild
+        self, guild: discord.Guild, check_enabled: bool = True
     ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
         config = await self.config_value(guild)()
-        if not config["enabled"]:
+        if not config["enabled"] and check_enabled:
             return "❌", _("Disabled"), _("Join Gate is currently disabled.")
         if all(not option["enabled"] for option in config["options"].values()):
             return "❎", _("No Enabled Options"), _("There are no Join Gate option enabled.")

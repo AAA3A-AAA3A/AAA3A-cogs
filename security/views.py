@@ -71,7 +71,10 @@ class WhitelistView(discord.ui.View):
                 else None
             )
         )
-        embed.set_footer(text=ctx.guild.name, icon_url=get_non_animated_asset(ctx.guild.icon))
+        embed.set_footer(
+            text=_("{guild.name} | Developed by AAA3A").format(guild=ctx.guild),
+            icon_url=get_non_animated_asset(ctx.guild.icon),
+        )
         self.whitelist_types = [
             whitelist_type
             for whitelist_type in WHITELIST_TYPES
@@ -345,7 +348,10 @@ class SettingsView(discord.ui.View):
             ),
             icon_url=get_non_animated_asset(self.ctx.author.display_avatar),
         )
-        embed.set_footer(text=self.ctx.guild.name, icon_url=get_non_animated_asset(self.ctx.guild.icon))
+        embed.set_footer(
+            text=_("{guild.name} | Developed by AAA3A").format(guild=self.ctx.guild),
+            icon_url=get_non_animated_asset(self.ctx.guild.icon),
+        )
         self.clear_items()
         self.add_item(self.select)
         for option in self.select.options:

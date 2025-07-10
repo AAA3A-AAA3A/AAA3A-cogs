@@ -106,10 +106,10 @@ class DankPoolProtectionModule(Module):
         ] = defaultdict(lambda: defaultdict(list))
 
     async def load(self) -> None:
-        self.cog.bot.add_listener(self.on_message_without_command)
+        self.cog.bot.add_listener(self.on_message)
 
     async def unload(self) -> None:
-        self.cog.bot.remove_listener(self.on_message_without_command)
+        self.cog.bot.remove_listener(self.on_message)
 
     async def get_status(self, guild: discord.Guild, check_enabled: bool = True) -> typing.Tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
         config = await self.config_value(guild)()
@@ -216,12 +216,12 @@ class DankPoolProtectionModule(Module):
 
         return title, description, fields, components
 
-    async def on_message_without_command(self, message: discord.Message) -> None:
+    async def on_message(self, message: discord.Message) -> None:
         if message.guild is None:
             return
         if not message.author.bot or message.author.id != DANK_MEMER_BOT_ID:
             return
-        if message.interaction_metadata is None:
+        if message.interaction_metadata is None or message._interaction is None:
             return
         config = await self.config_value(message.guild)()
         if not config["enabled"]:

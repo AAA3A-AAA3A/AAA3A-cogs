@@ -266,7 +266,7 @@ class SettingsView(discord.ui.View):
     def __init__(self, cog: commands.Cog) -> None:
         view_children_items = self.__view_children_items__.copy()
         self.__view_children_items__.clear()
-        super().__init__(timeout=5 * 60)
+        super().__init__(timeout=20 * 60)
         self.__class__.__view_children_items__ = self.__view_children_items__ = view_children_items
         self._children = self._init_children()
         self.ctx: commands.Context = None

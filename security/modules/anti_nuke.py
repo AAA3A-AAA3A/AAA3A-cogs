@@ -221,6 +221,7 @@ ANTI_NUKE_OPTIONS: typing.List[
                 entry.target.is_default()
                 or len(entry.target.members) >= len(entry.guild.members) * 0.1
             )
+            and hasattr(entry.after, "permissions")
             and entry.before.permissions != entry.after.permissions
             and any(
                 getattr(entry.after.permissions, dangerous_permission)
@@ -269,9 +270,10 @@ ANTI_NUKE_OPTIONS: typing.List[
                 entry.extra.is_default()
                 or len(entry.extra.members) >= len(entry.guild.members) * 0.1
             )
+            and hasattr(entry.after, "allow")
+            and entry.before.allow != entry.after.allow
             and any(
-                hasattr(entry.after, "allow")
-                and getattr(entry.after.allow, dangerous_permission)
+                getattr(entry.after.allow, dangerous_permission)
                 and not getattr(entry.before.allow, dangerous_permission)
                 for dangerous_permission in DANGEROUS_PERMISSIONS
             )
@@ -380,6 +382,8 @@ ANTI_NUKE_OPTIONS: typing.List[
         "default_enabled": False,
         "check": lambda entry: (
             entry.action == discord.AuditLogAction.role_update
+            and hasattr(entry.after, "permissions")
+            and entry.before.permissions != entry.after.permissions
             and any(
                 getattr(entry.after.permissions, dangerous_permission)
                 and not getattr(entry.before.permissions, dangerous_permission)

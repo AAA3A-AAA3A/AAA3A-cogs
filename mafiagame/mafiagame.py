@@ -192,7 +192,7 @@ class MafiaGame(Cog):
                 "description": "If this option is enabled, the cog will display the roles in game and their abilities when starting.",
             },
             "afk_days_before_kick": {
-                "converter": commands.Range[int, 2, 30],
+                "converter": commands.Range[int, 2, 15],
                 "description": "The number of days before a player is kicked for being AFK.",
             },
             "afk_temp_ban_duration": {
@@ -216,7 +216,7 @@ class MafiaGame(Cog):
                 "description": "The roles that will be blacklisted from the game.",
             },
             "poll_threshold": {
-                "converter": commands.Range[int, 5, 25],
+                "converter": commands.Range[int, 2, 25],
                 "description": "The votes needed to start the game.",
                 "no_slash": True,
             },

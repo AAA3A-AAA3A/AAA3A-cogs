@@ -1,4 +1,4 @@
-﻿from AAA3A_utils import Cog, Settings, Menu, Loop  # isort:skip
+﻿from AAA3A_utils import Cog, Settings, Menu, Loop, CogsUtils  # isort:skip
 from AAA3A_utils.context import is_dev  # isort:skip
 from redbot.core import commands, app_commands, Config  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -504,10 +504,14 @@ class MafiaGame(Cog):
     @commands.admin_or_permissions(manage_guild=True)
     @commands.bot_has_permissions(manage_channels=True)
     @mafia.command()
-    async def end(self, ctx: commands.Context) -> None:
+    async def end(self, ctx: commands.Context, confirm: bool = False) -> None:
         """End the current game of Mafia."""
         if (game := self.games.get(ctx.guild)) is None:
             raise commands.UserFeedbackCheckFailure(_("No game is currently running in this guild."))
+        if not confirm and not await CogsUtils.ConfirmationAsk(
+            ctx, _("Are you sure you want to end the current game of Mafia?")
+        ):
+            return
         await game.end()
 
     @mafia.command(aliases=["e"])

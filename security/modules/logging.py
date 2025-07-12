@@ -1112,7 +1112,7 @@ class LoggingModule(Module):
                 roles=humanize_list(
                     [
                         f"{role.mention} (`{role.name}`)"
-                        for role in member.roles
+                        for role in reversed(member.roles)
                         if not role.is_default()
                     ]
                 )
@@ -1139,7 +1139,7 @@ class LoggingModule(Module):
             roles=humanize_list(
                 [
                     f"{role.mention} (`{role.name}`)"
-                    for role in member.roles
+                    for role in reversed(member.roles)
                     if not role.is_default()
                 ]
             )

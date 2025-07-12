@@ -743,7 +743,7 @@ class Game:
     def get_player_by_id(self, member_id: int) -> typing.Optional[Player]:
         return next((player for player in self.players if player.member.id == member_id), None)
 
-    async def start_task(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
+    def start_task(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
         self.task: asyncio.Task = asyncio.create_task(self.start(ctx, players))
 
     async def start(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
@@ -1192,10 +1192,48 @@ class Game:
                     except discord.HTTPException:
                         pass
 
-        await self._start_message_view.on_timeout()
-        self._start_message_view.stop()
-        await self._spectate_view.on_timeout()
-        self._spectate_view.stop()
+        await self.end(embeds=embeds, view=view)
+
+    def get_mafia_team_embed(self) -> discord.Embed:
+        mafia_players = sorted(
+            [
+                p
+                for p in self.players
+                if (p.role.side == "Mafia" and p.role not in (MafiaAlchemist, VillagerAlchemist))
+                or p.is_town_traitor
+            ],
+            key=lambda p: (
+                MAFIA_HIERARCHY.index(p.role)
+                if p.role in MAFIA_HIERARCHY
+                else len(MAFIA_HIERARCHY) + 1
+            ),
+        )
+        embed: discord.Embed = discord.Embed(
+            title=_("🔪 Here's your Mafia team! 🔪"),
+            description="\n".join(
+                [
+                    f"🔫 {p.member.mention} ({p.role.display_name(self)}{_(' - Town Traitor') if p.is_town_traitor else ''})"
+                    for p in mafia_players
+                ]
+            ),
+            color=MAFIA_COLOR,
+        )
+        if len(mafia_players) > 1:
+            embed.set_footer(text=_("You can DM the bot to communicate with your team!"))
+        return embed
+
+    def get_readable_spoil(self) -> typing.Dict[str, str]:
+        return {player.member.display_name: player.role.display_name(self) for player in self.players}
+
+    async def end(self, **win_kwargs) -> None:
+        if not win_kwargs and self.task is not None:
+            self.task.cancel()
+        if self._start_message_view is not None:
+            await self._start_message_view.on_timeout()
+            self._start_message_view.stop()
+        if self._spectate_view is not None:
+            await self._spectate_view.on_timeout()
+            self._spectate_view.stop()
 
         if self.config["game_logs"]:
 
@@ -1254,19 +1292,20 @@ class Game:
                 ],
                 tz_info="UTC",
                 guild=self.ctx.guild,
-                bot=ctx.bot,
+                bot=self.bot,
             )
         else:
             transcript = None
-        await self.ctx.send(
-            embeds=embeds,
-            file=(
-                discord.File(io.BytesIO(transcript.encode("utf-8")), filename="transcript.html")
-                if transcript
-                else None
-            ),
-            view=view,
-        )
+        if win_kwargs or transcript is not None:
+            await self.ctx.send(
+                **win_kwargs,
+                file=(
+                    discord.File(io.BytesIO(transcript.encode("utf-8")), filename="transcript.html")
+                    if transcript
+                    else None
+                ),
+            )
+
         self.cog.games.pop(self.ctx.guild, None)
         self.cog.last_games[self.ctx.guild] = self
         if self.channel.permissions_for(self.ctx.guild.me).manage_channels:
@@ -1274,7 +1313,7 @@ class Game:
                 await asyncio.sleep(10)
                 if not await CogsUtils.ConfirmationAsk(
                     self.ctx,
-                    _("{host.mention} Do you want to delete the Mafia channel?").format(
+                    _("{host.mention} Do you want to delete the channel of the previous Mafia game?").format(
                         host=self.ctx.author
                     ),
                     timeout=600,
@@ -1287,45 +1326,3 @@ class Game:
                 await self.channel.delete()
             except discord.HTTPException:
                 pass
-
-    def get_mafia_team_embed(self) -> discord.Embed:
-        mafia_players = sorted(
-            [
-                p
-                for p in self.players
-                if (p.role.side == "Mafia" and p.role not in (MafiaAlchemist, VillagerAlchemist))
-                or p.is_town_traitor
-            ],
-            key=lambda p: (
-                MAFIA_HIERARCHY.index(p.role)
-                if p.role in MAFIA_HIERARCHY
-                else len(MAFIA_HIERARCHY) + 1
-            ),
-        )
-        embed: discord.Embed = discord.Embed(
-            title=_("🔪 Here's your Mafia team! 🔪"),
-            description="\n".join(
-                [
-                    f"🔫 {p.member.mention} ({p.role.display_name(self)}{_(' - Town Traitor') if p.is_town_traitor else ''})"
-                    for p in mafia_players
-                ]
-            ),
-            color=MAFIA_COLOR,
-        )
-        if len(mafia_players) > 1:
-            embed.set_footer(text=_("You can DM the bot to communicate with your team!"))
-        return embed
-
-    def get_readable_spoil(self) -> typing.Dict[str, str]:
-        return {player.member.display_name: player.role.display_name(self) for player in self.players}
-
-    async def end(self) -> None:
-        if self.task is not None:
-            self.task.cancel()
-        if self.channel is not None:
-            try:
-                await self.channel.delete()
-            except discord.HTTPException:
-                pass
-        self.cog.games.pop(self.ctx.guild, None)
-        self.cog.last_games[self.ctx.guild] = self

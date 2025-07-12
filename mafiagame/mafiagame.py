@@ -499,7 +499,16 @@ class MafiaGame(Cog):
             config[key] = join_view.config[key]
         players = join_view.players
         game: Game = Game(self, mode=join_view.mode, config=config)
-        asyncio.create_task(game.start(ctx, players=players))
+        game.start_task(ctx, players=players)
+
+    @commands.admin_or_permissions(manage_guild=True)
+    @commands.bot_has_permissions(manage_channels=True)
+    @mafia.command()
+    async def end(self, ctx: commands.Context) -> None:
+        """End the current game of Mafia."""
+        if (game := self.games.get(ctx.guild)) is None:
+            raise commands.UserFeedbackCheckFailure(_("No game is currently running in this guild."))
+        await game.end()
 
     @mafia.command(aliases=["e"])
     async def explain(self, ctx: commands.Context, page: str = "main") -> None:

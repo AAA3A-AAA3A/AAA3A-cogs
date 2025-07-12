@@ -710,6 +710,7 @@ class Game:
         self.ctx: commands.Context = None
         self.mode: typing.Type[Mode] = mode
         self.config: typing.Dict[str, typing.Any] = config
+        self.task: typing.Optional[asyncio.Task] = None
 
         self.channel: typing.Union[discord.TextChannel] = None
         self.players: typing.List[Player] = []
@@ -741,6 +742,9 @@ class Game:
 
     def get_player_by_id(self, member_id: int) -> typing.Optional[Player]:
         return next((player for player in self.players if player.member.id == member_id), None)
+
+    async def start_task(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
+        self.task: asyncio.Task = asyncio.create_task(self.start(ctx, players))
 
     async def start(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
         self.ctx: commands.Context = ctx
@@ -1314,3 +1318,14 @@ class Game:
 
     def get_readable_spoil(self) -> typing.Dict[str, str]:
         return {player.member.display_name: player.role.display_name(self) for player in self.players}
+
+    async def end(self) -> None:
+        if self.task is not None:
+            self.task.cancel()
+        if self.channel is not None:
+            try:
+                await self.channel.delete()
+            except discord.HTTPException:
+                pass
+        self.cog.games.pop(self.ctx.guild, None)
+        self.cog.last_games[self.ctx.guild] = self

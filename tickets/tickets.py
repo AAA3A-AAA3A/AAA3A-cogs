@@ -80,6 +80,7 @@ class Tickets(DashboardIntegration, Cog):
                 "create_modlog_case": False,
                 "transcripts": True,
                 "always_include_item_label": False,
+                "disable_default_open_modal": False,
                 # Roles.
                 "support_roles": [],
                 "ping_roles": [],
@@ -178,6 +179,11 @@ class Tickets(DashboardIntegration, Cog):
             "always_include_item_label": {
                 "converter": bool,
                 "description": "Whether the item label will always be included in the embeds.",
+                "no_slash": True,
+            },
+            "disable_default_open_modal": {
+                "converter": bool,
+                "description": "Whether the default open modal will be disabled.",
                 "no_slash": True,
             },
             # Roles.
@@ -563,11 +569,13 @@ class Tickets(DashboardIntegration, Cog):
     ) -> None:
         guild = ctx_interaction.guild
 
-        creating_modal = await self.config.guild(guild).profiles.get_raw(profile, "creating_modal")
+        config = await self.config.guild(guild).profiles.get_raw(profile)
+        creating_modal = config["creating_modal"]
         if (
             creating_modal is None
             and reason is None
             and isinstance(ctx_interaction, discord.Interaction)
+            and not config.get("disable_default_open_modal", False)
         ):
             final_modal = [
                 {

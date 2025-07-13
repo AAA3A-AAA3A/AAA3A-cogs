@@ -539,11 +539,8 @@ class ClosedTicketControls(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self.transcript.label = _("Transcript")
-        self.transcript.custom_id = "Tickets_transcript"
         self.reopen.label = _("Reopen")
-        self.reopen.custom_id = "Tickets_reopen"
         self.delete.label = _("Delete")
-        self.delete.custom_id = "Tickets_delete"
 
     async def start(
         self, ticket, interaction: typing.Optional[discord.Interaction] = None
@@ -607,7 +604,7 @@ class ClosedTicketControls(discord.ui.View):
             )
             return False
         interaction.data["ticket"] = ticket
-        if not await self.cog.is_support.__func__().predicate(interaction):
+        if not await self.cog.is_support.__func__(ignore_owner=interaction.data["custom_id"] == "Tickets_delete").predicate(interaction):
             await interaction.response.send_message(
                 _("⛔ You aren't allowed to interact with this ticket!"),
                 ephemeral=True,
@@ -615,7 +612,7 @@ class ClosedTicketControls(discord.ui.View):
             return False
         return True
 
-    @discord.ui.button(label="Transcript", style=discord.ButtonStyle.secondary)
+    @discord.ui.button(label="Transcript", style=discord.ButtonStyle.secondary, custom_id="Tickets_transcript")
     async def transcript(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
@@ -640,7 +637,7 @@ class ClosedTicketControls(discord.ui.View):
         )
         await interaction.edit_original_response(view=view)
 
-    @discord.ui.button(label="Reopen", style=discord.ButtonStyle.secondary)
+    @discord.ui.button(label="Reopen", style=discord.ButtonStyle.secondary, custom_id="Tickets_reopen")
     async def reopen(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
         ticket = discord.utils.get(
@@ -655,7 +652,7 @@ class ClosedTicketControls(discord.ui.View):
                 ephemeral=True,
             )
 
-    @discord.ui.button(label="Delete", style=discord.ButtonStyle.danger)
+    @discord.ui.button(label="Delete", style=discord.ButtonStyle.danger, custom_id="Tickets_delete")
     async def delete(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         ticket = discord.utils.get(
             self.cog.tickets.get(interaction.guild.id, {}).values(), channel=interaction.channel

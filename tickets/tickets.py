@@ -1169,8 +1169,8 @@ class Tickets(DashboardIntegration, Cog):
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
 
-    @is_support(ignore_owner=True)
-    @ticket.command()
+    @is_support()
+    @ticket.command(aliases=["transcript"])
     async def export(
         self, ctx: commands.Context, ticket: typing.Optional[TicketConverter] = None
     ) -> None:

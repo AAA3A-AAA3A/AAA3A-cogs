@@ -659,7 +659,7 @@ class Tickets(DashboardIntegration, Cog):
                     if text_input.value.strip()
                 }
         elif isinstance(ctx_interaction, discord.Interaction):
-            await ctx_interaction.response.defer(ephermal=True, thinking=True)
+            await ctx_interaction.response.defer(ephemeral=True, thinking=True)
 
         id = await self.config.guild(guild).last_id() + 1
         ticket: Ticket = Ticket(

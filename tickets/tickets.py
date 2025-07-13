@@ -758,7 +758,8 @@ class Tickets(DashboardIntegration, Cog):
                     "- Close/Reopen Reason Modal: {close_reopen_reason_modal}\n"
                     "- Create Modlog Case: {create_modlog_case}\n"
                     "- Transcripts: {transcripts}\n"
-                    "- Always Include Item Label: {always_include_item_label}\n\n"
+                    "- Always Include Item Label: {always_include_item_label}\n"
+                    "- Disable Default Open Modal: {disable_default_open_modal}\n\n"
                     "- Support Roles: {support_roles}\n"
                     "- Ping Roles: {ping_roles}\n"
                     "- Speak Roles: {speak_roles}\n"
@@ -796,6 +797,7 @@ class Tickets(DashboardIntegration, Cog):
                     create_modlog_case=config["create_modlog_case"],
                     transcripts=config["transcripts"],
                     always_include_item_label=config["always_include_item_label"],
+                    disable_default_open_modal=config.get("disable_default_open_modal", False),
                     support_roles=humanize_list(
                         [
                             role.mention

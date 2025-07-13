@@ -226,19 +226,23 @@ class DankPoolProtectionModule(Module):
         config = await self.config_value(message.guild)()
         if not config["enabled"]:
             return
-        if await self.cog.is_message_whitelisted(message, "dank_pool_protection"):
-            return
         try:
             raw_message = await self.cog.bot.http.get_message(message.channel.id, message.id)
         except discord.HTTPException:
             return
         if not raw_message["components"] or not raw_message["components"][0]["type"] == 17 or not raw_message["components"][0]["components"]:
             return
-        if (member := message.guild.get_member(message.interaction_metadata.user.id)) is None:
+        member_id = message.interaction_metadata.user.id
+        if (member := message.guild.get_member(member_id)) is None:
             try:
-                member = await message.guild.fetch_member(message.interaction_metadata.user.id)
+                member = await message.guild.fetch_member(member_id)
             except discord.HTTPException:
                 return
+        if (
+            await self.cog.is_whitelisted(member, "dank_pool_protection")
+            or await self.cog.is_whitelisted(message.channel, "dank_pool_protection")
+        ):
+            return
         log = _(
             "{member.mention} (`{member}`) executed `/{slash_name}` ({jump_url}) {timestamp}."
         ).format(

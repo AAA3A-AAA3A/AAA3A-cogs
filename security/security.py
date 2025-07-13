@@ -236,6 +236,8 @@ class Security(Cog):
                 return True
             if _whitelist_type["staff_allowed"] and await self.is_moderator_or_higher(_object):
                 return True
+            if _object.top_role >= _object.guild.me.top_role:
+                return True
             return await self.config.member(_object).whitelist.get_raw(whitelist_type) or any(
                 [await self.is_whitelisted(role, whitelist_type) for role in _object.roles]
             )

@@ -71,7 +71,7 @@ async def check_invite_links(
     message: discord.Message, filter_config: typing.Dict[str, typing.Any]
 ) -> int:
     count = 0
-    for invite_url in re.findall(INVITE_URL_RE, message.content):
+    for invite_url in re.findall(re.compile(r"(discord\.(?:gg|io|me|li)|discord(?:app)?\.com\/invite)[\/\\](\S+)", re.I), message.content):
         try:
             discord.utils.resolve_invite(invite_url[1])
         except ValueError:

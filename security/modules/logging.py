@@ -1237,9 +1237,11 @@ class LoggingModule(Module):
         async for entry in guild.audit_logs(
             limit=3, action=discord.AuditLogAction.message_delete, oldest_first=False
         ):
-            if entry.target.id == message.author.id:
+            if entry.extra.channel.id == message_channel.id and (message is None or entry.target.id == message.author.id):
                 responsible = entry.user
                 break
+        else:
+            responsible = None
         embed: discord.Embed = await self.get_embed(guild, event, responsible, message or message_channel)
         if message is not None:
             embed.description += f"\n{box('- ' + message.content, 'diff')}" if message.content else ""

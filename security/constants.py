@@ -177,6 +177,17 @@ WHITELIST_TYPES: typing.List[
         "staff_allowed": False,
     },
     {
+        "name": "Logging - Reaction Log Whitelist",
+        "emoji": Emojis.EMOJI.value,
+        "description": "Add and remove reactions without being logged.",
+        "value": "logging_reaction_log",
+        "members_roles": True,
+        "channels": True,
+        "categories": True,
+        "webhooks": True,
+        "staff_allowed": True,
+    },
+    {
         "name": "Reports Whitelist",
         "emoji": Emojis.REPORTS.value,
         "description": "Can't be reported on the reports system.",

@@ -8,7 +8,7 @@ import datetime
 import functools
 from collections import defaultdict
 
-from redbot.core.utils.chat_formatting import box, humanize_list
+from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
 
 from ..constants import Emojis, get_non_animated_asset
 from ..views import ToggleModuleButton
@@ -237,6 +237,22 @@ LOGGING_EVENTS: typing.Dict[
                 "color": discord.Color.gold(),
                 "value": "automod_flag_message",
             },
+            {
+                "name": "Reaction Add",
+                "emoji": "👍",
+                "color": discord.Color.green(),
+                "value": "reaction_add",
+                "default_ignore_bots": True,
+                "default_disabled": True,
+            },
+            {
+                "name": "Reaction Remove",
+                "emoji": "👎",
+                "color": discord.Color.red(),
+                "value": "reaction_remove",
+                "default_ignore_bots": True,
+                "default_disabled": True,
+            },
         ],
     },
     "role": {
@@ -425,7 +441,7 @@ class LoggingModule(Module):
         "events": {
             category: {
                 event["value"]: {
-                    "enabled": True,
+                    "enabled": not event.get("default_disabled", False),
                     "channel": None,
                     "ignore_bots": event.get("default_ignore_bots", False),
                     "emoji": event["emoji"],
@@ -455,7 +471,10 @@ class LoggingModule(Module):
         self.cog.bot.add_listener(self.on_member_join)
         self.cog.bot.add_listener(self.on_member_remove)
         self.cog.bot.add_listener(self.on_message_edit)
-        self.cog.bot.add_listener(self.on_message_delete)
+        self.cog.bot.add_listener(self.on_raw_message_delete)
+        self.cog.bot.add_listener(self.on_raw_bulk_message_delete)
+        self.cog.bot.add_listener(self.on_reaction_add)
+        self.cog.bot.add_listener(self.on_reaction_remove)
         self.cog.bot.add_listener(self.on_audit_log_entry_create)
         self.loop: Loop = Loop(
             cog=self.cog,
@@ -470,7 +489,10 @@ class LoggingModule(Module):
         self.cog.bot.remove_listener(self.on_member_join)
         self.cog.bot.remove_listener(self.on_member_remove)
         self.cog.bot.remove_listener(self.on_message_edit)
-        self.cog.bot.remove_listener(self.on_message_delete)
+        self.cog.bot.remove_listener(self.on_raw_message_delete)
+        self.cog.bot.remove_listener(self.on_raw_bulk_message_delete)
+        self.cog.bot.remove_listener(self.on_reaction_add)
+        self.cog.bot.remove_listener(self.on_reaction_remove)
         self.cog.bot.remove_listener(self.on_audit_log_entry_create)
 
     async def get_status(
@@ -833,33 +855,53 @@ class LoggingModule(Module):
         self,
         guild: discord.Guild,
         event: typing.Dict[str, typing.Any],
-        responsible: discord.Member,
+        responsible: typing.Optional[discord.Member],
         target=None,
     ) -> discord.TextChannel:
         config = await self.config_value(guild)()
         if not config["enabled"] or not event["enabled"]:
             return False
-        if event.get("ignore_bots", False) and responsible.bot:
-            return False
-        if (
-            event["value"] in ("message_edit", "message_delete")
-            and (
-                await self.cog.is_whitelisted(
-                    responsible, "logging_message_log"
+        if responsible is not None:
+            if event.get("ignore_bots", False) and responsible.bot:
+                return False
+            # if (
+            #     event["value"] in ("message_edit", "message_delete")
+            #     and (
+            #         await self.cog.is_whitelisted(
+            #             responsible, "logging_message_log"
+            #         )
+            #         or await self.cog.is_message_whitelisted(
+            #             target, "logging_message_log"
+            #         )
+            #     )
+            # ):
+            #     return False
+            elif (
+                event["value"] in ("channel_update", "overwrite_create", "overwrite_delete", "overwrite_update")
+                and await self.cog.is_whitelisted(
+                    target, "logging_channel_update_overwrites_log"
                 )
-                or await self.cog.is_message_whitelisted(
-                    target, "logging_message_log"
+            ):
+                return False
+            elif (
+                event["value"] in ("reaction_add", "reaction_remove")
+                and (
+                    await self.cog.is_whitelisted(
+                        responsible, "logging_reaction_log"
+                    )
+                    or await self.cog.is_message_whitelisted(
+                        target, "logging_reaction_log"
+                    )
                 )
-            )
-        ):
-            return False
+            ):
+                return False
         elif (
-            event["value"] in ("channel_update", "overwrite_create", "overwrite_delete", "overwrite_update")
+            event["value"] in ("message_edit", "message_delete")
             and await self.cog.is_whitelisted(
-                target, "logging_channel_update_overwrites_log"
+                target, "logging_message_log"
             )
-        ):
-            return False
+         ):
+                return False
         if (
             (channel_id := event["channel"]) is None
             or (channel := guild.get_channel(channel_id)) is None
@@ -874,7 +916,7 @@ class LoggingModule(Module):
         self,
         guild: discord.Guild,
         event: typing.Dict[str, typing.Any],
-        responsible: discord.Member,
+        responsible: typing.Optional[discord.Member],
         target: typing.Optional[
             typing.Union[
                 discord.Member,
@@ -896,22 +938,23 @@ class LoggingModule(Module):
             color=discord.Color(event["color"]),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
         )
-        embed.set_author(
-            name=responsible.display_name,
-            icon_url=get_non_animated_asset(responsible.display_avatar),
-        )
-        if isinstance(responsible, discord.Member):
-            embed.description = _(
-                "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) {responsible_emojis} - `{responsible.id}`"
-            ).format(
-                emoji=Emojis.ISSUED_BY.value,
-                responsible=responsible,
-                responsible_emojis=await self.cog.get_member_emojis(responsible),
+        if responsible is not None:
+            embed.set_author(
+                name=responsible.display_name,
+                icon_url=get_non_animated_asset(responsible.display_avatar),
             )
-        elif isinstance(responsible, discord.User):
-            embed.description = _(
-                "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) - `{responsible.id}`"
-            ).format(emoji=Emojis.ISSUED_BY.value, responsible=responsible)
+            if isinstance(responsible, discord.Member):
+                embed.description = _(
+                    "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) {responsible_emojis} - `{responsible.id}`"
+                ).format(
+                    emoji=Emojis.ISSUED_BY.value,
+                    responsible=responsible,
+                    responsible_emojis=await self.cog.get_member_emojis(responsible),
+                )
+            elif isinstance(responsible, discord.User):
+                embed.description = _(
+                    "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) - `{responsible.id}`"
+                ).format(emoji=Emojis.ISSUED_BY.value, responsible=responsible)
         if target is not None:
             embed.set_thumbnail(
                 url=get_non_animated_asset(
@@ -971,6 +1014,21 @@ class LoggingModule(Module):
                     embed.description += _(
                         "\n- **Author:** {target.author.mention} (`{target.author}`) - `{target.author.id}`"
                     ).format(target=target)
+                embed.description += _(
+                    "\n- **Created at:** {created_at} ({created_ago})"
+                ).format(
+                    created_at=discord.utils.format_dt(target.created_at, "F"),
+                    created_ago=discord.utils.format_dt(target.created_at, "R"),
+                )
+                if target.reference is not None and target.reference.resolved is not None:
+                    jump_link = (
+                        target.reference.resolved.jump_url
+                        if isinstance(target.reference.resolved, discord.Message)
+                        else f"https://discord.com/channels/{target.guild.id}/{target.channel.id}/{target.reference.message_id}"
+                    )
+                    embed.description += _(
+                        "\n- **Replying to:** [Jump to Message]({jump_link})"
+                    ).format(jump_link=jump_link)
             elif isinstance(target, discord.Emoji):
                 embed.description += "\n" + _(
                     "{emoji} **Target Emoji:** `{target.name}` - `{target.id}`"
@@ -1163,57 +1221,137 @@ class LoggingModule(Module):
         embed.description += f"\n{box('- ' + before.content, 'diff')}"
         if len(embed.description) + len(after.content) <= 4082:
             embed.description += f"\n{box('+ ' + after.content, 'diff')}"
-        if after.reference is not None and after.reference.resolved is not None:
-            jump_link = (
-                after.reference.resolved.jump_url
-                if isinstance(after.reference.resolved, discord.Message)
-                else f"https://discord.com/channels/{after.guild.id}/{after.channel.id}/{after.reference.message_id}"
-            )
-            embed.add_field(
-                name=_("Replying to:"),
-                value=f"[Jump to Message]({jump_link})",
-                inline=False,
-            )
         await channel.send(embed=embed)
 
-    async def on_message_delete(self, message: discord.Message) -> None:
-        if message.guild is None:
+    @commands.Cog.listener()
+    async def on_raw_message_delete(self, payload: discord.RawMessageDeleteEvent) -> None:
+        if (guild := self.cog.bot.get_guild(payload.guild_id)) is None:
             return
-        event = await self.get_event(message.guild, "message_delete")
-        if not (channel := await self.check_config(message.guild, event, message.author, message)):
+        if (message_channel := guild.get_channel(payload.channel_id)) is None:
             return
-        responsible = message.author
-        async for entry in message.guild.audit_logs(
+        event = await self.get_event(guild, "message_delete")
+        message = payload.cached_message
+        if not (channel := await self.check_config(guild, event, message.author if message is not None else None, message or message_channel)):
+            return
+        responsible = message.author if message is not None else None
+        async for entry in guild.audit_logs(
             limit=3, action=discord.AuditLogAction.message_delete, oldest_first=False
         ):
             if entry.target.id == message.author.id:
                 responsible = entry.user
                 break
-        embed: discord.Embed = await self.get_embed(message.guild, event, responsible, message)
-        embed.description += f"\n{box('- ' + message.content, 'diff')}" if message.content else ""
-        if message.attachments:
-            embed.description += "\n" + _("{emoji} **Attachments:**").format(
-                emoji=Emojis.FILE.value
+        embed: discord.Embed = await self.get_embed(guild, event, responsible, message or message_channel)
+        if message is not None:
+            embed.description += f"\n{box('- ' + message.content, 'diff')}" if message.content else ""
+            if message.attachments:
+                embed.description += "\n" + _("{emoji} **Attachments:**").format(
+                    emoji=Emojis.FILE.value
+                )
+                for attachment in message.attachments:
+                    embed.description += f"\n- [{attachment.filename}]({attachment.url})"
+            if message.stickers:
+                embed.description += "\n" + _("{emoji} **Stickers:**").format(
+                    emoji=Emojis.STICKER.value
+                )
+                for sticker in message.stickers:
+                    embed.description += f"\n- [{sticker.name}]({sticker.url}) (`{sticker.id}`)"
+        await channel.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_raw_bulk_message_delete(
+        self, payload: discord.RawBulkMessageDeleteEvent
+    ) -> None:
+        if (guild := self.cog.bot.get_guild(payload.guild_id)) is None:
+            return
+        if (message_channel := guild.get_channel(payload.channel_id)) is None:
+            return
+        event = await self.get_event(guild, "message_bulk_delete")
+        if not (channel := await self.check_config(guild, event, None, message_channel)):
+            return
+        responsible = None
+        async for entry in guild.audit_logs(
+            limit=3, action=discord.AuditLogAction.message_bulk_delete, oldest_first=False
+        ):
+            if entry.target.id == payload.channel_id:
+                responsible = entry.user
+                break
+        embed: discord.Embed = await self.get_embed(guild, event, responsible, message_channel)
+        embed.description += _("\n{emoji} **Count:** {count}").format(
+            emoji="🔢",
+            count=len(payload.message_ids),
+        )
+        if payload.cached_messages:
+            messages = payload.cached_messages
+            raw_messages = [
+                f"[{message.created_at.strftime('%Y-%m-%d %H:%M:%S')} (UTC)] {message.author.display_name} ({message.author.id}): {message.content}"
+                for message in messages
+            ]
+            file = text_to_file(
+                "\n".join(raw_messages),
+                filename="logging_bulk_deleted_messages.txt",
             )
-            for attachment in message.attachments:
-                embed.description += f"\n- [{attachment.filename}]({attachment.url})"
-        if message.stickers:
-            embed.description += "\n" + _("{emoji} **Stickers:**").format(
-                emoji=Emojis.STICKER.value
+            embed.description += _("\n{emoji} **Deleted Message{s}:**\n").format(
+                emoji=Emojis.MESSAGE.value,
+                s="" if len(messages) == 1 else "s",
             )
-            for sticker in message.stickers:
-                embed.description += f"\n- [{sticker.name}]({sticker.url}) (`{sticker.id}`)"
-        if message.reference is not None and message.reference.resolved is not None:
-            jump_link = (
-                message.reference.resolved.jump_url
-                if isinstance(message.reference.resolved, discord.Message)
-                else f"https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.reference.message_id}"
-            )
-            embed.add_field(
-                name=_("Replying to:"),
-                value=f"[Jump to Message]({jump_link})",
-                inline=False,
-            )
+            to_include = [raw_messages[-1]]
+            for message in reversed(raw_messages[:-1]):
+                if len(embed.description) + 8 + sum(map(len, to_include)) + len(message) <= 4000:
+                    to_include.insert(0, message)
+            embed.description += box("\n".join(to_include))
+        else:
+            file = None
+        await channel.send(embed=embed, file=file)
+
+    async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User) -> None:
+        if reaction.message.guild is None:
+            return
+        event = await self.get_event(reaction.message.guild, "reaction_add")
+        if not (channel := await self.check_config(reaction.message.guild, event, user)):
+            return
+        embed: discord.Embed = await self.get_embed(
+            reaction.message.guild,
+            event,
+            user,
+            reaction.message,
+        )
+        embed.description += _("\n{emoji} **Reaction:** {reaction}").format(
+            emoji=Emojis.EMOJI.value, reaction=reaction.emoji
+        )
+        await channel.send(embed=embed)
+
+    async def on_reaction_remove(self, reaction: discord.Reaction, user: discord.User) -> None:
+        if reaction.message.guild is None:
+            return
+        event = await self.get_event(reaction.message.guild, "reaction_add")
+        if not (channel := await self.check_config(reaction.message.guild, event, user)):
+            return
+        embed: discord.Embed = await self.get_embed(
+            reaction.message.guild,
+            event,
+            user,
+            reaction.message,
+        )
+        embed.description += _("\n{emoji} **Reaction:** {reaction}").format(
+            emoji=Emojis.EMOJI.value, reaction=reaction.emoji
+        )
+        await channel.send(embed=embed)
+
+    async def on_reaction_remove(self, reaction: discord.Reaction, user: discord.User) -> None:
+        if reaction.message.guild is None:
+            return
+        event = await self.get_event(reaction.message.guild, "reaction_remove")
+        if not (channel := await self.check_config(reaction.message.guild, event, user)):
+            return
+        embed: discord.Embed = await self.get_embed(
+            reaction.message.guild,
+            event,
+            user,
+            reaction.message,
+        )
+        embed.description += _("\n{emoji} **Reaction Removed:** {reaction}").format(
+            emoji=Emojis.EMOJI.value, reaction=reaction.emoji
+        )
         await channel.send(embed=embed)
 
     async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
@@ -1221,7 +1359,7 @@ class LoggingModule(Module):
             return
         if (event := await self.get_event(entry.guild, entry.action.name)) is None:
             return
-        if event["value"] == "message_delete":
+        if event["value"] in ("message_delete", "message_bulk_delete"):
             return
         if not (channel := await self.check_config(entry.guild, event, entry.user, entry.target)):
             return

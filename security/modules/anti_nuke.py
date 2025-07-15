@@ -543,10 +543,10 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 10,
         "actions": [discord.AuditLogAction.webhook_create],
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **created** {target.mention} (`{target.name}`) {timestamp}."
+            "{member.mention} (`{member}`) **created** `{target_id}` {timestamp}."
         ).format(
             member=entry.user,
-            target=entry.target,
+            target_id=entry.target.id,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
         "reason": lambda: _("**Anti Nuke** - Created too many webhooks in a short time."),

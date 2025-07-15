@@ -609,7 +609,7 @@ class Security(Cog):
             to_include = [raw_trigger_messages[-1]]
             for message in reversed(raw_trigger_messages[:-1]):
                 if len(embed.description) + 8 + sum(map(len, to_include)) + len(message) <= 4000:
-                    to_include.insert(-2, message)
+                    to_include.insert(0, message)
             embed.description += box("\n".join(to_include))
         else:
             file = None

@@ -288,17 +288,28 @@ class Security(Cog):
             for member_id, member_config in member_configs.items():
                 if (
                     member_config["level"] is not None or any(member_config["whitelist"].values())
-                ) and guild.get_member(member_id) is None:
-                    await self.config.member_from_ids(guild.id, member_id).level.clear()
-                    await self.config.member_from_ids(guild.id, member_id).whitelist.clear()
+                ):
+                    if guild.get_member(member_id) is None:
+                        try:
+                            await guild.fetch_member(member_id)
+                        except discord.NotFound:
+                            await self.config.member_from_ids(guild.id, member_id).level.clear()
+                            await self.config.member_from_ids(guild.id, member_id).whitelist.clear()
+                        except discord.HTTPException:
+                            pass
             if protected_role_ids := await self.config.guild(
                 guild
             ).modules.protected_roles.protected_roles():
                 for role_id in protected_role_ids:
                     if guild.get_role(int(role_id)) is None:
-                        await self.config.guild(
-                            guild
-                        ).modules.protected_roles.protected_roles.clear_raw(role_id)
+                        try:
+                            await guild.fetch_role(int(role_id))
+                        except discord.NotFound:
+                            await self.config.guild(
+                                guild
+                            ).modules.protected_roles.protected_roles.clear_raw(role_id)
+                        except discord.HTTPException:
+                            pass
 
     async def quarantine_member(
         self,

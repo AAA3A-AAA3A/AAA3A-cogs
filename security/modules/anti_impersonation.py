@@ -100,12 +100,12 @@ class AntiImpersonationModule(Module):
             if not any(getattr(other_member.guild_permissions, permission) for permission in DANGEROUS_PERMISSIONS):
                 continue
             if self.is_similar(member.display_name, other_member.display_name, similarity_ratio):
-                log = _("{member.mention} `{member.name}` has a similar display name to {other_member.mention} `{other_member.name}`: `{member.display_name}` vs `{other_member.display_name}`.").format(
+                log = _("{member.mention} (`{member.name}`) has a similar display name to {other_member.mention} (`{other_member.name}`): `{member.display_name}` vs `{other_member.display_name}`.").format(
                     member=member,
                     other_member=other_member
                 )
             elif self.is_similar(member.name, other_member.name, similarity_ratio):
-                log = _("{member.mention} `{member.name}` has a similar name to {other_member.mention} `{other_member.name}`: `{member.name}` vs `{other_member.name}`.").format(
+                log = _("{member.mention} (`{member.name}`) has a similar name to {other_member.mention} (`{other_member.name}`): `{member.name}` vs `{other_member.name}`.").format(
                     member=member,
                     other_member=other_member
                 )
@@ -114,7 +114,7 @@ class AntiImpersonationModule(Module):
                 and other_member.global_name is not None
                 and self.is_similar(member.global_name, other_member.global_name, similarity_ratio)
             ):
-                log = _("{member.mention} `{member.name}` has a similar global name to {other_member.mention} `{other_member.global_name}`: `{member.global_name}` vs `{other_member.global_name}`.").format(
+                log = _("{member.mention} (`{member.name}`) has a similar global name to {other_member.mention} (`{other_member.name}`): `{member.global_name}` vs `{other_member.global_name}`.").format(
                     member=member,
                     other_member=other_member
                 )
@@ -122,7 +122,7 @@ class AntiImpersonationModule(Module):
                 continue
             if only_check:
                 return True
-            reason = _("**Anti Impersonation**: Potential impersonation detected.")
+            reason = _("**Anti Impersonation** - Potential impersonation detected.")
             if config["quarantine"]:
                 await self.cog.quarantine_member(
                     member=member,

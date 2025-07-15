@@ -343,8 +343,9 @@ class SettingsView(discord.ui.View):
             timestamp=self.ctx.message.created_at,
         )
         embed.set_author(
-            name=_("Invoked by {author.display_name} ({author.id})").format(
-                author=self.ctx.author
+            name=_("Invoked by {author.display_name} ({author.id}) {member_emojis}").format(
+                author=self.ctx.author,
+                member_emojis=await self.cog.get_member_emojis(self.ctx.author),
             ),
             icon_url=get_non_animated_asset(self.ctx.author.display_avatar),
         )

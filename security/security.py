@@ -1014,6 +1014,7 @@ class Security(Cog):
             "anti_nuke",
             "protected_roles",
             "dank_pool_protection",
+            "anti_impersonation",
             "unauthorized_text_channel_deletions",
             "lockdown",
             "sentinel_relay",

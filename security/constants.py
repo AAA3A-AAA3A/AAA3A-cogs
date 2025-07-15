@@ -66,6 +66,7 @@ class Emojis(Enum):
     PROTECTED_ROLES = "☢️"
     DANK_POOL_PROTECTION = "💰"
     LOCKDOWN = "🔒"
+    ANTI_IMPERSONATION = "👮"
     UNAUTHORIZED_TEXT_CHANNEL_DELETIONS = "🚫"
     SENTINEL_RELAY = "🛰️"
 
@@ -340,6 +341,17 @@ WHITELIST_TYPES: typing.List[
         "categories": True,
         "webhooks": True,
         "staff_allowed": False,
+    },
+    {
+      "name": "Anti Impersonation Whitelist",
+      "emoji": Emojis.ANTI_IMPERSONATION.value,
+      "description": "CAUTION Be able to bypass anti impersonation checks.",
+      "value": "anti_impersonation",
+      "members_roles": True,
+      "channels": False,
+      "categories": False,
+      "webhooks": False,
+      "staff_allowed": False,
     },
     {
         "name": "Unauthorized Text Channel Deletions Whitelist",

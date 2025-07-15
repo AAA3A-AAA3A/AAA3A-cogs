@@ -1,5 +1,6 @@
 import typing  # isort:skip
 
+from .anti_impersonation import AntiImpersonationModule
 from .anti_nuke import AntiNukeModule
 from .auto_mod import AutoModModule
 from .dank_pool_protection import DankPoolProtectionModule
@@ -20,6 +21,7 @@ MODULES: typing.List[Module] = [
     AntiNukeModule,
     ProtectedRolesModule,
     DankPoolProtectionModule,
+    AntiImpersonationModule,
     UnauthorizedTextChannelDeletionsModule,
     LockdownModule,
     SentinelRelayModule,

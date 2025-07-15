@@ -114,7 +114,7 @@ class DankPoolProtectionModule(Module):
     async def get_status(self, guild: discord.Guild, check_enabled: bool = True) -> typing.Tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
-            return "❌", "Disabled", "Dank Pool Protection is currently disabled."
+            return "❌", _("Disabled"), _("Dank Pool Protection is currently disabled.")
         if not guild.me.guild_permissions.manage_messages:
             return (
                 "⚠️",
@@ -127,11 +127,11 @@ class DankPoolProtectionModule(Module):
                 _("Missing Permission"),
                 _("I need the `Manage Roles` permission to quarantine members."),
             )
-        return "✅", "Enabled", "Dank Pool Protection is enabled and configured correctly."
+        return "✅", _("Enabled"), _("Dank Pool Protection is enabled and configured correctly.")
 
     async def get_settings(self, guild: discord.Guild, view: discord.ui.View):
         title = f"{self.emoji} {self.name} {(await self.get_status(guild))[0]}"
-        description = "Protect your server's Dank Memer pool from abuse.\n"
+        description = _("Protect your server's Dank Memer pool from abuse.\n")
         config = await self.config_value(guild)()
         fields = []
         for option in DANK_POOL_PROTECTION_OPTIONS:

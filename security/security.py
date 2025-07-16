@@ -1,4 +1,4 @@
-from AAA3A_utils import Cog, CogsUtils, Loop  # isort:skip
+from AAA3A_utils import Cog, CogsUtils, Loop, Menu  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -7,6 +7,7 @@ import typing  # isort:skip
 
 import base64
 import datetime
+import functools
 import secrets
 from io import BytesIO
 
@@ -15,7 +16,7 @@ import onetimepass
 import qrcode
 from PIL import Image, ImageDraw
 from redbot.core import modlog
-from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
+from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file, pagify
 
 from .constants import (
     WHITELIST_TYPES,
@@ -210,12 +211,38 @@ class Security(Cog):
     async def is_trusted_admin_or_higher(self, member: discord.Member) -> bool:
         return (await self.get_member_level(member)).value <= Levels.TRUSTED_ADMIN.value
 
-    def is_trusted_admin_or_higher_level() -> commands.check:
+    def is_trusted_admin_or_higher_level(func):
         async def predicate(ctx: commands.Context) -> bool:
             cog = ctx.bot.get_cog("Security")
-            return await cog.is_trusted_admin_or_higher(ctx.author)
-
-        return commands.check(predicate)
+            if not await cog.is_trusted_admin_or_higher(ctx.author):
+                if ctx.cog is cog:
+                    await cog.send_modlog(
+                        action="notify",
+                        member=ctx.author,
+                        issued_by=None,
+                        reason=_("Tried to bypass the trusted admin or higher check."),
+                        logs=[
+                            _("{author.mention} (`{author}`) tried to bypass the check of the `{command}` command.").format(
+                                author=ctx.author, command=ctx.command.qualified_name
+                            ),
+                        ],
+                        trigger_messages=[ctx.message],
+                        context_message=ctx.message,
+                    )
+                return False
+            return True
+        callback = func.callback if isinstance(func, commands.HybridCommand) else func
+        @functools.wraps(callback)
+        async def new_func(self, ctx: commands.Context, *args, **kwargs):
+            if not await predicate(ctx):
+                raise commands.UserFeedbackCheckFailure(_("Don't try to bypass the checks!"))
+            return await callback(self, ctx, *args, **kwargs)
+        if isinstance(func, commands.HybridCommand):
+            func.callback = new_func
+            final = func
+        else:
+            final = new_func
+        return commands.check(predicate)(final)
 
     async def is_admin_or_higher(self, member: discord.Member) -> bool:
         return (await self.get_member_level(member)).value <= Levels.ADMIN.value
@@ -976,7 +1003,7 @@ class Security(Cog):
     #                     await module.on_audit_log_entry_create(entry)
     #             break
 
-    @is_trusted_admin_or_higher_level()
+    @is_trusted_admin_or_higher_level
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["q"])
@@ -998,7 +1025,7 @@ class Security(Cog):
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
 
-    @is_trusted_admin_or_higher_level()
+    @is_trusted_admin_or_higher_level
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["uq"])
@@ -1020,7 +1047,7 @@ class Security(Cog):
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
 
-    @is_trusted_admin_or_higher_level()
+    @is_trusted_admin_or_higher_level
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["swl"])
@@ -1038,7 +1065,36 @@ class Security(Cog):
             )
         await WhitelistView(self).start(ctx, _object)
 
-    @is_trusted_admin_or_higher_level()
+    @is_trusted_admin_or_higher_level
+    @commands.guild_only()
+    @commands.bot_has_guild_permissions(view_audit_log=True)
+    @commands.bot_has_permissions(embed_links=True)
+    @commands.hybrid_command()
+    async def lastactions(self, ctx: commands.Context, member: discord.Member = None) -> None:
+        """View the last actions of a member, from audit logs."""
+        if not (
+            audit_log_entries := [
+                entry
+                async for entry in ctx.guild.audit_logs(limit=100, user=member if member is not None else discord.utils.MISSING)
+            ]
+        ):
+            raise commands.UserFeedbackCheckFailure(_("No audit log entries found."))
+        logging_module = self.modules["logging"]
+        embeds: typing.List[discord.Embed] = [
+            await logging_module.get_embed(
+                ctx.guild,
+                event,
+                entry.user,
+                entry.target,
+                reason=entry.reason,
+                entry=entry,
+            )
+            for entry in audit_log_entries
+            if (event := await logging_module.get_event(ctx.guild, entry.action.name)) is not None
+        ]
+        await Menu(pages=embeds, page_start=-1).start(ctx)
+
+    @is_trusted_admin_or_higher_level
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command()

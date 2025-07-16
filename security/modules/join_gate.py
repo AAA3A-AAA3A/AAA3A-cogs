@@ -338,7 +338,7 @@ class JoinGateModule(Module):
                 if option["value"] == "account_age"
                 else ""
             )
-            logs = [_("{member.mention} ({member}) joined the server.").format(member=member)]
+            logs = [_("{member.mention} (`{member}`) joined the server.").format(member=member)]
             if action != "quarantine":
                 await self.cog.send_modlog(
                     action=action,

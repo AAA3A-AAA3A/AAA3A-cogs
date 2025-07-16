@@ -920,15 +920,15 @@ class LoggingModule(Module):
                 discord.ScheduledEvent,
             ]
         ] = None,
-        extra: typing.Optional[typing.Any] = None,
         reason: typing.Optional[str] = None,
-        before: typing.Optional[typing.Any] = None,
+        entry: typing.Optional[discord.AuditLogEntry] = None,
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title=f"{event['name']} {event['emoji']}",
             color=discord.Color(event["color"]),
-            timestamp=datetime.datetime.now(datetime.timezone.utc),
+            timestamp=entry.created_at if entry is not None else datetime.datetime.now(datetime.timezone.utc),
         )
+
         if responsible is not None:
             embed.set_author(
                 name=responsible.display_name,
@@ -946,6 +946,9 @@ class LoggingModule(Module):
                 embed.description = _(
                     "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) - `{responsible.id}`"
                 ).format(emoji=Emojis.ISSUED_BY.value, responsible=responsible)
+        else:
+            embed.description = ""
+
         if target is not None:
             embed.set_thumbnail(
                 url=get_non_animated_asset(
@@ -1036,7 +1039,7 @@ class LoggingModule(Module):
                 embed.description += "\n" + _(
                     "{emoji} **Target Scheduled Event:** `{event.name}` - `{event.id}`"
                 ).format(emoji=Emojis.SCHEDULED_EVENT.value, event=target)
-            elif isinstance(target, discord.Object) and before is not None:
+            elif isinstance(target, discord.Object) and entry is not None and (before := entry.before) is not None:
                 if event["value"] == "channel_delete":
                     embed.description += "\n" + _(
                         "{emoji} **Target Channel:** `{target_name}` - `{target.id}`"
@@ -1055,7 +1058,8 @@ class LoggingModule(Module):
                     ).format(target=target)
         elif event["value"] in ("member_join", "member_leave"):
             embed.set_thumbnail(url=get_non_animated_asset(responsible.display_avatar))
-        if extra is not None:
+
+        if entry is not None and (extra := entry.extra) is not None:
             if isinstance(extra, discord.Member):
                 embed.description += _(
                     "\n{emoji} **Target Member:** {member.mention} (`{member}`) - `{member.id}`"
@@ -1068,6 +1072,147 @@ class LoggingModule(Module):
             embed.description += _("\n{emoji} **Reason:**\n>>> {reason}").format(
                 emoji=Emojis.REASON.value, reason=reason
             )
+
+        if entry is not None:
+            def get_formatting(value: typing.Any) -> str:
+                if isinstance(value, str):
+                    return f"`{value}`"
+                elif isinstance(value, bool):
+                    return "✅" if value else "❌"
+                elif isinstance(value, discord.Color):
+                    return f"`#{value.value:06X}`"
+                elif isinstance(value, discord.Permissions):
+                    return f"`Permissions({value.value})`"
+                elif isinstance(value, (discord.Member, discord.User, discord.Role)):
+                    return f"{value.mention} (`{value}`) - `{value.id}`"
+                elif (
+                    isinstance(value, typing.List)
+                    and value
+                    and isinstance(value[0], typing.Tuple)
+                    and isinstance(value[0][1], discord.PermissionOverwrite)
+                ):
+                    result = ""
+                    for target, overwrite in value:
+                        if (member := entry.guild.get_member(target.id)) is not None:
+                            target_display = get_formatting(member)
+                        elif (role := entry.guild.get_role(target.id)) is not None:
+                            target_display = get_formatting(role)
+                        else:
+                            target_display = f"{target.type.__name__} `{target.id}`"
+                        result += f"\n  - {target_display} - `PermissionOverwrite({len(overwrite._values)} permissions)`"
+                    return result
+                return f"`{value}`"
+
+            added_permissions, removed_permissions = [], []
+            if entry.action != discord.AuditLogAction.member_role_update:
+                entry_before = any(value is not None for value in entry.before.__dict__.values())
+                entry_after = any(value is not None for value in entry.after.__dict__.values())
+                if not entry_before and entry_after:
+                    embed.add_field(
+                        name=_("Settings:"),
+                        value="\n".join(
+                            f"- **{key.replace('_', ' ').title()}**: {get_formatting(value)}"
+                            for key, value in entry.after.__dict__.items()
+                            if key != "colour"
+                        ),
+                    )
+                elif entry_before and not entry_after:
+                    embed.add_field(
+                        name=_("Previous Settings:"),
+                        value="\n".join(
+                            f"- **{key.replace('_', ' ').title()}**: {get_formatting(value)}"
+                            for key, value in entry.before.__dict__.items()
+                            if key != "colour"
+                        ),
+                    )
+                elif entry_before and entry_after:
+                    embed.add_field(
+                        name=_("Changes:"),
+                        value="\n".join(
+                            f"- **{key.replace('_', ' ').title()}**: {get_formatting(before)} ➡️ {get_formatting(after)}"
+                            for key, after in entry.after.__dict__.items()
+                            if hasattr(entry.before, key)
+                            and after != (before := getattr(entry.before, key))
+                            and key != "colour"
+                        ),
+                    )
+                if embed.fields and len(embed.fields[-1].value) > 1024:
+                    embed.fields[-1].value = embed.fields[-1].value[:1020] + "\n..."
+                if getattr(entry.after, "permissions", None) is not None:
+                    added_permissions.extend(
+                        permission.replace("_", " ").title()
+                        for permission, value in entry.after.permissions
+                        if value and not getattr(entry.before.permissions, permission, False)
+                    )
+                    removed_permissions.extend(
+                        permission.replace("_", " ").title()
+                        for permission, value in entry.after.permissions
+                        if not value and getattr(entry.before.permissions, permission, False)
+                    )
+                else:
+                    if getattr(entry.after, "allow", None) is not None:
+                        added_permissions.extend(
+                            permission.replace("_", " ").title()
+                            for permission, value in entry.after.allow
+                            if value
+                        )
+                    if getattr(entry.after, "deny", None) is not None:
+                        removed_permissions.extend(
+                            permission.replace("_", " ").title()
+                            for permission, value in entry.after.deny
+                            if value
+                        )
+            else:
+                if entry.after.roles:
+                    embed.add_field(
+                        name=_("Added Roles:"),
+                        value="\n".join(
+                            f"- {get_formatting(role)}"
+                            for role in entry.after.roles
+                            if role not in entry.before.roles
+                        ),
+                    )
+                    for role in entry.after.roles:
+                        if not isinstance(role, discord.Role):
+                            continue
+                        for permission, value in role.permissions:
+                            if value and all(
+                                not getattr(r.permissions, permission, False)
+                                for r in entry.target.roles
+                                if r not in entry.after.roles
+                            ):
+                                added_permissions.append(permission.replace("_", " ").title())
+                if entry.before.roles:
+                    embed.add_field(
+                        name=_("Removed Roles:"),
+                        value="\n".join(
+                            f"- {get_formatting(role)}"
+                            for role in entry.before.roles
+                            if role not in entry.after.roles
+                        ),
+                    )
+                    for role in entry.before.roles:
+                        if not isinstance(role, discord.Role):
+                            continue
+                        for permission, value in role.permissions:
+                            if value and not getattr(
+                                entry.target.guild_permissions, permission, False
+                            ):
+                                removed_permissions.append(permission.replace("_", " ").title())
+            if added_permissions or removed_permissions:
+                embed.add_field(
+                    name=_("Permissions Changes:"),
+                    value=box(
+                        (
+                            "\n".join(f"+ {perm}" for perm in added_permissions)
+                            + "\n"
+                            + "\n".join(f"- {perm}" for perm in removed_permissions)
+                        ).strip(),
+                        lang="diff",
+                    ),
+                    inline=False,
+                )
+
         embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
         return embed
 
@@ -1325,23 +1470,6 @@ class LoggingModule(Module):
     async def on_reaction_remove(self, reaction: discord.Reaction, user: discord.User) -> None:
         if reaction.message.guild is None:
             return
-        event = await self.get_event(reaction.message.guild, "reaction_add")
-        if not (channel := await self.check_config(reaction.message.guild, event, user)):
-            return
-        embed: discord.Embed = await self.get_embed(
-            reaction.message.guild,
-            event,
-            user,
-            reaction.message,
-        )
-        embed.description += _("\n{emoji} **Reaction:** {reaction}").format(
-            emoji=Emojis.EMOJI.value, reaction=reaction.emoji
-        )
-        await channel.send(embed=embed)
-
-    async def on_reaction_remove(self, reaction: discord.Reaction, user: discord.User) -> None:
-        if reaction.message.guild is None:
-            return
         event = await self.get_event(reaction.message.guild, "reaction_remove")
         if not (channel := await self.check_config(reaction.message.guild, event, user)):
             return
@@ -1370,145 +1498,9 @@ class LoggingModule(Module):
             event,
             entry.user,
             entry.target,
-            extra=entry.extra,
             reason=entry.reason,
-            before=entry.before,
+            entry=entry,
         )
-
-        def get_formatting(value: typing.Any) -> str:
-            if isinstance(value, str):
-                return f"`{value}`"
-            elif isinstance(value, bool):
-                return "✅" if value else "❌"
-            elif isinstance(value, discord.Color):
-                return f"`#{value.value:06X}`"
-            elif isinstance(value, discord.Permissions):
-                return f"`Permissions({value.value})`"
-            elif isinstance(value, (discord.Member, discord.User, discord.Role)):
-                return f"{value.mention} (`{value}`) - `{value.id}`"
-            elif (
-                isinstance(value, typing.List)
-                and value
-                and isinstance(value[0], typing.Tuple)
-                and isinstance(value[0][1], discord.PermissionOverwrite)
-            ):
-                result = ""
-                for target, overwrite in value:
-                    if (member := entry.guild.get_member(target.id)) is not None:
-                        target_display = get_formatting(member)
-                    elif (role := entry.guild.get_role(target.id)) is not None:
-                        target_display = get_formatting(role)
-                    else:
-                        target_display = f"{target.type.__name__} `{target.id}`"
-                    result += f"\n  - {target_display} - `PermissionOverwrite({len(overwrite._values)} permissions)`"
-                return result
-            return f"`{value}`"
-
-        added_permissions, removed_permissions = [], []
-        if entry.action != discord.AuditLogAction.member_role_update:
-            entry_before = any(value is not None for value in entry.before.__dict__.values())
-            entry_after = any(value is not None for value in entry.after.__dict__.values())
-            if not entry_before and entry_after:
-                embed.add_field(
-                    name=_("Settings:"),
-                    value="\n".join(
-                        f"- **{key.replace('_', ' ').title()}**: {get_formatting(value)}"
-                        for key, value in entry.after.__dict__.items()
-                        if key != "colour"
-                    ),
-                )
-            elif entry_before and not entry_after:
-                embed.add_field(
-                    name=_("Previous Settings:"),
-                    value="\n".join(
-                        f"- **{key.replace('_', ' ').title()}**: {get_formatting(value)}"
-                        for key, value in entry.before.__dict__.items()
-                        if key != "colour"
-                    ),
-                )
-            elif entry_before and entry_after:
-                embed.add_field(
-                    name=_("Changes:"),
-                    value="\n".join(
-                        f"- **{key.replace('_', ' ').title()}**: {get_formatting(before)} ➡️ {get_formatting(after)}"
-                        for key, after in entry.after.__dict__.items()
-                        if hasattr(entry.before, key)
-                        and after != (before := getattr(entry.before, key))
-                        and key != "colour"
-                    ),
-                )
-            if embed.fields and len(embed.fields[-1].value) > 1024:
-                embed.fields[-1].value = embed.fields[-1].value[:1020] + "\n..."
-            if hasattr(entry.after, "permissions"):
-                added_permissions.extend(
-                    permission.replace("_", " ").title()
-                    for permission, value in entry.after.permissions
-                    if value and not getattr(entry.before.permissions, permission, False)
-                )
-                removed_permissions.extend(
-                    permission.replace("_", " ").title()
-                    for permission, value in entry.after.permissions
-                    if not value and getattr(entry.before.permissions, permission, False)
-                )
-            else:
-                if getattr(entry.after, "allow", None) is not None:
-                    added_permissions.extend(
-                        permission.replace("_", " ").title()
-                        for permission, value in entry.after.allow
-                        if value
-                    )
-                if getattr(entry.after, "deny", None) is not None:
-                    removed_permissions.extend(
-                        permission.replace("_", " ").title()
-                        for permission, value in entry.after.deny
-                        if value
-                    )
-        else:
-            if entry.after.roles:
-                embed.add_field(
-                    name=_("Added Roles:"),
-                    value="\n".join(
-                        f"- {role.mention} (`{role.name}`) - `{role.id}`"
-                        for role in entry.after.roles
-                        if role not in entry.before.roles
-                    ),
-                )
-                for role in entry.after.roles:
-                    for permission, value in role.permissions:
-                        if value and all(
-                            not getattr(r.permissions, permission, False)
-                            for r in entry.target.roles
-                            if r not in entry.after.roles
-                        ):
-                            added_permissions.append(permission.replace("_", " ").title())
-            if entry.before.roles:
-                embed.add_field(
-                    name=_("Removed Roles:"),
-                    value="\n".join(
-                        f"- {role.mention} (`{role.name}`) - `{role.id}`"
-                        for role in entry.before.roles
-                        if role not in entry.after.roles
-                    ),
-                )
-                for role in entry.before.roles:
-                    for permission, value in role.permissions:
-                        if value and not getattr(
-                            entry.target.guild_permissions, permission, False
-                        ):
-                            removed_permissions.append(permission.replace("_", " ").title())
-        if added_permissions or removed_permissions:
-            embed.add_field(
-                name=_("Permissions Changes:"),
-                value=box(
-                    (
-                        "\n".join(f"+ {perm}" for perm in added_permissions)
-                        + "\n"
-                        + "\n".join(f"- {perm}" for perm in removed_permissions)
-                    ).strip(),
-                    lang="diff",
-                ),
-                inline=False,
-            )
         await channel.send(embed=embed)
 
 

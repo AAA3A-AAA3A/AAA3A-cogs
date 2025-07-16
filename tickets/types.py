@@ -661,7 +661,7 @@ class Ticket:
         await self.cog.config.member(self.owner).tickets_number.set(tickets_number + 1)
         await self.save()
 
-        self.bot.dispatch("ticket_created", self)
+        self.bot.dispatch("ticket_create", self)
         if config["create_modlog_case"]:
             await modlog.create_case(
                 bot=self.bot,
@@ -826,7 +826,7 @@ class Ticket:
                 reason=audit_reason,
             )
 
-        self.bot.dispatch("ticket_closed", self)
+        self.bot.dispatch("ticket_close", self)
         if config["create_modlog_case"]:
             await modlog.create_case(
                 bot=self.bot,
@@ -913,7 +913,7 @@ class Ticket:
             view=view,
         )
 
-        self.bot.dispatch("ticket_reopened", self)
+        self.bot.dispatch("ticket_reopene", self)
         await self.log_action(
             action=_("👐 Ticket Reopened"),
             author=reopener,
@@ -992,7 +992,7 @@ class Ticket:
             view=view,
         )
 
-        self.bot.dispatch("ticket_unclaimed", self)
+        self.bot.dispatch("ticket_unclaim", self)
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         await self.log_action(
             action=_("👤 Ticket Unclaimed"),
@@ -1062,7 +1062,7 @@ class Ticket:
             view=view,
         )
 
-        self.bot.dispatch("ticket_locked", self)
+        self.bot.dispatch("ticket_lock", self)
         await self.log_action(
             action=_("🔒 Ticket Locked"),
             author=locker,
@@ -1133,7 +1133,7 @@ class Ticket:
             view=view,
         )
 
-        self.bot.dispatch("ticket_unlocked", self)
+        self.bot.dispatch("ticket_unlock", self)
         await self.log_action(
             action=_("🔓 Ticket Unlocked"),
             author=unlocker,
@@ -1222,7 +1222,7 @@ class Ticket:
             view=view,
         )
 
-        self.bot.dispatch("ticket_appeal_approved", self)
+        self.bot.dispatch("ticket_appeal_approve", self)
         if config["create_modlog_case"]:
             await modlog.create_case(
                 bot=self.bot,
@@ -1287,7 +1287,7 @@ class Ticket:
                 reason=audit_reason,
             )
 
-        self.bot.dispatch("ticket_member_added", self)
+        self.bot.dispatch("ticket_member_add", self)
         await self.log_action(
             action=_("➕ Member Added"),
             author=author,
@@ -1345,7 +1345,7 @@ class Ticket:
                 reason=audit_reason,
             )
 
-        self.bot.dispatch("ticket_member_removed", self)
+        self.bot.dispatch("ticket_member_remove", self)
         await self.log_action(
             action=_("➖ Member Removed"),
             author=author,
@@ -1479,7 +1479,7 @@ class Ticket:
         else:
             await self.channel.delete(reason=audit_reason)
 
-        self.bot.dispatch("ticket_deleted", self)
+        self.bot.dispatch("ticket_delete", self)
         if config["create_modlog_case"]:
             await modlog.create_case(
                 bot=self.bot,

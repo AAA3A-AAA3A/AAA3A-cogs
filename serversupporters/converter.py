@@ -37,8 +37,12 @@ class RoleHierarchyConverter(commands.RoleConverter):
             raise commands.BadArgument(
                 _("This role is higher than your highest role in the discord hierarchy.")
             )
-        if any(getattr(role.permissions, permission, False) for permission in DANGEROUS_PERMISSIONS):
+        if any(
+            getattr(role.permissions, permission, False) for permission in DANGEROUS_PERMISSIONS
+        ):
             raise commands.BadArgument(
-                _("This role has dangerous permissions and should not be used in this context. Please choose a different role.")
+                _(
+                    "This role has dangerous permissions and should not be used in this context. Please choose a different role."
+                )
             )
         return role

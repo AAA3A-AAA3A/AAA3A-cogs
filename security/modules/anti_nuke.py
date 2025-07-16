@@ -303,7 +303,9 @@ ANTI_NUKE_OPTIONS: typing.List[
         ),
         "revert": lambda entry: entry.target.set_permissions(
             entry.extra,
-            overwrite=discord.PermissionOverwrite.from_pair(entry.before.allow, getattr(entry.before, "deny", discord.Permissions.none())),
+            overwrite=discord.PermissionOverwrite.from_pair(
+                entry.before.allow, getattr(entry.before, "deny", discord.Permissions.none())
+            ),
             reason=REVERT_AUDIT_LOG_REASON,
         ),
     },
@@ -860,7 +862,9 @@ class AntiNukeModule(Module):
                     elif (
                         filter["value"] == "webhook_creation"
                         and getattr(entry.target, "channel", None) is not None
-                        and await self.cog.is_whitelisted(entry.target.channel, "anti_nuke_filter_webhook_creation")
+                        and await self.cog.is_whitelisted(
+                            entry.target.channel, "anti_nuke_filter_webhook_creation"
+                        )
                     ):
                         continue
                     elif filter["value"] == "webhook_deletion" and await self.cog.is_whitelisted(

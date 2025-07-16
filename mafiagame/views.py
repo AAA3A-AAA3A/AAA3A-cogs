@@ -1254,7 +1254,9 @@ class JudgementView(discord.ui.View):
                     ephemeral=True,
                 )
                 return False
-            if player in [t for p, t in last_night.targets.items() if p.role.name == "Blackmailer"]:
+            if player in [
+                t for p, t in last_night.targets.items() if p.role.name == "Blackmailer"
+            ]:
                 await interaction.response.send_message(
                     _("You are **blackmailed**, you can't vote today!"), ephemeral=True
                 )
@@ -1338,7 +1340,12 @@ class JudgementView(discord.ui.View):
         player.last_interaction = interaction
         await self._update()
 
-    @discord.ui.button(emoji="⚖️", label="Perform Action", style=discord.ButtonStyle.success, custom_id="judgement_perform_action")
+    @discord.ui.button(
+        emoji="⚖️",
+        label="Perform Action",
+        style=discord.ButtonStyle.success,
+        custom_id="judgement_perform_action",
+    )
     async def perform_action(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:

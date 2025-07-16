@@ -9,7 +9,14 @@ import functools
 
 from redbot.core.utils.chat_formatting import humanize_list
 
-from .constants import POSSIBLE_ACTIONS, WHITELIST_TYPES, Colors, Emojis, Levels, get_non_animated_asset
+from .constants import (
+    POSSIBLE_ACTIONS,
+    WHITELIST_TYPES,
+    Colors,
+    Emojis,
+    Levels,
+    get_non_animated_asset,
+)  # NOQA
 
 _: Translator = Translator("Security", __file__)
 
@@ -79,10 +86,19 @@ class WhitelistView(discord.ui.View):
             whitelist_type
             for whitelist_type in WHITELIST_TYPES
             if (
-                (isinstance(_object, (discord.Member, discord.Role)) and whitelist_type["members_roles"])
+                (
+                    isinstance(_object, (discord.Member, discord.Role))
+                    and whitelist_type["members_roles"]
+                )
                 or (
                     isinstance(
-                        _object, (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel, discord.Webhook)
+                        _object,
+                        (
+                            discord.TextChannel,
+                            discord.VoiceChannel,
+                            discord.ForumChannel,
+                            discord.Webhook,
+                        ),
                     )
                     and whitelist_type["channels"]
                 )
@@ -500,7 +516,10 @@ class SettingsView(discord.ui.View):
                 if (
                     not module.configurable_by_trusted_admins
                     and not await self.cog.is_extra_owner_or_higher(self.ctx.author)
-                    and (self.page != "protected_roles" or component.custom_id != "manage_protected_roles_select")
+                    and (
+                        self.page != "protected_roles"
+                        or component.custom_id != "manage_protected_roles_select"
+                    )
                 ):
                     continue
                 self.add_item(component)

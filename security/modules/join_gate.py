@@ -67,7 +67,9 @@ JOIN_GATE_OPTIONS: typing.List[
         "action": "kick",
         "param": ("minimum_days", int, 7),
         "value": "account_age",
-        "check": lambda member, minimum_days: (datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at).days
+        "check": lambda member, minimum_days: (
+            datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at
+        ).days
         < minimum_days,
     },
     {
@@ -308,7 +310,13 @@ class JoinGateModule(Module):
         if triggered:
             option, option_config = sorted(
                 triggered,
-                key=lambda opt: next((i for i, possible_action in enumerate(POSSIBLE_ACTIONS) if possible_action["value"] == opt[1]["action"])),
+                key=lambda opt: next(
+                    (
+                        i
+                        for i, possible_action in enumerate(POSSIBLE_ACTIONS)
+                        if possible_action["value"] == opt[1]["action"]
+                    )
+                ),
                 reverse=True,
             )[0]
             action = option_config["action"]

@@ -254,7 +254,9 @@ class ViewPermissions(Cog):
             description = ""
             if roles:
                 description += _("\n**Role(s):** {roles}").format(
-                    roles=humanize_list([f"{role.mention} ({role.id})" for role in sorted(roles, reverse=True)])
+                    roles=humanize_list(
+                        [f"{role.mention} ({role.id})" for role in sorted(roles, reverse=True)]
+                    )
                 )
             if members:
                 description += _("\n**Member(s):** {members}").format(

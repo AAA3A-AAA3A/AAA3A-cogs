@@ -11,7 +11,7 @@ import re
 from redbot.core.utils.chat_formatting import humanize_list
 from redbot.core.utils.menus import start_adding_reactions
 
-from .types import RumbleRoyale, PlayerApparition
+from .types import PlayerApparition, RumbleRoyale
 from .view import AmIAliveView
 
 # Credits:
@@ -24,6 +24,7 @@ RUMBLE_BOT_ID: int = 693167035068317736
 
 def clean_embed_description(description: str) -> str:
     return re.sub(r":.*?:", "", re.sub(r"<:.+?:\d+>", "", description)).replace(" | ", "")
+
 
 def clean_name(name: str) -> str:
     return name.split("**~~")[0].split(" ")[0].replace("\\", "")

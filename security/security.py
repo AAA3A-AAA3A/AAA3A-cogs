@@ -15,9 +15,16 @@ import onetimepass
 import qrcode
 from PIL import Image, ImageDraw
 from redbot.core import modlog
-from redbot.core.utils.chat_formatting import humanize_list, box, text_to_file
+from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
 
-from .constants import WHITELIST_TYPES, Colors, Emojis, Levels, MemberEmojis, get_non_animated_asset
+from .constants import (
+    WHITELIST_TYPES,
+    Colors,
+    Emojis,
+    Levels,
+    MemberEmojis,
+    get_non_animated_asset,
+)  # NOQA
 from .modules import MODULES, Module
 from .views import OBJECT_TYPING, ActionsView, SettingsView, WhitelistView
 
@@ -81,14 +88,22 @@ class Security(Cog):
         )
         self.config.register_member(
             level=None,
-            whitelist={whitelist_type["value"]: False for whitelist_type in WHITELIST_TYPES if whitelist_type["members_roles"]},
+            whitelist={
+                whitelist_type["value"]: False
+                for whitelist_type in WHITELIST_TYPES
+                if whitelist_type["members_roles"]
+            },
             # Quarantine.
             quarantined=False,
             roles_before_quarantine=[],
             integration_role_permissions_before_quarantine=None,
         )
         self.config.register_role(
-            whitelist={whitelist_type["value"]: False for whitelist_type in WHITELIST_TYPES if whitelist_type["members_roles"]},
+            whitelist={
+                whitelist_type["value"]: False
+                for whitelist_type in WHITELIST_TYPES
+                if whitelist_type["members_roles"]
+            },
         )
         self.config.register_channel(
             whitelist={
@@ -225,7 +240,8 @@ class Security(Cog):
             raise ValueError("Invalid whitelist type: `{whitelist_type}`.")
         _type = _object.__class__ if not isinstance(_object, discord.Object) else _object.type
         if (
-            _type in (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel, discord.Thread)
+            _type
+            in (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel, discord.Thread)
             and not _whitelist_type["channels"]
         ) or (_type is discord.CategoryChannel and not _whitelist_type["categories"]):
             raise ValueError(
@@ -251,9 +267,8 @@ class Security(Cog):
         elif _type is discord.CategoryChannel:
             return await self.config.channel(_object).whitelist.get_raw(whitelist_type)
         elif _type is discord.Thread:
-            return (
-                getattr(_object, "parent", None) is not None
-                and await self.is_whitelisted(_object.parent, whitelist_type)
+            return getattr(_object, "parent", None) is not None and await self.is_whitelisted(
+                _object.parent, whitelist_type
             )
         elif _type is discord.Webhook:
             return await self.config.custom("webhook", _object.id).whitelist.get_raw(
@@ -286,15 +301,15 @@ class Security(Cog):
         for guild in self.bot.guilds:
             member_configs = await self.config.all_members(guild)
             for member_id, member_config in member_configs.items():
-                if (
-                    member_config["level"] is not None or any(member_config["whitelist"].values())
-                ):
+                if member_config["level"] is not None or any(member_config["whitelist"].values()):
                     if guild.get_member(member_id) is None:
                         try:
                             await guild.fetch_member(member_id)
                         except discord.NotFound:
                             await self.config.member_from_ids(guild.id, member_id).level.clear()
-                            await self.config.member_from_ids(guild.id, member_id).whitelist.clear()
+                            await self.config.member_from_ids(
+                                guild.id, member_id
+                            ).whitelist.clear()
                         except discord.HTTPException:
                             pass
             role_configs = await self.config.all_roles(guild)
@@ -314,7 +329,9 @@ class Security(Cog):
                         try:
                             await guild.fetch_channel(channel_id)
                         except discord.NotFound:
-                            await self.config.channel_from_ids(guild.id, channel_id).whitelist.clear()
+                            await self.config.channel_from_ids(
+                                guild.id, channel_id
+                            ).whitelist.clear()
                         except discord.HTTPException:
                             pass
             if protected_role_ids := await self.config.guild(
@@ -496,7 +513,15 @@ class Security(Cog):
     async def get_modlog_embed(
         self,
         action: typing.Literal[
-            "quarantine", "unquarantine", "timeout", "untimeout", "mute", "unmute", "kick", "ban", "notify"
+            "quarantine",
+            "unquarantine",
+            "timeout",
+            "untimeout",
+            "mute",
+            "unmute",
+            "kick",
+            "ban",
+            "notify",
         ],
         member: discord.Member,
         issued_by: typing.Optional[discord.Member] = None,
@@ -544,7 +569,9 @@ class Security(Cog):
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.set_thumbnail(url=member.display_avatar)
-        embed.set_footer(text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon))
+        embed.set_footer(
+            text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon)
+        )
         description = _(
             "{emoji} **Member:** {member.mention} (`{member}`) {member_emojis}"
         ).format(
@@ -592,7 +619,15 @@ class Security(Cog):
     async def send_modlog(
         self,
         action: typing.Literal[
-            "quarantine", "unquarantine", "timeout", "untimeout", "mute", "unmute", "kick", "ban", "notify"
+            "quarantine",
+            "unquarantine",
+            "timeout",
+            "untimeout",
+            "mute",
+            "unmute",
+            "kick",
+            "ban",
+            "notify",
         ],
         member: discord.Member,
         issued_by: typing.Optional[discord.Member] = None,
@@ -651,7 +686,9 @@ class Security(Cog):
             bot=self.bot,
             guild=member.guild,
             created_at=datetime.datetime.now(tz=datetime.timezone.utc),
-            action_type=action if action not in ("mute", "unmute") else f"s{action}",  # server mute/unmute
+            action_type=action
+            if action not in ("mute", "unmute")
+            else f"s{action}",  # server mute/unmute
             user=member,
             moderator=issued_by,
         )
@@ -891,14 +928,15 @@ class Security(Cog):
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel: discord.abc.GuildChannel) -> None:
         if (
-            (quarantine_role_id := await self.config.guild(channel.guild).quarantine_role()) is None
-            or channel.guild.get_role(quarantine_role_id) is None
-        ):
+            quarantine_role_id := await self.config.guild(channel.guild).quarantine_role()
+        ) is None or channel.guild.get_role(quarantine_role_id) is None:
             return
         await self.create_or_update_quarantine_role(channel.guild)
 
     @commands.Cog.listener("on_audit_log_entry_create")
-    async def on_me_entry(self, entry: discord.AuditLogEntry) -> None:  # Handle commands to find the right responsible of an action.
+    async def on_me_entry(
+        self, entry: discord.AuditLogEntry
+    ) -> None:  # Handle commands to find the right responsible of an action.
         if entry.user != entry.guild.me:
             return
         if entry.action not in (
@@ -907,10 +945,7 @@ class Security(Cog):
             discord.AuditLogAction.member_role_update,
         ):
             return
-        if (
-            entry.reason is None
-            or not entry.reason.startswith("Action requested by")   
-        ):
+        if entry.reason is None or not entry.reason.startswith("Action requested by"):
             return
         try:
             member_id = int(entry.reason.split("ID ")[1].split(")")[0])

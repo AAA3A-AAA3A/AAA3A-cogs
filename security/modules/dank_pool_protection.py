@@ -15,7 +15,18 @@ _: Translator = Translator("Security", __file__)
 
 DANK_MEMER_BOT_ID: int = 270904126974590976
 
-DANK_POOL_PROTECTION_OPTIONS: typing.List[typing.Dict[typing.Literal["name", "emoji", "description", "value", "check", "reason"], typing.Union[str, typing.Callable[[discord.Message, typing.Dict[str, typing.Any], typing.Dict[str, typing.Any]], bool], typing.Callable[[], str]]]] = [
+DANK_POOL_PROTECTION_OPTIONS: typing.List[
+    typing.Dict[
+        typing.Literal["name", "emoji", "description", "value", "check", "reason"],
+        typing.Union[
+            str,
+            typing.Callable[
+                [discord.Message, typing.Dict[str, typing.Any], typing.Dict[str, typing.Any]], bool
+            ],
+            typing.Callable[[], str],
+        ],
+    ]
+] = [
     {
         "name": "Self Payment Protection",
         "emoji": "🙅",
@@ -24,7 +35,12 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[typing.Dict[typing.Literal["name", "em
         "check": lambda message, raw_message, config: (
             message._interaction.name == "serverevents payout"
             and "Pending Confirmation" in raw_message["components"][0]["components"][0]["content"]
-            and int(raw_message["components"][0]["components"][2]["content"].split("<@")[1].split(">")[0]) == message.interaction_metadata.user.id
+            and int(
+                raw_message["components"][0]["components"][2]["content"]
+                .split("<@")[1]
+                .split(">")[0]
+            )
+            == message.interaction_metadata.user.id
         ),
         "reason": lambda: _("**Dank Pool Protection** - Attempted to pay themselves."),
     },
@@ -36,7 +52,13 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[typing.Dict[typing.Literal["name", "em
         "check": lambda message, raw_message, config: (
             message._interaction.name == "serverevents payout"
             and "Pending Confirmation" in raw_message["components"][0]["components"][0]["content"]
-            and int(raw_message["components"][0]["components"][2]["content"].split("**\u23e3 ")[1].split("**")[0].replace(",", "")) > config["high_amount_limit"]
+            and int(
+                raw_message["components"][0]["components"][2]["content"]
+                .split("**\u23e3 ")[1]
+                .split("**")[0]
+                .replace(",", "")
+            )
+            > config["high_amount_limit"]
         ),
         "reason": lambda: _("**Dank Pool Protection** - Attempted to pay over the limit."),
     },
@@ -45,14 +67,18 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[typing.Dict[typing.Literal["name", "em
         "emoji": "⏱️",
         "description": "Prevent members from making too many payouts in a short period.",
         "value": "rapid_payout",
-        "reason": lambda: _("**Dank Pool Protection** - Attempted to make too many payouts in a short period."),
+        "reason": lambda: _(
+            "**Dank Pool Protection** - Attempted to make too many payouts in a short period."
+        ),
     },
     {
         "name": "Payout Cooldown",
         "emoji": "⏳",
         "description": "Prevent members from making consecutive payouts too quickly.",
         "value": "payout_cooldown",
-        "reason": lambda: _("**Dank Pool Protection** - Attempted to make a payout too quickly after the last one."),
+        "reason": lambda: _(
+            "**Dank Pool Protection** - Attempted to make a payout too quickly after the last one."
+        ),
     },
     {
         "name": "Unauthorized Payout",
@@ -61,9 +87,12 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[typing.Dict[typing.Literal["name", "em
         "value": "unauthorized_payout",
         "check": lambda message, raw_message, config: (
             message._interaction.name == "serverevents payout"
-            and "Only event managers can payout from the server's pool!" in raw_message["components"][0]["components"][0]["content"]
+            and "Only event managers can payout from the server's pool!"
+            in raw_message["components"][0]["components"][0]["content"]
         ),
-        "reason": lambda: _("**Dank Pool Protection** - Attempted to execute payout command without permission."),
+        "reason": lambda: _(
+            "**Dank Pool Protection** - Attempted to execute payout command without permission."
+        ),
     },
     {
         "name": "Unauthorized Event",
@@ -72,9 +101,12 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[typing.Dict[typing.Literal["name", "em
         "value": "unauthorized_event",
         "check": lambda message, raw_message, config: (
             message._interaction.name.startswith("serverevents run")
-            and "Only event managers can run events!" in raw_message["components"][0]["components"][0]["content"]
+            and "Only event managers can run events!"
+            in raw_message["components"][0]["components"][0]["content"]
         ),
-        "reason": lambda: _("**Dank Pool Protection** - Attempted to execute event command without permission."),
+        "reason": lambda: _(
+            "**Dank Pool Protection** - Attempted to execute event command without permission."
+        ),
     },
 ]
 
@@ -100,9 +132,7 @@ class DankPoolProtectionModule(Module):
         super().__init__(cog)
         self.payouts_cache: typing.Dict[
             discord.Guild,
-            typing.Dict[
-                discord.Member, typing.List[typing.Tuple[datetime.datetime, str]]
-            ],
+            typing.Dict[discord.Member, typing.List[typing.Tuple[datetime.datetime, str]]],
         ] = defaultdict(lambda: defaultdict(list))
 
     async def load(self) -> None:
@@ -111,7 +141,9 @@ class DankPoolProtectionModule(Module):
     async def unload(self) -> None:
         self.cog.bot.remove_listener(self.on_message)
 
-    async def get_status(self, guild: discord.Guild, check_enabled: bool = True) -> typing.Tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
+    async def get_status(
+        self, guild: discord.Guild, check_enabled: bool = True
+    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
             return "❌", _("Disabled"), _("Dank Pool Protection is currently disabled.")
@@ -138,19 +170,29 @@ class DankPoolProtectionModule(Module):
             fields.append(
                 dict(
                     name=f"{option['emoji']} {option['name']}",
-                    value=option["description"] + _("\n**Enabled**: {enabled}").format(
+                    value=option["description"]
+                    + _("\n**Enabled**: {enabled}").format(
                         enabled="✅" if config["options"][option["value"]] else "❌"
-                    ) + (
+                    )
+                    + (
                         _("\n**Limit**: ⏣ {limit}").format(
                             limit=f"{config['high_amount_limit']:,}"
-                        ) if option["value"] == "high_amount_payment" else (
-                            _("\n**Minute Limit**: {minute_limit}\n**Hour Limit**: {hour_limit}").format(
+                        )
+                        if option["value"] == "high_amount_payment"
+                        else (
+                            _(
+                                "\n**Minute Limit**: {minute_limit}\n**Hour Limit**: {hour_limit}"
+                            ).format(
                                 minute_limit=config["rapid_payout"]["minute_limit"],
-                                hour_limit=config["rapid_payout"]["hour_limit"]
-                            ) if option["value"] == "rapid_payout" else (
+                                hour_limit=config["rapid_payout"]["hour_limit"],
+                            )
+                            if option["value"] == "rapid_payout"
+                            else (
                                 _("\n**Cooldown**: {cooldown} seconds").format(
                                     cooldown=config["payout_cooldown"]
-                                ) if option["value"] == "payout_cooldown" else ""
+                                )
+                                if option["value"] == "payout_cooldown"
+                                else ""
                             )
                         )
                     ),
@@ -166,6 +208,7 @@ class DankPoolProtectionModule(Module):
             else discord.ButtonStyle.danger,
             emoji=Emojis.QUARANTINE.value,
         )
+
         async def quarantine_callback(interaction: discord.Interaction) -> None:
             await interaction.response.defer()
             config["quarantine"] = not config["quarantine"]
@@ -177,6 +220,7 @@ class DankPoolProtectionModule(Module):
                 ephemeral=True,
             )
             await view._message.edit(embed=await view.get_embed(), view=view)
+
         quarantine_button.callback = quarantine_callback
         components.append(quarantine_button)
 
@@ -194,12 +238,14 @@ class DankPoolProtectionModule(Module):
             min_values=0,
             max_values=len(DANK_POOL_PROTECTION_OPTIONS),
         )
+
         async def options_select_callback(interaction: discord.Interaction) -> None:
             await interaction.response.defer()
             for option in DANK_POOL_PROTECTION_OPTIONS:
                 config["options"][option["value"]] = option["value"] in options_select.values
             await self.config_value(guild).options.set(config["options"])
             await view._message.edit(embed=await view.get_embed(), view=view)
+
         options_select.callback = options_select_callback
         components.append(options_select)
 
@@ -207,10 +253,10 @@ class DankPoolProtectionModule(Module):
             label=_("Configure Values"),
             style=discord.ButtonStyle.secondary,
         )
+
         async def configure_values_button_callback(interaction: discord.Interaction) -> None:
-            await interaction.response.send_modal(
-            ConfigureValuesModal(self, guild, view, config)
-            )
+            await interaction.response.send_modal(ConfigureValuesModal(self, guild, view, config))
+
         configure_values_button.callback = configure_values_button_callback
         components.append(configure_values_button)
 
@@ -230,7 +276,11 @@ class DankPoolProtectionModule(Module):
             raw_message = await self.cog.bot.http.get_message(message.channel.id, message.id)
         except discord.HTTPException:
             return
-        if not raw_message["components"] or not raw_message["components"][0]["type"] == 17 or not raw_message["components"][0]["components"]:
+        if (
+            not raw_message["components"]
+            or not raw_message["components"][0]["type"] == 17
+            or not raw_message["components"][0]["components"]
+        ):
             return
         member_id = message.interaction_metadata.user.id
         if (member := message.guild.get_member(member_id)) is None:
@@ -238,10 +288,9 @@ class DankPoolProtectionModule(Module):
                 member = await message.guild.fetch_member(member_id)
             except discord.HTTPException:
                 return
-        if (
-            await self.cog.is_whitelisted(member, "dank_pool_protection")
-            or await self.cog.is_whitelisted(message.channel, "dank_pool_protection")
-        ):
+        if await self.cog.is_whitelisted(
+            member, "dank_pool_protection"
+        ) or await self.cog.is_whitelisted(message.channel, "dank_pool_protection"):
             return
         log = _(
             "{member.mention} (`{member}`) executed `/{slash_name}` ({jump_url}) {timestamp}."
@@ -266,28 +315,27 @@ class DankPoolProtectionModule(Module):
                 continue
             if option["value"] == "rapid_payout":
                 if (
-                    len(self.payouts_cache[message.guild][member]) > config["rapid_payout"]["hour_limit"]
+                    len(self.payouts_cache[message.guild][member])
+                    > config["rapid_payout"]["hour_limit"]
                     or sum(
                         [
                             created_at >= message.created_at - datetime.timedelta(minutes=1)
                             for (created_at, __) in self.payouts_cache[message.guild][member]
                         ]
-                    ) > config["rapid_payout"]["minute_limit"]
+                    )
+                    > config["rapid_payout"]["minute_limit"]
                 ):
-                    logs = [
-                        log
-                        for (__, log) in self.payouts_cache[message.guild][member]
-                    ]
+                    logs = [log for (__, log) in self.payouts_cache[message.guild][member]]
                     break
             elif option["value"] == "payout_cooldown":
-                if (
-                    len(self.payouts_cache[message.guild][member]) > 1
-                    and message.created_at - self.payouts_cache[message.guild][member][-2][0] < datetime.timedelta(seconds=config["payout_cooldown"])
+                if len(
+                    self.payouts_cache[message.guild][member]
+                ) > 1 and message.created_at - self.payouts_cache[message.guild][member][-2][
+                    0
+                ] < datetime.timedelta(
+                    seconds=config["payout_cooldown"]
                 ):
-                    logs = [
-                        log
-                        for (__, log) in self.payouts_cache[message.guild][member]
-                    ]
+                    logs = [log for (__, log) in self.payouts_cache[message.guild][member]]
                     break
             elif option["check"](message, raw_message, config):
                 logs = [log]
@@ -313,6 +361,7 @@ class DankPoolProtectionModule(Module):
                 logs=logs,
             )
 
+
 def convert_amount(argument: str) -> int:
     try:
         return int(argument)
@@ -320,7 +369,9 @@ def convert_amount(argument: str) -> int:
         try:
             return int(float(argument[:-1]) * (1000 ** ("kmbt".index(argument[-1].lower()) + 1)))
         except (ValueError, IndexError):
-            raise ValueError(_("Invalid amount format. Use a number or a shorthand like `1k`, `2m`, etc."))
+            raise ValueError(
+                _("Invalid amount format. Use a number or a shorthand like `1k`, `2m`, etc.")
+            )
 
 
 def format_number(number: int) -> str:
@@ -328,7 +379,7 @@ def format_number(number: int) -> str:
         return str(number)
     for i, suffix in enumerate(["", "k", "m", "b", "t"]):
         if number < 1000 ** (i + 1) or i == 3:
-            num = number / (1000 ** i)
+            num = number / (1000**i)
             if num % 1 == 0:
                 return f"{int(num)}{suffix}"
             else:
@@ -404,8 +455,10 @@ class ConfigureValuesModal(discord.ui.Modal):
         self.config["rapid_payout"]["hour_limit"] = hour_limit
         self.config["payout_cooldown"] = payout_cooldown
         await self.module.config_value(self.guild).high_amount_limit.set(high_amount_limit)
-        await self.module.config_value(self.guild).rapid_payout.set({
-            "minute_limit": minute_limit,
-            "hour_limit": hour_limit,
-        })
+        await self.module.config_value(self.guild).rapid_payout.set(
+            {
+                "minute_limit": minute_limit,
+                "hour_limit": hour_limit,
+            }
+        )
         await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)

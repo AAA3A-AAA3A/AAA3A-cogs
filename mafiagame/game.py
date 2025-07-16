@@ -333,7 +333,9 @@ class Day(DayNight):
             else 10
         )
         embed: discord.Embed = discord.Embed(
-            title=_("Now, I will give you {talk_timeout} seconds to talk! 🔊").format(talk_timeout=talk_timeout),
+            title=_("Now, I will give you {talk_timeout} seconds to talk! 🔊").format(
+                talk_timeout=talk_timeout
+            ),
             description=_(
                 "Want to accuse someone? Want to defend yourself, or confess? Now is the time!"
             ),
@@ -406,7 +408,9 @@ class Day(DayNight):
             )
             embed.set_image(url="attachment://voting.png")
             embed.set_footer(
-                text=_("You have {voting_timeout} seconds to vote.").format(voting_timeout=voting_timeout)
+                text=_("You have {voting_timeout} seconds to vote.").format(
+                    voting_timeout=voting_timeout
+                )
             )
             view: VoteView = VoteView(self, remaining_players=remaining_players)
             view._message = await self.game.send(
@@ -659,13 +663,19 @@ class Day(DayNight):
                                 discord.Embed(
                                     title=_(
                                         "{target.member.display_name} is the **{role_name}**!"
-                                    ).format(target=target, role_name=target.role.display_name(self.game)),
+                                    ).format(
+                                        target=target,
+                                        role_name=target.role.display_name(self.game),
+                                    ),
                                     color=target.role.color(),
                                 ).set_image(url=target.role.image_url()),
                             ]
                             await self.game.send(
                                 embed=embeds,
-                                files=[lawyer.role.get_image(self.game), target.role.get_image(self.game)],
+                                files=[
+                                    lawyer.role.get_image(self.game),
+                                    target.role.get_image(self.game),
+                                ],
                             )
             else:
                 await self.game.send(
@@ -1223,7 +1233,9 @@ class Game:
         return embed
 
     def get_readable_spoil(self) -> typing.Dict[str, str]:
-        return {player.member.display_name: player.role.display_name(self) for player in self.players}
+        return {
+            player.member.display_name: player.role.display_name(self) for player in self.players
+        }
 
     async def end(self, **win_kwargs) -> None:
         if not win_kwargs and self.task is not None:
@@ -1300,7 +1312,9 @@ class Game:
             await self.ctx.send(
                 **win_kwargs,
                 file=(
-                    discord.File(io.BytesIO(transcript.encode("utf-8")), filename="transcript.html")
+                    discord.File(
+                        io.BytesIO(transcript.encode("utf-8")), filename="transcript.html"
+                    )
                     if transcript
                     else None
                 ),
@@ -1313,9 +1327,9 @@ class Game:
                 await asyncio.sleep(10)
                 if not await CogsUtils.ConfirmationAsk(
                     self.ctx,
-                    _("{host.mention} Do you want to delete the channel of the previous Mafia game?").format(
-                        host=self.ctx.author
-                    ),
+                    _(
+                        "{host.mention} Do you want to delete the channel of the previous Mafia game?"
+                    ).format(host=self.ctx.author),
                     timeout=600,
                     timeout_message=None,
                 ):

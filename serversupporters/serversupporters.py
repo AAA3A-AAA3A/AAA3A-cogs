@@ -5,11 +5,11 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import pagify
-
 import datetime
 import re
 from collections import defaultdict
+
+from redbot.core.utils.chat_formatting import pagify
 
 from .converter import RoleHierarchyConverter
 
@@ -45,7 +45,9 @@ class ServerSupporters(Cog):
                 "description": "Whether the server supporters system is enabled.",
             },
             "logs_channel": {
-                "converter": typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+                "converter": typing.Union[
+                    discord.TextChannel, discord.VoiceChannel, discord.Thread
+                ],
                 "description": "The channel where logs will be sent.",
             },
             "tag_supporter_role": {
@@ -79,7 +81,9 @@ class ServerSupporters(Cog):
         await super().cog_load()
         await self.settings.add_commands()
 
-    async def get_role(self, member: discord.Member, _type: typing.Literal["tag", "status"]) -> typing.Optional[discord.Role]:
+    async def get_role(
+        self, member: discord.Member, _type: typing.Literal["tag", "status"]
+    ) -> typing.Optional[discord.Role]:
         if not member.guild.me.guild_permissions.manage_roles:
             return None
         if _type == "tag":
@@ -94,7 +98,9 @@ class ServerSupporters(Cog):
             return None
         return role
 
-    async def get_embed(self, member: discord.Member, _type: typing.Literal["tag", "status"], enabled: bool = True) -> discord.Embed:
+    async def get_embed(
+        self, member: discord.Member, _type: typing.Literal["tag", "status"], enabled: bool = True
+    ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title=(
                 _("New Server {_type} Supporter!")
@@ -109,7 +115,9 @@ class ServerSupporters(Cog):
             icon_url=member.display_avatar,
         )
         embed.set_thumbnail(url=member.display_avatar)
-        if (role := await self.get_role(member, _type)) is not None:  # If I decide to remove the requirement of having a role set...
+        if (
+            role := await self.get_role(member, _type)
+        ) is not None:  # If I decide to remove the requirement of having a role set...
             if enabled:
                 embed.description = _(
                     "{member.mention} has been given the **{role.mention}** role for being a server supporter."
@@ -121,11 +129,12 @@ class ServerSupporters(Cog):
         embed.set_footer(text=member.guild.name, icon_url=member.guild.icon)
         return embed
 
-    async def log(self, member: discord.Member, _type: typing.Literal["tag", "status"], enabled: bool = True) -> None:
-        if (
-            (logs_channel_id := await self.config.guild(member.guild).logs_channel()) is None
-            or (logs_channel := member.guild.get_channel_or_thread(logs_channel_id)) is None
-        ):
+    async def log(
+        self, member: discord.Member, _type: typing.Literal["tag", "status"], enabled: bool = True
+    ) -> None:
+        if (logs_channel_id := await self.config.guild(member.guild).logs_channel()) is None or (
+            logs_channel := member.guild.get_channel_or_thread(logs_channel_id)
+        ) is None:
             return
         try:
             await logs_channel.send(embed=await self.get_embed(member, _type, enabled))
@@ -136,8 +145,14 @@ class ServerSupporters(Cog):
             )
         if _type == "tag" and not enabled:
             if (
-                (tag_abandon_channel_id := await self.config.guild(member.guild).tag_abandon_channel()) is None
-                or (tag_abandon_channel := member.guild.get_channel(tag_abandon_channel_id)) is None
+                (
+                    tag_abandon_channel_id := await self.config.guild(
+                        member.guild
+                    ).tag_abandon_channel()
+                )
+                is None
+                or (tag_abandon_channel := member.guild.get_channel(tag_abandon_channel_id))
+                is None
                 or (tag_supporter_role := await self.get_role(member, "tag")) is None
             ):
                 return
@@ -153,7 +168,9 @@ class ServerSupporters(Cog):
                     exc_info=e,
                 )
 
-    async def update_roles(self, member: discord.Member, _type: typing.Literal["tag", "status"], enabled: bool = True) -> None:
+    async def update_roles(
+        self, member: discord.Member, _type: typing.Literal["tag", "status"], enabled: bool = True
+    ) -> None:
         if (role := await self.get_role(member, _type)) is None:
             return
         if enabled:
@@ -176,7 +193,9 @@ class ServerSupporters(Cog):
                     )
 
     async def check_invites_in_status(self, guild: discord.Guild, status: str) -> bool:
-        for invite_link in re.compile(r"(discord\.(?:gg|io|me|li)|discord(?:app)?\.com\/invite|\.gg)\/(\S+)", re.I).findall(status):
+        for invite_link in re.compile(
+            r"(discord\.(?:gg|io|me|li)|discord(?:app)?\.com\/invite|\.gg)\/(\S+)", re.I
+        ).findall(status):
             if guild.vanity_url_code is not None and invite_link[1] == guild.vanity_url_code:
                 return True
             if guild.me.guild_permissions.manage_guild:
@@ -211,7 +230,13 @@ class ServerSupporters(Cog):
         elif _type == "status":
             return (
                 bool(member.activities)
-                and (status := next((a for a in member.activities if isinstance(a, discord.CustomActivity)), None)) is not None
+                and (
+                    status := next(
+                        (a for a in member.activities if isinstance(a, discord.CustomActivity)),
+                        None,
+                    )
+                )
+                is not None
                 and await self.check_invites_in_status(member.guild, status.name)
             )
         return False
@@ -241,7 +266,9 @@ class ServerSupporters(Cog):
 
     @commands.Cog.listener()
     async def on_member_update(
-        self, before: discord.Member, after: discord.Member,
+        self,
+        before: discord.Member,
+        after: discord.Member,
         user_payload: typing.Optional[typing.Dict[str, typing.Any]] = None,
     ) -> None:
         if after.bot:
@@ -271,7 +298,9 @@ class ServerSupporters(Cog):
         pass
 
     @setserversupporters.command(aliases=["list"])
-    async def listsupporters(self, ctx: commands.Context, _type: typing.Literal["tag", "status"]) -> None:
+    async def listsupporters(
+        self, ctx: commands.Context, _type: typing.Literal["tag", "status"]
+    ) -> None:
         """List all members with the status supporter role."""
         if _type == "tag":
             retrieve, after = 1000, discord.guild.OLDEST_OBJECT
@@ -283,7 +312,9 @@ class ServerSupporters(Cog):
                     break
                 after = discord.Object(id=int(data[-1]["user"]["id"]))
                 for raw_member in reversed(data):
-                    member = discord.Member(data=raw_member, guild=ctx.guild, state=ctx.guild._state)
+                    member = discord.Member(
+                        data=raw_member, guild=ctx.guild, state=ctx.guild._state
+                    )
                     if member.bot:
                         continue
                     if await self.check(member, "tag", raw_member["user"]):
@@ -292,8 +323,7 @@ class ServerSupporters(Cog):
                     break
         else:
             members = [
-                member for member in ctx.guild.members
-                if await self.check(member, "status")
+                member for member in ctx.guild.members if await self.check(member, "status")
             ]
         embed: discord.Embed = discord.Embed(
             title=_("{count} Server {_type} Supporter{s}").format(
@@ -305,10 +335,7 @@ class ServerSupporters(Cog):
             timestamp=ctx.message.created_at,
         )
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
-        description = "\n".join(
-            f"- {member.mention}"
-            for member in members
-        )
+        description = "\n".join(f"- {member.mention}" for member in members)
         embeds = []
         for page in pagify(description, page_length=2000):
             e = embed.copy()
@@ -320,7 +347,9 @@ class ServerSupporters(Cog):
     async def forceupdate(self, ctx: commands.Context) -> None:
         """Force update the roles of all members in the guild."""
         if not await self.config.guild(ctx.guild).enabled():
-            raise commands.UserFeedbackCheckFailure(_("The Server Supporters system is not enabled."))
+            raise commands.UserFeedbackCheckFailure(
+                _("The Server Supporters system is not enabled.")
+            )
         retrieve, after = 1000, discord.guild.OLDEST_OBJECT
         while True:
             after_id = after.id if after else None

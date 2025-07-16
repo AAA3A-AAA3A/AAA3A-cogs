@@ -876,32 +876,23 @@ class LoggingModule(Module):
             #     )
             # ):
             #     return False
-            elif (
-                event["value"] in ("channel_update", "overwrite_create", "overwrite_delete", "overwrite_update")
-                and await self.cog.is_whitelisted(
-                    target, "logging_channel_update_overwrites_log"
-                )
+            elif event["value"] in (
+                "channel_update",
+                "overwrite_create",
+                "overwrite_delete",
+                "overwrite_update",
+            ) and await self.cog.is_whitelisted(target, "logging_channel_update_overwrites_log"):
+                return False
+            elif event["value"] in ("reaction_add", "reaction_remove") and (
+                await self.cog.is_whitelisted(responsible, "logging_reaction_log")
+                or await self.cog.is_message_whitelisted(target, "logging_reaction_log")
             ):
                 return False
-            elif (
-                event["value"] in ("reaction_add", "reaction_remove")
-                and (
-                    await self.cog.is_whitelisted(
-                        responsible, "logging_reaction_log"
-                    )
-                    or await self.cog.is_message_whitelisted(
-                        target, "logging_reaction_log"
-                    )
-                )
-            ):
-                return False
-        elif (
-            event["value"] in ("message_edit", "message_delete")
-            and await self.cog.is_whitelisted(
-                target, "logging_message_log"
-            )
-         ):
-                return False
+        elif event["value"] in (
+            "message_edit",
+            "message_delete",
+        ) and await self.cog.is_whitelisted(target, "logging_message_log"):
+            return False
         if (
             (channel_id := event["channel"]) is None
             or (channel := guild.get_channel(channel_id)) is None
@@ -1014,9 +1005,7 @@ class LoggingModule(Module):
                     embed.description += _(
                         "\n- **Author:** {target.author.mention} (`{target.author}`) - `{target.author.id}`"
                     ).format(target=target)
-                embed.description += _(
-                    "\n- **Created at:** {created_at} ({created_ago})"
-                ).format(
+                embed.description += _("\n- **Created at:** {created_at} ({created_ago})").format(
                     created_at=discord.utils.format_dt(target.created_at, "F"),
                     created_ago=discord.utils.format_dt(target.created_at, "R"),
                 )
@@ -1231,20 +1220,33 @@ class LoggingModule(Module):
             return
         event = await self.get_event(guild, "message_delete")
         message = payload.cached_message
-        if not (channel := await self.check_config(guild, event, message.author if message is not None else None, message or message_channel)):
+        if not (
+            channel := await self.check_config(
+                guild,
+                event,
+                message.author if message is not None else None,
+                message or message_channel,
+            )
+        ):
             return
         responsible = message.author if message is not None else None
         async for entry in guild.audit_logs(
             limit=3, action=discord.AuditLogAction.message_delete, oldest_first=False
         ):
-            if entry.extra.channel.id == message_channel.id and (message is None or entry.target.id == message.author.id):
+            if entry.extra.channel.id == message_channel.id and (
+                message is None or entry.target.id == message.author.id
+            ):
                 responsible = entry.user
                 break
         else:
             responsible = None
-        embed: discord.Embed = await self.get_embed(guild, event, responsible, message or message_channel)
+        embed: discord.Embed = await self.get_embed(
+            guild, event, responsible, message or message_channel
+        )
         if message is not None:
-            embed.description += f"\n{box('- ' + message.content, 'diff')}" if message.content else ""
+            embed.description += (
+                f"\n{box('- ' + message.content, 'diff')}" if message.content else ""
+            )
             if message.attachments:
                 embed.description += "\n" + _("{emoji} **Attachments:**").format(
                     emoji=Emojis.FILE.value
@@ -1260,9 +1262,7 @@ class LoggingModule(Module):
         await channel.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_raw_bulk_message_delete(
-        self, payload: discord.RawBulkMessageDeleteEvent
-    ) -> None:
+    async def on_raw_bulk_message_delete(self, payload: discord.RawBulkMessageDeleteEvent) -> None:
         if (guild := self.cog.bot.get_guild(payload.guild_id)) is None:
             return
         if (message_channel := guild.get_channel(payload.channel_id)) is None:

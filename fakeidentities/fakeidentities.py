@@ -310,7 +310,9 @@ class FakeIdentities(Cog):
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["fakeid"])
-    @app_commands.autocomplete(gender=gender_autocomplete, nationality=locale_autocomplete, location=locale_autocomplete)
+    @app_commands.autocomplete(
+        gender=gender_autocomplete, nationality=locale_autocomplete, location=locale_autocomplete
+    )
     async def fakeidentity(
         self,
         ctx: commands.Context,

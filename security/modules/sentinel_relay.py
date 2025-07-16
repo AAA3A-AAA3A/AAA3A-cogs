@@ -3,9 +3,9 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import humanize_list
-
 import datetime
+
+from redbot.core.utils.chat_formatting import humanize_list
 
 from ..constants import Emojis
 from ..views import ToggleModuleButton
@@ -39,14 +39,20 @@ class SentinelRelayModule(Module):
     async def unload(self) -> None:
         pass
 
-    async def get_status(self, guild: discord.Guild, check_enabled: bool = True) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
+    async def get_status(
+        self, guild: discord.Guild, check_enabled: bool = True
+    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
             return "❎", _("Disabled"), _("Sentinel Relay is currently disabled.")
         if config["main_bot"] is None:
             return "⚠️", _("No Main Bot"), _("No main bot selected.")
         if not self.cog.bot.intents.presences:
-            return "⚠️", _("No Presence Intent"), _("The bot's presence intent is required for this module to function correctly.")
+            return (
+                "⚠️",
+                _("No Presence Intent"),
+                _("The bot's presence intent is required for this module to function correctly."),
+            )
         return "✅", _("Enabled"), _("Sentinel Relay is enabled and configured correctly.")
 
     async def get_settings(self, guild: discord.Guild, view: discord.ui.View):
@@ -63,10 +69,17 @@ class SentinelRelayModule(Module):
             "**Main Bot:** {main_bot}\n"
             "**Modules to Enable:** {modules_to_enable}"
         ).format(
-            main_bot=f"{main_bot.mention} (`{main_bot}`) {await self.cog.get_member_emojis(main_bot)}" if main_bot is not None else _("Not Set"),
+            main_bot=f"{main_bot.mention} (`{main_bot}`) {await self.cog.get_member_emojis(main_bot)}"
+            if main_bot is not None
+            else _("Not Set"),
             modules_to_enable=humanize_list(
-                [f"{module_name.replace('_', ' ').title()} {(await self.cog.modules[module_name].get_status(guild, check_enabled=False))[0]}" for module_name in config["modules_to_enable"]]
-            ) if config["modules_to_enable"] else _("None"),
+                [
+                    f"{module_name.replace('_', ' ').title()} {(await self.cog.modules[module_name].get_status(guild, check_enabled=False))[0]}"
+                    for module_name in config["modules_to_enable"]
+                ]
+            )
+            if config["modules_to_enable"]
+            else _("None"),
         )
 
         components = [ToggleModuleButton(self, guild, view, config["enabled"])]
@@ -77,6 +90,7 @@ class SentinelRelayModule(Module):
             max_values=1,
             default_values=[main_bot] if main_bot is not None else [],
         )
+
         async def main_bot_select_callback(interaction: discord.Interaction) -> None:
             selected = main_bot_select.values[0] if main_bot_select.values else None
             if selected:
@@ -92,7 +106,9 @@ class SentinelRelayModule(Module):
                     return
                 await self.config_value(guild).main_bot.set(selected.id)
                 await interaction.response.send_message(
-                    _("{selected} has been set as the main bot.").format(selected=selected.mention),
+                    _("{selected} has been set as the main bot.").format(
+                        selected=selected.mention
+                    ),
                     ephemeral=True,
                 )
             else:
@@ -102,6 +118,7 @@ class SentinelRelayModule(Module):
                     ephemeral=True,
                 )
             await view._message.edit(embed=await view.get_embed(), view=view)
+
         main_bot_select.callback = main_bot_select_callback
         components.append(main_bot_select)
 
@@ -125,10 +142,12 @@ class SentinelRelayModule(Module):
                 for module in modules
             ],
         )
+
         async def modules_select_callback(interaction: discord.Interaction) -> None:
             await interaction.response.defer()
             selected_modules = modules_select.values
             await self.config_value(guild).modules_to_enable.set(selected_modules)
+
         modules_select.callback = modules_select_callback
         components.append(modules_select)
 
@@ -139,10 +158,7 @@ class SentinelRelayModule(Module):
             if (guild := self.cog.bot.get_guild(guild_id)) is None:
                 continue
             config = await self.config_value(guild)()
-            if (
-                not config["enabled"]
-                or (main_bot_id := config["main_bot"]) is None
-            ):
+            if not config["enabled"] or (main_bot_id := config["main_bot"]) is None:
                 continue
             if (main_bot := guild.get_member(main_bot_id)) is None:
                 try:
@@ -159,7 +175,9 @@ class SentinelRelayModule(Module):
                     main_bot = main_bot or await self.cog.bot.fetch_user(main_bot_id)
                     embed: discord.Embed = discord.Embed(
                         title=_("Sentinel Relay Triggered!"),
-                        description=_("The main bot ({mention}) is offline, triggering the relay.").format(mention=main_bot.mention),
+                        description=_(
+                            "The main bot ({mention}) is offline, triggering the relay."
+                        ).format(mention=main_bot.mention),
                         color=discord.Color.red(),
                         timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                     )
@@ -184,7 +202,9 @@ class SentinelRelayModule(Module):
                             await module.config_value(guild).enabled.set(False)
                     embed: discord.Embed = discord.Embed(
                         title=_("Sentinel Relay Untriggered!"),
-                        description=_("The main bot ({mention}) is back online, untriggering the relay.").format(mention=main_bot.mention),
+                        description=_(
+                            "The main bot ({mention}) is back online, untriggering the relay."
+                        ).format(mention=main_bot.mention),
                         color=discord.Color.green(),
                         timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                     )

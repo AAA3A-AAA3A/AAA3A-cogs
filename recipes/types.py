@@ -20,9 +20,7 @@ class SearchResults:
     def to_embeds(
         self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
-        description = "\n".join(
-            f"- [**`{name}`**]({url})" for name, url in self.results.items()
-        )
+        description = "\n".join(f"- [**`{name}`**]({url})" for name, url in self.results.items())
         embeds = []
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed: discord.Embed = discord.Embed(

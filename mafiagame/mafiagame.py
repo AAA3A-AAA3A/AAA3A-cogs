@@ -507,7 +507,9 @@ class MafiaGame(Cog):
     async def end(self, ctx: commands.Context, confirm: bool = False) -> None:
         """End the current game of Mafia."""
         if (game := self.games.get(ctx.guild)) is None:
-            raise commands.UserFeedbackCheckFailure(_("No game is currently running in this guild."))
+            raise commands.UserFeedbackCheckFailure(
+                _("No game is currently running in this guild.")
+            )
         if not confirm and not await CogsUtils.ConfirmationAsk(
             ctx, _("Are you sure you want to end the current game of Mafia?")
         ):
@@ -604,7 +606,9 @@ class MafiaGame(Cog):
             title=(
                 _("General Achievements")
                 if role is None
-                else _("Achievements — {role_name}").format(role_name=role.display_name(theme=theme))
+                else _("Achievements — {role_name}").format(
+                    role_name=role.display_name(theme=theme)
+                )
             ),
             color=ACHIEVEMENTS_COLOR,
         )

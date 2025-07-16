@@ -113,9 +113,7 @@ class Mode:
                 embed.add_field(
                     name=_("{players_number} Players").format(players_number=players_number),
                     value=_(
-                        "- Villagers: {villagers}\n"
-                        "- Mafia: {mafia}\n"
-                        "- Neutral: {neutral}"
+                        "- Villagers: {villagers}\n" "- Mafia: {mafia}\n" "- Neutral: {neutral}"
                     ).format(
                         villagers=amounts["villagers"],
                         mafia=amounts["mafia"],

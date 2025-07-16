@@ -604,7 +604,9 @@ class ClosedTicketControls(discord.ui.View):
             )
             return False
         interaction.data["ticket"] = ticket
-        if not await self.cog.is_support.__func__(ignore_owner=interaction.data["custom_id"] == "Tickets_delete").predicate(interaction):
+        if not await self.cog.is_support.__func__(
+            ignore_owner=interaction.data["custom_id"] == "Tickets_delete"
+        ).predicate(interaction):
             await interaction.response.send_message(
                 _("⛔ You aren't allowed to interact with this ticket!"),
                 ephemeral=True,
@@ -612,7 +614,9 @@ class ClosedTicketControls(discord.ui.View):
             return False
         return True
 
-    @discord.ui.button(label="Transcript", style=discord.ButtonStyle.secondary, custom_id="Tickets_transcript")
+    @discord.ui.button(
+        label="Transcript", style=discord.ButtonStyle.secondary, custom_id="Tickets_transcript"
+    )
     async def transcript(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
@@ -637,7 +641,9 @@ class ClosedTicketControls(discord.ui.View):
         )
         await interaction.edit_original_response(view=view)
 
-    @discord.ui.button(label="Reopen", style=discord.ButtonStyle.secondary, custom_id="Tickets_reopen")
+    @discord.ui.button(
+        label="Reopen", style=discord.ButtonStyle.secondary, custom_id="Tickets_reopen"
+    )
     async def reopen(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
         ticket = discord.utils.get(
@@ -652,7 +658,9 @@ class ClosedTicketControls(discord.ui.View):
                 ephemeral=True,
             )
 
-    @discord.ui.button(label="Delete", style=discord.ButtonStyle.danger, custom_id="Tickets_delete")
+    @discord.ui.button(
+        label="Delete", style=discord.ButtonStyle.danger, custom_id="Tickets_delete"
+    )
     async def delete(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         ticket = discord.utils.get(
             self.cog.tickets.get(interaction.guild.id, {}).values(), channel=interaction.channel

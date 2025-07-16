@@ -619,10 +619,10 @@ class Ticket:
                     )
                 )
             applied_tags = [
-                    tag
-                    for tag_id in config["forum_tags"]
-                    if (tag := forum_channel.get_tag(tag_id)) is not None
-                ]
+                tag
+                for tag_id in config["forum_tags"]
+                if (tag := forum_channel.get_tag(tag_id)) is not None
+            ]
             if isinstance(forum_channel, discord.ForumChannel):
                 thread_message = await forum_channel.create_thread(
                     name=await self.channel_name(forum_channel=True),

@@ -4,13 +4,12 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import humanize_list
-
 import copy
 import datetime
+from dataclasses import _is_dataclass_instance, dataclass, field, fields
 from urllib.parse import quote_plus
 
-from dataclasses import dataclass, field, _is_dataclass_instance, fields
+from redbot.core.utils.chat_formatting import humanize_list
 
 _: Translator = Translator("Events", __file__)
 
@@ -29,7 +28,10 @@ def _asdict_inner(obj, dict_factory=dict):
     elif isinstance(obj, (list, tuple)):
         return type(obj)(_asdict_inner(v, dict_factory) for v in obj)
     elif isinstance(obj, dict):
-        return type(obj)((_asdict_inner(k, dict_factory), _asdict_inner(v, dict_factory)) for k, v in obj.items())
+        return type(obj)(
+            (_asdict_inner(k, dict_factory), _asdict_inner(v, dict_factory))
+            for k, v in obj.items()
+        )
     else:
         return copy.deepcopy(obj)
 
@@ -39,7 +41,13 @@ class Point:
     amount: int
     member_id: typing.Optional[int] = None
     managed_by_id: typing.Optional[int] = None
-    managed_at_timestamp: int = field(default_factory=lambda: int(datetime.datetime.now(tz=datetime.timezone.utc).replace(second=0, microsecond=0).timestamp()))
+    managed_at_timestamp: int = field(
+        default_factory=lambda: int(
+            datetime.datetime.now(tz=datetime.timezone.utc)
+            .replace(second=0, microsecond=0)
+            .timestamp()
+        )
+    )
 
     def to_dict(self) -> typing.Dict[str, typing.Any]:
         return _asdict_inner(self)
@@ -77,7 +85,13 @@ class Team:
     color_value: typing.Optional[int] = None
     description: typing.Optional[str] = None
     slogan: typing.Optional[str] = None
-    created_at_timestamp: int = field(default_factory=lambda: int(datetime.datetime.now(tz=datetime.timezone.utc).replace(second=0, microsecond=0).timestamp()))
+    created_at_timestamp: int = field(
+        default_factory=lambda: int(
+            datetime.datetime.now(tz=datetime.timezone.utc)
+            .replace(second=0, microsecond=0)
+            .timestamp()
+        )
+    )
 
     captain_role_id: typing.Optional[int] = None
     vice_captain_role_id: typing.Optional[int] = None
@@ -89,8 +103,11 @@ class Team:
         id = get_id(self.name)
         teams = sorted(
             [
-                team for team in self.cog.teams.get(self.guild_id, {}).values()
-                if team is not self and team.created_at < self.created_at and get_id(team.name) == id
+                team
+                for team in self.cog.teams.get(self.guild_id, {}).values()
+                if team is not self
+                and team.created_at < self.created_at
+                and get_id(team.name) == id
             ],
             key=lambda team: team.created_at,
         )
@@ -275,16 +292,20 @@ class Team:
             embed.add_field(
                 name=_("👥 Membership:"),
                 value=_(
-                    "- **Total Members:** {member_count}\n"
-                    "- **Captain:** {captain.mention}"
+                    "- **Total Members:** {member_count}\n" "- **Captain:** {captain.mention}"
                 ).format(
                     member_count=len(self.members),
                     captain=self.captain,
-                ) + (
+                )
+                + (
                     _("\n- **Vice-Captain{s}:** {vice_captains}").format(
-                        vice_captains=humanize_list([vice_captain.mention for vice_captain in self.vice_captains]),
-                        s="" if len(self.vice_captains) == 1 else "s"
-                    ) if self.vice_captains else ""
+                        vice_captains=humanize_list(
+                            [vice_captain.mention for vice_captain in self.vice_captains]
+                        ),
+                        s="" if len(self.vice_captains) == 1 else "s",
+                    )
+                    if self.vice_captains
+                    else ""
                 ),
             )
             embed.add_field(
@@ -296,7 +317,13 @@ class Team:
                 ).format(
                     total_points=sum(point.amount for point in self.points),
                     contributions=len(self.points),
-                    contributors=len({member for point in self.points if (member := point.get_member(self.guild)) is not None}),
+                    contributors=len(
+                        {
+                            member
+                            for point in self.points
+                            if (member := point.get_member(self.guild)) is not None
+                        }
+                    ),
                 ),
             )
             if any((self.captain_role, self.vice_captain_role, self.member_role)):
@@ -307,9 +334,15 @@ class Team:
                         "- **Vice-Captain Role:** {vice_captain_role}\n"
                         "- **Member Role:** {member_role}"
                     ).format(
-                        captain_role=self.captain_role.mention if self.captain_role is not None else _("None"),
-                        vice_captain_role=self.vice_captain_role.mention if self.vice_captain_role is not None else _("None"),
-                        member_role=self.member_role.mention if self.member_role is not None else _("None"),
+                        captain_role=self.captain_role.mention
+                        if self.captain_role is not None
+                        else _("None"),
+                        vice_captain_role=self.vice_captain_role.mention
+                        if self.vice_captain_role is not None
+                        else _("None"),
+                        member_role=self.member_role.mention
+                        if self.member_role is not None
+                        else _("None"),
                     ),
                 )
             if self.slogan is not None:
@@ -333,7 +366,9 @@ class Team:
     async def add_member(self, member: discord.Member) -> None:
         if member in self.member_ids:
             raise RuntimeError(_("Member is already in the team."))
-        if any(member.id in team.member_ids for team in self.cog.teams.get(self.guild.id, {}).values()):
+        if any(
+            member.id in team.member_ids for team in self.cog.teams.get(self.guild.id, {}).values()
+        ):
             raise RuntimeError(_("Member is already in another team."))
         self.member_ids.append(member.id)
         await self.save()
@@ -358,7 +393,9 @@ class Team:
             and member_role in member.roles
         ):
             try:
-                await member.remove_roles(member_role, reason="Removing member role from team member.")
+                await member.remove_roles(
+                    member_role, reason="Removing member role from team member."
+                )
             except discord.HTTPException:
                 pass
 
@@ -377,7 +414,9 @@ class Team:
             and vice_captain_role not in member.roles
         ):
             try:
-                await member.add_roles(vice_captain_role, reason="Adding vice captain role to team member.")
+                await member.add_roles(
+                    vice_captain_role, reason="Adding vice captain role to team member."
+                )
             except discord.HTTPException:
                 pass
 
@@ -409,17 +448,20 @@ class Team:
         self.captain_id = new_captain.id
         await self.save()
         if (
-            (captain_role := self.captain_role) is not None
-            and new_captain.guild.me.guild_permissions.manage_roles
-        ):
+            captain_role := self.captain_role
+        ) is not None and new_captain.guild.me.guild_permissions.manage_roles:
             if captain_role not in new_captain.roles:
                 try:
-                    await new_captain.add_roles(captain_role, reason="Adding captain role to new team captain.")
+                    await new_captain.add_roles(
+                        captain_role, reason="Adding captain role to new team captain."
+                    )
                 except discord.HTTPException:
                     pass
             if old_captain is not None and captain_role in old_captain.roles:
                 try:
-                    await old_captain.remove_roles(captain_role, reason="Removing captain role from old team captain.")
+                    await old_captain.remove_roles(
+                        captain_role, reason="Removing captain role from old team captain."
+                    )
                 except discord.HTTPException:
                     pass
 
@@ -427,7 +469,7 @@ class Team:
         self,
         amount: int,
         member: typing.Optional[discord.Member] = None,
-        managed_by: typing.Optional[discord.Member] = None
+        managed_by: typing.Optional[discord.Member] = None,
     ) -> None:
         self.points.append(
             Point(
@@ -442,7 +484,7 @@ class Team:
         self,
         amount: int,
         member: typing.Optional[discord.Member] = None,
-        managed_by: typing.Optional[discord.Member] = None
+        managed_by: typing.Optional[discord.Member] = None,
     ) -> None:
         self.points.append(
             Point(

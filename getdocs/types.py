@@ -27,9 +27,7 @@ class RTFSResults:
     def to_embeds(
         self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
-        description = "\n".join(
-            f"- [**`{name}`**]({url})" for name, _, url, __ in self.results
-        )
+        description = "\n".join(f"- [**`{name}`**]({url})" for name, _, url, __ in self.results)
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed = discord.Embed(color=embed_color)
         embed.set_author(
@@ -60,9 +58,7 @@ class SearchResults:
     def to_embeds(
         self, embed_color: discord.Color = discord.Color.green()
     ) -> typing.List[discord.Embed]:
-        description = "\n".join(
-            f"- [**`{name}`**]({url})" for name, _, url, __ in self.results
-        )
+        description = "\n".join(f"- [**`{name}`**]({url})" for name, _, url, __ in self.results)
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed = discord.Embed(color=embed_color)
         embed.set_author(

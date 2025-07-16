@@ -164,12 +164,11 @@ class UnauthorizedTextChannelDeletionsModule(Module):
             return
         if config["specific_channels"] and channel.id not in config["specific_channels"]:
             return
-        if (
-            await self.cog.is_whitelisted(responsible, "unauthorized_text_channel_deletions")
-            or await self.cog.is_whitelisted(
-                discord.Object(id=channel.id, type=discord.TextChannel),
-                "unauthorized_text_channel_deletions",
-            )
+        if await self.cog.is_whitelisted(
+            responsible, "unauthorized_text_channel_deletions"
+        ) or await self.cog.is_whitelisted(
+            discord.Object(id=channel.id, type=discord.TextChannel),
+            "unauthorized_text_channel_deletions",
         ):
             return
         messages = (
@@ -209,7 +208,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
                 name="\u200b",
                 value=_(
                     "You can find the last {count} message{s} in this channel in the transcript."
-                ).format(count=len(messages), s="" if len(messages) == 1 else "s")
+                ).format(count=len(messages), s="" if len(messages) == 1 else "s"),
             )
 
             class Transcript(chat_exporter.construct.transcript.TranscriptDAO):

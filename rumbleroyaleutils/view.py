@@ -38,7 +38,9 @@ class AmIAliveView(discord.ui.View):
         return True
 
     @discord.ui.button(emoji="😃", label="Am I Alive?", style=discord.ButtonStyle.success)
-    async def am_i_alive(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def am_i_alive(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         embed: discord.Embed = discord.Embed(timestamp=interaction.message.created_at)
         embed.set_author(
             name=interaction.user.display_name,
@@ -61,7 +63,9 @@ class AmIAliveView(discord.ui.View):
                     _("- **💀 Round {round_number}:** You died{killed}.").format(
                         round_number=event.round_number,
                         killed=(
-                            _(", killed by {other}").format(other=f"{event.other.display_name} (`{event.other}`)")
+                            _(", killed by {other}").format(
+                                other=f"{event.other.display_name} (`{event.other}`)"
+                            )
                             if event.other is not None
                             else ""
                         ),
@@ -80,6 +84,8 @@ class AmIAliveView(discord.ui.View):
         else:
             embed.title = _("💀 You are dead!")
             embed.color = discord.Color.red()
-        embed.description = "\n".join(description) if description else _("You have no events recorded.")
+        embed.description = (
+            "\n".join(description) if description else _("You have no events recorded.")
+        )
         embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
         await interaction.response.send_message(embed=embed, ephemeral=True)

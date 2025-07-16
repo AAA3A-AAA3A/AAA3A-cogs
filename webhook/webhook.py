@@ -44,8 +44,11 @@ class ChannelOrWebhookLinkConverter(commands.Converter):
             except commands.BadArgument:
                 pass
         raise commands.BadArgument(
-            _("That doesn't look like a valid channel or webhook link. Please provide a valid channel or webhook link.")
+            _(
+                "That doesn't look like a valid channel or webhook link. Please provide a valid channel or webhook link."
+            )
         )
+
 
 class Session:
     def __init__(
@@ -593,8 +596,10 @@ class Webhook(Cog):
                 bot=ctx.bot, channel=getattr(channel_or_webhook, "parent", channel_or_webhook)
             )
         session = Session(
-            cog=self, author=ctx.author,
-            channel=ctx.channel, webhook=channel_or_webhook,
+            cog=self,
+            author=ctx.author,
+            channel=ctx.channel,
+            webhook=channel_or_webhook,
         )
         await session.initialize(ctx)
 
@@ -624,15 +629,21 @@ class Webhook(Cog):
             username = member_to_sudo.display_name if username is None else username
             avatar_url = member_to_sudo.display_avatar.url if avatar_url is None else avatar_url
         session = Session(
-            cog=self, author=ctx.author, admin=True,
-            channel=ctx.channel, webhook=channel_or_webhook,
-            username=username, avatar_url=avatar_url,
+            cog=self,
+            author=ctx.author,
+            admin=True,
+            channel=ctx.channel,
+            webhook=channel_or_webhook,
+            username=username,
+            avatar_url=avatar_url,
         )
         await session.initialize(ctx)
 
     @webhook.command(name="closesession", aliases=["sessionclose"])
     async def webhook_closesession(
-        self, ctx: commands.Context, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread] = None
+        self,
+        ctx: commands.Context,
+        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread] = None,
     ):
         """Close an ongoing webhook session in a channel."""
         channel = channel or ctx.channel

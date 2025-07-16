@@ -94,7 +94,9 @@ class ProtectedRolesModule(Module):
                 return
             if not role.is_assignable():
                 await interaction.response.send_message(
-                    _("This role can't be protected because it is not assignable or is higher than my top role."),
+                    _(
+                        "This role can't be protected because it is not assignable or is higher than my top role."
+                    ),
                     ephemeral=True,
                 )
                 return
@@ -140,7 +142,8 @@ class ProtectedRolesModule(Module):
                 menu.extra_items.extend(
                     [
                         WhitelistMembersSelect(self, guild, role, view, menu),
-                    ] + (
+                    ]
+                    + (
                         [RemoveButton(self, guild, role, view)]
                         if await self.cog.is_extra_owner_or_higher(interaction.user)
                         else []
@@ -187,7 +190,9 @@ class ProtectedRolesModule(Module):
         config = await self.config_value(entry.guild)()
         if not config["enabled"] or not (protected_roles := config["protected_roles"]):
             return
-        if entry.user == entry.guild.me or await self.cog.is_whitelisted(entry.target, "protected_roles"):
+        if entry.user == entry.guild.me or await self.cog.is_whitelisted(
+            entry.target, "protected_roles"
+        ):
             return
         to_remove = []
         for role in entry.after.roles:

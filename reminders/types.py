@@ -708,7 +708,10 @@ class Reminder:
                     raise RuntimeError(
                         f"An error occurred while fetching the destination channel for the reminder {self.user_id}#{self.id}@{self.content['type']}."
                     )
-            if destination.guild is not None and (member := destination.guild.get_member(user.id)) is None:
+            if (
+                destination.guild is not None
+                and (member := destination.guild.get_member(user.id)) is None
+            ):
                 try:
                     member: discord.Member = await destination.guild.fetch_member(user.id)
                 except discord.NotFound:
@@ -744,8 +747,12 @@ class Reminder:
         elif self.content["type"] == "command":
             try:
                 if getattr(destination, "guild", None) is not None:
-                    if (invoker := destination.guild.get_member(self.content["command_invoker"])) is None:
-                        invoker = await destination.guild.fetch_member(self.content["command_invoker"])
+                    if (
+                        invoker := destination.guild.get_member(self.content["command_invoker"])
+                    ) is None:
+                        invoker = await destination.guild.fetch_member(
+                            self.content["command_invoker"]
+                        )
                 else:
                     if (invoker := self.cog.bot.get_user(self.content["command_invoker"])) is None:
                         invoker = await self.cog.bot.fetch_user(self.content["command_invoker"])

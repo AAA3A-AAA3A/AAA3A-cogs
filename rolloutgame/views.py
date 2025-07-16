@@ -336,9 +336,9 @@ class RolloutGameView(discord.ui.View):
             )
             for eleminated in eleminated_players_wrong_number:
                 embed.description += _(
-                    _(
-                        "\n- **{eleminated.display_name}** - Selected the number {number}."
-                    ).format(eleminated=eleminated, number=number)
+                    _("\n- **{eleminated.display_name}** - Selected the number {number}.").format(
+                        eleminated=eleminated, number=number
+                    )
                 ).format(eleminated=eleminated)
             for eleminated in eliminated_players_timeout:
                 embed.description += _(

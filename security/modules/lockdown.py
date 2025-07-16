@@ -316,13 +316,15 @@ class LockdownModule(Module):
                         _(
                             "A lockdown is currently active in this server. You are not allowed to send messages in any channel. **Please do not attempt to bypass this restriction.**"
                         )
-                        if not config["specific_channels"] else
-                        _(
+                        if not config["specific_channels"]
+                        else _(
                             "A lockdown is currently active in specific channels of this server. You are not allowed to send messages in this channel. **Please do not attempt to bypass this restriction.**"
                         )
                     ),
                     color=discord.Color.red(),
-                ).set_footer(text=message.guild.name, icon_url=get_non_animated_asset(message.guild.icon)),
+                ).set_footer(
+                    text=message.guild.name, icon_url=get_non_animated_asset(message.guild.icon)
+                ),
             )
         self.action_cache[message.author].append(
             _(
@@ -370,7 +372,10 @@ class LockdownModule(Module):
                                 "A lockdown is currently active in this server. You are not allowed to change roles of members. **Please do not attempt to bypass this restriction.**"
                             ),
                             color=discord.Color.red(),
-                        ).set_footer(text=entry.guild.name, icon_url=get_non_animated_asset(entry.guild.icon)),
+                        ).set_footer(
+                            text=entry.guild.name,
+                            icon_url=get_non_animated_asset(entry.guild.icon),
+                        ),
                     )
                 except discord.HTTPException:
                     pass
@@ -453,7 +458,10 @@ class LockdownModule(Module):
                                 "A lockdown is currently active in this server. You are not allowed to create invites. **Please do not attempt to bypass this restriction.**"
                             ),
                             color=discord.Color.red(),
-                        ).set_footer(text=entry.guild.name, icon_url=get_non_animated_asset(entry.guild.icon))
+                        ).set_footer(
+                            text=entry.guild.name,
+                            icon_url=get_non_animated_asset(entry.guild.icon),
+                        )
                     )
                 except discord.HTTPException:
                     pass

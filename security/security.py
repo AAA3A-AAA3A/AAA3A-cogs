@@ -297,6 +297,26 @@ class Security(Cog):
                             await self.config.member_from_ids(guild.id, member_id).whitelist.clear()
                         except discord.HTTPException:
                             pass
+            role_configs = await self.config.all_roles(guild)
+            for role_id, role_config in role_configs.items():
+                if any(role_config["whitelist"].values()):
+                    if guild.get_role(role_id) is None:
+                        try:
+                            await guild.fetch_role(role_id)
+                        except discord.NotFound:
+                            await self.config.role_from_ids(guild.id, role_id).whitelist.clear()
+                        except discord.HTTPException:
+                            pass
+            channel_configs = await self.config.all_channels(guild)
+            for channel_id, channel_config in channel_configs.items():
+                if any(channel_config["whitelist"].values()):
+                    if guild.get_channel(channel_id) is None:
+                        try:
+                            await guild.fetch_channel(channel_id)
+                        except discord.NotFound:
+                            await self.config.channel_from_ids(guild.id, channel_id).whitelist.clear()
+                        except discord.HTTPException:
+                            pass
             if protected_role_ids := await self.config.guild(
                 guild
             ).modules.protected_roles.protected_roles():

@@ -152,6 +152,14 @@ class AntiImpersonationModule(Module):
             or before.nick != after.nick
             or before.global_name != after.global_name
         ):
+            if after.guild.me.guild_permissions.view_audit_log:
+                async for entry in after.guild.audit_logs(
+                    limit=3, action=discord.AuditLogAction.member_update,
+                ):
+                    if entry.target.id != after.id:
+                        continue
+                    if await self.cog.is_whitelisted(entry.user, "anti_impersonation"):
+                        return
             await self.check_member(after)
 
 

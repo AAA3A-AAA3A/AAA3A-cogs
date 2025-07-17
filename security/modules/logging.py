@@ -1006,8 +1006,11 @@ class LoggingModule(Module):
                 ).format(emoji=Emojis.MESSAGE.value, message=target)
                 if target.author != responsible:
                     embed.description += _(
-                        "\n- **Author:** {target.author.mention} (`{target.author}`) - `{target.author.id}`"
-                    ).format(target=target)
+                        "\n- **Author:** {target.author.mention} (`{target.author}`){member_emojis} - `{target.author.id}`"
+                    ).format(
+                        target=target,
+                        member_emojis=f" {await self.cog.get_member_emojis(target.author)}" if isinstance(target.author, discord.Member) else "",
+                    )
                 embed.description += _("\n- **Created at:** {created_at} ({created_ago})").format(
                     created_at=discord.utils.format_dt(target.created_at, "F"),
                     created_ago=discord.utils.format_dt(target.created_at, "R"),

@@ -66,6 +66,15 @@ class ObjectConverter(commands.Converter):
         )
 
 
+class AuditLogActionConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> discord.AuditLogAction:
+        try:
+            action = discord.AuditLogAction[argument]
+        except KeyError:
+            raise commands.BadArgument(_("Invalid action."))
+        return action
+
+
 @cog_i18n(_)
 class Security(Cog):
     """Protect your servers from unwanted members, spam, but also from nuke attacks and more! This includes a quarantine/modlog system, and many modules like Auto Mod, Reports, Logging, Anti Nuke, Protected Roles, and more!"""
@@ -1070,8 +1079,13 @@ class Security(Cog):
     @commands.bot_has_guild_permissions(view_audit_log=True)
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command()
-    async def lastactions(self, ctx: commands.Context, member: discord.Member = None) -> None:
-        """View the last audit log entries for a member or the server."""
+    async def lastactions(
+        self,
+        ctx: commands.Context,
+        member: typing.Optional[typing.Union[discord.Member, discord.User]] = None,
+        action: typing.Optional[AuditLogActionConverter] = None,
+    ) -> None:
+        """View the last audit log entries for a member/user or the server."""
         audit_log_entries = list(
             reversed(
                 [
@@ -1079,12 +1093,15 @@ class Security(Cog):
                     async for entry in ctx.guild.audit_logs(
                         limit=100,
                         user=member if member is not None else discord.utils.MISSING,
+                        action=action if action is not None else discord.utils.MISSING,
                     )
                 ]
             )
         )
         if member is not None:
             params = {"target_id": member.id}
+            if action is not None:
+                params["action_type"] = action.value
             if audit_log_entries:
                 params["after"] = audit_log_entries[0].id
             else:

@@ -514,7 +514,7 @@ class LoggingModule(Module):
             return (
                 "⚠️",
                 _("Warning"),
-                _("Some events are enabled but the report channel is not set or inaccessible."),
+                _("Some events are enabled but the channel is not set or inaccessible."),
             )
         if not guild.me.guild_permissions.view_audit_log:
             return (

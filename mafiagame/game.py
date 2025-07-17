@@ -377,7 +377,7 @@ class Day(DayNight):
             if i == 1:
                 if any(
                     player.has_won and not player.role.objective_secondary
-                    for player in self.players
+                    for player in self.game.players
                 ):
                     break
                 if (

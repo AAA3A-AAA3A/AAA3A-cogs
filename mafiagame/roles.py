@@ -2804,7 +2804,7 @@ class Lawyer(Role):
 
     @classmethod
     async def perform_day_action(
-        cls, day, player: Player, target: Player, interaction: discord.Interaction
+        cls, day, player: Player, interaction: discord.Interaction, target: Player
     ) -> None:
         embed: discord.Embed = discord.Embed(
             title=_(

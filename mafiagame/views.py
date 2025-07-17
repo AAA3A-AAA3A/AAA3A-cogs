@@ -1340,51 +1340,6 @@ class JudgementView(discord.ui.View):
         player.last_interaction = interaction
         await self._update()
 
-    @discord.ui.button(
-        emoji="⚖️",
-        label="Perform Action",
-        style=discord.ButtonStyle.success,
-        custom_id="judgement_perform_action",
-    )
-    async def perform_action(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
-        if (
-            starspawn := next(
-                (
-                    t is None
-                    for p, t in self.day.game.days_nights[-2].targets.items()
-                    if p.role.name == "Starspawn"
-                ),
-                None,
-            )
-        ) is not None:
-            await interaction.response.send_message(
-                _("All day-actions have been blocked for today by {the_or_a}Starspawn!").format(
-                    the_or_a=starspawn.role.the_or_a(self.day.game)
-                ),
-                ephemeral=True,
-            )
-            return
-        await interaction.response.defer(ephemeral=True, thinking=True)
-        player = self.day.game.get_player(interaction.user)
-        player.last_interaction = interaction
-        if player.role.max_uses is not None and player.uses_amount >= player.role.max_uses:
-            await interaction.followup.send(
-                _("You have already used your action the maximum amount of times!"), ephemeral=True
-            )
-            return
-        try:
-            await player.role.perform_day_action(self.day, player, self.target, interaction)
-        except NotImplementedError:
-            await interaction.followup.send(_("You can't perform any day action!"), ephemeral=True)
-        except RuntimeError as error:
-            await interaction.followup.send(str(error), ephemeral=True)
-        except TypeError:
-            await interaction.followup.send(
-                _("You can't perform any action at this time!"), ephemeral=True
-            )
-
 
 class IsekaiView(discord.ui.View):
     def __init__(self, player, roles: typing.List[typing.Any]) -> None:

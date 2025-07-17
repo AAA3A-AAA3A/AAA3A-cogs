@@ -1136,8 +1136,6 @@ class LoggingModule(Module):
                             and key != "colour"
                         ),
                     )
-                if embed.fields and len(embed.fields[-1].value) > 1024:
-                    embed.fields[-1].value = embed.fields[-1].value[:1020] + "\n..."
                 if getattr(entry.after, "permissions", None) is not None:
                     added_permissions.extend(
                         permission.replace("_", " ").title()
@@ -1172,16 +1170,17 @@ class LoggingModule(Module):
                             if role not in entry.before.roles
                         ),
                     )
-                    for role in entry.after.roles:
-                        if not isinstance(role, discord.Role):
-                            continue
-                        for permission, value in role.permissions:
-                            if value and all(
-                                not getattr(r.permissions, permission, False)
-                                for r in entry.target.roles
-                                if r not in entry.after.roles
-                            ):
-                                added_permissions.append(permission.replace("_", " ").title())
+                    if isinstance(entry.target, discord.Member):
+                        for role in entry.after.roles:
+                            if not isinstance(role, discord.Role):
+                                continue
+                            for permission, value in role.permissions:
+                                if value and all(
+                                    not getattr(r.permissions, permission, False)
+                                    for r in entry.target.roles
+                                    if r not in entry.after.roles
+                                ):
+                                    added_permissions.append(permission.replace("_", " ").title())
                 if entry.before.roles:
                     embed.add_field(
                         name=_("Removed Roles:"),
@@ -1191,14 +1190,15 @@ class LoggingModule(Module):
                             if role not in entry.after.roles
                         ),
                     )
-                    for role in entry.before.roles:
-                        if not isinstance(role, discord.Role):
-                            continue
-                        for permission, value in role.permissions:
-                            if value and not getattr(
-                                entry.target.guild_permissions, permission, False
-                            ):
-                                removed_permissions.append(permission.replace("_", " ").title())
+                    if isinstance(entry.target, discord.Member):
+                        for role in entry.before.roles:
+                            if not isinstance(role, discord.Role):
+                                continue
+                            for permission, value in role.permissions:
+                                if value and not getattr(
+                                    entry.target.guild_permissions, permission, False
+                                ):
+                                    removed_permissions.append(permission.replace("_", " ").title())
             if added_permissions or removed_permissions:
                 embed.add_field(
                     name=_("Permissions Changes:"),
@@ -1213,6 +1213,9 @@ class LoggingModule(Module):
                     inline=False,
                 )
 
+        for field in getattr(embed, "_fields", []):
+            if len(field["value"]) > 1024:
+                field["value"] = field["value"][:1020] + "\n..."
         embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
         return embed
 

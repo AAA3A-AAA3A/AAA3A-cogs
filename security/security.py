@@ -16,7 +16,7 @@ import onetimepass
 import qrcode
 from PIL import Image, ImageDraw
 from redbot.core import modlog
-from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file, pagify
+from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
 
 from .constants import (
     WHITELIST_TYPES,
@@ -215,7 +215,7 @@ class Security(Cog):
         async def predicate(ctx: commands.Context) -> bool:
             cog = ctx.bot.get_cog("Security")
             if not await cog.is_trusted_admin_or_higher(ctx.author):
-                if ctx.cog is cog:
+                if ctx.invoked_with == ctx.command.name:
                     await cog.send_modlog(
                         action="notify",
                         member=ctx.author,
@@ -1071,14 +1071,68 @@ class Security(Cog):
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command()
     async def lastactions(self, ctx: commands.Context, member: discord.Member = None) -> None:
-        """View the last actions of a member, from audit logs."""
-        if not (
-            audit_log_entries := [
-                entry
-                async for entry in ctx.guild.audit_logs(limit=100, user=member if member is not None else discord.utils.MISSING)
-            ]
-        ):
+        """View the last audit log entries for a member or the server."""
+        audit_log_entries = list(
+            reversed(
+                [
+                    entry
+                    async for entry in ctx.guild.audit_logs(
+                        limit=100,
+                        user=member if member is not None else discord.utils.MISSING,
+                    )
+                ]
+            )
+        )
+        if member is not None:
+            params = {"target_id": member.id}
+            if audit_log_entries:
+                params["after"] = audit_log_entries[0].id
+            else:
+                params["limit"] = 100
+            data = await ctx.bot.http.request(
+                discord.http.Route(
+                    "GET",
+                    "/guilds/{guild.id}/audit-logs",
+                    guild=ctx.guild,
+                ),
+                params=params,
+            )
+            raw_entries, state = data.get("audit_log_entries", []), ctx.guild._state
+            users = (discord.User(data=raw_user, state=state) for raw_user in data.get("users", []))
+            user_map = {user.id: user for user in users}
+            integrations = (discord.PartialIntegration(data=raw_i, guild=self) for raw_i in data.get("integrations", []))
+            integration_map = {integration.id: integration for integration in integrations}
+            app_commands = (discord.app_commands.AppCommand(data=raw_cmd, state=state) for raw_cmd in data.get("application_commands", []))
+            app_command_map = {app_command.id: app_command for app_command in app_commands}
+            automod_rules = (
+                discord.AutoModRule(data=raw_rule, guild=self, state=state)
+                for raw_rule in data.get("auto_moderation_rules", [])
+            )
+            automod_rule_map = {rule.id: rule for rule in automod_rules}
+            webhooks = (discord.Webhook.from_state(data=raw_webhook, state=state) for raw_webhook in data.get("webhooks", []))
+            webhook_map = {webhook.id: webhook for webhook in webhooks}
+            audit_log_entries.extend(
+                [
+                    discord.AuditLogEntry(
+                        data=raw_entry,
+                        users=user_map,
+                        integrations=integration_map,
+                        app_commands=app_command_map,
+                        automod_rules=automod_rule_map,
+                        webhooks=webhook_map,
+                        guild=ctx.guild,
+                    )
+                    for raw_entry in raw_entries
+                    if (
+                        raw_entry["action_type"] is not None
+                        and (not audit_log_entries or discord.utils.snowflake_time(int(raw_entry["id"])) > audit_log_entries[0].created_at)
+                    )
+                ]
+            )
+            audit_log_entries.sort(key=lambda entry: entry.created_at)
+        if not audit_log_entries:
             raise commands.UserFeedbackCheckFailure(_("No audit log entries found."))
+
         logging_module = self.modules["logging"]
         embeds: typing.List[discord.Embed] = [
             await logging_module.get_embed(

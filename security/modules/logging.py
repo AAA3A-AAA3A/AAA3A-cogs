@@ -1475,7 +1475,7 @@ class LoggingModule(Module):
         if reaction.message.guild is None:
             return
         event = await self.get_event(reaction.message.guild, "reaction_remove")
-        if not (channel := await self.check_config(reaction.message.guild, event, user)):
+        if not (channel := await self.check_config(reaction.message.guild, event, user, reaction.message)):
             return
         embed: discord.Embed = await self.get_embed(
             reaction.message.guild,

@@ -23,11 +23,11 @@ RUMBLE_BOT_ID: int = 693167035068317736
 
 
 def clean_embed_description(description: str) -> str:
-    return re.sub(r":.*?:", "", re.sub(r"<:.+?:\d+>", "", description)).replace(" | ", "")
+    return re.sub(r":.*?:", "", re.sub(r"<a?:.+?:\d+>", "", description)).replace(" | ", "")
 
 
 def clean_name(name: str) -> str:
-    return name.split("**~~")[0].split(" ")[0].replace("\\", "")
+    return name.split(" ")[0].replace("\\", "")
 
 
 @cog_i18n(_)
@@ -148,7 +148,7 @@ class RumbleRoyaleUtils(Cog):
                     round_victims = []
                     for event in events:
                         try:
-                            victim_name = clean_name(event.split("~~**")[1])
+                            victim_name = clean_name(event.split("~~**")[1].split("**~~")[0])
                         except IndexError:
                             victim_name = None
                         try:

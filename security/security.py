@@ -672,7 +672,7 @@ class Security(Cog):
             await current_ctx.channel.send(embed=embed)
         if trigger_messages:
             raw_trigger_messages = [
-                f"[{message.created_at.strftime('%Y-%m-%d %H:%M:%S')} (UTC)] #{message.channel.name}: {message.content}"
+                f"[{message.created_at.strftime('%Y-%m-%d %H:%M:%S')} (UTC)] #{message.channel.name}: {message.content.replace('`', '\u02CB')}"
                 for message in trigger_messages
             ]
             file = text_to_file(

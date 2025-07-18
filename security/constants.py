@@ -427,3 +427,7 @@ def get_non_animated_asset(asset: typing.Optional[discord.Asset] = None) -> typi
         key=asset.key.removeprefix("a_"),
         animated=False,
     )
+
+
+def clean_backticks(text: str) -> str:
+    return text.replace("`", "\u02CB")

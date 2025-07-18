@@ -10,7 +10,7 @@ from collections import defaultdict
 
 from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
 
-from ..constants import Emojis, get_non_animated_asset
+from ..constants import Emojis, get_non_animated_asset, clean_backticks
 from ..views import ToggleModuleButton
 from .module import Module
 
@@ -1358,9 +1358,9 @@ class LoggingModule(Module):
         if not (channel := await self.check_config(after.guild, event, after.author, after)):
             return
         embed: discord.Embed = await self.get_embed(after.guild, event, after.author, after)
-        embed.description += f"\n{box('- ' + before.content.replace('`', '\u02CB'), 'diff')}"
+        embed.description += f"\n{box('- ' + clean_backticks(before.content), 'diff')}"
         if len(embed.description) + len(after.content) <= 4082:
-            embed.description += f"\n{box('+ ' + after.content.replace('`', '\u02CB'), 'diff')}"
+            embed.description += f"\n{box('+ ' + clean_backticks(after.content), 'diff')}"
         await channel.send(embed=embed)
 
     @commands.Cog.listener()
@@ -1394,7 +1394,7 @@ class LoggingModule(Module):
         )
         if message is not None:
             embed.description += (
-                f"\n{box('- ' + message.content.replace('`', '\u02CB'), 'diff')}" if message.content else ""
+                f"\n{box('- ' + clean_backticks(message.content), 'diff')}" if message.content else ""
             )
             if message.attachments:
                 embed.description += "\n" + _("{emoji} **Attachments:**").format(
@@ -1434,7 +1434,7 @@ class LoggingModule(Module):
         if payload.cached_messages:
             messages = payload.cached_messages
             raw_messages = [
-                f"[{message.created_at.strftime('%Y-%m-%d %H:%M:%S')} (UTC)] {message.author.display_name} ({message.author.id}): {message.content.replace('`', '\u02CB')}"
+                f"[{message.created_at.strftime('%Y-%m-%d %H:%M:%S')} (UTC)] {message.author.display_name} ({message.author.id}): {clean_backticks(message.content)}"
                 for message in messages
             ]
             file = text_to_file(

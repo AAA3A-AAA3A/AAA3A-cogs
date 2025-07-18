@@ -25,6 +25,7 @@ from .constants import (
     Levels,
     MemberEmojis,
     get_non_animated_asset,
+    clean_backticks,
 )  # NOQA
 from .modules import MODULES, Module
 from .views import OBJECT_TYPING, ActionsView, SettingsView, WhitelistView
@@ -672,7 +673,7 @@ class Security(Cog):
             await current_ctx.channel.send(embed=embed)
         if trigger_messages:
             raw_trigger_messages = [
-                f"[{message.created_at.strftime('%Y-%m-%d %H:%M:%S')} (UTC)] #{message.channel.name}: {message.content.replace('`', '\u02CB')}"
+                f"[{message.created_at.strftime('%Y-%m-%d %H:%M:%S')} (UTC)] #{message.channel.name}: {clean_backticks(message.content)}"
                 for message in trigger_messages
             ]
             file = text_to_file(

@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 @dataclass
 class PlayerApparition:
     round_number: int
-    type: typing.Literal["kill", "death", "revive"]
+    type: typing.Literal["kill", "death", "revive", "apparition"]
     cause: str
     message: discord.Message
     other: typing.Optional[discord.Member] = None

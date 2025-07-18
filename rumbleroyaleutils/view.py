@@ -49,8 +49,8 @@ class AmIAliveView(discord.ui.View):
         alive = True
         description = []
         for event in self.cog.rumbles[interaction.channel].players[interaction.user]:
+            alive = event.type != "death"
             if event.type == "kill":
-                alive = True
                 description.append(
                     _("- **🔪 Round {round_number}:** You killed {other}.").format(
                         round_number=event.round_number,
@@ -58,7 +58,6 @@ class AmIAliveView(discord.ui.View):
                     )
                 )
             elif event.type == "death":
-                alive = False
                 description.append(
                     _("- **💀 Round {round_number}:** You died{killed}.").format(
                         round_number=event.round_number,
@@ -74,6 +73,12 @@ class AmIAliveView(discord.ui.View):
             elif event.type == "revive":
                 description.append(
                     _("- **💖 Round {round_number}:** You were revived.").format(
+                        round_number=event.round_number,
+                    )
+                )
+            elif event.type == "apparition":
+                description.append(
+                    _("- **👻 Round {round_number}:** You appeared.").format(
                         round_number=event.round_number,
                     )
                 )

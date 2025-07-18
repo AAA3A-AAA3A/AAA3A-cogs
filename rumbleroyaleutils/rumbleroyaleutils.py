@@ -163,14 +163,27 @@ class RumbleRoyaleUtils(Cog):
                         if victim_name is not None:
                             victim = discord.utils.get(rumble.players, name=victim_name)
                         else:
-                            rumble.players[killer].append(
-                                PlayerApparition(
-                                    round_number=round_number,
-                                    type="revive",
-                                    cause=event,
-                                    message=message,
+                            alive = True
+                            for event in rumble.players[killer]:
+                                alive = event.type != "death"
+                            if not alive:
+                                rumble.players[killer].append(
+                                    PlayerApparition(
+                                        round_number=round_number,
+                                        type="revive",
+                                        cause=event,
+                                        message=message,
+                                    )
                                 )
-                            )
+                            else:
+                                rumble.players[killer].append(
+                                    PlayerApparition(
+                                        round_number=round_number,
+                                        type="apparition",
+                                        cause=event,
+                                        message=message,
+                                    )
+                                )
                             continue
                         if killer is not None:
                             rumble.players[killer].append(

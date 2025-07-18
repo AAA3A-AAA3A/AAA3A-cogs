@@ -82,8 +82,8 @@ class RumbleRoyaleUtils(Cog):
         await super().cog_load()
         await self.settings.add_commands()
 
-    @commands.Cog.listener(name="on_message_without_command")
-    async def on_message_without_command_1(self, message: discord.Message) -> None:
+    @commands.Cog.listener()
+    async def on_message_without_command(self, message: discord.Message) -> None:
         if message.guild is None or await self.bot.cog_disabled_in_guild(
             cog=self, guild=message.guild
         ):

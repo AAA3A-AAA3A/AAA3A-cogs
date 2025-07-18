@@ -864,18 +864,18 @@ class LoggingModule(Module):
         if responsible is not None:
             if event.get("ignore_bots", False) and responsible.bot:
                 return False
-            # if (
-            #     event["value"] in ("message_edit", "message_delete")
-            #     and (
-            #         await self.cog.is_whitelisted(
-            #             responsible, "logging_message_log"
-            #         )
-            #         or await self.cog.is_message_whitelisted(
-            #             target, "logging_message_log"
-            #         )
-            #     )
-            # ):
-            #     return False
+            if (
+                event["value"] in ("message_edit", "message_delete")
+                and (
+                    await self.cog.is_whitelisted(
+                        responsible, "logging_message_log"
+                    )
+                    or await self.cog.is_message_whitelisted(
+                        target, "logging_message_log"
+                    )
+                )
+            ):
+                return False
             elif event["value"] in (
                 "channel_update",
                 "overwrite_create",
@@ -1389,8 +1389,6 @@ class LoggingModule(Module):
             ):
                 responsible = entry.user
                 break
-        else:
-            responsible = None
         embed: discord.Embed = await self.get_embed(
             guild, event, responsible, message or message_channel
         )

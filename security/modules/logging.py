@@ -1277,7 +1277,7 @@ class LoggingModule(Module):
             if possible_invite is None:
                 for code, data in invites.items():
                     try:
-                        invite = await member.guild.fetch_invite(code)
+                        invite = await self.cog.bot.fetch_invite(code)
                     except discord.NotFound:
                         if data["max_uses"] is not None and (data["max_uses"] - data["uses"]) == 1:
                             possible_invite = _(

@@ -105,8 +105,10 @@ class GuildStatsView(discord.ui.View):
                 child.disabled = True
         try:
             await self._message.edit(view=self)
-        except discord.HTTPException:
-            pass
+        except discord.NotFound:
+            self.cog.log.warning("Original response not found during timeout view update.")
+        except discord.HTTPException as e:
+            self.cog.log.exception(f"Failed to update view on timeout: {e}")
         self._ready.set()
 
     @discord.ui.button(emoji="📈", custom_id="change_mode", style=discord.ButtonStyle.secondary)
@@ -128,8 +130,10 @@ class GuildStatsView(discord.ui.View):
             )
         # try:
         #     await interaction.delete_original_response()
-        # except discord.HTTPException:
-        #     pass
+        # except discord.NotFound:
+        #     self.cog.log.warning("Original response not found during deletion attempt.")
+        # except discord.HTTPException as e:
+        #     self.cog.log.exception(f"Failed to delete original response: {e}")
         await self._message.edit(attachments=[file])
 
     @discord.ui.button(emoji="🔄", custom_id="reload_page", style=discord.ButtonStyle.secondary)
@@ -150,8 +154,10 @@ class GuildStatsView(discord.ui.View):
             )
         # try:
         #     await interaction.delete_original_response()
-        # except discord.HTTPException:
-        #     pass
+        # except discord.NotFound:
+        #     self.cog.log.warning("Original response not found during deletion attempt.")
+        # except discord.HTTPException as e:
+        #     self.cog.log.exception(f"Failed to delete original response: {e}")
         await self._message.edit(attachments=[file])
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")

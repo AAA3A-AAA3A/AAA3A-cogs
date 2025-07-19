@@ -54,7 +54,7 @@ class AmIAliveView(discord.ui.View):
                 description.append(
                     _("- **🔪 Round {round_number}:** You killed {other}.").format(
                         round_number=event.round_number,
-                        other=f"{event.other.display_name} (`{event.other}`)",
+                        other=f"{event.other.mention} (`{event.other}`)",
                     )
                 )
             elif event.type == "death":
@@ -63,7 +63,7 @@ class AmIAliveView(discord.ui.View):
                         round_number=event.round_number,
                         killed=(
                             _(", killed by {other}").format(
-                                other=f"{event.other.display_name} (`{event.other}`)"
+                                other=f"{event.other.mention} (`{event.other}`)"
                             )
                             if event.other is not None
                             else ""

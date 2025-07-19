@@ -20,5 +20,5 @@
         9,
         0
     ],
-    "end_user_data_statement": "This cog does not persistently store data or metadata about users."
+    "end_user_data_statement": "This cog stores Discord user IDs, message counts, voice activity durations, and activity names for the purpose of generating guild statistics. This data is associated with specific guild members to provide personalized and guild-wide statistics. Users can request their data to be deleted using the `{prefix}guildstats ignoreme` command, or bot owners can manage user data via Red's built-in GDPR commands."
 }

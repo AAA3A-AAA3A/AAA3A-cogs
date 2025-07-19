@@ -110,13 +110,14 @@ class GuildStats(Cog):
             total_activities_times={},
         )
 
-        self.cache: typing.Dict[
-            typing.Dict[
-                discord.Guild,
-                discord.abc.GuildChannel,
-                typing.Dict[datetime.datetime, discord.Member],
-            ]
-        ] = {}
+        # In-memory cache for performance optimization
+        self.cache: typing.Dict[discord.Guild, typing.Dict[str, typing.Any]] = {}
+        # Image cache for repeated requests
+        self._image_cache: typing.Dict[str, typing.Tuple[bytes, float]] = {}
+        self._image_cache_ttl: int = 300  # 5 minutes TTL
+        # Dirty tracking for incremental saves
+        self._dirty_channels: typing.Set[int] = set()
+        self._dirty_members: typing.Set[typing.Tuple[int, int]] = set()  # (guild_id, member_id)
 
         self.font_path: Path = bundled_data_path(self) / "arial.ttf"
         self.bold_font_path: Path = bundled_data_path(self) / "arial_bold.ttf"
@@ -152,6 +153,7 @@ class GuildStats(Cog):
                 int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
             )
         asyncio.create_task(self.load_data())
+        asyncio.create_task(self._load_cache_data())
         self.loops.append(
             Loop(
                 cog=self,
@@ -160,6 +162,59 @@ class GuildStats(Cog):
                 minutes=1,
             )
         )
+
+    async def _load_cache_data(self) -> None:
+        """Load all channel and member data into memory cache for performance."""
+        try:
+            # Load all channels data
+            all_channels = await self.config.all_channels()
+            for channel_id_str, channel_data in all_channels.items():
+                channel_id = int(channel_id_str)
+                guild = self.bot.get_guild(channel_id >> 22)  # Extract guild ID from channel ID
+                if guild is None:
+                    continue
+                
+                if guild not in self.cache:
+                    self.cache[guild] = {"channels": {}, "members": {}}
+                
+                channel = guild.get_channel(channel_id)
+                if channel is not None:
+                    self.cache[guild]["channels"][channel] = {
+                        "total_messages": channel_data.get("total_messages", 0),
+                        "total_humans_messages": channel_data.get("total_humans_messages", 0),
+                        "total_bots_messages": channel_data.get("total_bots_messages", 0),
+                        "total_messages_members": channel_data.get("total_messages_members", {}),
+                        "messages": channel_data.get("messages", {}),
+                        "total_voice": channel_data.get("total_voice", 0),
+                        "total_humans_voice": channel_data.get("total_humans_voice", 0),
+                        "total_bots_voice": channel_data.get("total_bots_voice", 0),
+                        "total_voice_members": channel_data.get("total_voice_members", {}),
+                        "voice": channel_data.get("voice", {}),
+                        "voice_cache": {},
+                    }
+            
+            # Load all members data
+            all_members = await self.config.all_members()
+            for guild_id_str, guild_members in all_members.items():
+                guild_id = int(guild_id_str)
+                guild = self.bot.get_guild(guild_id)
+                if guild is None:
+                    continue
+                
+                if guild not in self.cache:
+                    self.cache[guild] = {"channels": {}, "members": {}}
+                
+                for member_id_str, member_data in guild_members.items():
+                    member_id = int(member_id_str)
+                    member = guild.get_member(member_id)
+                    if member is not None:
+                        self.cache[guild]["members"][member] = {
+                            "total_activities": member_data.get("total_activities", 0),
+                            "total_activities_times": member_data.get("total_activities_times", {}),
+                            "activities_cache": {},
+                        }
+        except Exception as e:
+            self.log.exception("Failed to load cache data: %s", e)
 
     async def cog_unload(self) -> None:
         self.font_to_remove_unprintable_characters.close()
@@ -361,98 +416,126 @@ class GuildStats(Cog):
                     "total_activities_times": {},
                     "activities_cache": data["activities_cache"],
                 }
-            self.cache = new_cache
+        self.cache = new_cache
 
-        channel_group = self.config._get_base_group(self.config.CHANNEL)
-        async with channel_group.all() as channels_data:
-            for guild in cache:
-                for channel, data in cache[guild]["channels"].items():
-                    if str(channel.id) not in channels_data:
-                        channels_data[str(channel.id)] = {
-                            "total_messages": 0,
-                            "total_humans_messages": 0,
-                            "total_bots_messages": 0,
-                            "total_messages_members": {},
-                            "messages": {},
-                            "total_voice": 0,
-                            "total_humans_voice": 0,
-                            "total_bots_voice": 0,
-                            "total_voice_members": {},
-                            "voice": {},
-                        }
-                    # Messages.
-                    channels_data[str(channel.id)]["total_messages"] += data["total_messages"]
-                    channels_data[str(channel.id)]["total_humans_messages"] += data[
-                        "total_humans_messages"
-                    ]
-                    channels_data[str(channel.id)]["total_bots_messages"] += data[
-                        "total_bots_messages"
-                    ]
-                    for member, count_messages in data["total_messages_members"].items():
-                        if (
-                            str(member.id)
-                            not in channels_data[str(channel.id)]["total_messages_members"]
-                        ):
-                            channels_data[str(channel.id)]["total_messages_members"][
-                                str(member.id)
-                            ] = 0
-                        channels_data[str(channel.id)]["total_messages_members"][
-                            str(member.id)
-                        ] += count_messages
-                    for member, times in data["messages"].items():
-                        if str(member.id) not in channels_data[str(channel.id)]["messages"]:
-                            channels_data[str(channel.id)]["messages"][str(member.id)] = []
-                        channels_data[str(channel.id)]["messages"][str(member.id)].extend(
-                            [int(time.timestamp()) for time in times]
-                        )
-                    # Voice.
-                    channels_data[str(channel.id)]["total_voice"] += data["total_voice"]
-                    channels_data[str(channel.id)]["total_humans_voice"] += data[
-                        "total_humans_voice"
-                    ]
-                    channels_data[str(channel.id)]["total_bots_voice"] += data["total_bots_voice"]
-                    for member, count_voice in data["total_voice_members"].items():
-                        if (
-                            str(member.id)
-                            not in channels_data[str(channel.id)]["total_voice_members"]
-                        ):
-                            channels_data[str(channel.id)]["total_voice_members"][
-                                str(member.id)
-                            ] = 0
-                        channels_data[str(channel.id)]["total_voice_members"][
-                            str(member.id)
-                        ] += count_voice
-        member_group = self.config._get_base_group(self.config.MEMBER)
-        async with member_group.all() as members_data:
-            for guild in cache:
-                # Activities.
-                for member, data in cache[guild]["members"].items():
-                    if not data["total_activities"]:
-                        continue
-                    if str(guild.id) not in members_data:
-                        members_data[str(guild.id)] = {}
-                    if str(member.id) not in members_data[str(guild.id)]:
-                        members_data[str(guild.id)][str(member.id)] = {
-                            "total_activities": 0,
-                            "total_activities_times": {},
-                        }
-                    members_data[str(guild.id)][str(member.id)]["total_activities"] += data[
-                        "total_activities"
-                    ]
-                    for activity_name, count_time in data["total_activities_times"].items():
-                        if (
-                            activity_name
-                            not in members_data[str(guild.id)][str(member.id)][
-                                "total_activities_times"
+        # Optimized incremental saving using dirty tracking
+        try:
+            # Save only dirty channels
+            if self._dirty_channels:
+                channel_group = self.config._get_base_group(self.config.CHANNEL)
+                async with channel_group.all() as channels_data:
+                    for guild in cache:
+                        for channel, data in cache[guild]["channels"].items():
+                            if channel.id not in self._dirty_channels:
+                                continue
+                            
+                            if str(channel.id) not in channels_data:
+                                channels_data[str(channel.id)] = {
+                                    "total_messages": 0,
+                                    "total_humans_messages": 0,
+                                    "total_bots_messages": 0,
+                                    "total_messages_members": {},
+                                    "messages": {},
+                                    "total_voice": 0,
+                                    "total_humans_voice": 0,
+                                    "total_bots_voice": 0,
+                                    "total_voice_members": {},
+                                    "voice": {},
+                                }
+                            
+                            # Messages.
+                            channels_data[str(channel.id)]["total_messages"] += data["total_messages"]
+                            channels_data[str(channel.id)]["total_humans_messages"] += data[
+                                "total_humans_messages"
                             ]
-                        ):
-                            members_data[str(guild.id)][str(member.id)]["total_activities_times"][
-                                activity_name
-                            ] = 0
-                        members_data[str(guild.id)][str(member.id)]["total_activities_times"][
-                            activity_name
-                        ] += count_time
+                            channels_data[str(channel.id)]["total_bots_messages"] += data[
+                                "total_bots_messages"
+                            ]
+                            for member, count_messages in data["total_messages_members"].items():
+                                if (
+                                    str(member.id)
+                                    not in channels_data[str(channel.id)]["total_messages_members"]
+                                ):
+                                    channels_data[str(channel.id)]["total_messages_members"][
+                                        str(member.id)
+                                    ] = 0
+                                channels_data[str(channel.id)]["total_messages_members"][
+                                    str(member.id)
+                                ] += count_messages
+                            for member, times in data["messages"].items():
+                                if str(member.id) not in channels_data[str(channel.id)]["messages"]:
+                                    channels_data[str(channel.id)]["messages"][str(member.id)] = []
+                                channels_data[str(channel.id)]["messages"][str(member.id)].extend(
+                                    [int(time.timestamp()) for time in times]
+                                )
+                            # Voice.
+                            channels_data[str(channel.id)]["total_voice"] += data["total_voice"]
+                            channels_data[str(channel.id)]["total_humans_voice"] += data[
+                                "total_humans_voice"
+                            ]
+                            channels_data[str(channel.id)]["total_bots_voice"] += data["total_bots_voice"]
+                            for member, count_voice in data["total_voice_members"].items():
+                                if (
+                                    str(member.id)
+                                    not in channels_data[str(channel.id)]["total_voice_members"]
+                                ):
+                                    channels_data[str(channel.id)]["total_voice_members"][
+                                        str(member.id)
+                                    ] = 0
+                                channels_data[str(channel.id)]["total_voice_members"][
+                                    str(member.id)
+                                ] += count_voice
+                
+                # Clear dirty channels after saving
+                self._dirty_channels.clear()
+            
+            # Save only dirty members
+            if self._dirty_members:
+                member_group = self.config._get_base_group(self.config.MEMBER)
+                async with member_group.all() as members_data:
+                    for guild in cache:
+                        # Activities.
+                        for member, data in cache[guild]["members"].items():
+                            if (guild.id, member.id) not in self._dirty_members:
+                                continue
+                            
+                            if not data["total_activities"]:
+                                continue
+                            if str(guild.id) not in members_data:
+                                members_data[str(guild.id)] = {}
+                            if str(member.id) not in members_data[str(guild.id)]:
+                                members_data[str(guild.id)][str(member.id)] = {
+                                    "total_activities": 0,
+                                    "total_activities_times": {},
+                                }
+                            members_data[str(guild.id)][str(member.id)]["total_activities"] += data[
+                                "total_activities"
+                            ]
+                            for activity_name, count_time in data["total_activities_times"].items():
+                                if (
+                                    activity_name
+                                    not in members_data[str(guild.id)][str(member.id)][
+                                        "total_activities_times"
+                                    ]
+                                ):
+                                    members_data[str(guild.id)][str(member.id)]["total_activities_times"][
+                                        activity_name
+                                    ] = 0
+                                members_data[str(guild.id)][str(member.id)]["total_activities_times"][
+                                    activity_name
+                                ] += count_time
+                
+                # Clear dirty members after saving
+                self._dirty_members.clear()
+                
+        except Exception as e:
+            self.log.exception("Failed to save data to config: %s", e)
+        
         await self.cleanup()
+        
+        # Clear image cache periodically to prevent memory bloat
+        if len(self._image_cache) > 100:  # Limit cache size
+            self._image_cache.clear()
 
     async def cleanup(self, utc_now: datetime.datetime = None) -> None:
         if utc_now is None:
@@ -547,6 +630,10 @@ class GuildStats(Cog):
         self.cache[message.guild]["channels"][message.channel]["messages"][message.author].append(
             datetime.datetime.now(tz=datetime.timezone.utc)
         )
+        # Mark channel as dirty for incremental saving
+        self._dirty_channels.add(message.channel.id)
+        # Clear image cache when data changes
+        self._image_cache.clear()
 
     @commands.Cog.listener()
     async def on_voice_state_update(
@@ -635,6 +722,10 @@ class GuildStats(Cog):
             self.cache[before.channel.guild]["channels"][before.channel]["voice"][member].append(
                 [int(start_time.timestamp()), int(end_time.timestamp())]
             )
+            # Mark channel as dirty for incremental saving
+            self._dirty_channels.add(before.channel.id)
+            # Clear image cache when data changes
+            self._image_cache.clear()
 
     @commands.Cog.listener()
     async def on_presence_update(
@@ -706,6 +797,10 @@ class GuildStats(Cog):
                 self.cache[before.guild]["members"][before]["total_activities_times"][
                     activity.name
                 ] += real_total_time
+                # Mark member as dirty for incremental saving
+                self._dirty_members.add((before.guild.id, before.id))
+                # Clear image cache when data changes
+                self._image_cache.clear()
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, old_channel: discord.abc.GuildChannel) -> None:
@@ -885,39 +980,39 @@ class GuildStats(Cog):
             else:
                 return False
 
+        def safe_get_member(guild, member_id: int):
+            """Safely get a member, ensuring it exists before accessing attributes."""
+            member = guild.get_member(member_id)
+            return member if member is not None else None
+
+        def safe_get_channel(guild, channel_id: int):
+            """Safely get a channel, ensuring it exists before accessing attributes."""
+            channel = guild.get_channel(channel_id)
+            return channel if channel is not None else None
+
         members_type_key = "" if members_type == "both" else f"{members_type}_"
 
         if isinstance(_object, discord.Member):
             if _type is None:
-                members_messages_counter: Counter = Counter(
-                    [
-                        member_id
-                        for channel_id in all_channels_data
-                        for member_id, count_messages in all_channels_data[channel_id][
-                            "total_messages_members"
-                        ].items()
-                        for __ in range(count_messages)
-                        if (member := _object.guild.get_member(int(member_id))) is not None
-                        and member.bot == _object.bot
-                    ]
-                )
+                # Optimized direct counting instead of list comprehension
+                members_messages_counter: Counter = Counter()
+                for channel_id in all_channels_data:
+                    for member_id, count_messages in all_channels_data[channel_id]["total_messages_members"].items():
+                        member = _object.guild.get_member(int(member_id))
+                        if member is not None and member.bot == _object.bot:
+                            members_messages_counter[member_id] += count_messages
                 members_messages_sorted: typing.List[int] = sorted(
                     members_messages_counter,
                     key=lambda x: (members_messages_counter[x], 1 if int(x) == _object.id else 0),
                     reverse=True,
                 )
-                members_voice_counter: Counter = Counter(
-                    [
-                        member_id
-                        for channel_id in all_channels_data
-                        for member_id, count_voice in all_channels_data[channel_id][
-                            "total_voice_members"
-                        ].items()
-                        for __ in range(count_voice)
-                        if (member := _object.guild.get_member(int(member_id))) is not None
-                        and member.bot == _object.bot
-                    ]
-                )
+                # Optimized direct counting instead of list comprehension
+                members_voice_counter: Counter = Counter()
+                for channel_id in all_channels_data:
+                    for member_id, count_voice in all_channels_data[channel_id]["total_voice_members"].items():
+                        member = _object.guild.get_member(int(member_id))
+                        if member is not None and member.bot == _object.bot:
+                            members_voice_counter[member_id] += count_voice
                 members_voice_sorted: typing.List[int] = sorted(
                     members_voice_counter,
                     key=lambda x: (members_voice_counter[x], 1 if int(x) == _object.id else 0),
@@ -1211,7 +1306,7 @@ class GuildStats(Cog):
                     ].items()
                     for __ in range(count_messages)
                     for role in getattr(member, "roles", [])
-                    if (member := _object.guild.get_member(int(member_id))) is not None
+                    if (member := safe_get_member(_object.guild, int(member_id))) is not None
                     and is_valid(int(member_id))
                 ]
             )  # and (role != _object.guild.default_role or role == _object)
@@ -1229,7 +1324,7 @@ class GuildStats(Cog):
                     ].items()
                     for __ in range(count_voice)
                     for role in getattr(member, "roles", [])
-                    if _object.guild.get_member(int(member_id)) is not None
+                    if safe_get_member(_object.guild, int(member_id)) is not None
                     and is_valid(int(member_id))
                 ]
             )  # and (role != _object.guild.default_role or role == _object)
@@ -2954,24 +3049,50 @@ class GuildStats(Cog):
             _object, _type = _object
         else:
             _type = None
+        
+        guild = _object if isinstance(_object, discord.Guild) else _object.guild
+        
+        # Build data from cache instead of reading from config
+        all_channels_data = {}
+        all_members_data = {}
+        
+        if guild in self.cache:
+            # Build channels data from cache
+            for channel, cache_data in self.cache[guild]["channels"].items():
+                if channel is None:
+                    continue
+                all_channels_data[channel.id] = {
+                    "total_messages": cache_data.get("total_messages", 0),
+                    "total_humans_messages": cache_data.get("total_humans_messages", 0),
+                    "total_bots_messages": cache_data.get("total_bots_messages", 0),
+                    "total_messages_members": cache_data.get("total_messages_members", {}),
+                    "messages": cache_data.get("messages", {}),
+                    "total_voice": cache_data.get("total_voice", 0),
+                    "total_humans_voice": cache_data.get("total_humans_voice", 0),
+                    "total_bots_voice": cache_data.get("total_bots_voice", 0),
+                    "total_voice_members": cache_data.get("total_voice_members", {}),
+                    "voice": cache_data.get("voice", {}),
+                }
+            
+            # Build members data from cache
+            for member, cache_data in self.cache[guild]["members"].items():
+                if member is None:
+                    continue
+                all_members_data[member.id] = {
+                    "total_activities": cache_data.get("total_activities", 0),
+                    "total_activities_times": cache_data.get("total_activities_times", {}),
+                }
+        
         return await asyncio.to_thread(
             self._get_data,
             _object=_object if _type is None else (_object, _type),
             members_type=members_type,
             utc_now=utc_now,
-            all_channels_data=await self.config.all_channels(),
-            all_members_data=await self.config.all_members(
-                guild=(_object if isinstance(_object, discord.Guild) else _object.guild)
-            ),
-            ignored_categories=await self.config.guild(
-                _object if isinstance(_object, discord.Guild) else _object.guild
-            ).ignored_categories(),
-            ignored_channels=await self.config.guild(
-                _object if isinstance(_object, discord.Guild) else _object.guild
-            ).ignored_channels(),
-            ignored_activities=await self.config.guild(
-                _object if isinstance(_object, discord.Guild) else _object.guild
-            ).ignored_activities(),
+            all_channels_data=all_channels_data,
+            all_members_data=all_members_data,
+            ignored_categories=await self.config.guild(guild).ignored_categories(),
+            ignored_channels=await self.config.guild(guild).ignored_channels(),
+            ignored_activities=await self.config.guild(guild).ignored_activities(),
         )
 
     def align_text_center(
@@ -3146,11 +3267,12 @@ class GuildStats(Cog):
                 fill=255,
             )
             # d.ellipse((0, 0, image.width, image.height), fill=255)
-            try:
-                img.paste(
-                    image, (30, 30, 170, 170), mask=ImageChops.multiply(mask, image.split()[3])
-                )
-            except IndexError:
+            # Optimized mask handling - use alpha channel if available, otherwise use mask directly
+            if image.mode == 'RGBA' and image.getchannel('A').getbbox() is not None:
+                # Image has alpha channel, use it directly
+                img.paste(image, (30, 30, 170, 170), mask=image.getchannel('A'))
+            else:
+                # No alpha channel, use the rounded rectangle mask
                 img.paste(image, (30, 30, 170, 170), mask=mask)
             if (
                 sum(
@@ -3224,11 +3346,12 @@ class GuildStats(Cog):
                     radius=25,
                     fill=255,
                 )
-                try:
-                    img.paste(
-                        image, (30, 30, 170, 170), mask=ImageChops.multiply(mask, image.split()[3])
-                    )
-                except IndexError:
+                # Optimized mask handling - use alpha channel if available, otherwise use mask directly
+                if image.mode == 'RGBA' and image.getchannel('A').getbbox() is not None:
+                    # Image has alpha channel, use it directly
+                    img.paste(image, (30, 30, 170, 170), mask=image.getchannel('A'))
+                else:
+                    # No alpha channel, use the rounded rectangle mask
                     img.paste(image, (30, 30, 170, 170), mask=mask)
             else:
                 image = Image.open(self.icons["person"])
@@ -6128,6 +6251,27 @@ class GuildStats(Cog):
             _object, _type = _object
         else:
             _type = None
+        
+        # Create cache key for image caching
+        cache_key = f"{hash(_object)}_{members_type}_{show_graphic}_{hash(data) if data else 'None'}"
+        current_time = datetime.datetime.now(tz=datetime.timezone.utc).timestamp()
+        
+        # Check if we have a cached version
+        if cache_key in self._image_cache:
+            cached_data, cache_time = self._image_cache[cache_key]
+            if current_time - cache_time < self._image_cache_ttl:
+                # Return cached image
+                if to_file:
+                    return discord.File(io.BytesIO(cached_data), filename="guildstats.png")
+                else:
+                    return Image.open(io.BytesIO(cached_data))
+        
+        # Clean up expired cache entries
+        expired_keys = [key for key, (_, time) in self._image_cache.items() 
+                       if current_time - time >= self._image_cache_ttl]
+        for key in expired_keys:
+            del self._image_cache[key]
+        
         img: Image.Image = await self.generate_prefix_image(
             _object if _type is None else (_object, _type),
             size=(1942, 1437 + 200 + 70 if show_graphic else 1026 + 70),
@@ -6150,7 +6294,8 @@ class GuildStats(Cog):
             )
         else:
             graphic = None
-        return await asyncio.to_thread(
+        
+        result = await asyncio.to_thread(
             self._generate_image,
             _object=_object if _type is None else (_object, _type),
             members_type=members_type,
@@ -6164,6 +6309,16 @@ class GuildStats(Cog):
                 await self.config.first_loading_time(), tz=datetime.timezone.utc
             ),
         )
+        
+        # Cache the result
+        if to_file and isinstance(result, discord.File):
+            # Read the file data for caching
+            result.seek(0)
+            file_data = result.read()
+            result.seek(0)
+            self._image_cache[cache_key] = (file_data, current_time)
+        
+        return result
 
     @commands.guild_only()
     @commands.bot_has_permissions(attach_files=True)

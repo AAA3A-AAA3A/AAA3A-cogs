@@ -876,12 +876,12 @@ class Security(Cog):
                 reason=_("Member joined while already quarantined."),
                 logs=[
                     _(
-                        "Member {member.mention} [{member}] was quarantined before leaving the server."
+                        "Member {member.mention} (`{member}`) was quarantined before leaving the server."
                     ).format(
                         member=member,
                     ),
                     _(
-                        "{member.mention} [{member}] has joined again while already quarantined."
+                        "{member.mention} (`{member}`) has joined again while already quarantined."
                     ).format(
                         member=member,
                     ),
@@ -908,7 +908,7 @@ class Security(Cog):
             reason=_("Tried to edit roles of a quarantined member."),
             logs=[
                 _(
-                    "Member {member.mention} [{member}] tried to {action} to/from the quarantined member {quarantined_member.mention} [{quarantined_member}]."
+                    "Member {member.mention} (`{member}`) tried to {action} to/from the quarantined member {quarantined_member.mention} (`{quarantined_member.id}`)."
                 ).format(
                     member=entry.user,
                     quarantined_member=entry.target,

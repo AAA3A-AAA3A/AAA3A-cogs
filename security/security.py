@@ -898,7 +898,11 @@ class Security(Cog):
             return
         try:
             await entry.target.edit(
-                roles=entry.before.roles,
+                roles=[
+                    role
+                    for role in entry.target.roles
+                    if role not in entry.after.roles
+                ] + entry.before.roles,
                 reason="Reverting role changes made on a quarantined member.",
             )
         except discord.HTTPException:

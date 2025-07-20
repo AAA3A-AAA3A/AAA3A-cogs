@@ -5,6 +5,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
 import base64
 import datetime
 import functools
@@ -24,8 +25,8 @@ from .constants import (
     Emojis,
     Levels,
     MemberEmojis,
-    get_non_animated_asset,
     clean_backticks,
+    get_non_animated_asset,
 )  # NOQA
 from .modules import MODULES, Module
 from .views import OBJECT_TYPING, ActionsView, SettingsView, WhitelistView
@@ -134,6 +135,7 @@ class Security(Cog):
         )
 
         self.modules: typing.Dict[str, Module] = {}
+        self.tasks: typing.List[asyncio.Task] = []
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -189,6 +191,9 @@ class Security(Cog):
         for module in self.modules.values():
             await module.unload()
         self.modules.clear()
+        for task in self.tasks:
+            task.cancel()
+        self.tasks.clear()
 
     async def get_member_level(self, member: discord.Member) -> Levels:
         if member == member.guild.me:
@@ -232,21 +237,24 @@ class Security(Cog):
                         issued_by=None,
                         reason=_("Tried to bypass the trusted admin or higher check."),
                         logs=[
-                            _("{author.mention} (`{author}`) tried to bypass the check of the `{command}` command.").format(
-                                author=ctx.author, command=ctx.command.qualified_name
-                            ),
+                            _(
+                                "{author.mention} (`{author}`) tried to bypass the check of the `{command}` command."
+                            ).format(author=ctx.author, command=ctx.command.qualified_name),
                         ],
                         trigger_messages=[ctx.message],
                         context_message=ctx.message,
                     )
                 return False
             return True
+
         callback = func.callback if isinstance(func, commands.HybridCommand) else func
+
         @functools.wraps(callback)
         async def new_func(self, ctx: commands.Context, *args, **kwargs):
             if not await predicate(ctx):
                 raise commands.UserFeedbackCheckFailure(_("Don't try to bypass the checks!"))
             return await callback(self, ctx, *args, **kwargs)
+
         if isinstance(func, commands.HybridCommand):
             func.callback = new_func
             final = func
@@ -621,9 +629,14 @@ class Security(Cog):
         return embed
 
     async def send_in_modlog_channel(
-        self, guild: discord.Guild, ping_role: bool = True, **kwargs
+        self,
+        guild: discord.Guild,
+        ping_role: bool = True,
+        modlog_channel: discord.TextChannel = None,
+        **kwargs,
     ) -> discord.Message:
-        modlog_channel: discord.TextChannel = await self.create_modlog_channel(guild=guild)
+        if modlog_channel is None:
+            modlog_channel: discord.TextChannel = await self.create_modlog_channel(guild=guild)
         return await modlog_channel.send(
             (
                 modlog_ping_role.mention
@@ -669,7 +682,8 @@ class Security(Cog):
             logs=logs,
             duration=duration,
         )
-        if current_ctx is not None:
+        modlog_channel: discord.TextChannel = await self.create_modlog_channel(guild=member.guild)
+        if current_ctx is not None and current_ctx.channel != modlog_channel:
             await current_ctx.channel.send(embed=embed)
         if trigger_messages:
             raw_trigger_messages = [
@@ -691,10 +705,11 @@ class Security(Cog):
             embed.description += box("\n".join(to_include))
         else:
             file = None
-        unaction = action in ("unquarantine", "untimeout", "unmute", "kick", "ban")
+        unaction = action in ("unquarantine", "untimeout", "unmute")
+        include_actions = not unaction and action not in ("kick", "ban")
         view: ActionsView = ActionsView(self, member, context_message=context_message)
         await view.populate(
-            include_actions=not unaction,
+            include_actions=include_actions,
             action=action,
         )
         view._message = await self.send_in_modlog_channel(
@@ -705,6 +720,10 @@ class Security(Cog):
             view=view,
         )
         self.views[view._message] = view
+        if include_actions and duration is not None:
+            self.tasks.append(
+                asyncio.create_task(view.populate_again_after_duration(duration=duration))
+            )
         await modlog.create_case(
             bot=self.bot,
             guild=member.guild,
@@ -898,11 +917,8 @@ class Security(Cog):
             return
         try:
             await entry.target.edit(
-                roles=[
-                    role
-                    for role in entry.target.roles
-                    if role not in entry.after.roles
-                ] + entry.before.roles,
+                roles=[role for role in entry.target.roles if role not in entry.after.roles]
+                + entry.before.roles,
                 reason="Reverting role changes made on a quarantined member.",
             )
         except discord.HTTPException:
@@ -1120,18 +1136,29 @@ class Security(Cog):
                 params=params,
             )
             raw_entries, state = data.get("audit_log_entries", []), ctx.guild._state
-            users = (discord.User(data=raw_user, state=state) for raw_user in data.get("users", []))
+            users = (
+                discord.User(data=raw_user, state=state) for raw_user in data.get("users", [])
+            )
             user_map = {user.id: user for user in users}
-            integrations = (discord.PartialIntegration(data=raw_i, guild=self) for raw_i in data.get("integrations", []))
+            integrations = (
+                discord.PartialIntegration(data=raw_i, guild=self)
+                for raw_i in data.get("integrations", [])
+            )
             integration_map = {integration.id: integration for integration in integrations}
-            app_commands = (discord.app_commands.AppCommand(data=raw_cmd, state=state) for raw_cmd in data.get("application_commands", []))
+            app_commands = (
+                discord.app_commands.AppCommand(data=raw_cmd, state=state)
+                for raw_cmd in data.get("application_commands", [])
+            )
             app_command_map = {app_command.id: app_command for app_command in app_commands}
             automod_rules = (
                 discord.AutoModRule(data=raw_rule, guild=self, state=state)
                 for raw_rule in data.get("auto_moderation_rules", [])
             )
             automod_rule_map = {rule.id: rule for rule in automod_rules}
-            webhooks = (discord.Webhook.from_state(data=raw_webhook, state=state) for raw_webhook in data.get("webhooks", []))
+            webhooks = (
+                discord.Webhook.from_state(data=raw_webhook, state=state)
+                for raw_webhook in data.get("webhooks", [])
+            )
             webhook_map = {webhook.id: webhook for webhook in webhooks}
             audit_log_entries.extend(
                 [
@@ -1147,7 +1174,11 @@ class Security(Cog):
                     for raw_entry in raw_entries
                     if (
                         raw_entry["action_type"] is not None
-                        and (not audit_log_entries or discord.utils.snowflake_time(int(raw_entry["id"])) > audit_log_entries[0].created_at)
+                        and (
+                            not audit_log_entries
+                            or discord.utils.snowflake_time(int(raw_entry["id"]))
+                            > audit_log_entries[0].created_at
+                        )
                     )
                 ]
             )

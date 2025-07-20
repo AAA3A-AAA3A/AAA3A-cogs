@@ -139,6 +139,7 @@ ANTI_NUKE_OPTIONS: typing.List[
                 any(getattr(role.permissions, dangerous_permission) for role in entry.after.roles)
                 and all(
                     not getattr(role.permissions, dangerous_permission)
+                    and not role.permissions.administrator
                     for role in entry.target.roles + entry.before.roles
                     if role not in entry.after.roles
                 )

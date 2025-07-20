@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-04-11 22:17+0200\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -573,7 +573,7 @@ msgid "You need to provide at least one permission."
 msgstr ""
 
 #: discordedit\editrole.py:356
-msgid "You don't have the permission {permission_name} in this guild."
+msgid "You don't have the permission `{permission_name}` in this guild."
 msgstr ""
 
 #: discordedit\editrole.py:378
@@ -656,7 +656,7 @@ msgid ""
 "Edit text channel position.\n"
 "\n"
 "        Warning: Only text channels are taken into account. Channel 1 is the highest positioned text channel.\n"
-"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        Channels can't be moved to a position that takes them out of their current category.\n"
 "        "
 msgstr ""
 
@@ -758,15 +758,15 @@ msgid "You need to provide a role or user you want to edit permissions for."
 msgstr ""
 
 #: discordedit\edittextchannel.py:570 discordedit\editvoicechannel.py:470
-msgid "You don't have the permission {permission_name} in this channel."
+msgid "You don't have the permission `{permission_name}` in this channel."
 msgstr ""
 
 #: discordedit\edittextchannel.py:595 discordedit\editvoicechannel.py:495
-msgid "You cannot remove permissions from you in this channel."
+msgid "You can't remove permissions from you in this channel."
 msgstr ""
 
 #: discordedit\edittextchannel.py:605 discordedit\editvoicechannel.py:505
-msgid "You cannot remove permissions from the bot in this channel."
+msgid "You can't remove permissions from the bot in this channel."
 msgstr ""
 
 #: discordedit\edittextchannel.py:624
@@ -983,7 +983,7 @@ msgid ""
 "Edit voice channel position.\n"
 "\n"
 "        Warning: Only voice channels are taken into account. Channel 1 is the highest positioned voice channel.\n"
-"        Channels cannot be moved to a position that takes them out of their current category.\n"
+"        Channels can't be moved to a position that takes them out of their current category.\n"
 "        "
 msgstr ""
 

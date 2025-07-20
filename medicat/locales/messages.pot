@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -226,94 +226,104 @@ msgid ""
 msgstr ""
 
 #: medicat\medicat.py:154
-msgid "X & Y"
+msgid "Can Medicat USB help bypass or recover BitLocker encryption?"
 msgstr ""
 
 #: medicat\medicat.py:155
+msgid ""
+"No. If you could bypass BitLocker with a bootable tool, it would defeat the purpose of BitLocker entirely. BitLocker is designed to protect your data with strong encryption to prevent theft and tampering. You need the recovery key to access the drive. If it was encrypted with TPM, you can't even crack it with specialized tools, which would require significant GPU power anyway.\n"
+"To get your recovery key, visit https://aka.ms/myrecoverykey and sign in with your Microsoft account. If you cannot access your Microsoft account, unfortunately, the data is not recoverable. There is no legitimate tool that can break BitLocker encryption."
+msgstr ""
+
+#: medicat\medicat.py:160
+msgid "X & Y"
+msgstr ""
+
+#: medicat\medicat.py:161
 msgid ""
 "What is the context?\n"
 "If you have any problems or would like to ask for help, please give information about what you are not able to do. Don't just say you don't understand how to make x software work, say where you are, what is wrong with it and what is the potential error. \n"
 "Thank you for your understanding."
 msgstr ""
 
-#: medicat\medicat.py:159
+#: medicat\medicat.py:165
 msgid "Test!"
 msgstr ""
 
-#: medicat\medicat.py:159
+#: medicat\medicat.py:165
 msgid "did that work for you?"
 msgstr ""
 
-#: medicat\medicat.py:280
+#: medicat\medicat.py:286
 #, docstring
 msgid ""
 "This cog will only work on x server and therefore cannot be used by the "
 "general public!"
 msgstr ""
 
-#: medicat\medicat.py:469
+#: medicat\medicat.py:475
 msgid "This Ventoy version doesn't exists."
 msgstr ""
 
-#: medicat\medicat.py:503
+#: medicat\medicat.py:509
 msgid "Ventoy v{ventoy_version_str} has been released!"
 msgstr ""
 
-#: medicat\medicat.py:506
+#: medicat\medicat.py:512
 msgid "New features:"
 msgstr ""
 
-#: medicat\medicat.py:511
+#: medicat\medicat.py:517
 msgid "Download this version:"
 msgstr ""
 
-#: medicat\medicat.py:519
+#: medicat\medicat.py:525
 msgid "View on Ventoy Official Website"
 msgstr ""
 
-#: medicat\medicat.py:603
+#: medicat\medicat.py:609
 msgid "{tool} now has a new version!"
 msgstr ""
 
-#: medicat\medicat.py:617
+#: medicat\medicat.py:623
 msgid "View on FCportables Official Website"
 msgstr ""
 
-#: medicat\medicat.py:761
+#: medicat\medicat.py:767
 #, docstring
 msgid "Get the latest version of Ventoy."
 msgstr ""
 
-#: medicat\medicat.py:768
+#: medicat\medicat.py:774
 #, docstring
 msgid "Get a version of Ventoy."
 msgstr ""
 
-#: medicat\medicat.py:777
+#: medicat\medicat.py:783
 #, docstring
 msgid "Get the latest versions of each Medicat USB bootable tool."
 msgstr ""
 
-#: medicat\medicat.py:813 medicat\medicat.py:950
+#: medicat\medicat.py:819 medicat\medicat.py:956
 msgid "View FCportables Official Website"
 msgstr ""
 
-#: medicat\medicat.py:832
+#: medicat\medicat.py:838
 #, docstring
 msgid "Get the debug for a FCportables's tool."
 msgstr ""
 
-#: medicat\medicat.py:909
+#: medicat\medicat.py:915
 #, docstring
 msgid "Get the download link of each Medicat USB bootable tool."
 msgstr ""
 
-#: medicat\medicat.py:970
+#: medicat\medicat.py:976
 #, docstring
 msgid "Get an embed to check loop status."
 msgstr ""
 
-#: medicat\medicat.py:977
+#: medicat\medicat.py:983
 #, docstring
 msgid "Update Medicat cog directly."
 msgstr ""

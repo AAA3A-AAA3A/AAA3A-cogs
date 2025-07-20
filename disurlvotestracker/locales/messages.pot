@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,7 +183,8 @@ msgid ""
 "**3.** Set the votes channel where vote notifications will be sent.\n"
 "**4.** Set the optional the voters role that will be assigned to voters.\n"
 "**5.** Optionally, toggle the vote reminder.\n"
-"**6.** Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`.**7.** Enable the cog."
+"**6.** Optionally, set the `custom_vote_message` and `custom_vote_reminder_message`.\n"
+"**7.** Enable the cog."
 msgstr ""
 
 #: disurlvotestracker\disurlvotestracker.py:545

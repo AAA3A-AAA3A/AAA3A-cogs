@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-04-11 22:17+0200\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,20 +11,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: devutils\devutils.py:51
+#: devutils\devutils.py:50
 msgid "No valid log level provided."
 msgstr ""
 
-#: devutils\devutils.py:80
+#: devutils\devutils.py:79
 msgid "No valid discord object provided."
 msgstr ""
 
-#: devutils\devutils.py:85
+#: devutils\devutils.py:84
 #, docstring
 msgid "Various development utilities!"
 msgstr ""
 
-#: devutils\devutils.py:135
+#: devutils\devutils.py:134
 #, docstring
 msgid ""
 "\n"
@@ -34,42 +34,42 @@ msgid ""
 "        "
 msgstr ""
 
-#: devutils\devutils.py:156 devutils\devutils.py:236 devutils\devutils.py:252
+#: devutils\devutils.py:155 devutils\devutils.py:235 devutils\devutils.py:251
 msgid "You have not specified a correct command."
 msgstr ""
 
-#: devutils\devutils.py:158 devutils\devutils.py:254
+#: devutils\devutils.py:157 devutils\devutils.py:253
 msgid "You can't execute yourself this command."
 msgstr ""
 
-#: devutils\devutils.py:175
+#: devutils\devutils.py:174
 #, docstring
 msgid "Execute multiple commands at once. Split them using |."
 msgstr ""
 
-#: devutils\devutils.py:190 devutils\devutils.py:212
+#: devutils\devutils.py:189 devutils\devutils.py:211
 msgid "`{command}` isn't a valid command."
 msgstr ""
 
-#: devutils\devutils.py:196 devutils\devutils.py:218
+#: devutils\devutils.py:195 devutils\devutils.py:217
 msgid "You can't execute yourself `{command}`."
 msgstr ""
 
-#: devutils\devutils.py:225
+#: devutils\devutils.py:224
 #, docstring
 msgid "Bypass a command's checks and cooldowns."
 msgstr ""
 
-#: devutils\devutils.py:241
+#: devutils\devutils.py:240
 #, docstring
 msgid "Run a command timing execution and catching exceptions."
 msgstr ""
 
-#: devutils\devutils.py:260
+#: devutils\devutils.py:259
 msgid "Command `{command}` finished in `{timing}`s."
 msgstr ""
 
-#: devutils\devutils.py:267
+#: devutils\devutils.py:266
 #, docstring
 msgid ""
 "Reinvoke a command message.\n"
@@ -79,15 +79,15 @@ msgid ""
 "        "
 msgstr ""
 
-#: devutils\devutils.py:291
+#: devutils\devutils.py:290
 msgid "The command isn't valid."
 msgstr ""
 
-#: devutils\devutils.py:293
+#: devutils\devutils.py:292
 msgid "This command can't be executed."
 msgstr ""
 
-#: devutils\devutils.py:299
+#: devutils\devutils.py:298
 #, docstring
 msgid ""
 "Change the logging level for a logger. If no name is provided, the root logger (`red`) is used.\n"
@@ -103,16 +103,16 @@ msgid ""
 "        "
 msgstr ""
 
-#: devutils\devutils.py:313
+#: devutils\devutils.py:312
 msgid "Logger `{logger_name}` level set to `{level}`."
 msgstr ""
 
-#: devutils\devutils.py:320
+#: devutils\devutils.py:319
 #, docstring
 msgid "Stop all bot typing tasks."
 msgstr ""
 
-#: devutils\devutils.py:336
+#: devutils\devutils.py:335
 #, docstring
 msgid ""
 "Force reload a module (to use code changes without restarting your bot).\n"
@@ -121,19 +121,19 @@ msgid ""
 "        "
 msgstr ""
 
-#: devutils\devutils.py:352
+#: devutils\devutils.py:351
 msgid "I couldn't find any module with this name."
 msgstr ""
 
-#: devutils\devutils.py:356
+#: devutils\devutils.py:355
 msgid "Module(s) {modules} reloaded."
 msgstr ""
 
-#: devutils\devutils.py:362
+#: devutils\devutils.py:361
 msgid "Modules [...] reloaded."
 msgstr ""
 
-#: devutils\devutils.py:366
+#: devutils\devutils.py:365
 #, docstring
 msgid "Display the JSON of a Discord object with a raw request."
 msgstr ""

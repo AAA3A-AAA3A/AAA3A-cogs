@@ -53,12 +53,11 @@ class Reach(Cog):
     async def check(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[discord.TextChannel],
+        channel: discord.TextChannel,
         roles: commands.Greedy[discord.Role],
         include_statuses: bool = False,
     ) -> None:
         """Check the reach of specific ping roles in a specific channel."""
-        channel = channel or ctx.channel
         if not roles:
             raise commands.UserFeedbackCheckFailure(
                 _("You must provide at least one role to check reach for.")
@@ -137,14 +136,13 @@ class Reach(Cog):
     async def search(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[discord.TextChannel],
+        channel: discord.TextChannel,
         amount: commands.Range[int, 1, None],
         possible_combinations: typing.Optional[commands.Range[int, 1, 3]] = 1,
         possible_roles: commands.Greedy[discord.Role] = [],
         include_statuses: bool = False,
     ) -> None:
         """Find the closest ping roles for the amount of members you want to ping in a specific channel."""
-        channel = channel or ctx.channel
         if possible_roles:
             roles = possible_roles
         elif not (roles_for_search := await self.config.guild(ctx.guild).roles_for_search()):

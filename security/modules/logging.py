@@ -10,7 +10,7 @@ from collections import defaultdict
 
 from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
 
-from ..constants import Emojis, get_non_animated_asset, clean_backticks
+from ..constants import Emojis, clean_backticks, get_non_animated_asset
 from ..views import ToggleModuleButton
 from .module import Module
 
@@ -864,16 +864,9 @@ class LoggingModule(Module):
         if responsible is not None:
             if event.get("ignore_bots", False) and responsible.bot:
                 return False
-            if (
-                event["value"] in ("message_edit", "message_delete")
-                and (
-                    await self.cog.is_whitelisted(
-                        responsible, "logging_message_log"
-                    )
-                    or await self.cog.is_message_whitelisted(
-                        target, "logging_message_log"
-                    )
-                )
+            if event["value"] in ("message_edit", "message_delete") and (
+                await self.cog.is_whitelisted(responsible, "logging_message_log")
+                or await self.cog.is_message_whitelisted(target, "logging_message_log")
             ):
                 return False
             elif event["value"] in (
@@ -926,7 +919,9 @@ class LoggingModule(Module):
         embed: discord.Embed = discord.Embed(
             title=f"{event['name']} {event['emoji']}",
             color=discord.Color(event["color"]),
-            timestamp=entry.created_at if entry is not None else datetime.datetime.now(datetime.timezone.utc),
+            timestamp=entry.created_at
+            if entry is not None
+            else datetime.datetime.now(datetime.timezone.utc),
         )
 
         if responsible is not None:
@@ -1009,7 +1004,9 @@ class LoggingModule(Module):
                         "\n- **Author:** {target.author.mention} (`{target.author}`){member_emojis} - `{target.author.id}`"
                     ).format(
                         target=target,
-                        member_emojis=f" {await self.cog.get_member_emojis(target.author)}" if isinstance(target.author, discord.Member) else "",
+                        member_emojis=f" {await self.cog.get_member_emojis(target.author)}"
+                        if isinstance(target.author, discord.Member)
+                        else "",
                     )
                 embed.description += _("\n- **Created at:** {created_at} ({created_ago})").format(
                     created_at=discord.utils.format_dt(target.created_at, "F"),
@@ -1042,7 +1039,11 @@ class LoggingModule(Module):
                 embed.description += "\n" + _(
                     "{emoji} **Target Scheduled Event:** `{event.name}` - `{event.id}`"
                 ).format(emoji=Emojis.SCHEDULED_EVENT.value, event=target)
-            elif isinstance(target, discord.Object) and entry is not None and (before := entry.before) is not None:
+            elif (
+                isinstance(target, discord.Object)
+                and entry is not None
+                and (before := entry.before) is not None
+            ):
                 if event["value"] == "channel_delete":
                     embed.description += "\n" + _(
                         "{emoji} **Target Channel:** `{target_name}` - `{target.id}`"
@@ -1077,6 +1078,7 @@ class LoggingModule(Module):
             )
 
         if entry is not None:
+
             def get_formatting(value: typing.Any) -> str:
                 if isinstance(value, str):
                     return f"`{value}`"
@@ -1201,7 +1203,9 @@ class LoggingModule(Module):
                                 if value and not getattr(
                                     entry.target.guild_permissions, permission, False
                                 ):
-                                    removed_permissions.append(permission.replace("_", " ").title())
+                                    removed_permissions.append(
+                                        permission.replace("_", " ").title()
+                                    )
             if added_permissions or removed_permissions:
                 embed.add_field(
                     name=_("Permissions Changes:"),
@@ -1394,7 +1398,9 @@ class LoggingModule(Module):
         )
         if message is not None:
             embed.description += (
-                f"\n{box('- ' + clean_backticks(message.content), 'diff')}" if message.content else ""
+                f"\n{box('- ' + clean_backticks(message.content), 'diff')}"
+                if message.content
+                else ""
             )
             if message.attachments:
                 embed.description += "\n" + _("{emoji} **Attachments:**").format(
@@ -1458,7 +1464,11 @@ class LoggingModule(Module):
         if reaction.message.guild is None:
             return
         event = await self.get_event(reaction.message.guild, "reaction_add")
-        if not (channel := await self.check_config(reaction.message.guild, event, user, reaction.message)):
+        if not (
+            channel := await self.check_config(
+                reaction.message.guild, event, user, reaction.message
+            )
+        ):
             return
         embed: discord.Embed = await self.get_embed(
             reaction.message.guild,
@@ -1475,7 +1485,11 @@ class LoggingModule(Module):
         if reaction.message.guild is None:
             return
         event = await self.get_event(reaction.message.guild, "reaction_remove")
-        if not (channel := await self.check_config(reaction.message.guild, event, user, reaction.message)):
+        if not (
+            channel := await self.check_config(
+                reaction.message.guild, event, user, reaction.message
+            )
+        ):
             return
         embed: discord.Embed = await self.get_embed(
             reaction.message.guild,

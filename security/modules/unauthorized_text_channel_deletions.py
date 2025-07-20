@@ -185,7 +185,9 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         )
 
         embed = discord.Embed(
-            title=_("Unauthorized Text Channel Deletion Detected {emoji}").format(emoji=self.emoji),
+            title=_("Unauthorized Text Channel Deletion Detected {emoji}").format(
+                emoji=self.emoji
+            ),
             color=Colors.UNAUTHORIZED_TEXT_CHANNEL_DELETIONS.value,
             timestamp=entry.created_at,
         )

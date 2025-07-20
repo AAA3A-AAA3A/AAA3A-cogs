@@ -907,9 +907,7 @@ class ActionsView(discord.ui.View):
             )
 
     async def populate_again_after_duration(self, duration: datetime.timedelta) -> None:
-        await asyncio.sleep(
-            (duration + datetime.timedelta(seconds=5)).total_seconds()
-        )
+        await asyncio.sleep((duration + datetime.timedelta(seconds=5)).total_seconds())
         await self.populate(include_actions=True)
         try:
             await self._message.edit(view=self)

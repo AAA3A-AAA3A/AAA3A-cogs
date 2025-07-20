@@ -7,7 +7,6 @@ import typing  # isort:skip
 
 import itertools
 import time
-
 from collections import Counter
 
 from redbot.core.utils.chat_formatting import humanize_list, humanize_number
@@ -61,10 +60,14 @@ class Reach(Cog):
         """Check the reach of specific ping roles in a specific channel."""
         channel = channel or ctx.channel
         if not roles:
-            raise commands.UserFeedbackCheckFailure(_("You must provide at least one role to check reach for."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You must provide at least one role to check reach for.")
+            )
         embed: discord.Embed = discord.Embed(
             title=_("Reach Check"),
-            description=_("**Channel:** {channel.mention} (`{channel.id}`)\n").format(channel=channel),
+            description=_("**Channel:** {channel.mention} (`{channel.id}`)\n").format(
+                channel=channel
+            ),
             color=await ctx.embed_color(),
             timestamp=ctx.message.created_at,
         )
@@ -78,10 +81,7 @@ class Reach(Cog):
             total_human_count += human_count
             reach = access_count / human_count * 100 if human_count > 0 else 0.00
             if include_statuses:
-                access_member_statuses = Counter(
-                    member.status.value
-                    for member in access_members
-                )
+                access_member_statuses = Counter(member.status.value for member in access_members)
                 total_statuses.update(access_member_statuses)
             embed.description += _(
                 "\n{i}. **{role.mention}** (`{role.id}`)\n"
@@ -97,9 +97,14 @@ class Reach(Cog):
             ) + (
                 _("\n  - Statuses: {statuses}").format(
                     statuses=humanize_list(
-                        [f"{STATUS_EMOJIS[name]} {count}" for name, count in access_member_statuses.most_common()]
+                        [
+                            f"{STATUS_EMOJIS[name]} {count}"
+                            for name, count in access_member_statuses.most_common()
+                        ]
                     )
-                ) if include_statuses and access_member_statuses else ""
+                )
+                if include_statuses and access_member_statuses
+                else ""
             )
         embed.add_field(
             name=_("**Total:**"),
@@ -111,12 +116,18 @@ class Reach(Cog):
                 human_count=humanize_number(total_human_count),
                 access_count=humanize_number(total_access_count),
                 reach=f"{total_access_count / total_human_count * 100:.2f}%",
-            ) + (
+            )
+            + (
                 _("\n- Statuses: {statuses}").format(
                     statuses=humanize_list(
-                        [f"{STATUS_EMOJIS[name]} {count}" for name, count in total_statuses.most_common()]
+                        [
+                            f"{STATUS_EMOJIS[name]} {count}"
+                            for name, count in total_statuses.most_common()
+                        ]
                     )
-                ) if include_statuses and total_statuses else ""
+                )
+                if include_statuses and total_statuses
+                else ""
             ),
         )
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
@@ -152,14 +163,18 @@ class Reach(Cog):
         result = []
         for i in range(1, possible_combinations + 1):
             for combination in itertools.combinations(roles, i):
-                human_members = set(member for role in combination for member in role_members[role] if not member.bot)
+                human_members = set(
+                    member
+                    for role in combination
+                    for member in role_members[role]
+                    if not member.bot
+                )
                 access_members = channel_members & human_members
                 human_count, access_count = len(human_members), len(access_members)
                 reach = access_count / human_count * 100 if human_count > 0 else 0.00
                 if include_statuses:
                     access_member_statuses = Counter(
-                        member.status.value
-                        for member in channel_members & human_members
+                        member.status.value for member in channel_members & human_members
                     )
                 else:
                     access_member_statuses = {}
@@ -178,7 +193,9 @@ class Reach(Cog):
         )
         embed: discord.Embed = discord.Embed(
             title=_("Reach Search Results"),
-            description=_("**Channel:** {channel.mention} (`{channel.id}`)\n**Target amount:** {amount}\n").format(
+            description=_(
+                "**Channel:** {channel.mention} (`{channel.id}`)\n**Target amount:** {amount}\n"
+            ).format(
                 channel=channel,
                 amount=humanize_number(amount),
             ),
@@ -202,9 +219,14 @@ class Reach(Cog):
             ) + (
                 _("\n  - Statuses: {statuses}").format(
                     statuses=humanize_list(
-                        [f"{STATUS_EMOJIS[name]} {count}" for name, count in item["statuses"].most_common()]
+                        [
+                            f"{STATUS_EMOJIS[name]} {count}"
+                            for name, count in item["statuses"].most_common()
+                        ]
                     )
-                ) if include_statuses and item["statuses"] else ""
+                )
+                if include_statuses and item["statuses"]
+                else ""
             )
         end = time.time()
         embed.set_footer(
@@ -217,10 +239,14 @@ class Reach(Cog):
         await Menu(pages=[embed]).start(ctx)
 
     @reach.command()
-    async def setrolesforsearch(self, ctx: commands.Context, roles: commands.Greedy[discord.Role]) -> None:
+    async def setrolesforsearch(
+        self, ctx: commands.Context, roles: commands.Greedy[discord.Role]
+    ) -> None:
         """Set the roles to search for. This will replace the current list of roles to search for."""
         if not roles:
-            raise commands.UserFeedbackCheckFailure(_("You must provide at least one role to search for."))
+            raise commands.UserFeedbackCheckFailure(
+                _("You must provide at least one role to search for.")
+            )
         await self.config.guild(ctx.guild).roles_for_search.set([role.id for role in roles])
 
     @reach.command()
@@ -228,7 +254,9 @@ class Reach(Cog):
         """Add a role to the list of roles to search for."""
         async with self.config.guild(ctx.guild).roles_for_search() as roles_for_search:
             if role.id in roles_for_search:
-                raise commands.UserFeedbackCheckFailure(_("This role is already in the list of roles to search for."))
+                raise commands.UserFeedbackCheckFailure(
+                    _("This role is already in the list of roles to search for.")
+                )
             roles_for_search.append(role.id)
 
     @reach.command()
@@ -236,7 +264,9 @@ class Reach(Cog):
         """Remove a role from the list of roles to search for."""
         async with self.config.guild(ctx.guild).roles_for_search() as roles_for_search:
             if role.id not in roles_for_search:
-                raise commands.UserFeedbackCheckFailure(_("This role is not in the list of roles to search for."))
+                raise commands.UserFeedbackCheckFailure(
+                    _("This role is not in the list of roles to search for.")
+                )
             roles_for_search.remove(role.id)
 
     @reach.command()
@@ -244,7 +274,9 @@ class Reach(Cog):
         """List the roles that are in the list of roles to search for."""
         roles_for_search = await self.config.guild(ctx.guild).roles_for_search()
         if not roles_for_search:
-            raise commands.UserFeedbackCheckFailure(_("There are no roles in the list of roles to search for."))
+            raise commands.UserFeedbackCheckFailure(
+                _("There are no roles in the list of roles to search for.")
+            )
         embed: discord.Embed = discord.Embed(
             title=_("Roles to search for"),
             description=humanize_list(

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,193 +41,193 @@ msgid ""
 " also welcome them when they join!"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:295
+#: onepiecebounties\onepiecebounties.py:296
 msgid "Pirate King"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:296
+#: onepiecebounties\onepiecebounties.py:297
 msgid "Emperor"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:297
+#: onepiecebounties\onepiecebounties.py:298
 msgid "Yonko Commander"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:298
+#: onepiecebounties\onepiecebounties.py:299
 msgid "Supernova"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:299
+#: onepiecebounties\onepiecebounties.py:300
 msgid "Grand Line"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:300
+#: onepiecebounties\onepiecebounties.py:301
 msgid "East Blue"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:301
+#: onepiecebounties\onepiecebounties.py:302
 msgid "Sailing Rookie"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:302
+#: onepiecebounties\onepiecebounties.py:303
 msgid "Sailor"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:314
+#: onepiecebounties\onepiecebounties.py:315
 msgid ""
 "Marine HQ has issued a bounty of **{bounty:,}** {berries} for "
 "**{member.display_name}**, worthy of a **{bounty_tier} Level Threat**!"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:319
-#: onepiecebounties\onepiecebounties.py:371
-#: onepiecebounties\onepiecebounties.py:440
-#: onepiecebounties\onepiecebounties.py:567
+#: onepiecebounties\onepiecebounties.py:320
+#: onepiecebounties\onepiecebounties.py:372
+#: onepiecebounties\onepiecebounties.py:441
+#: onepiecebounties\onepiecebounties.py:568
 msgid "berries"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:319
-#: onepiecebounties\onepiecebounties.py:371
-#: onepiecebounties\onepiecebounties.py:440
-#: onepiecebounties\onepiecebounties.py:567
+#: onepiecebounties\onepiecebounties.py:320
+#: onepiecebounties\onepiecebounties.py:372
+#: onepiecebounties\onepiecebounties.py:441
+#: onepiecebounties\onepiecebounties.py:568
 msgid "berry"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:349
-#: onepiecebounties\onepiecebounties.py:526
-#: onepiecebounties\onepiecebounties.py:541
-#: onepiecebounties\onepiecebounties.py:553
+#: onepiecebounties\onepiecebounties.py:350
+#: onepiecebounties\onepiecebounties.py:527
+#: onepiecebounties\onepiecebounties.py:542
+#: onepiecebounties\onepiecebounties.py:554
 msgid "Bots don't have a bounty!"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:358
+#: onepiecebounties\onepiecebounties.py:359
 msgid "🏴‍☠️ Bounty Leaderboard 🏴‍☠️"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:367
+#: onepiecebounties\onepiecebounties.py:368
 msgid "**{i}.** {member.display_name}: **{bounty:,}** {berries}"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:388
+#: onepiecebounties\onepiecebounties.py:389
 msgid "There are no bounties."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:410
+#: onepiecebounties\onepiecebounties.py:411
 #, docstring
 msgid "Add a bonus role to the bounty calculation."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:413
+#: onepiecebounties\onepiecebounties.py:414
 msgid "The minimum bounty can't be higher than the maximum bounty!"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:419
+#: onepiecebounties\onepiecebounties.py:420
 #, docstring
 msgid "Remove a bonus role from the bounty calculation."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:425
+#: onepiecebounties\onepiecebounties.py:426
 msgid "This role is not in the list of bonus roles."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:430
+#: onepiecebounties\onepiecebounties.py:431
 #, docstring
 msgid "List all bonus roles."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:433
+#: onepiecebounties\onepiecebounties.py:434
 msgid "There are no bonus roles."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:436
+#: onepiecebounties\onepiecebounties.py:437
 msgid "{role.mention}: {min_bounty:,} - {max_bounty:,} {berries}"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:447
+#: onepiecebounties\onepiecebounties.py:448
 msgid "Bonus Roles"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:448
+#: onepiecebounties\onepiecebounties.py:449
 msgid "The following roles give a bonus to the bounty calculation:"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:469
+#: onepiecebounties\onepiecebounties.py:470
 #, docstring
 msgid "Add a role to the only roles list."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:473
+#: onepiecebounties\onepiecebounties.py:474
 msgid "This role is already in the list of only roles."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:479
+#: onepiecebounties\onepiecebounties.py:480
 #, docstring
 msgid "Remove a role from the only roles list."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:485
+#: onepiecebounties\onepiecebounties.py:486
 msgid "This role is not in the list of only roles."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:490
+#: onepiecebounties\onepiecebounties.py:491
 #, docstring
 msgid "List all only roles."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:493
+#: onepiecebounties\onepiecebounties.py:494
 msgid "There are no only roles."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:496
+#: onepiecebounties\onepiecebounties.py:497
 msgid "{role.mention}: ONLY {only}"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:502
+#: onepiecebounties\onepiecebounties.py:503
 msgid "Only Roles"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:523
+#: onepiecebounties\onepiecebounties.py:524
 #, docstring
 msgid "Add a bonus to a member's bounty."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:538
+#: onepiecebounties\onepiecebounties.py:539
 #, docstring
 msgid "Remove a bonus from a member's bounty."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:550
+#: onepiecebounties\onepiecebounties.py:551
 #, docstring
 msgid "Clear a member's bonus."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:558
+#: onepiecebounties\onepiecebounties.py:559
 #, docstring
 msgid "List all bonuses."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:561
+#: onepiecebounties\onepiecebounties.py:562
 msgid "There are no bonuses."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:564
+#: onepiecebounties\onepiecebounties.py:565
 msgid "{member.mention}: {bonus:,} {berries}"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:574
+#: onepiecebounties\onepiecebounties.py:575
 msgid "Bonuses"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:575
+#: onepiecebounties\onepiecebounties.py:576
 msgid "The following members have a bonus to their bounty:"
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:596
+#: onepiecebounties\onepiecebounties.py:597
 #, docstring
 msgid ""
 "Set the accurate joined at date of a member in the format `YYYY-MM-DD`."
 msgstr ""
 
-#: onepiecebounties\onepiecebounties.py:601
+#: onepiecebounties\onepiecebounties.py:602
 msgid "Please provide a date in the format `YYYY-MM-DD`."
 msgstr ""

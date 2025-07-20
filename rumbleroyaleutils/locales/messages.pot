@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,61 +11,69 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:47
+#: rumbleroyaleutils\rumbleroyaleutils.py:35
 #, docstring
 msgid ""
-"Allow Rumble Royale players to check easely if they are dead or not and ping"
-" the host when a Rumble Royale ends!"
+"Allow Rumble Royale players to check easely if they are alive or not and "
+"ping the host when a Rumble Royale ends!"
 msgstr ""
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:137
-msgid "Quick Tip"
+#: rumbleroyaleutils\rumbleroyaleutils.py:141
+msgid "Click on the button below to see if you are alive or dead!"
 msgstr ""
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:138
-msgid ""
-"You can check if you are dead or not by sending `Am I dead?`/`Dead` in this "
-"channel."
-msgstr ""
-
-#: rumbleroyaleutils\rumbleroyaleutils.py:191
+#: rumbleroyaleutils\rumbleroyaleutils.py:211
 msgid "{victims} are dead!"
 msgstr ""
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:193
+#: rumbleroyaleutils\rumbleroyaleutils.py:213
 msgid "{victims} is dead!"
 msgstr ""
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:203
+#: rumbleroyaleutils\rumbleroyaleutils.py:224
 msgid "{host.mention} The Rumble Royale has ended!"
 msgstr ""
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:233
-msgid "View Message"
+#: rumbleroyaleutils\view.py:13
+msgid "Am I Alive?"
 msgstr ""
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:239
-msgid "You are dead!"
+#: rumbleroyaleutils\view.py:30
+msgid "There is no active Rumble Royale in this channel."
 msgstr ""
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:240
-msgid "- You died in **round {round_number}**."
+#: rumbleroyaleutils\view.py:35
+msgid "You are not a participant in this Rumble Royale."
 msgstr ""
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:244
-msgid ""
-"\n"
-"- Killed by {killer.mention}."
+#: rumbleroyaleutils\view.py:55
+msgid "- **🔪 Round {round_number}:** You killed {other}."
 msgstr ""
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:258
-msgid "You are alive!"
+#: rumbleroyaleutils\view.py:62
+msgid "- **💀 Round {round_number}:** You died{killed}."
 msgstr ""
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:259
-msgid "You are not dead."
+#: rumbleroyaleutils\view.py:65
+msgid ", killed by {other}"
 msgstr ""
 
-#: rumbleroyaleutils\rumbleroyaleutils.py:268
-msgid "You are not in the game!"
+#: rumbleroyaleutils\view.py:75
+msgid "- **💖 Round {round_number}:** You were revived."
+msgstr ""
+
+#: rumbleroyaleutils\view.py:81
+msgid "- **👻 Round {round_number}:** You appeared."
+msgstr ""
+
+#: rumbleroyaleutils\view.py:87
+msgid "😃 You are alive!"
+msgstr ""
+
+#: rumbleroyaleutils\view.py:90
+msgid "💀 You are dead!"
+msgstr ""
+
+#: rumbleroyaleutils\view.py:93
+msgid "You have no events recorded."
 msgstr ""

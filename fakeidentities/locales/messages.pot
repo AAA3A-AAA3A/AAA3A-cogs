@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-04-11 22:17+0200\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,7 +11,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: fakeidentities\fakeidentities.py:49
+#: fakeidentities\fakeidentities.py:53
+msgid "Unknown gender: {argument}."
+msgstr ""
+
+#: fakeidentities\fakeidentities.py:61
+msgid "Unknown locale: {argument}."
+msgstr ""
+
+#: fakeidentities\fakeidentities.py:66
 #, docstring
 msgid ""
 "Generate random and fake identities, including names, addresses, emails, and"

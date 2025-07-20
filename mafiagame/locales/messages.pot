@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,263 +15,267 @@ msgstr ""
 msgid "Anomaly — **{emoji} {name}**!"
 msgstr ""
 
-#: mafiagame\anomalies.py:66
+#: mafiagame\anomalies.py:70
 msgid ""
 "Everyone except Mafia side's players and Plague Doctor turn into the Jester "
 "for one day, then return to their normal selves."
 msgstr ""
 
-#: mafiagame\anomalies.py:69
+#: mafiagame\anomalies.py:73
 msgid ""
 "Some weird gas filled up the sky, and you were suddenly turned into a "
 "**Jester**! You will return to your normal self the following night."
 msgstr ""
 
-#: mafiagame\anomalies.py:94
+#: mafiagame\anomalies.py:98
 msgid ""
 "Random amount of people will be blinded and unable to perform their roles."
 msgstr ""
 
-#: mafiagame\anomalies.py:97
+#: mafiagame\anomalies.py:101
 msgid ""
 "A blinding light filled the sky! You were blinded and unable to perform your"
 " task tonight... if you were going to anyways..."
 msgstr ""
 
-#: mafiagame\anomalies.py:116
+#: mafiagame\anomalies.py:120
 msgid ""
 "Town gets another chance to lynch someone! The second chance to vote "
 "immediately appears after someone is lynched or no one was hanged."
 msgstr ""
 
-#: mafiagame\anomalies.py:124
+#: mafiagame\anomalies.py:128
 msgid ""
 "Some dead can talk! But not vote because, you know, dead people can't vote."
 msgstr ""
 
-#: mafiagame\anomalies.py:127
+#: mafiagame\anomalies.py:131
 msgid "You suddenly feel a surge of energy, and you can talk to the living!"
 msgstr ""
 
-#: mafiagame\anomalies.py:174
+#: mafiagame\anomalies.py:182
 msgid "The town has only 10 seconds to talk and 10 seconds to vote!"
 msgstr ""
 
-#: mafiagame\anomalies.py:180
+#: mafiagame\anomalies.py:183
+msgid "Hurry up! You have 10 seconds to talk and 10 seconds to vote!"
+msgstr ""
+
+#: mafiagame\anomalies.py:189
 msgid ""
 "Messages from last night disappeared! Who killed who? Who saved who? Who "
 "knows? Only thing you know is who's dead..."
 msgstr ""
 
-#: mafiagame\anomalies.py:191
+#: mafiagame\anomalies.py:200
 msgid "The role of a random player gets revealed to everyone!"
 msgstr ""
 
-#: mafiagame\anomalies.py:199
+#: mafiagame\anomalies.py:208
 msgid "{player.member.display_name} is {the_or_a} **{player.role.name}**!"
 msgstr ""
 
-#: mafiagame\anomalies.py:218
+#: mafiagame\anomalies.py:227
 msgid "A random dead player gets revived!"
 msgstr ""
 
-#: mafiagame\anomalies.py:227
+#: mafiagame\anomalies.py:240
 msgid "{player.member.display_name} has been revived!"
 msgstr ""
 
-#: mafiagame\anomalies.py:240
+#: mafiagame\anomalies.py:253
 msgid "The Sun is causing a heat stroke! A random player will die."
 msgstr ""
 
-#: mafiagame\anomalies.py:257
+#: mafiagame\anomalies.py:270
 msgid ""
 "The cat has gotten your tongue! Random amount of peope can't speak, but they"
 " can vote."
 msgstr ""
 
-#: mafiagame\game.py:81
+#: mafiagame\game.py:80
 msgid "🌞 Day {number} 🌞"
 msgstr ""
 
-#: mafiagame\game.py:86
+#: mafiagame\game.py:85
 msgid "Currently alive ({len_alive}):"
 msgstr ""
 
-#: mafiagame\game.py:98
+#: mafiagame\game.py:97
 msgid "Currently dead ({len_dead}):"
 msgstr ""
 
-#: mafiagame\game.py:103 mafiagame\game.py:1059 mafiagame\game.py:1071
-#: mafiagame\game.py:1081 mafiagame\game.py:1300 mafiagame\mafiagame.py:419
+#: mafiagame\game.py:102 mafiagame\game.py:1078 mafiagame\game.py:1090
+#: mafiagame\game.py:1100 mafiagame\game.py:1225 mafiagame\mafiagame.py:426
 msgid " - Town Traitor"
 msgstr ""
 
-#: mafiagame\game.py:110
+#: mafiagame\game.py:109
 msgid "No one is dead yet..."
 msgstr ""
 
-#: mafiagame\game.py:143
+#: mafiagame\game.py:142
 msgid "Night falls... 🌙"
 msgstr ""
 
-#: mafiagame\game.py:144
+#: mafiagame\game.py:143
 msgid ""
 "Alright everyone, close your eyes and let the night begin. It's 🔪 story time"
 " 🔪!"
 msgstr ""
 
-#: mafiagame\game.py:150
+#: mafiagame\game.py:149
 msgid "Don't panic, I've muted all of you."
 msgstr ""
 
-#: mafiagame\game.py:182
+#: mafiagame\game.py:181
 msgid "The Mafia was too lazy to kill anyone tonight..."
 msgstr ""
 
-#: mafiagame\game.py:237
+#: mafiagame\game.py:239
 msgid ""
 "The Mafia visited {tg.member.display_name} tonight, but they were already "
 "dead!"
 msgstr ""
 
-#: mafiagame\game.py:248
+#: mafiagame\game.py:249
 msgid "{tg.member.display_name} hasn't been found!"
 msgstr ""
 
-#: mafiagame\game.py:251 mafiagame\roles.py:1412 mafiagame\roles.py:2120
-#: mafiagame\roles.py:2558 mafiagame\roles.py:3671
+#: mafiagame\game.py:252 mafiagame\roles.py:1483 mafiagame\roles.py:2205
+#: mafiagame\roles.py:2654 mafiagame\roles.py:3824
 msgid "You were unable to perform your action."
 msgstr ""
 
-#: mafiagame\game.py:272
+#: mafiagame\game.py:274
 msgid "They were AFK for too long."
 msgstr ""
 
-#: mafiagame\game.py:300
+#: mafiagame\game.py:302
 msgid "Day dawns... 🌞"
 msgstr ""
 
-#: mafiagame\game.py:301
+#: mafiagame\game.py:303
 msgid "Good morning everyone! It's time to discuss who you think is a Mafia."
 msgstr ""
 
-#: mafiagame\game.py:314
+#: mafiagame\game.py:316
 msgid ""
 "{mayor_player.member.display_name} has revealed themselves as **Mayor**!"
 msgstr ""
 
-#: mafiagame\game.py:317
+#: mafiagame\game.py:319
 msgid "The {mayor_player.member.mention}'s vote will now count as two."
 msgstr ""
 
-#: mafiagame\game.py:329
+#: mafiagame\game.py:336
 msgid "Now, I will give you {talk_timeout} seconds to talk! 🔊"
 msgstr ""
 
-#: mafiagame\game.py:332
+#: mafiagame\game.py:339
 msgid ""
 "Want to accuse someone? Want to defend yourself, or confess? Now is the "
 "time!"
 msgstr ""
 
-#: mafiagame\game.py:393
+#: mafiagame\game.py:401
 msgid ""
 "🗳️ Voting time! 🗳️\n"
 "Minimum votes required: {minimum_votes_required}"
 msgstr ""
 
-#: mafiagame\game.py:403
+#: mafiagame\game.py:411
 msgid "You have {voting_timeout} seconds to vote."
 msgstr ""
 
-#: mafiagame\game.py:483
+#: mafiagame\game.py:487
 msgid "Voting Results:"
 msgstr ""
 
-#: mafiagame\game.py:520
+#: mafiagame\game.py:524
 msgid "{target.member.display_name} has been called to the stand!"
 msgstr ""
 
-#: mafiagame\game.py:523
+#: mafiagame\game.py:527
 msgid ""
 "You have {defend_timeout} seconds to defend yourself, before the town casts "
 "your judgement."
 msgstr ""
 
-#: mafiagame\game.py:544
+#: mafiagame\game.py:549
 msgid ""
 "It's judgement time! The town has now {judgement_timeout} seconds to vote."
 msgstr ""
 
-#: mafiagame\game.py:568
+#: mafiagame\game.py:573
 msgid "Judgement Results:"
 msgstr ""
 
-#: mafiagame\game.py:573 mafiagame\views.py:1288
+#: mafiagame\game.py:578 mafiagame\views.py:1295
 msgid "👿 GUIlTY ({len_guilty})"
 msgstr ""
 
-#: mafiagame\game.py:588 mafiagame\views.py:1297
+#: mafiagame\game.py:593 mafiagame\views.py:1304
 msgid "😇 INNOCENT ({len_innocent})"
 msgstr ""
 
-#: mafiagame\game.py:605
+#: mafiagame\game.py:610
 msgid "No one has voted."
 msgstr ""
 
-#: mafiagame\game.py:631
+#: mafiagame\game.py:636
 msgid "They have been voted out by the town."
 msgstr ""
 
-#: mafiagame\game.py:637
+#: mafiagame\game.py:642
 msgid "The Lawyer has obtained an acquittal for {target.member.display_name}!"
 msgstr ""
 
-#: mafiagame\game.py:650
+#: mafiagame\game.py:655
 msgid "The Lawyer has defended a non-Villager!"
 msgstr ""
 
-#: mafiagame\game.py:653
+#: mafiagame\game.py:658
 msgid "{lawyer.member.display_name} is the **Lawyer**!"
 msgstr ""
 
-#: mafiagame\game.py:659
-msgid "{target.member.display_name} is the **{target.role.name}**!"
+#: mafiagame\game.py:664
+msgid "{target.member.display_name} is the **{role_name}**!"
 msgstr ""
 
-#: mafiagame\game.py:672
+#: mafiagame\game.py:683
 msgid "The town was unable to reach a consensus."
 msgstr ""
 
-#: mafiagame\game.py:673
+#: mafiagame\game.py:684
 msgid "Better work together on that next time!"
 msgstr ""
 
-#: mafiagame\game.py:769
+#: mafiagame\game.py:784
 msgid "There is no **Town Traitor** in this game!"
 msgstr ""
 
-#: mafiagame\game.py:770
+#: mafiagame\game.py:785
 msgid "It would be too much chaos for a small game like this."
 msgstr ""
 
-#: mafiagame\game.py:811
+#: mafiagame\game.py:826
 msgid "A game of Mafia is currently in progress."
 msgstr ""
 
-#: mafiagame\game.py:830
+#: mafiagame\game.py:845
 msgid "👋 Welcome to Mafia! 👋"
 msgstr ""
 
-#: mafiagame\game.py:831
+#: mafiagame\game.py:846
 msgid "If you haven't read the rules yet, please do it now."
 msgstr ""
 
-#: mafiagame\game.py:835
+#: mafiagame\game.py:850
 msgid "Some important rules:"
 msgstr ""
 
-#: mafiagame\game.py:836
+#: mafiagame\game.py:851
 msgid ""
 "💬 Please not send any messages, unless instructed to do so.\n"
 "💢 Admins, please don't use your godly powers to talk when others can't.\n"
@@ -280,309 +284,322 @@ msgid ""
 "🚫 Screenshots are not permitted and would only ruin the game."
 msgstr ""
 
-#: mafiagame\game.py:855
+#: mafiagame\game.py:870
 msgid "👀 Mafia is starting...! 👀"
 msgstr ""
 
-#: mafiagame\game.py:866
+#: mafiagame\game.py:882
 msgid "Roles in this game:"
 msgstr ""
 
-#: mafiagame\game.py:914 mafiagame\views.py:375
+#: mafiagame\game.py:930 mafiagame\views.py:375
 msgid "🔪 You are {the_or_a} **Town Traitor**! 🔪"
 msgstr ""
 
-#: mafiagame\game.py:916 mafiagame\game.py:933 mafiagame\roles.py:210
-#: mafiagame\roles.py:448 mafiagame\roles.py:450 mafiagame\views.py:377
-#: mafiagame\views.py:393
+#: mafiagame\game.py:932 mafiagame\game.py:949 mafiagame\roles.py:214
+#: mafiagame\views.py:377 mafiagame\views.py:393
 msgid "the"
 msgstr ""
 
-#: mafiagame\game.py:918 mafiagame\game.py:935 mafiagame\roles.py:212
-#: mafiagame\roles.py:450 mafiagame\views.py:379 mafiagame\views.py:395
+#: mafiagame\game.py:934 mafiagame\game.py:951 mafiagame\roles.py:216
+#: mafiagame\views.py:379 mafiagame\views.py:395
 msgid "a"
 msgstr ""
 
-#: mafiagame\game.py:921 mafiagame\views.py:382
+#: mafiagame\game.py:937 mafiagame\views.py:382
 msgid "You are a Villager, but you are secretly working for the Mafia."
 msgstr ""
 
-#: mafiagame\game.py:931 mafiagame\views.py:391
+#: mafiagame\game.py:947 mafiagame\views.py:391
 msgid "🔪 You are {the_or_a} **Town VIP**! 🔪"
 msgstr ""
 
-#: mafiagame\game.py:938 mafiagame\views.py:398
+#: mafiagame\game.py:954 mafiagame\views.py:398
 msgid "Mafia have to kill you before winning the game."
 msgstr ""
 
-#: mafiagame\game.py:972
+#: mafiagame\game.py:988
 msgid "🔪 Let the game begin! 🔪"
 msgstr ""
 
-#: mafiagame\game.py:1039
+#: mafiagame\game.py:1058
 msgid "Game Over — {side} won the game!"
 msgstr ""
 
-#: mafiagame\game.py:1054
+#: mafiagame\game.py:1073
 msgid "🏆 Main Winners ({len_main_winners}):"
 msgstr ""
 
-#: mafiagame\game.py:1059 mafiagame\game.py:1071 mafiagame\game.py:1081
+#: mafiagame\game.py:1078 mafiagame\game.py:1090 mafiagame\game.py:1100
 msgid " - Town VIP"
 msgstr ""
 
-#: mafiagame\game.py:1066
+#: mafiagame\game.py:1085
 msgid "🏅 Secondary Winners ({len_secondary_winners}):"
 msgstr ""
 
-#: mafiagame\game.py:1078
+#: mafiagame\game.py:1097
 msgid "🗡️ Losers ({len_losers}):"
 msgstr ""
 
-#: mafiagame\game.py:1087
+#: mafiagame\game.py:1106
 msgid ""
 "Thanks for playing! Enjoyed the game? Please consider supporting the Dev!"
 msgstr ""
 
-#: mafiagame\game.py:1096
+#: mafiagame\game.py:1115
 msgid ""
 "{town_vip_player.member.display_name} was the **Town VIP** and was still "
 "alive!"
 msgstr ""
 
-#: mafiagame\game.py:1100
+#: mafiagame\game.py:1119
 msgid "{town_vip_players} were the **Town VIPs** and were still alive!"
 msgstr ""
 
-#: mafiagame\game.py:1114 mafiagame\views.py:1759
+#: mafiagame\game.py:1133 mafiagame\views.py:1725
 msgid "Support the Dev!"
 msgstr ""
 
-#: mafiagame\game.py:1152
+#: mafiagame\game.py:1171
 msgid "🏆 New Achievements Unlocked! 🏆"
 msgstr ""
 
-#: mafiagame\game.py:1174
+#: mafiagame\game.py:1193
 msgid "💰 You have received **{credits}** {currency_name}! 💰"
 msgstr ""
 
-#: mafiagame\game.py:1268
-msgid "{host.mention} Do you want to delete the Mafia channel?"
-msgstr ""
-
-#: mafiagame\game.py:1297
+#: mafiagame\game.py:1222
 msgid "🔪 Here's your Mafia team! 🔪"
 msgstr ""
 
-#: mafiagame\game.py:1307
+#: mafiagame\game.py:1232
 msgid "You can DM the bot to communicate with your team!"
 msgstr ""
 
-#: mafiagame\mafiagame.py:40
+#: mafiagame\game.py:1330
+msgid ""
+"{host.mention} Do you want to delete the channel of the previous Mafia game?"
+msgstr ""
+
+#: mafiagame\mafiagame.py:41
 msgid "You can't disable the GodFather or the Villager role."
 msgstr ""
 
-#: mafiagame\mafiagame.py:44
+#: mafiagame\mafiagame.py:45
 msgid "Invalid Mafia role."
 msgstr ""
 
-#: mafiagame\mafiagame.py:58
+#: mafiagame\mafiagame.py:59
 msgid "Invalid Mafia mode."
 msgstr ""
 
-#: mafiagame\mafiagame.py:72
+#: mafiagame\mafiagame.py:73
 msgid "Invalid Mafia anomaly."
 msgstr ""
 
-#: mafiagame\mafiagame.py:90
+#: mafiagame\mafiagame.py:91
 #, docstring
 msgid ""
 "Play the Mafia game, with many roles (Mafia/Villagers/Neutral), modes "
 "(including Random and Custom), anomalies...!"
 msgstr ""
 
-#: mafiagame\mafiagame.py:437
+#: mafiagame\mafiagame.py:444
 msgid "This command doesn't work as user installable."
 msgstr ""
 
-#: mafiagame\mafiagame.py:456
+#: mafiagame\mafiagame.py:463
 #, docstring
 msgid "Start a game of Mafia!"
 msgstr ""
 
-#: mafiagame\mafiagame.py:458 mafiagame\mafiagame.py:728
+#: mafiagame\mafiagame.py:465 mafiagame\mafiagame.py:755
 msgid "A game is already running in this guild."
 msgstr ""
 
-#: mafiagame\mafiagame.py:474
+#: mafiagame\mafiagame.py:481
 msgid "I don't have the permission to create channels in the category."
 msgstr ""
 
-#: mafiagame\mafiagame.py:499
+#: mafiagame\mafiagame.py:508
 #, docstring
-msgid "Explain how to play the Mafia game."
+msgid "End the current game of Mafia."
 msgstr ""
 
-#: mafiagame\mafiagame.py:509
-#, docstring
-msgid "Show the informations about a specific role."
+#: mafiagame\mafiagame.py:511
+msgid "No game is currently running in this guild."
 msgstr ""
 
 #: mafiagame\mafiagame.py:514
-#, docstring
-msgid "Show the different roles of the Mafia game"
+msgid "Are you sure you want to end the current game of Mafia?"
 msgstr ""
 
 #: mafiagame\mafiagame.py:521
 #, docstring
+msgid "Explain how to play the Mafia game."
+msgstr ""
+
+#: mafiagame\mafiagame.py:531
+#, docstring
+msgid "Show the informations about a specific role."
+msgstr ""
+
+#: mafiagame\mafiagame.py:537
+#, docstring
+msgid "Show the different roles of the Mafia game."
+msgstr ""
+
+#: mafiagame\mafiagame.py:545
+#, docstring
 msgid "Show the informations about a specific mode."
 msgstr ""
 
-#: mafiagame\mafiagame.py:526
+#: mafiagame\mafiagame.py:550
 #, docstring
 msgid "Show the different modes of the Mafia game."
 msgstr ""
 
-#: mafiagame\mafiagame.py:538
+#: mafiagame\mafiagame.py:562
 #, docstring
 msgid "Set your default custom dying message."
 msgstr ""
 
-#: mafiagame\mafiagame.py:546
+#: mafiagame\mafiagame.py:570
 #, docstring
 msgid "Show the information about a specific anomaly."
 msgstr ""
 
-#: mafiagame\mafiagame.py:551
+#: mafiagame\mafiagame.py:575
 #, docstring
 msgid "Show the different anomalies of the Mafia game."
 msgstr ""
 
-#: mafiagame\mafiagame.py:574
+#: mafiagame\mafiagame.py:598
 #, docstring
 msgid "Show your achievements or the achievements of a specific member."
 msgstr ""
 
-#: mafiagame\mafiagame.py:576 mafiagame\mafiagame.py:676
-#: mafiagame\mafiagame.py:695 mafiagame\mafiagame.py:708
+#: mafiagame\mafiagame.py:600 mafiagame\mafiagame.py:703
+#: mafiagame\mafiagame.py:722 mafiagame\mafiagame.py:735
 msgid "A bot can't play the Mafia game."
 msgstr ""
 
-#: mafiagame\mafiagame.py:582
+#: mafiagame\mafiagame.py:607
 msgid "General Achievements"
 msgstr ""
 
-#: mafiagame\mafiagame.py:584
-msgid "Achievements — {role.name}"
-msgstr ""
-
-#: mafiagame\mafiagame.py:607
-msgid "✅ All achievements completed!"
-msgstr ""
-
-#: mafiagame\mafiagame.py:610
-msgid "Completed {completed} out of {total} achievements ({percentage}%)!"
-msgstr ""
-
-#: mafiagame\mafiagame.py:621
-msgid "✨ Developer ✨"
-msgstr ""
-
-#: mafiagame\mafiagame.py:622
-msgid "Has developed this Mafia game."
-msgstr ""
-
-#: mafiagame\mafiagame.py:627
-msgid "✨ Helper ✨"
-msgstr ""
-
-#: mafiagame\mafiagame.py:628
-msgid "Has helped to create this Mafia game."
-msgstr ""
-
-#: mafiagame\mafiagame.py:633
-msgid "✨ Tester ✨"
+#: mafiagame\mafiagame.py:609
+msgid "Achievements — {role_name}"
 msgstr ""
 
 #: mafiagame\mafiagame.py:634
+msgid "✅ All achievements completed!"
+msgstr ""
+
+#: mafiagame\mafiagame.py:637
+msgid "Completed {completed} out of {total} achievements ({percentage}%)!"
+msgstr ""
+
+#: mafiagame\mafiagame.py:648
+msgid "✨ Developer ✨"
+msgstr ""
+
+#: mafiagame\mafiagame.py:649
+msgid "Has developed this Mafia game."
+msgstr ""
+
+#: mafiagame\mafiagame.py:654
+msgid "✨ Helper ✨"
+msgstr ""
+
+#: mafiagame\mafiagame.py:655
+msgid "Has helped to create this Mafia game."
+msgstr ""
+
+#: mafiagame\mafiagame.py:660
+msgid "✨ Tester ✨"
+msgstr ""
+
+#: mafiagame\mafiagame.py:661
 msgid "Has helped to test this Mafia game."
 msgstr ""
 
-#: mafiagame\mafiagame.py:639
+#: mafiagame\mafiagame.py:666
 msgid "✨ Supporter ✨"
 msgstr ""
 
-#: mafiagame\mafiagame.py:640
+#: mafiagame\mafiagame.py:667
 msgid "Has donated to support the developper."
 msgstr ""
 
-#: mafiagame\mafiagame.py:674
+#: mafiagame\mafiagame.py:701
 #, docstring
 msgid "Ban a member temporary from the Mafia game in this server."
 msgstr ""
 
-#: mafiagame\mafiagame.py:685
+#: mafiagame\mafiagame.py:712
 msgid ""
 "This member has been **temporarily banned for {duration}** from the Mafia "
 "game in this server."
 msgstr ""
 
-#: mafiagame\mafiagame.py:693
+#: mafiagame\mafiagame.py:720
 #, docstring
 msgid "Unban a member from the Mafia game in this server."
 msgstr ""
 
-#: mafiagame\mafiagame.py:698
+#: mafiagame\mafiagame.py:725
 msgid "The member is not banned from the Mafia game in this server."
 msgstr ""
 
-#: mafiagame\mafiagame.py:701
+#: mafiagame\mafiagame.py:728
 msgid "This member has been **unbanned** from the Mafia game in this server."
 msgstr ""
 
-#: mafiagame\mafiagame.py:706
+#: mafiagame\mafiagame.py:733
 #, docstring
 msgid "Kill a member for AFK from the Mafia game in this server."
 msgstr ""
 
-#: mafiagame\mafiagame.py:710
+#: mafiagame\mafiagame.py:737
 msgid "A game is not running in this guild."
 msgstr ""
 
-#: mafiagame\mafiagame.py:713
+#: mafiagame\mafiagame.py:740
 msgid "This member is not playing the Mafia game in this server."
 msgstr ""
 
-#: mafiagame\mafiagame.py:717
+#: mafiagame\mafiagame.py:744
 msgid "This player is already dead in the Mafia game in this server."
 msgstr ""
 
-#: mafiagame\mafiagame.py:720
+#: mafiagame\mafiagame.py:747
 msgid "This player has been **killed** from the Mafia game in this server."
 msgstr ""
 
-#: mafiagame\mafiagame.py:726
+#: mafiagame\mafiagame.py:753
 #, docstring
 msgid "Create a poll for the game."
 msgstr ""
 
-#: mafiagame\mafiagame.py:731
+#: mafiagame\mafiagame.py:758
 msgid "The poll threshold is not set in this server."
 msgstr ""
 
-#: mafiagame\mafiagame.py:738 mafiagame\views.py:165 mafiagame\views.py:1886
+#: mafiagame\mafiagame.py:765 mafiagame\views.py:165 mafiagame\views.py:1852
 msgid ""
 "You aren't allowed to join a Mafia game in this server because you have a "
 "blacklisted role!"
 msgstr ""
 
-#: mafiagame\mafiagame.py:746 mafiagame\views.py:175 mafiagame\views.py:1896
+#: mafiagame\mafiagame.py:773 mafiagame\views.py:175 mafiagame\views.py:1862
 msgid ""
 "You are **temporarily banned for {duration}** from joining Mafia games in "
 "this server!"
 msgstr ""
 
-#: mafiagame\mafiagame.py:757 mafiagame\views.py:192 mafiagame\views.py:1913
+#: mafiagame\mafiagame.py:784 mafiagame\views.py:192 mafiagame\views.py:1879
 msgid "You are already in a game of Mafia in another server!"
 msgstr ""
 
@@ -631,347 +648,369 @@ msgid ""
 "- Neutral: {neutral}"
 msgstr ""
 
-#: mafiagame\modes.py:183
+#: mafiagame\modes.py:181
 msgid "A mode with 3 classic roles and some villagers."
 msgstr ""
 
-#: mafiagame\modes.py:194
+#: mafiagame\modes.py:192
 msgid "A mode which includes some crazy roles."
 msgstr ""
 
-#: mafiagame\modes.py:209
+#: mafiagame\modes.py:207
 msgid "A mode where chaos reigns."
 msgstr ""
 
-#: mafiagame\modes.py:252
+#: mafiagame\modes.py:250
 msgid "A mode where survival is key."
 msgstr ""
 
-#: mafiagame\modes.py:289
+#: mafiagame\modes.py:287
 msgid "A mode where blood is spilled."
 msgstr ""
 
-#: mafiagame\modes.py:450
+#: mafiagame\modes.py:448
 msgid "A mode where roles are randomly assigned."
 msgstr ""
 
-#: mafiagame\modes.py:519
+#: mafiagame\modes.py:517
 msgid ""
 "A mode where you can choose all the roles. Use `[p]setmafia customroles` to "
 "configure this mode."
 msgstr ""
 
-#: mafiagame\roles.py:153
+#: mafiagame\roles.py:155
 msgid "{member.display_name} has been attacked by **the Mafia**!"
 msgstr ""
 
-#: mafiagame\roles.py:158
+#: mafiagame\roles.py:160
 msgid "{member.display_name} has been **lynched**!"
 msgstr ""
 
-#: mafiagame\roles.py:161
+#: mafiagame\roles.py:163
 msgid "{member.display_name} has killed **themselves**!"
 msgstr ""
 
-#: mafiagame\roles.py:166
+#: mafiagame\roles.py:168
 msgid "{member.display_name} has been considered as **AFK**!"
 msgstr ""
 
-#: mafiagame\roles.py:171
+#: mafiagame\roles.py:173
 msgid ""
 "{member.display_name} has been killed by the **Anomaly Scorching Sun**!"
 msgstr ""
 
-#: mafiagame\roles.py:175
-msgid "{member.display_name} has been killed by {the_or_a} **{cause}**!"
+#: mafiagame\roles.py:177
+msgid "{member.display_name} has been killed by {the_or_a}**{cause}**!"
 msgstr ""
 
-#: mafiagame\roles.py:196
-msgid "They were {the_or_a} **{player.role.name}**!"
+#: mafiagame\roles.py:198
+msgid "They were {the_or_a}**{role_name}**!"
 msgstr ""
 
-#: mafiagame\roles.py:200
+#: mafiagame\roles.py:204
 msgid "They were **???**!"
 msgstr ""
 
-#: mafiagame\roles.py:208
+#: mafiagame\roles.py:212
 msgid "They were {the_or_a} **Town Traitor**!"
 msgstr ""
 
-#: mafiagame\roles.py:215
+#: mafiagame\roles.py:219
 msgid "They were working with the Mafia to kill the villagers."
 msgstr ""
 
-#: mafiagame\roles.py:231 mafiagame\roles.py:266
+#: mafiagame\roles.py:235 mafiagame\roles.py:271
 msgid "Last Words (Dying Message):"
 msgstr ""
 
-#: mafiagame\roles.py:232
+#: mafiagame\roles.py:236
 msgid "???"
 msgstr ""
 
-#: mafiagame\roles.py:255
-msgid "{player.member.display_name} were {the_or_a} **{player.role.name}**!"
+#: mafiagame\roles.py:259
+msgid "{player.member.display_name} were {the_or_a}**{role_name}**!"
 msgstr ""
 
-#: mafiagame\roles.py:362
+#: mafiagame\roles.py:372
 msgid "No special ability."
 msgstr ""
 
-#: mafiagame\roles.py:411
-msgid "You are {now}{the_or_a} **{name}**!"
+#: mafiagame\roles.py:444
+msgid "You are {now}{the_or_a}**{name}**!"
 msgstr ""
 
-#: mafiagame\roles.py:420
+#: mafiagame\roles.py:453
 msgid ""
 "\n"
 "\n"
 "*Outside the `Custom` mode, it is not possible to be assigned this role at the start of the game.*"
 msgstr ""
 
-#: mafiagame\roles.py:427
+#: mafiagame\roles.py:460
 msgid "Ability: 🔪"
 msgstr ""
 
-#: mafiagame\roles.py:428
+#: mafiagame\roles.py:461
 msgid "Side: 👀"
 msgstr ""
 
-#: mafiagame\roles.py:429
+#: mafiagame\roles.py:462
 msgid "Visit Type: 🏃‍♂️"
 msgstr ""
 
-#: mafiagame\roles.py:431
+#: mafiagame\roles.py:464
 msgid "Objective: 🥅"
 msgstr ""
 
-#: mafiagame\roles.py:432
+#: mafiagame\roles.py:465
 msgid " *(secondary)*"
 msgstr ""
 
-#: mafiagame\roles.py:645
+#: mafiagame\roles.py:485 mafiagame\roles.py:486
+msgid "the "
+msgstr ""
+
+#: mafiagame\roles.py:486
+msgid "a "
+msgstr ""
+
+#: mafiagame\roles.py:681
 msgid ""
 "God Father is the big bad boss of the town. Every mafia is under his thumb, "
 "ready to execute the God Father's will."
 msgstr ""
 
-#: mafiagame\roles.py:648
+#: mafiagame\roles.py:684
 msgid ""
 "Each night, the God Father can select a player to kill. If they have a "
 "Mafia, their Mafia will attack the target instead, and they will not be seen"
 " visiting."
 msgstr ""
 
-#: mafiagame\roles.py:652
+#: mafiagame\roles.py:688
 msgid "Kill all villagers."
 msgstr ""
 
-#: mafiagame\roles.py:699
+#: mafiagame\roles.py:741
 msgid ""
 "Your God Father is about to die and appointed you to replace them at the "
 "head of the Mafia! *You will now be able to choose who to kill every "
 "night...*"
 msgstr ""
 
-#: mafiagame\roles.py:708
+#: mafiagame\roles.py:750
 msgid ""
 "The God Father's right hand. The mafia lives to serve the God Father, doing "
 "the biddings the God Father commands. That is always how it is... for now..."
 msgstr ""
 
-#: mafiagame\roles.py:711
+#: mafiagame\roles.py:753
 msgid ""
 "Each night, the Mafia carries out the God Father's kill orders. If the God "
 "Father dies, they become the God Father."
 msgstr ""
 
-#: mafiagame\roles.py:715
+#: mafiagame\roles.py:757
 msgid "Help the God Father to kill all villagers."
 msgstr ""
 
-#: mafiagame\roles.py:735
+#: mafiagame\roles.py:777
 msgid "Win the game without dying or becoming the God Father."
 msgstr ""
 
-#: mafiagame\roles.py:739
+#: mafiagame\roles.py:781
 msgid "Be promoted to the God Father."
 msgstr ""
 
-#: mafiagame\roles.py:752
+#: mafiagame\roles.py:795
 msgid ""
 "{target.member.display_name} was attacked by the Mafia but the Doctor saved "
 "them!"
 msgstr ""
 
-#: mafiagame\roles.py:765
+#: mafiagame\roles.py:808
 msgid ""
 "As the villagers' only medical professional, the Doctor possesses all the "
 "knowledge to save mafia victims. However, the online degree does not cover "
 "non mafia victims."
 msgstr ""
 
-#: mafiagame\roles.py:768
+#: mafiagame\roles.py:811
 msgid ""
 "Each night, the Doctor can select a player to save. If the player is "
 "attacked, they will survive. The Doctor can't save the same person two "
 "nights in row."
 msgstr ""
 
-#: mafiagame\roles.py:772
+#: mafiagame\roles.py:815
 msgid "Save the Mafia's victims."
 msgstr ""
 
-#: mafiagame\roles.py:793
+#: mafiagame\roles.py:836
 msgid "Heal someone who was attacked."
 msgstr ""
 
-#: mafiagame\roles.py:798
+#: mafiagame\roles.py:841
 msgid "Save 3 people in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:802
+#: mafiagame\roles.py:845
 msgid "Heal yourself after being attacked."
 msgstr ""
 
-#: mafiagame\roles.py:812
+#: mafiagame\roles.py:856
 msgid ""
 "It is late at night. Another case was reported. It's time to start cracking "
 "the case and expose the Mafia in this town..."
 msgstr ""
 
-#: mafiagame\roles.py:815
+#: mafiagame\roles.py:859
 msgid ""
 "Each night, the Detective can select a player to investigate. They will know"
 " if they are on the Mafia's side or not."
 msgstr ""
 
-#: mafiagame\roles.py:819
+#: mafiagame\roles.py:863
 msgid "Sniff out the Mafia."
 msgstr ""
 
-#: mafiagame\roles.py:839
+#: mafiagame\roles.py:883
 msgid "Investigate someone who is not on the Mafia's side."
 msgstr ""
 
-#: mafiagame\roles.py:843
+#: mafiagame\roles.py:887
 msgid "Investigate someone who is on the Mafia's side."
 msgstr ""
 
-#: mafiagame\roles.py:858
+#: mafiagame\roles.py:903
 msgid "{target.member.display_name} is on the Mafia's side!"
 msgstr ""
 
-#: mafiagame\roles.py:860
+#: mafiagame\roles.py:905
 msgid "{target.member.display_name} is not on the Mafia's side!"
 msgstr ""
 
-#: mafiagame\roles.py:872
+#: mafiagame\roles.py:917
 msgid ""
 "It's another normal day for good villager. Just finished a day of hard work,"
 " and it's good to be back home. Hope nothing bad happens!"
 msgstr ""
 
-#: mafiagame\roles.py:875
+#: mafiagame\roles.py:920
 msgid "Survive the nights."
 msgstr ""
 
-#: mafiagame\roles.py:895 mafiagame\roles.py:2370
+#: mafiagame\roles.py:940 mafiagame\roles.py:2459
 msgid "Stay alive until the end of the game."
 msgstr ""
 
-#: mafiagame\roles.py:909
+#: mafiagame\roles.py:955
 msgid ""
 "The Vigilante is a villager who has taken the law into their own hands. They"
 " will do whatever it takes to protect the town."
 msgstr ""
 
-#: mafiagame\roles.py:912
+#: mafiagame\roles.py:958
 msgid ""
 "Each night, the Vigilante can select a player to kill. However, if they kill"
 " a villager, they kill their target, but also themselves."
 msgstr ""
 
-#: mafiagame\roles.py:916
+#: mafiagame\roles.py:962
 msgid "Kill all the Mafia's members."
 msgstr ""
 
-#: mafiagame\roles.py:939
+#: mafiagame\roles.py:985
 msgid "Shoot 3 Non-Villagers in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:943
+#: mafiagame\roles.py:989
 msgid "Shoot yourself at night."
 msgstr ""
 
-#: mafiagame\roles.py:950
+#: mafiagame\roles.py:997
 msgid "The Vigilante can't shoot on Night 1."
 msgstr ""
 
-#: mafiagame\roles.py:958
+#: mafiagame\roles.py:1000
+msgid ""
+"You can't use your ability anymore, as you have killed someone on the "
+"villagers' side (even if they were a Town Traitor)."
+msgstr ""
+
+#: mafiagame\roles.py:1012
 msgid "They killed someone on the villagers' side."
 msgstr ""
 
-#: mafiagame\roles.py:965
+#: mafiagame\roles.py:1017
+msgid "You killed someone on the villagers' side!"
+msgstr ""
+
+#: mafiagame\roles.py:1018
+msgid "You will not die, but you won't be able to use your ability again."
+msgstr ""
+
+#: mafiagame\roles.py:1029
 msgid ""
 "The Mayor is the leader of the town. They can reveal themselves to the town "
 "and permanently gain an extra vote."
 msgstr ""
 
-#: mafiagame\roles.py:968
+#: mafiagame\roles.py:1032
 msgid "A night, the Mayor can choose to reveal themselves to the town."
 msgstr ""
 
-#: mafiagame\roles.py:969
+#: mafiagame\roles.py:1033
 msgid "Help the town lynch the Mafia's members."
 msgstr ""
 
-#: mafiagame\roles.py:989
+#: mafiagame\roles.py:1053
 msgid "Win without revealing yourself as the Mayor."
 msgstr ""
 
-#: mafiagame\roles.py:993
+#: mafiagame\roles.py:1057
 msgid "Reveal yourself as Mayor on day 1."
 msgstr ""
 
-#: mafiagame\roles.py:1000
+#: mafiagame\roles.py:1065
 msgid "You've already revealed yourself!"
 msgstr ""
 
-#: mafiagame\roles.py:1002
+#: mafiagame\roles.py:1067
 msgid ""
 "Hey Mayor! Would you like to reveal yourself to the town the next morning?"
 msgstr ""
 
-#: mafiagame\roles.py:1028
+#: mafiagame\roles.py:1093
 msgid "You have decided to reveal yourself to the town the next morning!"
 msgstr ""
 
-#: mafiagame\roles.py:1034
+#: mafiagame\roles.py:1099
 msgid "You have decided to not reveal yourself to the town the next morning!"
 msgstr ""
 
-#: mafiagame\roles.py:1047
+#: mafiagame\roles.py:1112
 msgid ""
 "A master of deception and cunning, the Framer knows every trick to deceive "
 "the town's investigative force. Planting fake evidence and alibis are what "
 "makes the Framer feared in the investigative world."
 msgstr ""
 
-#: mafiagame\roles.py:1050
+#: mafiagame\roles.py:1115
 msgid ""
 "Each night, the Framer can select a player to frame. They will appear as a "
 "member of the Mafia, to all role-checkers for the night."
 msgstr ""
 
-#: mafiagame\roles.py:1054
+#: mafiagame\roles.py:1119
 msgid "Mislead the village."
 msgstr ""
 
-#: mafiagame\roles.py:1074
+#: mafiagame\roles.py:1139
 msgid "Frame a member of the Mafia."
 msgstr ""
 
-#: mafiagame\roles.py:1084
+#: mafiagame\roles.py:1150
 msgid ""
 "A being of unknown intentions, the Executioner harbors unforgivable hatred "
 "towards a specific villager. Did the villager insult him? Stole something? "
@@ -979,193 +1018,193 @@ msgid ""
 "of this villager..."
 msgstr ""
 
-#: mafiagame\roles.py:1087
+#: mafiagame\roles.py:1153
 msgid ""
 "Each day, the Executioner tries to convince the town to lynch a given "
 "target."
 msgstr ""
 
-#: mafiagame\roles.py:1090
+#: mafiagame\roles.py:1156
 msgid "Convince the town to lynch their target during a vote."
 msgstr ""
 
-#: mafiagame\roles.py:1112
+#: mafiagame\roles.py:1178
 msgid "Get your target lynched on day 1."
 msgstr ""
 
-#: mafiagame\roles.py:1118
+#: mafiagame\roles.py:1184
 msgid "Get your target lynched on day 10 or later."
 msgstr ""
 
-#: mafiagame\roles.py:1141 mafiagame\views.py:409
+#: mafiagame\roles.py:1208 mafiagame\views.py:409
 msgid "🔫 Your target is {player.global_target.member.display_name}! 🔫"
 msgstr ""
 
-#: mafiagame\roles.py:1144 mafiagame\views.py:412
+#: mafiagame\roles.py:1211 mafiagame\views.py:412
 msgid "You must get them lynched by the town."
 msgstr ""
 
-#: mafiagame\roles.py:1158
+#: mafiagame\roles.py:1225
 msgid ""
 "Your target, {other.member.display_name}, has died, you have failed to make "
 "the town lynch them!"
 msgstr ""
 
-#: mafiagame\roles.py:1167
+#: mafiagame\roles.py:1234
 msgid ""
 "The Jester sits in the corner of the room, waiting in anticipation. The "
 "rioters are shouting outside, waiting to lynch the Jester. Does the Jester "
 "fear death? No. Death fears the Jester..."
 msgstr ""
 
-#: mafiagame\roles.py:1170
+#: mafiagame\roles.py:1237
 msgid "Get themselves lynched by the town, and win the game."
 msgstr ""
 
-#: mafiagame\roles.py:1193
+#: mafiagame\roles.py:1260
 msgid "Get lynched on day 1."
 msgstr ""
 
-#: mafiagame\roles.py:1199
+#: mafiagame\roles.py:1266
 msgid "Get lynched on day 10 or later."
 msgstr ""
 
-#: mafiagame\roles.py:1217
+#: mafiagame\roles.py:1285
 msgid ""
 "As a freelance investigator, the Private Investigator works alone. With only"
 " a camera and incredible stealth, the Private Investigator can gather "
 "information faster than the local law."
 msgstr ""
 
-#: mafiagame\roles.py:1220
+#: mafiagame\roles.py:1288
 msgid ""
 "Each night, the Private Investigator can check two people to see if they "
 "share the same side."
 msgstr ""
 
-#: mafiagame\roles.py:1224 mafiagame\roles.py:1300
+#: mafiagame\roles.py:1292 mafiagame\roles.py:1369
 msgid "Gather informations for the village."
 msgstr ""
 
-#: mafiagame\roles.py:1250
+#: mafiagame\roles.py:1318
 msgid "Check 2 players from different sides."
 msgstr ""
 
-#: mafiagame\roles.py:1254
+#: mafiagame\roles.py:1322
 msgid "Investigate yourself."
 msgstr ""
 
-#: mafiagame\roles.py:1277
+#: mafiagame\roles.py:1346
 msgid ""
 "{tg1.member.display_name} and {tg2.member.display_name} are on the same "
 "side!"
 msgstr ""
 
-#: mafiagame\roles.py:1281
+#: mafiagame\roles.py:1350
 msgid ""
 "{tg1.member.display_name} and {tg2.member.display_name} are not on the same "
 "side!"
 msgstr ""
 
-#: mafiagame\roles.py:1293
+#: mafiagame\roles.py:1362
 msgid ""
 "Highly trained in espionage, the Spy sneaks around the town to track down "
 "mafia activities. However, the Spy stays a safe distance from his targets, "
 "knowing he is no match for them yet..."
 msgstr ""
 
-#: mafiagame\roles.py:1296
+#: mafiagame\roles.py:1365
 msgid ""
 "Each night, the Spy can choose a target to spy on each night. They can see "
 "who the target visits on the night."
 msgstr ""
 
-#: mafiagame\roles.py:1326
+#: mafiagame\roles.py:1395
 msgid "See your target visit you."
 msgstr ""
 
-#: mafiagame\roles.py:1341
+#: mafiagame\roles.py:1410
 msgid "Spy on the same player 3 times and see them visiting."
 msgstr ""
 
-#: mafiagame\roles.py:1354 mafiagame\roles.py:1664
+#: mafiagame\roles.py:1424 mafiagame\roles.py:1743
 msgid "Your target, {target.member.display_name}, "
 msgstr ""
 
-#: mafiagame\roles.py:1356
+#: mafiagame\roles.py:1426
 msgid " has visited {t.member.display_name} this night."
 msgstr ""
 
-#: mafiagame\roles.py:1358
+#: mafiagame\roles.py:1428
 msgid "apparently didn't visit anyone this night."
 msgstr ""
 
-#: mafiagame\roles.py:1367
+#: mafiagame\roles.py:1437
 msgid ""
 "A master of distractions, the Distractor can divert the attention of people "
 "however they please. With only a fear of poultry, the Distractor are a "
 "fearsome foe to the Mafia."
 msgstr ""
 
-#: mafiagame\roles.py:1370
+#: mafiagame\roles.py:1440
 msgid ""
 "Each night, the Distractor can choose one player to prevent them from using "
 "their role. They can distract anyone with a visiting role."
 msgstr ""
 
-#: mafiagame\roles.py:1374
+#: mafiagame\roles.py:1444
 msgid "Distract the bad guys."
 msgstr ""
 
-#: mafiagame\roles.py:1400
+#: mafiagame\roles.py:1470
 msgid "Successfully distract someone."
 msgstr ""
 
-#: mafiagame\roles.py:1411 mafiagame\roles.py:2119
+#: mafiagame\roles.py:1482 mafiagame\roles.py:2204
 msgid "Sorry, you got distracted tonight!"
 msgstr ""
 
-#: mafiagame\roles.py:1422
+#: mafiagame\roles.py:1493
 msgid ""
 "The Baiter is a serial killer, but really a lazy one. Instead of hunting for"
 " prey, Baiter prefer to stay at home and kill whoever shows up."
 msgstr ""
 
-#: mafiagame\roles.py:1425
+#: mafiagame\roles.py:1496
 msgid ""
 "Baiter doesn't have any special night abilities, but they have a powerful "
 "passive ability: they kill anyone that visits them with an active visit "
 "type. They can kill an unlimited number of players in any night."
 msgstr ""
 
-#: mafiagame\roles.py:1428
+#: mafiagame\roles.py:1499
 msgid "Kill at least 3 people."
 msgstr ""
 
-#: mafiagame\roles.py:1460
+#: mafiagame\roles.py:1531
 msgid "Kill 3 or more people in one night."
 msgstr ""
 
-#: mafiagame\roles.py:1469
+#: mafiagame\roles.py:1540
 msgid "Win the game without killing any Villagers' player."
 msgstr ""
 
-#: mafiagame\roles.py:1475
+#: mafiagame\roles.py:1546
 msgid "Have no one get killed by you the whole game."
 msgstr ""
 
-#: mafiagame\roles.py:1489
+#: mafiagame\roles.py:1561
 msgid "They have visited them."
 msgstr ""
 
-#: mafiagame\roles.py:1497
+#: mafiagame\roles.py:1569
 msgid ""
 "The Bomber loves big booms. Bomber worked at a mine before, but those "
 "explosions got old quick. Bomber missed the excitement, the rush! That's why"
 " the Bomber came to this town, look for more things to go big boom..."
 msgstr ""
 
-#: mafiagame\roles.py:1500
+#: mafiagame\roles.py:1572
 msgid ""
 "Each night, the Bomber can plant a bomb on someone or blow up all planted "
 "bombs. They have a 20 percent chance of strapping a bomb to themselves each "
@@ -1174,66 +1213,66 @@ msgid ""
 "the village, the town isn't safe until the Bomber is dead."
 msgstr ""
 
-#: mafiagame\roles.py:1504 mafiagame\roles.py:4413
+#: mafiagame\roles.py:1576 mafiagame\roles.py:4810
 msgid "KILL EVERYONE!"
 msgstr ""
 
-#: mafiagame\roles.py:1536
+#: mafiagame\roles.py:1608
 msgid "Explode 5 or more players at once."
 msgstr ""
 
-#: mafiagame\roles.py:1544
+#: mafiagame\roles.py:1616
 msgid "Explode a God Father."
 msgstr ""
 
-#: mafiagame\roles.py:1563
+#: mafiagame\roles.py:1641
 msgid ""
 "You've attached a bomb to yourself by mistake, and spent all night defusing "
 "it! Your target is not dead."
 msgstr ""
 
-#: mafiagame\roles.py:1572
+#: mafiagame\roles.py:1650
 msgid "One of the Bomber's bombs has exploded!"
 msgstr ""
 
-#: mafiagame\roles.py:1579
+#: mafiagame\roles.py:1657
 msgid "The Bomber has died, and one of their bombs has exploded!"
 msgstr ""
 
-#: mafiagame\roles.py:1598
+#: mafiagame\roles.py:1676
 msgid ""
 "A protective guardian, the Watcher has eyes of a hawk. Unlike the Vigilante,"
 " the Watcher does not believe in violence. Justice should be handled the "
 "right way."
 msgstr ""
 
-#: mafiagame\roles.py:1601
+#: mafiagame\roles.py:1679
 msgid ""
 "Each night, the Watcher can choose a player to watch for the night. The "
 "Watcher will be told which players have visited their chosen target."
 msgstr ""
 
-#: mafiagame\roles.py:1605
+#: mafiagame\roles.py:1683
 msgid "Gather info for the village."
 msgstr ""
 
-#: mafiagame\roles.py:1633
+#: mafiagame\roles.py:1711
 msgid "Successfully watch your target get visited by someone."
 msgstr ""
 
-#: mafiagame\roles.py:1648
+#: mafiagame\roles.py:1726
 msgid "Have 4 or more people visit your target in one night."
 msgstr ""
 
-#: mafiagame\roles.py:1666
+#: mafiagame\roles.py:1745
 msgid " has been visited by {players} this night."
 msgstr ""
 
-#: mafiagame\roles.py:1670
+#: mafiagame\roles.py:1749
 msgid "hasn't been visited by anyone this night."
 msgstr ""
 
-#: mafiagame\roles.py:1679
+#: mafiagame\roles.py:1758
 msgid ""
 "The town seems to have lost its usual liveliness. The streets are empty, the"
 " shops are closed, and a fog covers the entire village. Not a single soul "
@@ -1241,33 +1280,33 @@ msgid ""
 "figure with a bird mask. It's time..."
 msgstr ""
 
-#: mafiagame\roles.py:1682
+#: mafiagame\roles.py:1761
 msgid ""
 "Each night, the Plague Doctor can visit someone to infect them with the plague. The infected players will spread the plague to all those whom they visit and those who visit them.\n"
 "🦠 Once the Plague Doctor has everyone infected, a warning is given to the party that the Plague Doctor has infected everyone with the Plague. The party then has to lynch the Plague Doctor on the day of the warning or else the Plague Doctor will win the game."
 msgstr ""
 
-#: mafiagame\roles.py:1686
+#: mafiagame\roles.py:1765
 msgid "Infect everyone."
 msgstr ""
 
-#: mafiagame\roles.py:1708
+#: mafiagame\roles.py:1787
 msgid "Infect all the living players."
 msgstr ""
 
-#: mafiagame\roles.py:1716
+#: mafiagame\roles.py:1795
 msgid "Have all the living players be infected on day 5 or earlier."
 msgstr ""
 
-#: mafiagame\roles.py:1761
+#: mafiagame\roles.py:1839
 msgid "The **Plague Doctor** has infected everyone!"
 msgstr ""
 
-#: mafiagame\roles.py:1762
+#: mafiagame\roles.py:1840
 msgid "The town has one day to lynch them, or else everyone will die!"
 msgstr ""
 
-#: mafiagame\roles.py:1780
+#: mafiagame\roles.py:1858
 msgid ""
 "A madman driven by panic and fear, the Hoarder will stop at nothing to make "
 "sure they have enough toilet paper, even if it means raiding other people's "
@@ -1275,30 +1314,30 @@ msgid ""
 "Walmart."
 msgstr ""
 
-#: mafiagame\roles.py:1783
+#: mafiagame\roles.py:1861
 msgid ""
 "Each night, the Hoarder can choose a player to duel for their toilet paper. "
 "If the Hoarder is victorious, the Hoarder kills the target and acquires one "
 "stash of toilet paper. If the Hoarder fails, nothing happens."
 msgstr ""
 
-#: mafiagame\roles.py:1787
+#: mafiagame\roles.py:1865
 msgid "Collect 3 stashes of toilet paper."
 msgstr ""
 
-#: mafiagame\roles.py:1815
+#: mafiagame\roles.py:1893
 msgid "Successfully hoard and kill the Godfather and Bomber in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:1824
+#: mafiagame\roles.py:1902
 msgid "Hoard and kill at least 5 players."
 msgstr ""
 
-#: mafiagame\roles.py:1843
+#: mafiagame\roles.py:1922
 msgid "They have killed them and acquired one stash of 🧻 toilet paper 🧻."
 msgstr ""
 
-#: mafiagame\roles.py:1850
+#: mafiagame\roles.py:1929
 msgid ""
 "The Hacker is a deity in the cyber world. They can find anything about their"
 " target in a snap of a finger by tracing their internet histories, banking "
@@ -1306,127 +1345,127 @@ msgid ""
 "online."
 msgstr ""
 
-#: mafiagame\roles.py:1853
+#: mafiagame\roles.py:1932
 msgid ""
 "Each night, the Hacker can select a player and get a list of their possible "
 "roles."
 msgstr ""
 
-#: mafiagame\roles.py:1857
+#: mafiagame\roles.py:1936
 msgid "Gather intel for the Mafia."
 msgstr ""
 
-#: mafiagame\roles.py:1879
+#: mafiagame\roles.py:1958
 msgid "Find a Spy, Vigilante or Doctor."
 msgstr ""
 
-#: mafiagame\roles.py:1890
+#: mafiagame\roles.py:1969
 msgid "Find a Detective, Vigilante and Doctor in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:1894
+#: mafiagame\roles.py:1973
 msgid "Find a Baiter."
 msgstr ""
 
-#: mafiagame\roles.py:1920
+#: mafiagame\roles.py:2000
 msgid "Possible roles for {target.member.display_name}:"
 msgstr ""
 
-#: mafiagame\roles.py:1929
+#: mafiagame\roles.py:2011
 msgid ""
 "Goose is the embodiment of chaos. The Goose's sole purpose in life is to "
 "torture the living. There are no emotions in the Goose, only the desire to "
 "Goose."
 msgstr ""
 
-#: mafiagame\roles.py:1932
+#: mafiagame\roles.py:2014
 msgid ""
 "Each night, the Goose can select a player and change their target(s) at "
 "random."
 msgstr ""
 
-#: mafiagame\roles.py:1936
+#: mafiagame\roles.py:2018
 msgid "Fulfill your destiny and bring chaos to the village."
 msgstr ""
 
-#: mafiagame\roles.py:1963
+#: mafiagame\roles.py:2045
 msgid "Make a Vigilante shoot another villager."
 msgstr ""
 
-#: mafiagame\roles.py:1978
+#: mafiagame\roles.py:2060
 msgid "Force 2 villagers to die to a Baiter in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:1999
+#: mafiagame\roles.py:2082
 msgid ""
 "{target.member.display_name} seems to be duelling with fate, better not "
 "interfere..."
 msgstr ""
 
-#: mafiagame\roles.py:2008
+#: mafiagame\roles.py:2091
 msgid "{target.member.display_name} didn't visit anyone last night. Weird..."
 msgstr ""
 
-#: mafiagame\roles.py:2021
+#: mafiagame\roles.py:2104
 msgid ""
 "Possessing one of the rarest talents in the world, the Link serves as the "
 "medium between two minds. Years of training allows the Link to dig into the "
 "hidden minds of others and expose all secrets."
 msgstr ""
 
-#: mafiagame\roles.py:2024
+#: mafiagame\roles.py:2107
 msgid ""
 "Each night, the Link can create psychic links between two people, allowing "
 "them to see each other's side. The Link can't see the sides themselves."
 msgstr ""
 
-#: mafiagame\roles.py:2028
+#: mafiagame\roles.py:2111
 msgid "Provide the Village with information."
 msgstr ""
 
-#: mafiagame\roles.py:2048
+#: mafiagame\roles.py:2131
 msgid "Link yourself."
 msgstr ""
 
-#: mafiagame\roles.py:2060
+#: mafiagame\roles.py:2144
 msgid ""
 "You have been linked to {other_tg.member.display_name}! Their side is "
 "**{other_tg.role.side}**."
 msgstr ""
 
-#: mafiagame\roles.py:2069
+#: mafiagame\roles.py:2153
 msgid ""
 "You have linked {tg1.member.display_name} and {tg2.member.display_name}!"
 msgstr ""
 
-#: mafiagame\roles.py:2079
+#: mafiagame\roles.py:2163
 msgid ""
 "Thirsty for blood, the Mimic hunts every night for prey to consume. As the "
 "Mimic drains the blood of the victims, Mimic's silhouette slowly morphes "
 "into their victim's shape..."
 msgstr ""
 
-#: mafiagame\roles.py:2082
+#: mafiagame\roles.py:2166
 msgid ""
 "Each night, the Mimic can drain a player and assume their identity for the "
 "night to investigators. They have a 50% chance of distracting the target."
 msgstr ""
 
-#: mafiagame\roles.py:2086
+#: mafiagame\roles.py:2170
 msgid "Confuse the village's intel and cause obstructions."
 msgstr ""
 
-#: mafiagame\roles.py:2108
+#: mafiagame\roles.py:2192
 msgid "Mimic the same player 3 times in one game."
 msgstr ""
 
-#: mafiagame\roles.py:2130
+#: mafiagame\roles.py:2215
 msgid ""
 "With a mastery in the art of potion brewing, the Alchemist utilizes their "
 "knowledge to help their side win through deception, control, and death."
 msgstr ""
 
-#: mafiagame\roles.py:2133
+#: mafiagame\roles.py:2218
 msgid ""
 "Each night, the Alchemist randomly brews one of 4 potions:\n"
 "- The **Lethal Potion** kills a player.\n"
@@ -1436,43 +1475,43 @@ msgid ""
 "The Alchemist can use the brewed potion on a chosen target."
 msgstr ""
 
-#: mafiagame\roles.py:2137 mafiagame\roles.py:2895
+#: mafiagame\roles.py:2222 mafiagame\roles.py:3002
 msgid "Help your side win."
 msgstr ""
 
-#: mafiagame\roles.py:2166
+#: mafiagame\roles.py:2251
 msgid "Use the Invisibility, Lethal and Truth potion in a single game."
 msgstr ""
 
-#: mafiagame\roles.py:2173
+#: mafiagame\roles.py:2258
 msgid "Make your team members invisible 5 times."
 msgstr ""
 
-#: mafiagame\roles.py:2180
+#: mafiagame\roles.py:2266
 msgid "Lethal Potion"
 msgstr ""
 
-#: mafiagame\roles.py:2181
+#: mafiagame\roles.py:2267
 msgid "Invisibility Potion"
 msgstr ""
 
-#: mafiagame\roles.py:2182
+#: mafiagame\roles.py:2268
 msgid "Truth Potion"
 msgstr ""
 
-#: mafiagame\roles.py:2183
+#: mafiagame\roles.py:2269
 msgid "Mundane Potion"
 msgstr ""
 
-#: mafiagame\roles.py:2192
+#: mafiagame\roles.py:2278
 msgid "You have brewed a **{potion}**!"
 msgstr ""
 
-#: mafiagame\roles.py:2205
+#: mafiagame\roles.py:2291
 msgid "The side of {target.member.display_name} is **{target.role.side}**."
 msgstr ""
 
-#: mafiagame\roles.py:2226
+#: mafiagame\roles.py:2312
 msgid ""
 "After living a mundane, uneventful life, the Isekai finds themselve facing a"
 " Goddess. The Goddess laids out three cards to choose from, each depicitng a"
@@ -1480,61 +1519,61 @@ msgid ""
 "another world..."
 msgstr ""
 
-#: mafiagame\roles.py:2229
+#: mafiagame\roles.py:2315
 msgid ""
 "The Isekai has no ability at the start of the game. However, once they die, "
 "the next night they are given three role choices to reincarnate as."
 msgstr ""
 
-#: mafiagame\roles.py:2232
+#: mafiagame\roles.py:2318
 msgid "Die, so you can be useful. :P"
 msgstr ""
 
-#: mafiagame\roles.py:2248
+#: mafiagame\roles.py:2335
 msgid "You have died!"
 msgstr ""
 
-#: mafiagame\roles.py:2249
+#: mafiagame\roles.py:2336
 msgid "You can choose to reincarnate as one of the following roles."
 msgstr ""
 
-#: mafiagame\roles.py:2258
+#: mafiagame\roles.py:2345
 msgid ""
 "It's the time of the jolly. Looking at the Good list, however, the Santa "
 "raises his glasses to take a second look. Looks like there's only one good "
 "child this year. Time to make sure the spirit of Christmas lives on..."
 msgstr ""
 
-#: mafiagame\roles.py:2261
+#: mafiagame\roles.py:2348
 msgid ""
 "The Santa doesn't have any special night abilities. However, they have a "
 "different goal: Keep a given target alive. If the good boi dies, they will "
 "lose faith in humanity and become a Jester."
 msgstr ""
 
-#: mafiagame\roles.py:2264
+#: mafiagame\roles.py:2351
 msgid "Keep the good child alive."
 msgstr ""
 
-#: mafiagame\roles.py:2285
+#: mafiagame\roles.py:2372
 msgid "Win even after you're dead."
 msgstr ""
 
-#: mafiagame\roles.py:2299
+#: mafiagame\roles.py:2387
 msgid "🎅 Your target is {player.global_target.member.display_name}! 🎅"
 msgstr ""
 
-#: mafiagame\roles.py:2302
+#: mafiagame\roles.py:2390
 msgid "You must keep them alive."
 msgstr ""
 
-#: mafiagame\roles.py:2315
+#: mafiagame\roles.py:2403
 msgid ""
 "You have lost faith in humanity after failing to protect your target, "
 "{other.member.display_name}!"
 msgstr ""
 
-#: mafiagame\roles.py:2324
+#: mafiagame\roles.py:2412
 msgid ""
 "A figure scurries back into the house. As the person spreads the intel onto "
 "the table in relief, the door locked behind them. Looking back in fear, the "
@@ -1542,160 +1581,160 @@ msgid ""
 "night..."
 msgstr ""
 
-#: mafiagame\roles.py:2327
+#: mafiagame\roles.py:2415
 msgid ""
 "Each night, the Silencer can choose a player to silence. If their target "
 "dies that night, their role and their last words will not be revealed, but "
 "only shown to the Silencer."
 msgstr ""
 
-#: mafiagame\roles.py:2331
+#: mafiagame\roles.py:2419
 msgid "Prevent the village from gathering intel."
 msgstr ""
 
-#: mafiagame\roles.py:2351
+#: mafiagame\roles.py:2439
 msgid "Win the game without silencing anyone."
 msgstr ""
 
-#: mafiagame\roles.py:2363
+#: mafiagame\roles.py:2452
 msgid ""
 "The Mafia outside continues to bang on the door. The Shaman inside pulls out"
 " a blank voodoo doll. If they're coming with intent of harm, the Shaman "
 "won't be going down without a fight..."
 msgstr ""
 
-#: mafiagame\roles.py:2366
+#: mafiagame\roles.py:2455
 msgid ""
 "Each night that they have a voodoo doll, the Shaman can link it to another player, causing any effects on them to instead transfer to that player.\n"
 "If no one actively attacks Shaman on the night which they use their voodoo doll, it will vanish for the rest of the game."
 msgstr ""
 
-#: mafiagame\roles.py:2391
+#: mafiagame\roles.py:2480
 msgid "Win the game without using your voodoo doll."
 msgstr ""
 
-#: mafiagame\roles.py:2396
+#: mafiagame\roles.py:2485
 msgid "Have your doll redirect an attack."
 msgstr ""
 
-#: mafiagame\roles.py:2407
+#: mafiagame\roles.py:2497
 msgid "Your voodoo doll has vanished for the rest of the game."
 msgstr ""
 
-#: mafiagame\roles.py:2421
+#: mafiagame\roles.py:2511
 msgid ""
 "You tried to perform your action on {t.member.display_name}, but some "
 "mysterious force transferred all the effects of your action to another "
 "player!"
 msgstr ""
 
-#: mafiagame\roles.py:2442
+#: mafiagame\roles.py:2532
 msgid ""
 "An addict to the evil abyss of gambling, the Gambler is willing to bet "
 "anything to feel the rush of gambling. Armed with sets of magical dice, the "
 "Gambler is well aware of the risks and rewards the dice could reap."
 msgstr ""
 
-#: mafiagame\roles.py:2445
+#: mafiagame\roles.py:2535
 msgid ""
 "Each night, the Gambler has up to 3 dice options to throw one of them.\n"
 "- **White Dice**, *70% chance* of success. If successful, you gain a 50% chance of surviving a Mafia's attack. Otherwise, a random villager is distracted.\n"
 "- **Yellow Dice**, *50% chance* of success. If successful, a random villager is given an extra vote for the day. Otherwise, you lose one vote for the day.\n"
-"- **Red Dice**, *20% chance* of success. If successful, a random dead villager is revived. Otherwise, you die. This option only appears when at least one village side role is dead."
+"- **Red Dice**, *20% chance* of success. If successful, a random dead villager is revived. Otherwise, you die. This option only appears when at least one Villagers' side role is dead."
 msgstr ""
 
-#: mafiagame\roles.py:2448
+#: mafiagame\roles.py:2538
 msgid "Make good gambling decisions that won't doom the town."
 msgstr ""
 
-#: mafiagame\roles.py:2470
+#: mafiagame\roles.py:2563
 msgid "Heal yourself by rolling the White Dice."
 msgstr ""
 
-#: mafiagame\roles.py:2478
+#: mafiagame\roles.py:2572
 msgid "Give a villager an extra vote from the Yellow Dice."
 msgstr ""
 
-#: mafiagame\roles.py:2486
+#: mafiagame\roles.py:2581
 msgid "Successfully revive someone from the Red Dice."
 msgstr ""
 
-#: mafiagame\roles.py:2493
+#: mafiagame\roles.py:2589
 msgid "Hey Gambler! What dice do you want to throw tonight?"
 msgstr ""
 
-#: mafiagame\roles.py:2550
+#: mafiagame\roles.py:2646
 msgid "You have survived a Mafia's attack!"
 msgstr ""
 
-#: mafiagame\roles.py:2557
+#: mafiagame\roles.py:2653
 msgid "Sorry, you got distracted by the Gambler's dice tonight!"
 msgstr ""
 
-#: mafiagame\roles.py:2573
+#: mafiagame\roles.py:2670
 msgid "You have been revived by the Gambler's dice!"
 msgstr ""
 
-#: mafiagame\roles.py:2574
+#: mafiagame\roles.py:2671
 msgid "You are now alive and well."
 msgstr ""
 
-#: mafiagame\roles.py:2580
+#: mafiagame\roles.py:2677
 msgid "They have rolled the Red Dice and lost."
 msgstr ""
 
-#: mafiagame\roles.py:2590
+#: mafiagame\roles.py:2687
 msgid ""
 "The Judge is the ultimate authority in the village. They have the power to "
 "decide the fate of the accused."
 msgstr ""
 
-#: mafiagame\roles.py:2593
+#: mafiagame\roles.py:2690
 msgid ""
 "Each day, the Judge can choose a player to be lynched immediately. However, "
 "if they prosecute a villager, they kill their target, but also themselves. "
 "They can use their ability twice."
 msgstr ""
 
-#: mafiagame\roles.py:2597 mafiagame\roles.py:3091
+#: mafiagame\roles.py:2694 mafiagame\roles.py:3208
 msgid "Help the village find the guilty players."
 msgstr ""
 
-#: mafiagame\roles.py:2618
+#: mafiagame\roles.py:2715
 msgid "Prosecute someone."
 msgstr ""
 
-#: mafiagame\roles.py:2624
+#: mafiagame\roles.py:2721
 msgid "Prosecute a non-town member."
 msgstr ""
 
-#: mafiagame\roles.py:2628
+#: mafiagame\roles.py:2725
 msgid "Prosecute a Jester."
 msgstr ""
 
-#: mafiagame\roles.py:2637
+#: mafiagame\roles.py:2735
 msgid "The Judge can't prosecute on Day 1."
 msgstr ""
 
-#: mafiagame\roles.py:2639
+#: mafiagame\roles.py:2737
 msgid "Hey Judge! Who do you want to prosecute today?"
 msgstr ""
 
-#: mafiagame\roles.py:2655
+#: mafiagame\roles.py:2753
 msgid "They have been judged guilty."
 msgstr ""
 
-#: mafiagame\roles.py:2659
+#: mafiagame\roles.py:2757
 msgid "They have prosecuted an innocent Villager."
 msgstr ""
 
-#: mafiagame\roles.py:2666
+#: mafiagame\roles.py:2764
 msgid ""
 "The Lawyer is a master of manipulation and deceit. They can defend someone "
 "each day, making them appear innocent to the town."
 msgstr ""
 
-#: mafiagame\roles.py:2669
+#: mafiagame\roles.py:2767
 msgid ""
 "Each day, the Lawyer can choose to acquit a player on the stand. If the "
 "player has been voted guilty, they'll use 1 charge and save them from being "
@@ -1705,105 +1744,105 @@ msgid ""
 "twice a game."
 msgstr ""
 
-#: mafiagame\roles.py:2673 mafiagame\roles.py:3456
+#: mafiagame\roles.py:2771 mafiagame\roles.py:3587
 msgid "Help the village protect their allies."
 msgstr ""
 
-#: mafiagame\roles.py:2694
+#: mafiagame\roles.py:2792
 msgid "Acquit 2 players in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:2698
+#: mafiagame\roles.py:2796
 msgid "Acquit yourself."
 msgstr ""
 
-#: mafiagame\roles.py:2702
+#: mafiagame\roles.py:2800
 msgid "Acquit a Jester."
 msgstr ""
 
-#: mafiagame\roles.py:2711
+#: mafiagame\roles.py:2810
 msgid "Hey Lawyer! Do you want to defend {target.member.display_name} today?"
 msgstr ""
 
-#: mafiagame\roles.py:2735
+#: mafiagame\roles.py:2838
 msgid "You have chosen to defend {target.member.display_name}."
 msgstr ""
 
-#: mafiagame\roles.py:2741
+#: mafiagame\roles.py:2844
 msgid "You have chosen not to defend {target.member.display_name}."
 msgstr ""
 
-#: mafiagame\roles.py:2751
+#: mafiagame\roles.py:2854
 msgid "The Blackmailer is a master of threatening and silencing."
 msgstr ""
 
-#: mafiagame\roles.py:2752
+#: mafiagame\roles.py:2855
 msgid ""
 "Every night, the Blackmailer can select a player to blackmail. Blackmailed "
-"players won't be able to speak nor vote for that day. You cannot blackmail "
+"players won't be able to speak nor vote for that day. You can't blackmail "
 "the same player twice a row."
 msgstr ""
 
-#: mafiagame\roles.py:2756 mafiagame\roles.py:2814 mafiagame\roles.py:2982
-#: mafiagame\roles.py:3966 mafiagame\roles.py:4041
+#: mafiagame\roles.py:2859 mafiagame\roles.py:2918 mafiagame\roles.py:3094
+#: mafiagame\roles.py:4126 mafiagame\roles.py:4202
 msgid "Help the Mafia win."
 msgstr ""
 
-#: mafiagame\roles.py:2776
+#: mafiagame\roles.py:2879
 msgid "Blackmail a member of the Mafia."
 msgstr ""
 
-#: mafiagame\roles.py:2780
+#: mafiagame\roles.py:2883
 msgid "Blackmail yourself."
 msgstr ""
 
-#: mafiagame\roles.py:2786
+#: mafiagame\roles.py:2889
 msgid "Blackmail the same person 3 times in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:2796
+#: mafiagame\roles.py:2900
 msgid ""
 "You have been **blackmailed**! You won't be able to speak or vote today."
 msgstr ""
 
-#: mafiagame\roles.py:2807
+#: mafiagame\roles.py:2911
 msgid ""
 "The Harbinger is a mysterious figure that protect their target at all costs."
 msgstr ""
 
-#: mafiagame\roles.py:2810
+#: mafiagame\roles.py:2914
 msgid ""
 "Each night, the Harbinger can select a player to hide with. They will kill a"
 " random player that visits their target, but also reveal their own role to "
 "everyone that visits their target."
 msgstr ""
 
-#: mafiagame\roles.py:2836
+#: mafiagame\roles.py:2940
 msgid "Assasinate a Doctor."
 msgstr ""
 
-#: mafiagame\roles.py:2844
+#: mafiagame\roles.py:2948
 msgid "Assasinate a Vigilante."
 msgstr ""
 
-#: mafiagame\roles.py:2850
+#: mafiagame\roles.py:2954
 msgid "Assasinate a Bomber."
 msgstr ""
 
-#: mafiagame\roles.py:2861
-msgid "{player.member.display_name} is {the_or_a} **{role_name}**!"
+#: mafiagame\roles.py:2966
+msgid "{player.member.display_name} is {the_or_a}**{role_name}**!"
 msgstr ""
 
-#: mafiagame\roles.py:2864
+#: mafiagame\roles.py:2971
 msgid "They were hiding with {player.member.display_name}."
 msgstr ""
 
-#: mafiagame\roles.py:2891
+#: mafiagame\roles.py:2998
 msgid ""
 "The Submissor is a coward that will do anything to save their own skin."
 msgstr ""
 
-#: mafiagame\roles.py:2892
+#: mafiagame\roles.py:2999
 msgid ""
 "The first time you are attacked, you will beg mercy from the attacker and "
 "will join their side. Once the player who attacked you dies, you take on "
@@ -1811,203 +1850,203 @@ msgid ""
 " life to the first attacker."
 msgstr ""
 
-#: mafiagame\roles.py:2916
+#: mafiagame\roles.py:3023
 msgid "Submit yourself to the Mafia."
 msgstr ""
 
-#: mafiagame\roles.py:2921
+#: mafiagame\roles.py:3028
 msgid "Submit yourself to a Vigilante."
 msgstr ""
 
-#: mafiagame\roles.py:2926
+#: mafiagame\roles.py:3033
 msgid "Submit yourself to a Neutral player."
 msgstr ""
 
-#: mafiagame\roles.py:2944
+#: mafiagame\roles.py:3052
 msgid ""
 "You have been attacked by {p.member.display_name}! You have begged mercy and"
 " joined their side: **{p.role.side}**."
 msgstr ""
 
-#: mafiagame\roles.py:2954
+#: mafiagame\roles.py:3062
 msgid ""
-"You have been joined by {player.member.display_name}, {the_or_a} "
-"**{role_name}**!"
+"You have been joined by {player.member.display_name}, "
+"{the_or_a}**{role_name}**!"
 msgstr ""
 
-#: mafiagame\roles.py:2969
+#: mafiagame\roles.py:3081
 msgid ""
 "You have taken on the role of {other.member.display_name}, because they "
 "died."
 msgstr ""
 
-#: mafiagame\roles.py:2978
+#: mafiagame\roles.py:3090
 msgid "The Manipulator is a master of deception and manipulation."
 msgstr ""
 
-#: mafiagame\roles.py:2979
+#: mafiagame\roles.py:3091
 msgid ""
 "Once a game, during the day, the Manipulator can manipulate the Mafia's "
 "votes, giving them an extra vote each for that day, while hiding everyone's "
 "vote."
 msgstr ""
 
-#: mafiagame\roles.py:3002
+#: mafiagame\roles.py:3114
 msgid "Manipulate the votes."
 msgstr ""
 
-#: mafiagame\roles.py:3021
+#: mafiagame\roles.py:3133
 msgid "Lynch a revealed Mayor with your manipulated votes."
 msgstr ""
 
-#: mafiagame\roles.py:3039
+#: mafiagame\roles.py:3151
 msgid "Lynch a Judge with your manipulated votes."
 msgstr ""
 
-#: mafiagame\roles.py:3048
+#: mafiagame\roles.py:3161
 msgid "You have already used your manipulation for this game."
 msgstr ""
 
-#: mafiagame\roles.py:3050
+#: mafiagame\roles.py:3163
 msgid "Hey Manipulator! Do you want to manipulate the Mafia's votes today?"
 msgstr ""
 
-#: mafiagame\roles.py:3072
+#: mafiagame\roles.py:3189
 msgid "You have chosen to manipulate the Mafia's votes."
 msgstr ""
 
-#: mafiagame\roles.py:3078
+#: mafiagame\roles.py:3195
 msgid "You have chosen not to manipulate the Mafia's votes."
 msgstr ""
 
-#: mafiagame\roles.py:3086
+#: mafiagame\roles.py:3203
 msgid "The Politician is a master of public speaking and manipulation."
 msgstr ""
 
-#: mafiagame\roles.py:3087
+#: mafiagame\roles.py:3204
 msgid ""
 "Twice a game, during the day, you may interrupt the nomination phase by "
 "choosing a player to reveal their role to everyone, and blocking everyone "
 "from voting."
 msgstr ""
 
-#: mafiagame\roles.py:3111
+#: mafiagame\roles.py:3228
 msgid "Protest and reveal an unturned Submissor."
 msgstr ""
 
-#: mafiagame\roles.py:3115
+#: mafiagame\roles.py:3232
 msgid "Protest and reveal a Mayor."
 msgstr ""
 
-#: mafiagame\roles.py:3119
+#: mafiagame\roles.py:3236
 msgid "Protest and reveal a member of the Mafia."
 msgstr ""
 
-#: mafiagame\roles.py:3133
-msgid "{the_or_a} Politician has interrupted the voting phase!"
+#: mafiagame\roles.py:3250
+msgid "{the_or_a}Politician has interrupted the voting phase!"
 msgstr ""
 
-#: mafiagame\roles.py:3136
+#: mafiagame\roles.py:3253
 msgid ""
 "They have chosen to reveal {target.member.display_name}'s role to everyone."
 msgstr ""
 
-#: mafiagame\roles.py:3142 mafiagame\roles.py:3365
-msgid "**{target.member.display_name}** is {the_or_a} **{role_name}**!"
+#: mafiagame\roles.py:3259 mafiagame\roles.py:3493
+msgid "**{target.member.display_name}** is {the_or_a}**{role_name}**!"
 msgstr ""
 
-#: mafiagame\roles.py:3157
+#: mafiagame\roles.py:3276
 msgid "The Magician is a master of illusions and trickery."
 msgstr ""
 
-#: mafiagame\roles.py:3158
+#: mafiagame\roles.py:3277
 msgid ""
 "Each night, the Magician can select 2 players. If those 2 players live until"
 " the following night, their roles will be swapped. They can use this ability"
 " twice."
 msgstr ""
 
-#: mafiagame\roles.py:3163 mafiagame\roles.py:3235 mafiagame\roles.py:3312
-#: mafiagame\roles.py:3388
+#: mafiagame\roles.py:3282 mafiagame\roles.py:3355 mafiagame\roles.py:3439
+#: mafiagame\roles.py:3516
 msgid "Witness the village lose."
 msgstr ""
 
-#: mafiagame\roles.py:3188
+#: mafiagame\roles.py:3307
 msgid "Swap two players with the same side."
 msgstr ""
 
-#: mafiagame\roles.py:3198
+#: mafiagame\roles.py:3317
 msgid "Swap a member of the Mafia with an unturned Submissor."
 msgstr ""
 
-#: mafiagame\roles.py:3208
+#: mafiagame\roles.py:3327
 msgid "Swap a Vigilante with a Neutral player."
 msgstr ""
 
-#: mafiagame\roles.py:3220
+#: mafiagame\roles.py:3340
 msgid "Your role has been swapped with someone else by the Magician!"
 msgstr ""
 
-#: mafiagame\roles.py:3228
+#: mafiagame\roles.py:3348
 msgid ""
 "The Starspawn is a powerful being that can manipulate the stars to their "
 "will."
 msgstr ""
 
-#: mafiagame\roles.py:3231
+#: mafiagame\roles.py:3351
 msgid ""
 "Each night, the Starspawn can visit a player and make them invisible. They "
 "cannot choose the same player on consecutive nights. Once a game, they can "
 "use their daybreak ability and block all day-actions from happening."
 msgstr ""
 
-#: mafiagame\roles.py:3268
+#: mafiagame\roles.py:3388
 msgid ""
 "Use your daybreak ability in a game with Judge, Lawyer, Manipulator and "
 "Politician!"
 msgstr ""
 
-#: mafiagame\roles.py:3284
+#: mafiagame\roles.py:3404
 msgid "Have your daybreak ability affect no one."
 msgstr ""
 
-#: mafiagame\roles.py:3290
+#: mafiagame\roles.py:3410
 msgid "Make the same player invisible 5 times in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:3307
+#: mafiagame\roles.py:3434
 msgid "The Thief is a master of stealing and deceit."
 msgstr ""
 
-#: mafiagame\roles.py:3308
+#: mafiagame\roles.py:3435
 msgid ""
 "Each night, the Thief can select a player to steal from. If they have an "
 "ability with limited usages, they will be left with 0 remaining usages. "
 "Otherwise, you learn the role of that player."
 msgstr ""
 
-#: mafiagame\roles.py:3332
+#: mafiagame\roles.py:3459
 msgid "Steal the Judge's ability."
 msgstr ""
 
-#: mafiagame\roles.py:3336
+#: mafiagame\roles.py:3463
 msgid "Steal the Lawyer's ability."
 msgstr ""
 
-#: mafiagame\roles.py:3348
+#: mafiagame\roles.py:3476
 msgid ""
 "You have stolen from {target.member.display_name}! They have 0 usages left."
 msgstr ""
 
-#: mafiagame\roles.py:3359
+#: mafiagame\roles.py:3487
 msgid "You have stolen from {target.member.display_name}!"
 msgstr ""
 
-#: mafiagame\roles.py:3382
+#: mafiagame\roles.py:3510
 msgid "The Manager is a master of organization and efficiency."
 msgstr ""
 
-#: mafiagame\roles.py:3383
+#: mafiagame\roles.py:3511
 msgid ""
 "Each night, the Manager can visit a player to manage them. If their action "
 "is limited to a certain number of usages, they will gain an additional "
@@ -2016,102 +2055,102 @@ msgid ""
 "before. They can use their ability thrice."
 msgstr ""
 
-#: mafiagame\roles.py:3408
+#: mafiagame\roles.py:3536
 msgid "Manage a player with limited usages."
 msgstr ""
 
-#: mafiagame\roles.py:3412
+#: mafiagame\roles.py:3540
 msgid "Manage a player without limited usages."
 msgstr ""
 
-#: mafiagame\roles.py:3428
+#: mafiagame\roles.py:3557
 msgid ""
 "You have managed {target.member.display_name}! They have gained an "
 "additional usage."
 msgstr ""
 
-#: mafiagame\roles.py:3439
+#: mafiagame\roles.py:3568
 msgid ""
 "You have managed {target.member.display_name}! They have gained an extra "
 "vote."
 msgstr ""
 
-#: mafiagame\roles.py:3451
+#: mafiagame\roles.py:3580
 msgid ""
-"The Guardian is a protector of the innocent and a defender of the weak."
+"The Body Guard is a protector of the innocent and a defender of the weak."
 msgstr ""
 
-#: mafiagame\roles.py:3452
+#: mafiagame\roles.py:3583
 msgid ""
-"Each night, the Guardian can select a player to protect. If that player is "
-"attacked, the Guardian will block the attack and kill the attacker instead, "
-"dying alongside with them. If the Guardian protects themselves, they will "
-"not die, but will not kill the attacker either. They cannot protect the same"
-" player twice a row."
+"Each night, the Body Guard can select a player to protect. If that player is"
+" attacked, the Body Guard will block the attack and kill the attacker "
+"instead, dying alongside with them. If the BodyGuard protects themselves, "
+"they will not die, but will not kill the attacker either. They cannot "
+"protect the same player twice a row."
 msgstr ""
 
-#: mafiagame\roles.py:3478
+#: mafiagame\roles.py:3609
 msgid "Successfully protect someone from being attacked."
 msgstr ""
 
-#: mafiagame\roles.py:3482
+#: mafiagame\roles.py:3613
 msgid "Successfully protect yourself from being attacked."
 msgstr ""
 
-#: mafiagame\roles.py:3490
+#: mafiagame\roles.py:3621
 msgid "Take down the Godfather as you die."
 msgstr ""
 
-#: mafiagame\roles.py:3511
-msgid "They have attacked a player protected by the Guardian."
+#: mafiagame\roles.py:3643
+msgid "They have attacked a player protected by the Body Guard."
 msgstr ""
 
-#: mafiagame\roles.py:3514
+#: mafiagame\roles.py:3646
 msgid "They have protected a player from an attack."
 msgstr ""
 
-#: mafiagame\roles.py:3523
+#: mafiagame\roles.py:3655
 msgid "The Mortician is a master of post-mortem investigations."
 msgstr ""
 
-#: mafiagame\roles.py:3524
+#: mafiagame\roles.py:3656
 msgid ""
 "Every other night, the Mortician can select a dead player to identify their "
 "attacker. They will obtain three suspects that might have killed their "
 "target."
 msgstr ""
 
-#: mafiagame\roles.py:3528 mafiagame\roles.py:3872
+#: mafiagame\roles.py:3660 mafiagame\roles.py:4031 mafiagame\roles.py:4288
 msgid "Help the village win."
 msgstr ""
 
-#: mafiagame\roles.py:3549
+#: mafiagame\roles.py:3681
 msgid "Autopsy a body."
 msgstr ""
 
-#: mafiagame\roles.py:3553
+#: mafiagame\roles.py:3685
 msgid ""
 "Autopsy 3 bodies that were killed by different killers in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:3561
+#: mafiagame\roles.py:3693
 msgid "Autopsy a body that was killed by the Bomber."
 msgstr ""
 
-#: mafiagame\roles.py:3577
+#: mafiagame\roles.py:3729
 msgid "Investigation Results"
 msgstr ""
 
-#: mafiagame\roles.py:3578
+#: mafiagame\roles.py:3730
 msgid ""
 "The suspects for the death of {target.member.display_name} are: {suspects}."
 msgstr ""
 
-#: mafiagame\roles.py:3597
+#: mafiagame\roles.py:3749
 msgid "The Baker is a master of baking and cooking."
 msgstr ""
 
-#: mafiagame\roles.py:3598
+#: mafiagame\roles.py:3750
 msgid ""
 "Each night, the Baker can select a player to give bread to. The player "
 "receiving the bread might gain an additional vote for that day, healed from "
@@ -2121,32 +2160,32 @@ msgid ""
 " they have won."
 msgstr ""
 
-#: mafiagame\roles.py:3602
+#: mafiagame\roles.py:3754
 msgid "Give the required amount of alive players bread."
 msgstr ""
 
-#: mafiagame\roles.py:3623
+#: mafiagame\roles.py:3775
 msgid "Give bread to 3 players in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:3632
+#: mafiagame\roles.py:3784
 msgid "Have all of your breads give negative effects to players."
 msgstr ""
 
-#: mafiagame\roles.py:3641
+#: mafiagame\roles.py:3793
 msgid "Have all of your breads give positive effects to players."
 msgstr ""
 
-#: mafiagame\roles.py:3670
+#: mafiagame\roles.py:3823
 msgid "Sorry, you got distracted by the bread you received!"
 msgstr ""
 
-#: mafiagame\roles.py:3683
+#: mafiagame\roles.py:3836
 msgid ""
 "Cupid is a mischievous matchmaker who loves to play with people's hearts."
 msgstr ""
 
-#: mafiagame\roles.py:3686
+#: mafiagame\roles.py:3839
 msgid ""
 "On the first night, the Cupid can choose two players to become lovers. If "
 "they don't, two players will be selected randomly. If one lover dies, the "
@@ -2154,156 +2193,156 @@ msgid ""
 "ability to kill each night. If the Cupid dies, the lovers become Killers."
 msgstr ""
 
-#: mafiagame\roles.py:3689
+#: mafiagame\roles.py:3842
 msgid "Ensure the lovers survive until the end of the game."
 msgstr ""
 
-#: mafiagame\roles.py:3710
+#: mafiagame\roles.py:3863
 msgid "Have a couple be formed by two players from the same side."
 msgstr ""
 
-#: mafiagame\roles.py:3715
+#: mafiagame\roles.py:3868
 msgid ""
 "Have a couple be formed by a member of the Mafia and a Villagers' player."
 msgstr ""
 
-#: mafiagame\roles.py:3721
+#: mafiagame\roles.py:3874
 msgid "Win a game where you and your couple are both alive."
 msgstr ""
 
-#: mafiagame\roles.py:3732
+#: mafiagame\roles.py:3886
 msgid "You can only use your ability on the first night."
 msgstr ""
 
-#: mafiagame\roles.py:3744
+#: mafiagame\roles.py:3902
 msgid "You have been struck by Cupid's arrow!"
 msgstr ""
 
-#: mafiagame\roles.py:3745
+#: mafiagame\roles.py:3903
 msgid ""
 "You are now in love with {other_lover.member.display_name} "
 "({other_lover.member.name}). If they die, you will die too. If your Cupid "
 "die, you will become a Killer."
 msgstr ""
 
-#: mafiagame\roles.py:3754
+#: mafiagame\roles.py:3912
 msgid ""
 "You have struck **{lover1.member.display_name} ({lover1.member.name})** and "
 "**{lover2.member.display_name} ({lover2.member.name})** with your arrow!"
 msgstr ""
 
-#: mafiagame\roles.py:3757
+#: mafiagame\roles.py:3915
 msgid ""
 "They are now in love with each other. If your lovers die, you will become a "
 "Killer."
 msgstr ""
 
-#: mafiagame\roles.py:3777
+#: mafiagame\roles.py:3935
 msgid ""
 "Your Cupid has died! You are now a Killer and can vote to kill someone each "
 "night."
 msgstr ""
 
-#: mafiagame\roles.py:3792
+#: mafiagame\roles.py:3950
 msgid "They saw their lover die and couldn't bear the pain."
 msgstr ""
 
-#: mafiagame\roles.py:3796
+#: mafiagame\roles.py:3954
 msgid ""
 "Your lovers have died! You are now a Killer and can kill someone each night."
 msgstr ""
 
-#: mafiagame\roles.py:3806
+#: mafiagame\roles.py:3964
 msgid ""
 "The Killer is a ruthless murderer who will stop at nothing to achieve their "
 "goal."
 msgstr ""
 
-#: mafiagame\roles.py:3809
+#: mafiagame\roles.py:3967
 msgid ""
 "Each night, the Killer can select a player to kill. If there is several "
 "Killers in the game, who target different players, nothing happens. They "
 "can't kill other Killers."
 msgstr ""
 
-#: mafiagame\roles.py:3812
+#: mafiagame\roles.py:3970
 msgid "Kill all players."
 msgstr ""
 
-#: mafiagame\roles.py:3834
+#: mafiagame\roles.py:3992
 msgid "Kill at least 3 players in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:3858
+#: mafiagame\roles.py:4017
 msgid "The Killers couldn't agree on a target!"
 msgstr ""
 
-#: mafiagame\roles.py:3859
+#: mafiagame\roles.py:4018
 msgid "No one was killed."
 msgstr ""
 
-#: mafiagame\roles.py:3868
+#: mafiagame\roles.py:4027
 msgid "The Oracle is a protector of the town."
 msgstr ""
 
-#: mafiagame\roles.py:3869
+#: mafiagame\roles.py:4028
 msgid ""
 "Each night, the Oracle can select a Villagers' role to make all players with"
 " that role invisible."
 msgstr ""
 
-#: mafiagame\roles.py:3908
+#: mafiagame\roles.py:4067
 msgid "Make an unrevealed Mayor invisible."
 msgstr ""
 
-#: mafiagame\roles.py:3929
+#: mafiagame\roles.py:4088
 msgid "Successfully make 5 different players invisible in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:3948
+#: mafiagame\roles.py:4108
 msgid "There are {number} {target.name}{s} alive in the game."
 msgstr ""
 
-#: mafiagame\roles.py:3959
+#: mafiagame\roles.py:4119
 msgid ""
 "The Ritualist is a master of dark arts, using rituals to eliminate their "
 "enemies."
 msgstr ""
 
-#: mafiagame\roles.py:3962
+#: mafiagame\roles.py:4122
 msgid ""
 "Each night, the Ritualist can select a player and guess their role. If they "
 "guess correctly, the player will be killed. Otherwise, the Ritualist's role "
 "will be revealed to everyone. This action can be used three times."
 msgstr ""
 
-#: mafiagame\roles.py:3988
+#: mafiagame\roles.py:4148
 msgid "Successfully perform a ritual."
 msgstr ""
 
-#: mafiagame\roles.py:3996
+#: mafiagame\roles.py:4156
 msgid "Perform all 3 rituals on Villagers' players."
 msgstr ""
 
-#: mafiagame\roles.py:4010
+#: mafiagame\roles.py:4171
 msgid "The Ritualist has guessed their role correctly."
 msgstr ""
 
-#: mafiagame\roles.py:4016
+#: mafiagame\roles.py:4177
 msgid ""
 "The Ritualist has guessed wrong! Their role is now revealed to everyone."
 msgstr ""
 
-#: mafiagame\roles.py:4021
+#: mafiagame\roles.py:4182
 msgid "{player.member.display_name} is the **Ritualist**!"
 msgstr ""
 
-#: mafiagame\roles.py:4034
+#: mafiagame\roles.py:4195
 msgid ""
 "The Necromancer is a master of the dark arts, able to reanimate the dead."
 msgstr ""
 
-#: mafiagame\roles.py:4037
+#: mafiagame\roles.py:4198
 msgid ""
 "Every night, the Necromancer can select a dead player to reanimate, and a "
 "living player to target. Any feedback that the dead player would receive "
@@ -2311,26 +2350,140 @@ msgid ""
 "multiple inputs, they will not respond. The Necromancer can't reanimate "
 "corpses that they have used before. Additionally, once a game, they may "
 "revive a dead player that they have not used as a corpse. That player will "
-"only be revived at the end of the day if the Necromancer is alive."
+"only be revived at the end of the day if the Necromancer is still alive."
 msgstr ""
 
-#: mafiagame\roles.py:4064
+#: mafiagame\roles.py:4225
 msgid "Reanimate a Vigilante and shoot someone."
 msgstr ""
 
-#: mafiagame\roles.py:4071
+#: mafiagame\roles.py:4232
 msgid "Reanimate a GodFather and kill someone."
 msgstr ""
 
-#: mafiagame\roles.py:4109
+#: mafiagame\roles.py:4271
 msgid "The Necromancer has revived **{target.member.display_name}**!"
 msgstr ""
 
-#: mafiagame\roles.py:4144
+#: mafiagame\roles.py:4283
+msgid "A master swordsman seeking the strongest opponents."
+msgstr ""
+
+#: mafiagame\roles.py:4284
+msgid ""
+"On Night 1, the Duelist selects a global target. Each night, they have a 25%"
+" chance to kill their target in a duel. If they succeed, they get their "
+"**Sanzen Sekai special attack**, which is made when the night starts and "
+"can't be redirected/cancelled, to use once. If their target is killed by "
+"someone else, they die of shame."
+msgstr ""
+
+#: mafiagame\roles.py:4304
+msgid "Die of shame because their target was killed by someone else."
+msgstr ""
+
+#: mafiagame\roles.py:4310
+msgid "Defeat their target in a duel."
+msgstr ""
+
+#: mafiagame\roles.py:4321
+msgid ""
+"You have already chosen your target. Wait for the duel results each night."
+msgstr ""
+
+#: mafiagame\roles.py:4333
+msgid "You have chosen {target.member.display_name} as your target."
+msgstr ""
+
+#: mafiagame\roles.py:4336
+msgid ""
+"You will duel them each night, with a 20% chance to win, and gain their "
+"**Sanzen Sekai special attack** to use once if you succeed."
+msgstr ""
+
+#: mafiagame\roles.py:4344
+msgid "The Duelist has chosen their target."
+msgstr ""
+
+#: mafiagame\roles.py:4345
+msgid ""
+"They will duel them each night, with a 20% chance to win, and gain their "
+"**Sanzen Sekai special attack** to use once if they succeed."
+msgstr ""
+
+#: mafiagame\roles.py:4355
+msgid "The Duelist has used their **Sanzen Sekai special attack**!"
+msgstr ""
+
+#: mafiagame\roles.py:4362
+msgid "The Duelist has defeated them in a duel!"
+msgstr ""
+
+#: mafiagame\roles.py:4367
+msgid "You have defeated {target.member.display_name} in a duel!"
+msgstr ""
+
+#: mafiagame\roles.py:4370
+msgid "You can now use your **Sanzen Sekai special attack** once."
+msgstr ""
+
+#: mafiagame\roles.py:4379
+msgid ""
+"You have failed to defeat {target.member.display_name} in a duel. Wait for "
+"the next night..."
+msgstr ""
+
+#: mafiagame\roles.py:4396
+msgid "Their target was killed by someone else, and they died of shame."
+msgstr ""
+
+#: mafiagame\roles.py:4403
+msgid ""
+"At the start of the game, a number of bricks equal to the number of players "
+"minus 2 are distributed among the players (each can have 0, 1, or 2). Each "
+"night, the Builder can visit a player to collect their bricks. When a player"
+" dies, their killer receives their bricks, or a random alive player receives"
+" them in other cases."
+msgstr ""
+
+#: mafiagame\roles.py:4406
+msgid "Each night, visit a player to take their bricks."
+msgstr ""
+
+#: mafiagame\roles.py:4408
+msgid "Collect all the bricks."
+msgstr ""
+
+#: mafiagame\roles.py:4429
+msgid "Try collecting bricks from a player who had none."
+msgstr ""
+
+#: mafiagame\roles.py:4433
+msgid "Collect at least 5 bricks in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:4437
+msgid "Collect bricks from at least 5 different players in the same game."
+msgstr ""
+
+#: mafiagame\roles.py:4460
+msgid "You have received **{bricks} brick{s}** to start with."
+msgstr ""
+
+#: mafiagame\roles.py:4476
+msgid ""
+"You have collected **{bricks} brick{s}** from {target.member.display_name}."
+msgstr ""
+
+#: mafiagame\roles.py:4485
+msgid "{target.member.display_name} has **no bricks** to collect."
+msgstr ""
+
+#: mafiagame\roles.py:4536
 msgid "The Grave Robber is a master of collecting souls."
 msgstr ""
 
-#: mafiagame\roles.py:4145
+#: mafiagame\roles.py:4537
 msgid ""
 "Each night, the Grave Robber can select a player. If that player dies, the "
 "Grave Robber will collect their soul. Once they have collected the required "
@@ -2338,44 +2491,48 @@ msgid ""
 "Apocalypse**."
 msgstr ""
 
-#: mafiagame\roles.py:4148 mafiagame\roles.py:4152
+#: mafiagame\roles.py:4540 mafiagame\roles.py:4544
 msgid "Transform into Death, Horseman of the Apocalypse."
 msgstr ""
 
-#: mafiagame\roles.py:4165
+#: mafiagame\roles.py:4558
 msgid ""
 "You have collected the required number of souls... You have transformed into"
 " **Death, Horseman of the Apocalypse**!"
 msgstr ""
 
-#: mafiagame\roles.py:4174
+#: mafiagame\roles.py:4567
 msgid ""
 "Death, Horseman of the Apocalypse, is a bringer of death and destruction."
 msgstr ""
 
-#: mafiagame\roles.py:4177
+#: mafiagame\roles.py:4570
 msgid ""
 "You have no ability. Instead, the town has one day to lynch you before their"
 " lives come to an end."
 msgstr ""
 
-#: mafiagame\roles.py:4201
+#: mafiagame\roles.py:4573 mafiagame\roles.py:4701
+msgid "Be the last one standing."
+msgstr ""
+
+#: mafiagame\roles.py:4595
 msgid "Kill 6 or more players after you transform into Death."
 msgstr ""
 
-#: mafiagame\roles.py:4222
+#: mafiagame\roles.py:4617
 msgid "**Death, Horseman of the Apocalypse** has arrived!"
 msgstr ""
 
-#: mafiagame\roles.py:4223
+#: mafiagame\roles.py:4618
 msgid "The town has one day to lynch them, before their lives come to an end!"
 msgstr ""
 
-#: mafiagame\roles.py:4235
+#: mafiagame\roles.py:4630
 msgid "The Farmer is a master of plants and agriculture."
 msgstr ""
 
-#: mafiagame\roles.py:4236
+#: mafiagame\roles.py:4631
 msgid ""
 "Each night, the Farmer can choose to plant a seed or give a plant to a "
 "player. When they plant a seed, that seed will become a plant the next day. "
@@ -2386,222 +2543,218 @@ msgid ""
 " Horseman of the Apocalypse**."
 msgstr ""
 
-#: mafiagame\roles.py:4239 mafiagame\roles.py:4243
+#: mafiagame\roles.py:4634 mafiagame\roles.py:4638
 msgid "Transform into Famine, Horseman of the Apocalypse."
 msgstr ""
 
-#: mafiagame\roles.py:4251
+#: mafiagame\roles.py:4647
 msgid "You don't have any plants to give!"
 msgstr ""
 
-#: mafiagame\roles.py:4273
+#: mafiagame\roles.py:4669
 msgid ""
 "You gave a plant to a player from each team... You have transformed into "
 "**Famine, Horseman of the Apocalypse**!"
 msgstr ""
 
-#: mafiagame\roles.py:4284
+#: mafiagame\roles.py:4680
 msgid ""
 "Swap all living players with dead players. You'll appear as a dead player "
 "for 1 day."
 msgstr ""
 
-#: mafiagame\roles.py:4285
+#: mafiagame\roles.py:4681
 msgid "Kill 2 random players."
 msgstr ""
 
-#: mafiagame\roles.py:4286
+#: mafiagame\roles.py:4682
 msgid "Permanently remove the vote of a player."
 msgstr ""
 
-#: mafiagame\roles.py:4287
+#: mafiagame\roles.py:4683
 msgid "Revive a player of your choice."
 msgstr ""
 
-#: mafiagame\roles.py:4288
+#: mafiagame\roles.py:4684
 msgid "Change a random player's role into any neutral role available."
 msgstr ""
 
-#: mafiagame\roles.py:4289
+#: mafiagame\roles.py:4685
 msgid "Control a player of your choice to visit any target of your choice."
 msgstr ""
 
-#: mafiagame\roles.py:4290
+#: mafiagame\roles.py:4686
 msgid "Permanently distract a player of your choice."
 msgstr ""
 
-#: mafiagame\roles.py:4291
+#: mafiagame\roles.py:4687
 msgid "Change the votes required to be 0 for one day."
 msgstr ""
 
-#: mafiagame\roles.py:4298
+#: mafiagame\roles.py:4694
 msgid ""
 "Famine, Horseman of the Apocalypse, is a bringer of hunger and starvation."
 msgstr ""
 
-#: mafiagame\roles.py:4301
+#: mafiagame\roles.py:4697
 msgid ""
 "Each night, Famine can choose to bring forth an apocalypse. They have 8 "
 "apocalypses to choose from. Once they have chosen an apocalypse, they can no"
 " longer use the same apocalypse until they use every other apocalypse."
 msgstr ""
 
-#: mafiagame\roles.py:4305
-msgid "Be the last one standing."
-msgstr ""
-
-#: mafiagame\roles.py:4336
+#: mafiagame\roles.py:4733
 msgid "Choose an apocalypse to bring forth:"
 msgstr ""
 
-#: mafiagame\roles.py:4354
+#: mafiagame\roles.py:4751
 msgid "You have brought forth the **{apocalypse}** apocalypse!"
 msgstr ""
 
-#: mafiagame\roles.py:4366
+#: mafiagame\roles.py:4763
 msgid "The Doomsayer is a prophet of the end times."
 msgstr ""
 
-#: mafiagame\roles.py:4367
+#: mafiagame\roles.py:4764
 msgid ""
 "Each night, the Doomsayer can select 3 players to guess their roles. If they"
 " guess all 3 roles correctly, they will kill the players and transform into "
 "**War, Horseman of the Apocalypse**."
 msgstr ""
 
-#: mafiagame\roles.py:4370 mafiagame\roles.py:4374
+#: mafiagame\roles.py:4767 mafiagame\roles.py:4771
 msgid "Transform into War, Horseman of the Apocalypse."
 msgstr ""
 
-#: mafiagame\roles.py:4388
+#: mafiagame\roles.py:4786
 msgid "The Doomsayer has guessed their role correctly."
 msgstr ""
 
-#: mafiagame\roles.py:4392
+#: mafiagame\roles.py:4790
 msgid ""
 "Your guesses were correct... You have transformed into **War, Horseman of "
 "the Apocalypse**!"
 msgstr ""
 
-#: mafiagame\roles.py:4400
+#: mafiagame\roles.py:4797
 msgid "You have guessed wrong! Retry next night..."
 msgstr ""
 
-#: mafiagame\roles.py:4408
+#: mafiagame\roles.py:4805
 msgid ""
 "War, Horseman of the Apocalypse, is a bringer of chaos and destruction."
 msgstr ""
 
-#: mafiagame\roles.py:4409
+#: mafiagame\roles.py:4806
 msgid ""
 "Each night, War can select players to kill. The amount of players they can "
 "kill each night increases by one every day."
 msgstr ""
 
-#: mafiagame\roles.py:4435
+#: mafiagame\roles.py:4832
 msgid "Kill 3 Mafia members in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:4440
+#: mafiagame\roles.py:4839
 msgid "Kill 3 Villagers' players in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:4445
+#: mafiagame\roles.py:4846
 msgid "Kill 3 Neutral players in the same game."
 msgstr ""
 
-#: mafiagame\roles.py:4452
+#: mafiagame\roles.py:4853
 msgid ""
 "Have at least 3 Horsemen from the Apocalypse, including yourself, in the "
 "same game."
 msgstr ""
 
-#: mafiagame\roles.py:4459
+#: mafiagame\roles.py:4860
 msgid "Have the ability to kill 5 or more players."
 msgstr ""
 
-#: mafiagame\roles.py:4498
+#: mafiagame\roles.py:4897
 msgid ""
 "The Developer is a master of coding and testing. They have all the powers "
 "and resist to all night abilities."
 msgstr ""
 
-#: mafiagame\roles.py:4501
+#: mafiagame\roles.py:4900
 msgid ""
 "Each night and day, the Developer can select a role to use their ability, "
 "then select or not a player to target with that ability."
 msgstr ""
 
-#: mafiagame\roles.py:4504
+#: mafiagame\roles.py:4903
 msgid "Test things."
 msgstr ""
 
-#: mafiagame\roles.py:4666
+#: mafiagame\roles.py:5066
 msgid "Win with all Villagers' players still alive."
 msgstr ""
 
-#: mafiagame\roles.py:4670
+#: mafiagame\roles.py:5070
 msgid "Have a game that last 10 days."
 msgstr ""
 
-#: mafiagame\roles.py:4677
+#: mafiagame\roles.py:5077
 msgid "Win with half of the Villagers' roles."
 msgstr ""
 
-#: mafiagame\roles.py:4682
+#: mafiagame\roles.py:5082
 msgid "Win with all Mafia members still alive."
 msgstr ""
 
-#: mafiagame\roles.py:4687
+#: mafiagame\roles.py:5087
 msgid "Win with half of the Mafia roles."
 msgstr ""
 
-#: mafiagame\roles.py:4694
+#: mafiagame\roles.py:5094
 msgid "Win with half of the Neutral roles."
 msgstr ""
 
-#: mafiagame\roles.py:4698
+#: mafiagame\roles.py:5098
 msgid "Win with half of the roles."
 msgstr ""
 
-#: mafiagame\roles.py:4705
+#: mafiagame\roles.py:5105
 msgid "Win with all Villagers' roles."
 msgstr ""
 
-#: mafiagame\roles.py:4710
+#: mafiagame\roles.py:5110
 msgid "Win with all Mafia roles."
 msgstr ""
 
-#: mafiagame\roles.py:4717
+#: mafiagame\roles.py:5117
 msgid "Win with all Neutral roles."
 msgstr ""
 
-#: mafiagame\roles.py:4721
+#: mafiagame\roles.py:5121
 msgid "Win with all roles."
 msgstr ""
 
-#: mafiagame\roles.py:4731
+#: mafiagame\roles.py:5131
 msgid "Win your first game{as_role}."
 msgstr ""
 
-#: mafiagame\roles.py:4732 mafiagame\roles.py:4737 mafiagame\roles.py:4742
-#: mafiagame\roles.py:4747 mafiagame\roles.py:4751
+#: mafiagame\roles.py:5132 mafiagame\roles.py:5137 mafiagame\roles.py:5142
+#: mafiagame\roles.py:5147 mafiagame\roles.py:5151
 msgid " as {role.name}"
 msgstr ""
 
-#: mafiagame\roles.py:4735
+#: mafiagame\roles.py:5135
 msgid "Win {value} games{as_role}."
 msgstr ""
 
-#: mafiagame\roles.py:4741
+#: mafiagame\roles.py:5141
 msgid "Play your first game{as_role}."
 msgstr ""
 
-#: mafiagame\roles.py:4745
+#: mafiagame\roles.py:5145
 msgid "Play {value} games{as_role}."
 msgstr ""
 
-#: mafiagame\roles.py:4750
+#: mafiagame\roles.py:5150
 msgid "Win the game{as_role} without dying."
 msgstr ""
 
@@ -4602,7 +4755,7 @@ msgstr ""
 msgid "Leave"
 msgstr ""
 
-#: mafiagame\views.py:55 mafiagame\views.py:1842
+#: mafiagame\views.py:55 mafiagame\views.py:1808
 msgid "View Players (1)"
 msgstr ""
 
@@ -4611,7 +4764,7 @@ msgid "Start Game!"
 msgstr ""
 
 #: mafiagame\views.py:92 mafiagame\views.py:196 mafiagame\views.py:213
-#: mafiagame\views.py:1922
+#: mafiagame\views.py:1888
 msgid "View Players ({len_players})"
 msgstr ""
 
@@ -4697,8 +4850,8 @@ msgstr ""
 msgid "Show my Role"
 msgstr ""
 
-#: mafiagame\views.py:352 mafiagame\views.py:564 mafiagame\views.py:1033
-#: mafiagame\views.py:1155 mafiagame\views.py:1226
+#: mafiagame\views.py:352 mafiagame\views.py:564 mafiagame\views.py:1037
+#: mafiagame\views.py:1159 mafiagame\views.py:1230
 msgid "You are not a player in this game!"
 msgstr ""
 
@@ -4710,7 +4863,7 @@ msgstr ""
 msgid "You are already dead!"
 msgstr ""
 
-#: mafiagame\views.py:429 mafiagame\views.py:1775
+#: mafiagame\views.py:429 mafiagame\views.py:1741
 msgid "You are not allowed to use this interaction."
 msgstr ""
 
@@ -4743,11 +4896,11 @@ msgstr ""
 msgid "You are now spectating the game! 👀 Jump to {channel.mention}!"
 msgstr ""
 
-#: mafiagame\views.py:543 mafiagame\views.py:1016
+#: mafiagame\views.py:543 mafiagame\views.py:1020
 msgid "Perform Action"
 msgstr ""
 
-#: mafiagame\views.py:545 mafiagame\views.py:981
+#: mafiagame\views.py:545 mafiagame\views.py:985
 msgid "Dying Message"
 msgstr ""
 
@@ -4755,7 +4908,7 @@ msgstr ""
 msgid "You are dead, you can't perform any action!"
 msgstr ""
 
-#: mafiagame\views.py:583 mafiagame\views.py:1123 mafiagame\views.py:1362
+#: mafiagame\views.py:583 mafiagame\views.py:1127
 msgid "You have already used your action the maximum amount of times!"
 msgstr ""
 
@@ -4763,371 +4916,367 @@ msgstr ""
 msgid "You can't perform any night action!"
 msgstr ""
 
-#: mafiagame\views.py:674
+#: mafiagame\views.py:675
 msgid "There are no valid target to select!"
 msgstr ""
 
-#: mafiagame\views.py:679
+#: mafiagame\views.py:681
 msgid "Select a target to kill "
 msgstr ""
 
-#: mafiagame\views.py:686
+#: mafiagame\views.py:688
 msgid "Select a target."
 msgstr ""
 
-#: mafiagame\views.py:688
+#: mafiagame\views.py:690
 msgid "Select {targets_number} targets."
 msgstr ""
 
-#: mafiagame\views.py:694
+#: mafiagame\views.py:698
 msgid "BOOM!"
 msgstr ""
 
-#: mafiagame\views.py:701
+#: mafiagame\views.py:705
 msgid "Daybreak"
 msgstr ""
 
-#: mafiagame\views.py:726
+#: mafiagame\views.py:730
 msgid "You have selected {target.member.mention}!"
 msgstr ""
 
-#: mafiagame\views.py:732
+#: mafiagame\views.py:736
 msgid ""
 "You have selected {target.member.mention}! If you don't select your second "
 "target, you will perform your special action."
 msgstr ""
 
-#: mafiagame\views.py:740
+#: mafiagame\views.py:744
 msgid "You need to select {targets_number} targets!"
 msgstr ""
 
-#: mafiagame\views.py:751
+#: mafiagame\views.py:755
 msgid "You have selected {len_targets} targets!"
 msgstr ""
 
-#: mafiagame\views.py:756 mafiagame\views.py:795 mafiagame\views.py:909
-#: mafiagame\views.py:1466
+#: mafiagame\views.py:760 mafiagame\views.py:799 mafiagame\views.py:913
+#: mafiagame\views.py:1432
 msgid "You have unselected!"
 msgstr ""
 
-#: mafiagame\views.py:763
+#: mafiagame\views.py:767
 msgid "You have chosen to make explode all the bombs you already planted!"
 msgstr ""
 
-#: mafiagame\views.py:771
+#: mafiagame\views.py:775
 msgid "You have chosen to block all days-actions from happening tomorrow!"
 msgstr ""
 
-#: mafiagame\views.py:781 mafiagame\views.py:871
+#: mafiagame\views.py:785 mafiagame\views.py:875
 msgid "You need to select a target first!"
 msgstr ""
 
-#: mafiagame\views.py:788
+#: mafiagame\views.py:792
 msgid ""
 "You have selected {first_target.member.mention} and {target.member.mention}!"
 msgstr ""
 
-#: mafiagame\views.py:844
+#: mafiagame\views.py:848
 msgid "Select a role."
 msgstr ""
 
-#: mafiagame\views.py:886
+#: mafiagame\views.py:890
 msgid "You can't perform any action!"
 msgstr ""
 
-#: mafiagame\views.py:897
+#: mafiagame\views.py:901
 msgid "You have selected the **{role.name}** role{for_player}!"
 msgstr ""
 
-#: mafiagame\views.py:902
+#: mafiagame\views.py:906
 msgid " for {player.member.mention}"
 msgstr ""
 
-#: mafiagame\views.py:957
+#: mafiagame\views.py:961
 msgid "Previous Page"
 msgstr ""
 
-#: mafiagame\views.py:958
+#: mafiagame\views.py:962
 msgid "Next Page"
 msgstr ""
 
-#: mafiagame\views.py:984
+#: mafiagame\views.py:988
 msgid "Dying Message:"
 msgstr ""
 
-#: mafiagame\views.py:985
+#: mafiagame\views.py:989
 msgid "Enter your death message..."
 msgstr ""
 
-#: mafiagame\views.py:997
+#: mafiagame\views.py:1001
 msgid "Your death message has been set!"
 msgstr ""
 
-#: mafiagame\views.py:1015
+#: mafiagame\views.py:1019
 msgid "Select a player to vote against."
 msgstr ""
 
-#: mafiagame\views.py:1038 mafiagame\views.py:1231
+#: mafiagame\views.py:1042 mafiagame\views.py:1235
 msgid "You are dead, you can't vote!"
 msgstr ""
 
-#: mafiagame\views.py:1050 mafiagame\views.py:1248
+#: mafiagame\views.py:1054 mafiagame\views.py:1253
 msgid "You have **rolled a yellow dice** and lost, you can't vote today!"
 msgstr ""
 
-#: mafiagame\views.py:1056 mafiagame\views.py:1254
+#: mafiagame\views.py:1060 mafiagame\views.py:1261
 msgid "You are **blackmailed**, you can't vote today!"
 msgstr ""
 
-#: mafiagame\views.py:1070 mafiagame\views.py:1268
+#: mafiagame\views.py:1074 mafiagame\views.py:1275
 msgid "You are **breaded**, you can't vote today!"
 msgstr ""
 
-#: mafiagame\views.py:1089
+#: mafiagame\views.py:1093
 msgid "You have voted against {player.member.mention}!"
 msgstr ""
 
-#: mafiagame\views.py:1094
+#: mafiagame\views.py:1098
 msgid "You have unvoted!"
 msgstr ""
 
-#: mafiagame\views.py:1112 mafiagame\views.py:1351
-msgid "All day-actions have been blocked for today by {the_or_a} Starspawn!"
+#: mafiagame\views.py:1116
+msgid "All day-actions have been blocked for today by {the_or_a}Starspawn!"
 msgstr ""
 
-#: mafiagame\views.py:1129 mafiagame\views.py:1368
+#: mafiagame\views.py:1133
 msgid "You can't perform any day action!"
 msgstr ""
 
-#: mafiagame\views.py:1134 mafiagame\views.py:1373
+#: mafiagame\views.py:1138
 msgid "You can't perform any action at this time!"
 msgstr ""
 
-#: mafiagame\views.py:1144
+#: mafiagame\views.py:1148
 msgid "Suicide"
 msgstr ""
 
-#: mafiagame\views.py:1160
+#: mafiagame\views.py:1164
 msgid "You can't perform this action at this time!"
 msgstr ""
 
-#: mafiagame\views.py:1165
+#: mafiagame\views.py:1169
 msgid "You are dead, you can't perform this action anymore!"
 msgstr ""
 
-#: mafiagame\views.py:1174
+#: mafiagame\views.py:1178
 msgid "Hey! Do you really want to kill yourself?"
 msgstr ""
 
-#: mafiagame\views.py:1194
+#: mafiagame\views.py:1198
 msgid "They felt threatened by judgement and decided to take their own life."
 msgstr ""
 
-#: mafiagame\views.py:1207
+#: mafiagame\views.py:1211
 msgid "GUILTY"
 msgstr ""
 
-#: mafiagame\views.py:1208
+#: mafiagame\views.py:1212
 msgid "INNOCENT"
 msgstr ""
 
-#: mafiagame\views.py:1209
+#: mafiagame\views.py:1213
 msgid "Abstain"
 msgstr ""
 
-#: mafiagame\views.py:1237
+#: mafiagame\views.py:1242
 msgid "You can't vote on your own judgement!"
 msgstr ""
 
-#: mafiagame\views.py:1314
+#: mafiagame\views.py:1321
 msgid "You have voted **GUILTY**!"
 msgstr ""
 
-#: mafiagame\views.py:1322
+#: mafiagame\views.py:1329
 msgid "You have voted **INNOCENT**!"
 msgstr ""
 
-#: mafiagame\views.py:1332
+#: mafiagame\views.py:1339
 msgid "You have abstained!"
 msgstr ""
 
-#: mafiagame\views.py:1385
+#: mafiagame\views.py:1352
 msgid "Select the role you want to reincarnate as."
 msgstr ""
 
-#: mafiagame\views.py:1407
-msgid "You have reincarnated as **{role.name}**!"
-msgstr ""
-
-#: mafiagame\views.py:1427
+#: mafiagame\views.py:1392
 msgid "Select a dice to throw."
 msgstr ""
 
-#: mafiagame\views.py:1430
+#: mafiagame\views.py:1395
 msgid "White Dice"
 msgstr ""
 
-#: mafiagame\views.py:1432
+#: mafiagame\views.py:1397
 msgid "70% chance of success"
 msgstr ""
 
-#: mafiagame\views.py:1436
+#: mafiagame\views.py:1401
 msgid "Yellow Dice"
 msgstr ""
 
-#: mafiagame\views.py:1438
+#: mafiagame\views.py:1403
 msgid "50% chance of success"
 msgstr ""
 
-#: mafiagame\views.py:1442
+#: mafiagame\views.py:1408
 msgid "Red Dice"
 msgstr ""
 
-#: mafiagame\views.py:1444
+#: mafiagame\views.py:1410
 msgid "20% chance of success"
 msgstr ""
 
-#: mafiagame\views.py:1460
+#: mafiagame\views.py:1426
 msgid "You have thrown the **{dice}** dice!"
 msgstr ""
 
-#: mafiagame\views.py:1484
+#: mafiagame\views.py:1450
 msgid "Select a player to prosecute."
 msgstr ""
 
-#: mafiagame\views.py:1528
+#: mafiagame\views.py:1494
 msgid "Main Page"
 msgstr ""
 
-#: mafiagame\views.py:1531
+#: mafiagame\views.py:1497
 msgid "How to play the Mafia game?"
 msgstr ""
 
-#: mafiagame\views.py:1532
+#: mafiagame\views.py:1498
 msgid ""
 "Mafia is a party game where players are secretly assigned roles that "
 "determine their objectives."
 msgstr ""
 
-#: mafiagame\views.py:1541
+#: mafiagame\views.py:1507
 msgid "Phases"
 msgstr ""
 
-#: mafiagame\views.py:1544
+#: mafiagame\views.py:1510
 msgid "**Phases:**"
 msgstr ""
 
-#: mafiagame\views.py:1545
+#: mafiagame\views.py:1511
 msgid "The game is divided into several phases."
 msgstr ""
 
-#: mafiagame\views.py:1548
+#: mafiagame\views.py:1514
 msgid "🌙 Night Phase"
 msgstr ""
 
-#: mafiagame\views.py:1549
+#: mafiagame\views.py:1515
 msgid ""
 "At night, players with night actions can use their abilities, possibly "
 "choose their target(s). The Mafia can kill a player, the Doctor can save a "
 "player, the Detective can investigate a player, etc."
 msgstr ""
 
-#: mafiagame\views.py:1555
+#: mafiagame\views.py:1521
 msgid "🌞 Day Phase"
 msgstr ""
 
-#: mafiagame\views.py:1556
+#: mafiagame\views.py:1522
 msgid ""
 "At the end of the night, the various events of the night and the victims of "
 "the Mafia are described. Players then have a time to talk and identify who "
 "to vote against."
 msgstr ""
 
-#: mafiagame\views.py:1562
+#: mafiagame\views.py:1528
 msgid "⚖️ Voting & Judgement Phases"
 msgstr ""
 
-#: mafiagame\views.py:1563
+#: mafiagame\views.py:1529
 msgid ""
 "- Once the speaking time is up, players who are still alive can vote against those they wish to eliminate. A minimum number of votes must be reached, worth around half the remaining players. Some players may have multiple votes for the whole game (like the Mayor), or just one day.\n"
 "- If a player is nominated by enough players, they have a time to defend themselves before a new vote, for which the answer can be “Guilty”, “Innocent” or “Abstain”. This time, if more players vote “Guilty”, the player is lynched. Depending on the configuration, his role or death message will be displayed for all to see."
 msgstr ""
 
-#: mafiagame\views.py:1569
+#: mafiagame\views.py:1535
 msgid "🔁 Repeat"
 msgstr ""
 
-#: mafiagame\views.py:1570
+#: mafiagame\views.py:1536
 msgid "The game continues until one side or a Neutral role wins."
 msgstr ""
 
-#: mafiagame\views.py:1576
+#: mafiagame\views.py:1542
 msgid "Roles"
 msgstr ""
 
-#: mafiagame\views.py:1579
+#: mafiagame\views.py:1545
 msgid "**Roles ({len_roles}):**"
 msgstr ""
 
-#: mafiagame\views.py:1580
+#: mafiagame\views.py:1546
 msgid ""
 "There are many different roles in the game. Each role has its own abilities "
 "and objectives. They are randomly assigned to players at the beginning of "
 "the game."
 msgstr ""
 
-#: mafiagame\views.py:1585
+#: mafiagame\views.py:1551
 msgid "Mafia Roles ({len_mafia_roles})"
 msgstr ""
 
-#: mafiagame\views.py:1590
+#: mafiagame\views.py:1556
 msgid ""
 "The Mafia is a group of players who know each other and must eliminate the Villagers. The God Father is the leader of the Mafia and choose the victim each night.\n"
 "🏆 The Mafia wins when their number is equal to or greater than the half of the alive players."
 msgstr ""
 
-#: mafiagame\views.py:1596
+#: mafiagame\views.py:1562
 msgid "Villagers' Roles ({len_villagers_roles})"
 msgstr ""
 
-#: mafiagame\views.py:1601
+#: mafiagame\views.py:1567
 msgid ""
 "The Villagers are the majority of the players. They don't know each other and must eliminate the Mafia. The Mayor is the leader of the Town and can choose to revelate their role to everyone.\n"
 "🏆 The Villagers win when all the Mafia members and the Bomber are dead."
 msgstr ""
 
-#: mafiagame\views.py:1607
+#: mafiagame\views.py:1573
 msgid "Neutral Roles ({len_neutral_roles})"
 msgstr ""
 
-#: mafiagame\views.py:1612
+#: mafiagame\views.py:1578
 msgid ""
 "The Neutral roles have their own objectives and can win alone or with "
 "another side."
 msgstr ""
 
-#: mafiagame\views.py:1618
+#: mafiagame\views.py:1584
 msgid "Horsemen of the Apocalypse Roles ({len_horsemen_roles})"
 msgstr ""
 
-#: mafiagame\views.py:1627
+#: mafiagame\views.py:1593
 msgid ""
 "These roles can't be assigned to players at the beginning of the game. Some "
 "Neutral roles can turn into Horseman of the Apocalypse roles during the game"
 " when they achieve an objective."
 msgstr ""
 
-#: mafiagame\views.py:1633
+#: mafiagame\views.py:1599
 msgid ""
 "ℹ️ See `{prefix}mafia roles` or `{prefix}mafia role <role>` for more "
 "information."
 msgstr ""
 
-#: mafiagame\views.py:1638
+#: mafiagame\views.py:1604
 msgid "Roles Priority"
 msgstr ""
 
-#: mafiagame\views.py:1639
+#: mafiagame\views.py:1605
 msgid ""
 " Each role waits for an action to finish before proceeding to the next role."
 " This is the reason why sometimes you die before you could do your action. "
@@ -5136,15 +5285,15 @@ msgid ""
 "first."
 msgstr ""
 
-#: mafiagame\views.py:1652
+#: mafiagame\views.py:1618
 msgid "Modes"
 msgstr ""
 
-#: mafiagame\views.py:1655
+#: mafiagame\views.py:1621
 msgid "**Modes:**"
 msgstr ""
 
-#: mafiagame\views.py:1656
+#: mafiagame\views.py:1622
 msgid ""
 "There are several possible modes.\n"
 "- {predefined_modes_number} have predefined options and make specific choices depending on the number of players.\n"
@@ -5153,84 +5302,84 @@ msgid ""
 "ℹ️ See `{prefix}mafia modes` or `{prefix}mafia mode <mode>` for more information."
 msgstr ""
 
-#: mafiagame\views.py:1666
+#: mafiagame\views.py:1632
 msgid "Town Traitor & Town VIP"
 msgstr ""
 
-#: mafiagame\views.py:1669
+#: mafiagame\views.py:1635
 msgid "**Town Traitor:**"
 msgstr ""
 
-#: mafiagame\views.py:1670
+#: mafiagame\views.py:1636
 msgid ""
 "The Town Traitor is a member of the Town who is secretly working with the Mafia. The Town Traitor wins with the Mafia.\n"
 "⚠️ Warning: the Mayor could be the Town Traitor!"
 msgstr ""
 
-#: mafiagame\views.py:1676
+#: mafiagame\views.py:1642
 msgid "**Town VIP:**"
 msgstr ""
 
-#: mafiagame\views.py:1677
+#: mafiagame\views.py:1643
 msgid ""
 "The Town VIP is a member of the Town that the Mafia must kill to win. The "
 "Villagers win if the Town VIP is alive at the end of the game."
 msgstr ""
 
-#: mafiagame\views.py:1687
+#: mafiagame\views.py:1653
 msgid "Anomalies"
 msgstr ""
 
-#: mafiagame\views.py:1690
+#: mafiagame\views.py:1656
 msgid "**Anomalies:**"
 msgstr ""
 
-#: mafiagame\views.py:1691
+#: mafiagame\views.py:1657
 msgid ""
 "Anomalies are special events that can occur during the game. They can be beneficial or harmful. Each turn, they have 40% chance to occur and a random anomaly among the {anomalies_number} existing will be selected.\n"
 "ℹ️ See `{prefix}mafia anomalies` or `{prefix}mafia anomaly <anomaly>` for more information."
 msgstr ""
 
-#: mafiagame\views.py:1701
+#: mafiagame\views.py:1667
 msgid "Achievements"
 msgstr ""
 
-#: mafiagame\views.py:1704
+#: mafiagame\views.py:1670
 msgid "**Achievements:**"
 msgstr ""
 
-#: mafiagame\views.py:1705
+#: mafiagame\views.py:1671
 msgid ""
 "Achievements are special goals that players can achieve during the game. They can be general or specific to a role. They are global for all the servers. If you get an achievement, you will receive a DM when a game ends.\n"
 "ℹ️ You can check them with `{prefix}mafia achievements`."
 msgstr ""
 
-#: mafiagame\views.py:1715
+#: mafiagame\views.py:1681
 msgid "More Information"
 msgstr ""
 
-#: mafiagame\views.py:1840
+#: mafiagame\views.py:1806
 msgid "Sure!"
 msgstr ""
 
-#: mafiagame\views.py:1851
+#: mafiagame\views.py:1817
 msgid "Poll to start a Mafia game!"
 msgstr ""
 
-#: mafiagame\views.py:1852
+#: mafiagame\views.py:1818
 msgid ""
 "Click the button below to join the poll. You have to be **at least "
 "{threshold} players** to actually start the game."
 msgstr ""
 
-#: mafiagame\views.py:1859
+#: mafiagame\views.py:1825
 msgid "Created by {host.display_name}"
 msgstr ""
 
-#: mafiagame\views.py:1918
+#: mafiagame\views.py:1884
 msgid "You have joined the poll!"
 msgstr ""
 
-#: mafiagame\views.py:1921
+#: mafiagame\views.py:1887
 msgid "You have left the poll!"
 msgstr ""

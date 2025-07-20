@@ -1,0 +1,150 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: reach\reach.py:31
+#, docstring
+msgid ""
+"Check the reach of ping roles in specific channels and find the closest ping"
+" roles for the number of members you want to ping!"
+msgstr ""
+
+#: reach\reach.py:60
+#, docstring
+msgid "Check the reach of specific ping roles in a specific channel."
+msgstr ""
+
+#: reach\reach.py:64
+msgid "You must provide at least one role to check reach for."
+msgstr ""
+
+#: reach\reach.py:67
+msgid "Reach Check"
+msgstr ""
+
+#: reach\reach.py:68
+msgid "**Channel:** {channel.mention} (`{channel.id}`)\n"
+msgstr ""
+
+#: reach\reach.py:86
+msgid ""
+"\n"
+"{i}. **{role.mention}** (`{role.id}`)\n"
+"  - Human members: **{human_count}**\n"
+"  - Members with channel access: **{access_count}**\n"
+"  - Reach: **{reach}**"
+msgstr ""
+
+#: reach\reach.py:98 reach\reach.py:220
+msgid ""
+"\n"
+"  - Statuses: {statuses}"
+msgstr ""
+
+#: reach\reach.py:110
+msgid "**Total:**"
+msgstr ""
+
+#: reach\reach.py:111
+msgid ""
+"- Human members: **{human_count}**\n"
+"- Members with channel access: **{access_count}**\n"
+"- Reach: **{reach}**"
+msgstr ""
+
+#: reach\reach.py:121
+msgid ""
+"\n"
+"- Statuses: {statuses}"
+msgstr ""
+
+#: reach\reach.py:146
+#, docstring
+msgid ""
+"Find the closest ping roles for the amount of members you want to ping in a "
+"specific channel."
+msgstr ""
+
+#: reach\reach.py:159
+msgid "There are no roles to search for."
+msgstr ""
+
+#: reach\reach.py:195
+msgid "Reach Search Results"
+msgstr ""
+
+#: reach\reach.py:196
+msgid ""
+"**Channel:** {channel.mention} (`{channel.id}`)\n"
+"**Target amount:** {amount}\n"
+msgstr ""
+
+#: reach\reach.py:206
+msgid ""
+"\n"
+"{i}. **{roles}**\n"
+"  - Human members: **{human_count}**\n"
+"  - Members with channel access: **{access_count}**\n"
+"  - Reach: **{reach}**\n"
+"  - Difference from requested amount: **{difference}**"
+msgstr ""
+
+#: reach\reach.py:233
+msgid "{ctx.guild.name} | Checked in {time} seconds."
+msgstr ""
+
+#: reach\reach.py:245
+#, docstring
+msgid ""
+"Set the roles to search for. This will replace the current list of roles to "
+"search for."
+msgstr ""
+
+#: reach\reach.py:248
+msgid "You must provide at least one role to search for."
+msgstr ""
+
+#: reach\reach.py:254
+#, docstring
+msgid "Add a role to the list of roles to search for."
+msgstr ""
+
+#: reach\reach.py:258
+msgid "This role is already in the list of roles to search for."
+msgstr ""
+
+#: reach\reach.py:264
+#, docstring
+msgid "Remove a role from the list of roles to search for."
+msgstr ""
+
+#: reach\reach.py:268
+msgid "This role is not in the list of roles to search for."
+msgstr ""
+
+#: reach\reach.py:274
+#, docstring
+msgid "List the roles that are in the list of roles to search for."
+msgstr ""
+
+#: reach\reach.py:278
+msgid "There are no roles in the list of roles to search for."
+msgstr ""
+
+#: reach\reach.py:281
+msgid "Roles to search for"
+msgstr ""
+
+#: reach\reach.py:297
+#, docstring
+msgid "Clear the list of roles to search for."
+msgstr ""

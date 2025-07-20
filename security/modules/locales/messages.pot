@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,91 +11,844 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: security\modules\join_gate.py:29
-msgid "Invalid regex pattern: {error}"
+#: security\modules\anti_impersonation.py:42 security\modules\anti_nuke.py:667
+#: security\modules\anti_nuke.py:673
+#: security\modules\dank_pool_protection.py:153
+#: security\modules\dank_pool_protection.py:159
+msgid "Missing Permission"
 msgstr ""
 
-#: security\modules\join_gate.py:138 security\modules\reports.py:56
+#: security\modules\anti_impersonation.py:43 security\modules\anti_nuke.py:674
+#: security\modules\dank_pool_protection.py:160
+msgid "I need the `Manage Roles` permission to quarantine members."
+msgstr ""
+
+#: security\modules\anti_impersonation.py:49
+msgid ""
+"Protect your server from impersonation attacks by checking new members and "
+"member updates to ensure their display name, their name and their global "
+"name aren't similar to members with dangerous permissions."
+msgstr ""
+
+#: security\modules\anti_impersonation.py:53
+msgid ""
+"\n"
+"\n"
+"**Similarity Ratio:** {ratio}\n"
+"A similarity ratio of {ratio} means that names that are {percent}% similar will be flagged as potential impersonation attempts. You can adjust this ratio."
+msgstr ""
+
+#: security\modules\anti_impersonation.py:62 security\modules\anti_nuke.py:713
+#: security\modules\dank_pool_protection.py:205
+msgid "Quarantine Automatically"
+msgstr ""
+
+#: security\modules\anti_impersonation.py:74 security\modules\anti_nuke.py:725
+#: security\modules\dank_pool_protection.py:217
+msgid "Automatic Quarantine is now {status}."
+msgstr ""
+
+#: security\modules\anti_impersonation.py:85
+msgid "Configure Similarity Ratio"
+msgstr ""
+
+#: security\modules\anti_impersonation.py:118
+msgid ""
+"{member.mention} (`{member.name}`) has a similar display name to "
+"{other_member.mention} (`{other_member.name}`): `{member.display_name}` vs "
+"`{other_member.display_name}`."
+msgstr ""
+
+#: security\modules\anti_impersonation.py:122
+msgid ""
+"{member.mention} (`{member.name}`) has a similar name to "
+"{other_member.mention} (`{other_member.name}`): `{member.name}` vs "
+"`{other_member.name}`."
+msgstr ""
+
+#: security\modules\anti_impersonation.py:130
+msgid ""
+"{member.mention} (`{member.name}`) has a similar global name to "
+"{other_member.mention} (`{other_member.name}`): `{member.global_name}` vs "
+"`{other_member.global_name}`."
+msgstr ""
+
+#: security\modules\anti_impersonation.py:137
+msgid "**Anti Impersonation** - Potential impersonation detected."
+msgstr ""
+
+#: security\modules\anti_impersonation.py:191
+msgid "Anti Impersonation"
+msgstr ""
+
+#: security\modules\anti_impersonation.py:194
+msgid "Similarity Ratio (0.2 - 1.0):"
+msgstr ""
+
+#: security\modules\anti_impersonation.py:206
+msgid "Similarity ratio must be between 0.2 and 1.0."
+msgstr ""
+
+#: security\modules\anti_impersonation.py:209 security\modules\auto_mod.py:964
+#: security\modules\dank_pool_protection.py:449
+msgid "Invalid value: {error}"
+msgstr ""
+
+#: security\modules\anti_nuke.py:98
+msgid ""
+"{member.mention} (`{member}`) **changed** the vanity URL from "
+"`{before.vanity_url_code}` to `{after.vanity_url_code}` {timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:106
+msgid "**Anti Nuke** - Attempted to change the vanity URL."
+msgstr ""
+
+#: security\modules\anti_nuke.py:119
+msgid ""
+"{member.mention} (`{member}`) **pruned** {members_removed} members "
+"({delete_member_days} days) {timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:127
+msgid "**Anti Nuke** - Pruned members without proper authorization."
+msgstr ""
+
+#: security\modules\anti_nuke.py:149
+msgid ""
+"{member.mention} (`{member}`) **added** {roles} to {target.mention} "
+"(`{target}`) that grant dangerous permissions {timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:190
+msgid ""
+"**Anti Nuke** - Added roles with dangerous permissions to a member without "
+"them having those permissions already."
+msgstr ""
+
+#: security\modules\anti_nuke.py:193
+msgid ""
+"**Anti Nuke** - Was given roles that grant dangerous permissions without "
+"having them already."
+msgstr ""
+
+#: security\modules\anti_nuke.py:233 security\modules\anti_nuke.py:396
+msgid ""
+"{member.mention} (`{member}`) **updated** the permissions of "
+"{target.mention} (`{target}`) to include dangerous permissions {timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:252
+msgid ""
+"**Anti Nuke** - Updated @everyone or main roles to have dangerous "
+"permissions."
+msgstr ""
+
+#: security\modules\anti_nuke.py:282
+msgid ""
+"{member.mention} (`{member}`) **updated** the permissions of {extra.mention}"
+" (`{extra}`) in {target.mention} (`{target}`) to include dangerous "
+"permissions {timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:302
+msgid ""
+"**Anti Nuke** - Updated @everyone or main roles to have dangerous "
+"permissions in a channel."
+msgstr ""
+
+#: security\modules\anti_nuke.py:332
+msgid ""
+"{member.mention} (`{member}`) **added** the role{s} {roles} with dangerous "
+"permissions to Discord's onboarding {timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:375
+msgid ""
+"**Anti Nuke** - Added roles with dangerous permissions to Discord's "
+"onboarding."
+msgstr ""
+
+#: security\modules\anti_nuke.py:415
+msgid "**Anti Nuke** - Updated a role to have dangerous permissions."
+msgstr ""
+
+#: security\modules\anti_nuke.py:457
+msgid ""
+"{member.mention} (`{member}`) **{action}** `{target.name}` {timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:461
+msgid "kicked"
+msgstr ""
+
+#: security\modules\anti_nuke.py:461
+msgid "banned"
+msgstr ""
+
+#: security\modules\anti_nuke.py:465
+msgid "**Anti Nuke** - Kicked/Banned too many members in a short time."
+msgstr ""
+
+#: security\modules\anti_nuke.py:476 security\modules\anti_nuke.py:512
+msgid ""
+"{member.mention} (`{member}`) **created** {target.mention} (`{target.name}`)"
+" {timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:483
+msgid "**Anti Nuke** - Created too many roles in a short time."
+msgstr ""
+
+#: security\modules\anti_nuke.py:494 security\modules\anti_nuke.py:530
+#: security\modules\anti_nuke.py:602
+msgid "{member.mention} (`{member}`) **deleted** `{target_name}` {timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:501
+msgid "**Anti Nuke** - Deleted too many roles in a short time."
+msgstr ""
+
+#: security\modules\anti_nuke.py:519
+msgid "**Anti Nuke** - Created too many channels in a short time."
+msgstr ""
+
+#: security\modules\anti_nuke.py:537
+msgid "**Anti Nuke** - Deleted too many channels in a short time."
+msgstr ""
+
+#: security\modules\anti_nuke.py:548
+msgid "{member.mention} (`{member}`) **created** `{target_id}` {timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:555
+msgid "**Anti Nuke** - Created too many webhooks in a short time."
+msgstr ""
+
+#: security\modules\anti_nuke.py:566
+msgid "{member.mention} (`{member}`) **deleted** `{target_id}` {timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:573
+msgid "**Anti Nuke** - Deleted too many webhooks in a short time."
+msgstr ""
+
+#: security\modules\anti_nuke.py:584
+msgid ""
+"{member.mention} (`{member}`) **created** {target} (`{target.name}`) "
+"{timestamp}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:591
+msgid "**Anti Nuke** - Created too many emojis in a short time."
+msgstr ""
+
+#: security\modules\anti_nuke.py:609
+msgid "**Anti Nuke** - Deleted too many emojis in a short time."
+msgstr ""
+
+#: security\modules\anti_nuke.py:655 security\modules\auto_mod.py:582
+#: security\modules\dank_pool_protection.py:149
+#: security\modules\join_gate.py:136 security\modules\logging.py:503
+#: security\modules\protected_roles.py:36 security\modules\reports.py:56
+#: security\modules\sentinel_relay.py:47
+#: security\modules\unauthorized_text_channel_deletions.py:51
 msgid "Disabled"
 msgstr ""
 
-#: security\modules\join_gate.py:138
-msgid "Join Gate is currently disabled."
+#: security\modules\anti_nuke.py:655
+msgid "Anti Nuke is currently disabled."
 msgstr ""
 
-#: security\modules\join_gate.py:140
-msgid "No Enabled Options"
+#: security\modules\anti_nuke.py:661
+msgid "No Enabled Options/Filters"
 msgstr ""
 
-#: security\modules\join_gate.py:140
-msgid "There are no Join Gate option enabled."
+#: security\modules\anti_nuke.py:662
+msgid "There are no Anti Nuke option/filter enabled."
 msgstr ""
 
-#: security\modules\join_gate.py:160 security\modules\lockdown.py:113
-#: security\modules\protected_roles.py:37
-msgid "Missing Permissions"
+#: security\modules\anti_nuke.py:668
+msgid "I need the `View Audit Log` permission to function properly."
 msgstr ""
 
-#: security\modules\join_gate.py:161 security\modules\lockdown.py:114
-msgid "I need the {permissions} permission{s} to function properly."
-msgstr ""
-
-#: security\modules\join_gate.py:168 security\modules\lockdown.py:121
-#: security\modules\protected_roles.py:40 security\modules\reports.py:59
+#: security\modules\anti_nuke.py:676 security\modules\auto_mod.py:623
+#: security\modules\dank_pool_protection.py:162
+#: security\modules\join_gate.py:166 security\modules\lockdown.py:125
+#: security\modules\logging.py:527 security\modules\protected_roles.py:51
+#: security\modules\reports.py:59 security\modules\sentinel_relay.py:56
+#: security\modules\unauthorized_text_channel_deletions.py:54
 msgid "Enabled"
 msgstr ""
 
-#: security\modules\join_gate.py:168
+#: security\modules\anti_nuke.py:676
+msgid "Anti Nuke is enabled and configured correctly."
+msgstr ""
+
+#: security\modules\anti_nuke.py:681 security\modules\auto_mod.py:628
+#: security\modules\join_gate.py:171 security\modules\lockdown.py:130
+#: security\modules\logging.py:533 security\modules\reports.py:65
+#: security\modules\unauthorized_text_channel_deletions.py:62
+msgid "Security — {emoji} {name} {status}"
+msgstr ""
+
+#: security\modules\anti_nuke.py:684
+msgid ""
+"This module allows you to protect your server from malicious actions by "
+"members or bots.\n"
+msgstr ""
+
+#: security\modules\anti_nuke.py:699
+msgid ""
+"{description}\n"
+"**Enabled:** {enabled}\n"
+"**Minute Limit:** {minute_limit}\n"
+"**Hour Limit:** {hour_limit}"
+msgstr ""
+
+#: security\modules\anti_nuke.py:735
+msgid "Revert Option Actions"
+msgstr ""
+
+#: security\modules\anti_nuke.py:749
+msgid "Revert option actions is now {status}."
+msgstr ""
+
+#: security\modules\anti_nuke.py:760
+msgid "Select Anti Nuke Options"
+msgstr ""
+
+#: security\modules\anti_nuke.py:786
+msgid "Configure Anti Nuke Filters"
+msgstr ""
+
+#: security\modules\anti_nuke.py:829
+msgid "I **failed** to revert the action due to missing permissions."
+msgstr ""
+
+#: security\modules\anti_nuke.py:835
+msgid "I **failed** to revert the action due to an error: `{error}`."
+msgstr ""
+
+#: security\modules\anti_nuke.py:841
+msgid "I **successfully** reverted the action."
+msgstr ""
+
+#: security\modules\anti_nuke.py:952
+msgid "Anti Nuke - {filter}"
+msgstr ""
+
+#: security\modules\anti_nuke.py:957 security\modules\auto_mod.py:1239
+#: security\modules\join_gate.py:398
+#: security\modules\unauthorized_text_channel_deletions.py:74
+msgid "Enabled:"
+msgstr ""
+
+#: security\modules\anti_nuke.py:964
+msgid "Minute Limit:"
+msgstr ""
+
+#: security\modules\anti_nuke.py:971
+msgid "Hour Limit:"
+msgstr ""
+
+#: security\modules\anti_nuke.py:986
+msgid "Invalid limit value: {error}"
+msgstr ""
+
+#: security\modules\auto_mod.py:135 security\modules\auto_mod.py:203
+msgid "**Auto Mod** - Spam of messages detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:153
+msgid "**Auto Mod** - Spam of similar messages detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:162
+msgid "**Auto Mod** - Spam of emojis detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:171
+msgid "**Auto Mod** - Spam of new lines detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:187
+msgid "**Auto Mod** - Spam of Zalgo characters detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:213
+msgid "**Auto Mod** - Spam of embeds detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:229
+msgid "**Auto Mod** - Spam of images/videos detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:245
+msgid "**Auto Mod** - Spam of files detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:255
+msgid "**Auto Mod** - Spam of links detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:265
+msgid "**Auto Mod** - Spam of stickers detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:280
+msgid "**Auto Mod** - Advertising of Discord invites detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:304
+msgid "**Auto Mod** - Spam of member mentions detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:322
+msgid "**Auto Mod** - Spam of role mentions detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:343
+msgid ""
+"**Auto Mod** - Spam of @everyone, @here or main roles mentions detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:382
+msgid "**Auto Mod** - Steam scam links detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:401
+msgid "**Auto Mod** - NSFW links detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:417
+msgid "**Auto Mod** - Disguised links detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:440
+msgid "**Auto Mod** - Blacklisted links detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:467
+msgid "**Auto Mod** - Bad words detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:491
+msgid "**Auto Mod** - Blacklisted word detected."
+msgstr ""
+
+#: security\modules\auto_mod.py:582
+msgid "Auto Mod is currently disabled."
+msgstr ""
+
+#: security\modules\auto_mod.py:590
+msgid "No Enabled Filters"
+msgstr ""
+
+#: security\modules\auto_mod.py:591
+msgid "There are no Auto Mod filter category enabled."
+msgstr ""
+
+#: security\modules\auto_mod.py:615 security\modules\join_gate.py:158
+#: security\modules\lockdown.py:117 security\modules\protected_roles.py:42
+#: security\modules\protected_roles.py:48
+msgid "Missing Permissions"
+msgstr ""
+
+#: security\modules\auto_mod.py:616 security\modules\join_gate.py:159
+#: security\modules\lockdown.py:118
+msgid "I need the {permissions} permission{s} to function properly."
+msgstr ""
+
+#: security\modules\auto_mod.py:623
+msgid "Auto Mod is enabled and configured correctly."
+msgstr ""
+
+#: security\modules\auto_mod.py:631
+msgid ""
+"This module helps to detect and prevent spam, advertising, and other "
+"unwanted behavior in your server.\n"
+msgstr ""
+
+#: security\modules\auto_mod.py:639
+msgid ""
+"\n"
+"**Heat:**\n"
+"- Maximum heat: **{max_heat}%**\n"
+"- Degradation: **{degradation}%** per second\n"
+"- Reset after punishment: {reset_after_punishment}\n"
+"**Strike timeout durations:**\n"
+"- Regular: `{regular}`\n"
+"- Severe: `{severe}`\n"
+"- Auto multiplier: `{auto_multiplier}x`\n"
+"- Individual timeout/mute duration: `{specific_duration}`\n"
+"*When the total heat reaches the maximum, the last trigger message will be deleted and the most triggered filter configuration will be used to punish the member.*"
+msgstr ""
+
+#: security\modules\auto_mod.py:671
+msgid ""
+"\n"
+"**Enabled:** {state}"
+msgstr ""
+
+#: security\modules\auto_mod.py:675
+msgid ""
+"\n"
+"**Enabled:** 🔀 (Different States)"
+msgstr ""
+
+#: security\modules\auto_mod.py:679
+msgid "Heat"
+msgstr ""
+
+#: security\modules\auto_mod.py:691
+msgid "Strike Durations"
+msgstr ""
+
+#: security\modules\auto_mod.py:704
+msgid "Configure Filter Category"
+msgstr ""
+
+#: security\modules\auto_mod.py:929
+msgid "Configure Heat Settings"
+msgstr ""
+
+#: security\modules\auto_mod.py:931
+msgid "Maximum Heat:"
+msgstr ""
+
+#: security\modules\auto_mod.py:938
+msgid "Degradation per second:"
+msgstr ""
+
+#: security\modules\auto_mod.py:945
+msgid "Reset After Punishment (True/False):"
+msgstr ""
+
+#: security\modules\auto_mod.py:989
+msgid "Configure Strike Durations"
+msgstr ""
+
+#: security\modules\auto_mod.py:991
+msgid "Regular Strike Duration:"
+msgstr ""
+
+#: security\modules\auto_mod.py:998
+msgid "Severe Strike Duration (3 strikes +):"
+msgstr ""
+
+#: security\modules\auto_mod.py:1005
+msgid "Auto Multiplier (1 severe strike +):"
+msgstr ""
+
+#: security\modules\auto_mod.py:1012
+msgid "Individual Timeout/Mute Duration (e.g., 1h):"
+msgstr ""
+
+#: security\modules\auto_mod.py:1030
+msgid "Invalid duration: {error}."
+msgstr ""
+
+#: security\modules\auto_mod.py:1038
+msgid "Invalid auto multiplier: {error}."
+msgstr ""
+
+#: security\modules\auto_mod.py:1067
+msgid "Select a filter to configure..."
+msgstr ""
+
+#: security\modules\auto_mod.py:1090
+msgid "Configure {emoji} {category_name} Filters"
+msgstr ""
+
+#: security\modules\auto_mod.py:1097
+msgid ""
+"\n"
+"- Added Heat: **{added_heat}%**"
+msgstr ""
+
+#: security\modules\auto_mod.py:1125
+msgid "[{count} item{s}]"
+msgstr ""
+
+#: security\modules\auto_mod.py:1138
+msgid ""
+"\n"
+"- Individual Action: {action}"
+msgstr ""
+
+#: security\modules\auto_mod.py:1141 security\modules\logging.py:1321
+#: security\modules\logging.py:1348 security\modules\logging.py:1576
+#: security\modules\logging.py:1769 security\modules\sentinel_relay.py:82
+msgid "None"
+msgstr ""
+
+#: security\modules\auto_mod.py:1149 security\modules\logging.py:1588
+msgid "Enable All"
+msgstr ""
+
+#: security\modules\auto_mod.py:1149 security\modules\logging.py:1588
+msgid "Disable All"
+msgstr ""
+
+#: security\modules\auto_mod.py:1155 security\modules\logging.py:1594
+msgid "Toggle All"
+msgstr ""
+
+#: security\modules\auto_mod.py:1175
+msgid "✅ All {category_name} filters have been {state}."
+msgstr ""
+
+#: security\modules\auto_mod.py:1177 security\modules\lockdown.py:260
+#: security\modules\logging.py:620 security\modules\logging.py:1635
+#: security\modules\logging.py:1768 security\modules\logging.py:1809
+msgid "enabled"
+msgstr ""
+
+#: security\modules\auto_mod.py:1177 security\modules\lockdown.py:260
+#: security\modules\logging.py:620 security\modules\logging.py:1635
+#: security\modules\logging.py:1768 security\modules\logging.py:1809
+msgid "disabled"
+msgstr ""
+
+#: security\modules\auto_mod.py:1247
+msgid "Added Heat:"
+msgstr ""
+
+#: security\modules\auto_mod.py:1259
+msgid "Specific Heat for {key}:"
+msgstr ""
+
+#: security\modules\auto_mod.py:1286 security\modules\join_gate.py:405
+msgid "Action ({actions}):"
+msgstr ""
+
+#: security\modules\auto_mod.py:1303
+msgid "Invalid added heat value: {error}"
+msgstr ""
+
+#: security\modules\auto_mod.py:1314
+msgid "Invalid specific heat value for {key}: {error}"
+msgstr ""
+
+#: security\modules\auto_mod.py:1330 security\modules\auto_mod.py:1343
+msgid "Invalid value for {key}: {error}."
+msgstr ""
+
+#: security\modules\auto_mod.py:1354 security\modules\join_gate.py:432
+msgid "Invalid action: `{action}`. Possible actions are: {actions}"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:45
+msgid "**Dank Pool Protection** - Attempted to pay themselves."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:63
+msgid "**Dank Pool Protection** - Attempted to pay over the limit."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:70
+msgid ""
+"**Dank Pool Protection** - Attempted to make too many payouts in a short "
+"period."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:79
+msgid ""
+"**Dank Pool Protection** - Attempted to make a payout too quickly after the "
+"last one."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:93
+msgid ""
+"**Dank Pool Protection** - Attempted to execute payout command without "
+"permission."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:107
+msgid ""
+"**Dank Pool Protection** - Attempted to execute event command without "
+"permission."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:149
+msgid "Dank Pool Protection is currently disabled."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:154
+msgid "I need the `Manage Messages` permission to function properly."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:162
+msgid "Dank Pool Protection is enabled and configured correctly."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:166
+msgid "Protect your server's Dank Memer pool from abuse.\n"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:174
+msgid ""
+"\n"
+"**Enabled**: {enabled}"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:178
+msgid ""
+"\n"
+"**Limit**: ⏣ {limit}"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:183
+msgid ""
+"\n"
+"**Minute Limit**: {minute_limit}\n"
+"**Hour Limit**: {hour_limit}"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:191
+msgid ""
+"\n"
+"**Cooldown**: {cooldown} seconds"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:228
+msgid "Select Dank Pool Protection Options"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:253
+msgid "Configure Values"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:295
+msgid ""
+"{member.mention} (`{member}`) executed `/{slash_name}` ({jump_url}) "
+"{timestamp}."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:373
+msgid ""
+"Invalid amount format. Use a number or a shorthand like `1k`, `2m`, etc."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:401
+msgid "Dank Pool Protection - Configure Values"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:404
+msgid "High Amount Payment Limit:"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:411
+msgid "Rapid Payout Minute Limit:"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:418
+msgid "Rapid Payout Hour Limit:"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:425
+msgid "Payout Cooldown:"
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:437
+msgid "High amount limit must be at least **⏣ 1,000,000**."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:440
+msgid "Minute limit must be at least **1**."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:443
+msgid "Hour limit must be at least **1**."
+msgstr ""
+
+#: security\modules\dank_pool_protection.py:446
+msgid "Payout cooldown must be at least **2 seconds**."
+msgstr ""
+
+#: security\modules\join_gate.py:31
+msgid "Invalid regex pattern: {error}"
+msgstr ""
+
+#: security\modules\join_gate.py:136
+msgid "Join Gate is currently disabled."
+msgstr ""
+
+#: security\modules\join_gate.py:138
+msgid "No Enabled Options"
+msgstr ""
+
+#: security\modules\join_gate.py:138
+msgid "There are no Join Gate option enabled."
+msgstr ""
+
+#: security\modules\join_gate.py:166
 msgid "Join Gate is enabled and configured correctly."
 msgstr ""
 
-#: security\modules\join_gate.py:173
-msgid "Security — {emoji} Join Gate {status}"
-msgstr ""
-
-#: security\modules\join_gate.py:176
+#: security\modules\join_gate.py:174
 msgid ""
 "This module allows you to manage Join Gate options to protect your server "
 "from unwanted members/bots."
 msgstr ""
 
-#: security\modules\join_gate.py:193
+#: security\modules\join_gate.py:191
 msgid ""
 "{description}\n"
 "**Enabled:** {enabled}\n"
 "**Action:** {action}"
 msgstr ""
 
-#: security\modules\join_gate.py:208
-msgid "Configure Join Gate Options"
+#: security\modules\join_gate.py:207
+msgid "Configure Option"
 msgstr ""
 
-#: security\modules\join_gate.py:266
+#: security\modules\join_gate.py:232
+msgid "Set Timeout/Mute Duration"
+msgstr ""
+
+#: security\modules\join_gate.py:238
+msgid "Timeout/Mute Duration"
+msgstr ""
+
+#: security\modules\join_gate.py:242
+msgid "Duration:"
+msgstr ""
+
+#: security\modules\join_gate.py:243
+msgid "Enter the duration (e.g. 3h)..."
+msgstr ""
+
+#: security\modules\join_gate.py:258
+msgid "Invalid duration: {error}"
+msgstr ""
+
+#: security\modules\join_gate.py:270
+msgid "Timeout/Mute duration set to {duration}."
+msgstr ""
+
+#: security\modules\join_gate.py:327
 msgid "**Join Gate** - Triggered by {option}."
 msgstr ""
 
-#: security\modules\join_gate.py:267
-msgid "{member.mention} ({member}) joined the server."
+#: security\modules\join_gate.py:328
+msgid ""
+"\n"
+"- Account Age: {account_age}\n"
+"- Minimum Age: {minimum_days} days"
 msgstr ""
 
-#: security\modules\join_gate.py:293
+#: security\modules\join_gate.py:341
+msgid "{member.mention} (`{member}`) joined the server."
+msgstr ""
+
+#: security\modules\join_gate.py:393
 msgid "Join Gate - {option}"
 msgstr ""
 
-#: security\modules\join_gate.py:298
-msgid "Enabled:"
-msgstr ""
-
-#: security\modules\join_gate.py:305
-msgid "Action ({actions}):"
-msgstr ""
-
-#: security\modules\join_gate.py:332
-msgid "Invalid action: {action}. Possible actions are: {actions}"
-msgstr ""
-
-#: security\modules\join_gate.py:344
-msgid "Invalid parameter value: {error}"
+#: security\modules\join_gate.py:444
+msgid "Invalid parameter value: {error}."
 msgstr ""
 
 #: security\modules\lockdown.py:27
@@ -131,15 +884,11 @@ msgstr ""
 msgid "There are no lockdown modes enabled."
 msgstr ""
 
-#: security\modules\lockdown.py:121
+#: security\modules\lockdown.py:125
 msgid "Lockdown is enabled and configured correctly."
 msgstr ""
 
-#: security\modules\lockdown.py:126
-msgid "Security — {emoji} Lockdown {status}"
-msgstr ""
-
-#: security\modules\lockdown.py:129
+#: security\modules\lockdown.py:133
 msgid ""
 "This module allows you to manage lockdown modes to protect your server "
 "during raids or emergencies. Members who try to bypass these modes several "
@@ -147,245 +896,690 @@ msgid ""
 "do so."
 msgstr ""
 
-#: security\modules\lockdown.py:141
+#: security\modules\lockdown.py:145
 msgid ""
 "{description}\n"
 "**Enabled:** {enabled}"
 msgstr ""
 
-#: security\modules\lockdown.py:151
+#: security\modules\lockdown.py:155
 msgid "Lockdown Modes"
 msgstr ""
 
-#: security\modules\lockdown.py:187
+#: security\modules\lockdown.py:191
 msgid "⚠️ Are you sure you want to enable **{mode}** mode?"
 msgstr ""
 
-#: security\modules\lockdown.py:219
+#: security\modules\lockdown.py:223
 msgid ""
 "**Lockdown** - Quarantined for having dangerous permissions during lockdown."
 msgstr ""
 
-#: security\modules\lockdown.py:223
+#: security\modules\lockdown.py:227
 msgid "{member.mention} ({member}) has dangerous permissions during lockdown."
 msgstr ""
 
-#: security\modules\lockdown.py:243
+#: security\modules\lockdown.py:247
 msgid ""
 "**Lockdown** - Unquarantined after disabling dangerous permissions lockdown "
 "mode."
 msgstr ""
 
-#: security\modules\lockdown.py:254
-msgid "✅ **{mode}** mode has been {status}."
+#: security\modules\lockdown.py:258
+msgid "✅ **{mode}** mode has been **{status}**."
 msgstr ""
 
-#: security\modules\lockdown.py:256
-msgid "enabled"
+#: security\modules\lockdown.py:270
+msgid "Specific Channels..."
 msgstr ""
 
-#: security\modules\lockdown.py:256
-msgid "disabled"
-msgstr ""
-
-#: security\modules\lockdown.py:266
-msgid "Specific Channels"
-msgstr ""
-
-#: security\modules\lockdown.py:284
+#: security\modules\lockdown.py:287
+#: security\modules\unauthorized_text_channel_deletions.py:146
 msgid "✅ Specific channels have been updated."
 msgstr ""
 
-#: security\modules\lockdown.py:311 security\modules\lockdown.py:359
-#: security\modules\lockdown.py:442
+#: security\modules\lockdown.py:314 security\modules\lockdown.py:368
+#: security\modules\lockdown.py:454
 msgid "{emoji} Lockdown Warning"
 msgstr ""
 
-#: security\modules\lockdown.py:312
+#: security\modules\lockdown.py:316
 msgid ""
 "A lockdown is currently active in this server. You are not allowed to send "
 "messages in any channel. **Please do not attempt to bypass this "
 "restriction.**"
 msgstr ""
 
-#: security\modules\lockdown.py:319
+#: security\modules\lockdown.py:320
+msgid ""
+"A lockdown is currently active in specific channels of this server. You are "
+"not allowed to send messages in this channel. **Please do not attempt to "
+"bypass this restriction.**"
+msgstr ""
+
+#: security\modules\lockdown.py:330
 msgid ""
 "{author.mention} ({author}) sent a message in {channel.mention} during "
 "lockdown."
 msgstr ""
 
-#: security\modules\lockdown.py:329 security\modules\lockdown.py:464
+#: security\modules\lockdown.py:340 security\modules\lockdown.py:479
 msgid "**Lockdown** - Several actions during lockdown."
 msgstr ""
 
-#: security\modules\lockdown.py:350
+#: security\modules\lockdown.py:359
 msgid "Security Lockdown: Role change during lockdown."
 msgstr ""
 
-#: security\modules\lockdown.py:362
+#: security\modules\lockdown.py:371
 msgid ""
 "A lockdown is currently active in this server. You are not allowed to change"
 " roles of members. **Please do not attempt to bypass this restriction.**"
 msgstr ""
 
-#: security\modules\lockdown.py:371
+#: security\modules\lockdown.py:383
 msgid ""
 "Member {member.mention} [{member}] tried to {action} to/from the member "
 "{quarantined_member.mention} [{quarantined_member}] during lockdown."
 msgstr ""
 
-#: security\modules\lockdown.py:379
+#: security\modules\lockdown.py:391
 msgid "add the role{s} {roles}"
 msgstr ""
 
-#: security\modules\lockdown.py:404
+#: security\modules\lockdown.py:416
 msgid "remove the role{s} {roles}"
 msgstr ""
 
-#: security\modules\lockdown.py:433
+#: security\modules\lockdown.py:445
 msgid "Security Lockdown: Invite created during lockdown."
 msgstr ""
 
-#: security\modules\lockdown.py:445
+#: security\modules\lockdown.py:457
 msgid ""
 "A lockdown is currently active in this server. You are not allowed to create"
 " invites. **Please do not attempt to bypass this restriction.**"
 msgstr ""
 
-#: security\modules\lockdown.py:454
+#: security\modules\lockdown.py:469
 msgid "{user.mention} ({user}) created an invite during lockdown."
 msgstr ""
 
-#: security\modules\lockdown.py:475 security\modules\lockdown.py:487
+#: security\modules\lockdown.py:488 security\modules\lockdown.py:500
 msgid "Security Lockdown: New member joined during lockdown."
 msgstr ""
 
-#: security\modules\lockdown.py:479
+#: security\modules\lockdown.py:492
 msgid "**Lockdown** - Kicked for joining during lockdown."
 msgstr ""
 
-#: security\modules\lockdown.py:481 security\modules\lockdown.py:493
+#: security\modules\lockdown.py:494 security\modules\lockdown.py:506
 msgid "{member.mention} ({member}) joined the server during lockdown."
 msgstr ""
 
-#: security\modules\lockdown.py:491
+#: security\modules\lockdown.py:504
 msgid "**Lockdown** - Banned for joining during lockdown."
 msgstr ""
 
-#: security\modules\protected_roles.py:33
-msgid "No Protected Roles"
+#: security\modules\logging.py:503
+msgid "Logging is currently disabled."
 msgstr ""
 
-#: security\modules\protected_roles.py:33
-msgid "There are no protected roles configured."
+#: security\modules\logging.py:516 security\modules\logging.py:522
+msgid "Warning"
+msgstr ""
+
+#: security\modules\logging.py:517
+msgid "Some events are enabled but the channel is not set or inaccessible."
+msgstr ""
+
+#: security\modules\logging.py:523
+msgid ""
+"The bot lacks the `View Audit Log` permission, which may limit logging "
+"capabilities."
+msgstr ""
+
+#: security\modules\logging.py:527
+msgid "Logging is enabled and configured."
+msgstr ""
+
+#: security\modules\logging.py:536
+msgid ""
+"Configure logging for various events in your server. You can enable or "
+"disable specific events, set the logging channel, and more."
+msgstr ""
+
+#: security\modules\logging.py:565
+msgid "**Enabled:** {state}"
+msgstr ""
+
+#: security\modules\logging.py:569
+msgid "**Enabled:** 🔀 (Different States)"
+msgstr ""
+
+#: security\modules\logging.py:576
+msgid ""
+"\n"
+"**Channel:** {channel.mention} (`{channel}`)"
+msgstr ""
+
+#: security\modules\logging.py:580
+msgid ""
+"\n"
+"**Channel:** None"
+msgstr ""
+
+#: security\modules\logging.py:587
+msgid ""
+"\n"
+"**Ignore Bots:** {state}"
+msgstr ""
+
+#: security\modules\logging.py:596
+msgid "Toggle All Events"
+msgstr ""
+
+#: security\modules\logging.py:606
+msgid "Disable All Events"
+msgstr ""
+
+#: security\modules\logging.py:609
+msgid "Enable All Events"
+msgstr ""
+
+#: security\modules\logging.py:619
+msgid "✅ All logging events have been **{state}**."
+msgstr ""
+
+#: security\modules\logging.py:630 security\modules\logging.py:640
+#: security\modules\logging.py:643 security\modules\logging.py:1541
+#: security\modules\logging.py:1739
+msgid "Ignore Bots"
+msgstr ""
+
+#: security\modules\logging.py:653
+msgid "✅ All logging events will now **{state}** bots."
+msgstr ""
+
+#: security\modules\logging.py:654 security\modules\logging.py:1662
+#: security\modules\logging.py:1843
+msgid "ignore"
+msgstr ""
+
+#: security\modules\logging.py:654 security\modules\logging.py:1662
+#: security\modules\logging.py:1843
+msgid "log"
+msgstr ""
+
+#: security\modules\logging.py:665
+msgid "Select a channel for all events..."
+msgstr ""
+
+#: security\modules\logging.py:675
+msgid "✅ All events will now be logged in {channel.mention}."
+msgstr ""
+
+#: security\modules\logging.py:684
+msgid "Create a Logging Category"
+msgstr ""
+
+#: security\modules\logging.py:706
+msgid ""
+"⚠️ Are you sure you want to create a new logging category with some "
+"channels? That will overwrite the current logging channel for all events."
+msgstr ""
+
+#: security\modules\logging.py:714
+msgid "📁・Logs"
+msgstr ""
+
+#: security\modules\logging.py:723 security\modules\logging.py:735
+#: security\modules\logging.py:792
+msgid "Created by Security's Logging Module."
+msgstr ""
+
+#: security\modules\logging.py:728
+msgid "{emoji}・{category}-logs"
+msgstr ""
+
+#: security\modules\logging.py:732
+msgid "This channel is used for logging {category} events."
+msgstr ""
+
+#: security\modules\logging.py:741
+msgid "✅ A new logging category has been created: {category_channel.name}."
+msgstr ""
+
+#: security\modules\logging.py:752
+msgid "Create a Logging Channel"
+msgstr ""
+
+#: security\modules\logging.py:774
+msgid ""
+"⚠️ Are you sure you want to create a new logging channel? That will "
+"overwrite the current logging channel for all events."
+msgstr ""
+
+#: security\modules\logging.py:782
+msgid "📁・logs"
+msgstr ""
+
+#: security\modules\logging.py:783
+msgid "This channel is used for logging various events."
+msgstr ""
+
+#: security\modules\logging.py:800
+msgid "✅ A new logging channel has been created: {channel.mention}."
+msgstr ""
+
+#: security\modules\logging.py:811
+msgid "Select an event category to configure..."
+msgstr ""
+
+#: security\modules\logging.py:933
+msgid ""
+"{emoji} **Responsible:** {responsible.mention} (`{responsible}`) "
+"{responsible_emojis} - `{responsible.id}`"
+msgstr ""
+
+#: security\modules\logging.py:941
+msgid ""
+"{emoji} **Responsible:** {responsible.mention} (`{responsible}`) - "
+"`{responsible.id}`"
+msgstr ""
+
+#: security\modules\logging.py:964
+msgid ""
+"{emoji} **Target Member:** {member.mention} (`{member}`) {member_emojis} - "
+"`{member.id}`"
+msgstr ""
+
+#: security\modules\logging.py:972
+msgid "{emoji} **Target User:** {user.mention} (`{user}`) - `{user.id}`"
+msgstr ""
+
+#: security\modules\logging.py:976
+msgid "{emoji} **Target Role:** {role.mention} (`{role}`) - `{role.id}`"
+msgstr ""
+
+#: security\modules\logging.py:988
+msgid ""
+"{emoji} **Target Channel:** {channel.mention} (`{channel}`) - `{channel.id}`"
+msgstr ""
+
+#: security\modules\logging.py:992
+msgid ""
+"{emoji} **Target Thread:** {thread.mention} (`{thread}`) - `{thread.id}`"
+msgstr ""
+
+#: security\modules\logging.py:999
+msgid "{emoji} **Target Message:** {message.jump_url}"
+msgstr ""
+
+#: security\modules\logging.py:1003
+msgid ""
+"\n"
+"- **Author:** {target.author.mention} (`{target.author}`){member_emojis} - `{target.author.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1011
+msgid ""
+"\n"
+"- **Created at:** {created_at} ({created_ago})"
+msgstr ""
+
+#: security\modules\logging.py:1021
+msgid ""
+"\n"
+"- **Replying to:** [Jump to Message]({jump_link})"
+msgstr ""
+
+#: security\modules\logging.py:1025
+msgid "{emoji} **Target Emoji:** `{target.name}` - `{target.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1032
+msgid "{emoji} **Target Sticker:** `{sticker.name}` - `{sticker.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1039
+msgid "{emoji} **Target Scheduled Event:** `{event.name}` - `{event.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1048
+msgid "{emoji} **Target Channel:** `{target_name}` - `{target.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1052
+msgid "{emoji} **Target Thread:** `{target_name}` - `{target.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1056
+msgid "{emoji} **Target Role:** `{target_name}` - `{target.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1060
+msgid "🗑️ **Target:** `{target}` - `{target.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1068
+msgid ""
+"\n"
+"{emoji} **Target Member:** {member.mention} (`{member}`) - `{member.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1072
+msgid ""
+"\n"
+"{emoji} **Target Role:** {role.mention} (`{role}`) - `{role.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1076
+msgid ""
+"\n"
+"{emoji} **Reason:**\n"
+">>> {reason}"
+msgstr ""
+
+#: security\modules\logging.py:1117
+msgid "Settings:"
+msgstr ""
+
+#: security\modules\logging.py:1126
+msgid "Previous Settings:"
+msgstr ""
+
+#: security\modules\logging.py:1135
+msgid "Changes:"
+msgstr ""
+
+#: security\modules\logging.py:1171
+msgid "Added Roles:"
+msgstr ""
+
+#: security\modules\logging.py:1191
+msgid "Removed Roles:"
+msgstr ""
+
+#: security\modules\logging.py:1211
+msgid "Permissions Changes:"
+msgstr ""
+
+#: security\modules\logging.py:1259
+msgid "- Added by {user.mention} (`{user}`) - `{user.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1264
+msgid "- {vanity_url} (Vanity URL)"
+msgstr ""
+
+#: security\modules\logging.py:1277
+msgid ""
+"- https://discord.gg/{invite.code}\n"
+"- Invited by {inviter.mention} (`{inviter}`) - `{inviter.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1287
+msgid ""
+"- https://discord.gg/{code}\n"
+"- Invited by {inviter.mention} (`{inviter}`) - `{inviter.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1297
+msgid ""
+"- https://discord.gg/{entry.target.code}\n"
+"- Invited by {entry.user.mention} (`{entry.user}`) - `{entry.user.id}`"
+msgstr ""
+
+#: security\modules\logging.py:1308
+msgid ""
+"\n"
+"🎂 **Account Created:** {created_at} ({created_ago})"
+msgstr ""
+
+#: security\modules\logging.py:1313 security\modules\logging.py:1340
+msgid ""
+"\n"
+"👥 **Roles:** {roles}"
+msgstr ""
+
+#: security\modules\logging.py:1323 security\modules\logging.py:1350
+msgid ""
+"\n"
+"🔢 **New Member Count:** {count} incuding {bots} bots"
+msgstr ""
+
+#: security\modules\logging.py:1329
+msgid "🔗 Join Method:"
+msgstr ""
+
+#: security\modules\logging.py:1406
+msgid "{emoji} **Attachments:**"
+msgstr ""
+
+#: security\modules\logging.py:1412
+msgid "{emoji} **Stickers:**"
+msgstr ""
+
+#: security\modules\logging.py:1436
+msgid ""
+"\n"
+"{emoji} **Count:** {count}"
+msgstr ""
+
+#: security\modules\logging.py:1450
+msgid ""
+"\n"
+"{emoji} **Deleted Message{s}:**\n"
+msgstr ""
+
+#: security\modules\logging.py:1479
+msgid ""
+"\n"
+"{emoji} **Reaction:** {reaction}"
+msgstr ""
+
+#: security\modules\logging.py:1500
+msgid ""
+"\n"
+"{emoji} **Reaction Removed:** {reaction}"
+msgstr ""
+
+#: security\modules\logging.py:1540
+msgid "Select a channel to log events..."
+msgstr ""
+
+#: security\modules\logging.py:1542
+msgid "Select an event to configure..."
+msgstr ""
+
+#: security\modules\logging.py:1565
+msgid "Configure {emoji} {category_name} Events"
+msgstr ""
+
+#: security\modules\logging.py:1571
+msgid ""
+"\n"
+"- Channel: {channel}"
+msgstr ""
+
+#: security\modules\logging.py:1579
+msgid ""
+"\n"
+"- Ignore Bots: {ignore_bots}"
+msgstr ""
+
+#: security\modules\logging.py:1633
+msgid "✅ All {category_name} events have been {state}."
+msgstr ""
+
+#: security\modules\logging.py:1660
+msgid "✅ All {category_name} events will now {state} bots."
+msgstr ""
+
+#: security\modules\logging.py:1691
+msgid "✅ All {category_name} events will now be logged in {channel.mention}."
+msgstr ""
+
+#: security\modules\logging.py:1738
+msgid "Select a channel to log this event..."
+msgstr ""
+
+#: security\modules\logging.py:1761
+msgid "Configure {emoji} {event_name}"
+msgstr ""
+
+#: security\modules\logging.py:1765
+msgid ""
+"This event is currently **{state}**.\n"
+"**Logging Channel:** {channel}\n"
+"**Ignore Bots:** {ignore_bots}"
+msgstr ""
+
+#: security\modules\logging.py:1773
+msgid "Enable"
+msgstr ""
+
+#: security\modules\logging.py:1773
+msgid "Disable"
+msgstr ""
+
+#: security\modules\logging.py:1807
+msgid "✅ {event_name} has been {state}."
+msgstr ""
+
+#: security\modules\logging.py:1841
+msgid "✅ {event_name} will now {state} bots."
+msgstr ""
+
+#: security\modules\logging.py:1880
+msgid "✅ {event_name} events will now be logged in {channel.mention}."
+msgstr ""
+
+#: security\modules\protected_roles.py:36
+msgid "Protected roles are currently disabled."
 msgstr ""
 
 #: security\modules\protected_roles.py:38
-msgid "I need the `Manage Roles` permission to manage protected roles."
+msgid "No Protected Roles"
 msgstr ""
 
-#: security\modules\protected_roles.py:40
-msgid "Protected roles are enabled and configured."
+#: security\modules\protected_roles.py:38
+msgid "There are no protected roles configured."
 msgstr ""
 
-#: security\modules\protected_roles.py:46
-msgid "Security — {emoji} Protected Roles ({count}/25) {status}"
+#: security\modules\protected_roles.py:43
+msgid "I need the `View Audit Log` permission to monitor protected roles."
 msgstr ""
 
 #: security\modules\protected_roles.py:49
+msgid "I need the `Manage Roles` permission to manage protected roles."
+msgstr ""
+
+#: security\modules\protected_roles.py:51
+msgid "Protected roles are enabled and configured."
+msgstr ""
+
+#: security\modules\protected_roles.py:58
+msgid "Security — {emoji} {name} ({count}/25) {status}"
+msgstr ""
+
+#: security\modules\protected_roles.py:64
 msgid ""
-"ℹ*If someone tries to add one of these roles to an unwhitelisted member, it "
+"*If someone tries to add one of these roles to an unwhitelisted member, it "
 "will be removed automatically and the author will be quarantined. If a "
 "trusted admin does this, the member will be whitelisted instead.*\n"
 msgstr ""
 
-#: security\modules\protected_roles.py:59
+#: security\modules\protected_roles.py:74
 msgid ""
 "\n"
 "- {role.mention} (`{role.name}`) - {count} whitelisted member{s}"
 msgstr ""
 
-#: security\modules\protected_roles.py:69
+#: security\modules\protected_roles.py:84
 msgid "Add Protected Role."
 msgstr ""
 
-#: security\modules\protected_roles.py:77
+#: security\modules\protected_roles.py:92
 msgid "This role is already protected."
 msgstr ""
 
-#: security\modules\protected_roles.py:82
-msgid "This role can't be protected because it is not assignable."
+#: security\modules\protected_roles.py:97
+msgid ""
+"This role can't be protected because it is not assignable or is higher than "
+"my top role."
 msgstr ""
 
-#: security\modules\protected_roles.py:88
+#: security\modules\protected_roles.py:106
 msgid "Protected role {role.mention} (`{role.name}`) added."
 msgstr ""
 
-#: security\modules\protected_roles.py:97
+#: security\modules\protected_roles.py:115
 msgid "Manage Protected Role."
 msgstr ""
 
-#: security\modules\protected_roles.py:141
+#: security\modules\protected_roles.py:164
 msgid "Protected Role `{role.name}` - {count} Whitelisted Members"
 msgstr ""
 
-#: security\modules\protected_roles.py:152
+#: security\modules\protected_roles.py:175
 msgid "- {member_id} (unknown)"
 msgstr ""
 
-#: security\modules\protected_roles.py:156
+#: security\modules\protected_roles.py:179
 msgid "No whitelisted members."
 msgstr ""
 
-#: security\modules\protected_roles.py:191
+#: security\modules\protected_roles.py:212
 msgid "Protected role removal by Security due to unauthorized addition."
 msgstr ""
 
-#: security\modules\protected_roles.py:199
-msgid "Unauthorized addition of protected role."
+#: security\modules\protected_roles.py:219
+msgid "**Protected Roles** - Added a protected role without permission."
 msgstr ""
 
-#: security\modules\protected_roles.py:201
+#: security\modules\protected_roles.py:221
 msgid ""
 "Added the protected role {role.mention} (`{role.name}`) to "
 "{entry.target.mention} (`{entry.target}`) without permission."
 msgstr ""
 
-#: security\modules\protected_roles.py:209
-msgid "Protected role added without permission."
+#: security\modules\protected_roles.py:230
+msgid "**Protected Roles** - Was given a protected role without permission."
 msgstr ""
 
-#: security\modules\protected_roles.py:211
+#: security\modules\protected_roles.py:234
 msgid ""
 "The protected role {role.mention} (`{role.name}`) was added to them by "
 "{entry.user.mention} (`{entry.user}`) without permission."
 msgstr ""
 
-#: security\modules\protected_roles.py:228
+#: security\modules\protected_roles.py:251
 msgid "Select members to add/remove from whitelist..."
 msgstr ""
 
-#: security\modules\protected_roles.py:261
+#: security\modules\protected_roles.py:285
 msgid "✅ Added to protected role's whitelist: {members}"
 msgstr ""
 
-#: security\modules\protected_roles.py:270
+#: security\modules\protected_roles.py:294
 msgid "❌ Removed from protected role's whitelist: {members}"
 msgstr ""
 
-#: security\modules\protected_roles.py:279
+#: security\modules\protected_roles.py:303
 msgid "🛡️ Trusted admins and higher not added: {members}"
 msgstr ""
 
-#: security\modules\protected_roles.py:300
+#: security\modules\protected_roles.py:324
 msgid "Remove from Protected Roles"
 msgstr ""
 
-#: security\modules\protected_roles.py:314
+#: security\modules\protected_roles.py:336
 msgid "Protected role {role.mention} (`{role.name}`) removed."
 msgstr ""
 
-#: security\modules\reports.py:56 security\modules\reports.py:198
+#: security\modules\reports.py:56 security\modules\reports.py:199
 msgid "Reports are currently disabled."
 msgstr ""
 
@@ -401,12 +1595,8 @@ msgstr ""
 msgid "Reports are enabled and configured."
 msgstr ""
 
-#: security\modules\reports.py:65
-msgid "Security — {emoji} Reports {status}"
-msgstr ""
-
 #: security\modules\reports.py:68
-msgid "Configure how users can report other members and messages to staff."
+msgid "Configure how members can report other members and messages to staff."
 msgstr ""
 
 #: security\modules\reports.py:87
@@ -437,80 +1627,224 @@ msgstr ""
 msgid "Staff Actions"
 msgstr ""
 
-#: security\modules\reports.py:149
+#: security\modules\reports.py:150
 msgid "Select report channel"
 msgstr ""
 
-#: security\modules\reports.py:160
-msgid "Report channel updated."
+#: security\modules\reports.py:161
+msgid "✅ Report channel updated."
 msgstr ""
 
-#: security\modules\reports.py:169
+#: security\modules\reports.py:170
 msgid "Select ping role"
 msgstr ""
 
-#: security\modules\reports.py:180
-msgid "Ping role updated."
+#: security\modules\reports.py:181
+msgid "✅ Ping role updated."
 msgstr ""
 
-#: security\modules\reports.py:205
+#: security\modules\reports.py:206
 msgid "Report channel is not set."
 msgstr ""
 
-#: security\modules\reports.py:210
+#: security\modules\reports.py:211
 msgid "You can't report a bot."
 msgstr ""
 
-#: security\modules\reports.py:214
+#: security\modules\reports.py:215
 msgid "You can't report yourself."
 msgstr ""
 
-#: security\modules\reports.py:223
-msgid "You can't report this member."
+#: security\modules\reports.py:224
+msgid "You can't report this target."
 msgstr ""
 
-#: security\modules\reports.py:237
+#: security\modules\reports.py:238
 msgid "Report"
 msgstr ""
 
-#: security\modules\reports.py:239
+#: security\modules\reports.py:240
 msgid "Member"
 msgstr ""
 
-#: security\modules\reports.py:239
+#: security\modules\reports.py:240
 msgid "Message"
 msgstr ""
 
-#: security\modules\reports.py:245 security\modules\reports.py:291
+#: security\modules\reports.py:246 security\modules\reports.py:301
 msgid "Reason:"
 msgstr ""
 
-#: security\modules\reports.py:257
+#: security\modules\reports.py:258
 msgid "{member.display_name} has been reported! {emoji}"
 msgstr ""
 
-#: security\modules\reports.py:264
+#: security\modules\reports.py:265
 msgid "👤 **Member:** {member.mention} (`{member}`) {member_emojis}"
 msgstr ""
 
-#: security\modules\reports.py:272
+#: security\modules\reports.py:273
 msgid ""
 "\n"
-"🛡️ **Reporter:** {reporter.mention} (`{reporter}`) {reporter_emojis}"
+"{emoji} **Reporter:** {reporter.mention} (`{reporter}`) {reporter_emojis}"
 msgstr ""
 
-#: security\modules\reports.py:279
+#: security\modules\reports.py:281
 msgid ""
 "\n"
-"💬 **Message:** [Jump to Message]({jump_url})"
+"{emoji} **Channel:** {channel.mention} (`{channel}`)"
 msgstr ""
 
-#: security\modules\reports.py:285
+#: security\modules\reports.py:287
 msgid ""
 "\n"
-"- **Attachments:**"
+"{emoji} **Message:** {jump_url}"
 msgstr ""
 
-#: security\modules\reports.py:319
+#: security\modules\reports.py:293
+msgid ""
+"\n"
+"{emoji} **Attachments:**"
+msgstr ""
+
+#: security\modules\reports.py:329
 msgid "Your report has been submitted successfully. Thank you!"
+msgstr ""
+
+#: security\modules\sentinel_relay.py:47
+msgid "Sentinel Relay is currently disabled."
+msgstr ""
+
+#: security\modules\sentinel_relay.py:49
+msgid "No Main Bot"
+msgstr ""
+
+#: security\modules\sentinel_relay.py:49
+msgid "No main bot selected."
+msgstr ""
+
+#: security\modules\sentinel_relay.py:53
+msgid "No Presence Intent"
+msgstr ""
+
+#: security\modules\sentinel_relay.py:54
+msgid ""
+"The bot's presence intent is required for this module to function correctly."
+msgstr ""
+
+#: security\modules\sentinel_relay.py:56
+msgid "Sentinel Relay is enabled and configured correctly."
+msgstr ""
+
+#: security\modules\sentinel_relay.py:67
+msgid ""
+"This module automatically enables specified modules when the main bot goes offline, ensuring essential functionality and continuity. This ensures that both bots won't conflict with each other.\n"
+"\n"
+"**Main Bot:** {main_bot}\n"
+"**Modules to Enable:** {modules_to_enable}"
+msgstr ""
+
+#: security\modules\sentinel_relay.py:74
+msgid "Not Set"
+msgstr ""
+
+#: security\modules\sentinel_relay.py:88
+msgid "Select the main bot"
+msgstr ""
+
+#: security\modules\sentinel_relay.py:99
+msgid "You can only select a bot as the main bot."
+msgstr ""
+
+#: security\modules\sentinel_relay.py:104
+msgid "You can't select me as the main bot."
+msgstr ""
+
+#: security\modules\sentinel_relay.py:109
+msgid "{selected} has been set as the main bot."
+msgstr ""
+
+#: security\modules\sentinel_relay.py:117
+msgid "The main bot has been unset."
+msgstr ""
+
+#: security\modules\sentinel_relay.py:131
+msgid "Select modules to enable"
+msgstr ""
+
+#: security\modules\sentinel_relay.py:177
+msgid "Sentinel Relay Triggered!"
+msgstr ""
+
+#: security\modules\sentinel_relay.py:178
+msgid "The main bot ({mention}) is offline, triggering the relay."
+msgstr ""
+
+#: security\modules\sentinel_relay.py:186
+msgid "Enabled Modules:"
+msgstr ""
+
+#: security\modules\sentinel_relay.py:204
+msgid "Sentinel Relay Untriggered!"
+msgstr ""
+
+#: security\modules\sentinel_relay.py:205
+msgid "The main bot ({mention}) is back online, untriggering the relay."
+msgstr ""
+
+#: security\modules\sentinel_relay.py:213
+msgid "Disabled Modules:"
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:51
+msgid "This module is currently disabled."
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:55
+msgid "This module is enabled and monitoring unauthorized channel deletions."
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:65
+msgid ""
+"This module monitors unauthorized text channel deletions and retrieves the "
+"last messages from the deleted channel."
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:79
+msgid "Cache Last Messages:"
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:84
+msgid "DM Extra Owners+ on Deletion:"
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:93
+msgid "Cache Last Messages"
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:110
+msgid "DM Extra Owners and higher"
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:129
+msgid "Select Specific Channels..."
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:188
+msgid "Unauthorized Text Channel Deletion Detected {emoji}"
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:198
+msgid ""
+"🛡️ **Responsible:** {responsible.mention} (`{responsible}`) {responsible_emojis} - `{responsible.id}`\n"
+"#️⃣ **Target:** `{channel_name}` - `{channel.id}`"
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:211
+msgid ""
+"You can find the last {count} message{s} in this channel in the transcript."
+msgstr ""
+
+#: security\modules\unauthorized_text_channel_deletions.py:265
+msgid "No recent messages found in this channel before deletion."
 msgstr ""

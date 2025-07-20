@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,205 +11,266 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: redgettext 3.4.2\n"
 
-#: security\security.py:52
+#: security\security.py:65
 msgid ""
 "Could not find a member, role, text channel, voice channel, category "
 "channel, or webhook."
 msgstr ""
 
-#: security\security.py:60
-#, docstring
-msgid ""
-"A cog to generate images with messages and voice stats, for members, roles, "
-"guilds, categories, text channels, voice channels and activities!"
+#: security\security.py:76
+msgid "Invalid action."
 msgstr ""
 
-#: security\security.py:122
+#: security\security.py:82
+#, docstring
+msgid ""
+"Protect your servers from unwanted members, spam, but also from nuke attacks"
+" and more! This includes a quarantine/modlog system, and many modules like "
+"Auto Mod, Reports, Logging, Anti Nuke, Protected Roles, and more!"
+msgstr ""
+
+#: security\security.py:152
 msgid "Quarantined"
 msgstr ""
 
-#: security\security.py:128
+#: security\security.py:158
 msgid "Unquarantined"
 msgstr ""
 
-#: security\security.py:134
+#: security\security.py:164
 msgid "Timed Out"
 msgstr ""
 
-#: security\security.py:140
+#: security\security.py:170
+msgid "Untimed Out"
+msgstr ""
+
+#: security\security.py:176
 msgid "Detected"
 msgstr ""
 
-#: security\security.py:298
+#: security\security.py:238
+msgid "Tried to bypass the trusted admin or higher check."
+msgstr ""
+
+#: security\security.py:240
+msgid ""
+"{author.mention} (`{author}`) tried to bypass the check of the `{command}` "
+"command."
+msgstr ""
+
+#: security\security.py:255
+msgid "Don't try to bypass the checks!"
+msgstr ""
+
+#: security\security.py:394
 msgid "This member is already quarantined."
 msgstr ""
 
-#: security\security.py:300
+#: security\security.py:396
 msgid "You can't quarantine a trusted admin or higher."
 msgstr ""
 
-#: security\security.py:303
+#: security\security.py:399
 msgid ""
 "This member is immune to quarantine because they are higher or equal than me"
 " in the role hierarchy."
 msgstr ""
 
-#: security\security.py:308 security\security.py:391
+#: security\security.py:404 security\security.py:480
 msgid "I don't have permission to manage roles in this guild."
 msgstr ""
 
-#: security\security.py:311
+#: security\security.py:407
 msgid "Confirm Quarantine"
 msgstr ""
 
-#: security\security.py:312
+#: security\security.py:408
 msgid "Are you sure you want to quarantine {member.mention}?"
 msgstr ""
 
-#: security\security.py:363
+#: security\security.py:460
 msgid "Failed to quarantine {member.mention}: {error}"
 msgstr ""
 
-#: security\security.py:389
+#: security\security.py:478
 msgid "This member is not quarantined."
 msgstr ""
 
-#: security\security.py:394
+#: security\security.py:483
 msgid "Confirm Unquarantine"
 msgstr ""
 
-#: security\security.py:395
+#: security\security.py:484
 msgid "Are you sure you want to unquarantine {member.mention}?"
 msgstr ""
 
-#: security\security.py:439
+#: security\security.py:528
 msgid "Failed to unquarantine {member.mention}: {error}"
 msgstr ""
 
-#: security\security.py:466
+#: security\security.py:565
 msgid "{member.display_name} has been quarantined! {emoji}"
 msgstr ""
 
-#: security\security.py:469
+#: security\security.py:568
 msgid "{member.display_name} has been unquarantined! {emoji}"
 msgstr ""
 
-#: security\security.py:472
+#: security\security.py:571
 msgid "{member.display_name} has been timed out for {duration}! {emoji}"
 msgstr ""
 
-#: security\security.py:479
+#: security\security.py:578
 msgid "{member.display_name} has been untimed out! {emoji}"
 msgstr ""
 
-#: security\security.py:482
+#: security\security.py:581
 msgid "{member.display_name} has been muted for {duration}! {emoji}"
 msgstr ""
 
-#: security\security.py:487
+#: security\security.py:586
 msgid "{member.display_name} has been unmuted! {emoji}"
 msgstr ""
 
-#: security\security.py:490
+#: security\security.py:589
 msgid "{member.display_name} has been kicked! {emoji}"
 msgstr ""
 
-#: security\security.py:493
+#: security\security.py:592
 msgid "{member.display_name} has been banned! {emoji}"
 msgstr ""
 
-#: security\security.py:496
+#: security\security.py:595
 msgid "{member.display_name} has been detected! {emoji}"
 msgstr ""
 
-#: security\security.py:505
-msgid "👤 **Member:** {member.mention} (`{member}`) {member_emojis}"
+#: security\security.py:606
+msgid "{emoji} **Member:** {member.mention} (`{member}`) {member_emojis}"
 msgstr ""
 
-#: security\security.py:510 security\views.py:171
+#: security\security.py:614 security\views.py:209
 msgid ""
 "\n"
-"🛡️ **Issued by:** {issued_by.mention} (`{issued_by}`) {member_emojis}"
+"{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emojis}"
 msgstr ""
 
-#: security\security.py:516
+#: security\security.py:621
 msgid ""
 "\n"
-"📝 **Reason:** *{reason}*"
+"{emoji} **Reason:** *{reason}*"
 msgstr ""
 
-#: security\security.py:517 security\security.py:599
+#: security\security.py:622
 msgid "No reason provided."
 msgstr ""
 
-#: security\security.py:592
+#: security\security.py:697
+msgid ""
+"\n"
+"{emoji} **Trigger Message{s}:**\n"
+msgstr ""
+
+#: security\security.py:739
 msgid "{member.display_name}, you have been quarantined! {emoji}"
 msgstr ""
 
-#: security\security.py:598
-msgid "📝 **Reason:** *{reason}*"
-msgstr ""
-
-#: security\security.py:629
-msgid "Failed to create the quarantine role: {error}"
-msgstr ""
-
-#: security\security.py:640
-msgid "Failed to update the quarantine role: {error}"
-msgstr ""
-
-#: security\security.py:685
-msgid "This channel is used for modlogs by Security."
-msgstr ""
-
-#: security\security.py:699
-msgid "Failed to create the modlog channel: {error}"
-msgstr ""
-
-#: security\security.py:710
-msgid "Member joined while already quarantined."
-msgstr ""
-
-#: security\security.py:712
-msgid ""
-"Member {member.mention} [{member}] was quarantined before leaving the "
-"server."
-msgstr ""
-
-#: security\security.py:717
-msgid ""
-"{member.mention} [{member}] has joined again while already quarantined."
-msgstr ""
-
 #: security\security.py:742
-msgid "Tried to edit roles of a quarantined member."
+msgid "{member.display_name}, you have been unquarantined! {emoji}"
 msgstr ""
 
-#: security\security.py:744
-msgid ""
-"Member {member.mention} [{member}] tried to {action} to/from the quarantined"
-" member {quarantined_member.mention} [{quarantined_member}]."
+#: security\security.py:745
+msgid "{member.display_name}, you have been timed out for {duration}! {emoji}"
 msgstr ""
 
 #: security\security.py:752
+msgid "{member.display_name}, you have been untimed out! {emoji}"
+msgstr ""
+
+#: security\security.py:755
+msgid "{member.display_name}, you have been muted for {duration}! {emoji}"
+msgstr ""
+
+#: security\security.py:762
+msgid "{member.display_name}, you have been unmuted! {emoji}"
+msgstr ""
+
+#: security\security.py:765
+msgid "{member.display_name}, you have been kicked! {emoji}"
+msgstr ""
+
+#: security\security.py:768
+msgid "{member.display_name}, you have been banned! {emoji}"
+msgstr ""
+
+#: security\security.py:771
+msgid "{member.display_name}, you have been detected! {emoji}"
+msgstr ""
+
+#: security\security.py:808
+msgid "Failed to create the quarantine role: {error}"
+msgstr ""
+
+#: security\security.py:818
+msgid "Failed to update the quarantine role: {error}"
+msgstr ""
+
+#: security\security.py:870
+msgid "This channel is used for modlogs by Security."
+msgstr ""
+
+#: security\security.py:884
+msgid "Failed to create the modlog channel: {error}"
+msgstr ""
+
+#: security\security.py:895
+msgid "Member joined while already quarantined."
+msgstr ""
+
+#: security\security.py:897
+msgid ""
+"Member {member.mention} (`{member}`) was quarantined before leaving the "
+"server."
+msgstr ""
+
+#: security\security.py:902
+msgid ""
+"{member.mention} (`{member}`) has joined again while already quarantined."
+msgstr ""
+
+#: security\security.py:928
+msgid "Tried to edit roles of a quarantined member."
+msgstr ""
+
+#: security\security.py:930
+msgid ""
+"Member {member.mention} (`{member}`) tried to {action} to/from the "
+"quarantined member {quarantined_member.mention} (`{quarantined_member.id}`)."
+msgstr ""
+
+#: security\security.py:938
 msgid "add the role{s} {roles}"
 msgstr ""
 
-#: security\security.py:767
+#: security\security.py:953
 msgid "remove the role{s} {roles}"
 msgstr ""
 
-#: security\security.py:831
+#: security\security.py:1092
 msgid ""
 "You can't whitelist a trusted admin or higher, they are already fully "
 "whitelisted from Security."
 msgstr ""
 
-#: security\security.py:892
+#: security\security.py:1187
+msgid "No audit log entries found."
+msgstr ""
+
+#: security\security.py:1271
 msgid "Security Recovery Key"
 msgstr ""
 
-#: security\security.py:893
+#: security\security.py:1272
 msgid ""
 "- Use [**Google Authenticator**](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2) or a similar app to scan the QR code below.\n"
 "- This will allow you to recover access to Security in this guild, as an extra owner.\n"
@@ -218,337 +279,351 @@ msgid ""
 "**Do not share this key with anyone else!**"
 msgstr ""
 
-#: security\security.py:918
+#: security\security.py:1301
 #, docstring
 msgid "Recover access to Security."
 msgstr ""
 
-#: security\security.py:920
+#: security\security.py:1303
 msgid "You are not a member of this guild."
 msgstr ""
 
-#: security\security.py:923
+#: security\security.py:1306
 msgid ""
 "You already have access to Security as an Extra Owner or higher in this "
 "guild."
 msgstr ""
 
-#: security\security.py:928
+#: security\security.py:1311
 msgid "This guild does not have a recovery key set."
 msgstr ""
 
-#: security\security.py:935
+#: security\security.py:1318
 msgid "The provided recovery key or code is invalid."
 msgstr ""
 
-#: security\security.py:942
+#: security\security.py:1325
 msgid "Recovered access to Security."
 msgstr ""
 
-#: security\security.py:946
+#: security\security.py:1329
 msgid ""
 "✅ You have successfully recovered access to Security in **{guild.name}**."
 msgstr ""
 
-#: security\views.py:50
+#: security\views.py:58
 msgid "Select whitelist types."
 msgstr ""
 
-#: security\views.py:51
+#: security\views.py:59
 msgid "Select protected roles to whitelist."
 msgstr ""
 
-#: security\views.py:54
+#: security\views.py:62
 msgid "Cancel"
 msgstr ""
 
-#: security\views.py:55
+#: security\views.py:63
 msgid "Save"
 msgstr ""
 
-#: security\views.py:61
+#: security\views.py:69
 msgid "{emoji} Security Whitelist"
 msgstr ""
 
-#: security\views.py:91
+#: security\views.py:83 security\views.py:370
+msgid "{guild.name} | Developed by AAA3A"
+msgstr ""
+
+#: security\views.py:112
 msgid "👤 **Target:** {member.mention} (`{member}`) {member_emojis}"
 msgstr ""
 
-#: security\views.py:126
-msgid "📳 **Target:** {role.mention} (`{role}`)"
+#: security\views.py:147
+msgid "{emoji} **Target:** {role.mention} (`{role}`)"
 msgstr ""
 
-#: security\views.py:129
-msgid "🔗 **Target:** {webhook.name} (`{webhook.id}`)"
+#: security\views.py:152
+msgid "{emoji} **Target:** {webhook.name} (`{webhook.id}`)"
 msgstr ""
 
-#: security\views.py:134
-msgid "#️⃣ **Target:** {channel.mention} (`{channel}`)"
+#: security\views.py:158
+msgid "{emoji} **Target:** {channel.mention} (`{channel}`)"
 msgstr ""
 
-#: security\views.py:141
+#: security\views.py:168
 msgid ""
 "ℹ️ Your staff members always possess these whitelist types: "
 "{staff_whitelist_types}."
 msgstr ""
 
-#: security\views.py:163 security\views.py:302 security\views.py:798
-#: security\views.py:804
+#: security\views.py:201 security\views.py:341 security\views.py:833
+#: security\views.py:839
 msgid "You are not allowed to use this interaction."
 msgstr ""
 
-#: security\views.py:184
+#: security\views.py:223
 msgid "**Protected Roles Whitelist:** {protected_roles}"
 msgstr ""
 
-#: security\views.py:256
+#: security\views.py:295
 msgid "Reset Recovery Key"
 msgstr ""
 
-#: security\views.py:257
+#: security\views.py:296
 msgid "Create Quarantine Role"
 msgstr ""
 
-#: security\views.py:258
+#: security\views.py:297
 msgid "Create Modlog Channel"
 msgstr ""
 
-#: security\views.py:259
+#: security\views.py:298
 msgid "Select Quarantine Role"
 msgstr ""
 
-#: security\views.py:260
+#: security\views.py:299
 msgid "Select Modlog Channel"
 msgstr ""
 
-#: security\views.py:261
+#: security\views.py:300
 msgid "Select Modlog Ping Role"
 msgstr ""
 
-#: security\views.py:262
+#: security\views.py:301
 msgid "Manage Extra Owners"
 msgstr ""
 
-#: security\views.py:263
+#: security\views.py:302
 msgid "Manage Trusted Admins"
 msgstr ""
 
-#: security\views.py:271
+#: security\views.py:310
 msgid "Overview"
 msgstr ""
 
-#: security\views.py:278
+#: security\views.py:317
 msgid "Authority Members"
 msgstr ""
 
-#: security\views.py:279
+#: security\views.py:318
 msgid "Manage Extra Owners and Trusted Admins."
 msgstr ""
 
-#: security\views.py:324
-msgid "Invoked by {author.display_name}"
+#: security\views.py:363
+msgid "Invoked by {author.display_name} ({author.id}) {member_emojis}"
 msgstr ""
 
-#: security\views.py:334
+#: security\views.py:378
 msgid "Security — Overview"
 msgstr ""
 
-#: security\views.py:337 security\views.py:752
-msgid "Disable"
-msgstr ""
-
-#: security\views.py:337 security\views.py:752
-msgid "Enable"
-msgstr ""
-
-#: security\views.py:367
+#: security\views.py:403
 msgid ""
 "**Quarantine Role:** {quarantine_role}\n"
 "**Modlog Channel:** {modlog_channel}\n"
 "**Modlog Ping Role:** {modlog_ping_role}"
 msgstr ""
 
-#: security\views.py:374 security\views.py:377
-msgid "None (Automatically created when needed)"
+#: security\views.py:410 security\views.py:413
+msgid "Not set (Automatically created when needed)"
 msgstr ""
 
-#: security\views.py:380
-msgid "None"
+#: security\views.py:416
+msgid "Not set"
 msgstr ""
 
-#: security\views.py:393
+#: security\views.py:429
 msgid ""
 "\n"
 "⚠️ The bot can't manage {count} role(s) that are higher or equal than its top role: they are considered immune, but can't access features and settings."
 msgstr ""
 
-#: security\views.py:417
+#: security\views.py:457
 msgid "Security — Authority Members"
 msgstr ""
 
-#: security\views.py:418
+#: security\views.py:458
 msgid ""
 "💥 Trusted Admins and Extra Owners are **100% immune** to Security, meaning they will **NEVER** be punished by Security for anything they do.\n"
 "**You should only give these levels to people you really trust!**"
 msgstr ""
 
-#: security\views.py:436
+#: security\views.py:476
 msgid "Extra Owners ({count}/5):"
 msgstr ""
 
-#: security\views.py:441
+#: security\views.py:484
 msgid ""
 "⚙️ *They can change **all settings** of Security, and can also manage "
 "Trusted Admins.*"
 msgstr ""
 
-#: security\views.py:447
+#: security\views.py:490
 msgid "Trusted Admins ({count}/8):"
 msgstr ""
 
-#: security\views.py:452
+#: security\views.py:498
 msgid "⚙️ *They can change **most settings** of Security.*"
 msgstr ""
 
-#: security\views.py:504
-msgid ""
-"⚠️ Are you sure you want to disable the security system? This may leave your server **vulnerable**!\n"
-"*You will still be able to quarantine and unquarantine members, but no other features will be active.*"
-msgstr ""
-
-#: security\views.py:513
-msgid "Security system has been **{status}**."
-msgstr ""
-
-#: security\views.py:514 security\views.py:767
-msgid "enabled"
-msgstr ""
-
-#: security\views.py:514 security\views.py:767
-msgid "disabled"
-msgstr ""
-
-#: security\views.py:523
-msgid "Failed to send recovery key: {error}"
-msgstr ""
-
-#: security\views.py:546
+#: security\views.py:554
 msgid ""
 "⚠️ Are you sure you want to reset the recovery key? This will invalidate the"
 " current key and generate a new one."
 msgstr ""
 
-#: security\views.py:557
-msgid "Failed to reset recovery key: {error}"
+#: security\views.py:565
+msgid "⚠️ Failed to reset recovery key: {error}"
 msgstr ""
 
-#: security\views.py:570
-msgid "Failed to create quarantine role: {error}"
+#: security\views.py:577
+msgid "⚠️ Failed to create quarantine role: {error}"
 msgstr ""
 
-#: security\views.py:574
-msgid "Quarantine role has been created successfully."
+#: security\views.py:582
+msgid "✅ Quarantine role has been created successfully."
 msgstr ""
 
-#: security\views.py:587
-msgid "Failed to create modlog channel: {error}"
+#: security\views.py:595
+msgid "⚠️ Failed to create modlog channel: {error}"
 msgstr ""
 
-#: security\views.py:591
-msgid "Modlog channel has been created successfully."
+#: security\views.py:600
+msgid "✅ Modlog channel has been created successfully."
 msgstr ""
 
-#: security\views.py:605
+#: security\views.py:615
+msgid ""
+"⚠️ The selected role is not assignable by the bot. Please select a role that"
+" the bot can assign."
+msgstr ""
+
+#: security\views.py:623
 msgid ""
 "⚠️ Quarantine role will lose all its permissions and overwrites will be "
 "added to each channel, when needed."
 msgstr ""
 
-#: security\views.py:613
-msgid "⚠️ Quarantine role will be created when needed."
+#: security\views.py:631
+msgid "✅ Quarantine role will be created when needed."
 msgstr ""
 
-#: security\views.py:633
+#: security\views.py:654
+msgid ""
+"⚠️ The selected channel is not accessible by the bot. Please select a "
+"channel that the bot can access."
+msgstr ""
+
+#: security\views.py:662
+msgid "✅ Modlog channel is now set."
+msgstr ""
+
+#: security\views.py:668
 msgid "⚠️ Modlog channel will be created when needed."
 msgstr ""
 
-#: security\views.py:667 security\views.py:713
-msgid "This member is higher than Extra Owners."
+#: security\views.py:685
+msgid "✅ Modlog ping role is now set."
 msgstr ""
 
-#: security\views.py:674
-msgid "Member {member.mention} **is no longer an Extra Owner**."
+#: security\views.py:688
+msgid "⚠️ Modlog ping role removed."
 msgstr ""
 
-#: security\views.py:690
-msgid "You can't add more than **5 Extra Owners**."
+#: security\views.py:704 security\views.py:750
+msgid "⚠️ This member is higher than Extra Owners."
 msgstr ""
 
-#: security\views.py:695
-msgid "Member {member.mention} **is now an Extra Owner**."
+#: security\views.py:711
+msgid "✅ Member {member.mention} **is no longer an Extra Owner**."
 msgstr ""
 
-#: security\views.py:720
-msgid "Member {member.mention} **is no longer a Trusted Admin**."
+#: security\views.py:727
+msgid "⚠️ You can't add more than **5 Extra Owners**."
 msgstr ""
 
-#: security\views.py:736
-msgid "You can't add more than **8 Trusted Admins**."
+#: security\views.py:732
+msgid "✅ Member {member.mention} **is now an Extra Owner**."
 msgstr ""
 
-#: security\views.py:741
-msgid "Member {member.mention} **is now a Trusted Admin**."
+#: security\views.py:757
+msgid "✅ Member {member.mention} **is no longer a Trusted Admin**."
 msgstr ""
 
-#: security\views.py:765
-msgid "Module **{module}** has been **{status}**."
+#: security\views.py:773
+msgid "⚠️ You can't add more than **8 Trusted Admins**."
 msgstr ""
 
-#: security\views.py:836
+#: security\views.py:778
+msgid "✅ Member {member.mention} **is now a Trusted Admin**."
+msgstr ""
+
+#: security\views.py:787
+msgid "Disable"
+msgstr ""
+
+#: security\views.py:787
+msgid "Enable"
+msgstr ""
+
+#: security\views.py:800
+msgid "✅ Module **{module}** has been **{status}**."
+msgstr ""
+
+#: security\views.py:802
+msgid "enabled"
+msgstr ""
+
+#: security\views.py:802
+msgid "disabled"
+msgstr ""
+
+#: security\views.py:880
 msgid "Unquarantine"
 msgstr ""
 
-#: security\views.py:839
+#: security\views.py:883
 msgid "Untimeout"
 msgstr ""
 
-#: security\views.py:841
+#: security\views.py:885
 msgid "Unmute"
 msgstr ""
 
-#: security\views.py:859
+#: security\views.py:903
 msgid "View Context Message"
 msgstr ""
 
-#: security\views.py:872
+#: security\views.py:924
 msgid "You are not allowed to use this action."
 msgstr ""
 
-#: security\views.py:901
+#: security\views.py:954
 msgid "⚠️ Are you sure you want to {action} {member.mention}?"
 msgstr ""
 
-#: security\views.py:911
+#: security\views.py:964
 msgid "{action} Duration"
 msgstr ""
 
-#: security\views.py:915
+#: security\views.py:968
 msgid "Duration:"
 msgstr ""
 
-#: security\views.py:916
+#: security\views.py:969
 msgid "Enter the duration (e.g. 3h)..."
 msgstr ""
 
-#: security\views.py:929
+#: security\views.py:981
 msgid "Invalid duration: {error}"
 msgstr ""
 
-#: security\views.py:936
+#: security\views.py:988
 msgid "**Security Actions View** - {action}"
 msgstr ""
 
-#: security\views.py:986
+#: security\views.py:1039
 msgid ""
-"Action **{action}** has been successfully performed on {member.mention}."
+"✅ Action **{action}** has been successfully performed on {member.mention}."
 msgstr ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-05-31 01:00+0200\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,104 +31,104 @@ msgstr ""
 msgid "You can't toast yourself!"
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:91
+#: onepiecebounties\plugins\welcome.py:92
 msgid "You've already toasted this member!"
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:94
+#: onepiecebounties\plugins\welcome.py:96
 msgid ""
 "{user.mention} grins widely: \"To {new_member.mention} joining our grand "
 "voyage!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:95
+#: onepiecebounties\plugins\welcome.py:97
 msgid "{user.mention} raises a flag: \"Another brave soul for our pirate crew!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:96
+#: onepiecebounties\plugins\welcome.py:98
 msgid ""
 "{user.mention}: \"May your log pose always point to adventure, "
 "{new_member.mention}!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:99
+#: onepiecebounties\plugins\welcome.py:101
 msgid ""
 "{user.mention} slams down a mug: \"To finding nakama in the vast blue sea!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:100
+#: onepiecebounties\plugins\welcome.py:102
 msgid ""
 "{user.mention} declares: \"Even the Pirate King needs a reliable crew like "
 "{new_member.mention}!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:103
+#: onepiecebounties\plugins\welcome.py:105
 msgid "{user.mention}: \"To dreams as vast as the Grand Line!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:104
+#: onepiecebounties\plugins\welcome.py:106
 msgid ""
 "{user.mention} toasts: \"May your bounty rise with each adventure, "
 "{new_member.mention}!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:107
+#: onepiecebounties\plugins\welcome.py:109
 msgid "{user.mention}: \"The Will of D lives on in our new nakama!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:108
+#: onepiecebounties\plugins\welcome.py:110
 msgid ""
 "{user.mention} raises a barrel of sake: \"To the treasures we'll find "
 "together!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:109
+#: onepiecebounties\plugins\welcome.py:111
 msgid ""
 "{user.mention}: \"Even Gol D. Roger would welcome {new_member.mention} "
 "aboard!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:110
+#: onepiecebounties\plugins\welcome.py:112
 msgid ""
 "{user.mention} cheers: \"Your wanted poster just joined our wall of fame, "
 "{new_member.mention}!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:113
+#: onepiecebounties\plugins\welcome.py:115
 msgid "{user.mention}: \"To sailing beyond the Red Line with our new crewmate!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:114
+#: onepiecebounties\plugins\welcome.py:116
 msgid ""
 "{user.mention} toasts: \"Even the All Blue isn't as vast as the adventures "
 "ahead!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:117
+#: onepiecebounties\plugins\welcome.py:119
 msgid ""
 "{user.mention}: \"May your spirit be as unbreakable as Luffy's will, "
 "{new_member.mention}!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:120
+#: onepiecebounties\plugins\welcome.py:122
 msgid "{user.mention} shares a toast: \"To finding our own Laugh Tale together!\""
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:137
+#: onepiecebounties\plugins\welcome.py:139
 msgid ""
 "# Navigator's Guide\n"
 "\n"
 "Welcome aboard the {guild.name} ship! Here's your Log Pose to navigate our waters:\n"
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:142
+#: onepiecebounties\plugins\welcome.py:144
 msgid ""
 "\n"
 "\n"
 "*It's not about the destination, it's about the journey!*"
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:151
+#: onepiecebounties\plugins\welcome.py:153
 msgid ""
 "# Bounty System\n"
 "\n"
@@ -141,10 +141,10 @@ msgid ""
 "*\"Your bounty doesn't determine your worth to the crew.\"*"
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:159
+#: onepiecebounties\plugins\welcome.py:161
 msgid "berries"
 msgstr ""
 
-#: onepiecebounties\plugins\welcome.py:159
+#: onepiecebounties\plugins\welcome.py:161
 msgid "berry"
 msgstr ""

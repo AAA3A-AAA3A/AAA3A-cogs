@@ -1,0 +1,430 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: teams\converters.py:33
+msgid "Team not found."
+msgstr ""
+
+#: teams\converters.py:77
+msgid "Invalid URL."
+msgstr ""
+
+#: teams\converters.py:90
+msgid "Invalid team or member."
+msgstr ""
+
+#: teams\teams.py:25
+#, docstring
+msgid ""
+"Manage teams with captains, vice captains and members, and points, "
+"leaderboard and contributor leaderboard!"
+msgstr ""
+
+#: teams\teams.py:72
+#, docstring
+msgid "Create a new team."
+msgstr ""
+
+#: teams\teams.py:75
+msgid ""
+"A team with this member already exists. Please remove them from the existing"
+" team first."
+msgstr ""
+
+#: teams\teams.py:83
+msgid "I need the `Manage Roles` permission to create roles."
+msgstr ""
+
+#: teams\teams.py:86
+msgid "{name} Captain"
+msgstr ""
+
+#: teams\teams.py:87
+msgid "{name} Vice-Captain"
+msgstr ""
+
+#: teams\teams.py:88
+msgid "{name} Member"
+msgstr ""
+
+#: teams\teams.py:123
+msgid "✅ Team **{team.display_name}** created successfully!"
+msgstr ""
+
+#: teams\teams.py:130
+#, docstring
+msgid "Show information about a specific team."
+msgstr ""
+
+#: teams\teams.py:137
+#, docstring
+msgid "Show the members of a specific team."
+msgstr ""
+
+#: teams\teams.py:139
+msgid " — {member_count} Member{s}"
+msgstr ""
+
+#: teams\teams.py:145
+msgid " (Captain)"
+msgstr ""
+
+#: teams\teams.py:147
+msgid " (Vice Captain)"
+msgstr ""
+
+#: teams\teams.py:166
+#, docstring
+msgid "Add a member to a specific team."
+msgstr ""
+
+#: teams\teams.py:172 teams\teams.py:264
+msgid ""
+"✅ Member {member.mention} added successfully to **{team.display_name}** "
+"team!"
+msgstr ""
+
+#: teams\teams.py:205
+#, docstring
+msgid "Remove a member from a specific team."
+msgstr ""
+
+#: teams\teams.py:211
+msgid ""
+"✅ Member {member.mention} removed successfully from **{team.display_name}** "
+"team!"
+msgstr ""
+
+#: teams\teams.py:237
+#, docstring
+msgid "Invite a member to a specific team."
+msgstr ""
+
+#: teams\teams.py:239
+msgid " — Invite"
+msgstr ""
+
+#: teams\teams.py:240
+msgid "Do you want to join this team?"
+msgstr ""
+
+#: teams\teams.py:274
+#, docstring
+msgid "Promote a member to captain in a specific team."
+msgstr ""
+
+#: teams\teams.py:280
+msgid ""
+"✅ Member {member.mention} promoted successfully to Vice-Captain in "
+"**{team.display_name}** team!"
+msgstr ""
+
+#: teams\teams.py:290
+#, docstring
+msgid "Demote a member from captain in a specific team."
+msgstr ""
+
+#: teams\teams.py:296
+msgid ""
+"✅ Member {member.mention} demoted successfully in **{team.display_name}** "
+"team!"
+msgstr ""
+
+#: teams\teams.py:306
+#, docstring
+msgid "Transfer captaincy to a new member in a specific team."
+msgstr ""
+
+#: teams\teams.py:309
+msgid "Are you sure you want to transfer captaincy to {new_captain.mention}?"
+msgstr ""
+
+#: teams\teams.py:319
+msgid ""
+"✅ Team **{team.display_name}** captaincy transferred to "
+"{new_captain.mention} successfully!"
+msgstr ""
+
+#: teams\teams.py:334
+#, docstring
+msgid "Edit a specific team."
+msgstr ""
+
+#: teams\teams.py:352
+msgid "✅ Team **{team.display_name}** {key} updated successfully!"
+msgstr ""
+
+#: teams\teams.py:360
+#, docstring
+msgid "Delete a specific team."
+msgstr ""
+
+#: teams\teams.py:362
+msgid "Are you sure you want to delete the team `{team.name}`?"
+msgstr ""
+
+#: teams\teams.py:366
+msgid "✅ Team **{team.display_name}** deleted successfully!"
+msgstr ""
+
+#: teams\teams.py:371
+#, docstring
+msgid "List all teams in this server."
+msgstr ""
+
+#: teams\teams.py:373 teams\teams.py:520 teams\teams.py:631 teams\teams.py:658
+msgid "No teams found in this server."
+msgstr ""
+
+#: teams\teams.py:375
+msgid "Teams:"
+msgstr ""
+
+#: teams\teams.py:377
+msgid "- **{display_name}** (Captain: {captain}) — **{count}** Member{s}"
+msgstr ""
+
+#: teams\teams.py:405
+#, docstring
+msgid "Add points to a specific team or team member."
+msgstr ""
+
+#: teams\teams.py:420 teams\teams.py:454
+msgid "This member is not in any team."
+msgstr ""
+
+#: teams\teams.py:426
+msgid ""
+"✅ **{amount} points** added successfully to **{team.display_name}** team!"
+msgstr ""
+
+#: teams\teams.py:439
+#, docstring
+msgid "Remove points from a specific team or team member."
+msgstr ""
+
+#: teams\teams.py:460
+msgid ""
+"✅ **{amount} points** removed successfully from **{team.display_name}** "
+"team!"
+msgstr ""
+
+#: teams\teams.py:470
+#, docstring
+msgid "Reset the points for a specific team."
+msgstr ""
+
+#: teams\teams.py:474
+msgid ""
+"Are you sure you want to reset points for all teams? This action cannot be "
+"undone."
+msgstr ""
+
+#: teams\teams.py:484
+msgid "✅ Points have been reset successfully!"
+msgstr ""
+
+#: teams\teams.py:490
+#, docstring
+msgid "Show the point history for a specific team."
+msgstr ""
+
+#: teams\teams.py:492
+msgid "No points found for this team."
+msgstr ""
+
+#: teams\teams.py:494
+msgid " — Point History"
+msgstr ""
+
+#: teams\teams.py:496
+msgid "- **{point.amount}** points{member}{managed_by} - {timestamp}"
+msgstr ""
+
+#: teams\teams.py:498
+msgid " for {member.mention}"
+msgstr ""
+
+#: teams\teams.py:501
+msgid " (managed by {managed_by.mention})"
+msgstr ""
+
+#: teams\teams.py:518
+#, docstring
+msgid "Show the team leaderboard for this server."
+msgstr ""
+
+#: teams\teams.py:526
+msgid "No points found for any team."
+msgstr ""
+
+#: teams\teams.py:529
+msgid "Team Leaderboard"
+msgstr ""
+
+#: teams\teams.py:535
+msgid "**{i}. {team.display_name}**"
+msgstr ""
+
+#: teams\teams.py:536
+msgid "=> **{points}** point{s}"
+msgstr ""
+
+#: teams\teams.py:554
+#, docstring
+msgid "List all point contributors globally or in a specific team."
+msgstr ""
+
+#: teams\teams.py:557
+msgid " — Contributors"
+msgstr ""
+
+#: teams\teams.py:561
+msgid "Contributors for **All Teams**"
+msgstr ""
+
+#: teams\teams.py:574
+msgid "No contributors found."
+msgstr ""
+
+#: teams\teams.py:580
+msgid "**{i}.** {member}: **{points}** point{s}"
+msgstr ""
+
+#: teams\teams.py:600
+#, docstring
+msgid "Add all members from a role to a team."
+msgstr ""
+
+#: teams\teams.py:602 teams\teams.py:629
+msgid "No members found in this role."
+msgstr ""
+
+#: teams\teams.py:610 teams\teams.py:642
+msgid ""
+"⚠️ Could not add {member.mention} to **{team.display_name}** team: {error}"
+msgstr ""
+
+#: teams\teams.py:617
+msgid "✅ **{count} members** added to **{team.display_name}** team!"
+msgstr ""
+
+#: teams\teams.py:625
+#, docstring
+msgid "Split members from a role into separate teams."
+msgstr ""
+
+#: teams\teams.py:648
+msgid "✅ **{count} members** split into **{team_count} teams**!"
+msgstr ""
+
+#: teams\teams.py:656
+#, docstring
+msgid "Delete all teams in this server."
+msgstr ""
+
+#: teams\teams.py:661
+msgid ""
+"Are you sure you want to delete all teams in this server? This action can't "
+"be undone."
+msgstr ""
+
+#: teams\teams.py:668
+msgid "✅ All teams deleted in this server!"
+msgstr ""
+
+#: teams\types.py:293
+msgid "👥 Membership:"
+msgstr ""
+
+#: teams\types.py:294
+msgid ""
+"- **Total Members:** {member_count}\n"
+"- **Captain:** {captain.mention}"
+msgstr ""
+
+#: teams\types.py:301
+msgid ""
+"\n"
+"- **Vice-Captain{s}:** {vice_captains}"
+msgstr ""
+
+#: teams\types.py:312
+msgid "🏆 Points:"
+msgstr ""
+
+#: teams\types.py:313
+msgid ""
+"- **Total Points:** {total_points}\n"
+"- **Contributions:** {contributions}\n"
+"- **Contributors:** {contributors}"
+msgstr ""
+
+#: teams\types.py:331
+msgid "🎭 Discord Roles:"
+msgstr ""
+
+#: teams\types.py:332
+msgid ""
+"- **Captain Role:** {captain_role}\n"
+"- **Vice-Captain Role:** {vice_captain_role}\n"
+"- **Member Role:** {member_role}"
+msgstr ""
+
+#: teams\types.py:339 teams\types.py:342 teams\types.py:345
+msgid "None"
+msgstr ""
+
+#: teams\types.py:350
+msgid "Slogan:"
+msgstr ""
+
+#: teams\types.py:355
+msgid "📅 Created At:"
+msgstr ""
+
+#: teams\types.py:368
+msgid "Member is already in the team."
+msgstr ""
+
+#: teams\types.py:372
+msgid "Member is already in another team."
+msgstr ""
+
+#: teams\types.py:387 teams\types.py:404 teams\types.py:425
+msgid "Member is not in the team."
+msgstr ""
+
+#: teams\types.py:406
+msgid "Member is already the captain."
+msgstr ""
+
+#: teams\types.py:408
+msgid "Member is already a vice captain."
+msgstr ""
+
+#: teams\types.py:427
+msgid "Member is the captain and cannot be demoted."
+msgstr ""
+
+#: teams\types.py:429
+msgid "Member is not a vice captain."
+msgstr ""
+
+#: teams\types.py:444
+msgid "New captain is not a member of the team."
+msgstr ""
+
+#: teams\types.py:446
+msgid "New captain is already the captain."
+msgstr ""

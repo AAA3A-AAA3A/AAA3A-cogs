@@ -1,0 +1,91 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: redgettext 3.4.2\n"
+
+#: serversupporters\converter.py:31
+msgid "This role isn't assignable."
+msgstr ""
+
+#: serversupporters\converter.py:34
+msgid "This role is higher than my highest role in the discord hierarchy."
+msgstr ""
+
+#: serversupporters\converter.py:38
+msgid "This role is higher than your highest role in the discord hierarchy."
+msgstr ""
+
+#: serversupporters\converter.py:44
+msgid ""
+"This role has dangerous permissions and should not be used in this context. "
+"Please choose a different role."
+msgstr ""
+
+#: serversupporters\serversupporters.py:24
+#, docstring
+msgid ""
+"Track and give roles to supporters, members using the server tag or having a"
+" server invite link in their status!"
+msgstr ""
+
+#: serversupporters\serversupporters.py:106
+msgid "New Server {_type} Supporter!"
+msgstr ""
+
+#: serversupporters\serversupporters.py:108
+msgid "Server {_type} Supporter Removed..."
+msgstr ""
+
+#: serversupporters\serversupporters.py:109
+#: serversupporters\serversupporters.py:331
+msgid "Tag"
+msgstr ""
+
+#: serversupporters\serversupporters.py:109
+#: serversupporters\serversupporters.py:331
+msgid "Status"
+msgstr ""
+
+#: serversupporters\serversupporters.py:122
+msgid ""
+"{member.mention} has been given the **{role.mention}** role for being a "
+"server supporter."
+msgstr ""
+
+#: serversupporters\serversupporters.py:126
+msgid ""
+"{member.mention} has been removed from the **{role.mention}** role for no "
+"longer being a server supporter."
+msgstr ""
+
+#: serversupporters\serversupporters.py:161
+msgid ""
+"Hello {member.mention}! By taking the **{member.guild.name}** tag off, you "
+"will lose access to the {tag_supporter_role.mention} role and its perks..."
+msgstr ""
+
+#: serversupporters\serversupporters.py:304
+#, docstring
+msgid "List all members with the status supporter role."
+msgstr ""
+
+#: serversupporters\serversupporters.py:329
+msgid "{count} Server {_type} Supporter{s}"
+msgstr ""
+
+#: serversupporters\serversupporters.py:348
+#, docstring
+msgid "Force update the roles of all members in the guild."
+msgstr ""
+
+#: serversupporters\serversupporters.py:351
+msgid "The Server Supporters system is not enabled."
+msgstr ""

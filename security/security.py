@@ -5,6 +5,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
 import base64
 import datetime
 import functools
@@ -134,6 +135,7 @@ class Security(Cog):
         )
 
         self.modules: typing.Dict[str, Module] = {}
+        self.tasks: typing.List[asyncio.Task] = []
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -189,6 +191,9 @@ class Security(Cog):
         for module in self.modules.values():
             await module.unload()
         self.modules.clear()
+        for task in self.tasks:
+            task.cancel()
+        self.tasks.clear()
 
     async def get_member_level(self, member: discord.Member) -> Levels:
         if member == member.guild.me:
@@ -621,9 +626,10 @@ class Security(Cog):
         return embed
 
     async def send_in_modlog_channel(
-        self, guild: discord.Guild, ping_role: bool = True, **kwargs
+        self, guild: discord.Guild, ping_role: bool = True, modlog_channel: discord.TextChannel = None, **kwargs
     ) -> discord.Message:
-        modlog_channel: discord.TextChannel = await self.create_modlog_channel(guild=guild)
+        if modlog_channel is None:
+            modlog_channel: discord.TextChannel = await self.create_modlog_channel(guild=guild)
         return await modlog_channel.send(
             (
                 modlog_ping_role.mention
@@ -669,7 +675,8 @@ class Security(Cog):
             logs=logs,
             duration=duration,
         )
-        if current_ctx is not None:
+        modlog_channel: discord.TextChannel = await self.create_modlog_channel(guild=member.guild)
+        if current_ctx is not None and current_ctx.channel != modlog_channel:
             await current_ctx.channel.send(embed=embed)
         if trigger_messages:
             raw_trigger_messages = [
@@ -691,10 +698,11 @@ class Security(Cog):
             embed.description += box("\n".join(to_include))
         else:
             file = None
-        unaction = action in ("unquarantine", "untimeout", "unmute", "kick", "ban")
+        unaction = action in ("unquarantine", "untimeout", "unmute")
+        include_actions = not unaction and action not in ("kick", "ban")
         view: ActionsView = ActionsView(self, member, context_message=context_message)
         await view.populate(
-            include_actions=not unaction,
+            include_actions=include_actions,
             action=action,
         )
         view._message = await self.send_in_modlog_channel(
@@ -705,6 +713,10 @@ class Security(Cog):
             view=view,
         )
         self.views[view._message] = view
+        if include_actions and duration is not None:
+            self.tasks.append(
+                asyncio.create_task(view.populate_again_after_duration(duration=duration))
+            )
         await modlog.create_case(
             bot=self.bot,
             guild=member.guild,

@@ -4,6 +4,7 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import asyncio
 import datetime
 import functools
 
@@ -904,6 +905,16 @@ class ActionsView(discord.ui.View):
                     url=self.context_message.jump_url,
                 )
             )
+
+    async def populate_again_after_duration(self, duration: datetime.timedelta) -> None:
+        await asyncio.sleep(
+            (duration + datetime.timedelta(seconds=5)).total_seconds()
+        )
+        await self.populate(include_actions=True)
+        try:
+            await self._message.edit(view=self)
+        except discord.HTTPException:
+            pass
 
     async def action_callback(
         self, interaction: discord.Interaction, action: typing.Dict[str, str]

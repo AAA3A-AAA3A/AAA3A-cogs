@@ -193,7 +193,7 @@ class Crazy(Mode):
     roles = {
         5: {
             "must": ALWAYS_MUST,
-            "choose": [(2, [Vigilante, Mayor, Executioner])],
+            "choices": [(2, [Vigilante, Mayor, Executioner])],
         },
         (6, None): {
             "must": ALWAYS_MUST + [Vigilante, Mayor, Executioner],

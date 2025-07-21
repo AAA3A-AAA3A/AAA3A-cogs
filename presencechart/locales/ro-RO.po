@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:15+0200\n"
-"PO-Revision-Date: 2024-07-20 20:25\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2025-07-21 15:14\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -34,35 +34,35 @@ msgstr "{member_or_role.guild.name} {member_or_role.name}' Prezența"
 msgid "{member_or_role.display_name}'s Presence"
 msgstr "{member_or_role.display_name}Prezența lui 's"
 
-#: presencechart\presencechart.py:327
+#: presencechart\presencechart.py:329
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum)."
 msgstr "Faceți un grafic cu diferitele stări Discord (prezență) ale unui membru Discord, în ultimele x zile (maxim 100 de zile)."
 
-#: presencechart\presencechart.py:331
+#: presencechart\presencechart.py:333
 msgid "This user is in the ignored users list (`{prefix}presencechart ignoreme`)."
 msgstr "Acest utilizator se află în lista utilizatorilor ignorați (`{prefix}presencechart ignoreme`)."
 
-#: presencechart\presencechart.py:375
+#: presencechart\presencechart.py:377
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of all members of the guild/server."
 msgstr "Faceți un grafic cu diferitele statusuri Discord (prezență) ale tuturor membrilor breslei/serverului."
 
-#: presencechart\presencechart.py:398
+#: presencechart\presencechart.py:400
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of all members of the specfied role."
 msgstr "Faceți un grafic cu diferitele stări Discord (prezență) ale tuturor membrilor rolului specificat."
 
-#: presencechart\presencechart.py:415
+#: presencechart\presencechart.py:417
 #, docstring
 msgid "Asking PresenceChart to ignore your statuses (presence)."
 msgstr "Solicitarea ca PresenceChart să vă ignore statusurile (prezența)."
 
-#: presencechart\presencechart.py:423
+#: presencechart\presencechart.py:425
 msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
 msgstr "Nu veți mai fi văzut de acest robot, iar datele pe care le dețineam despre dumneavoastră au fost șterse."
 
-#: presencechart\presencechart.py:430
+#: presencechart\presencechart.py:432
 msgid "You'll be seen again by this cog."
 msgstr "Vei fi văzut din nou de această rotiță."
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:15+0200\n"
-"PO-Revision-Date: 2024-07-20 20:25\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2025-07-21 15:15\n"
 "Last-Translator: \n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -34,35 +34,35 @@ msgstr "{member_or_role.guild.name} {member_or_role.name}' Παρουσία"
 msgid "{member_or_role.display_name}'s Presence"
 msgstr "{member_or_role.display_name}'s Παρουσία"
 
-#: presencechart\presencechart.py:327
+#: presencechart\presencechart.py:329
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum)."
 msgstr "Φτιάξτε ένα διάγραμμα με τις διαφορετικές καταστάσεις Discord (παρουσία) ενός μέλους του Discord, τις προηγούμενες x ημέρες (το πολύ τις τελευταίες 100 ημέρες)."
 
-#: presencechart\presencechart.py:331
+#: presencechart\presencechart.py:333
 msgid "This user is in the ignored users list (`{prefix}presencechart ignoreme`)."
 msgstr "Αυτός ο χρήστης βρίσκεται στη λίστα αγνοημένων χρηστών (`{prefix}presencechart ignoreme`)."
 
-#: presencechart\presencechart.py:375
+#: presencechart\presencechart.py:377
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of all members of the guild/server."
 msgstr "Φτιάξτε ένα διάγραμμα με τις διαφορετικές καταστάσεις (παρουσία) στο Discord όλων των μελών της συντεχνίας/του διακομιστή."
 
-#: presencechart\presencechart.py:398
+#: presencechart\presencechart.py:400
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of all members of the specfied role."
 msgstr "Φτιάξτε ένα διάγραμμα με τις διαφορετικές καταστάσεις (παρουσία) στο Discord όλων των μελών του συγκεκριμένου ρόλου."
 
-#: presencechart\presencechart.py:415
+#: presencechart\presencechart.py:417
 #, docstring
 msgid "Asking PresenceChart to ignore your statuses (presence)."
 msgstr "Ζητώντας από το PresenceChart να αγνοήσει τις καταστάσεις σας (παρουσία)."
 
-#: presencechart\presencechart.py:423
+#: presencechart\presencechart.py:425
 msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
 msgstr "Δεν θα σας βλέπει πλέον αυτό το γρανάζι και τα δεδομένα που διατηρούσα για εσάς έχουν διαγραφεί."
 
-#: presencechart\presencechart.py:430
+#: presencechart\presencechart.py:432
 msgid "You'll be seen again by this cog."
 msgstr "Θα σας ξαναδεί αυτό το γρανάζι."
 

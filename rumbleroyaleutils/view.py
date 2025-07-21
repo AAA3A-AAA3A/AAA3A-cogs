@@ -90,7 +90,7 @@ class AmIAliveView(discord.ui.View):
             embed.title = _("💀 You are dead!")
             embed.color = discord.Color.red()
         embed.description = (
-            "\n".join(description) if description else _("You have no events recorded.")
+            "\n".join(description) if description else _("You have no events recorded yet...")
         )
         embed.set_footer(text=interaction.guild.name, icon_url=interaction.guild.icon)
         await interaction.response.send_message(embed=embed, ephemeral=True)

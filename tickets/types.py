@@ -80,6 +80,8 @@ class Ticket:
     appeal_approved: bool = False
     appeal_approved_by_id: typing.Optional[int] = None
     appeal_approved_at_timestamp: int = None
+    deleted_by_id: typing.Optional[int] = None
+    deleted_at_timestamp: int = None
 
     members_ids: typing.List[int] = field(default_factory=list)
 
@@ -292,6 +294,33 @@ class Ticket:
         )
 
     @property
+    def deleted_by(self) -> typing.Optional[discord.Member]:
+        if (guild := self.guild) is None:
+            return None
+        return guild.get_member(self.deleted_by_id)
+
+    @deleted_by.setter
+    def deleted_by(self, deleted_by: typing.Optional[discord.Member]) -> None:
+        if deleted_by is None:
+            self.deleted_by_id = None
+        else:
+            self.deleted_by_id = deleted_by.id
+
+    @property
+    def deleted_at(self) -> typing.Optional[datetime.datetime]:
+        if self.deleted_at_timestamp is None:
+            return None
+        return datetime.datetime.fromtimestamp(
+            self.deleted_at_timestamp, tz=datetime.timezone.utc
+        )
+
+    @deleted_at.setter
+    def deleted_at(self, deleted_at: typing.Optional[datetime.datetime]) -> None:
+        self.deleted_at_timestamp = (
+            None if deleted_at is None else int(deleted_at.timestamp())
+        )
+
+    @property
     def members(self) -> typing.List[discord.Member]:
         if (guild := self.guild) is None:
             return []
@@ -386,10 +415,7 @@ class Ticket:
                         else type(
                             "",
                             (),
-                            {
-                                "mention": f"<@{self.appeal_approved_by_id}>",
-                                "id": self.claimed_by_id,
-                            },
+                            {"mention": f"<@{self.appeal_approved_by_id}>" if self.appeal_approved_by_id else _("Automatic")},
                         )
                     ),
                     claimed_at=int(self.claimed_at.timestamp()),
@@ -408,10 +434,7 @@ class Ticket:
                         else type(
                             "",
                             (),
-                            {
-                                "mention": f"<@{self.appeal_approved_by_id}>",
-                                "id": self.closed_by_id,
-                            },
+                            {"mention": f"<@{self.appeal_approved_by_id}>" if self.appeal_approved_by_id else _("Automatic")},
                         )
                     ),
                     closed_at=int(self.closed_at.timestamp()),
@@ -430,15 +453,31 @@ class Ticket:
                         else type(
                             "",
                             (),
-                            {
-                                "mention": f"<@{self.appeal_approved_by_id}>",
-                                "id": self.appeal_approved_by_id,
-                            },
+                            {"mention": f"<@{self.appeal_approved_by_id}>" if self.appeal_approved_by_id else _("Automatic")},
                         )
                     ),
                     appeal_approved_at=int(self.appeal_approved_at.timestamp()),
                 )
                 if self.appeal_approved
+                else ""
+            )
+            + (
+                _(
+                    "\nDeleted by: {deleted_by.mention}"
+                    "\nDeleted at: <t:{deleted_at}:F> (<t:{deleted_at}:R>)"
+                ).format(
+                    deleted_by=(
+                        self.deleted_by
+                        if self.deleted_by is not None
+                        else type(
+                            "",
+                            (),
+                            {"mention": f"<@{self.deleted_by_id}>" if self.deleted_by_id else _("Automatic")},
+                        )
+                    ),
+                    deleted_at=int(self.deleted_at.timestamp()),
+                )
+                if self.deleted_at is not None
                 else ""
             )
         )
@@ -1446,6 +1485,9 @@ class Ticket:
         )
 
     async def delete_channel(self, deleter: typing.Optional[discord.Member] = None) -> None:
+        self.deleted_by = deleter
+        self.deleted_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        await self.save()
         if deleter is None:
             audit_reason = _("Ticket deleted (profile `{self.profile}`).").format(self=self)
         else:

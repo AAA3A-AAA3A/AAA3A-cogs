@@ -753,6 +753,7 @@ class AutoModModule(Module):
         config = await self.config_value(message.guild)()
         if not config["enabled"]:
             return
+        number = self.strikes_cache[message.guild][message.author]
         if not isinstance(message.author, discord.Member):
             try:
                 message.author = await message.guild.fetch_member(message.author.id)
@@ -797,10 +798,13 @@ class AutoModModule(Module):
                             message,
                         )
                     )
-        number = self.strikes_cache[message.guild][message.author]
         lock = self.strikes_locks[message.guild][message.author]
         await lock.acquire()
         if self.strikes_cache[message.guild][message.author] > number:
+            try:
+                await message.delete()
+            except discord.HTTPException:
+                pass
             lock.release()
             return
         await self.update_heats_cache(message.guild, message.author)
@@ -829,7 +833,6 @@ class AutoModModule(Module):
                     await message.delete()
                 except discord.HTTPException:
                     pass
-            self.strikes_cache[message.guild][message.author] += 1
             reason = filter["reason"]()
             audit_log_reason = f"Security's Auto Mod: {filter['name']}."
             filter_config = config["filters"][category_value][filter["value"]]
@@ -853,6 +856,8 @@ class AutoModModule(Module):
                     )
                 for __ in range(self.strikes_cache[message.guild][message.author] - 2):
                     duration *= config["strike_durations"]["auto_multiplier"]
+                if message.guild.me.guild_permissions.moderate_members:
+                    await message.author.timeout(duration, reason=audit_log_reason)
                 await self.cog.send_modlog(
                     action="timeout",
                     member=message.author,
@@ -862,8 +867,6 @@ class AutoModModule(Module):
                     context_message=message,
                     current_ctx=message,
                 )
-                if message.guild.me.guild_permissions.moderate_members:
-                    await message.author.timeout(duration, reason=audit_log_reason)
             else:
                 if action in ("timeout", "mute"):
                     duration = await DurationConverter.convert(
@@ -871,16 +874,6 @@ class AutoModModule(Module):
                     )
                 else:
                     duration = None
-                if action != "quarantine":
-                    await self.cog.send_modlog(
-                        action=action,
-                        member=message.author,
-                        reason=reason,
-                        duration=duration,
-                        trigger_messages=trigger_messages,
-                        context_message=message,
-                        current_ctx=message,
-                    )
                 if action == "timeout" and message.guild.me.guild_permissions.moderate_members:
                     await message.author.timeout(duration, reason=audit_log_reason)
                 elif (
@@ -911,6 +904,17 @@ class AutoModModule(Module):
                         context_message=message,
                         current_ctx=message,
                     )
+                if action != "quarantine":
+                    await self.cog.send_modlog(
+                        action=action,
+                        member=message.author,
+                        reason=reason,
+                        duration=duration,
+                        trigger_messages=trigger_messages,
+                        context_message=message,
+                        current_ctx=message,
+                    )
+            self.strikes_cache[message.guild][message.author] += 1
         lock.release()
 
 

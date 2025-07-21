@@ -69,7 +69,7 @@ class SentinelRelayModule(Module):
             "**Main Bot:** {main_bot}\n"
             "**Modules to Enable:** {modules_to_enable}"
         ).format(
-            main_bot=f"{main_bot.mention} (`{main_bot}`) {await self.cog.get_member_emojis(main_bot)}"
+            main_bot=f"{main_bot.mention} (`{main_bot}`) {await self.cog.get_member_emoji(main_bot)}"
             if main_bot is not None
             else _("Not Set"),
             modules_to_enable=humanize_list(

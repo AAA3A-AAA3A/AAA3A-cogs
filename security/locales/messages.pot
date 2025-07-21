@@ -146,13 +146,13 @@ msgid "{member.display_name} has been detected! {emoji}"
 msgstr ""
 
 #: security\security.py:606
-msgid "{emoji} **Member:** {member.mention} (`{member}`) {member_emojis}"
+msgid "{emoji} **Member:** {member.mention} (`{member}`) {member_emoji}"
 msgstr ""
 
 #: security\security.py:614 security\views.py:209
 msgid ""
 "\n"
-"{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emojis}"
+"{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emoji}"
 msgstr ""
 
 #: security\security.py:621
@@ -336,7 +336,7 @@ msgid "{guild.name} | Developed by AAA3A"
 msgstr ""
 
 #: security\views.py:112
-msgid "👤 **Target:** {member.mention} (`{member}`) {member_emojis}"
+msgid "👤 **Target:** {member.mention} (`{member}`) {member_emoji}"
 msgstr ""
 
 #: security\views.py:147
@@ -411,7 +411,7 @@ msgid "Manage Extra Owners and Trusted Admins."
 msgstr ""
 
 #: security\views.py:363
-msgid "Invoked by {author.display_name} ({author.id}) {member_emojis}"
+msgid "Invoked by {author.display_name} ({author.id}) {member_emoji}"
 msgstr ""
 
 #: security\views.py:378

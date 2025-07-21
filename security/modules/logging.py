@@ -935,7 +935,7 @@ class LoggingModule(Module):
                 ).format(
                     emoji=Emojis.ISSUED_BY.value,
                     responsible=responsible,
-                    responsible_emojis=await self.cog.get_member_emojis(responsible),
+                    responsible_emojis=await self.cog.get_member_emoji(responsible),
                 )
             elif isinstance(responsible, discord.User):
                 embed.description = _(
@@ -962,11 +962,11 @@ class LoggingModule(Module):
                     pass
             if isinstance(target, discord.Member):
                 embed.description += "\n" + _(
-                    "{emoji} **Target Member:** {member.mention} (`{member}`) {member_emojis} - `{member.id}`"
+                    "{emoji} **Target Member:** {member.mention} (`{member}`) {member_emoji} - `{member.id}`"
                 ).format(
                     emoji=Emojis.MEMBER.value,
                     member=target,
-                    member_emojis=await self.cog.get_member_emojis(target),
+                    member_emoji=await self.cog.get_member_emoji(target),
                 )
             elif isinstance(target, discord.User):
                 embed.description += "\n" + _(
@@ -1001,10 +1001,10 @@ class LoggingModule(Module):
                 ).format(emoji=Emojis.MESSAGE.value, message=target)
                 if target.author != responsible:
                     embed.description += _(
-                        "\n- **Author:** {target.author.mention} (`{target.author}`){member_emojis} - `{target.author.id}`"
+                        "\n- **Author:** {target.author.mention} (`{target.author}`){member_emoji} - `{target.author.id}`"
                     ).format(
                         target=target,
-                        member_emojis=f" {await self.cog.get_member_emojis(target.author)}"
+                        member_emoji=f" {await self.cog.get_member_emoji(target.author)}"
                         if isinstance(target.author, discord.Member)
                         else "",
                     )

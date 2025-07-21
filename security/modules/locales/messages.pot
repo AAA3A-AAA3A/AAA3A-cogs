@@ -1190,7 +1190,7 @@ msgstr ""
 
 #: security\modules\logging.py:964
 msgid ""
-"{emoji} **Target Member:** {member.mention} (`{member}`) {member_emojis} - "
+"{emoji} **Target Member:** {member.mention} (`{member}`) {member_emoji} - "
 "`{member.id}`"
 msgstr ""
 
@@ -1219,7 +1219,7 @@ msgstr ""
 #: security\modules\logging.py:1003
 msgid ""
 "\n"
-"- **Author:** {target.author.mention} (`{target.author}`){member_emojis} - `{target.author.id}`"
+"- **Author:** {target.author.mention} (`{target.author}`){member_emoji} - `{target.author.id}`"
 msgstr ""
 
 #: security\modules\logging.py:1011
@@ -1680,7 +1680,7 @@ msgid "{member.display_name} has been reported! {emoji}"
 msgstr ""
 
 #: security\modules\reports.py:265
-msgid "👤 **Member:** {member.mention} (`{member}`) {member_emojis}"
+msgid "👤 **Member:** {member.mention} (`{member}`) {member_emoji}"
 msgstr ""
 
 #: security\modules\reports.py:273

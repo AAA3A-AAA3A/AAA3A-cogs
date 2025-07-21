@@ -200,7 +200,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
             "#️⃣ **Target:** `{channel_name}` - `{channel.id}`"
         ).format(
             responsible=responsible,
-            responsible_emojis=await self.cog.get_member_emojis(responsible),
+            responsible_emojis=await self.cog.get_member_emoji(responsible),
             channel_name=entry.before.name,
             channel=channel,
         )

@@ -268,7 +268,7 @@ class Security(Cog):
     async def is_moderator_or_higher(self, member: discord.Member) -> bool:
         return (await self.get_member_level(member)).value <= Levels.MODERATOR.value
 
-    async def get_member_emojis(self, member: discord.Member) -> str:
+    async def get_member_emoji(self, member: discord.Member) -> str:
         level = await self.get_member_level(member)
         return MemberEmojis[level.name].value
 
@@ -416,52 +416,59 @@ class Security(Cog):
             ):
                 return
         member_config["quarantined"] = True
-        await self.send_modlog(  # Send modlog entry before making changes to the member.
-            action="quarantine",
-            member=member,
-            issued_by=issued_by,
-            reason=reason,
-            logs=logs,
-            trigger_messages=trigger_messages,
-            context_message=context_message or (current_ctx.message if current_ctx else None),
-            current_ctx=current_ctx,
-        )
-        quarantine_role: discord.Role = await self.create_or_update_quarantine_role(
-            guild=member.guild
-        )
+        member_emoji = await self.get_member_emoji(member)
         audit_log_reason = (
             f"Automated quarantine with Security."
             if issued_by is None
             else f"Quarantine issued by {issued_by.display_name} ({issued_by.id}) with Security."
         )
         try:
-            unassignable_roles = [role for role in member.roles if not role.is_assignable()]
-            if (
-                integration_role := next(
-                    (role for role in member.roles if role.is_bot_managed()), None
-                )
-            ) is not None:
-                member_config[
-                    "integration_role_permissions_before_quarantine"
-                ] = integration_role.permissions.value
-                await integration_role.edit(
-                    permissions=discord.Permissions.none(),
+            quarantine_role: discord.Role = await self.create_or_update_quarantine_role(
+                guild=member.guild
+            )
+            try:
+                unassignable_roles = [role for role in member.roles if not role.is_assignable()]
+                if (
+                    integration_role := next(
+                        (role for role in member.roles if role.is_bot_managed()), None
+                    )
+                ) is not None:
+                    member_config[
+                        "integration_role_permissions_before_quarantine"
+                    ] = integration_role.permissions.value
+                    await integration_role.edit(
+                        permissions=discord.Permissions.none(),
+                        reason=audit_log_reason,
+                    )
+                member_config["roles_before_quarantine"] = [
+                    role.id for role in member.roles if role.is_assignable()
+                ]
+                await member.edit(
+                    roles=[quarantine_role] + unassignable_roles,
                     reason=audit_log_reason,
                 )
-            member_config["roles_before_quarantine"] = [
-                role.id for role in member.roles if role.is_assignable()
-            ]
-            await member.edit(
-                roles=[quarantine_role] + unassignable_roles,
-                reason=audit_log_reason,
-            )
-        except discord.HTTPException as e:
-            raise RuntimeError(
-                _("Failed to quarantine {member.mention}: {error}").format(
-                    member=member, error=str(e)
+            except discord.HTTPException as e:
+                raise RuntimeError(
+                    _("Failed to quarantine {member.mention}: {error}").format(
+                        member=member, error=str(e)
+                    )
                 )
+        except RuntimeError:
+            raise
+        else:
+            await self.config.member(member).set(member_config)
+        finally:
+            await self.send_modlog(
+                action="quarantine",
+                member=member,
+                issued_by=issued_by,
+                reason=reason,
+                logs=logs,
+                trigger_messages=trigger_messages,
+                context_message=context_message or (current_ctx.message if current_ctx else None),
+                current_ctx=current_ctx,
+                member_emoji=member_emoji,
             )
-        await self.config.member(member).set(member_config)
 
     async def unquarantine_member(
         self,
@@ -530,7 +537,7 @@ class Security(Cog):
                 )
             )
         await self.config.member(member).set(member_config)
-        await self.send_modlog(  # Send modlog entry after making changes to the member.
+        await self.send_modlog(
             action="unquarantine",
             member=member,
             issued_by=issued_by,
@@ -559,6 +566,7 @@ class Security(Cog):
         reason: typing.Optional[str] = None,
         logs: typing.List[str] = None,
         duration: typing.Optional[datetime.timedelta] = None,
+        member_emoji: typing.Optional[str] = None,  # Because quarantining changes the status.
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title={
@@ -604,19 +612,19 @@ class Security(Cog):
             text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon)
         )
         description = _(
-            "{emoji} **Member:** {member.mention} (`{member}`) {member_emojis}"
+            "{emoji} **Member:** {member.mention} (`{member}`) {member_emoji}"
         ).format(
             emoji=Emojis.MEMBER.value,
             member=member,
-            member_emojis=await self.get_member_emojis(member),
+            member_emoji=member_emoji or await self.get_member_emoji(member),
         )
         if issued_by is not None:
             description += _(
-                "\n{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emojis}"
+                "\n{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emoji}"
             ).format(
                 emoji=Emojis.ISSUED_BY.value,
                 issued_by=issued_by,
-                issued_by_emojis=await self.get_member_emojis(issued_by),
+                issued_by_emoji=await self.get_member_emoji(issued_by),
             )
         description += _("\n{emoji} **Reason:** *{reason}*").format(
             emoji=Emojis.REASON.value, reason=reason or _("No reason provided.")
@@ -673,6 +681,7 @@ class Security(Cog):
         trigger_messages: typing.List[discord.Message] = [],
         context_message: typing.Optional[discord.Message] = None,
         current_ctx: typing.Optional[typing.Union[commands.Context, discord.Message]] = None,
+        member_emoji: typing.Optional[str] = None,  # Because quarantining changes the status.
     ) -> None:
         embed: discord.Embed = await self.get_modlog_embed(
             member=member,
@@ -681,6 +690,7 @@ class Security(Cog):
             reason=reason,
             logs=logs,
             duration=duration,
+            member_emoji=member_emoji,
         )
         modlog_channel: discord.TextChannel = await self.create_modlog_channel(guild=member.guild)
         if current_ctx is not None and current_ctx.channel != modlog_channel:

@@ -110,10 +110,10 @@ class WhitelistView(discord.ui.View):
         self.remove_item(self.protected_roles_whitelist_select)
         if isinstance(self._object, discord.Member):
             embed.description = _(
-                "👤 **Target:** {member.mention} (`{member}`) {member_emojis}"
+                "👤 **Target:** {member.mention} (`{member}`) {member_emoji}"
             ).format(
                 member=_object,
-                member_emojis=await self.cog.get_member_emojis(_object),
+                member_emoji=await self.cog.get_member_emoji(_object),
             )
             self.config_value = self.cog.config.member(self._object).whitelist
             if protected_roles := {
@@ -207,11 +207,11 @@ class WhitelistView(discord.ui.View):
         embed = self._message.embeds[0]
         if self.saved:
             embed.description += _(
-                "\n{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emojis}"
+                "\n{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emoji}"
             ).format(
                 emoji=Emojis.ISSUED_BY.value,
                 issued_by=self.ctx.author,
-                issued_by_emojis=await self.cog.get_member_emojis(self.ctx.author),
+                issued_by_emoji=await self.cog.get_member_emoji(self.ctx.author),
             )
         embed.description += "\n\n" + "\n".join(
             [
@@ -360,9 +360,9 @@ class SettingsView(discord.ui.View):
             timestamp=self.ctx.message.created_at,
         )
         embed.set_author(
-            name=_("Invoked by {author.display_name} ({author.id}) {member_emojis}").format(
+            name=_("Invoked by {author.display_name} ({author.id}) {member_emoji}").format(
                 author=self.ctx.author,
-                member_emojis=await self.cog.get_member_emojis(self.ctx.author),
+                member_emoji=await self.cog.get_member_emoji(self.ctx.author),
             ),
             icon_url=get_non_animated_asset(self.ctx.author.display_avatar),
         )
@@ -476,7 +476,7 @@ class SettingsView(discord.ui.View):
                 name=_("Extra Owners ({count}/5):").format(count=len(extra_owners)),
                 value="\n".join(
                     [
-                        f"- {member.mention} (`{member}`) {await self.cog.get_member_emojis(member)}"
+                        f"- {member.mention} (`{member}`) {await self.cog.get_member_emoji(member)}"
                         for member in extra_owners
                     ]
                 )
@@ -490,7 +490,7 @@ class SettingsView(discord.ui.View):
                 name=_("Trusted Admins ({count}/8):").format(count=len(trusted_admins)),
                 value="\n".join(
                     [
-                        f"- {member.mention} (`{member}`) {await self.cog.get_member_emojis(member)}"
+                        f"- {member.mention} (`{member}`) {await self.cog.get_member_emoji(member)}"
                         for member in trusted_admins
                     ]
                 )

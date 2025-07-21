@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:14+0200\n"
-"PO-Revision-Date: 2024-07-20 20:21\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2025-07-21 15:17\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -36,23 +36,23 @@ msgid "There is an error in your regex.\n"
 msgstr "У вашому рексі є помилка.\n"
 "{e}"
 
-#: discordsearch\discordsearch.py:203
+#: discordsearch\discordsearch.py:206
 msgid "Look at the original message."
 msgstr "Подивіться на оригінальне повідомлення."
 
-#: discordsearch\discordsearch.py:219
+#: discordsearch\discordsearch.py:221
 msgid "Search in #{channel.name} ({channel.id})"
 msgstr "Шукайте в #{channel.name} ({channel.id})"
 
-#: discordsearch\discordsearch.py:220
+#: discordsearch\discordsearch.py:222
 msgid "Sorry, I could not find any results."
 msgstr "Вибачте, я не знайшов жодних результатів."
 
-#: discordsearch\discordsearch.py:233
+#: discordsearch\discordsearch.py:235
 msgid "Search in #{channel.name} ({channel.id}) in {total}s"
 msgstr "Шукайте в #{channel.name} ({channel.id}) в {total}s"
 
-#: discordsearch\discordsearch.py:245
+#: discordsearch\discordsearch.py:247
 msgid "Unrecognized date/time."
 msgstr "Нерозпізнана дата/час."
 

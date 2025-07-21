@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-07-20 22:15+0200\n"
-"PO-Revision-Date: 2024-07-20 20:25\n"
+"POT-Creation-Date: 2024-12-29 10:43+0100\n"
+"PO-Revision-Date: 2025-07-21 15:17\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "MIME-Version: 1.0\n"
@@ -34,35 +34,35 @@ msgstr "{member_or_role.guild.name} {member_or_role.name}' Presença"
 msgid "{member_or_role.display_name}'s Presence"
 msgstr "{member_or_role.display_name}Presença do usuário"
 
-#: presencechart\presencechart.py:327
+#: presencechart\presencechart.py:329
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of a Discord member, in the previous x days (last 100 days maximum)."
 msgstr "Faça um gráfico com os diferentes status do Discord (presença) de um membro do Discord, nos x dias anteriores (no máximo nos últimos 100 dias)."
 
-#: presencechart\presencechart.py:331
+#: presencechart\presencechart.py:333
 msgid "This user is in the ignored users list (`{prefix}presencechart ignoreme`)."
 msgstr "Esse usuário está na lista de usuários ignorados (`{prefix}presencechart ignoreme`)."
 
-#: presencechart\presencechart.py:375
+#: presencechart\presencechart.py:377
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of all members of the guild/server."
 msgstr "Faça um gráfico com os diferentes status do Discord (presença) de todos os membros da guilda/servidor."
 
-#: presencechart\presencechart.py:398
+#: presencechart\presencechart.py:400
 #, docstring
 msgid "Make a chart with the different Discord statuses (presence) of all members of the specfied role."
 msgstr "Faça um gráfico com os diferentes status do Discord (presença) de todos os membros da função especificada."
 
-#: presencechart\presencechart.py:415
+#: presencechart\presencechart.py:417
 #, docstring
 msgid "Asking PresenceChart to ignore your statuses (presence)."
 msgstr "Solicitar ao PresenceChart que ignore seus status (presença)."
 
-#: presencechart\presencechart.py:423
+#: presencechart\presencechart.py:425
 msgid "You will no longer be seen by this cog and the data I held on you have been deleted."
 msgstr "Você não será mais visto por essa engrenagem e os dados que eu mantinha sobre você foram excluídos."
 
-#: presencechart\presencechart.py:430
+#: presencechart\presencechart.py:432
 msgid "You'll be seen again by this cog."
 msgstr "Serás visto novamente por esta engrenagem."
 

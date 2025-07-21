@@ -698,9 +698,9 @@ class MafiaGame(Cog):
         member: discord.Member,
         duration: DurationConverter,
     ) -> None:
-        """Ban a member temporary from the Mafia game in this server."""
+        """Ban a member temporary from the Mafia games in this server."""
         if member.bot:
-            raise commands.UserFeedbackCheckFailure(_("A bot can't play the Mafia game."))
+            raise commands.UserFeedbackCheckFailure(_("A bot can't play a Mafia game."))
         await self.config.member(member).temp_banned_until.set(
             int(
                 (datetime.datetime.now(tz=datetime.timezone.utc) + duration)
@@ -710,7 +710,7 @@ class MafiaGame(Cog):
         )
         await ctx.send(
             _(
-                "This member has been **temporarily banned for {duration}** from the Mafia game in this server."
+                "This member has been **temporarily banned for {duration}** from the Mafia games in this server."
             ).format(duration=humanize_timedelta(timedelta=duration))
         )
 
@@ -719,13 +719,13 @@ class MafiaGame(Cog):
     async def unban(self, ctx: commands.Context, *, member: discord.Member) -> None:
         """Unban a member from the Mafia game in this server."""
         if member.bot:
-            raise commands.UserFeedbackCheckFailure(_("A bot can't play the Mafia game."))
+            raise commands.UserFeedbackCheckFailure(_("A bot can't play a Mafia game."))
         if await self.config.member(member).temp_banned_until() is None:
             raise commands.UserFeedbackCheckFailure(
-                _("The member is not banned from the Mafia game in this server.")
+                _("The member is not banned from the Mafia games in this server.")
             )
         await self.config.member(member).temp_banned_until.clear()
-        await ctx.send(_("This member has been **unbanned** from the Mafia game in this server."))
+        await ctx.send(_("This member has been **unbanned** from the Mafia games in this server."))
 
     @commands.mod_or_permissions(manage_guild=True)
     @mafia.command()

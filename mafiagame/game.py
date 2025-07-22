@@ -270,7 +270,7 @@ class Night(DayNight):
             player.role = final_role
         if (afk_days_before_kick := self.game.config["afk_days_before_kick"]) is not None:
             for player, days in self.game.afk_players.copy().items():
-                if days >= afk_days_before_kick:
+                if days >= afk_days_before_kick + 1:
                     await player.kill(cause="afk", reason=_("They were AFK for too long."))
                     if (
                         afk_temp_ban_duration := self.game.config["afk_temp_ban_duration"]

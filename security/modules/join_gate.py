@@ -297,13 +297,14 @@ class JoinGateModule(Module):
             elif not member.bot or not member.guild.me.guild_permissions.view_audit_log:
                 continue
             else:
-                responsible = [
-                    audit_log
-                    for audit_log in await member.guild.audit_logs(
-                        limit=1, action=discord.AuditLogAction.bot_add
-                    )
-                    if audit_log.target.id == member.id
-                ][0].user
+                async for entry in member.guild.audit_logs(
+                    limit=3, action=discord.AuditLogAction.bot_add
+                ):
+                    if entry.target.id == member.id:
+                        responsible = entry.user
+                        break
+                else:
+                    return
                 if await self.cog.is_trusted_admin_or_higher(responsible):
                     continue
             triggered.append((option, option_config))

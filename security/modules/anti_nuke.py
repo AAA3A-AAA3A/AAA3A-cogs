@@ -820,6 +820,11 @@ class AntiNukeModule(Module):
             return
         for option in ANTI_NUKE_OPTIONS:
             if option["check"](entry):
+                if (
+                    option["value"] == "strict_member_role_addition"
+                    and await self.cog.is_trusted_admin_or_higher(entry.target)
+                ):
+                    continue
                 option_filter, logs = option, [option["log"](entry)]
                 if config["revert_option_actions"]:
                     try:

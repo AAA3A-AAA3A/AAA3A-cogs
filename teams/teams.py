@@ -89,7 +89,7 @@ class Teams(Cog):
             }.items():
                 role = await ctx.guild.create_role(
                     name=role_name.format(name=name),
-                    color=color if color else discord.Color.default(),
+                    color=color if key == "member" and color is not None else discord.Color.default(),
                     display_icon=(
                         logo_url
                         or (await emoji.read() if isinstance(emoji, discord.Emoji) else emoji)

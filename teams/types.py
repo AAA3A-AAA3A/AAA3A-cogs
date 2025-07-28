@@ -344,17 +344,18 @@ class Team:
                         if self.member_role is not None
                         else _("None"),
                     ),
+                    inline=False,
                 )
             if self.slogan is not None:
                 embed.add_field(
-                    name=_("Slogan:"),
+                    name=_("📣 Slogan:"),
                     value=f"> *{self.slogan}*",
-                    inline=False,
+                    inline=True,
                 )
             embed.add_field(
                 name=_("📅 Created At:"),
                 value=discord.utils.format_dt(self.created_at, style="F"),
-                inline=False,
+                inline=True,
             )
         embed.set_footer(
             text=self.guild.name,

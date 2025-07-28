@@ -330,19 +330,22 @@ class Teams(Cog):
         team: TeamConverter,
         key: typing.Literal["name", "emoji", "logo_url", "color", "description", "slogan"],
         *,
-        value: str,
+        value: str = None,
     ) -> None:
         """Edit a specific team."""
-        if key == "emoji":
-            converter = Emoji
-        elif key == "logo_url":
-            converter = UrlConverter
-        elif key == "color":
-            converter = commands.ColorConverter
-        else:
-            converter = None
-        if converter is not None:
-            value = await converter().convert(ctx, value)
+        if not value and key == "name":
+            raise commands.UserFeedbackCheckFailure(_("You must provide a new name for the team."))
+        if value is not None:
+            if key == "emoji":
+                converter = Emoji
+            elif key == "logo_url":
+                converter = UrlConverter
+            elif key == "color":
+                converter = commands.ColorConverter
+            else:
+                converter = None
+            if converter is not None:
+                value = await converter().convert(ctx, value)
         old_id = team.id
         setattr(team, key if key != "emoji" else "display_emoji", value)
         await team.save()

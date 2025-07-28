@@ -93,7 +93,7 @@ class Teams(Cog):
                     display_icon=(
                         logo_url
                         or (await emoji.read() if isinstance(emoji, discord.Emoji) else emoji)
-                        if "ROLE_ICONS" in ctx.guild.features
+                        if key == "member" and "ROLE_ICONS" in ctx.guild.features
                         else None
                     ),
                     reason="Creating team role.",
@@ -110,6 +110,7 @@ class Teams(Cog):
             logo_url=logo_url,
             color_value=color.value if color is not None else None,
             description=description,
+            **roles,
         )
         await team.save()
         if (

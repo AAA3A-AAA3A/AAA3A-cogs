@@ -19,7 +19,7 @@ try:
 except ImportError:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 
-from ..constants import POSSIBLE_ACTIONS, Emojis
+from ..constants import POSSIBLE_ACTIONS, Emojis, get_correct_timeout_duration
 from ..views import DurationConverter, ToggleModuleButton
 from .module import Module
 
@@ -856,6 +856,7 @@ class AutoModModule(Module):
                     )
                 for __ in range(self.strikes_cache[message.guild][message.author] - 2):
                     duration *= config["strike_durations"]["auto_multiplier"]
+                duration = get_correct_timeout_duration(message.author, duration)
                 if message.guild.me.guild_permissions.moderate_members:
                     await message.author.timeout(duration, reason=audit_log_reason)
                 await self.cog.send_modlog(
@@ -872,6 +873,8 @@ class AutoModModule(Module):
                     duration = await DurationConverter.convert(
                         None, config["strike_durations"]["individual_timeout_mute"]
                     )
+                    if action == "timeout":
+                        duration = get_correct_timeout_duration(message.author, duration)
                 else:
                     duration = None
                 if action == "timeout" and message.guild.me.guild_permissions.moderate_members:

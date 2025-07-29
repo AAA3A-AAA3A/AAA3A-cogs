@@ -45,13 +45,18 @@ class AntiImpersonationModule(Module):
         return "✅", "Enabled", "Anti Impersonation is enabled and configured correctly."
 
     async def get_settings(self, guild: discord.Guild, view: discord.ui.View):
-        title = f"{self.emoji} {self.name} {(await self.get_status(guild))[0]}"
-        description = _(
-            "Protect your server from impersonation attacks by checking new members and member updates to ensure their display name, their name and their global name aren't similar to members with dangerous permissions."
+        status = await self.get_status(guild)
+        title = _("Security — {emoji} {name} {status}").format(
+            emoji=self.emoji, name=self.name, status=status[0]
         )
+        description = _(
+            "Protect your server from impersonation attacks by checking new members and member updates to ensure their display name, their name and their global name aren't similar to members with dangerous permissions.\n"
+        )
+        if status[0] == "⚠️":
+            description += f"{status[0]} **{status[1]}**: {status[2]}\n"
         config = await self.config_value(guild)()
         description += _(
-            "\n\n**Similarity Ratio:** {ratio}\nA similarity ratio of {ratio} means that names that are {percent}% similar will be flagged as potential impersonation attempts. You can adjust this ratio."
+            "\n**Similarity Ratio:** {ratio}\nA similarity ratio of {ratio} means that names that are {percent}% similar will be flagged as potential impersonation attempts. You can adjust this ratio."
         ).format(
             ratio=config["similarity_ratio"],
             percent=config["similarity_ratio"] * 100,

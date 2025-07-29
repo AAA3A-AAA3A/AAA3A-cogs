@@ -628,7 +628,6 @@ class AntiNukeModule(Module):
             }
             for filter in ANTI_NUKE_FILTERS
         },
-        "timeout_mute_duration": "3h",
     }
     configurable_by_trusted_admins = False
 
@@ -678,13 +677,13 @@ class AntiNukeModule(Module):
     async def get_settings(
         self, guild: discord.Guild, view: discord.ui.View
     ) -> typing.Tuple[str, str, typing.List[typing.Dict], typing.List[discord.ui.Item]]:
+        status = await self.get_status(guild)
         title = _("Security — {emoji} {name} {status}").format(
-            emoji=self.emoji, name=self.name, status=(await self.get_status(guild))[0]
+            emoji=self.emoji, name=self.name, status=status[0]
         )
         description = _(
             "This module allows you to protect your server from malicious actions by members or bots.\n"
         )
-        status = await self.get_status(guild)
         if status[0] == "⚠️":
             description += f"{status[0]} **{status[1]}**: {status[2]}\n"
         config = await self.config_value(guild)()

@@ -1,9 +1,9 @@
 import discord  # isort:skip
 import typing  # isort:skip
 
-from enum import Enum
+import datetime
 
-# delete/dismiss in Reports
+from enum import Enum
 
 
 class Levels(Enum):
@@ -414,6 +414,12 @@ DANGEROUS_PERMISSIONS: typing.List[str] = [
     "manage_threads",
     "moderate_members",
 ]
+
+
+def get_correct_timeout_duration(member: discord.Member, duration: datetime.timedelta) -> datetime.timedelta:
+    if member.is_timed_out():
+        duration += member.timed_out_until - datetime.datetime.now(datetime.timezone.utc)
+    return min(duration, datetime.timedelta(days=28))
 
 
 def get_non_animated_asset(asset: typing.Optional[discord.Asset] = None) -> typing.Optional[str]:

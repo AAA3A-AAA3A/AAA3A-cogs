@@ -9,7 +9,7 @@ import re
 
 from redbot.core.utils.chat_formatting import humanize_list
 
-from ..constants import POSSIBLE_ACTIONS, Emojis
+from ..constants import POSSIBLE_ACTIONS, Emojis, get_correct_timeout_duration
 from ..views import DurationConverter, ToggleModuleButton
 from .module import Module
 
@@ -323,6 +323,8 @@ class JoinGateModule(Module):
             action = option_config["action"]
             if action in ("timeout", "mute"):
                 duration = await DurationConverter.convert(None, config["timeout_mute_duration"])
+                if action == "timeout":
+                    duration = get_correct_timeout_duration(member, duration)
             else:
                 duration = None
             reason = _("**Join Gate** - Triggered by {option}.").format(option=option["name"]) + (

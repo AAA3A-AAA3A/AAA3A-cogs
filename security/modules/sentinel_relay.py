@@ -56,18 +56,25 @@ class SentinelRelayModule(Module):
         return "✅", _("Enabled"), _("Sentinel Relay is enabled and configured correctly.")
 
     async def get_settings(self, guild: discord.Guild, view: discord.ui.View):
+        status = await self.get_status(guild)
+        title = _("Security — {emoji} {name} {status}").format(
+            emoji=self.emoji, name=self.name, status=status[0]
+        )
+        description = _(
+            "This module automatically enables specified modules when the main bot goes offline, ensuring essential functionality and continuity. This ensures that both bots won't conflict with each other.\n"
+        )
+        if status[0] == "⚠️":
+            description += f"{status[0]} **{status[1]}**: {status[2]}\n"
         config = await self.config_value(guild)()
-        title = f"{self.emoji} {self.name} {(await self.get_status(guild))[0]}"
         main_bot = (
             main_bot
             if (main_bot_id := config["main_bot"]) is not None
             and (main_bot := guild.get_member(main_bot_id)) is not None
             else None
         )
-        description = _(
-            "This module automatically enables specified modules when the main bot goes offline, ensuring essential functionality and continuity. This ensures that both bots won't conflict with each other.\n\n"
-            "**Main Bot:** {main_bot}\n"
-            "**Modules to Enable:** {modules_to_enable}"
+        description += _(
+            "\n**Main Bot:** {main_bot}"
+            "\n**Modules to Enable:** {modules_to_enable}"
         ).format(
             main_bot=f"{main_bot.mention} (`{main_bot}`) {await self.cog.get_member_emoji(main_bot)}"
             if main_bot is not None

@@ -162,8 +162,13 @@ class DankPoolProtectionModule(Module):
         return "✅", _("Enabled"), _("Dank Pool Protection is enabled and configured correctly.")
 
     async def get_settings(self, guild: discord.Guild, view: discord.ui.View):
-        title = f"{self.emoji} {self.name} {(await self.get_status(guild))[0]}"
-        description = _("Protect your server's Dank Memer pool from abuse.\n")
+        status = await self.get_status(guild)
+        title = _("Security — {emoji} {name} {status}").format(
+            emoji=self.emoji, name=self.name, status=status[0]
+        )
+        description = _("Protect your server's Dank Memer pool from abuse.")
+        if status[0] == "⚠️":
+            description += f"\n{status[0]} **{status[1]}**: {status[2]}"
         config = await self.config_value(guild)()
         fields = []
         for option in DANK_POOL_PROTECTION_OPTIONS:

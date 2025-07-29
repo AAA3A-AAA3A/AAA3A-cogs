@@ -16,6 +16,7 @@ from .constants import (
     Colors,
     Emojis,
     Levels,
+    get_correct_timeout_duration,
     get_non_animated_asset,
 )  # NOQA
 
@@ -997,6 +998,7 @@ class ActionsView(discord.ui.View):
             )
         audit_log_reason = f"Security Actions View: issued by {interaction.user.display_name} ({interaction.user.id})."
         if action == "timeout":
+            duration = get_correct_timeout_duration(self.member, duration)
             await self.member.timeout(duration, reason=audit_log_reason)
         elif action == "untimeout":
             await self.member.timeout(None, reason=audit_log_reason)
@@ -1035,6 +1037,7 @@ class ActionsView(discord.ui.View):
                 reason=reason,
                 context_message=self._message,
             )
+        self.cog.modules["auto_mod"].heats_cache[self.member.guild].pop(self.member, None)
         await interaction.followup.send(
             _("✅ Action **{action}** has been successfully performed on {member.mention}.").format(
                 action=action,

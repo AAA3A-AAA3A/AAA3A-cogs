@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 
 
 @dataclass
-class PlayerApparition:
+class PlayerEvent:
     round_number: int
     type: typing.Literal["kill", "death", "revive", "apparition"]
     cause: str
@@ -19,7 +19,7 @@ class RumbleRoyale:
     host: discord.User
     players: typing.Dict[
         discord.Member,
-        typing.List[PlayerApparition],
+        typing.List[PlayerEvent],
     ] = field(default_factory=dict)
     views: typing.List[discord.ui.View] = field(default_factory=list)
 

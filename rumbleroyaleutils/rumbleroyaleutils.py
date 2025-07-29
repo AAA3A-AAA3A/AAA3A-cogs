@@ -11,7 +11,7 @@ import re
 from redbot.core.utils.chat_formatting import humanize_list
 from redbot.core.utils.menus import start_adding_reactions
 
-from .types import PlayerApparition, RumbleRoyale
+from .types import PlayerEvent, RumbleRoyale
 from .view import AmIAliveView
 
 # Credits:
@@ -164,11 +164,11 @@ class RumbleRoyaleUtils(Cog):
                             victim = discord.utils.get(rumble.players, name=victim_name)
                         else:
                             alive = True
-                            for event in rumble.players[killer]:
-                                alive = event.type != "death"
+                            for _event in rumble.players[killer]:
+                                alive = _event.type != "death"
                             if not alive:
                                 rumble.players[killer].append(
-                                    PlayerApparition(
+                                    PlayerEvent(
                                         round_number=round_number,
                                         type="revive",
                                         cause=event,
@@ -177,7 +177,7 @@ class RumbleRoyaleUtils(Cog):
                                 )
                             else:
                                 rumble.players[killer].append(
-                                    PlayerApparition(
+                                    PlayerEvent(
                                         round_number=round_number,
                                         type="apparition",
                                         cause=event,
@@ -187,7 +187,7 @@ class RumbleRoyaleUtils(Cog):
                             continue
                         if killer is not None:
                             rumble.players[killer].append(
-                                PlayerApparition(
+                                PlayerEvent(
                                     round_number=round_number,
                                     type="kill",
                                     cause=event,
@@ -196,7 +196,7 @@ class RumbleRoyaleUtils(Cog):
                                 )
                             )
                         rumble.players[victim].append(
-                            PlayerApparition(
+                            PlayerEvent(
                                 round_number=round_number,
                                 type="death",
                                 cause=event,

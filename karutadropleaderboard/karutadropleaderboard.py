@@ -1,4 +1,4 @@
-﻿from AAA3A_utils import Cog, Menu, Settings  # isort:skip
+﻿from AAA3A_utils import Cog, Menu, Settings, Loop  # isort:skip
 from redbot.core import commands, Config  # isort:skip
 from redbot.core.bot import Red  # isort:skip
 from redbot.core.i18n import Translator, cog_i18n  # isort:skip
@@ -6,6 +6,8 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 from redbot.core.utils.chat_formatting import pagify
+
+import datetime
 
 from .dashboard_integration import DashboardIntegration
 
@@ -33,7 +35,10 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
             enabled=False,
             channels=[],
         )
-        self.config.register_member(drops=0)
+        self.config.register_member(
+            drops=0,
+            last_drops={},
+        )
 
         _settings: typing.Dict[
             str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
@@ -64,6 +69,14 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.settings.add_commands()
+        self.loops.append(
+            Loop(
+                cog=self,
+                name="Cleanup Last Drops",
+                function=self.cleanup_last_drops,
+                hours=1,
+            )
+        )
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:
@@ -79,9 +92,25 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
         if message.channel.id not in config["channels"]:
             return
         member = message.mentions[0]
-        drops = await self.config.member(member).drops()
-        drops += 1
-        await self.config.member(member).drops.set(drops)
+        member_data = await self.config.member(member).all()
+        member_data["drops"] += 1
+        member_data["last_drops"][str(int(message.created_at.timestamp()))] = message.jump_url
+        await self.config.member(member).set(member_data)
+
+    async def cleanup_last_drops(self) -> None:
+        now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        for guild_id, data in (await self.config.all_members()).items():
+            for member_id, member_data in data.items():
+                if "last_drops" not in member_data:
+                    continue
+                new_last_drops = {
+                    drop: message_link
+                    for drop, message_link in member_data["last_drops"].items()
+                    if int(drop) > (now_timestamp - 86400)
+                }
+                if new_last_drops != member_data["last_drops"]:
+                    member_data["last_drops"] = new_last_drops
+                    await self.config.member_from_ids(guild_id, member_id).set(member_data)
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["karutadroplb", "karutadlb"])
@@ -123,6 +152,48 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
             e.description = page
             embeds.append(e)
         await Menu(pages=embeds).start(ctx)
+
+    @commands.guild_only()
+    @commands.hybrid_command(aliases=["karutadropreq", "dropreq"])
+    async def karutadroprequirement(
+        self,
+        ctx: commands.Context,
+        *,
+        member: discord.Member = commands.Author,
+    ) -> None:
+        """Check Karuta drop requirement for a member."""
+        embed: discord.Embed = discord.Embed(
+            title=_("Karuta Drop Requirement"),
+            color=await ctx.embed_color(),
+            timestamp=ctx.message.created_at,
+        )
+        embed.set_author(
+            name=member.display_name,
+            icon_url=member.display_avatar,
+        )
+        member_data = await self.config.member(member).all()
+        now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        embed.description = "\n".join(
+            f"- {'✅' if int(drop) > (now_timestamp - 43200) else '⏲️'} {discord.utils.format_dt(datetime.datetime.fromtimestamp(int(drop)), style='R')} {message_jump_url}"
+            for drop, message_jump_url in member_data["last_drops"].items()
+        )
+        within_last_12_hours = sum(
+            int(drop) > (now_timestamp - 43200)
+            for drop in member_data["last_drops"]
+        )
+        embed.add_field(
+            name=(
+                _("✅ Requirement met!")
+                if within_last_12_hours >= 3
+                else _("❌ Requirement not met!")
+            ),
+            value=_("{within_last_12_hours} drop{s}/3 in the last 12 hours...").format(
+                within_last_12_hours=within_last_12_hours,
+                s="" if within_last_12_hours == 1 else "s",
+            ),
+        )
+        embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
+        await Menu(pages=[embed]).start(ctx)
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)

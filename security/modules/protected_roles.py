@@ -80,7 +80,33 @@ class ProtectedRolesModule(Module):
             )
 
         components = [ToggleModuleButton(self, guild, view, config["enabled"])]
-        add_select = discord.ui.RoleSelect(
+
+        update_whitelisted_members_from_roles: discord.ui.Button = discord.ui.Button(
+            label=_("Update Whitelisted Members from Roles"),
+            style=discord.ButtonStyle.primary,
+            disabled=not protected_roles,
+        )
+        async def update_whitelisted_members_callback(interaction: discord.Interaction) -> None:
+            await interaction.response.defer(ephemeral=True, thinking=True)
+            protected_roles = await self.config_value(guild).protected_roles()
+            for role_id in protected_roles:
+                if (role := guild.get_role(int(role_id))) is None:
+                    continue
+                whitelisted_members = [
+                    member.id
+                    for member in role.members
+                    if not await self.cog.is_whitelisted(member, "protected_roles")
+                ]
+                protected_roles[role_id] = whitelisted_members
+            await self.config_value(guild).protected_roles.set(protected_roles)
+            await interaction.followup.send(
+                _("Whitelisted members updated from roles."), ephemeral=True
+            )
+            await view._message.edit(embed=await view.get_embed(), view=view)
+        update_whitelisted_members_from_roles.callback = update_whitelisted_members_callback
+        components.append(update_whitelisted_members_from_roles)
+
+        add_select: discord.ui.RoleSelect = discord.ui.RoleSelect(
             placeholder=_("Add Protected Role."),
             disabled=not guild.me.guild_permissions.manage_roles or len(protected_roles) >= 25,
         )
@@ -111,7 +137,7 @@ class ProtectedRolesModule(Module):
         add_select.callback = add_select_callback
         components.append(add_select)
         if protected_roles:
-            manage_select = discord.ui.Select(
+            manage_select: discord.ui.Select = discord.ui.Select(
                 placeholder=_("Manage Protected Role."),
                 options=[
                     discord.SelectOption(label=role.name, value=str(role.id))

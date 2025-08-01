@@ -34,6 +34,7 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
         self.config.register_guild(
             enabled=False,
             channels=[],
+            drop_requirement=3,
         )
         self.config.register_member(
             drops=0,
@@ -52,6 +53,10 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
                     typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
                 ],
                 "description": "List of channels to track.",
+            },
+            "drop_requirement": {
+                "converter": commands.Range[int, 1, 50],
+                "description": "Number of drops required in the last 12 hours to meet the requirement.",
             },
         }
         self.settings: Settings = Settings(
@@ -164,7 +169,6 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
         """Check Karuta drop requirement for a member."""
         embed: discord.Embed = discord.Embed(
             title=_("Karuta Drop Requirement"),
-            color=await ctx.embed_color(),
             timestamp=ctx.message.created_at,
         )
         embed.set_author(
@@ -181,15 +185,19 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
             int(drop) > (now_timestamp - 43200)
             for drop in member_data["last_drops"]
         )
+        drop_requirement = await self.config.guild(ctx.guild).drop_requirement()
+        requirement_met = within_last_12_hours >= drop_requirement
+        embed.color = discord.Color.green() if requirement_met else discord.Color.red()
         embed.add_field(
             name=(
                 _("✅ Requirement met!")
-                if within_last_12_hours >= 3
+                if requirement_met
                 else _("❌ Requirement not met!")
             ),
-            value=_("{within_last_12_hours} drop{s}/3 in the last 12 hours...").format(
+            value=_("{within_last_12_hours} drop{s}/{drop_requirement} in the last 12 hours...").format(
                 within_last_12_hours=within_last_12_hours,
                 s="" if within_last_12_hours == 1 else "s",
+                drop_requirement=drop_requirement,
             ),
         )
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)

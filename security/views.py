@@ -49,9 +49,12 @@ class WhitelistView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self._object: OBJECT_TYPING = None
+        self.duration: datetime.timedelta = None
         self.whitelist_types = []
         self.whitelist = {}
         self.protected_roles_whitelist = []
+        self.initial_whitelist = {}
+        self.initial_protected_roles_whitelist = []
         self.config_value = None
         self.saved: bool = False
         self._message: discord.Message = None
@@ -63,9 +66,10 @@ class WhitelistView(discord.ui.View):
         self.cancel.placeholder = _("Cancel")
         self.save.placeholder = _("Save")
 
-    async def start(self, ctx: commands.Context, _object: OBJECT_TYPING) -> discord.Message:
+    async def start(self, ctx: commands.Context, _object: OBJECT_TYPING, duration: DurationConverter) -> discord.Message:
         self.ctx: commands.Context = ctx
         self._object: OBJECT_TYPING = _object
+        self.duration: datetime.timedelta = duration
         embed: discord.Embed = discord.Embed(
             title=_("{emoji} Security Whitelist").format(emoji=Emojis.WHITELIST.value),
             color=Colors.WHITELIST.value,
@@ -127,7 +131,7 @@ class WhitelistView(discord.ui.View):
                 if (protected_role := self._object.guild.get_role(int(protected_role_id)))
                 is not None
             }:
-                self.protected_roles_whitelist = [
+                self.initial_protected_roles_whitelist = self.protected_roles_whitelist = [
                     str(protected_role.id)
                     for protected_role, whitelisted_members in protected_roles.items()
                     if self._object.id in whitelisted_members
@@ -178,7 +182,11 @@ class WhitelistView(discord.ui.View):
                     )
                 ),
             )
-        self.whitelist = await self.config_value()
+        self.initial_whitelist = self.whitelist = await self.config_value()
+        if self.duration is not None:
+            embed.description += _(
+                "\n⏳ **Duration:** {duration} (will be changed back after)"
+            ).format(duration=CogsUtils.get_interval_string(self.duration))
         for whitelist_type in self.whitelist_types:
             self.select.options.append(
                 discord.SelectOption(
@@ -192,8 +200,6 @@ class WhitelistView(discord.ui.View):
         self.select.max_values = len(self.select.options)
         self._message: discord.Message = await ctx.send(embed=embed, view=self)
         self.cog.views[self._message] = self
-        if not await self.wait():
-            await self.on_timeout()
         return self._message
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
@@ -256,11 +262,13 @@ class WhitelistView(discord.ui.View):
     async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
         self.whitelist = await self.config_value()
+        await self.on_timeout()
         self.stop()
 
     @discord.ui.button(emoji="✅", label="Save", style=discord.ButtonStyle.success)
-    async def save(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        await interaction.response.defer()
+    async def save(self, interaction: typing.Optional[discord.Interaction], button: discord.ui.Button) -> None:
+        if interaction is not None:
+            await interaction.response.defer()
         await self.config_value.set(self.whitelist)
         if isinstance(self._object, discord.Member):
             protected_roles = await self.cog.config.guild(
@@ -277,7 +285,32 @@ class WhitelistView(discord.ui.View):
                 self._object.guild
             ).modules.protected_roles.protected_roles.set(protected_roles)
         self.saved = True
+        await self.on_timeout()
         self.stop()
+        if self.duration is not None:
+            try:
+                await self.cog.bot.wait_for(
+                    "cog_unload",
+                    timeout=self.duration.total_seconds(),
+                    check=lambda cog: cog == self.cog,
+                )
+            except TimeoutError:
+                pass
+            await self.config_value.set(self.initial_whitelist)
+            if isinstance(self._object, discord.Member):
+                protected_roles = await self.cog.config.guild(
+                    self._object.guild
+                ).modules.protected_roles.protected_roles()
+                for protected_role_id, whitelisted_members in protected_roles.items():
+                    if protected_role_id in self.initial_protected_roles_whitelist:
+                        if self._object.id not in whitelisted_members:
+                            whitelisted_members.append(self._object.id)
+                    else:
+                        if self._object.id in whitelisted_members:
+                            whitelisted_members.remove(self._object.id)
+                await self.cog.config.guild(
+                    self._object.guild
+                ).modules.protected_roles.protected_roles.set(protected_roles)
 
 
 class SettingsView(discord.ui.View):

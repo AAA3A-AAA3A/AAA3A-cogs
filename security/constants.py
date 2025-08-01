@@ -1,3 +1,4 @@
+from redbot.core import commands  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
@@ -365,6 +366,27 @@ WHITELIST_TYPES: typing.List[
         "staff_allowed": False,
     },
 ]
+
+
+class WhitelistTypeConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
+        cog = ctx.bot.get_cog("Security")
+        for whitelist_type in WHITELIST_TYPES:
+            value = whitelist_type["value"]
+            if argument == value:
+                return value
+            if (
+                (
+                    module_key := next(
+                        m
+                        for m in cog.modules
+                        if value.startswith(m)
+                    )
+                ) is not None
+                and argument == value.removeprefix(f"{module_key}_")
+            ):
+                return value
+        raise commands.BadArgument(f"Unknown whitelist type: {argument}")
 
 
 POSSIBLE_ACTIONS: typing.List[

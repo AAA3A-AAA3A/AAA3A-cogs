@@ -25,11 +25,12 @@ from .constants import (
     Emojis,
     Levels,
     MemberEmojis,
+    WhitelistTypeConverter,
     clean_backticks,
     get_non_animated_asset,
 )  # NOQA
 from .modules import MODULES, Module
-from .views import OBJECT_TYPING, ActionsView, SettingsView, WhitelistView
+from .views import OBJECT_TYPING, ActionsView, SettingsView, WhitelistView, DurationConverter
 
 # Credits:
 # General repo credits.
@@ -1095,6 +1096,8 @@ class Security(Cog):
         self,
         ctx: commands.Context,
         _object: ObjectConverter,
+        duration: typing.Optional[DurationConverter] = None,
+        whitelist_types: commands.Greedy[WhitelistTypeConverter] = [],
     ) -> None:
         """Whitelist a member, role, text channel, voice channel, category channel, or webhook from Security."""
         if isinstance(_object, discord.Member) and await self.is_trusted_admin_or_higher(_object):
@@ -1103,7 +1106,12 @@ class Security(Cog):
                     "You can't whitelist a trusted admin or higher, they are already fully whitelisted from Security."
                 )
             )
-        await WhitelistView(self).start(ctx, _object)
+        view: WhitelistView = WhitelistView(self)
+        await view.start(ctx, _object, duration=duration)
+        if whitelist_types:
+            for whitelist_type in view.whitelist:
+                view.whitelist[whitelist_type] = whitelist_type in whitelist_types
+            await view.save.callback(None)
 
     @is_trusted_admin_or_higher_level
     @commands.guild_only()

@@ -1410,7 +1410,12 @@ class Ticket:
     ) -> None:
         embed = discord.Embed(
             description=bold(
-                _("{action} by {author.mention}").format(action=action, author=author)
+                action
+                + (
+                    _(" by {author.mention}").format(author=author)
+                    if author is not None
+                    else ""
+                )
             ),
             color=await self.bot.get_embed_color(self.channel),
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),

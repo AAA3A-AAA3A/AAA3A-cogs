@@ -438,6 +438,7 @@ class LoggingModule(Module):
     description = "Configure logging for various events in your server."
     default_config = {
         "enabled": False,
+        "use_webhooks": False,
         "events": {
             category: {
                 event["value"]: {
@@ -455,6 +456,7 @@ class LoggingModule(Module):
 
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)
+        self.webhooks: typing.Dict[discord.TextChannel, discord.Webhook] = {}
         self.invites_cache: typing.Dict[
             discord.Guild,
             typing.Dict[
@@ -521,7 +523,15 @@ class LoggingModule(Module):
                 "⚠️",
                 _("Warning"),
                 _(
-                    "The bot lacks the `View Audit Log` permission, which may limit logging capabilities."
+                    "The bot lacks the `View Audit Log` permission, which will limit logging capabilities a lot."
+                ),
+            )
+        if config["use_webhooks"] and not guild.me.guild_permissions.manage_webhooks:
+            return (
+                "⚠️",
+                _("Missing Permission"),
+                _(
+                    "The bot needs the `Manage Webhooks` permission to use webhooks for logging."
                 ),
             )
         return "✅", _("Enabled"), _("Logging is enabled and configured.")
@@ -592,93 +602,26 @@ class LoggingModule(Module):
 
         components = [ToggleModuleButton(self, guild, view, config["enabled"])]
 
-        toggle_all_button: discord.ui.Button = discord.ui.Button(
-            label=_("Toggle All Events"),
-            style=discord.ButtonStyle.secondary,
+        use_webhooks_button: discord.ui.Button = discord.ui.Button(
+            label=_("Use Webhooks"),
+            style=discord.ButtonStyle.success if config["use_webhooks"] else discord.ButtonStyle.danger,
+            emoji=Emojis.WEBHOOK.value,
         )
-        first_state = list(list(config["events"].values())[0].values())[0]["enabled"]
-        if all(
-            event["enabled"] == first_state
-            for events in config["events"].values()
-            for event in events.values()
-        ):
-            if first_state:
-                toggle_all_button.label = _("Disable All Events")
-                toggle_all_button.style = discord.ButtonStyle.danger
-            else:
-                toggle_all_button.label = _("Enable All Events")
-                toggle_all_button.style = discord.ButtonStyle.success
 
-        async def toggle_all_callback(interaction: discord.Interaction) -> None:
-            new_state = not list(list(config["events"].values())[0].values())[0]["enabled"]
-            for events in config["events"].values():
-                for event in events.values():
-                    event["enabled"] = new_state
-            await self.config_value(guild).events.set(config["events"])
-            await interaction.response.send_message(
-                _("✅ All logging events have been **{state}**.").format(
-                    state=_("enabled") if new_state else _("disabled")
+        async def use_webhooks_callback(interaction: discord.Interaction) -> None:
+            await interaction.response.defer()
+            config["use_webhooks"] = not config["use_webhooks"]
+            await self.config_value(guild).use_webhooks.set(config["use_webhooks"])
+            await interaction.followup.send(
+                _("Logging using webhooks is now {status}.").format(
+                    status=_("enabled") if config["use_webhooks"] else _("disabled")
                 ),
                 ephemeral=True,
             )
             await view._message.edit(embed=await view.get_embed(), view=view)
 
-        toggle_all_button.callback = toggle_all_callback
-        components.append(toggle_all_button)
-
-        ignore_bots_button: discord.ui.Button = discord.ui.Button(
-            label=_("Ignore Bots"),
-            style=discord.ButtonStyle.secondary,
-        )
-        first_ignore_bots = list(list(config["events"].values())[0].values())[0]["ignore_bots"]
-        if all(
-            event["ignore_bots"] == first_ignore_bots
-            for events in config["events"].values()
-            for event in events.values()
-        ):
-            if first_ignore_bots:
-                ignore_bots_button.label = _("Ignore Bots")
-                ignore_bots_button.style = discord.ButtonStyle.success
-            else:
-                ignore_bots_button.label = _("Ignore Bots")
-                ignore_bots_button.style = discord.ButtonStyle.danger
-
-        async def ignore_bots_callback(interaction: discord.Interaction) -> None:
-            new_state = not list(list(config["events"].values())[0].values())[0]["ignore_bots"]
-            for events in config["events"].values():
-                for event in events.values():
-                    event["ignore_bots"] = new_state
-            await self.config_value(guild).events.set(config["events"])
-            await interaction.response.send_message(
-                _("✅ All logging events will now **{state}** bots.").format(
-                    state=_("ignore") if new_state else _("log")
-                ),
-                ephemeral=True,
-            )
-            await view._message.edit(embed=await view.get_embed(), view=view)
-
-        ignore_bots_button.callback = ignore_bots_callback
-        components.append(ignore_bots_button)
-
-        channel_all_select: discord.ui.ChannelSelect = discord.ui.ChannelSelect(
-            channel_types=[discord.ChannelType.text],
-            placeholder=_("Select a channel for all events..."),
-        )
-
-        async def channel_all_callback(interaction: discord.Interaction) -> None:
-            channel = channel_all_select.values[0]
-            for events in config["events"].values():
-                for event in events.values():
-                    event["channel"] = channel.id
-            await self.config_value(guild).events.set(config["events"])
-            await interaction.response.send_message(
-                _("✅ All events will now be logged in {channel.mention}.").format(channel=channel),
-                ephemeral=True,
-            )
-            await view._message.edit(embed=await view.get_embed(), view=view)
-
-        channel_all_select.callback = channel_all_callback
-        components.append(channel_all_select)
+        use_webhooks_button.callback = use_webhooks_callback
+        components.append(use_webhooks_button)
 
         create_a_logging_category_button: discord.ui.Button = discord.ui.Button(
             label=_("Create a Logging Category"),
@@ -807,6 +750,97 @@ class LoggingModule(Module):
         create_a_logging_channel_button.callback = create_logging_channel_callback
         components.append(create_a_logging_channel_button)
 
+        toggle_all_button: discord.ui.Button = discord.ui.Button(
+            label=_("Toggle All Events"),
+            style=discord.ButtonStyle.secondary,
+            row=2,
+        )
+        first_state = list(list(config["events"].values())[0].values())[0]["enabled"]
+        if all(
+            event["enabled"] == first_state
+            for events in config["events"].values()
+            for event in events.values()
+        ):
+            if first_state:
+                toggle_all_button.label = _("Disable All Events")
+                toggle_all_button.style = discord.ButtonStyle.danger
+            else:
+                toggle_all_button.label = _("Enable All Events")
+                toggle_all_button.style = discord.ButtonStyle.success
+
+        async def toggle_all_callback(interaction: discord.Interaction) -> None:
+            new_state = not list(list(config["events"].values())[0].values())[0]["enabled"]
+            for events in config["events"].values():
+                for event in events.values():
+                    event["enabled"] = new_state
+            await self.config_value(guild).events.set(config["events"])
+            await interaction.response.send_message(
+                _("✅ All logging events have been **{state}**.").format(
+                    state=_("enabled") if new_state else _("disabled")
+                ),
+                ephemeral=True,
+            )
+            await view._message.edit(embed=await view.get_embed(), view=view)
+
+        toggle_all_button.callback = toggle_all_callback
+        components.append(toggle_all_button)
+
+        ignore_bots_button: discord.ui.Button = discord.ui.Button(
+            label=_("Ignore Bots"),
+            style=discord.ButtonStyle.secondary,
+            row=2,
+        )
+        first_ignore_bots = list(list(config["events"].values())[0].values())[0]["ignore_bots"]
+        if all(
+            event["ignore_bots"] == first_ignore_bots
+            for events in config["events"].values()
+            for event in events.values()
+        ):
+            if first_ignore_bots:
+                ignore_bots_button.label = _("Ignore Bots")
+                ignore_bots_button.style = discord.ButtonStyle.success
+            else:
+                ignore_bots_button.label = _("Ignore Bots")
+                ignore_bots_button.style = discord.ButtonStyle.danger
+
+        async def ignore_bots_callback(interaction: discord.Interaction) -> None:
+            new_state = not list(list(config["events"].values())[0].values())[0]["ignore_bots"]
+            for events in config["events"].values():
+                for event in events.values():
+                    event["ignore_bots"] = new_state
+            await self.config_value(guild).events.set(config["events"])
+            await interaction.response.send_message(
+                _("✅ All logging events will now **{state}** bots.").format(
+                    state=_("ignore") if new_state else _("log")
+                ),
+                ephemeral=True,
+            )
+            await view._message.edit(embed=await view.get_embed(), view=view)
+
+        ignore_bots_button.callback = ignore_bots_callback
+        components.append(ignore_bots_button)
+
+        channel_all_select: discord.ui.ChannelSelect = discord.ui.ChannelSelect(
+            channel_types=[discord.ChannelType.text],
+            placeholder=_("Select a channel for all events..."),
+            row=3,
+        )
+
+        async def channel_all_callback(interaction: discord.Interaction) -> None:
+            channel = channel_all_select.values[0]
+            for events in config["events"].values():
+                for event in events.values():
+                    event["channel"] = channel.id
+            await self.config_value(guild).events.set(config["events"])
+            await interaction.response.send_message(
+                _("✅ All events will now be logged in {channel.mention}.").format(channel=channel),
+                ephemeral=True,
+            )
+            await view._message.edit(embed=await view.get_embed(), view=view)
+
+        channel_all_select.callback = channel_all_callback
+        components.append(channel_all_select)
+
         configure_event_category_select: discord.ui.Select = discord.ui.Select(
             placeholder=_("Select an event category to configure..."),
             options=[
@@ -817,6 +851,7 @@ class LoggingModule(Module):
                 )
                 for category, data in LOGGING_EVENTS.items()
             ],
+            row=4,
         )
 
         async def configure_event_category_callback(interaction: discord.Interaction) -> None:
@@ -1225,6 +1260,30 @@ class LoggingModule(Module):
                 field["value"] = field["value"][:1020] + "\n..."
         embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
         return embed
+    
+    async def send_log(self, channel: discord.TextChannel, *args, **kwargs) -> discord.Message:
+        try:
+            if (
+                not await self.config_value(channel.guild).use_webhooks()
+                or not channel.permissions_for(channel.guild.me).manage_webhooks
+            ):
+                await channel.send(*args, **kwargs)
+            else:
+                if (webhook := self.webhooks.get(channel)) is None:
+                    self.webhooks[channel] = webhook = await CogsUtils.get_hook(self.cog.bot, channel)
+                try:
+                    return await webhook.send(
+                        *args,
+                        username=_("Security Logging"),
+                        avatar_url=channel.guild.me.display_avatar,
+                        wait=True,
+                        **kwargs,
+                    )
+                except discord.NotFound:
+                    self.webhooks[channel].pop(channel, None)
+                    return await self.send_log(channel, *args, **kwargs)
+        except discord.HTTPException:
+            pass
 
     async def cache_invites(self) -> None:
         guilds_data = await self.cog.config.all_guilds()
@@ -1330,7 +1389,7 @@ class LoggingModule(Module):
                 value=join_method,
                 inline=False,
             )
-        await channel.send(embed=embed)
+        await self.send_log(channel, embed=embed)
 
     async def on_member_remove(self, member: discord.Member) -> None:
         event = await self.get_event(member.guild, "member_leave")
@@ -1347,11 +1406,11 @@ class LoggingModule(Module):
             )
             or _("None"),
         )
-        embed.description += _("\n🔢 **New Member Count:** {count} incuding {bots} bots").format(
+        embed.description += _("\n🔢 **New Member Count:** {count} including {bots} bots").format(
             count=member.guild.member_count,
             bots=len([m for m in member.guild.members if m.bot]),
         )
-        await channel.send(embed=embed)
+        await self.send_log(channel, embed=embed)
 
     async def on_message_edit(self, before: discord.Message, after: discord.Message) -> None:
         if after.guild is None:
@@ -1365,7 +1424,7 @@ class LoggingModule(Module):
         embed.description += f"\n{box('- ' + clean_backticks(before.content), 'diff')}"
         if len(embed.description) + len(after.content) <= 4082:
             embed.description += f"\n{box('+ ' + clean_backticks(after.content), 'diff')}"
-        await channel.send(embed=embed)
+        await self.send_log(channel, embed=embed)
 
     @commands.Cog.listener()
     async def on_raw_message_delete(self, payload: discord.RawMessageDeleteEvent) -> None:
@@ -1414,7 +1473,7 @@ class LoggingModule(Module):
                 )
                 for sticker in message.stickers:
                     embed.description += f"\n- [{sticker.name}]({sticker.url}) (`{sticker.id}`)"
-        await channel.send(embed=embed)
+        await self.send_log(channel, embed=embed)
 
     @commands.Cog.listener()
     async def on_raw_bulk_message_delete(self, payload: discord.RawBulkMessageDeleteEvent) -> None:
@@ -1458,7 +1517,7 @@ class LoggingModule(Module):
             embed.description += box("\n".join(to_include))
         else:
             file = None
-        await channel.send(embed=embed, file=file)
+        await self.send_log(channel, embed=embed, file=file)
 
     async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User) -> None:
         if reaction.message.guild is None:
@@ -1479,7 +1538,7 @@ class LoggingModule(Module):
         embed.description += _("\n{emoji} **Reaction:** {reaction}").format(
             emoji=Emojis.EMOJI.value, reaction=reaction.emoji
         )
-        await channel.send(embed=embed)
+        await self.send_log(channel, embed=embed)
 
     async def on_reaction_remove(self, reaction: discord.Reaction, user: discord.User) -> None:
         if reaction.message.guild is None:
@@ -1500,7 +1559,7 @@ class LoggingModule(Module):
         embed.description += _("\n{emoji} **Reaction Removed:** {reaction}").format(
             emoji=Emojis.EMOJI.value, reaction=reaction.emoji
         )
-        await channel.send(embed=embed)
+        await self.send_log(channel, embed=embed)
 
     async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
         if entry.user is None:
@@ -1519,7 +1578,7 @@ class LoggingModule(Module):
             reason=entry.reason,
             entry=entry,
         )
-        await channel.send(embed=embed)
+        await self.send_log(channel, embed=embed)
 
 
 class ConfigureEventCategoryView(discord.ui.View):

@@ -179,7 +179,7 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
         now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
         embed.description = "\n".join(
             f"- {'✅' if int(drop) > (now_timestamp - 43200) else '⏲️'} {discord.utils.format_dt(datetime.datetime.fromtimestamp(int(drop)), style='R')} {message_jump_url}"
-            for drop, message_jump_url in member_data["last_drops"].items()[-10:]
+            for drop, message_jump_url in list(member_data["last_drops"].items())[-10:]
         )
         within_last_12_hours = sum(
             int(drop) > (now_timestamp - 43200)

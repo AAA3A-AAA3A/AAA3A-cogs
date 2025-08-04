@@ -213,6 +213,14 @@ class WhitelistView(discord.ui.View):
     async def on_timeout(self) -> None:
         embed = self._message.embeds[0]
         if self.saved:
+            if self.duration is not None:
+                expires_at = datetime.datetime.now(tz=datetime.timezone.utc) + self.duration
+                embed.description += _(
+                    "\n⏲️ **Expiration:** {F_timestamp} ({R_timestamp})"
+                ).format(
+                    F_timestamp=discord.utils.format_dt(expires_at, style="F"),
+                    R_timestamp=discord.utils.format_dt(expires_at, style="R"),
+                )
             embed.description += _(
                 "\n{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emoji}"
             ).format(
@@ -1019,7 +1027,7 @@ class ActionsView(discord.ui.View):
             await interaction.response.send_modal(modal)
             if await modal.wait() or duration is None:
                 return
-        reason = _("**Security Actions View** - {action}").format(action=action.title())
+        reason = _("**Security Action View** - {action} - {message.jump_url}").format(action=action.title(), message=self._message)
         if action not in ("quarantine", "unquarantine"):
             await self.cog.send_modlog(
                 action=action,
@@ -1029,7 +1037,7 @@ class ActionsView(discord.ui.View):
                 duration=duration,
                 context_message=self._message,
             )
-        audit_log_reason = f"Security Actions View: issued by {interaction.user.display_name} ({interaction.user.id})."
+        audit_log_reason = f"Security Action View: issued by {interaction.user.display_name} ({interaction.user.id})."
         if action == "timeout":
             duration = get_correct_timeout_duration(self.member, duration)
             await self.member.timeout(duration, reason=audit_log_reason)

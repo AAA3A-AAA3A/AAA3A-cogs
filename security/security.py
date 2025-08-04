@@ -10,6 +10,7 @@ import base64
 import datetime
 import functools
 import secrets
+from collections import Counter
 from io import BytesIO
 
 import numpy as np
@@ -17,7 +18,7 @@ import onetimepass
 import qrcode
 from PIL import Image, ImageDraw
 from redbot.core import modlog
-from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
+from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file, pagify
 
 from .constants import (
     WHITELIST_TYPES,
@@ -31,6 +32,7 @@ from .constants import (
 )  # NOQA
 from .modules import MODULES, Module
 from .views import OBJECT_TYPING, ActionsView, SettingsView, WhitelistView, DurationConverter
+from .modules.dank_pool_protection import Payout, format_amount, get_or_fetch_member_or_user
 
 # Credits:
 # General repo credits.
@@ -78,6 +80,21 @@ class AuditLogActionConverter(commands.Converter):
         return action
 
 
+class AnyOrMemberOrUserConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> typing.Optional[typing.Union[discord.Member, discord.User]]:
+        if argument.lower() == "any":
+            return None
+        try:
+            return await commands.MemberConverter().convert(ctx, argument)
+        except commands.BadArgument:
+            try:
+                return await commands.UserConverter().convert(ctx, argument)
+            except commands.BadArgument:
+                raise commands.BadArgument(
+                    _("Could not find a member or user with the provided argument. You can also use `any` to apply to any.")
+                )
+
+
 @cog_i18n(_)
 class Security(Cog):
     """Protect your servers from unwanted members, spam, but also from nuke attacks and more! This includes a quarantine/modlog system, and many modules like Auto Mod, Reports, Logging, Anti Nuke, Protected Roles, and more!"""
@@ -110,6 +127,7 @@ class Security(Cog):
             quarantined=False,
             roles_before_quarantine=[],
             integration_role_permissions_before_quarantine=None,
+            payouts=[],
         )
         self.config.register_role(
             whitelist={
@@ -1124,7 +1142,7 @@ class Security(Cog):
         member: typing.Optional[typing.Union[discord.Member, discord.User]] = None,
         action: typing.Optional[AuditLogActionConverter] = None,
     ) -> None:
-        """View the last audit log entries for a member/user or the server."""
+        """View the last audit log entries for the server or a member/user."""
         audit_log_entries = list(
             reversed(
                 [
@@ -1223,6 +1241,119 @@ class Security(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command()
+    async def lastpayouts(
+        self,
+        ctx: commands.Context,
+        leaderboard: typing.Optional[typing.Literal["ileaderboard", "rleaderboard", "ilb", "rlb"]] = None,
+        issued_by: typing.Optional[typing.Union[AnyOrMemberOrUserConverter]] = None,
+        recipient: typing.Optional[typing.Union[AnyOrMemberOrUserConverter]] = None,
+    ) -> None:
+        """View the last payouts for the server or a member/user."""
+        if issued_by is None:
+            payouts = [
+                Payout(**payout, issued_by_id=member_id)
+                for member_id, member_data in (await self.config.all_members(guild=ctx.guild)).items()
+                for payout in member_data.get("payouts", [])
+                if recipient is None or payout["recipient_id"] == recipient.id
+            ]
+            payouts.sort(key=lambda payout: payout.issued_at_timestamp)
+        else:
+            payouts = [
+                Payout(**payout, issued_by_id=issued_by.id)
+                for payout in await self.config.member_from_ids(ctx.guild.id, issued_by.id).payouts()
+                if recipient is None or payout["recipient_id"] == recipient.id
+            ]
+        if not payouts:
+            raise commands.UserFeedbackCheckFailure(_("No payouts found."))
+        embed: discord.Embed = discord.Embed(
+            title=_("Last Payouts"),
+            color=Colors.DANK_POOL_PROTECTION.value,
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+        )
+        constant_description = ""
+        async def format_member_user(member_user: typing.Union[discord.Member, discord.User, int]) -> str:
+            if isinstance(member_user, int):
+                return f"`{member_user}`"
+            return (
+                f"{member_user.mention} (`{member_user}`)"
+                + (
+                    f" {await self.get_member_emoji(member_user)}"
+                    if isinstance(member_user, discord.Member)
+                    else ""
+                )
+            )
+        if leaderboard is None:
+            if issued_by is not None:
+                constant_description += (
+                    _(
+                        "**{emoji} Issued by:** {display}\n"
+                    ).format(emoji=Emojis.ISSUED_BY.value, display=await format_member_user(issued_by))
+                )
+                if recipient is None:
+                    embed.set_thumbnail(url=get_non_animated_asset(issued_by.display_avatar))
+            if recipient is not None:
+                constant_description += (
+                    _(
+                        "**{emoji} Recipient:** {display}\n"
+                    ).format(emoji=Emojis.MEMBER.value, display=await format_member_user(recipient))
+                )
+                if issued_by is None:
+                    embed.set_thumbnail(url=get_non_animated_asset(recipient.display_avatar))
+            description = "\n\n".join(
+                [
+                    f"**{i}.** {discord.utils.format_dt(payout.issued_at, style='f')} ({discord.utils.format_dt(payout.issued_at, style='R')}) - **{payout.display_amount}**"
+                    + (
+                        _("\n- **Issued by:** {display}").format(
+                            display=await format_member_user(payout_issued_by)
+                        )
+                        if issued_by is None and (payout_issued_by := await payout.get_issued_by(ctx.bot, ctx.guild)) is not None
+                        else ""
+                    )
+                    + (
+                        _("\n- **Recipient:** {display}").format(
+                            display=await format_member_user(payout_recipient)
+                        )
+                        if recipient is None and (payout_recipient := await payout.get_recipient(ctx.bot, ctx.guild)) is not None
+                        else ""
+                    )
+                    +  _("\n- **Message:** {message_jump_url}").format(
+                        message_jump_url=payout.get_jump_url(ctx.guild)
+                    )
+                    for i, payout in enumerate(payouts, start=1)
+                ]
+            )
+        else:
+            if leaderboard == "ileaderboard" or leaderboard == "ilb":
+                embed.title += _(" — Issuer Leaderboard")
+                counter = Counter([payout.issued_by_id for payout in payouts])
+            else:
+                embed.title += _(" — Recipient Leaderboard")
+                counter = Counter([payout.recipient_id for payout in payouts])
+            description = "\n".join(
+                [
+                    _("**{i}.** {display} - **{amount}** payout{s}").format(
+                        i=i,
+                        display=await format_member_user(await get_or_fetch_member_or_user(ctx.bot, ctx.guild, member_id) or member_id),
+                        amount=format_amount(amount),
+                        s="" if amount == 1 else "s"
+                    )
+                    for i, (member_id, amount) in enumerate(
+                        counter.most_common(len(counter)), start=1,
+                    )
+                ]
+            )
+        embed.set_footer(text=ctx.guild.name, icon_url=get_non_animated_asset(ctx.guild.icon))
+        embeds = []
+        for page in pagify(description, page_length=3000 - len(constant_description) - 1):
+            e = embed.copy()
+            e.description = (constant_description + "\n" + page).strip()
+            embeds.append(e)
+        await Menu(pages=embeds, page_start=-1 if not leaderboard else 0).start(ctx)
+
+    @is_trusted_admin_or_higher_level
+    @commands.guild_only()
+    @commands.bot_has_permissions(embed_links=True)
+    @commands.hybrid_command()
     async def security(
         self,
         ctx: commands.Context,
@@ -1251,7 +1382,7 @@ class Security(Cog):
     ) -> None:
         raw_secret = secrets.token_bytes(20)
         recovery_key = base64.b32encode(raw_secret).decode("utf-8").replace("=", "")
-        data = f"otpauth://totp/{guild.name} Security?secret={recovery_key}&issuer={self.bot.user.name}"
+        data = f"otpauth://totp/{guild.name} Security?secret={recovery_key}&issued_by={self.bot.user.name}"
         colors = [
             (0, 200, 100),  # Soft green
             (100, 100, 255),  # Light purple

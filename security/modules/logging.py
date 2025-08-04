@@ -508,7 +508,9 @@ class LoggingModule(Module):
             and (
                 (channel_id := event["channel"]) is None
                 or guild.get_channel(channel_id) is None
-                or not guild.get_channel(channel_id).permissions_for(guild.me).send_messages
+                or not (channel_permissions := guild.get_channel(channel_id).permissions_for(guild.me)).view_channel
+                or not channel_permissions.send_messages
+                or not channel_permissions.embed_links
             )
             for events in config["events"].values()
             for event in events.values()
@@ -925,8 +927,9 @@ class LoggingModule(Module):
             (channel_id := event["channel"]) is None
             or (channel := guild.get_channel(channel_id)) is None
             or channel.id != channel_id
-            or not channel.permissions_for(guild.me).view_channel
-            or not channel.permissions_for(guild.me).send_messages
+            or not (channel_permissions := channel.permissions_for(guild.me)).view_channel
+            or not channel_permissions.send_messages
+            or not channel_permissions.embed_links
         ):
             return False
         return channel

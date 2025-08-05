@@ -1027,17 +1027,8 @@ class ActionsView(discord.ui.View):
             await interaction.response.send_modal(modal)
             if await modal.wait() or duration is None:
                 return
-        reason = _("**Security Action View** - {action} - {message.jump_url}").format(action=action.title(), message=self._message)
-        if action not in ("quarantine", "unquarantine"):
-            await self.cog.send_modlog(
-                action=action,
-                member=self.member,
-                issued_by=interaction.user,
-                reason=reason,
-                duration=duration,
-                context_message=self._message,
-            )
-        audit_log_reason = f"Security Action View: issued by {interaction.user.display_name} ({interaction.user.id})."
+        reason = _("**Security Action View** - {action}").format(action=action.title())
+        audit_log_reason = f"Security Action View ({self._message.jump_url}): issued by {interaction.user.display_name} ({interaction.user.id})."
         if action == "timeout":
             duration = get_correct_timeout_duration(self.member, duration)
             await self.member.timeout(duration, reason=audit_log_reason)
@@ -1076,6 +1067,15 @@ class ActionsView(discord.ui.View):
                 member=self.member,
                 issued_by=interaction.user,
                 reason=reason,
+                context_message=self._message,
+            )
+        if action not in ("quarantine", "unquarantine"):
+            await self.cog.send_modlog(
+                action=action,
+                member=self.member,
+                issued_by=interaction.user,
+                reason=reason,
+                duration=duration,
                 context_message=self._message,
             )
         self.cog.modules["auto_mod"].heats_cache[self.member.guild].pop(self.member, None)

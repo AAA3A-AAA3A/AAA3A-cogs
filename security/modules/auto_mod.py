@@ -877,6 +877,16 @@ class AutoModModule(Module):
                         duration = get_correct_timeout_duration(message.author, duration)
                 else:
                     duration = None
+                if action in ("kick", "ban"):
+                    await self.cog.send_modlog(
+                        action=action,
+                        member=message.author,
+                        reason=reason,
+                        duration=duration,
+                        trigger_messages=trigger_messages,
+                        context_message=message,
+                        current_ctx=message,
+                    )
                 if action == "timeout" and message.guild.me.guild_permissions.moderate_members:
                     await message.author.timeout(duration, reason=audit_log_reason)
                 elif (
@@ -907,7 +917,7 @@ class AutoModModule(Module):
                         context_message=message,
                         current_ctx=message,
                     )
-                if action != "quarantine":
+                if action not in ("quarantine", "kick", "ban"):
                     await self.cog.send_modlog(
                         action=action,
                         member=message.author,

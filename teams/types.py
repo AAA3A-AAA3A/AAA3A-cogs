@@ -354,8 +354,8 @@ class Team:
                     inline=True,
                 )
             embed.add_field(
-                name=_("📅 Created At:"),
-                value=discord.utils.format_dt(self.created_at, style="F"),
+                name=_("📅 Created On:"),
+                value=discord.utils.format_dt(self.created_at, style="D"),
                 inline=True,
             )
         if self.image_url is not None:

@@ -342,6 +342,14 @@ class JoinGateModule(Module):
                 else ""
             )
             logs = [_("{member.mention} (`{member}`) joined the server.").format(member=member)]
+            if action != "quarantine":
+                await self.cog.send_modlog(
+                    action=action,
+                    member=member,
+                    reason=reason,
+                    logs=logs,
+                    duration=duration,
+                )
             audit_log_reason = f"Security's Join Gate: {option['name']}."
             if action == "timeout" and member.guild.me.guild_permissions.moderate_members:
                 await member.timeout(duration, reason=audit_log_reason)
@@ -367,14 +375,6 @@ class JoinGateModule(Module):
                     member=member,
                     reason=reason,
                     logs=logs,
-                )
-            if action != "quarantine":
-                await self.cog.send_modlog(
-                    action=action,
-                    member=member,
-                    reason=reason,
-                    logs=logs,
-                    duration=duration,
                 )
 
 

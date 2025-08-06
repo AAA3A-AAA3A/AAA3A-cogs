@@ -364,7 +364,6 @@ class Team:
             text=self.guild.name,
             icon_url=self.guild.icon,
         )
-        embed.timestamp = self.created_at
         return embed
 
     async def add_member(self, member: discord.Member) -> None:

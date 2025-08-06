@@ -342,7 +342,7 @@ class JoinGateModule(Module):
                 else ""
             )
             logs = [_("{member.mention} (`{member}`) joined the server.").format(member=member)]
-            if action != "quarantine":
+            if action in ("kick", "ban"):
                 await self.cog.send_modlog(
                     action=action,
                     member=member,
@@ -375,6 +375,14 @@ class JoinGateModule(Module):
                     member=member,
                     reason=reason,
                     logs=logs,
+                )
+            if action not in ("quarantine", "kick", "ban"):
+                await self.cog.send_modlog(
+                    action=action,
+                    member=member,
+                    reason=reason,
+                    logs=logs,
+                    duration=duration,
                 )
 
 

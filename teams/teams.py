@@ -328,7 +328,7 @@ class Teams(Cog):
         self,
         ctx: commands.Context,
         team: TeamConverter,
-        key: typing.Literal["name", "emoji", "logo_url", "color", "description", "slogan"],
+        key: typing.Literal["name", "emoji", "logo_url", "color", "description", "slogan", "image_url"],
         *,
         value: str = None,
     ) -> None:
@@ -338,7 +338,7 @@ class Teams(Cog):
         if value is not None:
             if key == "emoji":
                 converter = Emoji
-            elif key == "logo_url":
+            elif key in ("logo_url", "image_url"):
                 converter = UrlConverter
             elif key == "color":
                 converter = commands.ColorConverter

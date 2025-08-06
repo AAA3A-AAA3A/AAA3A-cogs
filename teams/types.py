@@ -85,6 +85,7 @@ class Team:
     color_value: typing.Optional[int] = None
     description: typing.Optional[str] = None
     slogan: typing.Optional[str] = None
+    image_url: typing.Optional[str] = None
     created_at_timestamp: int = field(
         default_factory=lambda: int(
             datetime.datetime.now(tz=datetime.timezone.utc)
@@ -357,6 +358,8 @@ class Team:
                 value=discord.utils.format_dt(self.created_at, style="F"),
                 inline=True,
             )
+        if self.image_url is not None:
+            embed.set_image(url=self.image_url)
         embed.set_footer(
             text=self.guild.name,
             icon_url=self.guild.icon,

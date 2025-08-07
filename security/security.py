@@ -1159,10 +1159,10 @@ class Security(Cog):
             params = {"target_id": member.id}
             if action is not None:
                 params["action_type"] = action.value
-            if audit_log_entries:
-                params["after"] = audit_log_entries[0].id
-            else:
-                params["limit"] = 100
+            # if audit_log_entries:
+            #     params["after"] = audit_log_entries[0].id
+            # else:
+            params["limit"] = 100
             data = await ctx.bot.http.request(
                 discord.http.Route(
                     "GET",

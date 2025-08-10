@@ -206,13 +206,16 @@ class MemoryGameView(discord.ui.View):
             reduction_per_second = config["reduction_per_second"]
             reduction_per_wrong_match = config["reduction_per_wrong_match"]
             member_config = await self.cog.config.member(self.ctx.author).all()
-            final_prize = int(
-                (
-                    max_prize
-                    - (game_time * reduction_per_second)
-                    - (self._wrong_matches * reduction_per_wrong_match)
-                )
-                * (int(self.difficulty[0]) / 5)
+            final_prize = max(
+                int(
+                    (
+                        max_prize
+                        - (game_time * reduction_per_second)
+                        - (self._wrong_matches * reduction_per_wrong_match)
+                    )
+                    * (int(self.difficulty[0]) / 5)
+                ),
+                0,
             )
             member_config["score"] += final_prize
             member_config["wins"] += 1
@@ -224,7 +227,7 @@ class MemoryGameView(discord.ui.View):
                 except BalanceTooHigh as e:
                     await bank.set_balance(self.ctx.author, e.max_balance)
         embed: discord.Embed = discord.Embed(
-            title="Memory Game", color=await self.ctx.embed_color()
+            title=_("Memory Game"), color=await self.ctx.embed_color()
         )
         embed.set_author(
             name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar
@@ -248,7 +251,7 @@ class MemoryGameView(discord.ui.View):
             member_config["games"] += 1
             await self.cog.config.member(self.ctx.author).set(member_config)
         embed: discord.Embed = discord.Embed(
-            title="Memory Game", color=await self.ctx.embed_color()
+            title=_("Memory Game"), color=await self.ctx.embed_color()
         )
         embed.set_author(
             name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar

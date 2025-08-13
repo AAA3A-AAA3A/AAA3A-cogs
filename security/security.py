@@ -1355,11 +1355,21 @@ class Security(Cog):
             )
             description = "\n".join(
                 [
-                    _("**{i}.** {display} - **{amount}** payout{s}").format(
+                    _("**{i}.** {display} - **{total_payouts}** payout{s}").format(
                         i=i,
                         display=await format_member_user(await get_or_fetch_member_or_user(ctx.bot, ctx.guild, member_id) or member_id),
-                        amount=format_amount(amount),
-                        s="" if amount == 1 else "s"
+                        total_payouts=format_amount(
+                            total_payouts := (
+                                amount if sorted_by == "payout" else len(
+                                    [
+                                        payout
+                                        for payout in payouts
+                                        if (payout.issued_by_id if leaderboard in ("ileaderboard", "ilb") else payout.recipient_id) == member_id
+                                    ]
+                                )
+                            )
+                        ),
+                        s="" if amount == 1 else "s",
                     ) + _("\n- ⏣ {total_amount} & {total_items} item{s}").format(
                         total_amount=format_amount(
                             sum(

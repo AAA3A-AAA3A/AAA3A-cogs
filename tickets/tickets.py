@@ -488,13 +488,15 @@ class Tickets(DashboardIntegration, Cog):
 
     @commands.Cog.listener("on_message_without_command")
     async def close_after_dank_payout(self, message: discord.Message) -> None:
-        if (ticket := discord.utils.get(self.tickets.get(message.guild.id, {}).values(), channel_id=message.channel.id)) is None:
-            return
         if not message.author.bot or message.author.id != DANK_MEMER_BOT_ID:
             return
         if message.interaction_metadata is None:
             return
         if message.content or message.embeds:
+            return
+        if (ticket := discord.utils.get(self.tickets.get(message.guild.id, {}).values(), channel_id=message.channel.id)) is None:
+            return
+        if ticket.is_closed:
             return
         if not await self.config.guild(message.guild).profiles.get_raw(ticket.profile, "close_after_dank_payout", default=False):
             return

@@ -1326,23 +1326,28 @@ class Security(Cog):
         else:
             if leaderboard in ("ileaderboard", "ilb"):
                 embed.title += _(" — Issuer Leaderboard")
-                counter = Counter(
-                    [
-                        payout.issued_by_id
-                        for payout in payouts
-                        for __ in range(1 if sorted_by == "payout" else (0 if payout.item is not None else payout.quantity))
-                    ]
-                )
+                if sorted_by == "payout":
+                    counter = Counter([payout.issued_by_id for payout in payouts])
+                else:
+                    mapping = {}
+                    for payout in payouts:
+                        if payout.item is not None:
+                            continue
+                        mapping.setdefault(payout.issued_by_id, 0)
+                        mapping[payout.issued_by_id] += payout.quantity
+                    counter = Counter(mapping)
             else:
                 embed.title += _(" — Recipient Leaderboard")
-                counter = Counter(
-                    [
-                        payout.recipient_id
-                        for payout in payouts
-                        for __ in range(1 if sorted_by == "payout" else (0 if payout.item is not None else payout.quantity))
-                        if payout.recipient_id is not None
-                    ]
-                )
+                if sorted_by == "payout":
+                    counter = Counter([payout.receiver_id for payout in payouts if payout.receiver_id is not None])
+                else:
+                    mapping = {}
+                    for payout in payouts:
+                        if payout.receiver_id is None and payout.item is not None:
+                            continue
+                        mapping.setdefault(payout.receiver_id, 0)
+                        mapping[payout.receiver_id] += payout.quantity
+                    counter = Counter(mapping)
             constant_description += _(
                 "**🔢 Sorted by:** {sorted_by}\n"
             ).format(

@@ -1339,14 +1339,14 @@ class Security(Cog):
             else:
                 embed.title += _(" — Recipient Leaderboard")
                 if sorted_by == "payout":
-                    counter = Counter([payout.receiver_id for payout in payouts if payout.receiver_id is not None])
+                    counter = Counter([payout.recipient_id for payout in payouts if payout.recipient_id is not None])
                 else:
                     mapping = {}
                     for payout in payouts:
-                        if payout.receiver_id is None and payout.item is not None:
+                        if payout.recipient_id is None and payout.item is not None:
                             continue
-                        mapping.setdefault(payout.receiver_id, 0)
-                        mapping[payout.receiver_id] += payout.quantity
+                        mapping.setdefault(payout.recipient_id, 0)
+                        mapping[payout.recipient_id] += payout.quantity
                     counter = Counter(mapping)
             constant_description += _(
                 "**🔢 Sorted by:** {sorted_by}\n"

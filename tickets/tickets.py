@@ -102,6 +102,7 @@ class Tickets(DashboardIntegration, Cog):
                 "owner_can_add_members": False,
                 "owner_can_remove_members": False,
                 "close_on_leave": True,
+                "close_after_dank_payout": False,
                 "auto_delete_on_close": None,
                 # Emojis.
                 "emojis": {
@@ -270,6 +271,11 @@ class Tickets(DashboardIntegration, Cog):
             "close_on_leave": {
                 "converter": bool,
                 "description": "Whether the ticket will be closed when the owner leaves the server.",
+                "no_slash": True,
+            },
+            "close_after_dank_payout": {
+                "converter": bool,
+                "description": "Whether the ticket will be closed after a Dank Memer payout.",
                 "no_slash": True,
             },
             "auto_delete_on_close": {
@@ -477,6 +483,37 @@ class Tickets(DashboardIntegration, Cog):
                     > datetime.timedelta(hours=config["auto_delete_on_close"])
                 ):
                     await ticket.delete_channel(None)  # That's a setting, so no deleter.
+
+    @commands.Cog.listener("on_message_without_command")
+    async def close_after_dank_payout(self, message: discord.Message) -> None:
+        if (ticket := discord.utils.get(self.tickets.get(message.guild.id, {}).values(), channel_id=message.channel.id)) is None:
+            return
+        if not message.author.bot or message.author.id != DANK_MEMER_BOT_ID:
+            return
+        if message.interaction_metadata is None:
+            return
+        if message.content or message.embeds:
+            return
+        if not await self.config.guild(message.guild).profiles.get_raw(ticket.profile, "close_after_dank_payout", default=False):
+            return
+        try:
+            raw_message = await self.bot.http.get_message(message.channel.id, message.id)
+        except discord.HTTPException:
+            return
+        if (
+            not raw_message["components"]
+            or not raw_message["components"][0]["type"] == 17
+            or not raw_message["components"][0]["components"]
+            or "content" not in raw_message["components"][0]["components"][0]
+        ):
+            return
+        description = raw_message["components"][0]["components"][0]["content"]
+        if (
+            not description.startswith("Successfully paid ")
+            or not description.endswith(" from the server's pool!")
+        ):
+            return
+        await ticket.close(message.interaction_metadata.user)
 
     def is_support(ignore_owner=False):
         async def predicate(ctx: typing.Union[commands.Context, discord.Interaction]) -> bool:

@@ -653,13 +653,11 @@ class DankPoolProtectionModule(Module):
 
 
 def format_amount(amount: int) -> str:
-    if amount == int(amount):
-        amount = int(amount)
     if amount < 1000:
         return str(amount)
     for i, suffix in enumerate(["", "k", "m", "b", "t"]):
         if amount < 1000 ** (i + 1) or i == 3:
-            num = amount / (1000**i)
+            num = round(amount / (1000**i), 1)
             if num % 1 == 0:
                 return f"{int(num)}{suffix}"
             else:

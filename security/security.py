@@ -1266,7 +1266,7 @@ class Security(Cog):
         if not payouts:
             raise commands.UserFeedbackCheckFailure(_("No payouts found."))
         embed: discord.Embed = discord.Embed(
-            title=_("Last Payouts"),
+            title=_("Last Payouts ({number})").format(number=len(payouts)),
             color=Colors.DANK_POOL_PROTECTION.value,
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )

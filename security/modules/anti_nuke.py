@@ -455,11 +455,11 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 15,
         "actions": [discord.AuditLogAction.kick, discord.AuditLogAction.ban],
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **{action}** `{target.name}` {timestamp}."
+            "{member.mention} (`{member}`) **{action}** `{target}` {timestamp}."
         ).format(
             member=entry.user,
             action=_("kicked") if entry.action == discord.AuditLogAction.kick else _("banned"),
-            target=entry.target,
+            target=entry.target if not isinstance(entry.target, discord.Object) else entry.target.id,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
         "reason": lambda: _("**Anti Nuke** - Kicked/Banned too many members in a short time."),

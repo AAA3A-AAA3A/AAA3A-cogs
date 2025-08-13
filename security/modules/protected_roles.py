@@ -86,7 +86,7 @@ class ProtectedRolesModule(Module):
             style=discord.ButtonStyle.primary,
             disabled=not protected_roles,
         )
-        async def update_whitelisted_members_callback(interaction: discord.Interaction) -> None:
+        async def update_whitelisted_members_from_roles_callback(interaction: discord.Interaction) -> None:
             await interaction.response.defer(ephemeral=True, thinking=True)
             protected_roles = await self.config_value(guild).protected_roles()
             for role_id in protected_roles:
@@ -103,7 +103,7 @@ class ProtectedRolesModule(Module):
                 _("Whitelisted members updated from roles."), ephemeral=True
             )
             await view._message.edit(embed=await view.get_embed(), view=view)
-        update_whitelisted_members_from_roles.callback = update_whitelisted_members_callback
+        update_whitelisted_members_from_roles.callback = update_whitelisted_members_from_roles_callback
         components.append(update_whitelisted_members_from_roles)
 
         add_select: discord.ui.RoleSelect = discord.ui.RoleSelect(
@@ -126,7 +126,11 @@ class ProtectedRolesModule(Module):
                     ephemeral=True,
                 )
                 return
-            protected_roles[str(role.id)] = []
+            protected_roles[str(role.id)] = [
+                member.id
+                for member in role.members
+                if not await self.cog.is_whitelisted(member, "protected_roles")
+            ]
             await self.config_value(guild).protected_roles.set(protected_roles)
             await interaction.response.send_message(
                 _("Protected role {role.mention} (`{role.name}`) added.").format(role=role),

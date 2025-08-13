@@ -1260,7 +1260,8 @@ class LoggingModule(Module):
 
         for field in getattr(embed, "_fields", []):
             if len(field["value"]) > 1024:
-                field["value"] = field["value"][:1020] + "\n..."
+                code_block_open = field["value"].endswith("```")
+                field["value"] = field["value"][:1020 if not code_block_open else 1016] + "\n..." + ("" if not code_block_open else "\n```")
         embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
         return embed
     

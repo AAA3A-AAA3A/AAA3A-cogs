@@ -507,6 +507,7 @@ class DankPoolProtectionModule(Module):
             not raw_message["components"]
             or not raw_message["components"][0]["type"] == 17
             or not raw_message["components"][0]["components"]
+            or "content" not in raw_message["components"][0]["components"][0]
         ):
             return
         description = raw_message["components"][0]["components"][0]["content"]
@@ -563,6 +564,7 @@ class DankPoolProtectionModule(Module):
             not raw_message["components"]
             or not raw_message["components"][0]["type"] == 17
             or not raw_message["components"][0]["components"]
+            or "content" not in raw_message["components"][0]["components"][0]
         ):
             return
         member_id = message.interaction_metadata.user.id
@@ -576,7 +578,7 @@ class DankPoolProtectionModule(Module):
         ) or await self.cog.is_whitelisted(message.channel, "dank_pool_protection"):
             return
         log = _(
-            "{member.mention} (`{member}`) executed `/{slash_name}` ({jump_url}) {timestamp}."
+            "{member.mention} (`{member}`) executed `{slash_name}` ({jump_url}) {timestamp}."
         ).format(
             member=member,
             slash_name=message._interaction.name,
@@ -586,7 +588,7 @@ class DankPoolProtectionModule(Module):
         last_payouts = [
             (
                 datetime.datetime.fromtimestamp(last_payout["issued_at_timestamp"], tz=datetime.timezone.utc),
-                _("{member.mention} (`{member}`) executed `/{slash_name}` ({jump_url}) {timestamp}.").format(
+                _("{member.mention} (`{member}`) executed `{slash_name}` ({jump_url}) {timestamp}.").format(
                     member=member,
                     slash_name=await (payout := Payout(**last_payout)).get_slash_name(self.cog.bot),
                     jump_url=payout.get_jump_url(message.guild),

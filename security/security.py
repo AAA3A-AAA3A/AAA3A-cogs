@@ -1336,6 +1336,10 @@ class Security(Cog):
                         display=await format_member_user(await get_or_fetch_member_or_user(ctx.bot, ctx.guild, member_id) or member_id),
                         amount=format_amount(amount),
                         s="" if amount == 1 else "s"
+                    ) + _("\n- ⏣ {total_amount} & {total_items} item{s}").format(
+                        total_amount=format_amount(sum(payout.quantity for payout in payouts if payout.issued_by_id == member_id and payout.item is None)),
+                        total_items=format_amount((total_items := sum(payout.quantity for payout in payouts if payout.issued_by_id == member_id and payout.item is not None))),
+                        s="" if total_items == 1 else "s",
                     )
                     for i, (member_id, amount) in enumerate(
                         counter.most_common(len(counter)), start=1,

@@ -1245,6 +1245,7 @@ class Security(Cog):
         self,
         ctx: commands.Context,
         leaderboard: typing.Optional[typing.Literal["ileaderboard", "rleaderboard", "ilb", "rlb"]] = None,
+        sorted_by: typing.Optional[typing.Literal["payout", "amount"]] = "payout",
         issued_by: typing.Optional[typing.Union[AnyOrMemberOrUserConverter]] = None,
         recipient: typing.Optional[typing.Union[AnyOrMemberOrUserConverter]] = None,
     ) -> None:
@@ -1323,12 +1324,30 @@ class Security(Cog):
                 ]
             )
         else:
-            if leaderboard == "ileaderboard" or leaderboard == "ilb":
+            if leaderboard in ("ileaderboard", "ilb"):
                 embed.title += _(" — Issuer Leaderboard")
-                counter = Counter([payout.issued_by_id for payout in payouts])
+                counter = Counter(
+                    [
+                        payout.issued_by_id
+                        for payout in payouts
+                        for __ in range(1 if sorted_by == "payout" else (0 if payout.item is not None else payout.quantity))
+                    ]
+                )
             else:
                 embed.title += _(" — Recipient Leaderboard")
-                counter = Counter([payout.recipient_id for payout in payouts if payout.recipient_id is not None])
+                counter = Counter(
+                    [
+                        payout.recipient_id
+                        for payout in payouts
+                        for __ in range(1 if sorted_by == "payout" else (0 if payout.item is not None else payout.quantity))
+                        if payout.recipient_id is not None
+                    ]
+                )
+            constant_description += _(
+                "**🔢 Sorted by:** {sorted_by}\n"
+            ).format(
+                sorted_by=_("Payouts") if sorted_by == "payout" else _("Amount"),
+            )
             description = "\n".join(
                 [
                     _("**{i}.** {display} - **{amount}** payout{s}").format(
@@ -1337,8 +1356,22 @@ class Security(Cog):
                         amount=format_amount(amount),
                         s="" if amount == 1 else "s"
                     ) + _("\n- ⏣ {total_amount} & {total_items} item{s}").format(
-                        total_amount=format_amount(sum(payout.quantity for payout in payouts if payout.issued_by_id == member_id and payout.item is None)),
-                        total_items=format_amount((total_items := sum(payout.quantity for payout in payouts if payout.issued_by_id == member_id and payout.item is not None))),
+                        total_amount=format_amount(
+                            sum(
+                                payout.quantity
+                                for payout in payouts
+                                if (payout.issued_by_id if leaderboard in ("ileaderboard", "ilb") else payout.recipient_id) == member_id
+                                and payout.item is None
+                            )
+                        ),
+                        total_items=format_amount(
+                            total_items := sum(
+                                payout.quantity
+                                for payout in payouts
+                                if (payout.issued_by_id if leaderboard in ("ileaderboard", "ilb") else payout.recipient_id) == member_id
+                                and payout.item is not None
+                            )
+                        ),
                         s="" if total_items == 1 else "s",
                     )
                     for i, (member_id, amount) in enumerate(

@@ -1270,7 +1270,6 @@ class Security(Cog):
             color=Colors.DANK_POOL_PROTECTION.value,
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
-        constant_description = ""
         async def format_member_user(member_user: typing.Union[discord.Member, discord.User, int]) -> str:
             if isinstance(member_user, int):
                 return f"`{member_user}`"
@@ -1282,6 +1281,7 @@ class Security(Cog):
                     else ""
                 )
             )
+        constant_description = ""
         if leaderboard is None:
             if issued_by is not None:
                 constant_description += (
@@ -1328,7 +1328,7 @@ class Security(Cog):
                 counter = Counter([payout.issued_by_id for payout in payouts])
             else:
                 embed.title += _(" — Recipient Leaderboard")
-                counter = Counter([payout.recipient_id for payout in payouts])
+                counter = Counter([payout.recipient_id for payout in payouts if payout.recipient_id is not None])
             description = "\n".join(
                 [
                     _("**{i}.** {display} - **{amount}** payout{s}").format(
@@ -1346,11 +1346,19 @@ class Security(Cog):
                     )
                 ]
             )
+        constant_description += _(
+            "**{emoji} Total:** ⏣ {total_amount} & {total_items} item{s}\n"
+        ).format(
+            emoji=Emojis.DANK_POOL_PROTECTION.value,
+            total_amount=format_amount(sum(payout.quantity for payout in payouts if payout.item is None)),
+            total_items=format_amount((total_items := sum(payout.quantity for payout in payouts if payout.item is not None))),
+            s="" if total_items == 1 else "s",
+        )
         embed.set_footer(text=ctx.guild.name, icon_url=get_non_animated_asset(ctx.guild.icon))
         embeds = []
         for page in pagify(description, page_length=3000 - len(constant_description) - 1):
             e = embed.copy()
-            e.description = (constant_description + "\n" + page).strip()
+            e.description = (constant_description + "\n" + page.strip()).strip()
             embeds.append(e)
         await Menu(pages=embeds, page_start=-1 if not leaderboard else 0).start(ctx)
 

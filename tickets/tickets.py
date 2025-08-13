@@ -26,6 +26,8 @@ from .views import ClosedTicketControls, CreateTicketView, OwnerCloseConfirmatio
 
 _: Translator = Translator("Tickets", __file__)
 
+DANK_MEMER_BOT_ID: int = 270904126974590976
+
 
 class TicketConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> Ticket:

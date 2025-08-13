@@ -18,7 +18,7 @@ from .converters import (
     ProfileConverter,
 )  # NOQA
 from .dashboard_integration import DashboardIntegration
-from .types import Ticket
+from .types import Ticket, get_non_animated_asset
 from .views import ClosedTicketControls, CreateTicketView, OwnerCloseConfirmation, TicketView
 
 # Credits:
@@ -968,7 +968,7 @@ class Tickets(DashboardIntegration, Cog):
                 color=await ctx.embed_color(),
                 timestamp=ctx.message.created_at,
             )
-            embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
+            embed.set_footer(text=ctx.guild.name, icon_url=get_non_animated_asset(ctx.guild.icon))
             BREAK_LINE = "\n"
             description = "\n".join(
                 [
@@ -1510,7 +1510,7 @@ class Tickets(DashboardIntegration, Cog):
                 ),
                 color=discord.Color.red(),
             )
-            embed.set_footer(text=guild.name, icon_url=guild.icon)
+            embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
             message = await button_channel.send(embed=embed)
             await self.addbutton(
                 ctx,

@@ -18,6 +18,19 @@ from .views import ClosedTicketControls, TicketView
 _: Translator = Translator("Tickets", __file__)
 
 
+def get_non_animated_asset(asset: typing.Optional[discord.Asset] = None) -> typing.Optional[discord.Asset]:
+    if asset is None:
+        return None
+    if not asset.is_animated():
+        return asset
+    return discord.Asset(
+        asset._state,
+        url=asset.url.replace("/a_", "/").replace(".gif", ".png"),
+        key=asset.key.removeprefix("a_"),
+        animated=False,
+    )
+
+
 def _asdict_inner(obj, dict_factory=dict):
     if _is_dataclass_instance(obj):
         result = []
@@ -390,6 +403,7 @@ class Ticket:
                 name=f"{self.owner.display_name} ({self.owner.id})",
                 icon_url=self.owner.display_avatar,
             )
+            embed.set_thumbnail(url=get_non_animated_asset(self.owner.display_avatar))
         else:
             if self.message_id is not None:
                 try:
@@ -402,7 +416,6 @@ class Ticket:
                 embed.set_author(
                     name=f"[Unknown] ({self.owner_id})",
                 )
-        embed.set_thumbnail(url=self.guild.icon)
         embed.description = (
             (
                 _(
@@ -489,7 +502,7 @@ class Ticket:
             )
         embed.set_footer(
             text=f"{self.guild.name} | " + _("Opened at:"),
-            icon_url=self.guild.icon,
+            icon_url=get_non_animated_asset(self.guild.icon),
         )
         embed.timestamp = self.opened_at
         return embed
@@ -695,6 +708,10 @@ class Ticket:
             )
             view._message = await self.channel.send(**kwargs)
         self.cog.views[view._message] = view
+        try:
+            await view._message.pin()
+        except discord.HTTPException:
+            pass
         self.message = view._message
         tickets_number = await self.cog.config.member(self.owner).tickets_number()
         await self.cog.config.member(self.owner).tickets_number.set(tickets_number + 1)

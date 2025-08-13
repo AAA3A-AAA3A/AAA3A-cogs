@@ -445,7 +445,7 @@ def get_correct_timeout_duration(member: discord.Member, duration: datetime.time
     return min(duration, datetime.timedelta(days=28))
 
 
-def get_non_animated_asset(asset: typing.Optional[discord.Asset] = None) -> typing.Optional[str]:
+def get_non_animated_asset(asset: typing.Optional[discord.Asset] = None) -> typing.Optional[discord.Asset]:
     if asset is None:
         return None
     if not asset.is_animated():

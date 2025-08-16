@@ -1509,10 +1509,10 @@ class Security(Cog):
             title=_("Security Recovery Key"),
             description=_(
                 "- Use [**Google Authenticator**](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2) or a similar app to scan the QR code below.\n"
-                "- This will allow you to recover access to Security in this guild, as an extra owner.\n"
+                "- This will allow you to recover access to Security in this server, as an Extra Owner.\n"
                 "- **Keep this key safe**, as it is the only way to recover access to Security if you lose your account.\n"
-                "- This key is only valid for this guild and will not work in other guilds, and won't give you Discord ownership.\n"
-                "**Do not share this key with anyone else!**"
+                "- This key is only valid for this server and will not work in other servers, and won't give you Discord ownership.\n"
+                "**Do not share this key with anyone else! Anyone could use it to gain full access to Security in this server!**"
             ),
             color=discord.Color.red(),
         )
@@ -1538,15 +1538,15 @@ class Security(Cog):
     ) -> None:
         """Recover access to Security."""
         if (member := guild.get_member(ctx.author.id)) is None:
-            raise commands.UserFeedbackCheckFailure(_("You are not a member of this guild."))
+            raise commands.UserFeedbackCheckFailure(_("You are not a member of this server."))
         if await self.is_extra_owner_or_higher(member):
             raise commands.UserFeedbackCheckFailure(
-                _("You already have access to Security as an Extra Owner or higher in this guild.")
+                _("You already have access to Security as an Extra Owner or higher in this server.")
             )
         recovery_key = await self.config.guild(guild).recovery_key()
         if recovery_key is None:
             raise commands.UserFeedbackCheckFailure(
-                _("This guild does not have a recovery key set.")
+                _("This server does not have a recovery key set.")
             )
         if recovery_key_or_code == recovery_key or onetimepass.valid_totp(
             recovery_key_or_code,

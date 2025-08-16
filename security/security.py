@@ -115,6 +115,7 @@ class Security(Cog):
             # Modules.
             modules={module.key_name(): module.default_config for module in MODULES},
             recovery_key=None,
+            current_owner_id=None,
         )
         self.config.register_member(
             level=None,
@@ -363,6 +364,32 @@ class Security(Cog):
 
     async def cleanup_task(self) -> None:
         for guild in self.bot.guilds:
+            if await self.config.guild(guild).recovery_key() is None:
+                continue
+            if (current_owner_id := await self.config.guild(guild).current_owner_id()) is None:
+                await self.config.guild(guild).current_owner_id.set(guild.owner.id)
+            elif guild.owner.id != current_owner_id:
+                await self.config.member(guild.owner).level.clear()
+                embed: discord.Embed = discord.Embed(
+                    title=_("👑 New server owner detected! 👑"),
+                    description=_(
+                        "You're the new owner of **{guild.name}**! You are now considered the main owner of this server and can manage settings and Extra Owners.\n\n"
+                        "Security was already configured there, you should **check its settings to ensure everything is set up correctly**, by executing the `{prefix}security` command.\n"
+                        "Furthermore, you must **regenerate the recovery key**, as the previous owner had access to it and in case you lose your account."
+                    ).format(
+                        guild=guild,
+                        prefix=(await self.bot.get_valid_prefixes(guild))[-1],
+                    ),
+                    color=discord.Color.red(),
+                    timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                )
+                embed.set_author(name=guild.owner.name, icon_url=get_non_animated_asset(guild.owner.display_avatar))
+                embed.set_thumbnail(url=get_non_animated_asset(guild.icon))
+                embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
+                try:
+                    await guild.owner.send(embed=embed)
+                except discord.HTTPException:
+                    pass
             member_configs = await self.config.all_members(guild)
             for member_id, member_config in member_configs.items():
                 if member_config["level"] is not None or any(member_config["whitelist"].values()):
@@ -1034,33 +1061,34 @@ class Security(Cog):
             if key != "logging" and hasattr(module, "on_audit_log_entry_create"):
                 await module.on_audit_log_entry_create(entry)
 
-    # @commands.Cog.listener()
-    # async def on_command_completion(
-    #     self, ctx: commands.Context
-    # ) -> None:  # Handle commands to find the right responsible of an action.
-    #     if ctx.guild is None:
-    #         return
-    #     if not ctx.guild.me.guild_permissions.view_audit_log:
-    #         return
-    #     if ctx.command.name == "addrole":
-    #         action, target, role = (
-    #             discord.AuditLogAction.member_role_update,
-    #             ctx.kwargs["user"] or ctx.author,
-    #             ctx.args[2],
-    #         )
-    #     elif ctx.command.name == "kick":
-    #         action, target, role = discord.AuditLogAction.kick, ctx.args[2], None
-    #     elif ctx.command.name == "ban":
-    #         action, target, role = discord.AuditLogAction.ban, ctx.args[2], None
-    #     else:
-    #         return
-    #     async for entry in ctx.guild.audit_logs(action=action, user=ctx.guild.me, limit=3):
-    #         if entry.target.id == target.id and (role is None or role.id in entry.after.roles):
-    #             entry.user = ctx.author  # Set the user to the command author.
-    #             for key, module in self.modules.items():
-    #                 if key != "logging" and hasattr(module, "on_audit_log_entry_create"):
-    #                     await module.on_audit_log_entry_create(entry)
-    #             break
+    @commands.Cog.listener()
+    async def on_guild_remove(self, guild: discord.Guild) -> None:
+        if await self.config.guild(guild).recovery_key() is None:
+            return
+        embed: discord.Embed = discord.Embed(
+            title=_("⚠️ I left or was kicked from {guild.name}! ⚠️").format(guild=guild),
+            description=_("**The Security system can't function properly without me! If you're not responsible for this, you must check what is happening in your server IMMEDIATELY!**"),
+            color=discord.Color.red(),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+        )
+        embed.set_thumbnail(url=get_non_animated_asset(guild.icon))
+        embed.set_footer(
+            text=guild.name,
+            icon_url=get_non_animated_asset(guild.icon),
+        )
+        try:
+            await guild.owner.send(embed=embed)
+        except discord.HTTPException:
+            pass
+        for member_id, data in (await self.config.all_members(guild)).items():
+            if data.get("level") is None:
+                continue
+            if (user := get_or_fetch_member_or_user(guild, member_id)) is None:
+                continue
+            try:
+                await user.send(embed=embed)
+            except discord.HTTPException:
+                pass
 
     @is_trusted_admin_or_higher_level
     @commands.guild_only()

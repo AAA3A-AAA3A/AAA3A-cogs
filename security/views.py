@@ -770,6 +770,7 @@ class SettingsView(discord.ui.View):
             )
         else:
             await self.cog.config.member(member).level.set(Levels.EXTRA_OWNER.name)
+            await self.cog.config.member(member).whitelist.clear()
             await interaction.followup.send(
                 _("✅ Member {member.mention} **is now an Extra Owner**.").format(member=member),
                 ephemeral=True,
@@ -816,6 +817,7 @@ class SettingsView(discord.ui.View):
             )
         else:
             await self.cog.config.member(member).level.set(Levels.TRUSTED_ADMIN.name)
+            await self.cog.config.member(member).whitelist.clear()
             await interaction.followup.send(
                 _("✅ Member {member.mention} **is now a Trusted Admin**.").format(member=member),
                 ephemeral=True,

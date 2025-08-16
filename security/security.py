@@ -370,6 +370,7 @@ class Security(Cog):
                 await self.config.guild(guild).current_owner_id.set(guild.owner.id)
             elif guild.owner.id != current_owner_id:
                 await self.config.member(guild.owner).level.clear()
+                await self.config.member(guild.owner).whitelist.clear()
                 embed: discord.Embed = discord.Embed(
                     title=_("👑 New server owner detected! 👑"),
                     description=_(

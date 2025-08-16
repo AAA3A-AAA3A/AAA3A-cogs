@@ -1424,7 +1424,7 @@ class Security(Cog):
                 ]
             )
         constant_description += _(
-            "**{emoji} Total:** ⏣ {total_amount} & {total_items} item{s}\n"
+            "**{emoji} Total:** **⏣ {total_amount} & {total_items} item{s}**\n"
         ).format(
             emoji=Emojis.DANK_POOL_PROTECTION.value,
             total_amount=format_amount(sum(payout.quantity for payout in payouts if payout.item is None)),

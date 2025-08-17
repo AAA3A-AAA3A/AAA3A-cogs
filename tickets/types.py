@@ -670,12 +670,12 @@ class Ticket:
                         "I don't have the required permissions to create private threads in the forum/text channel configured."
                     )
                 )
-            applied_tags = [
-                tag
-                for tag_id in config["forum_tags"]
-                if (tag := forum_channel.get_tag(tag_id)) is not None
-            ]
             if isinstance(forum_channel, discord.ForumChannel):
+                applied_tags = [
+                    tag
+                    for tag_id in config["forum_tags"]
+                    if (tag := forum_channel.get_tag(tag_id)) is not None
+                ]
                 thread_message = await forum_channel.create_thread(
                     name=await self.channel_name(forum_channel=True),
                     auto_archive_duration=10080,
@@ -689,7 +689,6 @@ class Ticket:
                     name=await self.channel_name(forum_channel=True),
                     auto_archive_duration=10080,
                     invitable=False,
-                    applied_tags=applied_tags,
                     reason=audit_reason,
                 )
                 view._message = await self.channel.send(**kwargs)

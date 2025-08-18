@@ -397,9 +397,9 @@ class RolesButtons(Cog):
     ) -> None:
         """Create a message with a nice embed and roles-buttons.
 
-        ```[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```
-        ```[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 **Important Roles:**```
-        ```[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 #ff0000 **Important Roles:**```
+        `[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3`
+        `[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 Important Roles:`
+        `[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 #ff0000 Important Roles:`
         """
         channel = channel or ctx.channel
         if not channel.permissions_for(ctx.me).send_messages:
@@ -414,15 +414,13 @@ class RolesButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You have not specified any valid role-button.")
             )
-
-        embed = discord.Embed(
+        embed: discord.Embed = discord.Embed(
             title=title,
             description="\n".join(
                 [f"- {emoji} - {role.mention}" for emoji, role in roles_buttons]
             ),
             color=color or await ctx.embed_color(),
         )
-
         message = await channel.send(embed=embed)
         await self.bulk.callback(
             self, ctx, message=message, roles_buttons=roles_buttons

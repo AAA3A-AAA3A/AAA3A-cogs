@@ -414,17 +414,14 @@ class RolesButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You have not specified any valid role-button.")
             )
-        embed_color = color or await ctx.embed_color()
 
         embed = discord.Embed(
+            title=title,
             description="\n".join(
                 [f"- {emoji} - {role.mention}" for emoji, role in roles_buttons]
             ),
-            color=embed_color,
+            color=color or await ctx.embed_color(),
         )
-
-        if title:
-            embed.title = title
 
         message = await channel.send(embed=embed)
         await self.bulk.callback(

@@ -391,8 +391,9 @@ class RolesButtons(Cog):
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
         roles_buttons: commands.Greedy[EmojiRoleConverter],
+        color: typing.Optional[discord.Color] = None,
         *,
-        options: typing.Optional[str] = None,
+        title: typing.Optional[str] = None,
     ) -> None:
         """Create a message with a nice embed and roles-buttons.
 
@@ -413,21 +414,7 @@ class RolesButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You have not specified any valid role-button.")
             )
-        embed_color = await ctx.embed_color()
-        title = None
-
-        if options:
-            if options.startswith("#"):
-                parts = options.split(" ", 1)
-                hex_color = parts[0]
-                try:
-                    embed_color = int(hex_color[1:], 16)
-                    options = parts[1] if len(parts) > 1 else ""
-                except ValueError:
-                    pass
-
-            if options:
-                title = options.strip()
+        embed_color = color or await ctx.embed_color()
 
         embed = discord.Embed(
             description="\n".join(

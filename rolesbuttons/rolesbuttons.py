@@ -391,7 +391,7 @@ class RolesButtons(Cog):
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
         roles_buttons: commands.Greedy[EmojiRoleConverter],
-        color: typing.Optional[discord.Color] = None,
+        color: typing.Optional[commands.ColorConverter] = None,
         *,
         title: typing.Optional[str] = None,
     ) -> None:

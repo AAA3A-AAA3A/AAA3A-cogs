@@ -66,7 +66,9 @@ class RolesButtons(Cog):
             return
         if CONFIG_SCHEMA == 1:
             for guild_id in await self.config.all_guilds():
-                roles_buttons = await self.config.guild_from_id(guild_id).roles_buttons()
+                roles_buttons = await self.config.guild_from_id(
+                    guild_id
+                ).roles_buttons()
                 for message in roles_buttons:
                     message_data = roles_buttons[message].copy()
                     for emoji in message_data:
@@ -76,7 +78,9 @@ class RolesButtons(Cog):
                             length=5, existing_keys=roles_buttons[message]
                         )
                         roles_buttons[message][config_identifier] = data
-                await self.config.guild_from_id(guild_id).roles_buttons.set(roles_buttons)
+                await self.config.guild_from_id(guild_id).roles_buttons.set(
+                    roles_buttons
+                )
             CONFIG_SCHEMA = 2
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         if CONFIG_SCHEMA < self.CONFIG_SCHEMA:
@@ -99,7 +103,9 @@ class RolesButtons(Cog):
                 try:
                     view = self.get_buttons(config=config, message=message)
                     self.bot.add_view(view, message_id=message_id)
-                    self.views[discord.PartialMessage(channel=channel, id=message_id)] = view
+                    self.views[
+                        discord.PartialMessage(channel=channel, id=message_id)
+                    ] = view
                 except Exception as e:
                     self.logger.error(
                         f"The Button View could not be added correctly for the `{guild}-{message}` message.",
@@ -117,14 +123,21 @@ class RolesButtons(Cog):
             await interaction.response.defer(ephemeral=True)
         config = await self.config.guild(interaction.guild).roles_buttons.all()
         if f"{interaction.channel.id}-{interaction.message.id}" not in config:
-            await interaction.followup.send(_("This message is not in Config."), ephemeral=True)
+            await interaction.followup.send(
+                _("This message is not in Config."), ephemeral=True
+            )
             return
-        if config_identifier not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
-            await interaction.followup.send(_("This button is not in Config."), ephemeral=True)
+        if (
+            config_identifier
+            not in config[f"{interaction.channel.id}-{interaction.message.id}"]
+        ):
+            await interaction.followup.send(
+                _("This button is not in Config."), ephemeral=True
+            )
             return
-        role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier][
-            "role"
-        ]
+        role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][
+            config_identifier
+        ]["role"]
         role = interaction.guild.get_role(role_id)
         if role is None:
             await interaction.followup.send(
@@ -135,7 +148,8 @@ class RolesButtons(Cog):
             )
             return
         mode = await self.config.guild(interaction.guild).modes.get_raw(
-            f"{interaction.channel.id}-{interaction.message.id}", default="add_or_remove"
+            f"{interaction.channel.id}-{interaction.message.id}",
+            default="add_or_remove",
         )
         if mode == "add_only":
             add_role = True
@@ -161,7 +175,9 @@ class RolesButtons(Cog):
                 return
             else:
                 await interaction.followup.send(
-                    _("You now have the {role.mention} ({role.id}) role.").format(role=role),
+                    _("You now have the {role.mention} ({role.id}) role.").format(
+                        role=role
+                    ),
                     ephemeral=True,
                 )
         else:
@@ -180,16 +196,18 @@ class RolesButtons(Cog):
                 return
             else:
                 await interaction.followup.send(
-                    _("You no longer have the role {role.mention} ({role.id}).").format(role=role),
+                    _("You no longer have the role {role.mention} ({role.id}).").format(
+                        role=role
+                    ),
                     ephemeral=True,
                 )
         if mode == "replace":
             for emoji in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                 if emoji == config_identifier:
                     continue
-                other_role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][
-                    emoji
-                ]["role"]
+                other_role_id = config[
+                    f"{interaction.channel.id}-{interaction.message.id}"
+                ][emoji]["role"]
                 other_role = interaction.guild.get_role(other_role_id)
                 if other_role is None or other_role not in interaction.user.roles:
                     continue
@@ -259,7 +277,11 @@ class RolesButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You have to specify at least an emoji or a label.")
             )
-        if emoji is not None and ctx.interaction is None and ctx.bot_permissions.add_reactions:
+        if (
+            emoji is not None
+            and ctx.interaction is None
+            and ctx.bot_permissions.add_reactions
+        ):
             try:
                 await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
@@ -271,7 +293,9 @@ class RolesButtons(Cog):
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             if message.components:
-                raise commands.UserFeedbackCheckFailure(_("This message already has components."))
+                raise commands.UserFeedbackCheckFailure(
+                    _("This message already has components.")
+                )
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) > 25:
             raise commands.UserFeedbackCheckFailure(
@@ -333,7 +357,9 @@ class RolesButtons(Cog):
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             if message.components:
-                raise commands.UserFeedbackCheckFailure(_("This message already has components."))
+                raise commands.UserFeedbackCheckFailure(
+                    _("This message already has components.")
+                )
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(roles_buttons) > 25:
             raise commands.UserFeedbackCheckFailure(
@@ -345,7 +371,9 @@ class RolesButtons(Cog):
             )
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
                 "role": role.id,
-                "emoji": f"{getattr(emoji, 'id', emoji)}" if emoji is not None else None,
+                "emoji": f"{getattr(emoji, 'id', emoji)}"
+                if emoji is not None
+                else None,
                 "style_button": 2,
                 "text_button": None,
             }
@@ -363,10 +391,15 @@ class RolesButtons(Cog):
             typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
         ],
         roles_buttons: commands.Greedy[EmojiRoleConverter],
+        color: typing.Optional[commands.ColorConverter] = None,
+        *,
+        title: typing.Optional[str] = None,
     ) -> None:
         """Create a message with a nice embed and roles-buttons.
 
-        ```[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3```
+        `[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 :reaction3:|@role3`
+        `[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 Important Roles:`
+        `[p]rolesbuttons create #channel :reaction1:|@role1 :reaction2:|@role2 #ff0000 Important Roles:`
         """
         channel = channel or ctx.channel
         if not channel.permissions_for(ctx.me).send_messages:
@@ -381,15 +414,17 @@ class RolesButtons(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You have not specified any valid role-button.")
             )
-        message = await channel.send(
-            embed=discord.Embed(
-                description="\n".join(
-                    [f"- {emoji} - {role.mention}" for emoji, role in roles_buttons]
-                ),
-                color=await ctx.embed_color(),
+        embed: discord.Embed = discord.Embed(
+            title=title,
+            description="\n".join(
+                [f"- {emoji} - {role.mention}" for emoji, role in roles_buttons]
             ),
+            color=color or await ctx.embed_color(),
         )
-        await self.bulk.callback(self, ctx, message=message, roles_buttons=roles_buttons)
+        message = await channel.send(embed=embed)
+        await self.bulk.callback(
+            self, ctx, message=message, roles_buttons=roles_buttons
+        )
 
     @rolesbuttons.command()
     async def mode(
@@ -467,12 +502,16 @@ class RolesButtons(Cog):
             pass
         del config[f"{message.channel.id}-{message.id}"]
         await self.config.guild(ctx.guild).roles_buttons.set(config)
-        await self.config.guild(ctx.guild).modes.clear_raw(f"{message.channel.id}-{message.id}")
+        await self.config.guild(ctx.guild).modes.clear_raw(
+            f"{message.channel.id}-{message.id}"
+        )
         await ctx.send(_("Roles-buttons cleared for this message."))
 
     @commands.bot_has_permissions(embed_links=True)
     @rolesbuttons.command()
-    async def list(self, ctx: commands.Context, message: MyMessageConverter = None) -> None:
+    async def list(
+        self, ctx: commands.Context, message: MyMessageConverter = None
+    ) -> None:
         """List all roles-buttons of this server or display the settings for a specific one."""
         roles_buttons = await self.config.guild(ctx.guild).roles_buttons()
         for role_button in roles_buttons:
@@ -487,12 +526,14 @@ class RolesButtons(Cog):
             _roles_buttons = roles_buttons.copy()
             _roles_buttons = [roles_buttons[f"{message.channel.id}-{message.id}"]]
         if not _roles_buttons:
-            raise commands.UserFeedbackCheckFailure(_("No roles-buttons in this server."))
+            raise commands.UserFeedbackCheckFailure(
+                _("No roles-buttons in this server.")
+            )
         embed: discord.Embed = discord.Embed(
             title=_("Roles Buttons"),
-            description=_("There is {len_roles_buttons} roles buttons in this server.").format(
-                len_roles_buttons=len(roles_buttons)
-            ),
+            description=_(
+                "There is {len_roles_buttons} roles buttons in this server."
+            ).format(len_roles_buttons=len(roles_buttons)),
             color=await ctx.embed_color(),
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
@@ -512,7 +553,7 @@ class RolesButtons(Cog):
                 )
                 for page in pagify(value, page_length=1024):
                     e.add_field(
-                        name="\u200B",
+                        name="\u200b",
                         value=page,
                         inline=False,
                     )
@@ -526,7 +567,9 @@ class RolesButtons(Cog):
         await ctx.send(_("All roles-buttons purged."))
 
     def get_buttons(
-        self, config: typing.Dict[str, dict], message: typing.Union[discord.Message, str]
+        self,
+        config: typing.Dict[str, dict],
+        message: typing.Union[discord.Message, str],
     ) -> discord.ui.View:
         message = (
             f"{message.channel.id}-{message.id}"
@@ -541,7 +584,11 @@ class RolesButtons(Cog):
                 except ValueError:
                     b = config[message][config_identifier]["emoji"]
                 else:
-                    b = str(self.bot.get_emoji(int(config[message][config_identifier]["emoji"])))
+                    b = str(
+                        self.bot.get_emoji(
+                            int(config[message][config_identifier]["emoji"])
+                        )
+                    )
             else:
                 b = None
             button = discord.ui.Button(

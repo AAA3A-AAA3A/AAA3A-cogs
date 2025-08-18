@@ -262,9 +262,9 @@ class ReasonModal(discord.ui.Modal):
             color=Colors.REPORTS.value,
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
-        embed.description = _(
-            "👤 **Member:** {member.mention} (`{member}`) {member_emoji}"
-        ).format(member=member, member_emoji=await self.module.cog.get_member_emoji(member))
+        embed.description = _("👤 **Member:** {member.mention} (`{member}`) {member_emoji}").format(
+            member=member, member_emoji=await self.module.cog.get_member_emoji(member)
+        )
         if not config["anonymous"]:
             embed.set_author(
                 name=interaction.user.display_name,

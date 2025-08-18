@@ -5,9 +5,9 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-from redbot.core.utils.chat_formatting import pagify
-
 import datetime
+
+from redbot.core.utils.chat_formatting import pagify
 
 from .dashboard_integration import DashboardIntegration
 
@@ -182,19 +182,16 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
             for drop, message_jump_url in list(member_data["last_drops"].items())[-10:]
         )
         within_last_12_hours = sum(
-            int(drop) > (now_timestamp - 43200)
-            for drop in member_data["last_drops"]
+            int(drop) > (now_timestamp - 43200) for drop in member_data["last_drops"]
         )
         drop_requirement = await self.config.guild(ctx.guild).drop_requirement()
         requirement_met = within_last_12_hours >= drop_requirement
         embed.color = discord.Color.green() if requirement_met else discord.Color.red()
         embed.add_field(
-            name=(
-                _("✅ Requirement met!")
-                if requirement_met
-                else _("❌ Requirement not met!")
-            ),
-            value=_("{within_last_12_hours} drop{s}/{drop_requirement} in the last 12 hours...").format(
+            name=(_("✅ Requirement met!") if requirement_met else _("❌ Requirement not met!")),
+            value=_(
+                "{within_last_12_hours} drop{s}/{drop_requirement} in the last 12 hours..."
+            ).format(
                 within_last_12_hours=within_last_12_hours,
                 s="" if within_last_12_hours == 1 else "s",
                 drop_requirement=drop_requirement,

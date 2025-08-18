@@ -494,11 +494,17 @@ class Tickets(DashboardIntegration, Cog):
             return
         if message.content or message.embeds:
             return
-        if (ticket := discord.utils.get(self.tickets.get(message.guild.id, {}).values(), channel_id=message.channel.id)) is None:
+        if (
+            ticket := discord.utils.get(
+                self.tickets.get(message.guild.id, {}).values(), channel_id=message.channel.id
+            )
+        ) is None:
             return
         if ticket.is_closed:
             return
-        if not await self.config.guild(message.guild).profiles.get_raw(ticket.profile, "close_after_dank_payout", default=False):
+        if not await self.config.guild(message.guild).profiles.get_raw(
+            ticket.profile, "close_after_dank_payout", default=False
+        ):
             return
         try:
             raw_message = await self.bot.http.get_message(message.channel.id, message.id)
@@ -512,9 +518,8 @@ class Tickets(DashboardIntegration, Cog):
         ):
             return
         description = raw_message["components"][0]["components"][0]["content"]
-        if (
-            not description.startswith("Successfully paid ")
-            or not description.endswith(" from the server's pool!")
+        if not description.startswith("Successfully paid ") or not description.endswith(
+            " from the server's pool!"
         ):
             return
         await ticket.close(message.interaction_metadata.user)

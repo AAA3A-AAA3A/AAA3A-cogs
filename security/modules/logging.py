@@ -508,7 +508,9 @@ class LoggingModule(Module):
             and (
                 (channel_id := event["channel"]) is None
                 or guild.get_channel(channel_id) is None
-                or not (channel_permissions := guild.get_channel(channel_id).permissions_for(guild.me)).view_channel
+                or not (
+                    channel_permissions := guild.get_channel(channel_id).permissions_for(guild.me)
+                ).view_channel
                 or not channel_permissions.send_messages
                 or not channel_permissions.embed_links
             )
@@ -532,9 +534,7 @@ class LoggingModule(Module):
             return (
                 "⚠️",
                 _("Missing Permission"),
-                _(
-                    "The bot needs the `Manage Webhooks` permission to use webhooks for logging."
-                ),
+                _("The bot needs the `Manage Webhooks` permission to use webhooks for logging."),
             )
         return "✅", _("Enabled"), _("Logging is enabled and configured.")
 
@@ -606,7 +606,9 @@ class LoggingModule(Module):
 
         use_webhooks_button: discord.ui.Button = discord.ui.Button(
             label=_("Use Webhooks"),
-            style=discord.ButtonStyle.success if config["use_webhooks"] else discord.ButtonStyle.danger,
+            style=discord.ButtonStyle.success
+            if config["use_webhooks"]
+            else discord.ButtonStyle.danger,
             emoji=Emojis.WEBHOOK.value,
         )
 
@@ -1261,10 +1263,14 @@ class LoggingModule(Module):
         for field in getattr(embed, "_fields", []):
             if len(field["value"]) > 1024:
                 code_block_open = field["value"].endswith("```")
-                field["value"] = field["value"][:1020 if not code_block_open else 1016] + "\n..." + ("" if not code_block_open else "\n```")
+                field["value"] = (
+                    field["value"][: 1020 if not code_block_open else 1016]
+                    + "\n..."
+                    + ("" if not code_block_open else "\n```")
+                )
         embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
         return embed
-    
+
     async def send_log(self, channel: discord.TextChannel, *args, **kwargs) -> discord.Message:
         try:
             if (
@@ -1274,7 +1280,9 @@ class LoggingModule(Module):
                 await channel.send(*args, **kwargs)
             else:
                 if (webhook := self.webhooks.get(channel)) is None:
-                    self.webhooks[channel] = webhook = await CogsUtils.get_hook(self.cog.bot, channel)
+                    self.webhooks[channel] = webhook = await CogsUtils.get_hook(
+                        self.cog.bot, channel
+                    )
                 try:
                     return await webhook.send(
                         *args,

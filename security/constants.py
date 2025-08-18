@@ -3,7 +3,6 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
-
 from enum import Enum
 
 
@@ -377,15 +376,8 @@ class WhitelistTypeConverter(commands.Converter):
             if argument == value:
                 return value
             if (
-                (
-                    module_key := next(
-                        m
-                        for m in cog.modules
-                        if value.startswith(m)
-                    )
-                ) is not None
-                and argument == value.removeprefix(f"{module_key}_")
-            ):
+                module_key := next(m for m in cog.modules if value.startswith(m))
+            ) is not None and argument == value.removeprefix(f"{module_key}_"):
                 return value
         raise commands.BadArgument(f"Unknown whitelist type: {argument}")
 
@@ -439,13 +431,17 @@ DANGEROUS_PERMISSIONS: typing.List[str] = [
 ]
 
 
-def get_correct_timeout_duration(member: discord.Member, duration: datetime.timedelta) -> datetime.timedelta:
+def get_correct_timeout_duration(
+    member: discord.Member, duration: datetime.timedelta
+) -> datetime.timedelta:
     if member.is_timed_out():
         duration += member.timed_out_until - datetime.datetime.now(datetime.timezone.utc)
     return min(duration, datetime.timedelta(days=28))
 
 
-def get_non_animated_asset(asset: typing.Optional[discord.Asset] = None) -> typing.Optional[discord.Asset]:
+def get_non_animated_asset(
+    asset: typing.Optional[discord.Asset] = None,
+) -> typing.Optional[discord.Asset]:
     if asset is None:
         return None
     if not asset.is_animated():

@@ -66,7 +66,9 @@ class WhitelistView(discord.ui.View):
         self.cancel.placeholder = _("Cancel")
         self.save.placeholder = _("Save")
 
-    async def start(self, ctx: commands.Context, _object: OBJECT_TYPING, duration: DurationConverter) -> discord.Message:
+    async def start(
+        self, ctx: commands.Context, _object: OBJECT_TYPING, duration: DurationConverter
+    ) -> discord.Message:
         self.ctx: commands.Context = ctx
         self._object: OBJECT_TYPING = _object
         self.duration: datetime.timedelta = duration
@@ -274,7 +276,9 @@ class WhitelistView(discord.ui.View):
         self.stop()
 
     @discord.ui.button(emoji="✅", label="Save", style=discord.ButtonStyle.success)
-    async def save(self, interaction: typing.Optional[discord.Interaction], button: discord.ui.Button) -> None:
+    async def save(
+        self, interaction: typing.Optional[discord.Interaction], button: discord.ui.Button
+    ) -> None:
         if interaction is not None:
             await interaction.response.defer()
         await self.config_value.set(self.whitelist)

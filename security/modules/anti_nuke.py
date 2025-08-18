@@ -459,7 +459,9 @@ ANTI_NUKE_FILTERS: typing.List[
         ).format(
             member=entry.user,
             action=_("kicked") if entry.action == discord.AuditLogAction.kick else _("banned"),
-            target=entry.target if not isinstance(entry.target, discord.Object) else entry.target.id,
+            target=entry.target
+            if not isinstance(entry.target, discord.Object)
+            else entry.target.id,
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
         "reason": lambda: _("**Anti Nuke** - Kicked/Banned too many members in a short time."),
@@ -819,9 +821,10 @@ class AntiNukeModule(Module):
             return
         for option in ANTI_NUKE_OPTIONS:
             if option["check"](entry):
-                if (
-                    option["value"] == "strict_member_role_addition"
-                    and await self.cog.is_trusted_admin_or_higher(entry.target)
+                if option[
+                    "value"
+                ] == "strict_member_role_addition" and await self.cog.is_trusted_admin_or_higher(
+                    entry.target
                 ):
                     continue
                 option_filter, logs = option, [option["log"](entry)]

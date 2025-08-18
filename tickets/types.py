@@ -18,7 +18,9 @@ from .views import ClosedTicketControls, TicketView
 _: Translator = Translator("Tickets", __file__)
 
 
-def get_non_animated_asset(asset: typing.Optional[discord.Asset] = None) -> typing.Optional[discord.Asset]:
+def get_non_animated_asset(
+    asset: typing.Optional[discord.Asset] = None,
+) -> typing.Optional[discord.Asset]:
     if asset is None:
         return None
     if not asset.is_animated():
@@ -323,15 +325,11 @@ class Ticket:
     def deleted_at(self) -> typing.Optional[datetime.datetime]:
         if self.deleted_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(
-            self.deleted_at_timestamp, tz=datetime.timezone.utc
-        )
+        return datetime.datetime.fromtimestamp(self.deleted_at_timestamp, tz=datetime.timezone.utc)
 
     @deleted_at.setter
     def deleted_at(self, deleted_at: typing.Optional[datetime.datetime]) -> None:
-        self.deleted_at_timestamp = (
-            None if deleted_at is None else int(deleted_at.timestamp())
-        )
+        self.deleted_at_timestamp = None if deleted_at is None else int(deleted_at.timestamp())
 
     @property
     def members(self) -> typing.List[discord.Member]:
@@ -428,7 +426,11 @@ class Ticket:
                         else type(
                             "",
                             (),
-                            {"mention": f"<@{self.appeal_approved_by_id}>" if self.appeal_approved_by_id else _("Automatic")},
+                            {
+                                "mention": f"<@{self.appeal_approved_by_id}>"
+                                if self.appeal_approved_by_id
+                                else _("Automatic")
+                            },
                         )
                     ),
                     claimed_at=int(self.claimed_at.timestamp()),
@@ -447,7 +449,11 @@ class Ticket:
                         else type(
                             "",
                             (),
-                            {"mention": f"<@{self.appeal_approved_by_id}>" if self.appeal_approved_by_id else _("Automatic")},
+                            {
+                                "mention": f"<@{self.appeal_approved_by_id}>"
+                                if self.appeal_approved_by_id
+                                else _("Automatic")
+                            },
                         )
                     ),
                     closed_at=int(self.closed_at.timestamp()),
@@ -466,7 +472,11 @@ class Ticket:
                         else type(
                             "",
                             (),
-                            {"mention": f"<@{self.appeal_approved_by_id}>" if self.appeal_approved_by_id else _("Automatic")},
+                            {
+                                "mention": f"<@{self.appeal_approved_by_id}>"
+                                if self.appeal_approved_by_id
+                                else _("Automatic")
+                            },
                         )
                     ),
                     appeal_approved_at=int(self.appeal_approved_at.timestamp()),
@@ -485,7 +495,11 @@ class Ticket:
                         else type(
                             "",
                             (),
-                            {"mention": f"<@{self.deleted_by_id}>" if self.deleted_by_id else _("Automatic")},
+                            {
+                                "mention": f"<@{self.deleted_by_id}>"
+                                if self.deleted_by_id
+                                else _("Automatic")
+                            },
                         )
                     ),
                     deleted_at=int(self.deleted_at.timestamp()),
@@ -1427,11 +1441,7 @@ class Ticket:
         embed = discord.Embed(
             description=bold(
                 action
-                + (
-                    _(" by {author.mention}").format(author=author)
-                    if author is not None
-                    else ""
-                )
+                + (_(" by {author.mention}").format(author=author) if author is not None else "")
             ),
             color=await self.bot.get_embed_color(self.channel),
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),

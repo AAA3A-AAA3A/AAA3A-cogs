@@ -73,8 +73,7 @@ class SentinelRelayModule(Module):
             else None
         )
         description += _(
-            "\n**Main Bot:** {main_bot}"
-            "\n**Modules to Enable:** {modules_to_enable}"
+            "\n**Main Bot:** {main_bot}" "\n**Modules to Enable:** {modules_to_enable}"
         ).format(
             main_bot=f"{main_bot.mention} (`{main_bot}`) {await self.cog.get_member_emoji(main_bot)}"
             if main_bot is not None

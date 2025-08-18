@@ -4,12 +4,12 @@ from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
+import datetime
+from dataclasses import asdict, dataclass
+
 from redbot.core.utils.chat_formatting import box
 
-import datetime
-from dataclasses import dataclass, asdict
-
-from ..constants import Emojis, Colors
+from ..constants import Colors, Emojis
 from ..views import ToggleModuleButton
 from .module import Module
 
@@ -29,7 +29,9 @@ def convert_amount(argument: str) -> int:
             )
 
 
-async def get_or_fetch_member_or_user(bot: Red, guild: discord.Guild, user_id: int) -> typing.Optional[typing.Union[discord.Member, discord.User]]:
+async def get_or_fetch_member_or_user(
+    bot: Red, guild: discord.Guild, user_id: int
+) -> typing.Optional[typing.Union[discord.Member, discord.User]]:
     if (member := guild.get_member(user_id)) is not None:
         return member
     try:
@@ -172,9 +174,7 @@ class Payout:
 
     @property
     def issued_at(self) -> datetime.datetime:
-        return datetime.datetime.fromtimestamp(
-            self.issued_at_timestamp, tz=datetime.timezone.utc
-        )
+        return datetime.datetime.fromtimestamp(self.issued_at_timestamp, tz=datetime.timezone.utc)
 
     @property
     def display_amount(self) -> str:
@@ -182,16 +182,22 @@ class Payout:
 
     def get_jump_url(self, guild: discord.Guild) -> str:
         return discord.PartialMessage(
-            channel=discord.PartialMessageable(state=guild._state, id=self.channel_id, guild_id=guild.id),
+            channel=discord.PartialMessageable(
+                state=guild._state, id=self.channel_id, guild_id=guild.id
+            ),
             id=self.message_id,
         ).jump_url
 
-    async def get_issued_by(self, bot: Red, guild: discord.Guild) -> typing.Optional[typing.Union[discord.Member, discord.User]]:
+    async def get_issued_by(
+        self, bot: Red, guild: discord.Guild
+    ) -> typing.Optional[typing.Union[discord.Member, discord.User]]:
         if self.issued_by_id is None:
             return None
         return await get_or_fetch_member_or_user(bot, guild, self.issued_by_id)
 
-    async def get_recipient(self, bot: Red, guild: discord.Guild) -> typing.Optional[typing.Union[discord.Member, discord.User]]:
+    async def get_recipient(
+        self, bot: Red, guild: discord.Guild
+    ) -> typing.Optional[typing.Union[discord.Member, discord.User]]:
         if self.recipient_id is None:
             return None
         return await get_or_fetch_member_or_user(bot, guild, self.recipient_id)
@@ -202,35 +208,35 @@ class Payout:
             color=Colors.DANK_POOL_PROTECTION.value,
             timestamp=self.issued_at,
         )
-        embed.description = _("**{emoji} Amount**: {amount}").format(emoji=Emojis.DANK_POOL_PROTECTION.value, amount=self.display_amount)
+        embed.description = _("**{emoji} Amount**: {amount}").format(
+            emoji=Emojis.DANK_POOL_PROTECTION.value, amount=self.display_amount
+        )
         if (issued_by := await self.get_issued_by(cog.bot, guild)) is not None:
-            embed.description += (
-                _("\n**{emoji} Issued By**: {issued_by.mention} (`{issued_by}`)").format(emoji=Emojis.ISSUED_BY.value, issued_by=issued_by)
-                + (
-                    f" {await cog.get_member_emoji(issued_by)}"
-                    if isinstance(issued_by, discord.Member)
-                    else ""
-                )
+            embed.description += _(
+                "\n**{emoji} Issued By**: {issued_by.mention} (`{issued_by}`)"
+            ).format(emoji=Emojis.ISSUED_BY.value, issued_by=issued_by) + (
+                f" {await cog.get_member_emoji(issued_by)}"
+                if isinstance(issued_by, discord.Member)
+                else ""
             )
             embed.set_author(
                 name=issued_by.display_name,
                 icon_url=issued_by.display_avatar.url,
             )
         if (recipient := await self.get_recipient(cog.bot, guild)) is not None:
-            embed.description += (
-                _("\n**{emoji} Recipient**: {recipient.mention} (`{recipient}`)").format(emoji=Emojis.MEMBER.value, recipient=recipient)
-                + (
-                    f" {await cog.get_member_emoji(recipient)}"
-                    if isinstance(recipient, discord.Member)
-                    else ""
-                )
+            embed.description += _(
+                "\n**{emoji} Recipient**: {recipient.mention} (`{recipient}`)"
+            ).format(emoji=Emojis.MEMBER.value, recipient=recipient) + (
+                f" {await cog.get_member_emoji(recipient)}"
+                if isinstance(recipient, discord.Member)
+                else ""
             )
         if self.recipient_id is not None:
             embed.description += f"\n{box(await self.get_slash_name(cog.bot))}"
         embed.description += _("\n**{emoji} Message**: {message_jump_url}").format(
             emoji=Emojis.MESSAGE.value, message_jump_url=self.get_jump_url(guild)
         )
-        embed.set_footer(text=guild.name, icon_url=guild.icon) 
+        embed.set_footer(text=guild.name, icon_url=guild.icon)
         return embed
 
     async def get_slash_name(self, bot: Red) -> str:
@@ -238,7 +244,9 @@ class Payout:
             recipient = str(await bot.get_or_fetch_user(self.recipient_id))
         except discord.HTTPException:
             recipient = str(self.recipient_id)
-        return f"/serverevents payout user: {recipient} quantity: {self.quantity:,}" + (f" item: {self.item}" if self.item else "")
+        return f"/serverevents payout user: {recipient} quantity: {self.quantity:,}" + (
+            f" item: {self.item}" if self.item else ""
+        )
 
 
 class DankPoolProtectionModule(Module):
@@ -322,7 +330,9 @@ class DankPoolProtectionModule(Module):
             else None
         )
         description += _("\n\n**Logs Channel**: {payout_logs_channel}").format(
-            payout_logs_channel=f"{payout_logs_channel.mention} (`{payout_logs_channel}`)" if payout_logs_channel is not None else _("Not set")
+            payout_logs_channel=f"{payout_logs_channel.mention} (`{payout_logs_channel}`)"
+            if payout_logs_channel is not None
+            else _("Not set")
         )
         fields = []
         for option in DANK_POOL_PROTECTION_OPTIONS:
@@ -370,7 +380,9 @@ class DankPoolProtectionModule(Module):
         )
 
         async def payout_logs_channel_select_callback(interaction: discord.Interaction) -> None:
-            selected = payout_logs_channel_select.values[0] if payout_logs_channel_select.values else None
+            selected = (
+                payout_logs_channel_select.values[0] if payout_logs_channel_select.values else None
+            )
             if selected:
                 await self.config_value(guild).payout_logs_channel.set(selected.id)
                 await interaction.response.send_message(
@@ -511,13 +523,14 @@ class DankPoolProtectionModule(Module):
         ):
             return
         description = raw_message["components"][0]["components"][0]["content"]
-        if (
-            not description.startswith("Successfully paid ")
-            or not description.endswith(" from the server's pool!")
+        if not description.startswith("Successfully paid ") or not description.endswith(
+            " from the server's pool!"
         ):
             return
         member_id = message.interaction_metadata.user.id
-        member_payouts = await self.cog.config.member_from_ids(message.guild.id, member_id).payouts()
+        member_payouts = await self.cog.config.member_from_ids(
+            message.guild.id, member_id
+        ).payouts()
         thing = description.split("**")[1].split("**")[0]
         quantity = convert_amount(thing.removeprefix("⏣ ").split(" ")[0])
         item = None if thing.startswith("⏣ ") else " ".join(thing.split(" ")[2:])
@@ -527,18 +540,22 @@ class DankPoolProtectionModule(Module):
             item=item,
             recipient_id=(
                 int(raw_message["referenced_message"]["mentions"][0]["id"])
-                if raw_message.get("referenced_message", {}).get("mentions", []) else None
+                if raw_message.get("referenced_message", {}).get("mentions", [])
+                else None
             ),
             issued_by_id=member_id,
         )
         member_payouts.append(payout.to_dict())
-        await self.cog.config.member_from_ids(
-            message.guild.id, member_id
-        ).payouts.set(member_payouts)
+        await self.cog.config.member_from_ids(message.guild.id, member_id).payouts.set(
+            member_payouts
+        )
         if (
             (payout_logs_channel_id := config["payout_logs_channel"]) is not None
-            and (payout_logs_channel := message.guild.get_channel(payout_logs_channel_id)) is not None
-            and (channel_permissions := payout_logs_channel.permissions_for(message.guild.me)).view_channel
+            and (payout_logs_channel := message.guild.get_channel(payout_logs_channel_id))
+            is not None
+            and (
+                channel_permissions := payout_logs_channel.permissions_for(message.guild.me)
+            ).view_channel
             and channel_permissions.send_messages
             and channel_permissions.embed_links
         ):
@@ -587,43 +604,40 @@ class DankPoolProtectionModule(Module):
         )
         last_payouts = [
             (
-                datetime.datetime.fromtimestamp(last_payout["issued_at_timestamp"], tz=datetime.timezone.utc),
-                _("{member.mention} (`{member}`) executed `{slash_name}` ({jump_url}) {timestamp}.").format(
+                datetime.datetime.fromtimestamp(
+                    last_payout["issued_at_timestamp"], tz=datetime.timezone.utc
+                ),
+                _(
+                    "{member.mention} (`{member}`) executed `{slash_name}` ({jump_url}) {timestamp}."
+                ).format(
                     member=member,
-                    slash_name=await (payout := Payout(**last_payout)).get_slash_name(self.cog.bot),
+                    slash_name=await (payout := Payout(**last_payout)).get_slash_name(
+                        self.cog.bot
+                    ),
                     jump_url=payout.get_jump_url(message.guild),
                     timestamp=f"<t:{int(message.created_at.timestamp())}:R>",
                 ),
             )
             for last_payout in await self.cog.config.member(member).payouts()
         ]
-        hour_ago, minute_ago = message.created_at - datetime.timedelta(hours=1), message.created_at - datetime.timedelta(minutes=1)
+        hour_ago, minute_ago = message.created_at - datetime.timedelta(
+            hours=1
+        ), message.created_at - datetime.timedelta(minutes=1)
         for option in DANK_POOL_PROTECTION_OPTIONS:
             if not config["options"][option["value"]]:
                 continue
             if option["value"] == "rapid_payout":
                 if (
-                    sum(
-                        [
-                            last_payout[0] >= hour_ago
-                            for last_payout in last_payouts
-                        ]
-                    )
+                    sum([last_payout[0] >= hour_ago for last_payout in last_payouts])
                     > config["rapid_payout"]["hour_limit"]
-                    or sum(
-                        [
-                            last_payout[0] >= minute_ago
-                            for last_payout in last_payouts
-                        ]
-                    )
+                    or sum([last_payout[0] >= minute_ago for last_payout in last_payouts])
                     > config["rapid_payout"]["minute_limit"]
                 ):
                     logs = [log for (__, log) in last_payouts]
                     break
             elif option["value"] == "payout_cooldown":
-                if (
-                    last_payouts
-                    and message.created_at - last_payouts[-1][0] < datetime.timedelta(seconds=config["payout_cooldown"])
+                if last_payouts and message.created_at - last_payouts[-1][0] < datetime.timedelta(
+                    seconds=config["payout_cooldown"]
                 ):
                     logs = [log for (__, log) in last_payouts]
                     break

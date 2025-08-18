@@ -18,7 +18,7 @@ import onetimepass
 import qrcode
 from PIL import Image, ImageDraw
 from redbot.core import modlog
-from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file, pagify
+from redbot.core.utils.chat_formatting import box, humanize_list, pagify, text_to_file
 
 from .constants import (
     WHITELIST_TYPES,
@@ -31,8 +31,8 @@ from .constants import (
     get_non_animated_asset,
 )  # NOQA
 from .modules import MODULES, Module
-from .views import OBJECT_TYPING, ActionsView, SettingsView, WhitelistView, DurationConverter
 from .modules.dank_pool_protection import Payout, format_amount, get_or_fetch_member_or_user
+from .views import OBJECT_TYPING, ActionsView, DurationConverter, SettingsView, WhitelistView
 
 # Credits:
 # General repo credits.
@@ -81,7 +81,9 @@ class AuditLogActionConverter(commands.Converter):
 
 
 class AnyOrMemberOrUserConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Optional[typing.Union[discord.Member, discord.User]]:
+    async def convert(
+        self, ctx: commands.Context, argument: str
+    ) -> typing.Optional[typing.Union[discord.Member, discord.User]]:
         if argument.lower() == "any":
             return None
         try:
@@ -91,7 +93,9 @@ class AnyOrMemberOrUserConverter(commands.Converter):
                 return await commands.UserConverter().convert(ctx, argument)
             except commands.BadArgument:
                 raise commands.BadArgument(
-                    _("Could not find a member or user with the provided argument. You can also use `any` to apply to any.")
+                    _(
+                        "Could not find a member or user with the provided argument. You can also use `any` to apply to any."
+                    )
                 )
 
 
@@ -385,7 +389,10 @@ class Security(Cog):
                     color=discord.Color.red(),
                     timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                 )
-                embed.set_author(name=guild.owner.name, icon_url=get_non_animated_asset(guild.owner.display_avatar))
+                embed.set_author(
+                    name=guild.owner.name,
+                    icon_url=get_non_animated_asset(guild.owner.display_avatar),
+                )
                 embed.set_thumbnail(url=get_non_animated_asset(guild.icon))
                 embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
                 try:
@@ -659,9 +666,7 @@ class Security(Cog):
         embed.set_footer(
             text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon)
         )
-        description = _(
-            "{emoji} **Member:** {member.mention} (`{member}`) {member_emoji}"
-        ).format(
+        description = _("{emoji} **Member:** {member.mention} (`{member}`) {member_emoji}").format(
             emoji=Emojis.MEMBER.value,
             member=member,
             member_emoji=member_emoji or await self.get_member_emoji(member),
@@ -1069,7 +1074,9 @@ class Security(Cog):
             return
         embed: discord.Embed = discord.Embed(
             title=_("⚠️ I left or was kicked from {guild.name}! ⚠️").format(guild=guild),
-            description=_("**The Security system can't function properly without me! If you're not responsible for this, you must check what is happening in your server IMMEDIATELY!**"),
+            description=_(
+                "**The Security system can't function properly without me! If you're not responsible for this, you must check what is happening in your server IMMEDIATELY!**"
+            ),
             color=discord.Color.red(),
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
@@ -1274,7 +1281,9 @@ class Security(Cog):
     async def lastpayouts(
         self,
         ctx: commands.Context,
-        leaderboard: typing.Optional[typing.Literal["ileaderboard", "rleaderboard", "ilb", "rlb"]] = None,
+        leaderboard: typing.Optional[
+            typing.Literal["ileaderboard", "rleaderboard", "ilb", "rlb"]
+        ] = None,
         sorted_by: typing.Optional[typing.Literal["payout", "amount"]] = "payout",
         issued_by: typing.Optional[typing.Union[AnyOrMemberOrUserConverter]] = None,
         recipient: typing.Optional[typing.Union[AnyOrMemberOrUserConverter]] = None,
@@ -1283,7 +1292,9 @@ class Security(Cog):
         if issued_by is None:
             payouts = [
                 Payout(**payout, issued_by_id=member_id)
-                for member_id, member_data in (await self.config.all_members(guild=ctx.guild)).items()
+                for member_id, member_data in (
+                    await self.config.all_members(guild=ctx.guild)
+                ).items()
                 for payout in member_data.get("payouts", [])
                 if recipient is None or payout["recipient_id"] == recipient.id
             ]
@@ -1291,7 +1302,9 @@ class Security(Cog):
         else:
             payouts = [
                 Payout(**payout, issued_by_id=issued_by.id)
-                for payout in await self.config.member_from_ids(ctx.guild.id, issued_by.id).payouts()
+                for payout in await self.config.member_from_ids(
+                    ctx.guild.id, issued_by.id
+                ).payouts()
                 if recipient is None or payout["recipient_id"] == recipient.id
             ]
         if not payouts:
@@ -1301,32 +1314,29 @@ class Security(Cog):
             color=Colors.DANK_POOL_PROTECTION.value,
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
-        async def format_member_user(member_user: typing.Union[discord.Member, discord.User, int]) -> str:
+
+        async def format_member_user(
+            member_user: typing.Union[discord.Member, discord.User, int]
+        ) -> str:
             if isinstance(member_user, int):
                 return f"`{member_user}`"
-            return (
-                f"{member_user.mention} (`{member_user}`)"
-                + (
-                    f" {await self.get_member_emoji(member_user)}"
-                    if isinstance(member_user, discord.Member)
-                    else ""
-                )
+            return f"{member_user.mention} (`{member_user}`)" + (
+                f" {await self.get_member_emoji(member_user)}"
+                if isinstance(member_user, discord.Member)
+                else ""
             )
+
         constant_description = ""
         if leaderboard is None:
             if issued_by is not None:
-                constant_description += (
-                    _(
-                        "**{emoji} Issued by:** {display}\n"
-                    ).format(emoji=Emojis.ISSUED_BY.value, display=await format_member_user(issued_by))
+                constant_description += _("**{emoji} Issued by:** {display}\n").format(
+                    emoji=Emojis.ISSUED_BY.value, display=await format_member_user(issued_by)
                 )
                 if recipient is None:
                     embed.set_thumbnail(url=get_non_animated_asset(issued_by.display_avatar))
             if recipient is not None:
-                constant_description += (
-                    _(
-                        "**{emoji} Recipient:** {display}\n"
-                    ).format(emoji=Emojis.MEMBER.value, display=await format_member_user(recipient))
+                constant_description += _("**{emoji} Recipient:** {display}\n").format(
+                    emoji=Emojis.MEMBER.value, display=await format_member_user(recipient)
                 )
                 if issued_by is None:
                     embed.set_thumbnail(url=get_non_animated_asset(recipient.display_avatar))
@@ -1337,17 +1347,21 @@ class Security(Cog):
                         _("\n- **Issued by:** {display}").format(
                             display=await format_member_user(payout_issued_by)
                         )
-                        if issued_by is None and (payout_issued_by := await payout.get_issued_by(ctx.bot, ctx.guild)) is not None
+                        if issued_by is None
+                        and (payout_issued_by := await payout.get_issued_by(ctx.bot, ctx.guild))
+                        is not None
                         else ""
                     )
                     + (
                         _("\n- **Recipient:** {display}").format(
                             display=await format_member_user(payout_recipient)
                         )
-                        if recipient is None and (payout_recipient := await payout.get_recipient(ctx.bot, ctx.guild)) is not None
+                        if recipient is None
+                        and (payout_recipient := await payout.get_recipient(ctx.bot, ctx.guild))
+                        is not None
                         else ""
                     )
-                    +  _("\n- **Message:** {message_jump_url}").format(
+                    + _("\n- **Message:** {message_jump_url}").format(
                         message_jump_url=payout.get_jump_url(ctx.guild)
                     )
                     for i, payout in enumerate(payouts, start=1)
@@ -1369,7 +1383,13 @@ class Security(Cog):
             else:
                 embed.title += _(" — Recipient Leaderboard")
                 if sorted_by == "payout":
-                    counter = Counter([payout.recipient_id for payout in payouts if payout.recipient_id is not None])
+                    counter = Counter(
+                        [
+                            payout.recipient_id
+                            for payout in payouts
+                            if payout.recipient_id is not None
+                        ]
+                    )
                 else:
                     mapping = {}
                     for payout in payouts:
@@ -1378,34 +1398,48 @@ class Security(Cog):
                         mapping.setdefault(payout.recipient_id, 0)
                         mapping[payout.recipient_id] += payout.quantity
                     counter = Counter(mapping)
-            constant_description += _(
-                "**🔢 Sorted by:** {sorted_by}\n"
-            ).format(
+            constant_description += _("**🔢 Sorted by:** {sorted_by}\n").format(
                 sorted_by=_("Payouts") if sorted_by == "payout" else _("Amount"),
             )
             description = "\n".join(
                 [
                     _("**{i}.** {display} - **{total_payouts}** payout{s}").format(
                         i=i,
-                        display=await format_member_user(await get_or_fetch_member_or_user(ctx.bot, ctx.guild, member_id) or member_id),
+                        display=await format_member_user(
+                            await get_or_fetch_member_or_user(ctx.bot, ctx.guild, member_id)
+                            or member_id
+                        ),
                         total_payouts=format_amount(
                             total_payouts := (
-                                amount if sorted_by == "payout" else len(
+                                amount
+                                if sorted_by == "payout"
+                                else len(
                                     [
                                         payout
                                         for payout in payouts
-                                        if (payout.issued_by_id if leaderboard in ("ileaderboard", "ilb") else payout.recipient_id) == member_id
+                                        if (
+                                            payout.issued_by_id
+                                            if leaderboard in ("ileaderboard", "ilb")
+                                            else payout.recipient_id
+                                        )
+                                        == member_id
                                     ]
                                 )
                             )
                         ),
                         s="" if amount == 1 else "s",
-                    ) + _("\n- ⏣ {total_amount} & {total_items} item{s}").format(
+                    )
+                    + _("\n- ⏣ {total_amount} & {total_items} item{s}").format(
                         total_amount=format_amount(
                             sum(
                                 payout.quantity
                                 for payout in payouts
-                                if (payout.issued_by_id if leaderboard in ("ileaderboard", "ilb") else payout.recipient_id) == member_id
+                                if (
+                                    payout.issued_by_id
+                                    if leaderboard in ("ileaderboard", "ilb")
+                                    else payout.recipient_id
+                                )
+                                == member_id
                                 and payout.item is None
                             )
                         ),
@@ -1413,14 +1447,20 @@ class Security(Cog):
                             total_items := sum(
                                 payout.quantity
                                 for payout in payouts
-                                if (payout.issued_by_id if leaderboard in ("ileaderboard", "ilb") else payout.recipient_id) == member_id
+                                if (
+                                    payout.issued_by_id
+                                    if leaderboard in ("ileaderboard", "ilb")
+                                    else payout.recipient_id
+                                )
+                                == member_id
                                 and payout.item is not None
                             )
                         ),
                         s="" if total_items == 1 else "s",
                     )
                     for i, (member_id, amount) in enumerate(
-                        counter.most_common(len(counter)), start=1,
+                        counter.most_common(len(counter)),
+                        start=1,
                     )
                 ]
             )
@@ -1428,8 +1468,16 @@ class Security(Cog):
             "**{emoji} Total:** **⏣ {total_amount} & {total_items} item{s}**\n"
         ).format(
             emoji=Emojis.DANK_POOL_PROTECTION.value,
-            total_amount=format_amount(sum(payout.quantity for payout in payouts if payout.item is None)),
-            total_items=format_amount((total_items := sum(payout.quantity for payout in payouts if payout.item is not None))),
+            total_amount=format_amount(
+                sum(payout.quantity for payout in payouts if payout.item is None)
+            ),
+            total_items=format_amount(
+                (
+                    total_items := sum(
+                        payout.quantity for payout in payouts if payout.item is not None
+                    )
+                )
+            ),
             s="" if total_items == 1 else "s",
         )
         embed.set_footer(text=ctx.guild.name, icon_url=get_non_animated_asset(ctx.guild.icon))
@@ -1542,7 +1590,9 @@ class Security(Cog):
             raise commands.UserFeedbackCheckFailure(_("You are not a member of this server."))
         if await self.is_extra_owner_or_higher(member):
             raise commands.UserFeedbackCheckFailure(
-                _("You already have access to Security as an Extra Owner or higher in this server.")
+                _(
+                    "You already have access to Security as an Extra Owner or higher in this server."
+                )
             )
         recovery_key = await self.config.guild(guild).recovery_key()
         if recovery_key is None:

@@ -3663,7 +3663,7 @@ class GuildStats(Cog):
             #         fill="toself",
             #         fillcolor="rgba(255,0,0,0.2)",
             #         line_color="rgba(255,255,255,0)",
-            #         name="Voice",
+            #         name=_("Voice"),
             #         showlegend=False,
             #     )
             # )
@@ -3672,7 +3672,7 @@ class GuildStats(Cog):
                     x=x,
                     y=y2,
                     line_color="rgb(255,0,0)",
-                    name="Voice",
+                    name=_("Voice"),
                     showlegend=False,
                     line={"width": 14},
                     fill="tozeroy",
@@ -3708,7 +3708,7 @@ class GuildStats(Cog):
             #         fill="toself",
             #         fillcolor="rgba(0,255,0,0.2)",
             #         line_color="rgba(255,255,255,0)",
-            #         name="Messages",
+            #         name=_("Messages"),
             #         showlegend=False,
             #     )
             # )
@@ -3719,7 +3719,7 @@ class GuildStats(Cog):
             #         fill="toself",
             #         fillcolor="rgba(0,255,0,0.2)",
             #         line_color="rgba(255,255,255,0)",
-            #         name="Messages",
+            #         name=_("Messages"),
             #         showlegend=False,
             #         line={"width": 15},
             #     )
@@ -3729,7 +3729,7 @@ class GuildStats(Cog):
                     x=x,
                     y=y1,
                     line_color="rgb(0,255,0)",
-                    name="Messages",
+                    name=_("Messages"),
                     showlegend=False,
                     line={"width": 14},
                     fill="tozeroy",

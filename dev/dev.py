@@ -139,7 +139,7 @@ class DevOutput(dev_commands.DevOutput):
                 kwargs["file"] = self.result
             elif isinstance(self.result, discord.abc.Iterable):
                 kwargs = {"embeds": [], "files": []}
-                for element in self.result:
+                for element in (self.result if not isinstance(self.result, typing.Dict) else self.result.values()):
                     if isinstance(element, discord.Embed) and channel_permissions.embed_links:
                         if (
                             len(kwargs["embeds"]) < 10
@@ -148,11 +148,14 @@ class DevOutput(dev_commands.DevOutput):
                         ):
                             kwargs["embeds"].append(element)
                     elif isinstance(element, discord.File) and channel_permissions.attach_files:
-                        if (sum(len(file) for file in kwargs["files"]) + len(element)) <= 6000:
+                        if (sum(len(file.fp.read()) for file in kwargs["files"]) + len(element.fp.read())) <= 6000:
                             kwargs["files"].append(element)
                 for key in ("embeds", "files"):
                     if not kwargs[key]:
                         del kwargs[key]
+                    elif key == "files":
+                        for file in kwargs[key]:
+                            file.fp.seek(0)
             if kwargs:
                 try:
                     await Menu(pages=[kwargs]).start(self.ctx, wait=False)

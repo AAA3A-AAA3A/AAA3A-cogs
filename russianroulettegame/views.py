@@ -174,6 +174,8 @@ class ShotView(discord.ui.View):
         self.player: discord.Member = player
         self._message: discord.Message = None
 
+        self.shoot.label = _("Shoot!")
+
     async def on_timeout(self):
         try:
             await self._message.edit(view=None)

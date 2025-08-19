@@ -17,11 +17,11 @@ _: Translator = Translator("AcronymGame", __file__)
 
 class JoinGameModal(discord.ui.Modal):
     def __init__(self, parent: discord.ui.View) -> None:
-        super().__init__(title="Join Acronym Game")
+        super().__init__(title=_("Join Acronym Game"))
         self._parent: discord.ui.View = parent
         self.answer: discord.ui.TextInput = discord.ui.TextInput(
-            label=f"Answer for {self._parent.acronym} acronym",
-            placeholder=f"Your full name for {self._parent.acronym} acronym",
+            label=_("Answer for {acronym} acronym").format(acronym=self._parent.acronym),
+            placeholder=_("Your full name for {acronym} acronym").format(acronym=self._parent.acronym),
             default=None,
             style=discord.TextStyle.short,
             custom_id="description",

@@ -126,14 +126,18 @@ class AcronymGameView(discord.ui.View):
         self.ctx: commands.Context = ctx
         self.acronym: str = self.get_acronym()
         embed: discord.Embed = discord.Embed(
-            title="Acronym Game", color=await self.ctx.embed_color()
+            title=_("Acronym Game"),
+            description=_("Click the button below to **join the party**! Please note that the maximum amount of players is **20**."),
+            color=await self.ctx.embed_color(),
         )
-        embed.description = _(
-            "Join the game by clicking on the button below and entering your acronym. Maximum 20 players."
-        )
-        embed.add_field(name="Random Acronym", value=self.acronym)
+        embed.add_field(name=_("Random Acronym:"), value=self.acronym)
         end_time = int((datetime.datetime.now() + datetime.timedelta(seconds=120)).timestamp())
-        embed.add_field(name="End time for joining", value=f"<t:{end_time}:T> (<t:{end_time}:R>)")
+        embed.add_field(name=_("End time for joining:"), value=f"<t:{end_time}:T> (<t:{end_time}:R>)")
+        embed.set_author(
+            name=_("Hosted by {host.display_name}").format(host=self.ctx.author),
+            icon_url=self.ctx.author.display_avatar,
+        )
+        embed.set_footer(text=self.ctx.guild.name, icon_url=self.ctx.guild.icon)
         self._mode = "join"
         self._message: discord.Message = await self.ctx.send(embed=embed, view=self)
         self.cog.views[self._message] = self
@@ -143,14 +147,15 @@ class AcronymGameView(discord.ui.View):
             await self.on_timeout()
             self.stop()
             raise commands.UserFeedbackCheckFailure(
-                _("At least three players are needed to play.")
+                _("At least three players are needed to play!")
             )
         table = PrettyTable()
         table.field_names = ["#", "Answer"]
         for num, (__, answer) in enumerate(self.players.items()):
             table.add_row([num + 1, answer])
         embed: discord.Embed = discord.Embed(
-            title="Acronym Game", color=await self.ctx.embed_color()
+            title=_("Acronym Game"),
+            color=await self.ctx.embed_color(),
         )
         embed.description = _(
             "Use the dropdown below to vote for the best answer for the random acronym. All guild members can vote.\n"

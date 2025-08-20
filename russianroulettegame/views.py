@@ -30,7 +30,7 @@ class JoinGameView(discord.ui.View):
         embed: discord.Embed = discord.Embed(
             title=_("💥 Russian Roulette Game 🔫"),
             description=_(
-                "Click the button below to join the party! Please note that the maximum amount of players is 30."
+                "Click the button below to **join the party!** Please note that the maximum amount of players is **30**."
             ),
             color=await self.ctx.embed_color(),
             timestamp=ctx.message.created_at,

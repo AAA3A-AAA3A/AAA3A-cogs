@@ -95,7 +95,7 @@ class JoinGameView(discord.ui.View):
         embed: discord.Embed = discord.Embed(
             title=_("🔪 Mafia Game 🔪"),
             description=_(
-                "Click the button below to join the party! Please note that the maximum amount of players is 25."
+                "Click the button below to **join the party**! Please note that the maximum amount of players is **25**."
             ),
             color=await self.ctx.embed_color(),
             timestamp=self.ctx.message.created_at,

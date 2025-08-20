@@ -53,7 +53,7 @@ class JoinGameView(discord.ui.View):
                 flag=f":flag_{'gb' if self.lang is Lang.ENGLISH else self.lang.value}:",
             ),
             description=_(
-                "Click the button below to join the party! Please note that the maximum amount of players is 50."
+                "Click the button below to **join the party**! Please note that the maximum amount of players is **50**."
             ),
             color=await self.ctx.embed_color(),
             timestamp=ctx.message.created_at,

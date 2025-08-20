@@ -35,7 +35,7 @@ class JoinGameView(discord.ui.View):
         embed: discord.Embed = discord.Embed(
             title=_("Rollout Game"),
             description=_(
-                "Click the button below to join the party! Please note that the maximum amount of players is 50."
+                "Click the button below to **join the party**! Please note that the maximum amount of players is **50**."
             ),
             color=await self.ctx.embed_color(),
             timestamp=ctx.message.created_at,

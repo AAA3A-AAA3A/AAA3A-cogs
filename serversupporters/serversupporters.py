@@ -19,6 +19,21 @@ from .converter import RoleHierarchyConverter
 _: Translator = Translator("ServerSupporters", __file__)
 
 
+def get_non_animated_asset(
+    asset: typing.Optional[discord.Asset] = None,
+) -> typing.Optional[discord.Asset]:
+    if asset is None:
+        return None
+    if not asset.is_animated():
+        return asset
+    return discord.Asset(
+        asset._state,
+        url=asset.url.replace("/a_", "/").replace(".gif", ".png"),
+        key=asset.key.removeprefix("a_"),
+        animated=False,
+    )
+
+
 @cog_i18n(_)
 class ServerSupporters(Cog):
     """Track and give roles to supporters, members using the server tag or having a server invite link in their status!"""
@@ -112,9 +127,9 @@ class ServerSupporters(Cog):
         )
         embed.set_author(
             name=member.display_name,
-            icon_url=member.display_avatar,
+            icon_url=get_non_animated_asset(member.display_avatar),
         )
-        embed.set_thumbnail(url=member.display_avatar)
+        embed.set_thumbnail(url=get_non_animated_asset(member.display_avatar))
         if (
             role := await self.get_role(member, _type)
         ) is not None:  # If I decide to remove the requirement of having a role set...
@@ -126,7 +141,7 @@ class ServerSupporters(Cog):
                 embed.description = _(
                     "{member.mention} has been removed from the **{role.mention}** role for no longer being a server supporter."
                 ).format(member=member, role=role, _type=_type)
-        embed.set_footer(text=member.guild.name, icon_url=member.guild.icon)
+        embed.set_footer(text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon))
         return embed
 
     async def log(

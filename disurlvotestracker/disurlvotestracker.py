@@ -20,6 +20,21 @@ from .dashboard_integration import DashboardIntegration
 _: Translator = Translator("DisurlVotesTracker", __file__)
 
 
+def get_non_animated_asset(
+    asset: typing.Optional[discord.Asset] = None,
+) -> typing.Optional[discord.Asset]:
+    if asset is None:
+        return None
+    if not asset.is_animated():
+        return asset
+    return discord.Asset(
+        asset._state,
+        url=asset.url.replace("/a_", "/").replace(".gif", ".png"),
+        key=asset.key.removeprefix("a_"),
+        animated=False,
+    )
+
+
 @cog_i18n(_)
 class DisurlVotesTracker(DashboardIntegration, Cog):
     """Track votes on Disurl, assign roles to voters and remind them to vote!"""
@@ -216,8 +231,8 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                     color=discord.Color.green(),
                     timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                 )
-                embed.set_author(name=member.display_name, icon_url=member.display_avatar)
-                embed.set_thumbnail(url=member.display_avatar)
+                embed.set_author(name=member.display_name, icon_url=get_non_animated_asset(member.display_avatar))
+                embed.set_thumbnail(url=get_non_animated_asset(member.display_avatar))
                 embed.description = _(
                     "{member.mention} voted on Disurl!\n"
                     "`{number_member_monthly_votes} vote{s_2} this month & {number_member_votes} lifetime vote{s_1}`"
@@ -239,7 +254,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                     text=_("Thanks for supporting this server! | User ID: {member.id}").format(
                         member=member
                     ),
-                    icon_url=guild.icon,
+                    icon_url=get_non_animated_asset(guild.icon),
                 )
                 await votes_channel.send(embed=embed)
             else:

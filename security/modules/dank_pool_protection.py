@@ -9,7 +9,7 @@ from dataclasses import asdict, dataclass
 
 from redbot.core.utils.chat_formatting import box
 
-from ..constants import Colors, Emojis
+from ..constants import Colors, Emojis, get_non_animated_asset
 from ..views import ToggleModuleButton
 from .module import Module
 
@@ -221,7 +221,7 @@ class Payout:
             )
             embed.set_author(
                 name=issued_by.display_name,
-                icon_url=issued_by.display_avatar.url,
+                icon_url=get_non_animated_asset(issued_by.display_avatar),
             )
         if (recipient := await self.get_recipient(cog.bot, guild)) is not None:
             embed.description += _(
@@ -236,7 +236,7 @@ class Payout:
         embed.description += _("\n**{emoji} Message**: {message_jump_url}").format(
             emoji=Emojis.MESSAGE.value, message_jump_url=self.get_jump_url(guild)
         )
-        embed.set_footer(text=guild.name, icon_url=guild.icon)
+        embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
         return embed
 
     async def get_slash_name(self, bot: Red) -> str:

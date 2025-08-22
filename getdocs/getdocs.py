@@ -138,8 +138,8 @@ BASE_URLS: typing.Dict[str, typing.Dict[str, typing.Any]] = {
         "icon_url": "https://avatars.githubusercontent.com/u/125160897?s=88&v=4",
         "display_name": "PyLav",
     },
-    "tags": {  # Cog `Tags` by Lemon.
-        "url": "https://seina-cogs.readthedocs.io/en/latest/",
+    "tags": {  # Cog `Tags` by Phen then Lemon.
+        "url": "https://phen-cogs.readthedocs.io/en/latest/",
         "icon_url": "https://www.aprifel.com/wp-content/uploads/2018/10/une-citron.jpg",
         "aliases": ["lemontags"],
         "display_name": "Tags cog",
@@ -930,7 +930,7 @@ class Source:
                 ):
                     continue
                 for file in files:
-                    if not file.endswith(".md"):
+                    if not file.endswith(".mdx"):
                         continue
                     try:
                         filepath = pathlib.Path(os.path.join(subdir, file))
@@ -950,12 +950,19 @@ class Source:
                                 ("### Guild Scheduled Event ", "### An ", "### Any ")
                             ):
                                 if _current is not None:
-                                    _documentations.append(_current.strip("### ").strip("## "))
+                                    _documentations.append(
+                                        _current.strip("\n:")
+                                        .removeprefix("### ")
+                                        .removeprefix("## ")
+                                    )
                                 _current = line
-                            if _current is not None:
+                            elif _current is not None:
                                 _current += f"\n{line}"
                         # Iter documentations.
                         for _documentation in _documentations:
+                            assert isinstance(_documentation, str)
+                            if "Application Emojis".lower() in _documentation.lower():
+                                self.cog.logger.critical(_documentation)
                             if not _documentation:
                                 continue
                             # Get name and signature.
@@ -965,11 +972,8 @@ class Source:
                                 f"## {_name}"
                             ) or _documentation.startswith(f"### {_name}"):
                                 _documentation = "\n".join(_documentation.split("\n")[1:])
-                            if len(_name.split(" % ")) == 2:
-                                signature = _name.split(" % ")[1]
-                                _name = _name.split(" % ")[0]
-                                for _match in re.compile(r"{.*?#DOCS_(.*?)}").findall(signature):
-                                    signature = signature.replace(f"#DOCS_{_match}", "")
+                            if (line := _documentation.split("\n")[0]).startswith("<Route "):
+                                signature = f"{line.split('method=')[1:].split('>')[:-1]} {line.split('>')[1].split('<')[0]}"
                             else:
                                 signature = ""
                             description = _documentation.split("###### ")[0]

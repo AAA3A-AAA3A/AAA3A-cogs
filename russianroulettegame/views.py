@@ -165,6 +165,7 @@ class JoinGameView(discord.ui.View):
             await self._message.delete()
         except discord.HTTPException:
             pass
+        self.stop()
 
 
 class ShotView(discord.ui.View):

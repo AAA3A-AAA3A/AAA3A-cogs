@@ -280,6 +280,7 @@ class JoinGameView(discord.ui.View):
             await self._message.delete()
         except discord.HTTPException:
             pass
+        self.stop()
 
     @discord.ui.select(placeholder="Select a mode...", options=[], row=1)
     async def mode_select(

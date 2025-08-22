@@ -153,7 +153,7 @@ class LastMentions(Cog):
     async def on_message_without_command(self, message: discord.Message) -> None:
         if message.guild is None:
             return
-        if not message.raw_mentions:
+        if not message.mentions:
             return
         config = await self.config.guild(message.guild).all()
         if not config["enabled"] or await self.bot.cog_disabled_in_guild(self, message.guild):

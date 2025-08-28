@@ -1427,7 +1427,7 @@ class Security(Cog):
                                 )
                             )
                         ),
-                        s="" if amount == 1 else "s",
+                        s="" if total_payouts == 1 else "s",
                     )
                     + _("\n- ⏣ {total_amount} & {total_items} item{s}").format(
                         total_amount=format_amount(

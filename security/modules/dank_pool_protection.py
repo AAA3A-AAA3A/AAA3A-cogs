@@ -231,6 +231,7 @@ class Payout:
                 if isinstance(recipient, discord.Member)
                 else ""
             )
+            embed.set_thumbnail(url=get_non_animated_asset(recipient.display_avatar))
         if self.recipient_id is not None:
             embed.description += f"\n{box(await self.get_slash_name(cog.bot))}"
         embed.description += _("\n**{emoji} Message**: {message_jump_url}").format(

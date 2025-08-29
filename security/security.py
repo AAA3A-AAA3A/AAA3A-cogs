@@ -936,6 +936,8 @@ class Security(Cog):
                     guild.me: discord.PermissionOverwrite(
                         view_channel=True,
                         send_messages=True,
+                        embed_links=True,
+                        attach_files=True,
                     ),
                 },
                 reason="Creating the modlog channel used by Security.",

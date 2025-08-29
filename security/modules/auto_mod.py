@@ -156,7 +156,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "name": "Emojis (each)",
                 "emoji": Emojis.EMOJI.value,
                 "value": "emojis",
-                "default_added_heat": 9.0,
+                "default_added_heat": 5.5,
                 "check": lambda message, filter_config: filter_config["added_heat"]
                 * get_emoji_count(message.content),
                 "reason": lambda: _("**Auto Mod** - Spam of emojis detected."),

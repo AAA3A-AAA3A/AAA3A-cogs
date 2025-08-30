@@ -1304,7 +1304,7 @@ class Game:
                 ],
                 tz_info="UTC",
                 guild=self.ctx.guild,
-                bot=self.bot,
+                bot=self.cog.bot,
             )
         else:
             transcript = None

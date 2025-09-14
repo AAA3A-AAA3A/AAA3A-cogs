@@ -81,7 +81,7 @@ class Mode:
                 if "choices" in roles:
                     value += _("\n- **Choices:**")
                     for amount, choices in roles["choices"]:
-                        value += _("\n  **{amount}** from {choices}").format(
+                        value += _("\n  - **{amount}** from {choices}").format(
                             amount=(
                                 (
                                     str(amount)

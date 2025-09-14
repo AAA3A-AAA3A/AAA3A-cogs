@@ -115,13 +115,17 @@ class Teams(Cog):
             **roles,
         )
         await team.save()
-        if (
-            captain_role := team.captain_role
-        ) is not None and ctx.guild.me.guild_permissions.manage_roles:
-            try:
-                await captain.add_roles(captain_role, reason="Adding captain role to team member.")
-            except discord.HTTPException:
-                pass
+        if ctx.guild.me.guild_permissions.manage_roles:
+            if (captain_role := team.captain_role) is not None:
+                try:
+                    await captain.add_roles(captain_role, reason="Adding captain role to team member.")
+                except discord.HTTPException:
+                    pass
+            if (member_role := team.member_role) is not None:
+                try:
+                    await captain.add_roles(member_role, reason="Adding member role to team member.")
+                except discord.HTTPException:
+                    pass
         await ctx.send(
             _("✅ Team **{team.display_name}** created successfully!").format(team=team),
             embed=await team.get_embed(),

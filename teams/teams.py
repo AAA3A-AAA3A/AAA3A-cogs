@@ -48,6 +48,47 @@ class Teams(Cog):
                 team = Team(bot=self.bot, cog=self, **team_data)
                 self.teams.setdefault(guild_id, {})[team_id] = team
 
+    @commands.Cog.listener()
+    async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
+        if entry.action != discord.AuditLogAction.member_role_update:
+            return
+        if not entry.before or not entry.after:
+            return
+        for role in list(entry.before.roles) + list(entry.after.roles):
+            if (
+                team := next(
+                    (
+                        t
+                        for t in self.teams.get(entry.guild.id, {}).values()
+                        if t.member_role_id is not None and t.member_role_id == role.id
+                    ),
+                    None,
+                )
+            ) is None:
+                continue
+            if role not in entry.before.roles and role in entry.after.roles:
+                if entry.target.id not in team.member_ids:
+                    try:
+                        await team.add_member(entry.target)
+                    except RuntimeError:
+                        try:
+                            await entry.target.remove_roles(
+                                role, reason="Removing team member role due to a failed team addition."
+                            )
+                        except discord.HTTPException:
+                            pass
+            elif role in entry.before.roles and role not in entry.after.roles:
+                if entry.target.id in team.member_ids and entry.target != team.captain:
+                    try:
+                        await team.remove_member(entry.target)
+                    except RuntimeError:
+                        try:
+                            await entry.target.add_roles(
+                                role, reason="Re-adding team member role due to a failed team removal."
+                            )
+                        except discord.HTTPException:
+                            pass
+
     @commands.guild_only()
     @commands.hybrid_group(aliases=["teams"])
     async def team(self, ctx: commands.Context) -> None:
@@ -202,7 +243,7 @@ class Teams(Cog):
                 return True
             return False
 
-        return commands.check(predicate)
+        return predicate
 
     @commands.permissions_check(is_captain_or_vice_captain_or_admin())
     @team.command()
@@ -219,22 +260,6 @@ class Teams(Cog):
                 "✅ Member {member.mention} removed successfully from **{team.display_name}** team!"
             ).format(member=member, team=team)
         )
-
-    def is_team_captain_or_admin():
-        async def predicate(ctx: typing.Union[commands.Context, discord.Interaction]) -> bool:
-            bot = ctx.client if isinstance(ctx, discord.Interaction) else ctx.bot
-            author = ctx.user if isinstance(ctx, discord.Interaction) else ctx.author
-            if await bot.get_cog("Teams").is_admin(author):
-                return True
-            if (
-                team := (ctx.data if isinstance(ctx, discord.Interaction) else ctx.kwargs).get(
-                    "team"
-                )
-            ) is not None and author == team.captain:
-                return True
-            return False
-
-        return commands.check(predicate)
 
     @commands.permissions_check(is_captain_or_vice_captain_or_admin())
     @team.command()
@@ -272,6 +297,22 @@ class Teams(Cog):
                 "✅ Member {member.mention} added successfully to **{team.display_name}** team!"
             ).format(member=member, team=team)
         )
+
+    def is_team_captain_or_admin():
+        async def predicate(ctx: typing.Union[commands.Context, discord.Interaction]) -> bool:
+            bot = ctx.client if isinstance(ctx, discord.Interaction) else ctx.bot
+            author = ctx.user if isinstance(ctx, discord.Interaction) else ctx.author
+            if await bot.get_cog("Teams").is_admin(author):
+                return True
+            if (
+                team := (ctx.data if isinstance(ctx, discord.Interaction) else ctx.kwargs).get(
+                    "team"
+                )
+            ) is not None and author == team.captain:
+                return True
+            return False
+
+        return predicate
 
     @commands.permissions_check(is_team_captain_or_admin())
     @team.command()
@@ -394,7 +435,7 @@ class Teams(Cog):
                 )
                 for team in sorted(
                     self.teams[ctx.guild.id].values(),
-                    key=lambda t: (len(t.members), t.name),
+                    key=lambda t: (-len(t.members), t.name),
                 )
             ),
             color=await ctx.embed_color(),
@@ -405,6 +446,49 @@ class Teams(Cog):
             icon_url=ctx.guild.icon,
         )
         await Menu(pages=[embed]).start(ctx)
+
+    @commands.bot_has_permissions(embed_links=True)
+    @team.command()
+    async def member(self, ctx: commands.Context, *, member: discord.Member) -> None:
+        """Show the team of a member."""
+        team = next(
+            (t for t in self.teams.get(ctx.guild.id, {}).values() if member in t.members),
+            None,
+        )
+        if not team:
+            if member == ctx.author:
+                raise commands.UserFeedbackCheckFailure(_("You are not in any team."))
+            else:
+                raise commands.UserFeedbackCheckFailure(_("This member is not in any team."))
+        embed = await team.get_embed()
+        embed.title += _(" — Member Info")
+        embed.set_author(
+            name=member.display_name,
+            icon_url=member.display_avatar,
+        )
+        await Menu(pages=[embed]).start(ctx)
+
+    @team.command()
+    async def me(self, ctx: commands.Context) -> None:
+        """Show your team."""
+        await self.member(ctx, member=ctx.author)
+
+    @team.command()
+    async def leave(self, ctx: commands.Context) -> None:
+        """Leave your current team."""
+        team = next(
+            (t for t in self.teams.get(ctx.guild.id, {}).values() if ctx.author in t.members),
+            None,
+        )
+        if not team:
+            raise commands.UserFeedbackCheckFailure(_("You are not in any team."))
+        try:
+            await team.remove_member(ctx.author)
+        except RuntimeError as e:
+            raise commands.UserFeedbackCheckFailure(str(e))
+        await ctx.send(
+            _("✅ You have left the team **{team.display_name}**!").format(team=team)
+        )
 
     @commands.admin_or_permissions(manage_guild=True)
     @team.command()

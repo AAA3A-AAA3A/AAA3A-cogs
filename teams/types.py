@@ -390,8 +390,6 @@ class Team:
             raise RuntimeError(_("Member is not in the team."))
         if member.id == self.captain_id:
             raise RuntimeError(_("Member is the captain, transfer captaincy first."))
-        if member.id in self.vice_captain_ids:
-            raise RuntimeError(_("Member is a vice captain, demote them first."))
         self.member_ids.remove(member.id)
         await self.save()
         if (

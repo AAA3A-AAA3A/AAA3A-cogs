@@ -429,7 +429,7 @@ class Teams(Cog):
             description="\n".join(
                 _("- **{display_name}** (Captain: {captain}) — **{count}** Member{s}").format(
                     display_name=team.display_name,
-                    captain=f"<@{team.captain.id}>" if team.captain else _("No captain assigned"),
+                    captain=f"<@{captain_id}>",
                     count=len(team.members),
                     s="" if len(team.members) == 1 else "s",
                 )

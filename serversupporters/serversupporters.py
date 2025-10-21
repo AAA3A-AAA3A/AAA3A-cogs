@@ -226,22 +226,29 @@ class ServerSupporters(Cog):
         user_payload: typing.Optional[typing.Dict[str, typing.Any]] = None,
     ) -> bool:
         if _type == "tag":
-            if user_payload is None:
-                try:
-                    user_payload = await self.bot.http.request(
-                        discord.http.Route(
-                            "GET",
-                            "/users/{user_id}",
-                            user_id=member.id,
+            if discord.__version__ >= "2.6.0":
+                return (
+                    member.primary_guild is not None
+                    and member.primary_guild.identity_enabled
+                    and member.primary_guild.identity_guild_id == member.guild.id
+                )
+            else:
+                if user_payload is None:
+                    try:
+                        user_payload = await self.bot.http.request(
+                            discord.http.Route(
+                                "GET",
+                                "/users/{user_id}",
+                                user_id=member.id,
+                            )
                         )
-                    )
-                except discord.HTTPException:
-                    return False
-            return (
-                user_payload["clan"] is not None
-                and user_payload["clan"]["identity_enabled"]
-                and user_payload["clan"]["identity_guild_id"] == str(member.guild.id)
-            )
+                    except discord.HTTPException:
+                        return False
+                return (
+                    user_payload["clan"] is not None
+                    and user_payload["clan"]["identity_enabled"]
+                    and user_payload["clan"]["identity_guild_id"] == str(member.guild.id)
+                )
         elif _type == "status":
             return (
                 bool(member.activities)
@@ -298,8 +305,14 @@ class ServerSupporters(Cog):
             return
         self.cache[after] = True
 
-        before_tag_enabled = tag_supporter_role in before.roles
-        after_tag_enabled = await self.check(after, "tag", user_payload)
+        if discord.__version__ >= "2.6.0":
+            before_tag_enabled = (
+                await self.check(before, "tag"),
+                await self.check(after, "tag"),
+            )
+        else:
+            before_tag_enabled = tag_supporter_role in before.roles
+            after_tag_enabled = await self.check(after, "tag", user_payload)
         await self.update_roles(after, "tag", after_tag_enabled)
         if before_tag_enabled != after_tag_enabled:
             await self.log(after, "tag", after_tag_enabled)
@@ -318,27 +331,34 @@ class ServerSupporters(Cog):
     ) -> None:
         """List all members with the status supporter role."""
         if _type == "tag":
-            retrieve, after = 1000, discord.guild.OLDEST_OBJECT
-            members = []
-            while True:
-                after_id = after.id if after else None
-                data = await ctx.bot.http.get_members(ctx.guild.id, retrieve, after_id)
-                if not data:
-                    break
-                after = discord.Object(id=int(data[-1]["user"]["id"]))
-                for raw_member in reversed(data):
-                    member = discord.Member(
-                        data=raw_member, guild=ctx.guild, state=ctx.guild._state
-                    )
-                    if member.bot:
-                        continue
-                    if await self.check(member, "tag", raw_member["user"]):
-                        members.append(member)
-                if len(data) < 1000:
-                    break
+            if discord.__version__ >= "2.6.0":
+                members = [
+                    member for member in ctx.guild.members
+                    if await self.check(member, "tag")
+                ]
+            else:
+                retrieve, after = 1000, discord.guild.OLDEST_OBJECT
+                members = []
+                while True:
+                    after_id = after.id if after else None
+                    data = await ctx.bot.http.get_members(ctx.guild.id, retrieve, after_id)
+                    if not data:
+                        break
+                    after = discord.Object(id=int(data[-1]["user"]["id"]))
+                    for raw_member in reversed(data):
+                        member = discord.Member(
+                            data=raw_member, guild=ctx.guild, state=ctx.guild._state
+                        )
+                        if member.bot:
+                            continue
+                        if await self.check(member, "tag", raw_member["user"]):
+                            members.append(member)
+                    if len(data) < 1000:
+                        break
         else:
             members = [
-                member for member in ctx.guild.members if await self.check(member, "status")
+                member for member in ctx.guild.members
+                if await self.check(member, "status")
             ]
         embed: discord.Embed = discord.Embed(
             title=_("{count} Server {_type} Supporter{s}").format(
@@ -365,20 +385,25 @@ class ServerSupporters(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The Server Supporters system is not enabled.")
             )
-        retrieve, after = 1000, discord.guild.OLDEST_OBJECT
-        while True:
-            after_id = after.id if after else None
-            data = await ctx.bot.http.get_members(ctx.guild.id, retrieve, after_id)
-            if not data:
-                break
-            after = discord.Object(id=int(data[-1]["user"]["id"]))
-            for raw_member in reversed(data):
-                member = discord.Member(data=raw_member, guild=ctx.guild, state=ctx.guild._state)
+        if discord.__version__ >= "2.6.0":
+            for member in ctx.guild.members:
                 if member.bot:
                     continue
-                if await self.check(member, "tag", raw_member["user"]):
-                    await self.update_roles(member, "tag", True)
-                if await self.check(member, "status"):
-                    await self.update_roles(member, "status", True)
-            if len(data) < 1000:
-                break
+                await self.update_roles(member, "tag", await self.check(member, "tag"))
+                await self.update_roles(member, "status", await self.check(member, "status"))
+        else:
+            retrieve, after = 1000, discord.guild.OLDEST_OBJECT
+            while True:
+                after_id = after.id if after else None
+                data = await ctx.bot.http.get_members(ctx.guild.id, retrieve, after_id)
+                if not data:
+                    break
+                after = discord.Object(id=int(data[-1]["user"]["id"]))
+                for raw_member in reversed(data):
+                    member = discord.Member(data=raw_member, guild=ctx.guild, state=ctx.guild._state)
+                    if member.bot:
+                        continue
+                    await self.update_roles(member, "tag", await self.check(member, "tag", raw_member["user"]))
+                    await self.update_roles(member, "status", await self.check(member, "status"))
+                if len(data) < 1000:
+                    break

@@ -1292,7 +1292,7 @@ class LoggingModule(Module):
                         **kwargs,
                     )
                 except discord.NotFound:
-                    self.webhooks[channel].pop(channel, None)
+                    self.webhooks.pop(channel, None)
                     return await self.send_log(channel, *args, **kwargs)
         except discord.HTTPException:
             pass

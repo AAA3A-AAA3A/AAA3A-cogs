@@ -814,12 +814,12 @@ class AutoModModule(Module):
                 {heat[3] for heat in heats},
                 key=lambda m: m.created_at,
             )
-            if config["heats"]["reset_after_punishment"]:
-                heats.clear()
             filter_value = sorted(
                 {heat[1]: sum(h[2] for h in heats if h[1] == heat[1]) for heat in heats}.items(),
                 key=lambda item: item[1],
             )[-1]
+            if config["heats"]["reset_after_punishment"]:
+                heats.clear()
             category_value, filter = next(
                 (
                     (category, f)

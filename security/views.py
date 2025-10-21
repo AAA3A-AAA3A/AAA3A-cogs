@@ -1061,20 +1061,33 @@ class ActionsView(discord.ui.View):
             await self.member.kick(reason=audit_log_reason)
         elif action == "ban":
             await self.member.ban(reason=audit_log_reason)
-        elif action == "quarantine":
-            await self.cog.quarantine_member(
-                member=self.member,
-                issued_by=interaction.user,
-                reason=reason,
-                context_message=self._message,
+        try:
+            if action == "quarantine":
+                await self.cog.quarantine_member(
+                    member=self.member,
+                    issued_by=interaction.user,
+                    reason=reason,
+                    context_message=self._message,
+                )
+            elif action == "unquarantine":
+                await self.cog.unquarantine_member(
+                    member=self.member,
+                    issued_by=interaction.user,
+                    reason=reason,
+                    context_message=self._message,
+                )
+        except RuntimeError as e:
+            await interaction.followup.send(
+                _("⚠️ Failed to perform action **{action}** on {member.mention}: {error}").format(
+                    action=action,
+                    member=self.member,
+                    error=str(e),
+                ),
+                ephemeral=True,
             )
-        elif action == "unquarantine":
-            await self.cog.unquarantine_member(
-                member=self.member,
-                issued_by=interaction.user,
-                reason=reason,
-                context_message=self._message,
-            )
+            await self.on_timeout()
+            self.stop()
+            return
         if action not in ("quarantine", "unquarantine"):
             await self.cog.send_modlog(
                 action=action,

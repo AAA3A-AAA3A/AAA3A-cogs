@@ -62,6 +62,8 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[
         "check": lambda message, raw_message, config: (
             message._interaction.name == "serverevents payout"
             and "Pending Confirmation" in raw_message["components"][0]["components"][0]["content"]
+            and len(raw_message["components"][0]["components"]) >= 3
+            and "content" in raw_message["components"][0]["components"][2]
             and int(
                 raw_message["components"][0]["components"][2]["content"]
                 .split("<@")[1]
@@ -79,6 +81,8 @@ DANK_POOL_PROTECTION_OPTIONS: typing.List[
         "check": lambda message, raw_message, config: (
             message._interaction.name == "serverevents payout"
             and "Pending Confirmation" in raw_message["components"][0]["components"][0]["content"]
+            and len(raw_message["components"][0]["components"]) >= 3
+            and "content" in raw_message["components"][0]["components"][2]
             and convert_amount(
                 raw_message["components"][0]["components"][2]["content"]
                 .split("**\u23e3 ")[1]

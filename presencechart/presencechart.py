@@ -304,6 +304,7 @@ class PresenceChart(Cog):
         time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
         self.presence_data_cache[after._user.id] = (time, (old_status, status))
 
+    @commands.guild_only()
     @commands.bot_has_permissions(attach_files=True)
     @commands.hybrid_group(aliases=["statuschart", "statuseschart"], invoke_without_command=True)
     async def presencechart(

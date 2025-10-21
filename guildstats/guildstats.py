@@ -2064,7 +2064,8 @@ class GuildStats(Cog):
                                         for time in all_channels_data[channel_id]["messages"][
                                             member_id
                                         ]
-                                        if is_valid(int(member_id))
+                                        if _object.get_member(int(member_id)) is not None
+                                        and is_valid(int(member_id))
                                         and time
                                         >= (utc_now - datetime.timedelta(days=7)).timestamp()
                                     ]
@@ -2148,7 +2149,8 @@ class GuildStats(Cog):
                                         for time in all_channels_data[channel_id]["messages"][
                                             member_id
                                         ]
-                                        if is_valid(int(member_id))
+                                        if _object.get_member(int(member_id)) is not None
+                                        and is_valid(int(member_id))
                                         and time
                                         >= (utc_now - datetime.timedelta(days=30)).timestamp()
                                     ]

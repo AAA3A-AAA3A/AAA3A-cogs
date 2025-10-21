@@ -1,3 +1,4 @@
+import asyncio
 from AAA3A_utils import Loop  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -174,6 +175,10 @@ class SentinelRelayModule(Module):
                 except discord.HTTPException:
                     continue
             if main_bot is None or main_bot.status.value == "offline":
+                if main_bot.status.value == "offline":
+                    await asyncio.sleep(30)  # Wait a bit to avoid false positives.
+                    if main_bot.status.value != "offline":
+                        continue
                 if not config["triggered"]:
                     await self.config_value(guild).triggered.set(True)
                     for module_name in config["modules_to_enable"]:

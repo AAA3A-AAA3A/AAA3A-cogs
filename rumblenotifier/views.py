@@ -12,8 +12,8 @@ class RumbleNotifierView(discord.ui.View):
         super().__init__(timeout=None)
         self.cog: commands.Cog = cog
 
-        self.unsuscribe.label = _("Unsuscribe")
-        self.suscribe.label = _("Suscribe")
+        self.unsubscribe.label = _("Unsubscribe")
+        self.subscribe.label = _("Subscribe")
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if (
@@ -48,11 +48,11 @@ class RumbleNotifierView(discord.ui.View):
 
     @discord.ui.button(
         emoji="✖️",
-        label="Unsuscribe",
+        label="Unsubscribe",
         style=discord.ButtonStyle.danger,
-        custom_id="RumbleNotifier_unsuscribe",
+        custom_id="RumbleNotifier_unsubscribe",
     )
-    async def unsuscribe(
+    async def unsubscribe(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
@@ -60,7 +60,7 @@ class RumbleNotifierView(discord.ui.View):
         role = interaction.guild.get_role(role_id)
         if role not in interaction.user.roles:
             await interaction.followup.send(
-                _("You are already unsuscribed from the Rumble notifications."), ephemeral=True
+                _("You are already unsubscribed from the Rumble notifications."), ephemeral=True
             )
             return
         try:
@@ -78,17 +78,17 @@ class RumbleNotifierView(discord.ui.View):
 
     @discord.ui.button(
         emoji="⚔️",
-        label="Suscribe",
+        label="Subscribe",
         style=discord.ButtonStyle.success,
-        custom_id="RumbleNotifier_suscribe",
+        custom_id="RumbleNotifier_subscribe",
     )
-    async def suscribe(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def subscribe(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
         role_id = await self.cog.config.guild(interaction.guild).role()
         role = interaction.guild.get_role(role_id)
         if role in interaction.user.roles:
             await interaction.followup.send(
-                _("You are already suscribed to the Rumble notifications."), ephemeral=True
+                _("You are already subscribed to the Rumble notifications."), ephemeral=True
             )
             return
         try:

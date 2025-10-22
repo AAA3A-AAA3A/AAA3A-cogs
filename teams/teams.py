@@ -222,6 +222,35 @@ class Teams(Cog):
             ).format(member=member, team=team)
         )
 
+    @commands.admin_or_permissions(manage_guild=True)
+    @team.command()
+    async def addmembers(
+        self, ctx: commands.Context, team: TeamConverter, *, members: commands.Greedy[discord.Member]
+    ) -> None:
+        """Add a member to a specific team."""
+        if not members:
+            raise commands.UserInputError()
+        done = 0
+        for member in members:
+            try:
+                await team.add_member(member)
+            except RuntimeError as e:
+                await ctx.send(
+                    _(
+                        "⚠️ Could not add {member.mention} to **{team.display_name}** team: {error}"
+                    ).format(member=member, team=team, error=str(e))
+                )
+            else:
+                done += 1
+        if done > 0:
+            await ctx.send(
+                _("✅ {done} member{s} added successfully to **{team.display_name}** team!").format(
+                    team=team,
+                    done=done,
+                    s="" if done == 1 else "s",
+                )
+            )
+
     async def is_admin(self, member: discord.Member) -> bool:
         return (
             await self.bot.is_admin(member)
@@ -260,6 +289,35 @@ class Teams(Cog):
                 "✅ Member {member.mention} removed successfully from **{team.display_name}** team!"
             ).format(member=member, team=team)
         )
+
+    @commands.permissions_check(is_captain_or_vice_captain_or_admin())
+    @team.command()
+    async def removemembers(
+        self, ctx: commands.Context, team: TeamConverter, *, members: commands.Greedy[discord.Member]
+    ) -> None:
+        """Remove multiple members from a specific team."""
+        if not members:
+            raise commands.UserInputError()
+        done = 0
+        for member in members:
+            try:
+                await team.remove_member(member)
+            except RuntimeError as e:
+                await ctx.send(
+                    _(
+                        "⚠️ Could not remove {member.mention} from **{team.display_name}** team: {error}"
+                    ).format(member=member, team=team, error=str(e))
+                )
+            else:
+                done += 1
+        if done > 0:
+            await ctx.send(
+                _("✅ {done} member{s} removed successfully from **{team.display_name}** team!").format(
+                    team=team,
+                    done=done,
+                    s="" if done == 1 else "s",
+                )
+            )
 
     @commands.permissions_check(is_captain_or_vice_captain_or_admin())
     @team.command()
@@ -317,9 +375,23 @@ class Teams(Cog):
     @commands.permissions_check(is_team_captain_or_admin())
     @team.command()
     async def promote(
-        self, ctx: commands.Context, team: TeamConverter, *, member: discord.Member
+        self,
+        ctx: commands.Context,
+        team: TeamConverter,
+        ignore_belonging_check: bool = False,
+        *,
+        member: discord.Member,
     ) -> None:
         """Promote a member to captain in a specific team."""
+        if ignore_belonging_check and member.id not in team.member_ids:
+            try:
+                await team.add_member(member)
+            except RuntimeError as e:
+                raise commands.UserFeedbackCheckFailure(
+                    _("Could not add {member.mention} to the team: {error}").format(
+                        member=member, error=str(e)
+                    )
+                )
         try:
             await team.promote_member(member)
         except RuntimeError as e:

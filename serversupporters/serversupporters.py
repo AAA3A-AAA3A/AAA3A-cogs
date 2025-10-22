@@ -306,7 +306,7 @@ class ServerSupporters(Cog):
         self.cache[after] = True
 
         if discord.__version__ >= "2.6.0":
-            before_tag_enabled = (
+            before_tag_enabled, after_tag_enabled = (
                 await self.check(before, "tag"),
                 await self.check(after, "tag"),
             )

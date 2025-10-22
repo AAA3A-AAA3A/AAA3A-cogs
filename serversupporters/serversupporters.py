@@ -230,7 +230,7 @@ class ServerSupporters(Cog):
                 return (
                     member.primary_guild is not None
                     and member.primary_guild.identity_enabled
-                    and member.primary_guild.identity_guild_id == member.guild.id
+                    and member.primary_guild.id == member.guild.id
                 )
             else:
                 if user_payload is None:

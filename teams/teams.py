@@ -223,7 +223,7 @@ class Teams(Cog):
         )
 
     @commands.admin_or_permissions(manage_guild=True)
-    @team.command()
+    @team.command(with_app_command=False)
     async def addmembers(
         self, ctx: commands.Context, team: TeamConverter, *, members: commands.Greedy[discord.Member]
     ) -> None:
@@ -291,7 +291,7 @@ class Teams(Cog):
         )
 
     @commands.permissions_check(is_captain_or_vice_captain_or_admin())
-    @team.command()
+    @team.command(with_app_command=False)
     async def removemembers(
         self, ctx: commands.Context, team: TeamConverter, *, members: commands.Greedy[discord.Member]
     ) -> None:

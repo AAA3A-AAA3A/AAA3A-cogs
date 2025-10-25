@@ -153,7 +153,7 @@ class Honeypot(Cog):
                     self.bot,
                     message.guild,
                     message.created_at,
-                    action_type=action,
+                    action_type=action if action != "mute" else "smute",
                     user=message.author,
                     moderator=message.guild.me,
                     reason=reason,

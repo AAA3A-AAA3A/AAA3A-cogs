@@ -588,7 +588,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
         await Menu(pages=embeds).start(ctx)
 
     @setonepiecebounties.command()
-    async def setaccuratejoinedat(
+    async def setaccuratejoindate(
         self,
         ctx: commands.Context,
         member: discord.Member = commands.Author,

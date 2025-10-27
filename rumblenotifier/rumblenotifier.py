@@ -127,8 +127,8 @@ class RumbleNotifier(Cog):
         )
         embed: discord.Embed = discord.Embed(
             title=_("⚔️ New Rumble battle! ⚔️"),
-            description=_("I've notified the {length} members of the {role} role.").format(
-                length=len(role.members), role=role.mention
+            description=_("I've notified the {length} member{s} of the {role} role.").format(
+                length=len(role.members), role=role.mention, s="" if len(role.members) == 1 else "s"
             ),
             color=discord.Color.gold(),
         )

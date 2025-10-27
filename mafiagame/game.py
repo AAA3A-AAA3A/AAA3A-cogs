@@ -200,11 +200,13 @@ class Night(DayNight):
                 is not None
             ):
                 player = mafia_player
+                final_role = player.role
             if (
                 self.game.current_anomaly is BlindingLights
                 and player in self.game.current_anomaly_players
             ):
                 self.targets.pop(player, None)
+                player.role = final_role
                 continue
             if target is not None:
                 try:

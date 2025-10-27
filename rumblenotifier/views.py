@@ -27,7 +27,7 @@ class RumbleNotifierView(discord.ui.View):
             )
             or (role_id := await self.cog.config.guild(interaction.guild).role()) is None
             or (role := interaction.guild.get_role(role_id)) is None
-            or not await self.cog.config.guild(interaction.guild).suscribing()
+            or not await self.cog.config.guild(interaction.guild).subscribing()
         ):
             await interaction.response.send_message(
                 _("You are not allowed to use this interaction."), ephemeral=True

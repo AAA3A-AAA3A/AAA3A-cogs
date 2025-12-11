@@ -7,7 +7,6 @@ import typing  # isort:skip
 import asyncio
 import datetime
 import io
-import os
 import random
 from dataclasses import dataclass, field
 
@@ -28,12 +27,13 @@ from .anomalies import (
 from .constants import (
     ACHIEVEMENTS_COLOR,
     DAY_COLOR,
+    DEVELOPER,
     MAFIA_COLOR,
     NIGHT_COLOR,
     VILLAGERS_COLOR,
     VOTING_AND_JUDGEMENT_COLOR,
 )  # NOQA
-from .modes import Classic, Mode
+from .modes import Classic, Mode, TraitorsGambit
 from .roles import (
     ACHIEVEMENTS,
     MAFIA_HIERARCHY,
@@ -42,6 +42,7 @@ from .roles import (
     TARGET_TYPE_HINT,
     Alchemist,
     Blackmailer,
+    Developer,
     Doctor,
     Gambler,
     GodFather,
@@ -55,7 +56,14 @@ from .roles import (
     VillagerAlchemist,
 )  # NOQA
 from .utils import get_image
-from .views import JudgementView, PerformActionView, SpectateView, StartMessageView, SuicideView, VoteView
+from .views import (
+    JudgementView,
+    PerformActionView,
+    SpectateView,
+    StartMessageView,
+    SuicideView,
+    VoteView,
+)  # NOQA
 
 _: Translator = Translator("MafiaGame", __file__)
 
@@ -74,7 +82,9 @@ class DayNight:
             color=NIGHT_COLOR if isinstance(self, Night) else DAY_COLOR,
         )
         embed.add_field(
-            name=_("Currently alive ({len_alive}):").format(len_alive=len(self.game.alive_players)),
+            name=_("Currently alive ({len_alive}):").format(
+                len_alive=len(self.game.alive_players)
+            ),
             value="\n".join(
                 [
                     f"😃 {player.member.mention}"
@@ -89,7 +99,7 @@ class DayNight:
                 [
                     f"☠️ {player.member.mention}"
                     + (
-                        f" ({player.role.name}{_(' - Town Traitor') if player.is_town_traitor else ''})"
+                        f" ({player.role.display_name(self.game)}{_(' - Town Traitor') if player.is_town_traitor else ''})"
                         if self.game.config["show_dead_role"]
                         else ""
                     )
@@ -176,12 +186,9 @@ class Night(DayNight):
             if player.is_dead:
                 self.targets.pop(player, None)
                 continue
-            if (
-                self.game.current_anomaly is BlindingLights
-                and player in self.game.current_anomaly_players
-            ):
-                self.targets.pop(player, None)
-                continue
+            final_role = player.role
+            if player.first_role_night_number == self.number:
+                player.role = player.previous_role
             if (
                 player.role is GodFather
                 and (
@@ -193,9 +200,19 @@ class Night(DayNight):
                 is not None
             ):
                 player = mafia_player
+                final_role = player.role
+            if (
+                self.game.current_anomaly is BlindingLights
+                and player in self.game.current_anomaly_players
+            ):
+                self.targets.pop(player, None)
+                player.role = final_role
+                continue
             if target is not None:
                 try:
-                    for i, tg in enumerate([target] if not isinstance(target, typing.Tuple) else target):
+                    for i, tg in enumerate(
+                        [target] if not isinstance(target, typing.Tuple) else target
+                    ):
                         if not isinstance(tg, Player):
                             continue
                         for p in sorted(
@@ -227,7 +244,6 @@ class Night(DayNight):
                                             color=MAFIA_COLOR,
                                         ),
                                     )
-                            del self.targets[player]
                             raise ValueError()
                         if tg.immune or tg in self.immune_players:
                             await player.send(
@@ -238,29 +254,30 @@ class Night(DayNight):
                                     description=_("You were unable to perform your action."),
                                 ),
                             )
-                            del self.targets[player]
                             raise ValueError()
                         if player.role.visit_type != "Passive" and player.infected:
                             tg.infected = False
                 except ValueError:
                     self.targets.pop(player, None)
+                    player.role = final_role
                     continue
-            if player.role is not Doctor or target in [
-                t for p, t in self.targets.items() if p.role is GodFather
-            ]:
-                player.game_targets.append(target)
             try:
                 await player.role.action(self, player, target)
             except NotImplementedError:
                 pass
+            if player.role is not Doctor or target in [
+                t for p, t in self.targets.items() if p.role is GodFather
+            ]:
+                player.game_targets.append(target)
+            player.role = final_role
         if (afk_days_before_kick := self.game.config["afk_days_before_kick"]) is not None:
             for player, days in self.game.afk_players.copy().items():
-                if days >= afk_days_before_kick:
+                if days >= afk_days_before_kick + 1:
                     await player.kill(cause="afk", reason=_("They were AFK for too long."))
                     if (
                         afk_temp_ban_duration := self.game.config["afk_temp_ban_duration"]
                     ) is not None:
-                        await self.game.cog.config.member(player.member).temp_ban_until.set(
+                        await self.game.cog.config.member(player.member).temp_banned_until.set(
                             int(
                                 (
                                     datetime.datetime.now(tz=datetime.timezone.utc)
@@ -306,15 +323,20 @@ class Day(DayNight):
                 ).format(mayor_player=mayor_player),
                 color=mayor_player.role.color(),
             )
-            embed.set_image(url="attachment://mayor.png")
+            embed.set_image(url=mayor_player.role.image_url())
             await self.game.send(
                 embed=embed,
-                file=get_image(os.path.join("roles", "mayor")),
+                file=mayor_player.role.get_image(self.game),
             )
         await asyncio.sleep(1)
+        talk_timeout = (
+            self.game.config["talk_timeout"]
+            if self.game.current_anomaly is not LightningRound
+            else 10
+        )
         embed: discord.Embed = discord.Embed(
             title=_("Now, I will give you {talk_timeout} seconds to talk! 🔊").format(
-                talk_timeout=self.game.config["talk_timeout"]
+                talk_timeout=talk_timeout
             ),
             description=_(
                 "Want to accuse someone? Want to defend yourself, or confess? Now is the time!"
@@ -350,18 +372,14 @@ class Day(DayNight):
             await self.game.channel.edit(overwrites=overwrites)
         except discord.HTTPException:
             pass
-        await asyncio.sleep(
-            self.game.config["talk_timeout"]
-            if self.game.current_anomaly is not LightningRound
-            else 10
-        )
+        await asyncio.sleep(talk_timeout)
 
         manipulator = None
         for i in range(1 if self.game.current_anomaly is not DejaVu else 2):
             if i == 1:
                 if any(
                     player.has_won and not player.role.objective_secondary
-                    for player in self.players
+                    for player in self.game.players
                 ):
                     break
                 if (
@@ -376,6 +394,11 @@ class Day(DayNight):
                 if len(remaining_players) % 2
                 else len(remaining_players) // 2
             )
+            voting_timeout = (
+                self.game.config["voting_timeout"]
+                if self.game.current_anomaly is not LightningRound
+                else 10
+            )
             embed: discord.Embed = discord.Embed(
                 title=_(
                     "🗳️ Voting time! 🗳️\nMinimum votes required: {minimum_votes_required}"
@@ -388,7 +411,7 @@ class Day(DayNight):
             embed.set_image(url="attachment://voting.png")
             embed.set_footer(
                 text=_("You have {voting_timeout} seconds to vote.").format(
-                    voting_timeout=self.game.config["voting_timeout"]
+                    voting_timeout=voting_timeout
                 )
             )
             view: VoteView = VoteView(self, remaining_players=remaining_players)
@@ -398,11 +421,7 @@ class Day(DayNight):
                 file=get_image("voting"),
             )
             self.game.cog.views[view._message] = view
-            await asyncio.sleep(
-                self.game.config["voting_timeout"]
-                if self.game.current_anomaly is not LightningRound
-                else 10
-            )
+            await asyncio.sleep(voting_timeout)
             await view.on_timeout()
             if politicians := {
                 player: target
@@ -475,7 +494,7 @@ class Day(DayNight):
                                     ":\n"
                                     + "\n".join(
                                         [
-                                            f"**•** {voter.member.mention}{f' **+{extra_votes}**' if (extra_votes := get_extra_votes(voter, for_displaying=True)) else ''}"
+                                            f"- {voter.member.mention}{f' **+{extra_votes}**' if (extra_votes := get_extra_votes(voter, for_displaying=True)) else ''}"
                                             for voter in votes[player]
                                         ]
                                     )
@@ -522,6 +541,7 @@ class Day(DayNight):
                     )
                     for __ in range(self.game.config["defend_timeout"]):
                         if target.is_dead:
+                            await asyncio.sleep(4)
                             break
                         await asyncio.sleep(1)
                     await suicide_view.on_timeout()
@@ -629,7 +649,7 @@ class Day(DayNight):
                         embed.set_image(url=lawyer.role.image_url())
                         await self.game.send(
                             embed=embed,
-                            file=lawyer.role.get_image(),
+                            file=lawyer.role.get_image(self.game),
                         )
                         if target.role.side != "Villagers":
                             embeds = [
@@ -644,14 +664,20 @@ class Day(DayNight):
                                 ).set_image(url=lawyer.role.image_url()),
                                 discord.Embed(
                                     title=_(
-                                        "{target.member.display_name} is the **{target.role.name}**!"
-                                    ).format(target=target),
+                                        "{target.member.display_name} is the **{role_name}**!"
+                                    ).format(
+                                        target=target,
+                                        role_name=target.role.display_name(self.game),
+                                    ),
                                     color=target.role.color(),
                                 ).set_image(url=target.role.image_url()),
                             ]
                             await self.game.send(
                                 embed=embeds,
-                                files=[lawyer.role.get_image(), target.role.get_image()],
+                                files=[
+                                    lawyer.role.get_image(self.game),
+                                    target.role.get_image(self.game),
+                                ],
                             )
             else:
                 await self.game.send(
@@ -696,6 +722,7 @@ class Game:
         self.ctx: commands.Context = None
         self.mode: typing.Type[Mode] = mode
         self.config: typing.Dict[str, typing.Any] = config
+        self.task: typing.Optional[asyncio.Task] = None
 
         self.channel: typing.Union[discord.TextChannel] = None
         self.players: typing.List[Player] = []
@@ -727,6 +754,9 @@ class Game:
 
     def get_player_by_id(self, member_id: int) -> typing.Optional[Player]:
         return next((player for player in self.players if player.member.id == member_id), None)
+
+    def start_task(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
+        self.task: asyncio.Task = asyncio.create_task(self.start(ctx, players))
 
     async def start(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
         self.ctx: commands.Context = ctx
@@ -848,12 +878,13 @@ class Game:
 
         roles = self.mode.get_roles(len(self.players), config=self.config)
         if self.config["display_roles_when_starting"]:
+            theme = self.config["theme"]
             await self.send(
                 embed=discord.Embed(
                     title=_("Roles in this game:"),
                     description="\n".join(
                         [
-                            f"- **{f'{count} ' if (count := roles.count(role)) > 1 else ''}{role.name}{'s' if count > 1 else ''}** (**{role.side}**): {_(role.ability)}"
+                            f"- **{f'{count} ' if (count := roles.count(role)) > 1 else ''}{role.display_name(theme=theme)}{'s' if theme is None and count > 1 else ''}** (**{role.side}**): {_(role.ability)}"
                             for role in sorted(
                                 set(roles),
                                 key=lambda role: (
@@ -861,7 +892,7 @@ class Game:
                                     role.side != "Villagers",
                                     role.side != "Neutral",
                                     role not in (GodFather, Mayor),
-                                    role.name,
+                                    role.display_name(theme=theme),
                                 ),
                             )
                         ]
@@ -870,12 +901,28 @@ class Game:
                 ),
             )
         for player in self.players:
-            role = random.choice(roles)
+            if player.member.id != DEVELOPER or Developer not in roles:
+                role = random.choice(roles)
+            else:
+                role = Developer
             roles.remove(role)
             if role is Alchemist:
                 role = random.choice([MafiaAlchemist, VillagerAlchemist])
             player.role = role
-        if self.config["town_traitor"]:
+        if self.mode is TraitorsGambit:
+            # Multiple hidden traitors
+            traitor_count = TraitorsGambit.get_traitor_count(len(self.players))
+            eligible_traitors = [
+                p for p in self.players 
+                if p.role.side == "Villagers" and not p.is_town_traitor
+            ]
+            
+            if len(eligible_traitors) >= traitor_count:
+                traitors = random.sample(eligible_traitors, traitor_count)
+                for traitor in traitors:
+                    traitor.is_town_traitor = True
+        elif self.config["town_traitor"]:
+            # Standard single traitor
             random.choice(
                 [player for player in self.players if player.role.side == "Villagers"]
             ).is_town_traitor = True
@@ -928,7 +975,7 @@ class Game:
             if (
                 player.role.side == "Mafia" and player.role != MafiaAlchemist
             ) or player.is_town_traitor:
-                kwargs["embeds"].append(self.get_mafia_team_embed(player=player))
+                kwargs["embeds"].append(self.get_mafia_team_embed())
             try:
                 await player.member.send(**kwargs)
             except discord.HTTPException:
@@ -937,6 +984,48 @@ class Game:
                 await player.role.on_game_start(self, player)
             except NotImplementedError:
                 pass
+            
+            # Special notifications for Traitor's Gambit mode
+        if self.mode is TraitorsGambit:
+            traitor_count = len([p for p in self.players if p.is_town_traitor])
+            
+            # Notify Mafia (but don't tell them who the traitors are)
+            mafia_players = [
+                p for p in self.players 
+                if p.role.side == "Mafia" and p.role != MafiaAlchemist
+            ]
+            for mafia in mafia_players:
+                try:
+                    await mafia.member.send(
+                        embed=discord.Embed(
+                            title=_("🎭 Traitor's Gambit Mode Active! 🎭"),
+                            description=_(
+                                "There are **{traitor_count}** Town Traitors secretly working for the Mafia.\n\n"
+                                "❓ You don't know who they are\n"
+                                "❓ They don't know each other\n"
+                                "❓ They could be any Villager role\n\n"
+                                "Be careful who you kill - you might eliminate your own allies!"
+                            ).format(traitor_count=traitor_count),
+                            color=MAFIA_COLOR
+                        )
+                    )
+                except discord.HTTPException:
+                    pass
+            
+            # Public announcement (creates the paranoia)
+            await self.send(
+                embed=discord.Embed(
+                    title=_("🎭 Traitor's Gambit Mode Activated! 🎭"),
+                    description=_(
+                        "**Multiple Town Traitors lurk among the Villagers...**\n\n"
+                        "Nobody knows how many there are.\n"
+                        "They don't know each other.\n"
+                        "Even confirmed roles could be traitors.\n\n"
+                        "**Trust no one. Question everything.**"
+                    ),
+                    color=discord.Color.dark_red()
+                ).set_footer(text=_("Good luck... you'll need it."))
+            )
 
         # if failed_to_send:
         #     self._show_my_role_view: ShowMyRoleView = ShowMyRoleView(self, players=players)
@@ -965,8 +1054,11 @@ class Game:
                     [
                         anomaly
                         for anomaly in ANOMALIES
-                        if anomaly.name not in self.config["disabled_anomalies"]
-                        and anomaly is not self.current_anomaly
+                        if (
+                            anomaly.is_possible(self)
+                            and anomaly.name not in self.config["disabled_anomalies"]
+                            and anomaly is not self.current_anomaly
+                        )
                     ]
                 )
             else:
@@ -1027,7 +1119,7 @@ class Game:
                     else (
                         "Villagers"
                         if main_winners[0].role.side == "Villagers"
-                        else main_winners[0].role.name
+                        else main_winners[0].role.display_name(self)
                     )
                 )
             ),
@@ -1040,7 +1132,7 @@ class Game:
                 ),
                 value="\n".join(
                     [
-                        f"{'👼' if not player.is_dead else '☠️'} {player.member.mention} ({player.role.name}{_(' - Town Traitor') if player.is_town_traitor else ''}{_(' - Town VIP') if player.is_town_vip else ''})"
+                        f"{'👼' if not player.is_dead else '☠️'} {player.member.mention} ({player.role.display_name(self)}{_(' - Town Traitor') if player.is_town_traitor else ''}{_(' - Town VIP') if player.is_town_vip else ''})"
                         for player in main_winners
                     ]
                 ),
@@ -1052,7 +1144,7 @@ class Game:
                 ),
                 value="\n".join(
                     [
-                        f"{'👼' if not player.is_dead else '☠️'} {player.member.mention} ({player.role.name}{_(' - Town Traitor') if player.is_town_traitor else ''}{_(' - Town VIP') if player.is_town_vip else ''})"
+                        f"{'👼' if not player.is_dead else '☠️'} {player.member.mention} ({player.role.display_name(self)}{_(' - Town Traitor') if player.is_town_traitor else ''}{_(' - Town VIP') if player.is_town_vip else ''})"
                         for player in secondary_winners
                     ]
                 ),
@@ -1062,7 +1154,7 @@ class Game:
                 name=_("🗡️ Losers ({len_losers}):").format(len_losers=len(losers)),
                 value="\n".join(
                     [
-                        f"{'👼' if not player.is_dead else '☠️'} {player.member.mention} ({player.role.name}{_(' - Town Traitor') if player.is_town_traitor else ''}{_(' - Town VIP') if player.is_town_vip else ''})"
+                        f"{'👼' if not player.is_dead else '☠️'} {player.member.mention} ({player.role.display_name(self)}{_(' - Town Traitor') if player.is_town_traitor else ''}{_(' - Town VIP') if player.is_town_vip else ''})"
                         for player in losers
                     ]
                 ),
@@ -1114,13 +1206,13 @@ class Game:
             new_achievements = await player.check_achievements()
             if player in main_winners and self.config["red_economy"]:
                 if not self.config["reward_for_winning_based_on_costs"]:
-                    credits_to_win = self.config["credits_to_win"]
+                    reward_for_winning = self.config["reward_for_winning"]
                 else:
-                    credits_to_win = (self.config["cost_to_play"] * len(self.players)) // len(
+                    reward_for_winning = (self.config["cost_to_play"] * len(self.players)) // len(
                         main_winners
                     )
                 try:
-                    await bank.deposit_credits(player.member, self.config["credits_to_win"])
+                    await bank.deposit_credits(player.member, reward_for_winning)
                 except BalanceTooHigh as e:
                     await bank.set_balance(player.member, e.max_balance)
             if player not in failed_to_send:
@@ -1158,7 +1250,7 @@ class Game:
                                 title=_(
                                     "💰 You have received **{credits}** {currency_name}! 💰"
                                 ).format(
-                                    credits=credits_to_win,
+                                    credits=reward_for_winning,
                                     currency_name=await bank.get_currency_name(self.ctx.guild),
                                 ),
                                 color=ACHIEVEMENTS_COLOR,
@@ -1167,10 +1259,50 @@ class Game:
                     except discord.HTTPException:
                         pass
 
-        await self._start_message_view.on_timeout()
-        self._start_message_view.stop()
-        await self._spectate_view.on_timeout()
-        self._spectate_view.stop()
+        await self.end(embeds=embeds, view=view)
+
+    def get_mafia_team_embed(self) -> discord.Embed:
+        mafia_players = sorted(
+            [
+                p
+                for p in self.players
+                if (p.role.side == "Mafia" and p.role not in (MafiaAlchemist, VillagerAlchemist))
+                or p.is_town_traitor
+            ],
+            key=lambda p: (
+                MAFIA_HIERARCHY.index(p.role)
+                if p.role in MAFIA_HIERARCHY
+                else len(MAFIA_HIERARCHY) + 1
+            ),
+        )
+        embed: discord.Embed = discord.Embed(
+            title=_("🔪 Here's your Mafia team! 🔪"),
+            description="\n".join(
+                [
+                    f"🔫 {p.member.mention} ({p.role.display_name(self)}{_(' - Town Traitor') if p.is_town_traitor else ''})"
+                    for p in mafia_players
+                ]
+            ),
+            color=MAFIA_COLOR,
+        )
+        if len(mafia_players) > 1:
+            embed.set_footer(text=_("You can DM the bot to communicate with your team!"))
+        return embed
+
+    def get_readable_spoil(self) -> typing.Dict[str, str]:
+        return {
+            player.member.display_name: player.role.display_name(self) for player in self.players
+        }
+
+    async def end(self, **win_kwargs) -> None:
+        if not win_kwargs and self.task is not None:
+            self.task.cancel()
+        if self._start_message_view is not None:
+            await self._start_message_view.on_timeout()
+            self._start_message_view.stop()
+        if self._spectate_view is not None:
+            await self._spectate_view.on_timeout()
+            self._spectate_view.stop()
 
         if self.config["game_logs"]:
 
@@ -1194,7 +1326,7 @@ class Game:
                         channel.guild = guild
 
                     class AttachmentHandler(
-                        chat_exporter.construct.attachment_handlers.AttachmentHandler
+                        chat_exporter.construct.attachment_handler.AttachmentHandler
                     ):
                         async def process_asset(
                             self, attachment: discord.Attachment
@@ -1229,19 +1361,22 @@ class Game:
                 ],
                 tz_info="UTC",
                 guild=self.ctx.guild,
-                bot=ctx.bot,
+                bot=self.cog.bot,
             )
         else:
             transcript = None
-        await self.ctx.send(
-            embeds=embeds,
-            file=(
-                discord.File(io.BytesIO(transcript.encode("utf-8")), filename="transcript.html")
-                if transcript
-                else None
-            ),
-            view=view,
-        )
+        if win_kwargs or transcript is not None:
+            await self.ctx.send(
+                **win_kwargs,
+                file=(
+                    discord.File(
+                        io.BytesIO(transcript.encode("utf-8")), filename="transcript.html"
+                    )
+                    if transcript
+                    else None
+                ),
+            )
+
         self.cog.games.pop(self.ctx.guild, None)
         self.cog.last_games[self.ctx.guild] = self
         if self.channel.permissions_for(self.ctx.guild.me).manage_channels:
@@ -1249,9 +1384,9 @@ class Game:
                 await asyncio.sleep(10)
                 if not await CogsUtils.ConfirmationAsk(
                     self.ctx,
-                    _("{host.mention} Do you want to delete the Mafia channel?").format(
-                        host=self.ctx.author
-                    ),
+                    _(
+                        "{host.mention} Do you want to delete the channel of the previous Mafia game?"
+                    ).format(host=self.ctx.author),
                     timeout=600,
                     timeout_message=None,
                 ):
@@ -1262,34 +1397,3 @@ class Game:
                 await self.channel.delete()
             except discord.HTTPException:
                 pass
-
-    def get_mafia_team_embed(self, player: typing.Optional[Player] = None) -> discord.Embed:
-        mafia_players = sorted(
-            [
-                p
-                for p in self.players
-                if (p.role.side == "Mafia" and p.role not in (MafiaAlchemist, VillagerAlchemist))
-                or p.is_town_traitor
-            ],
-            key=lambda p: (
-                MAFIA_HIERARCHY.index(p.role)
-                if p.role in MAFIA_HIERARCHY
-                else len(MAFIA_HIERARCHY) + 1
-            ),
-        )
-        embed: discord.Embed = discord.Embed(
-            title=_("🔪 Here's your Mafia team! 🔪"),
-            description="\n".join(
-                [
-                    f"🔫 {p.member.mention} ({p.role.name}{_(' - Town Traitor') if p.is_town_traitor else ''})"
-                    for p in mafia_players
-                ]
-            ),
-            color=MAFIA_COLOR,
-        )
-        if len(mafia_players) > 1:
-            embed.set_footer(text=_("You can DM the bot to communicate with your team!"))
-        return embed
-
-    def get_readable_spoil(self) -> typing.Dict[str, str]:
-        return {player.member.display_name: player.role.name for player in self.players}

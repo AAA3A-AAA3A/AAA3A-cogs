@@ -539,4 +539,111 @@ class Custom(Mode):
         return roles
 
 
-MODES: typing.List[typing.Type[Mode]] = [Classic, Crazy, Chaos, Corona, Crimson, Random, Custom]
+class TraitorsGambit(Mode):
+    name: str = "Traitor's Gambit"
+    emoji: str = "🎭"
+    description: str = _(
+        "A paranoia-inducing mode where multiple Villagers are secretly Town Traitors. "
+        "The number of traitors is hidden, they don't know each other, and even the Mafia doesn't know who they are. "
+        "Any Villager could be a traitor - even Detectives, Doctors, or Mayors."
+    )
+    
+    roles = {
+        (7, 9): {
+            "must": ALWAYS_MUST,  # GodFather, Detective, Doctor
+            "choices": [
+                (None, [Vigilante, Mayor, Spy, PrivateInvestigator, Distractor])
+            ],
+        },
+        (10, 12): {
+            "must": ALWAYS_MUST + [Vigilante],
+            "choices": [
+                (1, [Framer]),
+                (None, [Mayor, Spy, PrivateInvestigator, Distractor, Watcher])
+            ],
+        },
+        (13, 15): {
+            "must": ALWAYS_MUST + [Vigilante, Mayor],
+            "choices": [
+                ((1, 2), [Framer]),
+                (None, [Spy, PrivateInvestigator, Distractor, Watcher])
+            ],
+        },
+        (16, None): {
+            "must": ALWAYS_MUST + [Vigilante, Mayor, Spy, PrivateInvestigator],
+            "choices": [
+                (2, [Framer]),
+                (None, [Distractor, Watcher])
+            ],
+        },
+    }
+
+    @classmethod
+    def get_roles(
+        cls,
+        players_number: int,
+        config: typing.Dict[str, typing.Any] = {
+            "disabled_roles": [],
+            "more_roles": False,
+            "custom_roles": [],
+        },
+    ) -> typing.List[typing.Type[Role]]:
+        """Generate roles using standard mode logic."""
+        specificities = next(
+            (
+                roles_dict
+                for players_range, roles_dict in cls.roles.items()
+                if (
+                    players_range == players_number
+                    if isinstance(players_range, int)
+                    else (players_range[0] or 5) <= players_number <= (players_range[1] or 25)
+                )
+            ),
+        )
+        
+        roles = [
+            role for role in specificities["must"] 
+            if role.name not in config["disabled_roles"]
+        ]
+        
+        if "choices" in specificities:
+            for amount, choices in specificities["choices"]:
+                choices = [
+                    role for role in choices 
+                    if role.name not in config["disabled_roles"]
+                ]
+                if amount is not None:
+                    if not isinstance(amount, typing.Tuple):
+                        roles.extend(random.sample(choices, k=min(amount, len(choices))))
+                    else:
+                        k = random.randint(amount[0], min(amount[1], len(choices)))
+                        roles.extend(random.sample(choices, k=k))
+                elif len(roles) < players_number:
+                    roles.extend(
+                        random.sample(choices, min(len(choices), players_number - len(roles)))
+                    )
+        
+        if len(roles) < players_number:
+            roles.extend([Villager] * (players_number - len(roles)))
+        
+        return roles
+
+    @classmethod
+    def get_traitor_count(cls, players_number: int) -> int:
+        """
+        Determine how many Town Traitors based on player count.
+        Uses variable ranges to keep exact number hidden.
+        """
+        if players_number <= 8:
+            return random.randint(2, 3)  # 2-3 traitors
+        elif players_number <= 12:
+            return random.randint(2, 4)  # 2-4 traitors  
+        elif players_number <= 16:
+            return random.randint(3, 5)  # 3-5 traitors
+        else:
+            return random.randint(4, 6)  # 4-6 traitors
+
+
+MODES: typing.List[typing.Type[Mode]] = [
+    Classic, Crazy, Chaos, Corona, Crimson, Random, Custom, TraitorsGambit
+]

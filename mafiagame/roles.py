@@ -684,7 +684,7 @@ class GodFather(Role):
     ability: str = _(
         "Each night, the God Father can select a player to kill. If they have a Mafia, their Mafia will attack the target instead, and they will not be seen visiting."
     )
-    visit_type: str = "**Passive** if you order a mafia to kill otherwise **Active**."
+    visit_type: str = "**Passive** if you order a Mafia to kill otherwise **Active**."
     objective: str = _("Kill all villagers.")
     achievements = {
         "Leader of the Mafia": {
@@ -2997,7 +2997,7 @@ class Submissor(Role):
     side: str = "Neutral"
     description: str = _("The Submissor is a coward that will do anything to save their own skin.")
     ability: str = _(
-        "The first time you are attacked, you will beg mercy from the attacker and will join their side. Once the player who attacked you dies, you take on their role. If attacked the second time, you will die as you have given your life to the first attacker."
+        "The first time you are attacked, you will beg mercy from the visiter and will join their side. Once the player who targetted you dies, you take on their role. If attacked the second time, you will die as you have given your life to the first visiter."
     )
     objective: str = _("Help your side win.")
     achievements = {

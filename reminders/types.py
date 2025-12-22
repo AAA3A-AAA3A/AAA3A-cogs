@@ -814,19 +814,13 @@ class Reminder:
                     if self.content["type"] == "message" and destination.id == int(
                         self.content["message_jump_url"].split("/")[-2]
                     ):
-                        if (
-                            message := destination.get_partial_message(
-                                int(self.content["message_jump_url"].split("/")[-1])
-                            )
-                        ) is not None:
-                            reference = message
+                        reference = destination.get_partial_message(
+                            int(self.content["message_jump_url"].split("/")[-1])
+                        )
                     elif destination.id == int(self.jump_url.split("/")[-2]):
-                        if (
-                            message := destination.get_partial_message(
-                                int(self.jump_url.split("/")[-1])
-                            )
-                        ) is not None:
-                            reference = message
+                        reference = destination.get_partial_message(
+                            int(self.jump_url.split("/")[-1])
+                        )
                     snooze_view_enabled = await self.cog.config.snooze_view()
                     if snooze_view_enabled:
                         view: SnoozeView = SnoozeView(cog=self.cog, reminder=self)
@@ -856,7 +850,11 @@ class Reminder:
                             replied_user=False,
                         ),
                         view=view,
-                        reference=reference,
+                        reference=(
+                            reference.to_reference(fail_if_not_exists=False)
+                            if reference is not None
+                            else None
+                        ),
                     )
                     if snooze_view_enabled:
                         view._message = message

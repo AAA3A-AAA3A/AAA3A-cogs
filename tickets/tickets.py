@@ -19,7 +19,12 @@ from .converters import (
 )  # NOQA
 from .dashboard_integration import DashboardIntegration
 from .types import Ticket, get_non_animated_asset
-from .views import ClosedTicketControls, CreateTicketView, OwnerCloseConfirmation, TicketView
+from .views import (
+    ClosedTicketControls,
+    CreateTicketView,
+    OwnerCloseConfirmation,
+    TicketView,
+)
 
 # Credits:
 # General repo credits.
@@ -1317,9 +1322,9 @@ class Tickets(DashboardIntegration, Cog):
                 title=_("Buttons & Dropdowns:"),
                 description=_(
                     "You can add buttons and dropdowns to messages to create tickets.\n"
-                    "- Use `{ctx.clean_prefix}tickets addbutton <message> [profile=main] [emoji] [style=secondary] <label>` to add a button to a message.\n"
-                    "- Use `{ctx.clean_prefix}tickets adddropdownoption <message> [profile=main] [emoji] <label> [description]` to add an option to a dropdown.\n"
-                    "- Use `{ctx.clean_prefix}tickets clearmessage <message>` to remove them."
+                    "- Use `{ctx.clean_prefix}settickets addbutton <message> [profile=main] [emoji] [style=secondary] <label>` to add a button to a message.\n"
+                    "- Use `{ctx.clean_prefix}settickets adddropdownoption <message> [profile=main] [emoji] <label> [description]` to add an option to a dropdown.\n"
+                    "- Use `{ctx.clean_prefix}settickets clearmessage <message>` to remove them."
                 ).format(ctx=ctx),
                 color=await ctx.embed_color(),
             )

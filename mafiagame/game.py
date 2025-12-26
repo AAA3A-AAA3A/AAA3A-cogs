@@ -51,6 +51,7 @@ from .roles import (
     MafiaAlchemist,
     Manipulator,
     Mayor,
+    Mortician,
     Player,
     Politician,
     Silencer,
@@ -254,7 +255,7 @@ class Night(DayNight):
                                 t = list(self.targets[player])
                                 t[i] = tg
                                 self.targets[player] = tuple(t)
-                        if tg.is_dead and player.role != Watcher:
+                        if tg.is_dead and player.role not in (Watcher, Mortician):
                             if player.role in (GodFather, Mafia):
                                 if self.game.current_anomaly is not FoggyMist:
                                     await self.game.send(

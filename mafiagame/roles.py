@@ -3713,7 +3713,7 @@ class Mortician(Role):
             suspects = [
                 sorted(
                     [p for p in player.game.alive_players if p.role.side == "Mafia"],
-                    key=lambda p: (not p.role is Mafia, not p.role is GodFather),
+                    key=lambda p: (p.role is not Mafia, p.role is not GodFather),
                 )[0]
             ]
         else:

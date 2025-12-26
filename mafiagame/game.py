@@ -110,7 +110,7 @@ class DayNight:
                                         (
                                             day_night
                                             for day_night in self.game.days_nights
-                                            if day_night.__class__.__name__ == "Night" and day_night.number == player.death_night_number
+                                            if day_night.__class__.__name__ == "Night" and day_night.number == player.death_day_night_number
                                         ),
                                         None,
                                     )

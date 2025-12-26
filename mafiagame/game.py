@@ -53,7 +53,9 @@ from .roles import (
     Mayor,
     Player,
     Politician,
+    Silencer,
     VillagerAlchemist,
+    Watcher,
 )  # NOQA
 from .utils import get_image
 from .views import (
@@ -100,7 +102,26 @@ class DayNight:
                     f"☠️ {player.member.mention}"
                     + (
                         f" ({player.role.display_name(self.game)}{_(' - Town Traitor') if player.is_town_traitor else ''})"
-                        if self.game.config["show_dead_role"]
+                        if (
+                            self.game.config["show_dead_role"]
+                            and (
+                                (
+                                    death_night := next(
+                                        (
+                                            day_night
+                                            for day_night in self.game.days_nights
+                                            if day_night.__class__.__name__ == "Night" and day_night.number == player.death_night_number
+                                        ),
+                                        None,
+                                    )
+                                ) is None
+                                or not any(
+                                    p
+                                    for p, t in death_night.targets.items()
+                                    if p.role is Silencer and t is player
+                                )
+                            )
+                        )
                         else ""
                     )
                     for player in self.game.dead_players
@@ -233,7 +254,7 @@ class Night(DayNight):
                                 t = list(self.targets[player])
                                 t[i] = tg
                                 self.targets[player] = tuple(t)
-                        if tg.is_dead:
+                        if tg.is_dead and player.role != Watcher:
                             if player.role in (GodFather, Mafia):
                                 if self.game.current_anomaly is not FoggyMist:
                                     await self.game.send(
@@ -673,7 +694,7 @@ class Day(DayNight):
                                 ).set_image(url=target.role.image_url()),
                             ]
                             await self.game.send(
-                                embed=embeds,
+                                embeds=embeds,
                                 files=[
                                     lawyer.role.get_image(self.game),
                                     target.role.get_image(self.game),

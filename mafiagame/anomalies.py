@@ -33,14 +33,13 @@ class Anomaly:
         return get_image(os.path.join("anomalies", cls.image_name()))
 
     @classmethod
-    def get_kwargs(cls) -> typing.Dict[str, typing.Union[discord.Embed, discord.File]]:
+    def get_kwargs(cls) -> typing.Dict[typing.Literal["embed", "file"], typing.Union[discord.Embed, discord.File]]:
         _: Translator = Translator("MafiaGame", __file__)
         embed: discord.Embed = discord.Embed(
             title=_("Anomaly — **{emoji} {name}**!").format(name=cls.name, emoji=cls.emoji),
             description=f"*{_(cls.description)}*",
             color=ANOMALIES_COLOR,
         )
-        image = cls.name.lower().replace(" ", "_").replace("'", "")
         embed.set_image(url=cls.image_url())
         if cls.message is not None:
             embed.add_field(name="\u200b", value=_(cls.message))
@@ -96,7 +95,7 @@ class BlindingLights(Anomaly):
     name: str = "Blinding Lights"
     emoji: str = "💡"
     description: str = _(
-        "Random amount of people will be blinded and unable to perform their roles."
+        "Random amount of players will be blinded and unable to perform their roles."
     )
     message: str = _(
         "A blinding light filled the sky! You were blinded and unable to perform your task tonight... if you were going to anyways..."
@@ -104,8 +103,10 @@ class BlindingLights(Anomaly):
 
     @classmethod
     async def start(cls, game) -> None:
-        game.current_anomaly_players = random.sample(
-            game.alive_players, k=random.randint(1, len(game.alive_players))
+        game.current_anomaly_players = dict.fromkeys(
+            random.sample(
+                game.alive_players, k=random.randint(1, len(game.alive_players))
+            )
         )
         await super().start(game)
 
@@ -136,8 +137,10 @@ class TalkingDead(Anomaly):
 
     @classmethod
     async def start(cls, game) -> None:
-        game.current_anomaly_players = random.sample(
-            game.dead_players, k=random.randint(1, len(game.dead_players))
+        game.current_anomaly_players = dict.fromkeys(
+            random.sample(
+                game.dead_players, k=random.randint(1, len(game.dead_players))
+            )
         )
         if not isinstance(game.channel, discord.Thread):
             try:
@@ -201,8 +204,8 @@ class AcidRain(Anomaly):
 
     @classmethod
     async def start(cls, game) -> None:
-        game.current_anomaly_players = [random.choice(game.alive_players)]
-        player = game.current_anomaly_players[0]
+        game.current_anomaly_players = dict.fromkeys([random.choice(game.alive_players)])
+        player = list(game.current_anomaly_players.keys())[0]
         kwargs = cls.get_kwargs()
         embed: discord.Embed = discord.Embed(
             title=_("{player.member.display_name} is {the_or_a} **{player.role.name}**!").format(
@@ -232,8 +235,8 @@ class LivingDead(Anomaly):
 
     @classmethod
     async def start(cls, game) -> None:
-        game.current_anomaly_players = [random.choice(game.dead_players)]
-        player = game.current_anomaly_players[0]
+        game.current_anomaly_players = dict.fromkeys([random.choice(game.dead_players)])
+        player = list(game.current_anomaly_players.keys())[0]
         player.is_dead = False
         kwargs = cls.get_kwargs()
         embed: discord.Embed = discord.Embed(
@@ -254,8 +257,8 @@ class ScorchingSun(Anomaly):
 
     @classmethod
     async def start(cls, game) -> None:
-        game.current_anomaly_players = [random.choice(game.alive_players)]
-        player = game.current_anomaly_players[0]
+        game.current_anomaly_players = dict.fromkeys([random.choice(game.alive_players)])
+        player = list(game.current_anomaly_players.keys())[0]
         await game.send(**cls.get_kwargs())
         await player.kill(reason="scorching_sun")
 
@@ -273,8 +276,10 @@ class CatsTongue(Anomaly):
 
     @classmethod
     async def start(cls, game) -> None:
-        game.current_anomaly_players = random.sample(
-            game.alive_players, k=random.randint(1, len(game.alive_players))
+        game.current_anomaly_players = dict.fromkeys(
+            random.sample(
+                game.alive_players, k=random.randint(1, len(game.alive_players))
+            )
         )
         await super().start(game)
 

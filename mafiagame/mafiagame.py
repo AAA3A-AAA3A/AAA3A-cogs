@@ -5,9 +5,7 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import asyncio
 import datetime
-import os
 from copy import deepcopy
 
 from redbot.core.utils.chat_formatting import humanize_timedelta
@@ -17,7 +15,6 @@ from .constants import ACHIEVEMENTS_COLOR, DEVELOPER, HELPERS, SUPPORTERS, TESTE
 from .game import Game
 from .modes import MODES, Mode
 from .roles import ACHIEVEMENTS, ROLES, Developer, GodFather, Role, Villager
-from .utils import get_image
 from .views import ExplainView, JoinGameView, PollView
 
 # Credits:
@@ -774,7 +771,7 @@ class MafiaGame(Cog):
                     "You are **temporarily banned for {duration}** from joining Mafia games in this server!"
                 ).format(
                     duration=humanize_timedelta(
-                        timedelta=temp_banned_until
+                        timedelta=datetime.datetime.fromtimestamp(temp_banned_until, tz=datetime.timezone.utc)
                         - datetime.datetime.now(tz=datetime.timezone.utc)
                     )
                 ),

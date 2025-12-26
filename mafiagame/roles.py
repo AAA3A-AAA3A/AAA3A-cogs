@@ -2980,14 +2980,13 @@ class Harbinger(Role):
                 for p2, t2 in night.targets.items()
                 if t2 == player
                 and p2.role.visit_type == "Active"
-                and ROLES_PRIORITY.index(cls) > ROLES_PRIORITY.index(p2.role)
+                and ROLES_PRIORITY.index(p2.role) > ROLES_PRIORITY.index(p.role)
             ]
-            if (len(possible_p) == 1 or random.random() < 0.3) and not any(
+            if (len(possible_p) == 0 or random.random() < 0.35) and not any(
                 p3.death_day_night_number == night.number and p3.death_cause == player
                 for p3 in night.game.dead_players
             ):
-                p.kill(cause=cls)
-                night.targets.pop(p, None)
+                await p.kill(cause=cls)
                 raise ValueError()
         return t
 
@@ -3415,7 +3414,9 @@ class Starspawn(Role):
     @classmethod
     def has_won(cls, player: Player) -> bool:
         return any(
-            p.has_won for p in player.game.players if p.role is not Starspawn
+            p.has_won and not p.role.objective_secondary
+            for p in player.game.players
+            if p.role is not Starspawn
         ) and not Villager.has_won(player)
 
     perform_action = perform_action_select_targets(last_target_allowed=False)
@@ -4026,8 +4027,9 @@ class Oracle(Role):
     side: str = "Villagers"
     description: str = _("The Oracle is a protector of the town.")
     ability: str = _(
-        "Each night, the Oracle can select a Villagers' role to make all players with that role invisible."
+        "Each night, the Oracle can select a role to make all players with that role invisible. You can't select the same role to make its players invisible two nights in a row. However, once per game, you can select the same role as the previous night to see how many players have that role, regardless of their actual team. You can only choose roles belonging to the village team."
     )
+    max_uses: int = 1
     objective: str = _("Help the village win.")
     achievements = {
         "Hidden Talent": {
@@ -4092,21 +4094,35 @@ class Oracle(Role):
 
     perform_action = perform_action_select_roles(
         mafia_allowed=False,
-        condition=lambda player, role: role.side == "Villagers",
+        condition=lambda player, role: (
+            role.side == "Villagers"
+            and (
+                len(player.game_targets) == 0
+                or role != player.game_targets[-1]
+                or player.uses_amount < player.role.max_uses
+            )
+        ),
     )
 
     @classmethod
     async def action(cls, night, player: Player, target: typing.Type[Role]) -> None:
-        if target not in player.game_targets:
+        if len(player.game_targets) == 0 or target != player.game_targets[-1]:
             for p in night.game.alive_players:
                 if p.role is target:
                     night.immune_players.append(p)
         else:
+            player.uses_amount += 1
             number = len([p for p in night.game.alive_players if p.role is target])
             await player.send(
                 embed=discord.Embed(
-                    title=_("There are {number} {target.name}{s} alive in the game.").format(
-                        number=number, target=target, s="" if number == 1 else "s"
+                    title=(
+                        _("There are {number} {target.name}s alive in the game.").format(
+                            number=number, target=target
+                        )
+                        if number != 1
+                        else _("There is {number} {target.name} alive in the game.").format(
+                            number=number, target=target
+                        )
                     ),
                     color=cls.color(),
                 ),
@@ -4198,6 +4214,7 @@ class Necromancer(Role):
     ability: str = _(
         "Every night, the Necromancer can select a dead player to reanimate, and a living player to target. Any feedback that the dead player would receive will instead be redirected to the Necromancer. If the dead player requires multiple inputs, they will not respond. The Necromancer can't reanimate corpses that they have used before. Additionally, once a game, they may revive a dead player that they have not used as a corpse. That player will only be revived at the end of the day if the Necromancer is still alive."
     )
+    max_uses: int = 1
     visit_type: str = "Active"
     objective: str = _("Help the Mafia win.")
     achievements = {
@@ -4241,7 +4258,7 @@ class Necromancer(Role):
             self_allowed=False,
             condition=lambda player, target: not any(t[0] is target for t in player.game_targets),
             two_selects=True,
-            second_select_optional=not player.uses_amount,
+            second_select_optional=player.uses_amount < player.role.max_uses,
         )(night, player, interaction)
 
     @classmethod
@@ -4249,12 +4266,11 @@ class Necromancer(Role):
         cls, night, player: Player, target: typing.Tuple[Player, typing.Optional[Player]]
     ) -> None:
         if target[1] is not None:
-            _target = target[1]
             try:
                 await target[0].role.action(
                     night,
                     player,
-                    _target,
+                    target[1],
                 )
             except NotImplementedError:
                 pass
@@ -4282,7 +4298,7 @@ class Duelist(Role):
     side: str = "Villagers"
     description: str = _("A master swordsman seeking the strongest opponents.")
     ability: str = _(
-        "On Night 1, the Duelist selects a global target. Each night, they have a 25% chance to kill their target in a duel. If they succeed, they get their **Sanzen Sekai special attack**, which is made when the night starts and can't be redirected/cancelled, to use once. If their target is killed by someone else, they die of shame."
+        "On Night 1, the Duelist selects a global target. Each night, they have a 30% chance to kill their target in a duel. If they succeed, they get their **Sanzen Sekai special attack**, which is made when the night starts and can't be redirected/cancelled, to use once. If their target is killed by someone else, they die of shame."
     )
     visit_type: str = "Active"
     objective: str = _("Help the village win.")
@@ -4356,7 +4372,7 @@ class Duelist(Role):
             )
             player.duelist_special_attack = False
         else:
-            if random.random() < 0.25:
+            if random.random() < 0.30:
                 await target.kill(
                     cause=player,
                     reason=_("The Duelist has defeated them in a duel!"),

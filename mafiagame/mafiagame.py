@@ -534,7 +534,11 @@ class MafiaGame(Cog):
         """Show the different roles of the Mafia game."""
         theme = await self.config.guild(ctx.guild).theme()
         await Menu(
-            pages=[role.get_kwargs(theme=theme) for role in ROLES],
+            pages=[
+                role.get_kwargs(theme=theme)
+                for role in ROLES
+                if role is not Developer or ctx.author.id == DEVELOPER
+            ],
         ).start(ctx)
 
     @mafia.command()
@@ -782,7 +786,7 @@ class MafiaGame(Cog):
             )
         poll_view: PollView = PollView(self, threshold)
         await poll_view.start(ctx)
-        await poll_view.wait()
+        await poll_view.wazit()
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)

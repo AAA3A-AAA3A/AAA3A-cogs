@@ -46,6 +46,7 @@ from .roles import (
     Doctor,
     Gambler,
     GodFather,
+    Judge,
     Lawyer,
     Mafia,
     MafiaAlchemist,
@@ -455,6 +456,17 @@ class Day(DayNight):
                 for politician, target in politicians.items():
                     await politician.role.day_action(self, politician, target)
                 continue
+            if judges := {
+                player: target
+                for player, target in sorted(
+                    self.targets.items(), key=lambda x: self.game.players.index(x[0])
+                )
+                if player.role is Judge
+            }:
+                for judge, target in judges.items():
+                    if target.is_dead:
+                        continue
+                    await judge.role.day_action(self, judge, target)
             votes = {
                 player: v
                 for player in remaining_players
@@ -1192,7 +1204,9 @@ class Game:
                     pass
                 if new_achievements:
                     achievements_embed: discord.Embed = discord.Embed(
-                        title=_("🏆 New Achievements Unlocked! 🏆"),
+                        title=_("🏆 New Achievement{s} Unlocked! 🏆").format(
+                            s="" if sum(len(v) for v in new_achievements.values()) == 1 else _("s")
+                        ),
                         color=ACHIEVEMENTS_COLOR,
                     )
                     for role, achievements in new_achievements.items():

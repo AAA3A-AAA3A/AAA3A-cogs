@@ -2986,7 +2986,7 @@ class Harbinger(Role):
                 p3.death_day_night_number == night.number and p3.death_cause == player
                 for p3 in night.game.dead_players
             ):
-                await p.kill(cause=cls)
+                await p.kill(cause=player)
                 raise ValueError()
         return t
 
@@ -3328,6 +3328,14 @@ class Magician(Role):
     }
     theme_names = {"one-piece": "Basil Hawkins"}
 
+    @classmethod
+    def has_won(cls, player: Player) -> bool:
+        return any(
+            p.has_won and not p.role.objective_secondary
+            for p in player.game.players
+            if p.role.objective != _("Witness the village lose.")
+        ) and not Villager.has_won(player)
+
     perform_action = perform_action_select_targets(targets_number=2, self_allowed=False)
 
     @classmethod
@@ -3416,7 +3424,7 @@ class Starspawn(Role):
         return any(
             p.has_won and not p.role.objective_secondary
             for p in player.game.players
-            if p.role is not Starspawn
+            if p.role.objective != _("Witness the village lose.")
         ) and not Villager.has_won(player)
 
     perform_action = perform_action_select_targets(last_target_allowed=False)
@@ -3465,6 +3473,14 @@ class Thief(Role):
         },
     }
     theme_names = {"one-piece": "Nami"}
+
+    @classmethod
+    def has_won(cls, player: Player) -> bool:
+        return any(
+            p.has_won and not p.role.objective_secondary
+            for p in player.game.players
+            if p.role.objective != _("Witness the village lose.")
+        ) and not Villager.has_won(player)
 
     perform_action = perform_action_select_targets()
 
@@ -3542,6 +3558,14 @@ class Manager(Role):
         },
     }
     theme_names = {"one-piece": "Iceburg"}
+
+    @classmethod
+    def has_won(cls, player: Player) -> bool:
+        return any(
+            p.has_won and not p.role.objective_secondary
+            for p in player.game.players
+            if p.role.objective != _("Witness the village lose.")
+        ) and not Villager.has_won(player)
 
     perform_action = perform_action_select_targets(
         self_allowed=False,
@@ -4339,7 +4363,7 @@ class Duelist(Role):
             )
 
     @classmethod
-    async def action(cls, night, player: Player, target: Player) -> None:
+    async def action(cls, night, player: Player, target: typing.Optional[Player]) -> None:
         if night.number == 1:
             player.global_target = target or random.choice(
                 [p for p in night.game.alive_players if p != player]
@@ -4350,7 +4374,7 @@ class Duelist(Role):
                         target=player.global_target
                     ),
                     description=_(
-                        "You will duel them each night, with a 20% chance to win, and gain their **Sanzen Sekai special attack** to use once if you succeed."
+                        "You will duel them each night, with a 30% chance to win, and gain their **Sanzen Sekai special attack** to use once if you succeed."
                     ),
                     color=cls.color(),
                 )
@@ -4359,7 +4383,7 @@ class Duelist(Role):
                 embed=discord.Embed(
                     title=_("The Duelist has chosen their target."),
                     description=_(
-                        "They will duel them each night, with a 20% chance to win, and gain their **Sanzen Sekai special attack** to use once if they succeed."
+                        "They will duel them each night, with a 30% chance to win, and gain their **Sanzen Sekai special attack** to use once if they succeed."
                     ),
                     color=cls.color(),
                 ).set_image(url=cls.image_url()),
@@ -4401,7 +4425,7 @@ class Duelist(Role):
 
     @classmethod
     async def no_action(cls, night, player: Player) -> None:
-        if night.number == 1:
+        if not player.duelist_special_attack:
             await cls.action(night, player, None)
 
     @classmethod
@@ -4554,12 +4578,6 @@ class GraveRobber(Role):
         "Each night, the Grave Robber can select a player. If that player dies, the Grave Robber will collect their soul. Once they have collected the required number of souls, they will transform into **Death, Horseman of the Apocalypse**."
     )
     objective: str = _("Transform into Death, Horseman of the Apocalypse.")
-    achievements = {
-        "Death Itself": {
-            "check": lambda player: player.role is Death,
-            "description": _("Transform into Death, Horseman of the Apocalypse."),
-        },
-    }
     theme_names = {"one-piece": "Brook"}
 
     perform_action = perform_action_select_targets(self_allowed=False)
@@ -4588,6 +4606,10 @@ class Death(Role):
     )
     objective: str = _("Be the last one standing.")
     achievements = {
+        "Death Itself": {
+            "check": lambda __: True,
+            "description": _("Transform into Death, Horseman of the Apocalypse."),
+        },
         "Extinction": {
             "check": "wins",
             "value": 1,
@@ -4648,12 +4670,6 @@ class Farmer(Role):
         "Each night, the Farmer can choose to plant a seed or give a plant to a player. When they plant a seed, that seed will become a plant the next day. If they give a plant to a player, the player's role will change to their base team role: Villagers will turn into Villager, Mafia's members will turn into Mafia and Neutral's players will turn into Jester. Once they have given a plant to a player from each team, they will transform into **Famine, Horseman of the Apocalypse**."
     )
     objective: str = _("Transform into Famine, Horseman of the Apocalypse.")
-    achievements = {
-        "Lucky Transformation": {
-            "check": lambda player: player.role is Famine,
-            "description": _("Transform into Famine, Horseman of the Apocalypse."),
-        },
-    }
     theme_names = {"one-piece": "Kurozumi Kanjuro"}
 
     @classmethod
@@ -4717,6 +4733,10 @@ class Famine(Role):
     objective: str = _("Be the last one standing.")
     starting: bool = False
     achievements = {
+        "Lucky Transformation": {
+            "check": lambda __: True,
+            "description": _("Transform into Famine, Horseman of the Apocalypse."),
+        },
         "Droughtbringer": {
             "check": "wins",
             "value": 1,
@@ -4781,12 +4801,6 @@ class Doomsayer(Role):
         "Each night, the Doomsayer can select 3 players to guess their roles. If they guess all 3 roles correctly, they will kill the players and transform into **War, Horseman of the Apocalypse**."
     )
     objective: str = _("Transform into War, Horseman of the Apocalypse.")
-    achievements = {
-        "The Third Horseman": {
-            "check": lambda player: player.role is War,
-            "description": _("Transform into War, Horseman of the Apocalypse."),
-        },
-    }
     theme_names = {"one-piece": "Charlotte Katakuri"}
 
     perform_action = perform_action_guess_targets_roles(targets_number=3, self_allowed=False)
@@ -4802,7 +4816,7 @@ class Doomsayer(Role):
                     reason=_("The Doomsayer has guessed their role correctly."),
                 )
             await player.change_role(
-                Famine,
+                War,
                 reason=_(
                     "Your guesses were correct... You have transformed into **War, Horseman of the Apocalypse**!"
                 ),
@@ -4826,6 +4840,10 @@ class War(Role):
     objective: str = _("KILL EVERYONE!")
     starting: bool = False
     achievements = {
+        "The Third Horseman": {
+            "check": lambda __: True,
+            "description": _("Transform into War, Horseman of the Apocalypse."),
+        },
         "Master of Doom": {
             "check": "wins",
             "value": 1,

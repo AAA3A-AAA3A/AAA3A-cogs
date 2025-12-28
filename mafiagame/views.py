@@ -176,7 +176,7 @@ class JoinGameView(discord.ui.View):
                     "You are **temporarily banned for {duration}** from joining Mafia games in this server!"
                 ).format(
                     duration=humanize_timedelta(
-                        timedelta=temp_banned_until
+                        timedelta=datetime.datetime.fromtimestamp(temp_banned_until, tz=datetime.timezone.utc)
                         - datetime.datetime.now(tz=datetime.timezone.utc)
                     )
                 ),
@@ -839,7 +839,7 @@ class SelectRolesView(discord.ui.View):
                     and (self.condition is None or self.condition(self.player, role))
                 )
             ],
-            key=lambda role: role.name,
+            key=lambda role: role.display_name(self.day_night.game),
         )
         day_night_target = self.day_night.targets.get(self.player)
         for i, _roles in enumerate(discord.utils.as_chunks(self.possible_roles, 25)):
@@ -851,7 +851,7 @@ class SelectRolesView(discord.ui.View):
             select.callback = functools.partial(self.role_select, select=select)
             for role in _roles:
                 select.add_option(
-                    label=role.name,
+                    label=role.display_name(self.day_night.game),
                     description=role.side,
                     value=role.name,
                     default=(
@@ -899,8 +899,8 @@ class SelectRolesView(discord.ui.View):
                 if all(None not in target for target in self.targets):
                     self.day_night.targets[self.player] = self.targets.copy()
             await interaction.response.send_message(
-                _("You have selected the **{role.name}** role{for_player}!").format(
-                    role=role,
+                _("You have selected the **{role_name}** role{for_player}!").format(
+                    role_name=role.display_name(self.day_night.game),
                     for_player=(
                         ""
                         if not isinstance(self, GuessTargetsRolesView)
@@ -955,10 +955,9 @@ class GuessTargetsRolesView(SelectTargetsView, SelectRolesView):
             (None, None) for _ in range(self.pages)
         ]
 
-        if self.pages == 1:
-            self.remove_item(self.previous_page)
-            self.remove_item(self.next_page)
-        else:
+        self.remove_item(self.previous_page)
+        self.remove_item(self.next_page)
+        if self.pages != 1:
             self.previous_page.label = _("Previous Page")
             self.next_page.label = _("Next Page")
 
@@ -1372,7 +1371,7 @@ class IsekaiView(discord.ui.View):
         self.player.is_dead = False
         await self.player.change_role(
             role,
-            reason=("You have reincarnated as **{role.name}**!").format(role=role),
+            reason=("You have reincarnated as **{role_name}**!").format(role_name=role.display_name(self.player.game)),
         )
 
     @discord.ui.select(placeholder="Select the role you want to reincarnate as.")
@@ -1460,8 +1459,12 @@ class JudgeView(discord.ui.View):
     async def select(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         await interaction.response.defer()
         target = self.day.game.get_player_by_id(int(select.values[0]))
-        await self.on_timeout()
-        await self.player.role.day_action(self.day, self.player, target)
+        self.day.targets[self.player] = target
+        await interaction.followup.send(
+            _("You have chosen to prosecute {target.member.mention}!").format(target=target),
+            ephemeral=True,
+        )
+        self.player.last_interaction = interaction
 
 
 class ExplainView(discord.ui.View):
@@ -1792,7 +1795,7 @@ class ExplainView(discord.ui.View):
 
 class PollView(JoinGameView):
     def __init__(self, cog: commands.Cog, threshold: int = 5) -> None:
-        discord.ui.View.__init__(self, timeout=20 * 60)
+        discord.ui.View.__init__(self, timeout=10 * 60)
         self.ctx: commands.Context = None
         self.cog: commands.Cog = cog
         self.threshold: int = threshold

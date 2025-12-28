@@ -786,7 +786,7 @@ class MafiaGame(Cog):
             )
         poll_view: PollView = PollView(self, threshold)
         await poll_view.start(ctx)
-        await poll_view.wazit()
+        await poll_view.wait()
 
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)

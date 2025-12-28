@@ -1833,7 +1833,7 @@ class PlagueDoctor(Role):
 
     @classmethod
     async def check_pt(cls, night, player: Player, p: Player, t: Player) -> Player:
-        if p.visit_type != "Active":
+        if p.role.visit_type != "Active":
             return t
         if p.infected:
             t.infected = True
@@ -1844,6 +1844,14 @@ class PlagueDoctor(Role):
     @classmethod
     async def action(cls, night, player: Player, target: Player) -> None:
         target.infected = True
+        await cls.check_infections(night)
+
+    @classmethod
+    async def no_action(cls, night, player: Player) -> None:
+        await cls.check_infections(night)
+
+    @classmethod
+    async def check_infections(cls, night) -> None:
         if all(p.infected for p in night.game.alive_players if p.role is not PlagueDoctor):
             night.plague_doctor_warning = True
             embed: discord.Embed = discord.Embed(

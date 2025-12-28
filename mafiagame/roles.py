@@ -524,6 +524,7 @@ class Role:
                 or p.role is Bomber
                 or p.role.side == "Horsemen of the Apocalypse"
             )
+            and any(p for p in player.game.alive_players if p.role.side == "Villagers")
         ) or (mafia_check and any(p for p in player.game.alive_players if p.is_town_vip))
         if cls.side == "Mafia" or player.is_town_traitor:
             return mafia_check and not any(p for p in player.game.alive_players if p.is_town_vip)
@@ -1829,6 +1830,16 @@ class PlagueDoctor(Role):
         self_allowed=False,
         condition=lambda player, target: not target.infected and target.role is not PlagueDoctor,
     )
+
+    @classmethod
+    async def check_pt(cls, night, player: Player, p: Player, t: Player) -> Player:
+        if p.visit_type != "Active":
+            return t
+        if p.infected:
+            t.infected = True
+        if t.infected:
+            p.infected = True
+        return t
 
     @classmethod
     async def action(cls, night, player: Player, target: Player) -> None:
@@ -4984,6 +4995,7 @@ ROLES_PRIORITY: typing.List[typing.Type["Role"]] = [
     Famine,
     Oracle,
     Shaman,
+    PlagueDoctor,
     Goose,
     Mimic,
     Harbinger,
@@ -5029,7 +5041,6 @@ ROLES_PRIORITY: typing.List[typing.Type["Role"]] = [
     Magician,
     Thief,
     Builder,
-    PlagueDoctor,
 ] + [Death, Isekai, Judge, Lawyer, Manipulator, Politician, Villager]
 MAFIA_HIERARCHY: typing.List[typing.Type["Role"]] = [
     GodFather,

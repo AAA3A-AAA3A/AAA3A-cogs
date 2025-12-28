@@ -278,8 +278,6 @@ class Night(DayNight):
                                 ),
                             )
                             raise ValueError()
-                        if player.role.visit_type != "Passive" and player.infected:
-                            tg.infected = False
                 except ValueError:
                     self.targets.pop(player, None)
                     player.role = final_role

@@ -846,7 +846,7 @@ class SelectRolesView(discord.ui.View):
             select = discord.ui.Select(
                 min_values=0,
                 max_values=1,
-                placeholder=_("Select a role."),
+                placeholder=_("Select a role.") + f" ({25 * i + 1}-{25 * i + len(_roles)})",
             )
             select.callback = functools.partial(self.role_select, select=select)
             for role in _roles:

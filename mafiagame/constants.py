@@ -83,6 +83,7 @@ TESTERS: typing.List[int] = [
     374623019437654016,  # grillribba
     343068848712581120,  # argnavis
     1018154987127316601,  # Lobster
+    731785408001736776,  # Vanoralix
 ]
 
 

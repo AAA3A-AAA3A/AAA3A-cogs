@@ -260,7 +260,7 @@ class ScorchingSun(Anomaly):
         game.current_anomaly_players = dict.fromkeys([random.choice(game.alive_players)])
         player = list(game.current_anomaly_players.keys())[0]
         await game.send(**cls.get_kwargs())
-        await player.kill(reason="scorching_sun")
+        await player.kill(cause="scorching_sun")
 
     @classmethod
     async def end(cls, game) -> None:

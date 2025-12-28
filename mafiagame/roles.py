@@ -2282,7 +2282,7 @@ class Alchemist(Role):
     async def action(cls, night, player: Player, target: Player) -> None:
         potion = night.alchemists_potions.pop(player)
         if potion == "lethal":
-            await target.kill(cause=player)
+            await target.kill(cause=player, reason=_("They have been killed by a Lethal Potion."))
         elif potion == "invisibility":
             night.immune_players.append(target)
         elif potion == "truth":
@@ -2960,7 +2960,7 @@ class Harbinger(Role):
 
     @classmethod
     async def check_pt(cls, night, player: Player, p: Player, t: Player) -> Player:
-        if t == night.targets.get(player) and p.role.visit_type == "Active" and p != player:
+        if t == night.targets.get(player) and p.role.visit_type == "Active":
             await p.send(
                 embed=discord.Embed(
                     title=_("{player.member.display_name} is {the_or_a}**{role_name}**!").format(
@@ -2968,9 +2968,7 @@ class Harbinger(Role):
                         the_or_a=cls.the_or_a(night.game),
                         role_name=cls.display_name(night.game),
                     ),
-                    description=_("They were hiding with {player.member.display_name}.").format(
-                        player=player
-                    ),
+                    description=_("They were hiding with {t.member.display_name}.").format(t=t),
                     color=cls.color(),
                 ).set_image(url=cls.image_url()),
                 file=cls.get_image(night.game),
@@ -2986,7 +2984,7 @@ class Harbinger(Role):
                 p3.death_day_night_number == night.number and p3.death_cause == player
                 for p3 in night.game.dead_players
             ):
-                await p.kill(cause=player)
+                await p.kill(cause=player, reason=_("They were a visitor of {t.member.display_name}.").format(t=t))
                 raise ValueError()
         return t
 

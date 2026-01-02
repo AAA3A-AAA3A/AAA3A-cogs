@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: aaa3a-cogs\n"
-"POT-Creation-Date: 2024-12-29 10:44+0100\n"
-"PO-Revision-Date: 2024-12-29 11:38\n"
+"POT-Creation-Date: 2025-07-20 15:17+0200\n"
+"PO-Revision-Date: 2026-01-02 20:32\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgstr "\n"
 "**役割：** {roles}"
 
 #: viewpermissions\viewpermissions.py:208
-#: viewpermissions\viewpermissions.py:260
+#: viewpermissions\viewpermissions.py:262
 msgid "\n"
 "**Member(s):** {members}"
 msgstr "\n"
@@ -60,7 +60,7 @@ msgstr "\n"
 "**チャンネル:** {channel}"
 
 #: viewpermissions\viewpermissions.py:218
-#: viewpermissions\viewpermissions.py:266
+#: viewpermissions\viewpermissions.py:268
 msgid "\n"
 "**Permission(s) checked:** {permissions}"
 msgstr "\n"

@@ -115,10 +115,8 @@ class RumbleRoyaleUtils(Cog):
                     ),
                     None,
                 )
-
                 if reaction is None:
                     return  # probably won't happen but good to guard anyway
-
                 rumble.players = {
                     member: [] async for member in reaction.users() if not member.bot
                 }

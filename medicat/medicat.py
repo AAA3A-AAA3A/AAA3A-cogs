@@ -298,7 +298,7 @@ class Medicat(Cog):
             str, typing.Union[typing.Optional[int], str, typing.Dict[str, str]]
         ] = {
             "CONFIG_SCHEMA": None,
-            "last_ventoy_version": "1.0.74",
+            "last_ventoy_version": "1.1.10",
             "last_bootables_tools_versions": {
                 "Acronis Cyber Backup": "12.5",
                 "Acronis True Image": "2021.6",

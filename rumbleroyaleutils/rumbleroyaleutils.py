@@ -163,6 +163,8 @@ class RumbleRoyaleUtils(Cog):
                         )
                         if victim_name is not None:
                             victim = discord.utils.get(rumble.players, name=victim_name)
+                            if victim is None:
+                                continue
                         elif killer is None:
                             continue
                         else:

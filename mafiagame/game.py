@@ -33,7 +33,7 @@ from .constants import (
     VILLAGERS_COLOR,
     VOTING_AND_JUDGEMENT_COLOR,
 )  # NOQA
-from .modes import Classic, Mode
+from .modes import Classic, Mode, TraitorsGambit
 from .roles import (
     ACHIEVEMENTS,
     MAFIA_HIERARCHY,
@@ -941,7 +941,20 @@ class Game:
             if role is Alchemist:
                 role = random.choice([MafiaAlchemist, VillagerAlchemist])
             player.role = role
-        if self.config["town_traitor"]:
+        if self.mode is TraitorsGambit:
+            # Multiple hidden traitors
+            traitor_count = TraitorsGambit.get_traitor_count(len(self.players))
+            eligible_traitors = [
+                p for p in self.players 
+                if p.role.side == "Villagers" and not p.is_town_traitor
+            ]
+            
+            if len(eligible_traitors) >= traitor_count:
+                traitors = random.sample(eligible_traitors, traitor_count)
+                for traitor in traitors:
+                    traitor.is_town_traitor = True
+        elif self.config["town_traitor"]:
+            # Standard single traitor
             random.choice(
                 [player for player in self.players if player.role.side == "Villagers"]
             ).is_town_traitor = True
@@ -1003,6 +1016,48 @@ class Game:
                 await player.role.on_game_start(self, player)
             except NotImplementedError:
                 pass
+            
+            # Special notifications for Traitor's Gambit mode
+        if self.mode is TraitorsGambit:
+            traitor_count = len([p for p in self.players if p.is_town_traitor])
+            
+            # Notify Mafia (but don't tell them who the traitors are)
+            mafia_players = [
+                p for p in self.players 
+                if p.role.side == "Mafia" and p.role != MafiaAlchemist
+            ]
+            for mafia in mafia_players:
+                try:
+                    await mafia.member.send(
+                        embed=discord.Embed(
+                            title=_("🎭 Traitor's Gambit Mode Active! 🎭"),
+                            description=_(
+                                "There are **{traitor_count}** Town Traitors secretly working for the Mafia.\n\n"
+                                "❓ You don't know who they are\n"
+                                "❓ They don't know each other\n"
+                                "❓ They could be any Villager role\n\n"
+                                "Be careful who you kill - you might eliminate your own allies!"
+                            ).format(traitor_count=traitor_count),
+                            color=MAFIA_COLOR
+                        )
+                    )
+                except discord.HTTPException:
+                    pass
+            
+            # Public announcement (creates the paranoia)
+            await self.send(
+                embed=discord.Embed(
+                    title=_("🎭 Traitor's Gambit Mode Activated! 🎭"),
+                    description=_(
+                        "**Multiple Town Traitors lurk among the Villagers...**\n\n"
+                        "Nobody knows how many there are.\n"
+                        "They don't know each other.\n"
+                        "Even confirmed roles could be traitors.\n\n"
+                        "**Trust no one. Question everything.**"
+                    ),
+                    color=discord.Color.dark_red()
+                ).set_footer(text=_("Good luck... you'll need it."))
+            )
 
         # if failed_to_send:
         #     self._show_my_role_view: ShowMyRoleView = ShowMyRoleView(self, players=players)

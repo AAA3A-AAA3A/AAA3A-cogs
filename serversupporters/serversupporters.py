@@ -13,9 +13,6 @@ from redbot.core.utils.chat_formatting import pagify
 
 from .converter import RoleHierarchyConverter
 
-# Credits:
-# General repo credits.
-
 _: Translator = Translator("ServerSupporters", __file__)
 
 
@@ -130,9 +127,7 @@ class ServerSupporters(Cog):
             icon_url=get_non_animated_asset(member.display_avatar),
         )
         embed.set_thumbnail(url=get_non_animated_asset(member.display_avatar))
-        if (
-            role := await self.get_role(member, _type)
-        ) is not None:  # If I decide to remove the requirement of having a role set...
+        if (role := await self.get_role(member, _type)) is not None:
             if enabled:
                 embed.description = _(
                     "{member.mention} has been given the **{role.mention}** role for being a server supporter."
@@ -184,28 +179,36 @@ class ServerSupporters(Cog):
                 )
 
     async def update_roles(
-        self, member: discord.Member, _type: typing.Literal["tag", "status"], enabled: bool = True
-    ) -> None:
-        if (role := await self.get_role(member, _type)) is None:
-            return
-        if enabled:
-            if role not in member.roles:
-                try:
-                    await member.add_roles(role, reason="Server Supporters system.")
-                except discord.HTTPException as e:
-                    self.logger.error(
-                        f"Failed to add role `{role.name}` ({role.id}) to member `{member.name}` ({member.id}) in guild `{member.guild.name}` ({member.guild.id}).",
-                        exc_info=e,
-                    )
+        self, member: discord.Member, _type: typing.Literal["tag", "status"], should_have_role: bool
+    ) -> bool:
+        role = await self.get_role(member, _type)
+        if role is None:
+            return False
+
+        has_role = role in member.roles
+        if has_role == should_have_role:
+            return False
+
+        if should_have_role:
+            try:
+                await member.add_roles(role, reason="Server Supporters system.")
+                return True
+            except discord.HTTPException as e:
+                self.logger.error(
+                    f"Failed to add role `{role.name}` ({role.id}) to member `{member.name}` ({member.id}) in guild `{member.guild.name}` ({member.guild.id}).",
+                    exc_info=e,
+                )
+                return False
         else:
-            if role in member.roles:
-                try:
-                    await member.remove_roles(role, reason="Server Supporters system.")
-                except discord.HTTPException as e:
-                    self.logger.error(
-                        f"Failed to remove role `{role.name}` ({role.id}) from member `{member.name}` ({member.id}) in guild `{member.guild.name}` ({member.guild.id}).",
-                        exc_info=e,
-                    )
+            try:
+                await member.remove_roles(role, reason="Server Supporters system.")
+                return True
+            except discord.HTTPException as e:
+                self.logger.error(
+                    f"Failed to remove role `{role.name}` ({role.id}) from member `{member.name}` ({member.id}) in guild `{member.guild.name}` ({member.guild.id}).",
+                    exc_info=e,
+                )
+                return False
 
     async def check_invites_in_status(self, guild: discord.Guild, status: str) -> bool:
         for invite_link in re.compile(
@@ -277,14 +280,16 @@ class ServerSupporters(Cog):
             return
         self.cache[after] = True
 
-        before_status_enabled, after_status_enabled = (
-            await self.check(before, "status"),
-            await self.check(after, "status"),
-        )
-        await self.update_roles(after, "status", after_status_enabled)
-        if before_status_enabled != after_status_enabled:
-            await self.log(after, "status", after_status_enabled)
-        self.cache.pop(after, None)
+        try:
+            before_qualifies = await self.check(before, "status")
+            after_qualifies = await self.check(after, "status")
+            if before_qualifies == after_qualifies:
+                return
+            role_changed = await self.update_roles(after, "status", after_qualifies)
+            if role_changed:
+                await self.log(after, "status", after_qualifies)
+        finally:
+            self.cache.pop(after, None)
 
     @commands.Cog.listener()
     async def on_member_update(
@@ -305,18 +310,20 @@ class ServerSupporters(Cog):
             return
         self.cache[after] = True
 
-        if discord.__version__ >= "2.6.0":
-            before_tag_enabled, after_tag_enabled = (
-                await self.check(before, "tag"),
-                await self.check(after, "tag"),
-            )
-        else:
-            before_tag_enabled = tag_supporter_role in before.roles
-            after_tag_enabled = await self.check(after, "tag", user_payload)
-        await self.update_roles(after, "tag", after_tag_enabled)
-        if before_tag_enabled != after_tag_enabled:
-            await self.log(after, "tag", after_tag_enabled)
-        self.cache.pop(after, None)
+        try:
+            if discord.__version__ >= "2.6.0":
+                before_qualifies = await self.check(before, "tag")
+                after_qualifies = await self.check(after, "tag")
+            else:
+                before_qualifies = tag_supporter_role in before.roles
+                after_qualifies = await self.check(after, "tag", user_payload)
+            if before_qualifies == after_qualifies:
+                return
+            role_changed = await self.update_roles(after, "tag", after_qualifies)
+            if role_changed:
+                await self.log(after, "tag", after_qualifies)
+        finally:
+            self.cache.pop(after, None)
 
     @commands.admin_or_permissions(manage_guild=True, manage_roles=True)
     @commands.bot_has_guild_permissions(manage_roles=True)
@@ -385,12 +392,19 @@ class ServerSupporters(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The Server Supporters system is not enabled.")
             )
+
+        updated_count = 0
+
         if discord.__version__ >= "2.6.0":
             for member in ctx.guild.members:
                 if member.bot:
                     continue
-                await self.update_roles(member, "tag", await self.check(member, "tag"))
-                await self.update_roles(member, "status", await self.check(member, "status"))
+                tag_qualifies = await self.check(member, "tag")
+                status_qualifies = await self.check(member, "status")
+                if await self.update_roles(member, "tag", tag_qualifies):
+                    updated_count += 1
+                if await self.update_roles(member, "status", status_qualifies):
+                    updated_count += 1
         else:
             retrieve, after = 1000, discord.guild.OLDEST_OBJECT
             while True:
@@ -403,7 +417,13 @@ class ServerSupporters(Cog):
                     member = discord.Member(data=raw_member, guild=ctx.guild, state=ctx.guild._state)
                     if member.bot:
                         continue
-                    await self.update_roles(member, "tag", await self.check(member, "tag", raw_member["user"]))
-                    await self.update_roles(member, "status", await self.check(member, "status"))
+                    tag_qualifies = await self.check(member, "tag", raw_member["user"])
+                    status_qualifies = await self.check(member, "status")
+                    if await self.update_roles(member, "tag", tag_qualifies):
+                        updated_count += 1
+                    if await self.update_roles(member, "status", status_qualifies):
+                        updated_count += 1
                 if len(data) < 1000:
                     break
+
+        await ctx.send(_("Force update complete. {count} role changes made.").format(count=updated_count))

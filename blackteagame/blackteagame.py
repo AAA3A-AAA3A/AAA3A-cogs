@@ -51,6 +51,11 @@ class BlackTeaGame(Cog):
                 self.dictionaries[lang] = [word for word in file.read().split("\n") if word]
         return self.dictionaries[lang]
 
+    def _unload_dictionary(self, lang: str) -> None:
+        """Unload a dictionary from memory to free up resources."""
+        if lang in self.dictionaries:
+            del self.dictionaries[lang]
+
     @property
     def games(self) -> typing.Dict[discord.Message, JoinGameView]:
         return self.views
@@ -145,3 +150,4 @@ class BlackTeaGame(Cog):
         embed.set_thumbnail(url=winner.display_avatar)
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
         await ctx.send(content=winner.mention, embed=embed)
+        self._unload_dictionary(lang.value)

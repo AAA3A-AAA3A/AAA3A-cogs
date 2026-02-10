@@ -7,7 +7,6 @@ import typing  # isort:skip
 
 import asyncio
 import random
-from collections import defaultdict
 
 from redbot.core.data_manager import bundled_data_path
 from redbot.core.utils.menus import start_adding_reactions
@@ -38,15 +37,19 @@ class BlackTeaGame(Cog):
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.dictionaries: typing.Dict[str, typing.List[str]] = defaultdict(list)
+        self.dictionaries: typing.Dict[str, typing.List[str]] = {}
+        self.data_path = None
 
     async def cog_load(self) -> None:
         await super().cog_load()
-        data_path = bundled_data_path(self)
-        for lang in Lang:
-            with (data_path / f"{lang.value}.txt").open(mode="rt", encoding="utf-8") as file:
-                for word in file.read().split("\n"):
-                    self.dictionaries[lang.value].append(word)
+        self.data_path = bundled_data_path(self)
+
+    def _load_dictionary(self, lang: str) -> typing.List[str]:
+        """Load a dictionary on demand and cache it."""
+        if lang not in self.dictionaries:
+            with (self.data_path / f"{lang}.txt").open(mode="rt", encoding="utf-8") as file:
+                self.dictionaries[lang] = [word for word in file.read().split("\n") if word]
+        return self.dictionaries[lang]
 
     @property
     def games(self) -> typing.Dict[discord.Message, JoinGameView]:
@@ -70,6 +73,7 @@ class BlackTeaGame(Cog):
         if join_view.cancelled:
             return
         players = {player: base_hp for player in join_view.players}
+        dictionary = self._load_dictionary(lang.value)
 
         used_words: typing.List[str] = []
         player = None
@@ -77,7 +81,7 @@ class BlackTeaGame(Cog):
             player = random.choice([p for p in players if p != player])
             random_word = None
             while random_word is None or len(random_word) < 3:
-                random_word = random.choice(self.dictionaries[lang.value])
+                random_word = random.choice(dictionary)
             i = random.randint(0, len(random_word) - 3)
             letters = random_word[i : i + 3].upper()
             message = await ctx.send(
@@ -105,7 +109,7 @@ class BlackTeaGame(Cog):
                         m.author == player
                         and m.channel == ctx.channel
                         and letters.lower() in word
-                        and word in self.dictionaries[lang.value]
+                        and word in dictionary
                         and word not in used_words
                     ):
                         used_words.append(word)

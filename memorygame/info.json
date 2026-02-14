@@ -6,7 +6,8 @@
     "description": "Play to Memory game, with buttons, leaderboard and Red bank!",
     "tags": [
         "memory",
-        "game"
+        "game",
+        "Dashboard Integrated"
     ],
     "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "prettytable"],
     "min_bot_version": "3.5.0",

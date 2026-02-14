@@ -9,7 +9,8 @@
         "support",
         "system",
         "modular",
-        "help"
+        "help",
+        "Dashboard Integrated"
     ],
     "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "emoji", "chat-exporter"],
     "min_bot_version": "3.5.0",

@@ -12,7 +12,8 @@
         "schedule",
         "fifo",
         "command",
-        "say"
+        "say",
+        "Dashboard Integrated"
     ],
     "requirements": ["git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git", "pytz", "python-dateutil", "dateparser", "pyparsing", "validators", "apscheduler", "cron-descriptor", "recurrent"],
     "min_bot_version": "3.5.0",

@@ -107,18 +107,21 @@ class RumbleRoyaleUtils(Cog):
         elif (rumble := self.rumbles.get(message.channel)) is not None:
             if "Started a new Rumble Royale session" in embed.title:
                 rumble.first_message = await message.channel.fetch_message(rumble.first_message.id)
-                reaction = next(
-                    (
-                        reaction
-                        for reaction in rumble.first_message.reactions
-                        if isinstance(reaction.emoji, discord.PartialEmoji)
-                    ),
-                    None,
-                )
-                if reaction is None:
-                    return  # probably won't happen but good to guard anyway
+                if (
+                    reaction := next(
+                        (
+                            reaction
+                            for reaction in rumble.first_message.reactions
+                            if isinstance(reaction.emoji, discord.PartialEmoji)
+                        ),
+                        None,
+                    )
+                ) is None:
+                    return  # Shouldn't happen.
                 rumble.players = {
-                    member: [] async for member in reaction.users() if not member.bot
+                    member: []
+                    async for member in reaction.users()
+                    if not member.bot
                 }
                 # if config["am_i_alive"]:
                 #     await message.reply(

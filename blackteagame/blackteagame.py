@@ -53,8 +53,7 @@ class BlackTeaGame(Cog):
 
     def _unload_dictionary(self, lang: str) -> None:
         """Unload a dictionary from memory to free up resources."""
-        if lang in self.dictionaries:
-            del self.dictionaries[lang]
+        self.dictionaries.pop(lang, None)
 
     @property
     def games(self) -> typing.Dict[discord.Message, JoinGameView]:

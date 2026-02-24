@@ -144,7 +144,7 @@ class CommandsButtons(Cog):
                 text_input = discord.ui.TextInput(
                     label=f"{name.replace('_', ' ').title()}:",
                     style=discord.TextStyle.short,
-                    placeholder=repr(param)[repr(param).index(":", 12) + 1 : -2][:100],
+                    placeholder=repr(param)[repr(param).find(":") + 1 : -2][:100] if ":" in repr(param) else "Input",
                     default=(
                         str(param.default) if param.default != inspect._empty and False else None
                     ),

@@ -606,9 +606,11 @@ class LoggingModule(Module):
 
         use_webhooks_button: discord.ui.Button = discord.ui.Button(
             label=_("Use Webhooks"),
-            style=discord.ButtonStyle.success
-            if config["use_webhooks"]
-            else discord.ButtonStyle.danger,
+            style=(
+                discord.ButtonStyle.success
+                if config["use_webhooks"]
+                else discord.ButtonStyle.danger
+            ),
             emoji=Emojis.WEBHOOK.value,
         )
 
@@ -837,7 +839,9 @@ class LoggingModule(Module):
                     event["channel"] = channel.id
             await self.config_value(guild).events.set(config["events"])
             await interaction.response.send_message(
-                _("✅ All events will now be logged in {channel.mention}.").format(channel=channel),
+                _("✅ All events will now be logged in {channel.mention}.").format(
+                    channel=channel
+                ),
                 ephemeral=True,
             )
             await view._message.edit(embed=await view.get_embed(), view=view)
@@ -959,9 +963,11 @@ class LoggingModule(Module):
         embed: discord.Embed = discord.Embed(
             title=f"{event['name']} {event['emoji']}",
             color=discord.Color(event["color"]),
-            timestamp=entry.created_at
-            if entry is not None
-            else datetime.datetime.now(datetime.timezone.utc),
+            timestamp=(
+                entry.created_at
+                if entry is not None
+                else datetime.datetime.now(datetime.timezone.utc)
+            ),
         )
 
         if responsible is not None:
@@ -1044,9 +1050,11 @@ class LoggingModule(Module):
                         "\n- **Author:** {target.author.mention} (`{target.author}`){member_emoji} - `{target.author.id}`"
                     ).format(
                         target=target,
-                        member_emoji=f" {await self.cog.get_member_emoji(target.author)}"
-                        if isinstance(target.author, discord.Member)
-                        else "",
+                        member_emoji=(
+                            f" {await self.cog.get_member_emoji(target.author)}"
+                            if isinstance(target.author, discord.Member)
+                            else ""
+                        ),
                     )
                 embed.description += _("\n- **Created at:** {created_at} ({created_ago})").format(
                     created_at=discord.utils.format_dt(target.created_at, "F"),
@@ -1527,9 +1535,9 @@ class LoggingModule(Module):
                 if len(embed.description) + 8 + sum(map(len, to_include)) + len(message) <= 4000:
                     to_include.insert(0, message)
             embed.description += box("\n".join(to_include))
+            await self.send_log(channel, embed=embed, file=file)
         else:
-            file = None
-        await self.send_log(channel, embed=embed, file=file)
+            await self.send_log(channel, embed=embed)
 
     async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User) -> None:
         if reaction.message.guild is None:

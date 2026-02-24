@@ -52,9 +52,22 @@ class Ip(DashboardIntegration, Cog):
             commands_group=self.ip_group,
         )
 
+        self._session: typing.Optional[aiohttp.ClientSession] = None
+
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.settings.add_commands()
+        self._session = aiohttp.ClientSession(raise_for_status=True)
+
+    async def cog_unload(self) -> None:
+        await super().cog_unload()
+        if self._session is not None:
+            await self._session.close()
+
+    async def get_public_ip(self) -> str:
+        async with self._session.get("https://api.ipify.org/?format=json", timeout=3) as r:
+            ip = (await r.json())["ip"]
+        return ip
 
     @commands.is_owner()
     @commands.hybrid_group(name="ip")
@@ -65,19 +78,13 @@ class Ip(DashboardIntegration, Cog):
     @ip_group.command()
     async def ip(self, ctx: commands.Context) -> None:
         """Get the ip address of the bot's host machine."""
-        # hostname = socket.gethostname()
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://www.wikipedia.org", timeout=3) as r:
-                ip = r.headers["X-Client-IP"]  # Gives the "public IP" of the Bot client PC
+        ip = await self.get_public_ip()
         await ctx.send(_("The ip address of your bot is `{ip}`.").format(ip=ip))
 
     @ip_group.command()
     async def website(self, ctx: commands.Context) -> None:
         """Get the ip address website of the bot's host machine."""
-        # hostname = socket.gethostname()
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://www.wikipedia.org", timeout=3) as r:
-                ip = r.headers["X-Client-IP"]  # Gives the "public IP" of the Bot client PC
+        ip = await self.get_public_ip()
         port = await self.config.port()
         await ctx.send(
             _("The Administrator Panel website is http://{ip}:{port}/.").format(ip=ip, port=port)

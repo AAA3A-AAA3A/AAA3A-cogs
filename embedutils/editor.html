@@ -7932,8 +7932,8 @@
                             url: "https://glitchii.github.io/embedbuilder/assets/media/banner.png"
                         },
                         footer: {
-                            text: "{{ guild.name }}",
-                            icon_url: "{{ guild.icon_url }}"
+                            text: "{% if guild %}{{ guild.name }}{% endif %}",
+                            icon_url: "{% if guild %}{{ guild.icon_url }}{% endif %}"
                         },
                         fields: [
                             {

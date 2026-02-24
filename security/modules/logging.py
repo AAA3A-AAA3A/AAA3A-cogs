@@ -1516,7 +1516,6 @@ class LoggingModule(Module):
             emoji="🔢",
             count=len(payload.message_ids),
         )
-        file = None
         if payload.cached_messages:
             messages = payload.cached_messages
             raw_messages = [
@@ -1536,7 +1535,6 @@ class LoggingModule(Module):
                 if len(embed.description) + 8 + sum(map(len, to_include)) + len(message) <= 4000:
                     to_include.insert(0, message)
             embed.description += box("\n".join(to_include))
-        if file is not None:
             await self.send_log(channel, embed=embed, file=file)
         else:
             await self.send_log(channel, embed=embed)

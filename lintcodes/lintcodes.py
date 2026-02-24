@@ -36,7 +36,7 @@ class LintCodes(Cog):
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self._session: aiohttp.ClientSession = None
+        self._session: typing.Optional[aiohttp.ClientSession] = None
 
     async def cog_load(self) -> None:
         await super().cog_load()

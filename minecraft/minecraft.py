@@ -68,7 +68,7 @@ class Minecraft(Cog):
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self._session: aiohttp.ClientSession = None
+        self._session: typing.Optional[aiohttp.ClientSession] = None
         self.cache: typing.Dict[int, typing.Dict[str, dict]] = {}
 
         self.config: Config = Config.get_conf(

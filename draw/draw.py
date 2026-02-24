@@ -44,7 +44,7 @@ class Draw(Cog):
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self._session: aiohttp.ClientSession = None
+        self._session: typing.Optional[aiohttp.ClientSession] = None
         self.cache: typing.Dict[
             typing.Union[str, int, typing.Tuple[int, int, int, int]]
         ] = {}  # Unicode emojis, colors RGB and Discord custom emojis ids.

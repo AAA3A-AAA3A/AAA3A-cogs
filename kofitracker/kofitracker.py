@@ -59,7 +59,7 @@ class KoFiTracker(Cog):
             kofi_pages={},
         )
 
-        # self._session: aiohttp.ClientSession = None
+        # self._session: typing.Optional[aiohttp.ClientSession] = None
 
     async def cog_load(self) -> None:
         await super().cog_load()

@@ -119,7 +119,7 @@ class RunCode(Cog):
         ] = {}
         self.tio_languages: typing.Dict[str, TioLanguage] = {}
 
-        self._session: aiohttp.ClientSession = None
+        self._session: typing.Optional[aiohttp.ClientSession] = None
         self.history: typing.Dict[
             typing.Union[discord.Member, discord.User], typing.List[WandboxResponse, TioResponse]
         ] = {}

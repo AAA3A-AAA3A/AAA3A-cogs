@@ -35,7 +35,7 @@ class Recipes(Cog):
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self._session: aiohttp.ClientSession = None
+        self._session: typing.Optional[aiohttp.ClientSession] = None
         self.cache: typing.Dict[str, Recipe] = {}
 
     async def cog_load(self) -> None:

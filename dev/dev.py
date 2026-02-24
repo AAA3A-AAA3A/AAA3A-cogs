@@ -481,7 +481,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
 
         self.env_extensions: typing.Dict[str, typing.Any] = {}
         self.source_cache: dev_commands.SourceCache = dev_commands.SourceCache()
-        self._session: aiohttp.ClientSession = None
+        self._session: typing.Optional[aiohttp.ClientSession] = None
         self.dev_space: DevSpace = DevSpace()
 
         self._last_result: typing.Optional[typing.Any] = None

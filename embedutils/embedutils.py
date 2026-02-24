@@ -59,7 +59,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         self.config.register_global(stored_embeds={})
         self.config.register_guild(stored_embeds={})
 
-        self._session: aiohttp.ClientSession = None
+        self._session: typing.Optional[aiohttp.ClientSession] = None
 
     async def cog_load(self) -> None:
         await super().cog_load()

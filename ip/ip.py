@@ -57,7 +57,7 @@ class Ip(DashboardIntegration, Cog):
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.settings.add_commands()
-        self._session = aiohttp.ClientSession(raise_for_status=True)
+        self._session: aiohttp.ClientSession = aiohttp.ClientSession(raise_for_status=True)
 
     async def cog_unload(self) -> None:
         await super().cog_unload()
@@ -66,8 +66,7 @@ class Ip(DashboardIntegration, Cog):
 
     async def get_public_ip(self) -> str:
         async with self._session.get("https://api.ipify.org/?format=json", timeout=3) as r:
-            ip = (await r.json())["ip"]
-        return ip
+            return (await r.json())["ip"]
 
     @commands.is_owner()
     @commands.hybrid_group(name="ip")

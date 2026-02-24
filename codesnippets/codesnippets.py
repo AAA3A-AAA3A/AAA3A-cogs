@@ -89,7 +89,7 @@ class CodeSnippets(DashboardIntegration, Cog):
             HASTEBIN_RE: self.fetch_hastebin_snippet,
             GITEA_RE: self.fetch_gitea_snippet,
         }
-        self._session: aiohttp.ClientSession = None
+        self._session: typing.Optional[aiohttp.ClientSession] = None
         self.antispam_cache: typing.Dict[discord.abc.Messageable, deque[tuple, 5]] = {}
 
         _settings: typing.Dict[

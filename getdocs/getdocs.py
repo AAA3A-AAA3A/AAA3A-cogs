@@ -261,7 +261,7 @@ class GetDocs(DashboardIntegration, Cog):
         # self._playwright = None
         # self._browser = None
         # self._bcontext = None
-        self._session: aiohttp.ClientSession = None
+        self._session: typing.Optional[aiohttp.ClientSession] = None
         # self._rate_limit = AsyncLimiter(100, 30)
 
         _settings: typing.Dict[

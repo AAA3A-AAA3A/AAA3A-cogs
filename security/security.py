@@ -1008,7 +1008,6 @@ class Security(Cog):
             )
         except discord.HTTPException:
             return
-
         try:
             await self.quarantine_member(
                 moderator,

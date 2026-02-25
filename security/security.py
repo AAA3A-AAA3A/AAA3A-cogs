@@ -985,8 +985,6 @@ class Security(Cog):
                 member = await self.bot.get_or_fetch_member(entry.guild, entry.target.id)
             except discord.HTTPException:
                 return
-            if member is None:
-                return
         if not await self.is_quarantined(member):
             return
         if isinstance(entry.user, discord.Member):
@@ -995,8 +993,6 @@ class Security(Cog):
             try:
                 moderator = await self.bot.get_or_fetch_member(entry.guild, entry.user.id)
             except discord.HTTPException:
-                return
-            if moderator is None:
                 return
         if await self.is_whitelisted(moderator, "quarantine"):
             return

@@ -976,22 +976,24 @@ class Security(Cog):
     async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
         if entry.action != discord.AuditLogAction.member_role_update:
             return
-        if not isinstance(entry.target, discord.Member):
-            member = entry.guild.get_member(entry.target.id)
-            if member is None:
-                return
-        else:
-            member = entry.target
-        if not await self.is_quarantined(member):
-            return
         if entry.user is None:
             return
-        if not isinstance(entry.user, discord.Member):
-            moderator = entry.guild.get_member(entry.user.id)
-            if moderator is None:
-                return
+        if isinstance(entry.target, discord.Member):
+            member = entry.target
         else:
+            try:
+                member = self.bot.get_or_fetch_member(entry.guild, entry.target.id)
+            except discord.HTTPException:
+                return
+        if not await self.is_quarantined(member):
+            return
+        if isinstance(entry.user, discord.Member):
             moderator = entry.user
+        else:
+            try:
+                moderator = self.bot.get_or_fetch_member(entry.guild, entry.user.id)
+            except discord.HTTPException:
+                return
         if await self.is_whitelisted(moderator, "quarantine"):
             return
         try:

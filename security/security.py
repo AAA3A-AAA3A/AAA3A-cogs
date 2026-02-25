@@ -982,8 +982,10 @@ class Security(Cog):
             member = entry.target
         else:
             try:
-                member = self.bot.get_or_fetch_member(entry.guild, entry.target.id)
+                member = await self.bot.get_or_fetch_member(entry.guild, entry.target.id)
             except discord.HTTPException:
+                return
+            if member is None:
                 return
         if not await self.is_quarantined(member):
             return
@@ -991,8 +993,10 @@ class Security(Cog):
             moderator = entry.user
         else:
             try:
-                moderator = self.bot.get_or_fetch_member(entry.guild, entry.user.id)
+                moderator = await self.bot.get_or_fetch_member(entry.guild, entry.user.id)
             except discord.HTTPException:
+                return
+            if moderator is None:
                 return
         if await self.is_whitelisted(moderator, "quarantine"):
             return
@@ -1004,50 +1008,54 @@ class Security(Cog):
             )
         except discord.HTTPException:
             return
-        await self.quarantine_member(
-            moderator,
-            reason=_("Tried to edit roles of a quarantined member."),
-            logs=[
-                _(
-                    "Member {member.mention} (`{member}`) tried to {action} to/from the quarantined member {quarantined_member.mention} (`{quarantined_member.id}`)."
-                ).format(
-                    member=moderator,
-                    quarantined_member=member,
-                    action=humanize_list(
-                        (
-                            [
-                                _("add the role{s} {roles}").format(
-                                    roles=humanize_list(
-                                        [
-                                            f"{role.mention} (`{role}`)"
-                                            for role in entry.after.roles
-                                        ]
-                                    ),
-                                    s="" if len(entry.after.roles) == 1 else "s",
-                                )
-                            ]
-                            if entry.after.roles
-                            else []
-                        )
-                        + (
-                            [
-                                _("remove the role{s} {roles}").format(
-                                    roles=humanize_list(
-                                        [
-                                            f"{role.mention} (`{role}`)"
-                                            for role in entry.before.roles
-                                        ]
-                                    ),
-                                    s="" if len(entry.before.roles) == 1 else "s",
-                                )
-                            ]
-                            if entry.before.roles
-                            else []
-                        )
+
+        try:
+            await self.quarantine_member(
+                moderator,
+                reason=_("Tried to edit roles of a quarantined member."),
+                logs=[
+                    _(
+                        "Member {member.mention} (`{member}`) tried to {action} to/from the quarantined member {quarantined_member.mention} (`{quarantined_member.id}`)."
+                    ).format(
+                        member=moderator,
+                        quarantined_member=member,
+                        action=humanize_list(
+                            (
+                                [
+                                    _("add the role{s} {roles}").format(
+                                        roles=humanize_list(
+                                            [
+                                                f"{role.mention} (`{role}`)"
+                                                for role in entry.after.roles
+                                            ]
+                                        ),
+                                        s="" if len(entry.after.roles) == 1 else "s",
+                                    )
+                                ]
+                                if entry.after.roles
+                                else []
+                            )
+                            + (
+                                [
+                                    _("remove the role{s} {roles}").format(
+                                        roles=humanize_list(
+                                            [
+                                                f"{role.mention} (`{role}`)"
+                                                for role in entry.before.roles
+                                            ]
+                                        ),
+                                        s="" if len(entry.before.roles) == 1 else "s",
+                                    )
+                                ]
+                                if entry.before.roles
+                                else []
+                            )
+                        ),
                     ),
-                ),
-            ],
-        )
+                ],
+            )
+        except RuntimeError:
+            pass
 
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel: discord.abc.GuildChannel) -> None:

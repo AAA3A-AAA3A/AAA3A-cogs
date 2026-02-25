@@ -976,27 +976,43 @@ class Security(Cog):
     async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
         if entry.action != discord.AuditLogAction.member_role_update:
             return
-        if not await self.is_quarantined(entry.target):
+        if entry.user is None:
             return
-        if await self.is_whitelisted(entry.user, "quarantine"):
+        if isinstance(entry.target, discord.Member):
+            member = entry.target
+        else:
+            try:
+                member = self.bot.get_or_fetch_member(entry.guild, entry.target.id)
+            except discord.HTTPException:
+                return
+        if not await self.is_quarantined(member):
+            return
+        if isinstance(entry.user, discord.Member):
+            moderator = entry.user
+        else:
+            try:
+                moderator = self.bot.get_or_fetch_member(entry.guild, entry.user.id)
+            except discord.HTTPException:
+                return
+        if await self.is_whitelisted(moderator, "quarantine"):
             return
         try:
-            await entry.target.edit(
-                roles=[role for role in entry.target.roles if role not in entry.after.roles]
+            await member.edit(
+                roles=[role for role in member.roles if role not in entry.after.roles]
                 + entry.before.roles,
                 reason="Reverting role changes made on a quarantined member.",
             )
         except discord.HTTPException:
             return
         await self.quarantine_member(
-            entry.user,
+            moderator,
             reason=_("Tried to edit roles of a quarantined member."),
             logs=[
                 _(
                     "Member {member.mention} (`{member}`) tried to {action} to/from the quarantined member {quarantined_member.mention} (`{quarantined_member.id}`)."
                 ).format(
-                    member=entry.user,
-                    quarantined_member=entry.target,
+                    member=moderator,
+                    quarantined_member=member,
                     action=humanize_list(
                         (
                             [

@@ -13,6 +13,9 @@ from redbot.core.utils.chat_formatting import pagify
 
 from .converter import RoleHierarchyConverter
 
+# Credits:
+# General repo credits.
+
 _: Translator = Translator("ServerSupporters", __file__)
 
 
@@ -181,8 +184,7 @@ class ServerSupporters(Cog):
     async def update_roles(
         self, member: discord.Member, _type: typing.Literal["tag", "status"], should_have_role: bool
     ) -> bool:
-        role = await self.get_role(member, _type)
-        if role is None:
+        if (role := await self.get_role(member, _type)) is None:
             return False
 
         has_role = role in member.roles
@@ -392,7 +394,7 @@ class ServerSupporters(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The Server Supporters system is not enabled.")
             )
-
+            
         updated_count = 0
 
         if discord.__version__ >= "2.6.0":

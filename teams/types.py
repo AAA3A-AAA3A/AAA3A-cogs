@@ -202,7 +202,11 @@ class Team:
     def display_emoji(self) -> typing.Optional[str]:
         if self.emoji is None:
             return None
-        return self.emoji if isinstance(self.emoji, str) else str(self.bot.get_emoji(self.emoji))
+        if isinstance(self.emoji, str):
+            return self.emoji
+        else:
+            emoji = self.bot.get_emoji(self.emoji)
+            return str(emoji) if emoji is not None else None
 
     @display_emoji.setter
     def display_emoji(self, emoji: typing.Optional[typing.Union[discord.Emoji, str]]) -> None:
@@ -224,6 +228,8 @@ class Team:
             return self.logo_url
         elif self.emoji is not None:
             emoji = self.emoji if isinstance(self.emoji, str) else self.bot.get_emoji(self.emoji)
+            if emoji is None:
+                return None
             if isinstance(emoji, str):
                 try:
                     return f"https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/{hex(ord(emoji))[2:]}.png"

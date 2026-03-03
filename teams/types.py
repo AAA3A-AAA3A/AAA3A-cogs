@@ -390,19 +390,31 @@ class Team:
             raise RuntimeError(_("Member is not in the team."))
         if member.id == self.captain_id:
             raise RuntimeError(_("Member is the captain, transfer captaincy first."))
+        if member.id in self.vice_captain_ids:
+            self.vice_captain_ids.remove(member.id)
         self.member_ids.remove(member.id)
         await self.save()
-        if (
-            (member_role := self.member_role) is not None
-            and member.guild.me.guild_permissions.manage_roles
-            and member_role in member.roles
-        ):
-            try:
-                await member.remove_roles(
-                    member_role, reason="Removing member role from team member."
-                )
-            except discord.HTTPException:
-                pass
+        if member.guild.me.guild_permissions.manage_roles:
+            if (
+                (vice_captain_role := self.vice_captain_role) is not None
+                and vice_captain_role in member.roles
+            ):
+                try:
+                    await member.remove_roles(
+                        vice_captain_role, reason="Removing vice captain role from team member."
+                    )
+                except discord.HTTPException:
+                    pass
+            if (
+                (member_role := self.member_role) is not None
+                and member_role in member.roles
+            ):
+                try:
+                    await member.remove_roles(
+                        member_role, reason="Removing member role from team member."
+                    )
+                except discord.HTTPException:
+                    pass
 
     async def promote_member(self, member: discord.Member) -> None:
         if member.id not in self.member_ids:

@@ -4438,7 +4438,7 @@ class Duelist(Role):
             player.duelist_special_attack = False
         else:
             if random.random() < 0.30:
-                await target.kill(
+                await player.global_target.kill(
                     cause=player,
                     reason=_("The Duelist has defeated them in a duel!"),
                 )
@@ -4446,8 +4446,8 @@ class Duelist(Role):
                 await player.send(
                     embed=discord.Embed(
                         title=_(
-                            "You have defeated {target.member.display_name} in a duel!"
-                        ).format(target=target),
+                            "You have defeated {global_target.member.display_name} in a duel!"
+                        ).format(global_target=player.global_target),
                         description=_(
                             "You can now use your **Sanzen Sekai special attack** once."
                         ),
@@ -4458,8 +4458,8 @@ class Duelist(Role):
                 await player.send(
                     embed=discord.Embed(
                         title=_(
-                            "You have failed to defeat {target.member.display_name} in a duel. Wait for the next night..."
-                        ).format(target=target),
+                            "You have failed to defeat {global_target.member.display_name} in a duel. Wait for the next night..."
+                        ).format(global_target=player.global_target),
                         color=cls.color(),
                     ),
                 )
@@ -4741,27 +4741,30 @@ class Farmer(Role):
             reason=_("Your role has been changed to the base role of your side by the Farmer."),
         )
         if not any(p.role is GodFather for p in night.game.alive_players):
-            new_god_father = sorted(
-                [p for p in night.game.alive_players if p.role.side == "Mafia"],
-                key=lambda p: (MAFIA_HIERARCHY.index(p.role), player.game.players.index(p)),
-            )[0]
-            await new_god_father.change_role(
-                GodFather,
-                reason=_("The previous God Father lost his position in a duel against you..."),
-            )
-            for p in night.game.alive_players:
-                if (p.role.side != "Mafia" and not p.is_town_traitor) or p == new_god_father:
-                    continue
-                await p.send(
-                    embed=discord.Embed(
-                        title=_("**{new_god_father.member.display_name}** is now the new **{role_name}**!").format(
-                            new_god_father=new_god_father,
-                            role_name=new_god_father.role.display_name(night.game),
-                        ),
-                        color=new_god_father.role.color(),
-                    ).set_image(url=new_god_father.role.image_url()),
-                    file=new_god_father.role.get_image(night.game),
+            if (mafia_players := [p for p in night.game.alive_players if p.role.side == "Mafia"]):
+                new_god_father = sorted(
+                    mafia_players,
+                    key=lambda p: (MAFIA_HIERARCHY.index(p.role), player.game.players.index(p)),
+                )[0]
+                await new_god_father.change_role(
+                    GodFather,
+                    reason=_("The previous God Father lost his position in a duel against you..."),
                 )
+                for p in night.game.alive_players:
+                    if (p.role.side != "Mafia" and not p.is_town_traitor) or p == new_god_father:
+                        continue
+                    await p.send(
+                        embed=discord.Embed(
+                            title=_(
+                                "**{new_god_father.member.display_name}** is now the new **{role_name}**!"
+                            ).format(
+                                new_god_father=new_god_father,
+                                role_name=new_god_father.role.display_name(night.game),
+                            ),
+                            color=new_god_father.role.color(),
+                        ).set_image(url=new_god_father.role.image_url()),
+                        file=new_god_father.role.get_image(night.game),
+                    )
         if len({p.role.side for p in player.game_targets + [target]}) == 3:
             await player.change_role(
                 Famine,

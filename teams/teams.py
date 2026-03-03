@@ -382,7 +382,7 @@ class Teams(Cog):
         *,
         member: discord.Member,
     ) -> None:
-        """Promote a member to captain in a specific team."""
+        """Promote a member to Vice-Captain in a specific team."""
         if ignore_belonging_check and member.id not in team.member_ids:
             try:
                 await team.add_member(member)
@@ -407,7 +407,7 @@ class Teams(Cog):
     async def demote(
         self, ctx: commands.Context, team: TeamConverter, *, member: discord.Member
     ) -> None:
-        """Demote a member from captain in a specific team."""
+        """Demote a member from Vice-Captain in a specific team."""
         try:
             await team.demote_member(member)
         except RuntimeError as e:

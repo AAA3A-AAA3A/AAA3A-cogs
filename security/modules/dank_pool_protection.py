@@ -657,11 +657,14 @@ class DankPoolProtectionModule(Module):
             pass
         reason = option["reason"]()
         if config["quarantine"]:
-            await self.cog.quarantine_member(
-                member=member,
-                reason=reason,
-                logs=logs,
-            )
+            try:
+                await self.cog.quarantine_member(
+                    member=member,
+                    reason=reason,
+                    logs=logs,
+                )
+            except RuntimeError:
+                pass
         else:
             await self.cog.send_modlog(
                 action="notify",

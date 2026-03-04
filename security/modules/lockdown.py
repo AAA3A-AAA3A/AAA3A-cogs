@@ -217,21 +217,25 @@ class LockdownModule(Module):
                                 "ban_members",
                             )
                         ) and not await self.cog.is_whitelisted(member, "lockdown"):
-                            await self.cog.quarantine_member(
-                                member=member,
-                                issued_by=interaction.user,
-                                reason=_(
-                                    "**Lockdown** - Quarantined for having dangerous permissions during lockdown."
-                                ),
-                                logs=[
-                                    _(
-                                        "{member.mention} ({member}) has dangerous permissions during lockdown."
-                                    ).format(member=member)
-                                ],
-                            )
-                            config["members_with_dangerous_permissions_quarantined"].append(
-                                member.id
-                            )
+                            try:
+                                await self.cog.quarantine_member(
+                                    member=member,
+                                    issued_by=interaction.user,
+                                    reason=_(
+                                        "**Lockdown** - Quarantined for having dangerous permissions during lockdown."
+                                    ),
+                                    logs=[
+                                        _(
+                                            "{member.mention} ({member}) has dangerous permissions during lockdown."
+                                        ).format(member=member)
+                                    ],
+                                )
+                            except RuntimeError:
+                                pass
+                            else:
+                                config["members_with_dangerous_permissions_quarantined"].append(
+                                    member.id
+                                )
                     await self.config_value(
                         guild
                     ).members_with_dangerous_permissions_quarantined.set(
@@ -335,11 +339,14 @@ class LockdownModule(Module):
             len(self.action_cache[message.author]) >= 3
             and message.guild.me.guild_permissions.manage_roles
         ):
-            await self.cog.quarantine_member(
-                message.author,
-                reason=_("**Lockdown** - Several actions during lockdown."),
-                logs=self.action_cache[message.author],
-            )
+            try:
+                await self.cog.quarantine_member(
+                    message.author,
+                    reason=_("**Lockdown** - Several actions during lockdown."),
+                    logs=self.action_cache[message.author],
+                )
+            except RuntimeError:
+                pass
 
     async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
         if entry.action not in (
@@ -474,11 +481,14 @@ class LockdownModule(Module):
             len(self.action_cache[entry.user]) >= 3
             and entry.guild.me.guild_permissions.manage_roles
         ):
-            await self.cog.quarantine_member(
-                entry.user,
-                reason=_("**Lockdown** - Several actions during lockdown."),
-                logs=self.action_cache[entry.user],
-            )
+            try:
+                await self.cog.quarantine_member(
+                    entry.user,
+                    reason=_("**Lockdown** - Several actions during lockdown."),
+                    logs=self.action_cache[entry.user],
+                )
+            except RuntimeError:
+                pass
 
     async def on_member_join(self, member: discord.Member) -> None:
         if member.bot or member.guild is None:

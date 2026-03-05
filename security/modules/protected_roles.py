@@ -250,29 +250,35 @@ class ProtectedRolesModule(Module):
                 )
             except discord.HTTPException:
                 pass
-            await self.cog.quarantine_member(
-                entry.user,
-                reason=_("**Protected Roles** - Added a protected role without permission."),
-                logs=[
-                    _(
-                        "Added the protected role {role.mention} (`{role.name}`) to {entry.target.mention} (`{entry.target}`) without permission."
-                    ).format(role=role, entry=entry)
-                    for role in to_remove
-                ],
-            )
-            if entry.target != entry.user:
+            try:
                 await self.cog.quarantine_member(
-                    entry.target,
-                    reason=_(
-                        "**Protected Roles** - Was given a protected role without permission."
-                    ),
+                    entry.user,
+                    reason=_("**Protected Roles** - Added a protected role without permission."),
                     logs=[
                         _(
-                            "The protected role {role.mention} (`{role.name}`) was added to them by {entry.user.mention} (`{entry.user}`) without permission."
+                            "Added the protected role {role.mention} (`{role.name}`) to {entry.target.mention} (`{entry.target}`) without permission."
                         ).format(role=role, entry=entry)
                         for role in to_remove
                     ],
                 )
+            except RuntimeError:
+                pass
+            if entry.target != entry.user:
+                try:
+                    await self.cog.quarantine_member(
+                        entry.target,
+                        reason=_(
+                            "**Protected Roles** - Was given a protected role without permission."
+                        ),
+                        logs=[
+                            _(
+                                "The protected role {role.mention} (`{role.name}`) was added to them by {entry.user.mention} (`{entry.user}`) without permission."
+                            ).format(role=role, entry=entry)
+                            for role in to_remove
+                        ],
+                    )
+                except RuntimeError:
+                    pass
 
 
 class WhitelistMembersSelect(discord.ui.UserSelect):

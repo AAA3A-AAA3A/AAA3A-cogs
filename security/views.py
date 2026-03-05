@@ -595,14 +595,18 @@ class SettingsView(discord.ui.View):
                 "send": functools.partial(interaction.followup.send, wait=True),
             },
         )()
-        if not await CogsUtils.ConfirmationAsk(
-            fake_context,
-            _(
-                "⚠️ Are you sure you want to reset the recovery key? This will invalidate the current key and generate a new one."
-            ),
-            timeout_message=None,
-            ephemeral=True,
-        ):
+        try:
+            confirmed = await CogsUtils.ConfirmationAsk(
+                fake_context,
+                _(
+                    "⚠️ Are you sure you want to reset the recovery key? This will invalidate the current key and generate a new one."
+                ),
+                timeout_message=None,
+                ephemeral=True,
+            )
+        except discord.NotFound:
+            return
+        if not confirmed:
             return
         try:
             await self.cog.send_recovery_key(self.ctx.guild)
@@ -997,15 +1001,19 @@ class ActionsView(discord.ui.View):
                     "send": functools.partial(interaction.followup.send, wait=True),
                 },
             )()
-            if not await CogsUtils.ConfirmationAsk(
-                fake_context,
-                _("⚠️ Are you sure you want to {action} {member.mention}?").format(
-                    action=action,
-                    member=self.member,
-                ),
-                timeout_message=None,
-                ephemeral=True,
-            ):
+            try:
+                confirmed = await CogsUtils.ConfirmationAsk(
+                    fake_context,
+                    _("⚠️ Are you sure you want to {action} {member.mention}?").format(
+                        action=action,
+                        member=self.member,
+                    ),
+                    timeout_message=None,
+                    ephemeral=True,
+                )
+            except discord.NotFound:
+                return
+            if not confirmed:
                 return
         else:
             modal: discord.ui.Modal = discord.ui.Modal(

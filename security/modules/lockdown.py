@@ -348,6 +348,48 @@ class LockdownModule(Module):
             except RuntimeError:
                 pass
 
+    def _build_role_change_log(self, entry: discord.AuditLogEntry) -> str:
+        added = [r for r in entry.after.roles if r not in entry.before.roles]
+        removed = [r for r in entry.before.roles if r not in entry.after.roles]
+        parts = []
+        if added:
+            roles_str = humanize_list([f"{r.mention} (`{r}`)" for r in added])
+            parts.append(_("add the role{s} {roles}").format(
+                roles=roles_str, s="" if len(added) == 1 else "s"
+            ))
+        if removed:
+            roles_str = humanize_list([f"{r.mention} (`{r}`)" for r in removed])
+            parts.append(_("remove the role{s} {roles}").format(
+                roles=roles_str, s="" if len(removed) == 1 else "s"
+            ))
+        return _(
+            "Member {member.mention} [{member}] tried to {action} to/from the member {quarantined_member.mention} [{quarantined_member}] during lockdown."
+        ).format(
+            member=entry.user,
+            quarantined_member=entry.target,
+            action=humanize_list(parts),
+        )
+
+    async def _send_lockdown_warning(
+        self, user: discord.Member, guild: discord.Guild, description: str
+    ) -> None:
+        if self.warning_cache[user]:
+            return
+        self.warning_cache[user] = True
+        try:
+            await user.send(
+                embed=discord.Embed(
+                    title=_("{emoji} Lockdown Warning").format(emoji=Emojis.LOCKDOWN.value),
+                    description=description,
+                    color=discord.Color.red(),
+                ).set_footer(
+                    text=guild.name,
+                    icon_url=get_non_animated_asset(guild.icon),
+                )
+            )
+        except discord.HTTPException:
+            pass
+
     async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry) -> None:
         if entry.action not in (
             discord.AuditLogAction.member_role_update,
@@ -367,111 +409,24 @@ class LockdownModule(Module):
                 )
             except discord.HTTPException:
                 pass
-            if not self.warning_cache[entry.user]:
-                self.warning_cache[entry.user] = True
-                try:
-                    await entry.user.send(
-                        embed=discord.Embed(
-                            title=_("{emoji} Lockdown Warning").format(
-                                emoji=Emojis.LOCKDOWN.value
-                            ),
-                            description=_(
-                                "A lockdown is currently active in this server. You are not allowed to change roles of members. **Please do not attempt to bypass this restriction.**"
-                            ),
-                            color=discord.Color.red(),
-                        ).set_footer(
-                            text=entry.guild.name,
-                            icon_url=get_non_animated_asset(entry.guild.icon),
-                        ),
-                    )
-                except discord.HTTPException:
-                    pass
-            self.action_cache[entry.user].append(
-                _(
-                    "Member {member.mention} [{member}] tried to {action} to/from the member {quarantined_member.mention} [{quarantined_member}] during lockdown."
-                ).format(
-                    member=entry.user,
-                    quarantined_member=entry.target,
-                    action=humanize_list(
-                        (
-                            [
-                                _("add the role{s} {roles}").format(
-                                    roles=humanize_list(
-                                        [
-                                            f"{role.mention} (`{role}`)"
-                                            for role in entry.after.roles
-                                            if role not in entry.before.roles
-                                        ]
-                                    ),
-                                    s=""
-                                    if len(
-                                        [
-                                            role
-                                            for role in entry.after.roles
-                                            if role not in entry.before.roles
-                                        ]
-                                    )
-                                    == 1
-                                    else "s",
-                                )
-                            ]
-                            if any(role not in entry.before.roles for role in entry.after.roles)
-                            else []
-                        )
-                        + (
-                            [
-                                _("remove the role{s} {roles}").format(
-                                    roles=humanize_list(
-                                        [
-                                            f"{role.mention} (`{role}`)"
-                                            for role in entry.before.roles
-                                            if role not in entry.after.roles
-                                        ]
-                                    ),
-                                    s=""
-                                    if len(
-                                        [
-                                            role
-                                            for role in entry.before.roles
-                                            if role not in entry.after.roles
-                                        ]
-                                    )
-                                    == 1
-                                    else "s",
-                                )
-                            ]
-                            if any(role not in entry.after.roles for role in entry.before.roles)
-                            else []
-                        )
-                    ),
-                ),
+            await self._send_lockdown_warning(
+                entry.user,
+                entry.guild,
+                _("A lockdown is currently active in this server. You are not allowed to change roles of members. **Please do not attempt to bypass this restriction.**"),
             )
+            self.action_cache[entry.user].append(self._build_role_change_log(entry))
         elif entry.action == discord.AuditLogAction.invite_create and modes["server_invites"]:
             try:
                 await entry.target.delete(
                     reason=_("Security Lockdown: Invite created during lockdown.")
                 )
-            except discord.HTTPException as e:
+            except discord.HTTPException:
                 pass
-            if not self.warning_cache[entry.user]:
-                self.warning_cache[entry.user] = True
-                try:
-                    await entry.user.send(
-                        embed=discord.Embed(
-                            title=_("{emoji} Lockdown Warning").format(
-                                emoji=Emojis.LOCKDOWN.value
-                            ),
-                            description=_(
-                                "A lockdown is currently active in this server. You are not allowed to create invites. **Please do not attempt to bypass this restriction.**"
-                            ),
-                            color=discord.Color.red(),
-                        ).set_footer(
-                            text=entry.guild.name,
-                            icon_url=get_non_animated_asset(entry.guild.icon),
-                        )
-                    )
-                except discord.HTTPException:
-                    pass
+            await self._send_lockdown_warning(
+                entry.user,
+                entry.guild,
+                _("A lockdown is currently active in this server. You are not allowed to create invites. **Please do not attempt to bypass this restriction.**"),
+            )
             self.action_cache[entry.user].append(
                 _("{user.mention} ({user}) created an invite during lockdown.").format(
                     user=entry.user

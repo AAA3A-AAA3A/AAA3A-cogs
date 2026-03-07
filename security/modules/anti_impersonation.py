@@ -141,11 +141,14 @@ class AntiImpersonationModule(Module):
                 return True
             reason = _("**Anti Impersonation** - Potential impersonation detected.")
             if config["quarantine"]:
-                await self.cog.quarantine_member(
-                    member=member,
-                    reason=reason,
-                    logs=[log],
-                )
+                try:
+                    await self.cog.quarantine_member(
+                        member=member,
+                        reason=reason,
+                        logs=[log],
+                    )
+                except RuntimeError:
+                    pass
             else:
                 await self.cog.send_modlog(
                     action="notify",

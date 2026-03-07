@@ -912,11 +912,14 @@ class AntiNukeModule(Module):
                 return
         reason = option_filter["reason"]()
         if config["quarantine"]:
-            await self.cog.quarantine_member(
-                member=entry.user,
-                reason=reason,
-                logs=logs,
-            )
+            try:
+                await self.cog.quarantine_member(
+                    member=entry.user,
+                    reason=reason,
+                    logs=logs,
+                )
+            except RuntimeError:
+                pass
         else:
             await self.cog.send_modlog(
                 action="notify",
@@ -927,11 +930,14 @@ class AntiNukeModule(Module):
         if "member_reason" in option_filter and entry.target != entry.user:
             member_reason = option_filter["member_reason"]()
             if config["quarantine"]:
-                await self.cog.quarantine_member(
-                    member=entry.target,
-                    reason=member_reason,
-                    logs=logs,
-                )
+                try:
+                    await self.cog.quarantine_member(
+                        member=entry.target,
+                        reason=member_reason,
+                        logs=logs,
+                    )
+                except RuntimeError:
+                    pass
             else:
                 await self.cog.send_modlog(
                     action="notify",

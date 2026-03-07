@@ -839,12 +839,15 @@ class AutoModModule(Module):
             if await self.cog.is_moderator_or_higher(
                 message.author
             ):  # An administrator can't be timed out, and we don't want to get the staff kicked/banned.
-                await self.cog.quarantine_member(
-                    member=message.author,
-                    reason=reason,
-                    trigger_messages=trigger_messages,
-                    context_message=message,
-                )
+                try:
+                    await self.cog.quarantine_member(
+                        member=message.author,
+                        reason=reason,
+                        trigger_messages=trigger_messages,
+                        context_message=message,
+                    )
+                except RuntimeError:
+                    pass
             elif (action := filter_config["action"]) is None:
                 if self.strikes_cache[message.guild][message.author] < 3:
                     duration = await DurationConverter.convert(
@@ -910,13 +913,16 @@ class AutoModModule(Module):
                     action == "quarantine"
                     and message.author.guild.me.guild_permissions.manage_roles
                 ):
-                    await self.cog.quarantine_member(
-                        member=message.author,
-                        reason=reason,
-                        trigger_messages=trigger_messages,
-                        context_message=message,
-                        current_ctx=message,
-                    )
+                    try:
+                        await self.cog.quarantine_member(
+                            member=message.author,
+                            reason=reason,
+                            trigger_messages=trigger_messages,
+                            context_message=message,
+                            current_ctx=message,
+                        )
+                    except RuntimeError:
+                        pass
                 if action not in ("quarantine", "kick", "ban"):
                     await self.cog.send_modlog(
                         action=action,

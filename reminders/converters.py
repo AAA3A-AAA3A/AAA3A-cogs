@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from redbot.core import commands  # isort:skip
 from redbot.core.i18n import Translator  # isort:skip
 import discord  # isort:skip
@@ -7,6 +9,7 @@ import asyncio
 import datetime
 import functools
 import re
+from typing import TYPE_CHECKING
 
 import dateparser
 import dateutil
@@ -35,6 +38,9 @@ from pyparsing import (
     tokenMap,
 )  # NOQA
 from recurrent.event_parser import RecurringEvent
+
+if TYPE_CHECKING:
+    from .types import Reminder
 
 _: Translator = Translator("Reminders", __file__)
 
@@ -535,7 +541,7 @@ class ContentConverter(commands.Converter):  # no longer used
 
 
 class ExistingReminderConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.Any:
+    async def convert(self, ctx: commands.Context, argument: str) -> "Reminder":
         cog = ctx.bot.get_cog("Reminders")
         if ctx.author.id not in cog.cache or not (reminders := cog.cache[ctx.author.id]):
             raise commands.BadArgument(_("You haven't any reminders."))

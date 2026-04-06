@@ -6,6 +6,7 @@ import discord  # isort:skip
 import typing  # isort:skip
 
 import datetime
+import asyncio
 import re
 from collections import defaultdict
 
@@ -90,16 +91,42 @@ class ServerSupporters(Cog):
             commands_group=self.setserversupporters,
         )
 
+        self._startup_sync_task: typing.Optional[asyncio.Task] = None
+        self._invite_regex = re.compile(
+            r"(discord\.(?:gg|io|me|li)|discord(?:app)?\.com\/invite|\.gg)\/(\S+)",
+            re.I,
+        )
         self.cache: typing.Dict[discord.Member, bool] = defaultdict(bool)
 
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.settings.add_commands()
+        self._startup_sync_task = asyncio.create_task(self._startup_resync())
+
+    async def cog_unload(self) -> None:
+        if self._startup_sync_task is not None and not self._startup_sync_task.done():
+            self._startup_sync_task.cancel()
+        await super().cog_unload()
+
+    async def _startup_resync(self) -> None:
+        await self.bot.wait_until_ready()
+        for guild in self.bot.guilds:
+            if not await self.config.guild(guild).enabled() or await self.bot.cog_disabled_in_guild(
+                self, guild
+            ):
+                continue
+            try:
+                await self.sync_guild_roles(guild)
+            except Exception as e:
+                self.logger.error(
+                    f"Failed to run startup supporters sync in guild `{guild.name}` ({guild.id}).",
+                    exc_info=e,
+                )
 
     async def get_role(
         self, member: discord.Member, _type: typing.Literal["tag", "status"]
     ) -> typing.Optional[discord.Role]:
-        if not member.guild.me.guild_permissions.manage_roles:
+        if member.guild.me is None or not member.guild.me.guild_permissions.manage_roles:
             return None
         if _type == "tag":
             role_id = await self.config.guild(member.guild).tag_supporter_role()
@@ -212,17 +239,62 @@ class ServerSupporters(Cog):
                 )
                 return False
 
-    async def check_invites_in_status(self, guild: discord.Guild, status: str) -> bool:
-        for invite_link in re.compile(
-            r"(discord\.(?:gg|io|me|li)|discord(?:app)?\.com\/invite|\.gg)\/(\S+)", re.I
-        ).findall(status):
-            if guild.vanity_url_code is not None and invite_link[1] == guild.vanity_url_code:
-                return True
-            if guild.me.guild_permissions.manage_guild:
-                for invite in await guild.invites():
-                    if invite.code == invite_link[1]:
-                        return True
-        return False
+    async def check_invites_in_status(self, guild: discord.Guild, status: typing.Optional[str]) -> bool:
+        if not status:
+            return False
+        invite_codes = {
+            invite_link[1].rstrip(")].,!?;:'\"").lower()
+            for invite_link in self._invite_regex.findall(status)
+            if invite_link[1]
+        }
+        if not invite_codes:
+            return False
+        if guild.vanity_url_code is not None and guild.vanity_url_code.lower() in invite_codes:
+            return True
+        if guild.me is None or not guild.me.guild_permissions.manage_guild:
+            return False
+        try:
+            invites = await guild.invites()
+        except (discord.Forbidden, discord.HTTPException):
+            return False
+        return any(invite.code.lower() in invite_codes for invite in invites)
+
+    async def sync_guild_roles(self, guild: discord.Guild) -> int:
+        updated_count = 0
+
+        if discord.version_info >= (2, 6, 0):
+            members: typing.Iterable[discord.Member] = guild.members
+            for member in members:
+                if member.bot:
+                    continue
+                tag_qualifies = await self.check(member, "tag")
+                status_qualifies = await self.check(member, "status")
+                if await self.update_roles(member, "tag", tag_qualifies):
+                    updated_count += 1
+                if await self.update_roles(member, "status", status_qualifies):
+                    updated_count += 1
+            return updated_count
+
+        retrieve, after = 1000, discord.guild.OLDEST_OBJECT
+        while True:
+            after_id = after.id if after else None
+            data = await self.bot.http.get_members(guild.id, retrieve, after_id)
+            if not data:
+                break
+            after = discord.Object(id=int(data[-1]["user"]["id"]))
+            for raw_member in reversed(data):
+                member = discord.Member(data=raw_member, guild=guild, state=guild._state)
+                if member.bot:
+                    continue
+                tag_qualifies = await self.check(member, "tag", raw_member["user"])
+                status_qualifies = await self.check(member, "status")
+                if await self.update_roles(member, "tag", tag_qualifies):
+                    updated_count += 1
+                if await self.update_roles(member, "status", status_qualifies):
+                    updated_count += 1
+            if len(data) < 1000:
+                break
+        return updated_count
 
     async def check(
         self,
@@ -231,7 +303,7 @@ class ServerSupporters(Cog):
         user_payload: typing.Optional[typing.Dict[str, typing.Any]] = None,
     ) -> bool:
         if _type == "tag":
-            if discord.__version__ >= "2.6.0":
+            if discord.version_info >= (2, 6, 0):
                 return (
                     member.primary_guild is not None
                     and member.primary_guild.identity_enabled
@@ -313,7 +385,7 @@ class ServerSupporters(Cog):
         self.cache[after] = True
 
         try:
-            if discord.__version__ >= "2.6.0":
+            if discord.version_info >= (2, 6, 0):
                 before_qualifies = await self.check(before, "tag")
                 after_qualifies = await self.check(after, "tag")
             else:
@@ -340,7 +412,7 @@ class ServerSupporters(Cog):
     ) -> None:
         """List all members with the status supporter role."""
         if _type == "tag":
-            if discord.__version__ >= "2.6.0":
+            if discord.version_info >= (2, 6, 0):
                 members = [
                     member for member in ctx.guild.members
                     if await self.check(member, "tag")
@@ -394,38 +466,5 @@ class ServerSupporters(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("The Server Supporters system is not enabled.")
             )
-            
-        updated_count = 0
-
-        if discord.__version__ >= "2.6.0":
-            for member in ctx.guild.members:
-                if member.bot:
-                    continue
-                tag_qualifies = await self.check(member, "tag")
-                status_qualifies = await self.check(member, "status")
-                if await self.update_roles(member, "tag", tag_qualifies):
-                    updated_count += 1
-                if await self.update_roles(member, "status", status_qualifies):
-                    updated_count += 1
-        else:
-            retrieve, after = 1000, discord.guild.OLDEST_OBJECT
-            while True:
-                after_id = after.id if after else None
-                data = await ctx.bot.http.get_members(ctx.guild.id, retrieve, after_id)
-                if not data:
-                    break
-                after = discord.Object(id=int(data[-1]["user"]["id"]))
-                for raw_member in reversed(data):
-                    member = discord.Member(data=raw_member, guild=ctx.guild, state=ctx.guild._state)
-                    if member.bot:
-                        continue
-                    tag_qualifies = await self.check(member, "tag", raw_member["user"])
-                    status_qualifies = await self.check(member, "status")
-                    if await self.update_roles(member, "tag", tag_qualifies):
-                        updated_count += 1
-                    if await self.update_roles(member, "status", status_qualifies):
-                        updated_count += 1
-                if len(data) < 1000:
-                    break
-
+        updated_count = await self.sync_guild_roles(ctx.guild)
         await ctx.send(_("Force update complete. {count} role changes made.").format(count=updated_count))

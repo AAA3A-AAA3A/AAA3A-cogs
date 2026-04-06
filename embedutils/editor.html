@@ -8586,7 +8586,7 @@
                                             linkInput.value = res.data.url;
                                             // focus on the next empty input if the field requires a name or text to display eg. footer or author.
                                             !textInput?.value && textInput?.focus();
-                                            console.info(`${res.data.url} will be deleted in ${expiration / 60 / 60} hours. To delete it now, visit ${res.data.delete_url} and scroll down to find the delete button.`);
+                                            console.info(`${res.data.url} won't be deleted. To delete it now, visit ${res.data.delete_url} and scroll down to find the delete button.`);
                                             linkInput.dispatchEvent(new Event("input"));
                                         }).catch(err => {
                                             browse.classList.remove("loading");

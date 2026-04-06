@@ -91,6 +91,7 @@ JOIN_GATE_OPTIONS: typing.List[
         "description": "Target bots added by unauthorized members.",
         "action": "kick",
         "value": "bot_additions",
+        "check": lambda member: member.bot,
     },
     {
         "name": "Unverified Bot Additions",
@@ -287,16 +288,16 @@ class JoinGateModule(Module):
             option_config = config["options"][option["value"]]
             if not option_config["enabled"]:
                 continue
-            if option["value"] != "bot_additions":
-                if "param" not in option:
-                    if not option["check"](member):
-                        continue
-                else:
-                    if not option["check"](member, option_config[option["param"][0]]):
-                        continue
-            elif not member.bot or not member.guild.me.guild_permissions.view_audit_log:
-                continue
+            if "param" not in option:
+                if not option["check"](member):
+                    continue
             else:
+                if not option["check"](member, option_config[option["param"][0]]):
+                    continue
+            if (
+                option["value"] in ("bot_additions", "unverified_bot_additions")
+                and member.guild.me.guild_permissions.view_audit_log
+            ):
                 async for entry in member.guild.audit_logs(
                     limit=3, action=discord.AuditLogAction.bot_add
                 ):
@@ -304,7 +305,7 @@ class JoinGateModule(Module):
                         responsible = entry.user
                         break
                 else:
-                    return
+                    continue
                 if await self.cog.is_trusted_admin_or_higher(responsible):
                     continue
             triggered.append((option, option_config))

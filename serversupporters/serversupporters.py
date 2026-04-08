@@ -101,7 +101,7 @@ class ServerSupporters(Cog):
     async def cog_load(self) -> None:
         await super().cog_load()
         await self.settings.add_commands()
-        self._startup_sync_task = asyncio.create_task(self._startup_resync())
+        # self._startup_sync_task = asyncio.create_task(self._startup_resync())
 
     async def cog_unload(self) -> None:
         if self._startup_sync_task is not None and not self._startup_sync_task.done():

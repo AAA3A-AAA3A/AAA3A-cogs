@@ -372,11 +372,14 @@ class JoinGateModule(Module):
             elif action == "ban" and member.guild.me.guild_permissions.ban_members:
                 await member.ban(reason=audit_log_reason)
             elif action == "quarantine" and member.guild.me.guild_permissions.manage_roles:
-                await self.cog.quarantine_member(
-                    member=member,
-                    reason=reason,
-                    logs=logs,
-                )
+                try:
+                    await self.cog.quarantine_member(
+                        member=member,
+                        reason=reason,
+                        logs=logs,
+                    )
+                except RuntimeError:
+                    pass
             if action not in ("quarantine", "kick", "ban"):
                 await self.cog.send_modlog(
                     action=action,

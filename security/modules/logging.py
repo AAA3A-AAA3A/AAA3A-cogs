@@ -1154,8 +1154,8 @@ class LoggingModule(Module):
                             target_display = f"{target.type.__name__} `{target.id}`"
                         result += f"\n  - {target_display} - `PermissionOverwrite({len(overwrite._values)} permissions)`"
                     return result
-                elif isinstance(value, list) and value and isinstance(value[0], discord.AutoModRuleAction):
-                    return ", ".join(a.type.name.replace("_", " ").title() for a in value)
+                elif isinstance(value, typing.List) and value and isinstance(value[0], discord.AutoModRuleAction):
+                    return humanize_list([a.type.name.replace("_", " ").title() for a in value])
                 elif isinstance(value, discord.AutoModTrigger):
                     return f"`{value.type.name.replace('_', ' ').title()}`"
                 return f"`{value}`"

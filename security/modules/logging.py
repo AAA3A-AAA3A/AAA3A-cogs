@@ -1106,7 +1106,7 @@ class LoggingModule(Module):
                     ).format(emoji=Emojis.ROLE.value, target_name=before.name, target=target)
                 else:
                     embed.description += "\n" + _(
-                        "🗑️ **Target:** `{target}` - `{target.id}`"
+                        "🗑️ **Target:** `{target.id}`"
                     ).format(target=target)
         elif event["value"] in ("member_join", "member_leave"):
             embed.set_thumbnail(url=get_non_animated_asset(responsible.display_avatar))
@@ -1154,6 +1154,10 @@ class LoggingModule(Module):
                             target_display = f"{target.type.__name__} `{target.id}`"
                         result += f"\n  - {target_display} - `PermissionOverwrite({len(overwrite._values)} permissions)`"
                     return result
+                elif isinstance(value, typing.List) and value and isinstance(value[0], discord.AutoModRuleAction):
+                    return humanize_list([a.type.name.replace("_", " ").title() for a in value])
+                elif isinstance(value, discord.AutoModTrigger):
+                    return f"`{value.type.name.replace('_', ' ').title()}`"
                 return f"`{value}`"
 
             added_permissions, removed_permissions = [], []

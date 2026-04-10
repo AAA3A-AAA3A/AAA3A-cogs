@@ -115,7 +115,7 @@ class Ticket:
         else:
             if not self.cog.tickets[self.guild_id]:
                 del self.cog.tickets[self.guild_id]
-        await self.cog.config.guild(self.guild).tickets.clear_raw(str(self.id))
+        await self.cog.config.guild_from_id(self.guild_id).tickets.clear_raw(str(self.id))
         if self.message in self.cog.views:
             self.cog.views.pop(self.message).stop()
 

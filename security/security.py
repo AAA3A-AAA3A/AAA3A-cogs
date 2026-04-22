@@ -912,8 +912,6 @@ class Security(Cog):
                         overwrite=discord.PermissionOverwrite(**overwrites),
                         reason="Updating the quarantine role overwrites in the channel used by Security.",
                     )
-                except discord.Forbidden:
-                    pass
                 except discord.HTTPException:
                     pass
         return quarantine_role

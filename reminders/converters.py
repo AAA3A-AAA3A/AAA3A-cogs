@@ -9,7 +9,6 @@ import asyncio
 import datetime
 import functools
 import re
-from typing import TYPE_CHECKING
 
 import dateparser
 import dateutil
@@ -39,7 +38,7 @@ from pyparsing import (
 )  # NOQA
 from recurrent.event_parser import RecurringEvent
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from .types import Reminder
 
 _: Translator = Translator("Reminders", __file__)

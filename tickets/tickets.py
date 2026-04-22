@@ -447,8 +447,7 @@ class Tickets(DashboardIntegration, Cog):
                 channel_id, message_id = (int(x) for x in str(message).split("-"))
                 view: CreateTicketView = CreateTicketView(cog=self, components=components)
                 self.bot.add_view(view, message_id=message_id)
-                channel = self.bot.get_channel(channel_id)
-                if channel is not None:
+                if (channel := self.bot.get_channel(channel_id)) is not None:
                     self.views[discord.PartialMessage(channel=channel, id=message_id)] = view
         view: OwnerCloseConfirmation = OwnerCloseConfirmation(cog=self)
         self.bot.add_view(view)

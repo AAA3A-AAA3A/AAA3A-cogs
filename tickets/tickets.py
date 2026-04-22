@@ -432,17 +432,23 @@ class Tickets(DashboardIntegration, Cog):
                 self.tickets.setdefault(guild_id, {})[int(ticket_id)] = ticket
                 view: TicketView = TicketView(cog=self, ticket=ticket)
                 view._message = ticket.message
-                await view._update()
+                if ticket.guild is not None:
+                    await view._update()
+                else:
+                    view.members.custom_id = f"Tickets_#{ticket.id}_members"
+                    view.lock.custom_id = f"Tickets_#{ticket.id}_lock"
+                    view.claim.custom_id = f"Tickets_#{ticket.id}_claim"
+                    view.close.custom_id = f"Tickets_#{ticket.id}_close"
+                    view.approve_appeal.custom_id = f"Tickets_#{ticket.id}_approve_appeal"
                 self.bot.add_view(view, message_id=ticket.message_id)
-                self.views[ticket.message] = view
+                if ticket.message is not None:
+                    self.views[ticket.message] = view
             for message, components in guild_data["buttons_dropdowns"].items():
-                channel = self.bot.get_channel(int((str(message).split("-"))[0]))
-                if channel is None:
-                    continue
-                message_id = int((str(message).split("-"))[1])
+                channel_id, message_id = (int(x) for x in str(message).split("-"))
                 view: CreateTicketView = CreateTicketView(cog=self, components=components)
                 self.bot.add_view(view, message_id=message_id)
-                self.views[discord.PartialMessage(channel=channel, id=message_id)] = view
+                if (channel := self.bot.get_channel(channel_id)) is not None:
+                    self.views[discord.PartialMessage(channel=channel, id=message_id)] = view
         view: OwnerCloseConfirmation = OwnerCloseConfirmation(cog=self)
         self.bot.add_view(view)
         self.views["OwnerCloseConfirmation"] = view

@@ -1318,7 +1318,10 @@ class LoggingModule(Module):
                 continue
             if not guild_data.get("modules", {}).get("logging", {}).get("enabled", False):
                 continue
-            invites = await guild.invites()
+            try:
+                invites = await guild.invites()
+            except discord.HTTPException:
+                continue
             self.invites_cache[guild] = {
                 invite.code: {
                     "uses": invite.uses,

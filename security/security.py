@@ -906,11 +906,14 @@ class Security(Cog):
                             "stream": False,
                         }
                     )
-                await channel.set_permissions(
-                    quarantine_role,
-                    overwrite=discord.PermissionOverwrite(**overwrites),
-                    reason="Updating the quarantine role overwrites in the channel used by Security.",
-                )
+                try:
+                    await channel.set_permissions(
+                        quarantine_role,
+                        overwrite=discord.PermissionOverwrite(**overwrites),
+                        reason="Updating the quarantine role overwrites in the channel used by Security.",
+                    )
+                except discord.HTTPException:
+                    pass
         return quarantine_role
 
     async def create_modlog_channel(

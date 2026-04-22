@@ -14,7 +14,6 @@ from redbot.core.utils.chat_formatting import pagify
 
 from .converter import RoleHierarchyConverter
 
-
 # Credits:
 # General repo credits.
 
@@ -383,28 +382,24 @@ class ServerSupporters(Cog):
     async def on_user_update(self, before: discord.User, after: discord.User) -> None:
         if after.bot:
             return
-        if discord.version_info >= (2, 6, 0):
-            # we have to guard the dpy version in order to check guild tag
-            before_pg = before.primary_guild
-            after_pg = after.primary_guild
-            if before_pg == after_pg or (
-                before_pg is not None
-                and after_pg is not None
-                and before_pg.id == after_pg.id
-                and before_pg.identity_enabled == after_pg.identity_enabled
-            ):
-                return
+        before_pg = before.primary_guild
+        after_pg = after.primary_guild
+        if before_pg == after_pg or (
+            before_pg is not None
+            and after_pg is not None
+            and before_pg.id == after_pg.id
+            and before_pg.identity_enabled == after_pg.identity_enabled
+        ):
+            return
 
         for guild in self.bot.guilds:
             if not await self.config.guild(
                 guild
             ).enabled() or await self.bot.cog_disabled_in_guild(self, guild):
                 continue
-            member = guild.get_member(after.id)
-            if member is None:
+            if (member := guild.get_member(after.id)) is None:
                 continue
-            role = await self.get_role(member, "tag")
-            if role is None:
+            if (role := await self.get_role(member, "tag")) is None:
                 continue
             if self.cache[member]:
                 continue

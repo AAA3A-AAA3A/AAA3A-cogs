@@ -5,8 +5,8 @@ from redbot.core.i18n import Translator, cog_i18n  # isort:skip
 import discord  # isort:skip
 import typing  # isort:skip
 
-import datetime
 import asyncio
+import datetime
 import re
 from collections import defaultdict
 
@@ -111,9 +111,9 @@ class ServerSupporters(Cog):
     async def _startup_resync(self) -> None:
         await self.bot.wait_until_ready()
         for guild in self.bot.guilds:
-            if not await self.config.guild(guild).enabled() or await self.bot.cog_disabled_in_guild(
-                self, guild
-            ):
+            if not await self.config.guild(
+                guild
+            ).enabled() or await self.bot.cog_disabled_in_guild(self, guild):
                 continue
             try:
                 await self.sync_guild_roles(guild)
@@ -141,7 +141,10 @@ class ServerSupporters(Cog):
         return role
 
     async def get_embed(
-        self, member: discord.Member, _type: typing.Literal["tag", "status"], enabled: bool = True
+        self,
+        member: discord.Member,
+        _type: typing.Literal["tag", "status"],
+        enabled: bool = True,
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title=(
@@ -166,11 +169,16 @@ class ServerSupporters(Cog):
                 embed.description = _(
                     "{member.mention} has been removed from the **{role.mention}** role for no longer being a server supporter."
                 ).format(member=member, role=role, _type=_type)
-        embed.set_footer(text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon))
+        embed.set_footer(
+            text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon)
+        )
         return embed
 
     async def log(
-        self, member: discord.Member, _type: typing.Literal["tag", "status"], enabled: bool = True
+        self,
+        member: discord.Member,
+        _type: typing.Literal["tag", "status"],
+        enabled: bool = True,
     ) -> None:
         if (logs_channel_id := await self.config.guild(member.guild).logs_channel()) is None or (
             logs_channel := member.guild.get_channel_or_thread(logs_channel_id)
@@ -209,7 +217,10 @@ class ServerSupporters(Cog):
                 )
 
     async def update_roles(
-        self, member: discord.Member, _type: typing.Literal["tag", "status"], should_have_role: bool
+        self,
+        member: discord.Member,
+        _type: typing.Literal["tag", "status"],
+        should_have_role: bool,
     ) -> bool:
         if (role := await self.get_role(member, _type)) is None:
             return False
@@ -239,7 +250,9 @@ class ServerSupporters(Cog):
                 )
                 return False
 
-    async def check_invites_in_status(self, guild: discord.Guild, status: typing.Optional[str]) -> bool:
+    async def check_invites_in_status(
+        self, guild: discord.Guild, status: typing.Optional[str]
+    ) -> bool:
         if not status:
             return False
         invite_codes = {
@@ -366,38 +379,41 @@ class ServerSupporters(Cog):
             self.cache.pop(after, None)
 
     @commands.Cog.listener()
-    async def on_member_update(
-        self,
-        before: discord.Member,
-        after: discord.Member,
-        user_payload: typing.Optional[typing.Dict[str, typing.Any]] = None,
-    ) -> None:
+    async def on_user_update(self, before: discord.User, after: discord.User) -> None:
         if after.bot:
             return
-        if (
-            not await self.config.guild(after.guild).enabled()
-            or await self.bot.cog_disabled_in_guild(self, after.guild)
-            or (tag_supporter_role := await self.get_role(after, "tag")) is None
+        before_pg = before.primary_guild
+        after_pg = after.primary_guild
+        if before_pg == after_pg or (
+            before_pg is not None
+            and after_pg is not None
+            and before_pg.id == after_pg.id
+            and before_pg.identity_enabled == after_pg.identity_enabled
         ):
             return
-        if self.cache[after]:
-            return
-        self.cache[after] = True
 
-        try:
-            if discord.version_info >= (2, 6, 0):
-                before_qualifies = await self.check(before, "tag")
-                after_qualifies = await self.check(after, "tag")
-            else:
-                before_qualifies = tag_supporter_role in before.roles
-                after_qualifies = await self.check(after, "tag", user_payload)
-            if before_qualifies == after_qualifies:
-                return
-            role_changed = await self.update_roles(after, "tag", after_qualifies)
-            if role_changed:
-                await self.log(after, "tag", after_qualifies)
-        finally:
-            self.cache.pop(after, None)
+        for guild in self.bot.guilds:
+            if not await self.config.guild(
+                guild
+            ).enabled() or await self.bot.cog_disabled_in_guild(self, guild):
+                continue
+            if (member := guild.get_member(after.id)) is None:
+                continue
+            if (role := await self.get_role(member, "tag")) is None:
+                continue
+            if self.cache[member]:
+                continue
+            self.cache[member] = True
+            try:
+                before_qualifies = role in member.roles
+                after_qualifies = await self.check(member, "tag")
+                if before_qualifies == after_qualifies:
+                    continue
+                role_changed = await self.update_roles(member, "tag", after_qualifies)
+                if role_changed:
+                    await self.log(member, "tag", after_qualifies)
+            finally:
+                self.cache.pop(member, None)
 
     @commands.admin_or_permissions(manage_guild=True, manage_roles=True)
     @commands.bot_has_guild_permissions(manage_roles=True)
@@ -414,8 +430,7 @@ class ServerSupporters(Cog):
         if _type == "tag":
             if discord.version_info >= (2, 6, 0):
                 members = [
-                    member for member in ctx.guild.members
-                    if await self.check(member, "tag")
+                    member for member in ctx.guild.members if await self.check(member, "tag")
                 ]
             else:
                 retrieve, after = 1000, discord.guild.OLDEST_OBJECT
@@ -438,8 +453,7 @@ class ServerSupporters(Cog):
                         break
         else:
             members = [
-                member for member in ctx.guild.members
-                if await self.check(member, "status")
+                member for member in ctx.guild.members if await self.check(member, "status")
             ]
         embed: discord.Embed = discord.Embed(
             title=_("{count} Server {_type} Supporter{s}").format(
@@ -467,4 +481,6 @@ class ServerSupporters(Cog):
                 _("The Server Supporters system is not enabled.")
             )
         updated_count = await self.sync_guild_roles(ctx.guild)
-        await ctx.send(_("Force update complete. {count} role changes made.").format(count=updated_count))
+        await ctx.send(
+            _("Force update complete. {count} role changes made.").format(count=updated_count)
+        )

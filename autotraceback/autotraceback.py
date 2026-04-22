@@ -57,8 +57,6 @@ class AutoTraceback(DashboardIntegration, Cog):
             - `[public]` - Whether to send the traceback to the current context. Default is `True`.
             - `[index]`  - The error index. `0` is the last one.
         """
-        if not self.tracebacks and not ctx.bot._last_exception:
-            raise commands.UserFeedbackCheckFailure(_("No exception has occurred yet."))
         if index == 0:  # Last bot exception can be set directly by cogs.
             _last_exception = ctx.bot._last_exception
         else:

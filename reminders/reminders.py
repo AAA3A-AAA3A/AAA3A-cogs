@@ -1107,7 +1107,7 @@ class Reminders(DashboardIntegration, Cog):
                         "The repeat timedelta must be greater than {minimum_repeat} minutes."
                     ).format(minimum_repeat=minimum_repeat)
                 )
-        reminder.intervals = Repeat.from_json([repeat_dict])
+        reminder.repeat = Repeat.from_json([repeat_dict])
         await reminder.save()
         await ctx.send(
             _("Your reminder **#{reminder_id}** has been successfully edited.").format(

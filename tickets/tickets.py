@@ -541,7 +541,7 @@ class Tickets(DashboardIntegration, Cog):
             return
         await ticket.close(message.interaction_metadata.user)
 
-    def is_support(self=False):
+    def is_support(ignore_owner: bool = False):
         async def predicate(ctx: commands.Context | discord.Interaction) -> bool:
             bot = ctx.client if isinstance(ctx, discord.Interaction) else ctx.bot
             author = ctx.user if isinstance(ctx, discord.Interaction) else ctx.author
@@ -565,7 +565,7 @@ class Tickets(DashboardIntegration, Cog):
             else:
                 profile = "main"
             return (
-                (ticket is not None and ticket.owner == author and not self)
+                (ticket is not None and ticket.owner == author and not ignore_owner)
                 or await bot.is_admin(author)
                 or author.guild_permissions.manage_guild
                 or any(

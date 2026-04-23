@@ -1,12 +1,12 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 import functools
+import typing
 
+import discord
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 
 _: Translator = Translator("Tickets", __file__)
@@ -41,7 +41,7 @@ class TicketView(discord.ui.View):
 
     async def _update(self, edit_message: bool = False) -> None:
         config = await self.cog.config.guild(self.ticket.guild).profiles.get_raw(
-            self.ticket.profile
+            self.ticket.profile,
         )
         self.members.custom_id = f"Tickets_#{self.ticket.id}_members"
         if not self.ticket.is_locked:
@@ -176,12 +176,14 @@ class TicketView(discord.ui.View):
             if not self.ticket.is_locked:
                 await self.ticket.lock(interaction.user)
                 await interaction.followup.send(
-                    _("🔒 This ticket has been locked!"), ephemeral=True
+                    _("🔒 This ticket has been locked!"),
+                    ephemeral=True,
                 )
             else:
                 await self.ticket.unlock(interaction.user)
                 await interaction.followup.send(
-                    _("🔓 This ticket has been unlocked!"), ephemeral=True
+                    _("🔓 This ticket has been unlocked!"),
+                    ephemeral=True,
                 )
         except RuntimeError as e:
             return await interaction.followup.send(
@@ -196,12 +198,14 @@ class TicketView(discord.ui.View):
             if not self.ticket.is_claimed:
                 await self.ticket.claim(interaction.user)
                 await interaction.followup.send(
-                    _("👥 You have claimed this ticket!"), ephemeral=True
+                    _("👥 You have claimed this ticket!"),
+                    ephemeral=True,
                 )
             else:
                 await self.ticket.unclaim()
                 await interaction.followup.send(
-                    _("👤 You have unclaimed this ticket!"), ephemeral=True
+                    _("👤 You have unclaimed this ticket!"),
+                    ephemeral=True,
                 )
         except RuntimeError as e:
             return await interaction.followup.send(
@@ -212,7 +216,7 @@ class TicketView(discord.ui.View):
     @discord.ui.button(label="Close", style=discord.ButtonStyle.danger)
     async def close(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         config = await self.cog.config.guild(self.ticket.guild).profiles.get_raw(
-            self.ticket.profile
+            self.ticket.profile,
         )
         if not self.ticket.is_closed and not config["owner_can_close"]:
             fake_context = type(
@@ -250,13 +254,16 @@ class TicketView(discord.ui.View):
 
     @discord.ui.button(emoji="🛡️", label="Approve Appeal", style=discord.ButtonStyle.success)
     async def approve_appeal(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
         try:
             await self.ticket.approve_appeal(interaction.user)
             await interaction.followup.send(
-                _("✅ This ticket's appeal has been approved!"), ephemeral=True
+                _("✅ This ticket's appeal has been approved!"),
+                ephemeral=True,
             )
         except RuntimeError as e:
             return await interaction.followup.send(
@@ -266,6 +273,7 @@ class TicketView(discord.ui.View):
         if not self.ticket.is_closed:
             view: OwnerCloseConfirmation = OwnerCloseConfirmation(self.cog)
             await view.start(self.ticket)
+        return None
 
 
 class MembersView(discord.ui.View):
@@ -283,14 +291,14 @@ class MembersView(discord.ui.View):
             except discord.HTTPException:
                 pass
 
-    async def get_members_embeds(self) -> typing.List[discord.Embed]:
+    async def get_members_embeds(self) -> list[discord.Embed]:
         embed: discord.Embed = discord.Embed(
             title=_("{total} Member{s}").format(
                 total=len(self.ticket.members_ids),
                 s="s" if len(self.ticket.members_ids) != 1 else "",
             ),
             color=await self.cog.bot.get_embed_color(self.ticket.channel),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=datetime.datetime.now(tz=datetime.UTC),
         )
         embed.description = "\n".join(
             _("**{i}.** {member.mention} ({member.id})").format(i=i, member=member)
@@ -322,7 +330,7 @@ class MembersView(discord.ui.View):
     async def add(self, interaction: discord.Interaction, select: discord.ui.UserSelect) -> None:
         if not select.values:
             await interaction.response.defer()
-            return
+            return None
         await interaction.response.defer(ephemeral=True, thinking=True)
         try:
             for member in select.values:
@@ -337,8 +345,10 @@ class MembersView(discord.ui.View):
             )
         await self._update()
         await interaction.followup.send(
-            _("➕ Members have been added to the ticket!"), ephemeral=True
+            _("➕ Members have been added to the ticket!"),
+            ephemeral=True,
         )
+        return None
 
     @discord.ui.select(
         cls=discord.ui.UserSelect,
@@ -346,12 +356,10 @@ class MembersView(discord.ui.View):
         max_values=10,
         placeholder="Select the member(s) to remove from the ticket.",
     )
-    async def remove(
-        self, interaction: discord.Interaction, select: discord.ui.UserSelect
-    ) -> None:
+    async def remove(self, interaction: discord.Interaction, select: discord.ui.UserSelect) -> None:
         if not select.values:
             await interaction.response.defer()
-            return
+            return None
         await interaction.response.defer(ephemeral=True, thinking=True)
         try:
             for member in select.values:
@@ -366,8 +374,10 @@ class MembersView(discord.ui.View):
             )
         await self._update()
         await interaction.followup.send(
-            _("➖ Members have been removed from the ticket!"), ephemeral=True
+            _("➖ Members have been removed from the ticket!"),
+            ephemeral=True,
         )
+        return None
 
 
 class ReasonModal(discord.ui.Modal):
@@ -375,7 +385,7 @@ class ReasonModal(discord.ui.Modal):
         self.cog: commands.Cog = cog
         self.ticket = ticket
         super().__init__(
-            title=_("Close Ticket") if not self.ticket.is_closed else _("Reopen Ticket")
+            title=_("Close Ticket") if not self.ticket.is_closed else _("Reopen Ticket"),
         )
 
         self.reason: discord.ui.TextInput = discord.ui.TextInput(
@@ -392,7 +402,7 @@ class ReasonModal(discord.ui.Modal):
         try:
             if not self.ticket.is_closed:
                 config = await self.cog.config.guild(self.ticket.guild).profiles.get_raw(
-                    self.ticket.profile
+                    self.ticket.profile,
                 )
                 if (
                     interaction.user != self.ticket.owner
@@ -433,13 +443,13 @@ class OwnerCloseConfirmation(discord.ui.View):
     async def start(
         self,
         ticket,
-        interaction: typing.Optional[discord.Interaction] = None,
-        reason: typing.Optional[str] = None,
+        interaction: discord.Interaction | None = None,
+        reason: str | None = None,
     ) -> discord.Message:
         embed: discord.Embed = discord.Embed(
             title=_("Close Ticket"),
             description=_(
-                "If you would like to close this ticket, then just press the `Close` button. If you would like to keep this ticket open to get further assistance, you can click on the `Cancel` button."
+                "If you would like to close this ticket, then just press the `Close` button. If you would like to keep this ticket open to get further assistance, you can click on the `Cancel` button.",
             ),
             color=await self.cog.bot.get_embed_color(ticket.channel),
         )
@@ -450,7 +460,7 @@ class OwnerCloseConfirmation(discord.ui.View):
                 inline=False,
             )
         embed.set_footer(
-            text=_("Note that if there is no response from you the ticket will be closed.")
+            text=_("Note that if there is no response from you the ticket will be closed."),
         )
         config = await self.cog.config.guild(ticket.guild).profiles.get_raw(ticket.profile)
         try:
@@ -468,7 +478,7 @@ class OwnerCloseConfirmation(discord.ui.View):
             interaction.response.send_message if interaction is not None else ticket.channel.send
         )(
             _("{owner.mention}, is there anything else we can help you with?").format(
-                owner=ticket.owner
+                owner=ticket.owner,
             ),
             embed=embed,
             view=self,
@@ -480,7 +490,8 @@ class OwnerCloseConfirmation(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(), channel=interaction.channel
+            self.cog.tickets.get(interaction.guild.id, {}).values(),
+            channel=interaction.channel,
         )
         if ticket is None:
             await interaction.response.send_message(
@@ -516,7 +527,8 @@ class OwnerCloseConfirmation(discord.ui.View):
         except discord.HTTPException:
             pass
         ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(), channel=interaction.channel
+            self.cog.tickets.get(interaction.guild.id, {}).values(),
+            channel=interaction.channel,
         )
         try:
             reason = (
@@ -543,7 +555,9 @@ class ClosedTicketControls(discord.ui.View):
         self.delete.label = _("Delete")
 
     async def start(
-        self, ticket, interaction: typing.Optional[discord.Interaction] = None
+        self,
+        ticket,
+        interaction: discord.Interaction | None = None,
     ) -> discord.Message:
         config = await self.cog.config.guild(ticket.guild).profiles.get_raw(ticket.profile)
         try:
@@ -595,7 +609,8 @@ class ClosedTicketControls(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(), channel=interaction.channel
+            self.cog.tickets.get(interaction.guild.id, {}).values(),
+            channel=interaction.channel,
         )
         if ticket is None:
             await interaction.response.send_message(
@@ -605,7 +620,7 @@ class ClosedTicketControls(discord.ui.View):
             return False
         interaction.data["ticket"] = ticket
         if not await self.cog.is_support.__func__(
-            ignore_owner=interaction.data["custom_id"] == "Tickets_delete"
+            ignore_owner=interaction.data["custom_id"] == "Tickets_delete",
         ).predicate(interaction):
             await interaction.response.send_message(
                 _("⛔ You aren't allowed to interact with this ticket!"),
@@ -615,14 +630,15 @@ class ClosedTicketControls(discord.ui.View):
         return True
 
     @discord.ui.button(
-        label="Transcript", style=discord.ButtonStyle.secondary, custom_id="Tickets_transcript"
+        label="Transcript",
+        style=discord.ButtonStyle.secondary,
+        custom_id="Tickets_transcript",
     )
-    async def transcript(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def transcript(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer(thinking=True)
         ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(), channel=interaction.channel
+            self.cog.tickets.get(interaction.guild.id, {}).values(),
+            channel=interaction.channel,
         )
         transcript = await ticket.export()
         message = await interaction.followup.send(
@@ -637,17 +653,20 @@ class ClosedTicketControls(discord.ui.View):
                 label=_("View Transcript"),
                 style=discord.ButtonStyle.link,
                 url=f"https://mahto.id/chat-exporter?url={message.attachments[0].url}",
-            )
+            ),
         )
         await interaction.edit_original_response(view=view)
 
     @discord.ui.button(
-        label="Reopen", style=discord.ButtonStyle.secondary, custom_id="Tickets_reopen"
+        label="Reopen",
+        style=discord.ButtonStyle.secondary,
+        custom_id="Tickets_reopen",
     )
     async def reopen(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
         ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(), channel=interaction.channel
+            self.cog.tickets.get(interaction.guild.id, {}).values(),
+            channel=interaction.channel,
         )
         try:
             await ticket.reopen(interaction.user)
@@ -658,12 +677,11 @@ class ClosedTicketControls(discord.ui.View):
                 ephemeral=True,
             )
 
-    @discord.ui.button(
-        label="Delete", style=discord.ButtonStyle.danger, custom_id="Tickets_delete"
-    )
+    @discord.ui.button(label="Delete", style=discord.ButtonStyle.danger, custom_id="Tickets_delete")
     async def delete(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(), channel=interaction.channel
+            self.cog.tickets.get(interaction.guild.id, {}).values(),
+            channel=interaction.channel,
         )
         await interaction.response.send_message(
             embed=discord.Embed(
@@ -679,9 +697,9 @@ class CreateTicketView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        components: typing.Dict[
+        components: dict[
             typing.Literal["buttons", "dropdown_options"],
-            typing.List[typing.Dict[str, typing.Any]],
+            list[dict[str, typing.Any]],
         ],
     ) -> None:
         super().__init__(timeout=None)
@@ -689,7 +707,7 @@ class CreateTicketView(discord.ui.View):
 
         async def callback(
             interaction: discord.Interaction,
-            item: typing.Union[discord.ui.Button, discord.ui.Select],
+            item: discord.ui.Button | discord.ui.Select,
         ) -> None:
             if isinstance(item, discord.ui.Button):
                 config_identifier = item.custom_id.split("_")[-1]
@@ -710,12 +728,13 @@ class CreateTicketView(discord.ui.View):
                 f"{interaction.message.channel.id}-{interaction.message.id}"
             ]["buttons" if isinstance(item, discord.ui.Button) else "dropdown_options"][
                 config_identifier
-            ][
-                "profile"
-            ]
+            ]["profile"]
             try:
                 await self.cog.create_ticket(
-                    interaction, profile, interaction.user, category_label=category_label
+                    interaction,
+                    profile,
+                    interaction.user,
+                    category_label=category_label,
                 )
             except commands.UserFeedbackCheckFailure as e:
                 return await interaction.followup.send(
@@ -771,7 +790,7 @@ class CreateTicketView(discord.ui.View):
                         label=option["label"],
                         description=option["description"],
                         value=config_identifier,
-                    )
+                    ),
                 )
             dropdown.callback = functools.partial(callback, item=dropdown)
             self.add_item(dropdown)

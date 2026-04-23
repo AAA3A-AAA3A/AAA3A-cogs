@@ -1,13 +1,16 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import typing
 
+import discord
+
+from AAA3A_utils import CogsUtils
 from redbot.cogs.customcom.customcom import ArgParseError
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 from .utils import rpc_check
+
+if typing.TYPE_CHECKING:
+    from redbot.core.bot import Red
 
 _: Translator = Translator("Dashboard", __file__)
 
@@ -29,7 +32,7 @@ class DashboardRPC_DefaultCogs:
         self.bot.unregister_rpc_handler(self.set_custom_commands)
 
     @rpc_check()
-    async def get_aliases(self, user_id: int, guild_id: typing.Optional[int]):
+    async def get_aliases(self, user_id: int, guild_id: int | None):
         if guild_id is not None:
             guild = self.bot.get_guild(guild_id)
             if guild is None:
@@ -54,14 +57,16 @@ class DashboardRPC_DefaultCogs:
         return {
             "status": 0,
             "aliases": {
-                alias.name: alias.command
-                for alias in sorted(aliases, key=lambda alias: alias.name)
+                alias.name: alias.command for alias in sorted(aliases, key=lambda alias: alias.name)
             },
         }
 
     @rpc_check()
     async def set_aliases(
-        self, user_id: int, guild_id: typing.Optional[int], aliases: typing.Dict[str, str]
+        self,
+        user_id: int,
+        guild_id: int | None,
+        aliases: dict[str, str],
     ):
         if guild_id is not None:
             guild = self.bot.get_guild(guild_id)
@@ -99,15 +104,15 @@ class DashboardRPC_DefaultCogs:
                 if Alias.is_command(alias):
                     errors.append(
                         _(
-                            "You attempted to create a new alias with the name {name}, but that name is already a command on this bot."
-                        ).format(name=alias)
+                            "You attempted to create a new alias with the name {name}, but that name is already a command on this bot.",
+                        ).format(name=alias),
                     )
                     continue
                 if self.bot.get_command(command.split(maxsplit=1)[0]) is None:
                     errors.append(
                         _(
-                            "You attempted to create a new alias with the name {name}, but the command {command} does not exist."
-                        ).format(name=alias, command=command)
+                            "You attempted to create a new alias with the name {name}, but the command {command} does not exist.",
+                        ).format(name=alias, command=command),
                     )
                     continue
                 await Alias._aliases.add_alias(ctx, alias, command, global_=guild is None)
@@ -142,14 +147,18 @@ class DashboardRPC_DefaultCogs:
             "custom_commands": {
                 custom_command["command"]: custom_command["response"]
                 for custom_command in sorted(
-                    custom_commands, key=lambda custom_command: custom_command["command"]
+                    custom_commands,
+                    key=lambda custom_command: custom_command["command"],
                 )
             },
         }
 
     @rpc_check()
     async def set_custom_commands(
-        self, user_id: int, guild_id: int, custom_commands: typing.Dict[str, str]
+        self,
+        user_id: int,
+        guild_id: int,
+        custom_commands: dict[str, str],
     ):
         guild = self.bot.get_guild(guild_id)
         if guild is None:
@@ -171,7 +180,7 @@ class DashboardRPC_DefaultCogs:
             invoke=False,
         )
         existing_custom_commands = await CustomCommands.commandobj.get_commands(
-            CustomCommands.config.guild(guild)
+            CustomCommands.config.guild(guild),
         )
         errors = []
         for command, responses in custom_commands.items():
@@ -182,7 +191,10 @@ class DashboardRPC_DefaultCogs:
                     errors.append(_("`{command}`: ").format(command=command) + e.args[0])
             elif responses != existing_custom_commands[command]["response"]:
                 await CustomCommands.commandobj.edit(
-                    ctx, command, response=responses, ask_for=False
+                    ctx,
+                    command,
+                    response=responses,
+                    ask_for=False,
                 )
         for command in existing_custom_commands:
             if command not in custom_commands:

@@ -1,14 +1,14 @@
-from AAA3A_utils import Cog, Menu, CogsUtils  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import random
+import typing
 from collections import defaultdict
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import pagify
 
 from .converters import Emoji, TeamConverter, TeamOrMemberConverter, UrlConverter
@@ -34,7 +34,7 @@ class Teams(Cog):
         )
         self.config.register_guild(teams={})
 
-        self.teams: typing.Dict[int, typing.Dict[int, Team]] = {}
+        self.teams: dict[int, dict[int, Team]] = {}
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -73,7 +73,8 @@ class Teams(Cog):
                     except RuntimeError:
                         try:
                             await entry.target.remove_roles(
-                                role, reason="Removing team member role due to a failed team addition."
+                                role,
+                                reason="Removing team member role due to a failed team addition.",
                             )
                         except discord.HTTPException:
                             pass
@@ -84,7 +85,8 @@ class Teams(Cog):
                     except RuntimeError:
                         try:
                             await entry.target.add_roles(
-                                role, reason="Re-adding team member role due to a failed team removal."
+                                role,
+                                reason="Re-adding team member role due to a failed team removal.",
                             )
                         except discord.HTTPException:
                             pass
@@ -102,10 +104,10 @@ class Teams(Cog):
         self,
         ctx: commands.Context,
         name: str,
-        captain: typing.Optional[discord.Member] = commands.Author,
-        emoji: typing.Optional[Emoji] = None,
-        logo_url: typing.Optional[UrlConverter] = None,
-        color: typing.Optional[commands.ColorConverter] = None,
+        captain: discord.Member | None = commands.Author,
+        emoji: Emoji | None = None,
+        logo_url: UrlConverter | None = None,
+        color: commands.ColorConverter | None = None,
         use_roles: bool = False,
         *,
         description: str = None,
@@ -114,14 +116,14 @@ class Teams(Cog):
         if any(captain in team.members for team in self.teams.get(ctx.guild.id, {}).values()):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "A team with this member already exists. Please remove them from the existing team first."
-                )
+                    "A team with this member already exists. Please remove them from the existing team first.",
+                ),
             )
         roles = {}
         if use_roles:
             if not ctx.guild.me.guild_permissions.manage_roles:
                 raise commands.UserFeedbackCheckFailure(
-                    _("I need the `Manage Roles` permission to create roles.")
+                    _("I need the `Manage Roles` permission to create roles."),
                 )
             for key, role_name in {
                 "captain": _("{name} Captain"),
@@ -159,12 +161,18 @@ class Teams(Cog):
         if ctx.guild.me.guild_permissions.manage_roles:
             if (captain_role := team.captain_role) is not None:
                 try:
-                    await captain.add_roles(captain_role, reason="Adding captain role to team member.")
+                    await captain.add_roles(
+                        captain_role,
+                        reason="Adding captain role to team member.",
+                    )
                 except discord.HTTPException:
                     pass
             if (member_role := team.member_role) is not None:
                 try:
-                    await captain.add_roles(member_role, reason="Adding member role to team member.")
+                    await captain.add_roles(
+                        member_role,
+                        reason="Adding member role to team member.",
+                    )
                 except discord.HTTPException:
                     pass
         await ctx.send(
@@ -185,7 +193,8 @@ class Teams(Cog):
         """Show the members of a specific team."""
         embed: discord.Embed = await team.get_embed(sample=True)
         embed.title += _(" — {member_count} Member{s}").format(
-            member_count=len(team.members), s="" if len(team.members) == 1 else "s"
+            member_count=len(team.members),
+            s="" if len(team.members) == 1 else "s",
         )
         description = "\n".join(
             f"- {member.mention}"
@@ -196,7 +205,7 @@ class Teams(Cog):
             )
             for member in sorted(
                 team.members,
-                key=lambda member: (not member == team.captain, member not in team.vice_captains),
+                key=lambda member: (member != team.captain, member not in team.vice_captains),
             )
         )
         embeds = []
@@ -209,7 +218,11 @@ class Teams(Cog):
     @commands.admin_or_permissions(manage_guild=True)
     @team.command()
     async def addmember(
-        self, ctx: commands.Context, team: TeamConverter, *, member: discord.Member
+        self,
+        ctx: commands.Context,
+        team: TeamConverter,
+        *,
+        member: discord.Member,
     ) -> None:
         """Add a member to a specific team."""
         try:
@@ -218,14 +231,17 @@ class Teams(Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
         await ctx.send(
             _(
-                "✅ Member {member.mention} added successfully to **{team.display_name}** team!"
-            ).format(member=member, team=team)
+                "✅ Member {member.mention} added successfully to **{team.display_name}** team!",
+            ).format(member=member, team=team),
         )
 
     @commands.admin_or_permissions(manage_guild=True)
     @team.command(with_app_command=False)
     async def addmembers(
-        self, ctx: commands.Context, team: TeamConverter, members: commands.Greedy[discord.Member]
+        self,
+        ctx: commands.Context,
+        team: TeamConverter,
+        members: commands.Greedy[discord.Member],
     ) -> None:
         """Add a member to a specific team."""
         if not members:
@@ -237,8 +253,8 @@ class Teams(Cog):
             except RuntimeError as e:
                 await ctx.send(
                     _(
-                        "⚠️ Could not add {member.mention} to **{team.display_name}** team: {error}"
-                    ).format(member=member, team=team, error=str(e))
+                        "⚠️ Could not add {member.mention} to **{team.display_name}** team: {error}",
+                    ).format(member=member, team=team, error=str(e)),
                 )
             else:
                 done += 1
@@ -248,7 +264,7 @@ class Teams(Cog):
                     team=team,
                     done=done,
                     s="" if done == 1 else "s",
-                )
+                ),
             )
 
     async def is_admin(self, member: discord.Member) -> bool:
@@ -259,25 +275,31 @@ class Teams(Cog):
         )
 
     def is_captain_or_vice_captain_or_admin():
-        async def predicate(ctx: typing.Union[commands.Context, discord.Interaction]) -> bool:
+        async def predicate(ctx: commands.Context | discord.Interaction) -> bool:
             bot = ctx.client if isinstance(ctx, discord.Interaction) else ctx.bot
             author = ctx.user if isinstance(ctx, discord.Interaction) else ctx.author
             if await bot.get_cog("Teams").is_admin(author):
                 return True
-            if (
-                team := (ctx.data if isinstance(ctx, discord.Interaction) else ctx.kwargs).get(
-                    "team"
+            return bool(
+                (
+                    team := (ctx.data if isinstance(ctx, discord.Interaction) else ctx.kwargs).get(
+                        "team",
+                    )
                 )
-            ) is not None and (author == team.captain or author in team.vice_captains):
-                return True
-            return False
+                is not None
+                and (author == team.captain or author in team.vice_captains),
+            )
 
         return predicate
 
     @commands.permissions_check(is_captain_or_vice_captain_or_admin())
     @team.command()
     async def removemember(
-        self, ctx: commands.Context, team: TeamConverter, *, member: discord.Member
+        self,
+        ctx: commands.Context,
+        team: TeamConverter,
+        *,
+        member: discord.Member,
     ) -> None:
         """Remove a member from a specific team."""
         try:
@@ -286,14 +308,17 @@ class Teams(Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
         await ctx.send(
             _(
-                "✅ Member {member.mention} removed successfully from **{team.display_name}** team!"
-            ).format(member=member, team=team)
+                "✅ Member {member.mention} removed successfully from **{team.display_name}** team!",
+            ).format(member=member, team=team),
         )
 
     @commands.permissions_check(is_captain_or_vice_captain_or_admin())
     @team.command(with_app_command=False)
     async def removemembers(
-        self, ctx: commands.Context, team: TeamConverter, members: commands.Greedy[discord.Member]
+        self,
+        ctx: commands.Context,
+        team: TeamConverter,
+        members: commands.Greedy[discord.Member],
     ) -> None:
         """Remove multiple members from a specific team."""
         if not members:
@@ -305,24 +330,30 @@ class Teams(Cog):
             except RuntimeError as e:
                 await ctx.send(
                     _(
-                        "⚠️ Could not remove {member.mention} from **{team.display_name}** team: {error}"
-                    ).format(member=member, team=team, error=str(e))
+                        "⚠️ Could not remove {member.mention} from **{team.display_name}** team: {error}",
+                    ).format(member=member, team=team, error=str(e)),
                 )
             else:
                 done += 1
         if done > 0:
             await ctx.send(
-                _("✅ {done} member{s} removed successfully from **{team.display_name}** team!").format(
+                _(
+                    "✅ {done} member{s} removed successfully from **{team.display_name}** team!",
+                ).format(
                     team=team,
                     done=done,
                     s="" if done == 1 else "s",
-                )
+                ),
             )
 
     @commands.permissions_check(is_captain_or_vice_captain_or_admin())
     @team.command()
     async def invite(
-        self, ctx: commands.Context, team: TeamConverter, *, member: discord.Member
+        self,
+        ctx: commands.Context,
+        team: TeamConverter,
+        *,
+        member: discord.Member,
     ) -> None:
         """Invite a member to a specific team."""
         embed: discord.Embed = await team.get_embed(sample=True)
@@ -352,23 +383,25 @@ class Teams(Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
         await ctx.send(
             _(
-                "✅ Member {member.mention} added successfully to **{team.display_name}** team!"
-            ).format(member=member, team=team)
+                "✅ Member {member.mention} added successfully to **{team.display_name}** team!",
+            ).format(member=member, team=team),
         )
 
     def is_team_captain_or_admin():
-        async def predicate(ctx: typing.Union[commands.Context, discord.Interaction]) -> bool:
+        async def predicate(ctx: commands.Context | discord.Interaction) -> bool:
             bot = ctx.client if isinstance(ctx, discord.Interaction) else ctx.bot
             author = ctx.user if isinstance(ctx, discord.Interaction) else ctx.author
             if await bot.get_cog("Teams").is_admin(author):
                 return True
-            if (
-                team := (ctx.data if isinstance(ctx, discord.Interaction) else ctx.kwargs).get(
-                    "team"
+            return bool(
+                (
+                    team := (ctx.data if isinstance(ctx, discord.Interaction) else ctx.kwargs).get(
+                        "team",
+                    )
                 )
-            ) is not None and author == team.captain:
-                return True
-            return False
+                is not None
+                and author == team.captain,
+            )
 
         return predicate
 
@@ -389,8 +422,9 @@ class Teams(Cog):
             except RuntimeError as e:
                 raise commands.UserFeedbackCheckFailure(
                     _("Could not add {member.mention} to the team: {error}").format(
-                        member=member, error=str(e)
-                    )
+                        member=member,
+                        error=str(e),
+                    ),
                 )
         try:
             await team.promote_member(member)
@@ -398,14 +432,18 @@ class Teams(Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
         await ctx.send(
             _(
-                "✅ Member {member.mention} promoted successfully to Vice-Captain in **{team.display_name}** team!"
-            ).format(member=member, team=team)
+                "✅ Member {member.mention} promoted successfully to Vice-Captain in **{team.display_name}** team!",
+            ).format(member=member, team=team),
         )
 
     @commands.permissions_check(is_team_captain_or_admin())
     @team.command()
     async def demote(
-        self, ctx: commands.Context, team: TeamConverter, *, member: discord.Member
+        self,
+        ctx: commands.Context,
+        team: TeamConverter,
+        *,
+        member: discord.Member,
     ) -> None:
         """Demote a member from Vice-Captain in a specific team."""
         try:
@@ -414,20 +452,24 @@ class Teams(Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
         await ctx.send(
             _(
-                "✅ Member {member.mention} demoted successfully in **{team.display_name}** team!"
-            ).format(member=member, team=team)
+                "✅ Member {member.mention} demoted successfully in **{team.display_name}** team!",
+            ).format(member=member, team=team),
         )
 
     @commands.permissions_check(is_team_captain_or_admin())
     @team.command()
     async def transfercaptaincy(
-        self, ctx: commands.Context, team: TeamConverter, *, new_captain: discord.Member
+        self,
+        ctx: commands.Context,
+        team: TeamConverter,
+        *,
+        new_captain: discord.Member,
     ) -> None:
         """Transfer captaincy to a new member in a specific team."""
         if not await CogsUtils.ConfirmationAsk(
             ctx,
             _("Are you sure you want to transfer captaincy to {new_captain.mention}?").format(
-                new_captain=new_captain
+                new_captain=new_captain,
             ),
         ):
             return
@@ -437,8 +479,8 @@ class Teams(Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
         await ctx.send(
             _(
-                "✅ Team **{team.display_name}** captaincy transferred to {new_captain.mention} successfully!"
-            ).format(team=team, new_captain=new_captain)
+                "✅ Team **{team.display_name}** captaincy transferred to {new_captain.mention} successfully!",
+            ).format(team=team, new_captain=new_captain),
         )
 
     @commands.permissions_check(is_team_captain_or_admin())
@@ -448,7 +490,13 @@ class Teams(Cog):
         ctx: commands.Context,
         team: TeamConverter,
         key: typing.Literal[
-            "name", "emoji", "logo_url", "color", "description", "slogan", "image_url"
+            "name",
+            "emoji",
+            "logo_url",
+            "color",
+            "description",
+            "slogan",
+            "image_url",
         ],
         *,
         value: str = None,
@@ -475,8 +523,9 @@ class Teams(Cog):
             await self.config.guild(ctx.guild).teams.clear_raw(old_id)
         await ctx.send(
             _("✅ Team **{team.display_name}** {key} updated successfully!").format(
-                team=team, key=key
-            )
+                team=team,
+                key=key,
+            ),
         )
 
     @commands.permissions_check(is_team_captain_or_admin())
@@ -484,7 +533,8 @@ class Teams(Cog):
     async def delete(self, ctx: commands.Context, team: TeamConverter) -> None:
         """Delete a specific team."""
         if not await CogsUtils.ConfirmationAsk(
-            ctx, _("Are you sure you want to delete the team `{team.name}`?").format(team=team)
+            ctx,
+            _("Are you sure you want to delete the team `{team.name}`?").format(team=team),
         ):
             return
         await team.delete()
@@ -530,8 +580,7 @@ class Teams(Cog):
         if not team:
             if member == ctx.author:
                 raise commands.UserFeedbackCheckFailure(_("You are not in any team."))
-            else:
-                raise commands.UserFeedbackCheckFailure(_("This member is not in any team."))
+            raise commands.UserFeedbackCheckFailure(_("This member is not in any team."))
         embed = await team.get_embed()
         embed.title += _(" — Member Info")
         embed.set_author(
@@ -558,9 +607,7 @@ class Teams(Cog):
             await team.remove_member(ctx.author)
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
-        await ctx.send(
-            _("✅ You have left the team **{team.display_name}**!").format(team=team)
-        )
+        await ctx.send(_("✅ You have left the team **{team.display_name}**!").format(team=team))
 
     @commands.admin_or_permissions(manage_guild=True)
     @team.command()
@@ -592,8 +639,9 @@ class Teams(Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
         await ctx.send(
             _("✅ **{amount} points** added successfully to **{team.display_name}** team!").format(
-                amount=amount, team=team
-            )
+                amount=amount,
+                team=team,
+            ),
         )
 
     @commands.admin_or_permissions(manage_guild=True)
@@ -626,21 +674,23 @@ class Teams(Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
         await ctx.send(
             _(
-                "✅ **{amount} points** removed successfully from **{team.display_name}** team!"
-            ).format(amount=amount, team=team)
+                "✅ **{amount} points** removed successfully from **{team.display_name}** team!",
+            ).format(amount=amount, team=team),
         )
 
     @commands.admin_or_permissions(manage_guild=True)
     @team.command()
     async def resetpoints(
-        self, ctx: commands.Context, team: typing.Optional[TeamConverter] = None
+        self,
+        ctx: commands.Context,
+        team: TeamConverter | None = None,
     ) -> None:
         """Reset the points for a specific team."""
         if team is None:
             if not await CogsUtils.ConfirmationAsk(
                 ctx,
                 _(
-                    "Are you sure you want to reset points for all teams? This action cannot be undone."
+                    "Are you sure you want to reset points for all teams? This action cannot be undone.",
                 ),
             ):
                 return
@@ -717,7 +767,9 @@ class Teams(Cog):
     @commands.bot_has_permissions(embed_links=True)
     @team.command()
     async def contributors(
-        self, ctx: commands.Context, team: typing.Optional[TeamConverter] = None
+        self,
+        ctx: commands.Context,
+        team: TeamConverter | None = None,
     ) -> None:
         """List all point contributors globally or in a specific team."""
         if team is not None:
@@ -763,7 +815,10 @@ class Teams(Cog):
     @commands.admin_or_permissions(manage_guild=True)
     @team.command()
     async def addmembersfromrole(
-        self, ctx: commands.Context, team: TeamConverter, role: discord.Role
+        self,
+        ctx: commands.Context,
+        team: TeamConverter,
+        role: discord.Role,
     ) -> None:
         """Add all members from a role to a team."""
         if not role.members:
@@ -776,15 +831,16 @@ class Teams(Cog):
                 except RuntimeError as e:
                     await ctx.send(
                         _(
-                            "⚠️ Could not add {member.mention} to **{team.display_name}** team: {error}"
-                        ).format(member=member, team=team, error=str(e))
+                            "⚠️ Could not add {member.mention} to **{team.display_name}** team: {error}",
+                        ).format(member=member, team=team, error=str(e)),
                     )
                 else:
                     count += 1
         await ctx.send(
             _("✅ **{count} members** added to **{team.display_name}** team!").format(
-                count=count, team=team
-            )
+                count=count,
+                team=team,
+            ),
         )
 
     @commands.admin_or_permissions(manage_guild=True)
@@ -808,14 +864,15 @@ class Teams(Cog):
                 except RuntimeError as e:
                     await ctx.send(
                         _(
-                            "⚠️ Could not add {member.mention} to **{team.display_name}** team: {error}"
-                        ).format(member=member, team=team, error=str(e))
+                            "⚠️ Could not add {member.mention} to **{team.display_name}** team: {error}",
+                        ).format(member=member, team=team, error=str(e)),
                     )
             members = members[member_count:]
         await ctx.send(
             _("✅ **{count} members** split into **{team_count} teams**!").format(
-                count=count, team_count=len(teams)
-            )
+                count=count,
+                team_count=len(teams),
+            ),
         )
 
     @commands.admin_or_permissions(manage_guild=True)
@@ -827,7 +884,7 @@ class Teams(Cog):
         if not await CogsUtils.ConfirmationAsk(
             ctx,
             _(
-                "Are you sure you want to delete all teams in this server? This action can't be undone."
+                "Are you sure you want to delete all teams in this server? This action can't be undone.",
             ),
         ):
             return

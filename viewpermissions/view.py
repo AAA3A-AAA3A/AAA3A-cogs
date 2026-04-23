@@ -1,10 +1,10 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
+
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("ViewPermissions", __file__)
 
@@ -14,10 +14,10 @@ class PermissionsView(discord.ui.View):
         self,
         cog: commands.Cog,
         guild: discord.Guild,
-        roles: typing.List[discord.Role] = None,
-        members: typing.List[discord.Member] = None,
-        channel: typing.Optional[discord.abc.GuildChannel] = None,
-        permissions: typing.List[str] = None,
+        roles: list[discord.Role] = None,
+        members: list[discord.Member] = None,
+        channel: discord.abc.GuildChannel | None = None,
+        permissions: list[str] = None,
         advanced: bool = False,
     ) -> None:
         roles = [] if roles is None else roles.copy()
@@ -30,23 +30,23 @@ class PermissionsView(discord.ui.View):
         self.ctx: commands.Context = None
 
         self.guild: discord.Guild = guild
-        self.roles: typing.Optional[typing.List[discord.Role]] = roles
-        self.members: typing.Optional[typing.List[discord.Member]] = members
+        self.roles: list[discord.Role] | None = roles
+        self.members: list[discord.Member] | None = members
         for member in self.members:
             self.roles.extend(member.roles)
         self.roles = sorted(set(self.roles))
-        self.channel: typing.Optional[discord.abc.GuildChannel] = channel
-        self.permissions: typing.List[str] = permissions
+        self.channel: discord.abc.GuildChannel | None = channel
+        self.permissions: list[str] = permissions
         self.advanced: bool = advanced
 
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()
         self._current: int = 0
-        self._pages: typing.List[discord.Embed] = []
+        self._pages: list[discord.Embed] = []
 
     async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
-        self._pages: typing.List[discord.Embed] = await self.cog.get_embeds(
+        self._pages: list[discord.Embed] = await self.cog.get_embeds(
             guild=self.guild,
             roles=self.roles,
             members=self.members,
@@ -61,7 +61,8 @@ class PermissionsView(discord.ui.View):
         #     self.remove_item(self._current_channel_permissions_button)
         self._current: int = 0
         self._message: discord.Message = await self.ctx.send(
-            embed=self._pages[self._current], view=self
+            embed=self._pages[self._current],
+            view=self,
         )
         self.cog.views[self._message] = self
         await self._ready.wait()
@@ -70,7 +71,8 @@ class PermissionsView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -95,19 +97,21 @@ class PermissionsView(discord.ui.View):
         max_values=None,
     )
     async def mentionables_select(
-        self, interaction: discord.Interaction, select: discord.ui.MentionableSelect
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.MentionableSelect,
     ):
         await interaction.response.defer()
-        self.roles: typing.List[discord.Role] = [
+        self.roles: list[discord.Role] = [
             mentionable for mentionable in select.values if isinstance(mentionable, discord.Role)
         ]
-        self.members: typing.List[discord.Member] = [
+        self.members: list[discord.Member] = [
             mentionable for mentionable in select.values if isinstance(mentionable, discord.Member)
         ]
         for member in self.members:
             self.roles.extend(member.roles)
         self.roles = sorted(set(self.roles))
-        self._pages: typing.List[discord.Embed] = await self.cog.get_embeds(
+        self._pages: list[discord.Embed] = await self.cog.get_embeds(
             guild=self.guild,
             roles=self.roles,
             members=self.members,
@@ -120,14 +124,19 @@ class PermissionsView(discord.ui.View):
         self._message: discord.Message = await self._message.edit(embed=self._pages[self._current])
 
     @discord.ui.select(
-        cls=discord.ui.ChannelSelect, placeholder="Select channel.", min_values=0, max_values=1
+        cls=discord.ui.ChannelSelect,
+        placeholder="Select channel.",
+        min_values=0,
+        max_values=1,
     )
     async def channel_select(
-        self, interaction: discord.Interaction, select: discord.ui.ChannelSelect
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.ChannelSelect,
     ):
         await interaction.response.defer()
         self.channel = await select.values[0].fetch() if select.values else None
-        self._pages: typing.List[discord.Embed] = await self.cog.get_embeds(
+        self._pages: list[discord.Embed] = await self.cog.get_embeds(
             guild=self.guild,
             channel=self.channel,
             roles=self.roles,
@@ -149,9 +158,7 @@ class PermissionsView(discord.ui.View):
         self._message: discord.Message = await self._message.edit(embed=self._pages[self._current])
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page", row=2)
-    async def close_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -172,7 +179,7 @@ class PermissionsView(discord.ui.View):
     @discord.ui.button(emoji="🔄", custom_id="reload_button", row=2)
     async def _reload_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
-        self._pages: typing.List[discord.Embed] = await self.cog.get_embeds(
+        self._pages: list[discord.Embed] = await self.cog.get_embeds(
             guild=self.guild,
             roles=self.roles,
             members=self.members,
@@ -185,14 +192,19 @@ class PermissionsView(discord.ui.View):
         self._message: discord.Message = await self._message.edit(embed=self._pages[self._current])
 
     @discord.ui.button(
-        label="Server Permissions", emoji="🌍", custom_id="server_permissions_button", row=3
+        label="Server Permissions",
+        emoji="🌍",
+        custom_id="server_permissions_button",
+        row=3,
     )
     async def _server_permissions_button(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ):
         await interaction.response.defer()
-        self.channel: typing.Optional[discord.abc.GuildChannel] = None
-        self._pages: typing.List[discord.Embed] = await self.cog.get_embeds(
+        self.channel: discord.abc.GuildChannel | None = None
+        self._pages: list[discord.Embed] = await self.cog.get_embeds(
             guild=self.guild,
             roles=self.roles,
             members=self.members,
@@ -211,11 +223,13 @@ class PermissionsView(discord.ui.View):
         row=3,
     )
     async def _current_channel_permissions_button(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ):
         await interaction.response.defer()
-        self.channel: typing.Optional[discord.abc.GuildChannel] = self.ctx.channel
-        self._pages: typing.List[discord.Embed] = await self.cog.get_embeds(
+        self.channel: discord.abc.GuildChannel | None = self.ctx.channel
+        self._pages: list[discord.Embed] = await self.cog.get_embeds(
             guild=self.guild,
             roles=self.roles,
             members=self.members,

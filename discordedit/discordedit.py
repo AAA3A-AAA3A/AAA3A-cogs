@@ -1,7 +1,7 @@
-from AAA3A_utils import Cog  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import typing  # isort:skip
+import typing
+
+from AAA3A_utils import Cog
+from redbot.core.i18n import Translator, cog_i18n
 
 # from .editautomod import EditAutoMod
 from .editguild import EditGuild
@@ -26,6 +26,6 @@ class DiscordEdit(*BASES, Cog):
         """Nothing to delete."""
         return
 
-    async def red_get_data_for_user(self, *args, **kwargs) -> typing.Dict[str, typing.Any]:
+    async def red_get_data_for_user(self, *args, **kwargs) -> dict[str, typing.Any]:
         """Nothing to get."""
         return {}

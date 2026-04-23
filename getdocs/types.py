@@ -1,10 +1,9 @@
-from redbot.core import commands  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
-import sys
+import typing
 from dataclasses import dataclass
 
+import discord
+
+from redbot.core import commands
 from redbot.core.utils.chat_formatting import box, pagify
 
 
@@ -16,17 +15,20 @@ class RTFSItem:
 
 class RTFSResults:
     def __init__(
-        self, source, results: typing.List[typing.Tuple[str, str, str]]
+        self,
+        source,
+        results: list[tuple[str, str, str]],
     ) -> None:  # set[str, str, bool]
         self.source = source
-        self.results: typing.List[RTFSItem] = results
+        self.results: list[RTFSItem] = results
 
-    def __list__(self) -> typing.List[RTFSItem]:
+    def __list__(self) -> list[RTFSItem]:
         return self.results
 
     def to_embeds(
-        self, embed_color: discord.Color = discord.Color.green()
-    ) -> typing.List[discord.Embed]:
+        self,
+        embed_color: discord.Color = discord.Color.green(),
+    ) -> list[discord.Embed]:
         description = "\n".join(f"- [**`{name}`**]({url})" for name, _, url, __ in self.results)
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed = discord.Embed(color=embed_color)
@@ -46,18 +48,22 @@ class RTFSResults:
 
 class SearchResults:
     def __init__(
-        self, source, results: typing.List[typing.Tuple[str, str, str]], query_time: int
+        self,
+        source,
+        results: list[tuple[str, str, str]],
+        query_time: int,
     ) -> None:  # set[str, str, bool]
         self.source = source
-        self.results: typing.List[typing.Tuple[str, str, str]] = results
+        self.results: list[tuple[str, str, str]] = results
         self.query_time = query_time
 
-    def __list__(self) -> typing.Set:
+    def __list__(self) -> set:
         return self.results
 
     def to_embeds(
-        self, embed_color: discord.Color = discord.Color.green()
-    ) -> typing.List[discord.Embed]:
+        self,
+        embed_color: discord.Color = discord.Color.green(),
+    ) -> list[discord.Embed]:
         description = "\n".join(f"- [**`{name}`**]({url})" for name, _, url, __ in self.results)
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed = discord.Embed(color=embed_color)
@@ -75,19 +81,19 @@ class SearchResults:
         return embeds
 
 
-class Parameters(typing.Dict):
+class Parameters(dict):
     def to_text(self) -> str:
         def format_parameter(name: str, description: str):
-            formatted_parameter = f"• {name} – {description}"
-            return formatted_parameter
+            return f"• {name} – {description}"
 
         return "\n".join(
-            [format_parameter(name, description) for name, description in self.items()]
+            [format_parameter(name, description) for name, description in self.items()],
         )
 
     def to_embeds(
-        self, embed_color: discord.Color = discord.Color.green()
-    ) -> typing.List[discord.Embed]:
+        self,
+        embed_color: discord.Color = discord.Color.green(),
+    ) -> list[discord.Embed]:
         description = self.to_text()
         embeds = []
         pages = list(pagify(description, page_length=4000, delims=["\n• "]))
@@ -110,12 +116,12 @@ class Parameters(typing.Dict):
         return embeds
 
 
-class Examples(typing.List):
+class Examples(list):
     def to_embeds(
         self,
-        ctx: typing.Optional[commands.Context] = None,
+        ctx: commands.Context | None = None,
         embed_color: discord.Color = discord.Color.green(),
-    ) -> typing.List[discord.Embed]:
+    ) -> list[discord.Embed]:
         embeds = []
         for i, example in enumerate(self, start=1):
             if ctx is not None:
@@ -123,7 +129,8 @@ class Examples(typing.List):
                     example.replace("USER_ID", str(ctx.author.id))
                     .replace("MEMBER_ID", str(ctx.author.id))
                     .replace(
-                        "GUILD_ID", str(ctx.guild.id) if ctx.guild is not None else '"{GUILD_ID}"'
+                        "GUILD_ID",
+                        str(ctx.guild.id) if ctx.guild is not None else '"{GUILD_ID}"',
                     )
                     .replace("CHANNEL_ID", str(ctx.channel.id))
                     .replace(
@@ -152,31 +159,32 @@ class Examples(typing.List):
 @dataclass(frozen=True)
 class Attribute:
     name: str
-    role: typing.Optional[str]
+    role: str | None
     url: str
-    type: typing.Optional[str]
+    type: str | None
     description: str
 
 
 @dataclass(frozen=True)
 class Attributes:
-    attributes: typing.Dict[str, Attribute]
-    properties: typing.Dict[str, Attribute]
-    methods: typing.Dict[str, Attribute]
+    attributes: dict[str, Attribute]
+    properties: dict[str, Attribute]
+    methods: dict[str, Attribute]
 
     def __bool__(self) -> bool:
-        return any(bool(getattr(self, key)) for key in self.__dataclass_fields__.keys())
+        return any(bool(getattr(self, key)) for key in self.__dataclass_fields__)
 
     def to_embeds(
-        self, embed_color: discord.Color = discord.Color.green()
-    ) -> typing.List[discord.Embed]:
+        self,
+        embed_color: discord.Color = discord.Color.green(),
+    ) -> list[discord.Embed]:
         def format_attribute(
             name: str,
-            role: typing.Optional[str],
+            role: str | None,
             url: str,
-            type: typing.Optional[str],
-            description: typing.Optional[str],
-            show_description: typing.Optional[bool] = True,
+            type: str | None,
+            description: str | None,
+            show_description: bool | None = True,
         ):
             formatted_attribute = "- "
             if role is not None:
@@ -187,7 +195,7 @@ class Attributes:
             return formatted_attribute
 
         embeds = []
-        for name in self.__dataclass_fields__.keys():
+        for name in self.__dataclass_fields__:
             attributes = getattr(self, name)
             if not attributes:
                 continue
@@ -200,7 +208,7 @@ class Attributes:
                         url=attributes[attribute].url,
                         type=attributes[attribute].type,
                         description=attributes[attribute].description,
-                    )
+                    ),
                 )
             description = "\n".join(formatted_attributes)
             pages = list(pagify(description, page_length=4000, delims=["\n• "]))
@@ -228,17 +236,13 @@ class Documentation:
     name: str
     signature: str
     description: str
-    if sys.version_info >= (3, 11):
-        parameters: typing.Union[Parameters[str, str], str]
-        examples: Examples[str]
-    else:
-        parameters: typing.Any
-        examples: Examples
+    parameters: Parameters[str, str] | str
+    examples: Examples[str]
     url: str
-    fields: typing.Dict[str, str]
+    fields: dict[str, str]
     attributes: Attributes
 
-    def to_json(self) -> typing.Dict[str, typing.Any]:
+    def to_json(self) -> dict[str, typing.Any]:
         return {
             v: getattr(self, v)
             for v in dir(self)
@@ -255,9 +259,7 @@ class Documentation:
             title=discord.utils.escape_markdown(self.name),
             url=self.url if self.url.startswith("http") else None,
             description=(
-                list(pagify(description, page_length=4000))[0]
-                if description
-                else "No description."
+                list(pagify(description, page_length=4000))[0] if description else "No description."
             ),
             color=embed_color,
         )

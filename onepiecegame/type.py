@@ -1,18 +1,18 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import io
+import typing
 from dataclasses import dataclass
 
+import discord
 from cache import AsyncTTL
 from PIL import Image, ImageFilter
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("OnePieceGame", __file__)
 
 
-ARCS: typing.Dict[str, typing.Tuple[int, int]] = {
+ARCS: dict[str, tuple[int, int]] = {
     "Romance Dawn": (1, 7),
     "Orange Town": (8, 21),
     "Syrup Village": (22, 41),
@@ -53,24 +53,22 @@ class Character:
     cog: commands.Cog
 
     name: str
-    aliases: typing.List[str]
-    epithets: typing.List[str]
+    aliases: list[str]
+    epithets: list[str]
 
     gender: str
     affiliation: str
     origin: str
 
-    bounty: typing.Optional[int]
-    devil_fruit: typing.Optional[
-        typing.Dict[typing.Literal["name", "translated_name", "type"], str]
-    ]
-    haki: typing.List[str]
+    bounty: int | None
+    devil_fruit: dict[typing.Literal["name", "translated_name", "type"], str] | None
+    haki: list[str]
 
     status: str
     height: int
     blood_type: str
 
-    first_apparition: typing.Dict[typing.Literal["manga", "anime"], int]
+    first_apparition: dict[typing.Literal["manga", "anime"], int]
 
     def __hash__(self) -> int:
         return hash(self.name)
@@ -102,12 +100,14 @@ class Character:
     async def get_image_file(self) -> discord.File:
         return discord.File(
             io.BytesIO(await self.get_image()),
-            filename=f"character.png",
+            filename="character.png",
         )
 
     @AsyncTTL(time_to_live=60 * 30, maxsize=1024)
     async def get_wanted_poster(
-        self, blurry_level: int = 0, show_colors: bool = False
+        self,
+        blurry_level: int = 0,
+        show_colors: bool = False,
     ) -> discord.File:
         if self.name != "Brook":
             img = Image.open(io.BytesIO(self.cog.wanted_poster_template))
@@ -134,7 +134,9 @@ class Character:
         return buffer.read()
 
     async def get_wanted_poster_file(
-        self, blurry_level: int = 0, show_colors: bool = False
+        self,
+        blurry_level: int = 0,
+        show_colors: bool = False,
     ) -> discord.File:
         return discord.File(
             io.BytesIO(await self.get_wanted_poster(blurry_level, show_colors)),

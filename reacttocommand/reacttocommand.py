@@ -1,12 +1,11 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import inline
 
 try:
@@ -24,8 +23,10 @@ _: Translator = Translator("ReactToCommand", __file__)
 
 class Emoji(commands.EmojiConverter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[str, discord.Emoji]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> str | discord.Emoji:
         # argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
@@ -77,7 +78,7 @@ class ReactToCommand(Cog):
         self.config.register_global(CONFIG_SCHEMA=None)
         self.config.register_guild(react_commands={})
 
-        self.cache: typing.List[commands.Context] = []
+        self.cache: list[commands.Context] = []
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -101,7 +102,7 @@ class ReactToCommand(Cog):
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         self.logger.info(
-            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
+            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog.",
         )
 
     @commands.Cog.listener()
@@ -116,7 +117,8 @@ class ReactToCommand(Cog):
         if payload.member.bot:
             return
         if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=guild
+            cog=self,
+            guild=guild,
         ) or not await self.bot.allowed_by_whitelist_blacklist(who=payload.member):
             return
         config = await self.config.guild(guild).react_commands.all()
@@ -172,7 +174,10 @@ class ReactToCommand(Cog):
 
     @commands.Cog.listener()
     async def on_command_error(
-        self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False
+        self,
+        ctx: commands.Context,
+        error: commands.CommandError,
+        unhandled_by_cog: bool = False,
     ) -> None:
         if ctx not in self.cache:
             return
@@ -244,7 +249,12 @@ class ReactToCommand(Cog):
 
     @reacttocommand.command(aliases=["+"])
     async def add(
-        self, ctx: commands.Context, message: discord.Message, emoji: Emoji, *, command: str
+        self,
+        ctx: commands.Context,
+        message: discord.Message,
+        emoji: Emoji,
+        *,
+        command: str,
     ) -> None:
         """Add a reaction-command for a message.
 
@@ -261,8 +271,8 @@ class ReactToCommand(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to add reactions and to see the messages in that channel."
-                )
+                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to add reactions and to see the messages in that channel.",
+                ),
             )
         if ctx.prefix != "/":
             msg = ctx.message
@@ -270,13 +280,13 @@ class ReactToCommand(Cog):
             new_ctx = await ctx.bot.get_context(msg)
             if not new_ctx.valid:
                 raise commands.UserFeedbackCheckFailure(
-                    _("You have not specified a correct command.")
+                    _("You have not specified a correct command."),
                 )
         try:
             await message.add_reaction(emoji)
         except discord.HTTPException:
             raise commands.UserFeedbackCheckFailure(
-                _("An error has occurred. It is possible that the emoji you provided is invalid.")
+                _("An error has occurred. It is possible that the emoji you provided is invalid."),
             )
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -291,11 +301,11 @@ class ReactToCommand(Cog):
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No reaction-command is configured for this message.")
+                _("No reaction-command is configured for this message."),
             )
         if f"{getattr(emoji, 'id', emoji)}" not in config[f"{message.channel.id}-{message.id}"]:
             raise commands.UserFeedbackCheckFailure(
-                _("I wasn't watching for this reaction on this message.")
+                _("I wasn't watching for this reaction on this message."),
             )
         del config[f"{message.channel.id}-{message.id}"][f"{getattr(emoji, 'id', emoji)}"]
         if config[f"{message.channel.id}-{message.id}"] == {}:
@@ -313,7 +323,7 @@ class ReactToCommand(Cog):
         config = await self.config.guild(ctx.guild).react_commands.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No reaction-command is configured for this message.")
+                _("No reaction-command is configured for this message."),
             )
         for react in config[f"{message.channel.id}-{message.id}"]:
             try:

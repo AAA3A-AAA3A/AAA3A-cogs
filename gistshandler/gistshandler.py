@@ -1,11 +1,12 @@
-from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import typing
 
+import discord
 import gists
+
+from AAA3A_utils import Cog
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 from .view import GistsHandlerView
 
@@ -21,8 +22,10 @@ class GistConverter(commands.Converter):
         cog: GistsHandler = ctx.bot.get_cog("GistsHandler")
         try:
             gist_id = gists.Gist.gist_url_to_id(argument)
-            gist_data: typing.Dict = await cog.gists_client.request(
-                "GET", f"gists/{gist_id}", authorization=cog.gists_client.access_token is not None
+            gist_data: dict = await cog.gists_client.request(
+                "GET",
+                f"gists/{gist_id}",
+                authorization=cog.gists_client.access_token is not None,
             )
             gist = gists.Gist(gist_data, self)
         except gists.NotFound:
@@ -51,7 +54,9 @@ class GistsHandler(Cog):
 
     @commands.Cog.listener()
     async def on_red_api_tokens_update(
-        self, service_name: str, api_tokens: typing.Mapping[str, str]
+        self,
+        service_name: str,
+        api_tokens: typing.Mapping[str, str],
     ) -> None:
         if service_name != "github":
             return
@@ -66,7 +71,10 @@ class GistsHandler(Cog):
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["gisthandler"], usage="[gist_url_or_id] [file_name]")
     async def gist(
-        self, ctx: commands.Context, gist: GistConverter = None, file_name: str = None
+        self,
+        ctx: commands.Context,
+        gist: GistConverter = None,
+        file_name: str = None,
     ) -> None:
         """Create a new Gist and edit an existing one.
 
@@ -75,8 +83,8 @@ class GistsHandler(Cog):
         if self.gists_client is None or self.gists_client.access_token is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "You need to set up a GitHub token with `{ctx.prefix}set api github token,[TOKEN]` first!"
-                ).format(ctx=ctx)
+                    "You need to set up a GitHub token with `{ctx.prefix}set api github token,[TOKEN]` first!",
+                ).format(ctx=ctx),
             )
         file = None if gist is None else discord.utils.get(gist.files, name=file_name)
         await GistsHandlerView(cog=self, gist=gist, file=file).start(ctx)

@@ -1,15 +1,15 @@
 import asyncio
-from AAA3A_utils import Loop  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
+import typing
 
+import discord
+
+from AAA3A_utils import Loop
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
+from security.constants import Emojis
+from security.views import ToggleModuleButton
 
-from ..constants import Emojis
-from ..views import ToggleModuleButton
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
@@ -34,15 +34,17 @@ class SentinelRelayModule(Module):
                 name="Check Sentinel Relay",
                 function=self.check_loop,
                 minutes=1,
-            )
+            ),
         )
 
     async def unload(self) -> None:
         pass
 
     async def get_status(
-        self, guild: discord.Guild, check_enabled: bool = True
-    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
+        self,
+        guild: discord.Guild,
+        check_enabled: bool = True,
+    ) -> tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
             return "❎", _("Disabled"), _("Sentinel Relay is currently disabled.")
@@ -59,10 +61,12 @@ class SentinelRelayModule(Module):
     async def get_settings(self, guild: discord.Guild, view: discord.ui.View):
         status = await self.get_status(guild)
         title = _("Security — {emoji} {name} {status}").format(
-            emoji=self.emoji, name=self.name, status=status[0]
+            emoji=self.emoji,
+            name=self.name,
+            status=status[0],
         )
         description = _(
-            "This module automatically enables specified modules when the main bot goes offline, ensuring essential functionality and continuity. This ensures that both bots won't conflict with each other.\n"
+            "This module automatically enables specified modules when the main bot goes offline, ensuring essential functionality and continuity. This ensures that both bots won't conflict with each other.\n",
         )
         if status[0] == "⚠️":
             description += f"{status[0]} **{status[1]}**: {status[2]}\n"
@@ -74,7 +78,7 @@ class SentinelRelayModule(Module):
             else None
         )
         description += _(
-            "\n**Main Bot:** {main_bot}" "\n**Modules to Enable:** {modules_to_enable}"
+            "\n**Main Bot:** {main_bot}\n**Modules to Enable:** {modules_to_enable}",
         ).format(
             main_bot=f"{main_bot.mention} (`{main_bot}`) {await self.cog.get_member_emoji(main_bot)}"
             if main_bot is not None
@@ -83,7 +87,7 @@ class SentinelRelayModule(Module):
                 [
                     f"{module_name.replace('_', ' ').title()} {(await self.cog.modules[module_name].get_status(guild, check_enabled=False))[0]}"
                     for module_name in config["modules_to_enable"]
-                ]
+                ],
             )
             if config["modules_to_enable"]
             else _("None"),
@@ -103,19 +107,19 @@ class SentinelRelayModule(Module):
             if selected:
                 if not selected.bot:
                     await interaction.response.send_message(
-                        _("You can only select a bot as the main bot."), ephemeral=True
+                        _("You can only select a bot as the main bot."),
+                        ephemeral=True,
                     )
                     return
                 if selected == guild.me:
                     await interaction.response.send_message(
-                        _("You can't select me as the main bot."), ephemeral=True
+                        _("You can't select me as the main bot."),
+                        ephemeral=True,
                     )
                     return
                 await self.config_value(guild).main_bot.set(selected.id)
                 await interaction.response.send_message(
-                    _("{selected} has been set as the main bot.").format(
-                        selected=selected.mention
-                    ),
+                    _("{selected} has been set as the main bot.").format(selected=selected.mention),
                     ephemeral=True,
                 )
             else:
@@ -187,10 +191,10 @@ class SentinelRelayModule(Module):
                     embed: discord.Embed = discord.Embed(
                         title=_("Sentinel Relay Triggered!"),
                         description=_(
-                            "The main bot ({mention}) is offline, triggering the relay."
+                            "The main bot ({mention}) is offline, triggering the relay.",
                         ).format(mention=main_bot.mention),
                         color=discord.Color.red(),
-                        timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                        timestamp=datetime.datetime.now(tz=datetime.UTC),
                     )
                     embed.set_author(name=main_bot.display_name, icon_url=main_bot.display_avatar)
                     embed.add_field(
@@ -200,7 +204,7 @@ class SentinelRelayModule(Module):
                                 f"- {module.emoji} {module.name} {(await module.get_status(guild))[0]}"
                                 for module in self.cog.modules.values()
                                 if module.key_name() in config["modules_to_enable"]
-                            ]
+                            ],
                         ),
                     )
                     embed.set_footer(text=guild.name, icon_url=guild.icon)
@@ -214,10 +218,10 @@ class SentinelRelayModule(Module):
                     embed: discord.Embed = discord.Embed(
                         title=_("Sentinel Relay Untriggered!"),
                         description=_(
-                            "The main bot ({mention}) is back online, untriggering the relay."
+                            "The main bot ({mention}) is back online, untriggering the relay.",
                         ).format(mention=main_bot.mention),
                         color=discord.Color.green(),
-                        timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                        timestamp=datetime.datetime.now(tz=datetime.UTC),
                     )
                     embed.set_author(name=main_bot.display_name, icon_url=main_bot.display_avatar)
                     embed.add_field(
@@ -227,7 +231,7 @@ class SentinelRelayModule(Module):
                                 f"- {module.emoji} {module.name} {(await module.get_status(guild))[0]}"
                                 for module in self.cog.modules.values()
                                 if module.key_name() in config["modules_to_enable"]
-                            ]
+                            ],
                         ),
                     )
                     embed.set_footer(text=guild.name, icon_url=guild.icon)

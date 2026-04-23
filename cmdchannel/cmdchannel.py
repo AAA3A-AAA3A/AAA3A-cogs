@@ -1,9 +1,9 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
+
+from AAA3A_utils import Cog, CogsUtils
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 # Credits:
 # General repo credits.
@@ -35,7 +35,8 @@ class CmdChannel(Cog):
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:
         if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=message.guild
+            cog=self,
+            guild=message.guild,
         ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
             return
         if message.webhook_id is not None or message.author.bot:
@@ -61,7 +62,11 @@ class CmdChannel(Cog):
 
     @commands.hybrid_group(aliases=["cmdmock"], invoke_without_command=True)
     async def cmdchannel(
-        self, ctx: commands.Context, channel: discord.TextChannel, *, command: str
+        self,
+        ctx: commands.Context,
+        channel: discord.TextChannel,
+        *,
+        command: str,
     ):
         """Use `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel`."""
         if ctx.invoked_subcommand is None:
@@ -70,7 +75,11 @@ class CmdChannel(Cog):
     @commands.mod()
     @cmdchannel.command()
     async def channel(
-        self, ctx: commands.Context, channel: discord.TextChannel, *, command: str
+        self,
+        ctx: commands.Context,
+        channel: discord.TextChannel,
+        *,
+        command: str,
     ) -> None:
         """Act as if the command had been typed in the channel of your choice.
         The prefix must not be entered if it is a command. It will be a message only, if the command is invalid.
@@ -80,7 +89,7 @@ class CmdChannel(Cog):
         guild = channel.guild
         if ctx.author not in guild.members:
             raise commands.UserFeedbackCheckFailure(
-                _("To send commands to another server, you must be there.")
+                _("To send commands to another server, you must be there."),
             )
         if not command and not ctx.message.embeds and not ctx.message.attachments:
             raise commands.UserInputError()
@@ -99,7 +108,7 @@ class CmdChannel(Cog):
     async def user(
         self,
         ctx: commands.Context,
-        user: typing.Union[discord.Member, discord.User],
+        user: discord.Member | discord.User,
         *,
         command: str,
     ) -> None:
@@ -113,8 +122,8 @@ class CmdChannel(Cog):
         if ctx.bot.get_cog("Dev") is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
-                )
+                    "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing.",
+                ),
             )
         await CogsUtils.invoke_command(
             bot=ctx.bot,
@@ -132,7 +141,7 @@ class CmdChannel(Cog):
         self,
         ctx: commands.Context,
         user: discord.User,
-        channel: typing.Optional[discord.TextChannel] = None,
+        channel: discord.TextChannel | None = None,
         *,
         command: str,
     ) -> None:
@@ -148,14 +157,14 @@ class CmdChannel(Cog):
         if channel.guild is not None:
             if ctx.author not in channel.guild.members:
                 raise commands.UserFeedbackCheckFailure(
-                    _("To send commands to another server, you must be there.")
+                    _("To send commands to another server, you must be there."),
                 )
             user = channel.guild.get_member(user.id) or user
         if ctx.bot.get_cog("Dev") is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing."
-                )
+                    "To be able to run a command as another user, the cog Dev must be loaded, to make sure you know what you are doing.",
+                ),
             )
 
         await CogsUtils.invoke_command(

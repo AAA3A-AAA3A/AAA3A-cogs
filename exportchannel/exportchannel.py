@@ -1,13 +1,12 @@
-from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import io
+import typing
 
 import chat_exporter
+import discord
+
+from AAA3A_utils import Cog
+from redbot.core import commands
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list
 
 # Credits:
@@ -20,7 +19,7 @@ def _(untranslated: str) -> str:  # `redgettext` will found these strings.
 
 
 RESULT_MESSAGE = _(
-    "Here is the transcript's {mode} file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS."
+    "Here is the transcript's {mode} file of the messages in the channel {channel.mention} ({channel.id}).\nPlease note: all attachments and user avatars are saved with the Discord link in this file.\nThere are {count_messages} exported messages.\nRemember that exporting other users' messages from Discord does not respect the TOS.",
 )
 LINK_MESSAGE = _("[Click here to view the transcript.]({url})")
 
@@ -29,8 +28,10 @@ _: Translator = Translator("ExportChannel", __file__)
 
 class MessageOrObjectConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[discord.Message, discord.Object]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> discord.Message | discord.Object:
         try:
             return await commands.MessageConverter().convert(ctx, argument=argument)
         except commands.BadArgument as e:
@@ -51,34 +52,30 @@ class ExportChannel(Cog):
                 channel_permissions.view_channel,
                 channel_permissions.read_messages,
                 channel_permissions.read_message_history,
-            ]
+            ],
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id})."
-                ).format(channel=channel)
+                    "Sorry, I can't read the content of the messages in {channel.mention} ({channel.id}).",
+                ).format(channel=channel),
             )
 
     async def get_messages(
         self,
         ctx: commands.Context,
-        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        number: typing.Optional[int] = None,
-        limit: typing.Optional[int] = None,
-        before: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
-        after: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
-        user_id: typing.Optional[int] = None,
-        bot: typing.Optional[bool] = None,
-        exclude_users_and_roles: typing.List[typing.Union[discord.User, discord.Role]] = [],
-    ) -> typing.Tuple[int, typing.List[discord.Message]]:
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        number: int | None = None,
+        limit: int | None = None,
+        before: discord.Message | discord.Object | None = None,
+        after: discord.Message | discord.Object | None = None,
+        user_id: int | None = None,
+        bot: bool | None = None,
+        exclude_users_and_roles: list[discord.User | discord.Role] = [],
+    ) -> tuple[int, list[discord.Message]]:
         messages = []
         async for message in channel.history(
             limit=(
-                (
-                    limit
-                    if channel != ctx.message.channel and ctx.interaction is None
-                    else limit + 1
-                )
+                (limit if channel != ctx.message.channel and ctx.interaction is None else limit + 1)
                 if limit is not None
                 else None
             ),
@@ -110,10 +107,10 @@ class ExportChannel(Cog):
     async def export_messages(
         self,
         ctx: commands.Context,
-        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         mode: typing.Literal["html", "txt"] = "html",
         **kwargs,
-    ) -> typing.Union[int, typing.List[discord.Message], discord.File]:
+    ) -> int | list[discord.Message] | discord.File:
         if "messages" in kwargs:
             messages = kwargs["messages"]
             count_messages = len(messages)
@@ -126,17 +123,15 @@ class ExportChannel(Cog):
                 @classmethod
                 async def export(
                     cls,
-                    channel: typing.Union[
-                        discord.TextChannel, discord.VoiceChannel, discord.Thread
-                    ],
-                    messages: typing.List[discord.Message],
+                    channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+                    messages: list[discord.Message],
                     tz_info="UTC",
-                    guild: typing.Optional[discord.Guild] = None,
-                    bot: typing.Optional[discord.Client] = None,
-                    military_time: typing.Optional[bool] = False,
-                    fancy_times: typing.Optional[bool] = True,
-                    support_dev: typing.Optional[bool] = True,
-                    attachment_handler: typing.Optional[typing.Any] = None,
+                    guild: discord.Guild | None = None,
+                    bot: discord.Client | None = None,
+                    military_time: bool | None = False,
+                    fancy_times: bool | None = True,
+                    support_dev: bool | None = True,
+                    attachment_handler: typing.Any | None = None,
                 ):
                     if guild:
                         channel.guild = guild
@@ -170,7 +165,7 @@ class ExportChannel(Cog):
                 [
                     f"{message.created_at.strftime('%d/%m/%Y %H:%M:%S')} | {message.id} | {message.author.display_name} ({message.author.id}) | {message.content.replace(BREAK_LINE, BREAK_REPLACE)} | {humanize_list([attachment.filename for attachment in message.attachments])}"
                     for message in messages
-                ]
+                ],
             )
 
         file = discord.File(
@@ -190,9 +185,9 @@ class ExportChannel(Cog):
     async def all(
         self,
         ctx: commands.Context,
-        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread] = None,
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread = None,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Export all of a channel's messages to an html file.
 
@@ -222,8 +217,10 @@ class ExportChannel(Cog):
             view = discord.ui.View()
             view.add_item(
                 discord.ui.Button(
-                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
-                )
+                    style=discord.ButtonStyle.url,
+                    label=_("View transcript"),
+                    url=url,
+                ),
             )
         else:
             embed, view = None, None
@@ -263,8 +260,10 @@ class ExportChannel(Cog):
             view = discord.ui.View()
             view.add_item(
                 discord.ui.Button(
-                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
-                )
+                    style=discord.ButtonStyle.url,
+                    label=_("View transcript"),
+                    url=url,
+                ),
             )
         else:
             embed, view = None, None
@@ -274,12 +273,10 @@ class ExportChannel(Cog):
     async def messages(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         limit: int,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -311,8 +308,10 @@ class ExportChannel(Cog):
             view = discord.ui.View()
             view.add_item(
                 discord.ui.Button(
-                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
-                )
+                    style=discord.ButtonStyle.url,
+                    label=_("View transcript"),
+                    url=url,
+                ),
             )
         else:
             embed, view = None, None
@@ -322,12 +321,10 @@ class ExportChannel(Cog):
     async def before(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         before: MessageOrObjectConverter,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -359,8 +356,10 @@ class ExportChannel(Cog):
             view = discord.ui.View()
             view.add_item(
                 discord.ui.Button(
-                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
-                )
+                    style=discord.ButtonStyle.url,
+                    label=_("View transcript"),
+                    url=url,
+                ),
             )
         else:
             embed, view = None, None
@@ -370,12 +369,10 @@ class ExportChannel(Cog):
     async def after(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         after: MessageOrObjectConverter,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -407,8 +404,10 @@ class ExportChannel(Cog):
             view = discord.ui.View()
             view.add_item(
                 discord.ui.Button(
-                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
-                )
+                    style=discord.ButtonStyle.url,
+                    label=_("View transcript"),
+                    url=url,
+                ),
             )
         else:
             embed, view = None, None
@@ -418,13 +417,11 @@ class ExportChannel(Cog):
     async def between(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -457,8 +454,10 @@ class ExportChannel(Cog):
             view = discord.ui.View()
             view.add_item(
                 discord.ui.Button(
-                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
-                )
+                    style=discord.ButtonStyle.url,
+                    label=_("View transcript"),
+                    url=url,
+                ),
             )
         else:
             embed, view = None, None
@@ -468,11 +467,9 @@ class ExportChannel(Cog):
     async def user(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         user: discord.User,
-        limit: typing.Optional[int] = None,
+        limit: int | None = None,
         mode: typing.Literal["html", "txt"] = "html",
     ) -> None:
         """Export a part of the messages of a channel in an html file.
@@ -505,8 +502,10 @@ class ExportChannel(Cog):
             view = discord.ui.View()
             view.add_item(
                 discord.ui.Button(
-                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
-                )
+                    style=discord.ButtonStyle.url,
+                    label=_("View transcript"),
+                    url=url,
+                ),
             )
         else:
             embed, view = None, None
@@ -516,13 +515,11 @@ class ExportChannel(Cog):
     async def bot(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
-        bot: typing.Optional[bool] = True,
-        limit: typing.Optional[int] = None,
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
+        bot: bool | None = True,
+        limit: int | None = None,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -555,8 +552,10 @@ class ExportChannel(Cog):
             view = discord.ui.View()
             view.add_item(
                 discord.ui.Button(
-                    style=discord.ButtonStyle.url, label=_("View transcript"), url=url
-                )
+                    style=discord.ButtonStyle.url,
+                    label=_("View transcript"),
+                    url=url,
+                ),
             )
         else:
             embed, view = None, None

@@ -1,10 +1,10 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
+
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 from .board import Board
 from .constants import (
@@ -22,24 +22,24 @@ class StartDrawView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        board: typing.Union[typing.Tuple[int, int, str], Board] = (0, 0, MAIN_COLORS[-1]),
-        tool_options: typing.Optional[typing.List[discord.SelectOption]] = None,
-        color_options: typing.Optional[typing.List[discord.SelectOption]] = None,
+        board: tuple[int, int, str] | Board = (0, 0, MAIN_COLORS[-1]),
+        tool_options: list[discord.SelectOption] | None = None,
+        color_options: list[discord.SelectOption] | None = None,
     ) -> None:
         super().__init__(timeout=60)
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 
-        if isinstance(board, typing.Tuple):
+        if isinstance(board, tuple):
             board = Board(cog=self.cog, height=board[0], width=board[1], background=board[2])
         self._board: Board = board
         self.height: int = self._board.height
         self.width: int = self._board.width
         self.background: str = self._board.background
-        self.draw_view: typing.Optional[DrawView] = None
+        self.draw_view: DrawView | None = None
 
-        self.tool_options: typing.Optional[typing.List[discord.SelectOption]] = tool_options
-        self.color_options: typing.Optional[typing.List[discord.SelectOption]] = color_options
+        self.tool_options: list[discord.SelectOption] | None = tool_options
+        self.color_options: list[discord.SelectOption] | None = color_options
 
         self._message: discord.Message = None
         self._embed: discord.Embed = None
@@ -57,7 +57,8 @@ class StartDrawView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -92,7 +93,7 @@ class StartDrawView(discord.ui.View):
         if self._message is None:
             self._message: discord.Message = await self.ctx.send(
                 _(
-                    "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
+                    "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`.",
                 ).format(height=self.height, width=self.width, background=self.background),
                 embed=self._embed,
                 file=file,
@@ -101,7 +102,7 @@ class StartDrawView(discord.ui.View):
         else:
             self._message: discord.Message = await self._message.edit(
                 content=_(
-                    "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`."
+                    "Create a new Draw Board with `height = {height}`, `width = {width}` and `background = {background}`.",
                 ).format(height=self.height, width=self.width, background=self.background),
                 embed=self._embed,
                 attachments=[file],
@@ -115,9 +116,7 @@ class StartDrawView(discord.ui.View):
         return embed
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -141,7 +140,9 @@ class StartDrawView(discord.ui.View):
 
     @discord.ui.select(options=base_colors_options(), placeholder="Select Board Background.")
     async def select_background(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         if self.background == select.values[0]:
@@ -150,10 +151,13 @@ class StartDrawView(discord.ui.View):
         await self._update()
 
     @discord.ui.select(
-        options=base_height_or_width_select_options("height"), placeholder="Select Board Height."
+        options=base_height_or_width_select_options("height"),
+        placeholder="Select Board Height.",
     )
     async def select_height(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         if self.height == int(select.values[0]):
@@ -162,10 +166,13 @@ class StartDrawView(discord.ui.View):
         await self._update()
 
     @discord.ui.select(
-        options=base_height_or_width_select_options("width"), placeholder="Select Board Width."
+        options=base_height_or_width_select_options("width"),
+        placeholder="Select Board Width.",
     )
     async def select_width(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         if self.width == int(select.values[0]):

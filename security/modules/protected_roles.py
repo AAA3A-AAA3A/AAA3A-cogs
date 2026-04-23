@@ -1,12 +1,13 @@
-from AAA3A_utils import Menu  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import typing
 
+import discord
+
+from AAA3A_utils import Menu
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list, pagify
+from security.constants import Emojis, get_non_animated_asset
+from security.views import ToggleModuleButton
 
-from ..constants import Emojis, get_non_animated_asset
-from ..views import ToggleModuleButton
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
@@ -29,8 +30,10 @@ class ProtectedRolesModule(Module):
         self.cog.bot.remove_listener(self.on_audit_log_entry_create)
 
     async def get_status(
-        self, guild: discord.Guild, check_enabled: bool = True
-    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
+        self,
+        guild: discord.Guild,
+        check_enabled: bool = True,
+    ) -> tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
             return "❌", _("Disabled"), _("Protected roles are currently disabled.")
@@ -51,8 +54,10 @@ class ProtectedRolesModule(Module):
         return "✅", _("Enabled"), _("Protected roles are enabled and configured.")
 
     async def get_settings(
-        self, guild: discord.Guild, view: discord.ui.View
-    ) -> typing.Tuple[str, str, typing.List[typing.Dict], typing.List[discord.ui.Item]]:
+        self,
+        guild: discord.Guild,
+        view: discord.ui.View,
+    ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         config = await self.config_value(guild)()
         protected_roles = config["protected_roles"]
         title = _("Security — {emoji} {name} ({count}/25) {status}").format(
@@ -63,7 +68,7 @@ class ProtectedRolesModule(Module):
         )
         description = _(
             "*If someone tries to add one of these roles to an unwhitelisted member, it will be removed automatically and the author will be quarantined."
-            " If a trusted admin does this, the member will be whitelisted instead.*\n"
+            " If a trusted admin does this, the member will be whitelisted instead.*\n",
         )
         status = await self.get_status(guild)
         if status[0] == "⚠️":
@@ -72,7 +77,7 @@ class ProtectedRolesModule(Module):
             if (role := guild.get_role(int(role_id))) is None:
                 continue
             description += _(
-                "\n- {role.mention} (`{role.name}`) - {count} whitelisted member{s}"
+                "\n- {role.mention} (`{role.name}`) - {count} whitelisted member{s}",
             ).format(
                 role=role,
                 count=len(whitelisted_members),
@@ -103,7 +108,8 @@ class ProtectedRolesModule(Module):
                 protected_roles[role_id] = whitelisted_members
             await self.config_value(guild).protected_roles.set(protected_roles)
             await interaction.followup.send(
-                _("Whitelisted members updated from roles."), ephemeral=True
+                _("Whitelisted members updated from roles."),
+                ephemeral=True,
             )
             await view._message.edit(embed=await view.get_embed(), view=view)
 
@@ -121,13 +127,14 @@ class ProtectedRolesModule(Module):
             role = add_select.values[0]
             if str(role.id) in protected_roles:
                 await interaction.response.send_message(
-                    _("This role is already protected."), ephemeral=True
+                    _("This role is already protected."),
+                    ephemeral=True,
                 )
                 return
             if not role.is_assignable():
                 await interaction.response.send_message(
                     _(
-                        "This role can't be protected because it is not assignable or is higher than my top role."
+                        "This role can't be protected because it is not assignable or is higher than my top role.",
                     ),
                     ephemeral=True,
                 )
@@ -183,7 +190,7 @@ class ProtectedRolesModule(Module):
                         [RemoveButton(self, guild, role, view)]
                         if await self.cog.is_extra_owner_or_higher(interaction.user)
                         else []
-                    )
+                    ),
                 )
                 await menu.start(fake_context)
 
@@ -193,12 +200,15 @@ class ProtectedRolesModule(Module):
         return title, description, [], components
 
     async def get_whitelisted_members_embeds(
-        self, guild: discord.Guild, role: discord.Role
-    ) -> typing.List[discord.Embed]:
+        self,
+        guild: discord.Guild,
+        role: discord.Role,
+    ) -> list[discord.Embed]:
         protected_roles = await self.config_value(guild).protected_roles()
         embed: discord.Embed = discord.Embed(
             title=_("Protected Role `{role.name}` - {count} Whitelisted Members").format(
-                role=role, count=len(protected_roles[str(role.id)])
+                role=role,
+                count=len(protected_roles[str(role.id)]),
             ),
             color=discord.Color.gold(),
         )
@@ -211,7 +221,7 @@ class ProtectedRolesModule(Module):
                     else _("- {member_id} (unknown)").format(member_id=member_id)
                 )
                 for member_id in protected_roles[str(role.id)]
-            ]
+            ],
         ) or _("No whitelisted members.")
         embeds = []
         for page in pagify(description, page_length=1024):
@@ -227,7 +237,8 @@ class ProtectedRolesModule(Module):
         if not config["enabled"] or not (protected_roles := config["protected_roles"]):
             return
         if entry.user == entry.guild.me or await self.cog.is_whitelisted(
-            entry.target, "protected_roles"
+            entry.target,
+            "protected_roles",
         ):
             return
         to_remove = []
@@ -256,7 +267,7 @@ class ProtectedRolesModule(Module):
                     reason=_("**Protected Roles** - Added a protected role without permission."),
                     logs=[
                         _(
-                            "Added the protected role {role.mention} (`{role.name}`) to {entry.target.mention} (`{entry.target}`) without permission."
+                            "Added the protected role {role.mention} (`{role.name}`) to {entry.target.mention} (`{entry.target}`) without permission.",
                         ).format(role=role, entry=entry)
                         for role in to_remove
                     ],
@@ -268,11 +279,11 @@ class ProtectedRolesModule(Module):
                     await self.cog.quarantine_member(
                         entry.target,
                         reason=_(
-                            "**Protected Roles** - Was given a protected role without permission."
+                            "**Protected Roles** - Was given a protected role without permission.",
                         ),
                         logs=[
                             _(
-                                "The protected role {role.mention} (`{role.name}`) was added to them by {entry.user.mention} (`{entry.user}`) without permission."
+                                "The protected role {role.mention} (`{role.name}`) was added to them by {entry.user.mention} (`{entry.user}`) without permission.",
                             ).format(role=role, entry=entry)
                             for role in to_remove
                         ],
@@ -318,15 +329,16 @@ class WhitelistMembersSelect(discord.ui.UserSelect):
         self.menu._current_page = self.menu._source.get_max_pages() - 1
         await self.menu.change_page(interaction)
         await self.initial_view._message.edit(
-            embed=await self.initial_view.get_embed(), view=self.initial_view
+            embed=await self.initial_view.get_embed(),
+            view=self.initial_view,
         )
         await interaction.followup.send(
             "\n".join(
                 (
                     [
                         _("✅ Added to protected role's whitelist: {members}").format(
-                            members=humanize_list([m.mention for m in added])
-                        )
+                            members=humanize_list([m.mention for m in added]),
+                        ),
                     ]
                     if added
                     else []
@@ -334,8 +346,8 @@ class WhitelistMembersSelect(discord.ui.UserSelect):
                 + (
                     [
                         _("❌ Removed from protected role's whitelist: {members}").format(
-                            members=humanize_list([m.mention for m in removed])
-                        )
+                            members=humanize_list([m.mention for m in removed]),
+                        ),
                     ]
                     if removed
                     else []
@@ -343,12 +355,12 @@ class WhitelistMembersSelect(discord.ui.UserSelect):
                 + (
                     [
                         _("🛡️ Trusted admins and higher not added: {members}").format(
-                            members=humanize_list([m.mention for m in removed])
-                        )
+                            members=humanize_list([m.mention for m in removed]),
+                        ),
                     ]
                     if trusted_admins
                     else []
-                )
+                ),
             ),
             ephemeral=True,
         )
@@ -379,5 +391,6 @@ class RemoveButton(discord.ui.Button):
             ephemeral=True,
         )
         await self.initial_view._message.edit(
-            embed=await self.initial_view.get_embed(), view=self.initial_view
+            embed=await self.initial_view.get_embed(),
+            view=self.initial_view,
         )

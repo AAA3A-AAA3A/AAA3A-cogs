@@ -1,57 +1,91 @@
-[tool.black]
-    line-length = 99
-    target-version = ["py38"]
-    include = '\.py$'
-    exclude = '''
-    /(
-          \.eggs
-        | \.git
-        | \.vscode
-        | \.hg
-        | \.mypy_cache
-        | \.tox
-        | \.venv
-        | _build
-        | buck-out
-        | build
-        | dist
-        | AAA3A_utils
-    )/
-    '''
+[tool.ruff]
+line-length = 100
+indent-width = 4
+target-version = "py312"
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
 
-[tool.isort]
-    profile = "black"
-    line_length = 99
-    atomic = true
-    src_paths = ["isort", "test"]
-    multi_line_output = 7
-    order_by_type = true
-    sections = ["FUTURE","STDLIB","FIRSTPARTY","THIRDPARTY","LOCALFOLDER"]
-    known_third_party = ["discord", "redbot"]
-    known_first_party = [
-        "antinuke",
-        "autotraceback",
-        "calculator",
-        "clearchannel",
-        "ctxvar",
-        "discordedit",
-        "discordmodals",
-        "discordsearch",
-        "dropdownstexts",
-        "editfile",
-        "exportchannel",
-        "getloc",
-        "ip",
-        "medicat",
-        "memberprefix",
-        "reacttocommand",
-        "rolesbuttons",
-        "seen",
-        "simplesanction",
-        "sudo",
-        "tickettool",
-        "transferchannel",
-        "urlbuttons"
-    ]
-    skip = [".gitignore"]
-    skip_glob = [".github/*", ".git/*", ".vscode/*", "docs/*", "AAA3A_utils/*"]
+[tool.ruff.lint]
+extend-select = [
+    "F",        # Pyflakes rules
+    "W",        # PyCodeStyle warnings
+    "E",        # PyCodeStyle errors
+    "I",        # Properly sort imports
+    "UP",       # Warn when code can be updated for newer Python versions
+    "C4",       # Detect incorrect use of comprehensions, `dict`, `list`, etc.
+    "FA",       # Enforce `from __future__ import annotations`
+    "ISC",      # Proper string concatenation usage
+    "ICN",      # Use common import naming conventions
+    "RET",      # Return statement best practices
+    "SIM",      # Common simplification rules
+    "TID",      # Additional import best practices
+    "TC",       # Move certain type imports into a `TYPE_CHECKING` block
+    "PTH",      # Use `pathlib` instead of `os.path`
+    "NPY",      # NumPy-specific checks
+    "A",        # Detect shadowed builtins
+    "BLE",      # Disallow broad exception catches
+    "COM",      # Enforce trailing comma rules
+    "DTZ",      # Require strict timezone handling with datetime
+    "N",        # Enforce naming conventions, e.g. `ClassName` vs `function_name`
+]
+ignore = [
+    "SIM105",   # Do not replace `try/except/pass` with `contextlib.suppress()`
+    "D100",     # Docstring rule
+    "D101",     # Docstring rule
+    "D102",     # Docstring rule
+    "D103",     # Docstring rule
+    "D104",     # Docstring rule
+    "D105",     # Docstring rule
+    "D106",     # Docstring rule
+]
+fixable = ["ALL"]
+extend-unsafe-fixes = ["ALL"]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint.isort]
+known-first-party = ["AAA3A_utils", "redbot"]
+known-local-folder = ["."]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder"
+]
+force-sort-within-sections = false
+split-on-trailing-comma = true

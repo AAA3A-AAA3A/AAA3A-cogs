@@ -1,9 +1,10 @@
-from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import typing
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import commands
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import pagify
 from redbot.core.utils.tunnel import Tunnel
 
@@ -21,7 +22,7 @@ def _(untranslated: str) -> str:  # `redgettext` will found these strings.
 
 
 RESULT_MESSAGE = _(
-    "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+    "There are {count_messages} transfered messages from {source.mention} to {destination.mention}.",
 )
 
 _: Translator = Translator("TransferChannel", __file__)
@@ -29,8 +30,10 @@ _: Translator = Translator("TransferChannel", __file__)
 
 class MessageOrObjectConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[discord.Message, discord.Object]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> discord.Message | discord.Object:
         try:
             return await commands.MessageConverter().convert(ctx, argument=argument)
         except commands.BadArgument as e:
@@ -71,14 +74,16 @@ class TransferChannel(Cog):
                 em.set_image(url=url)
             else:
                 em.add_field(
-                    name="Message has an attachment.", value=f"[{fname}]({url})", inline=True
+                    name="Message has an attachment.",
+                    value=f"[{fname}]({url})",
+                    inline=True,
                 )
         return em
 
     async def check_channels(
         self,
-        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        source: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         way: str,
     ) -> None:
         source_permissions = source.permissions_for(source.guild.me)
@@ -87,47 +92,43 @@ class TransferChannel(Cog):
                 source_permissions.view_channel,
                 source_permissions.read_messages,
                 source_permissions.read_message_history,
-            ]
+            ],
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "Sorry, I can't read the content of the messages in {source.mention} ({source.id})."
-                ).format(source=source)
+                    "Sorry, I can't read the content of the messages in {source.mention} ({source.id}).",
+                ).format(source=source),
             )
         destination_permissions = destination.permissions_for(destination.guild.me)
         if not destination_permissions.send_messages or not destination_permissions.embed_links:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id})."
-                ).format(destination=destination)
+                    "I need to have all the permissions to send messages with embeds in {destination.guild.name} ({destination.guild.id}).",
+                ).format(destination=destination),
             )
         if way == "webhooks" and not destination_permissions.manage_webhooks:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id}). You can use embeds or text messages by adding `embeds`/`messages` to your command."
-                ).format(destination=destination)
+                    "I need to have all the permission to create webhooks in {destination.guild.name} ({destination.guild.id}). You can use embeds or text messages by adding `embeds`/`messages` to your command.",
+                ).format(destination=destination),
             )
 
     async def get_messages(
         self,
         ctx: commands.Context,
-        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        number: typing.Optional[int] = None,
-        limit: typing.Optional[int] = None,
-        before: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
-        after: typing.Optional[typing.Union[discord.Message, discord.Object]] = None,
-        user_id: typing.Optional[int] = None,
-        bot: typing.Optional[bool] = None,
-        exclude_users_and_roles: typing.List[typing.Union[discord.User, discord.Role]] = [],
-    ) -> typing.Tuple[int, typing.List[discord.Message]]:
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        number: int | None = None,
+        limit: int | None = None,
+        before: discord.Message | discord.Object | None = None,
+        after: discord.Message | discord.Object | None = None,
+        user_id: int | None = None,
+        bot: bool | None = None,
+        exclude_users_and_roles: list[discord.User | discord.Role] = [],
+    ) -> tuple[int, list[discord.Message]]:
         messages = []
         async for message in channel.history(
             limit=(
-                (
-                    limit
-                    if channel != ctx.message.channel and ctx.interaction is None
-                    else limit + 1
-                )
+                (limit if channel != ctx.message.channel and ctx.interaction is None else limit + 1)
                 if limit is not None
                 else None
             ),
@@ -161,11 +162,11 @@ class TransferChannel(Cog):
     async def transfer_messages(
         self,
         ctx: commands.Context,
-        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        source: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         way: typing.Literal["webhooks", "embeds", "messages"],
         **kwargs,
-    ) -> typing.Tuple[int, typing.List[discord.Message]]:
+    ) -> tuple[int, list[discord.Message]]:
         if "messages" in kwargs:
             messages = kwargs["messages"]
             count_messages = len(messages)
@@ -195,7 +196,9 @@ class TransferChannel(Cog):
                         embeds=message.embeds,
                         files=files,
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=False, users=False, roles=False
+                            everyone=False,
+                            users=False,
+                            roles=False,
                         ),
                         thread=(
                             destination
@@ -212,7 +215,9 @@ class TransferChannel(Cog):
                         files=files,
                         stickers=message.stickers,
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=False, users=False, roles=False
+                            everyone=False,
+                            users=False,
+                            roles=False,
                         ),
                     )
                 except discord.HTTPException:
@@ -222,7 +227,9 @@ class TransferChannel(Cog):
                             files=files,
                             stickers=message.stickers,
                             allowed_mentions=discord.AllowedMentions(
-                                everyone=False, users=False, roles=False
+                                everyone=False,
+                                users=False,
+                                roles=False,
                             ),
                         )
                     except discord.HTTPException:
@@ -231,7 +238,9 @@ class TransferChannel(Cog):
                             files=files,
                             stickers=message.stickers,
                             allowed_mentions=discord.AllowedMentions(
-                                everyone=False, users=False, roles=False
+                                everyone=False,
+                                users=False,
+                                roles=False,
                             ),
                         )
             elif way == "messages":
@@ -239,11 +248,11 @@ class TransferChannel(Cog):
                 msg = "\n".join(
                     [
                         _("**Author:** {message.author.mention} ({message.author.id})").format(
-                            message=message
+                            message=message,
                         ),
                         _("**Channel:** <#{message.channel.id}>").format(message=message),
                         _("**Time (UTC):** {iso_format}").format(iso_format=iso_format),
-                    ]
+                    ],
                 )
                 if len(f"{msg}\n\n{message.content}") <= 2000:
                     await destination.send(
@@ -252,7 +261,9 @@ class TransferChannel(Cog):
                         files=files,
                         stickers=message.stickers,
                         allowed_mentions=discord.AllowedMentions(
-                            everyone=False, users=False, roles=False
+                            everyone=False,
+                            users=False,
+                            roles=False,
                         ),
                     )
                 else:
@@ -264,7 +275,9 @@ class TransferChannel(Cog):
                             files=files,
                             stickers=message.stickers,
                             allowed_mentions=discord.AllowedMentions(
-                                everyone=False, users=False, roles=False
+                                everyone=False,
+                                users=False,
+                                roles=False,
                             ),
                         )
         return count_messages, messages
@@ -287,10 +300,10 @@ class TransferChannel(Cog):
     async def all(
         self,
         ctx: commands.Context,
-        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        source: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Transfer all messages from a channel to another channel. This might take a long time.
 
@@ -308,8 +321,10 @@ class TransferChannel(Cog):
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
-                count_messages=count_messages, source=source, destination=destination
-            )
+                count_messages=count_messages,
+                source=source,
+                destination=destination,
+            ),
         ).start(ctx)
 
     @transferchannel.command()
@@ -317,7 +332,7 @@ class TransferChannel(Cog):
         self,
         ctx: commands.Context,
         message: discord.Message,
-        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer a specific message to another channel. This might take a long time.
@@ -337,21 +352,21 @@ class TransferChannel(Cog):
         )
         await ctx.send(
             _(
-                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
+                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}.",
             ).format(
-                count_messages=count_messages, source=message.channel, destination=destination
-            )
+                count_messages=count_messages, source=message.channel, destination=destination,
+            ),
         )
 
     @transferchannel.command()
     async def messages(
         self,
         ctx: commands.Context,
-        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        source: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         limit: int,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -371,19 +386,19 @@ class TransferChannel(Cog):
         )
         await ctx.send(
             _(
-                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}."
-            ).format(count_messages=count_messages, source=source, destination=destination)
+                "There are {count_messages} transfered messages from {source.mention} to {destination.mention}.",
+            ).format(count_messages=count_messages, source=source, destination=destination),
         )
 
     @transferchannel.command()
     async def before(
         self,
         ctx: commands.Context,
-        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        source: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         before: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -403,19 +418,21 @@ class TransferChannel(Cog):
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
-                count_messages=count_messages, source=source, destination=destination
-            )
+                count_messages=count_messages,
+                source=source,
+                destination=destination,
+            ),
         ).start(ctx)
 
     @transferchannel.command()
     async def after(
         self,
         ctx: commands.Context,
-        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        source: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         after: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -435,20 +452,22 @@ class TransferChannel(Cog):
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
-                count_messages=count_messages, source=source, destination=destination
-            )
+                count_messages=count_messages,
+                source=source,
+                destination=destination,
+            ),
         ).start(ctx)
 
     @transferchannel.command()
     async def between(
         self,
         ctx: commands.Context,
-        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        source: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -469,18 +488,20 @@ class TransferChannel(Cog):
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
-                count_messages=count_messages, source=source, destination=destination
-            )
+                count_messages=count_messages,
+                source=source,
+                destination=destination,
+            ),
         ).start(ctx)
 
     @transferchannel.command()
     async def user(
         self,
         ctx: commands.Context,
-        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        source: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         user: discord.User,
-        limit: typing.Optional[int] = None,
+        limit: int | None = None,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
@@ -501,20 +522,22 @@ class TransferChannel(Cog):
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
-                count_messages=count_messages, source=source, destination=destination
-            )
+                count_messages=count_messages,
+                source=source,
+                destination=destination,
+            ),
         ).start(ctx)
 
     @transferchannel.command()
     async def bot(
         self,
         ctx: commands.Context,
-        source: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        destination: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        bot: typing.Optional[bool] = True,
-        limit: typing.Optional[int] = None,
+        source: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        bot: bool | None = True,
+        limit: int | None = None,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[typing.Union[discord.User, discord.Role]] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
@@ -535,6 +558,8 @@ class TransferChannel(Cog):
         )
         await Menu(
             pages=_(RESULT_MESSAGE).format(
-                count_messages=count_messages, source=source, destination=destination
-            )
+                count_messages=count_messages,
+                source=source,
+                destination=destination,
+            ),
         ).start(ctx)

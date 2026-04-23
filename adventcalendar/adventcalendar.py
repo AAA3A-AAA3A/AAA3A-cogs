@@ -1,24 +1,26 @@
-from AAA3A_utils import Cog, Settings, CogsUtils, Loop, Menu  # isort:skip
-from redbot.core import commands, Config, bank  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 import functools
 import io
 import random
+import typing
 from collections import Counter
-from pathlib import Path
 
+import discord
 import plotly.graph_objects as go
 from PIL import Image, ImageDraw, ImageFont
+
+from AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings
+from redbot.core import Config, bank, commands
+from redbot.core.bot import Red
 from redbot.core.data_manager import bundled_data_path
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list, pagify
 
 from .view import SetRewardsView
+
+if typing.TYPE_CHECKING:
+    from pathlib import Path
 
 # Credits:
 # General repo credits.
@@ -54,7 +56,7 @@ class AdventCalendar(Cog):
             opened_days=[],
         )
 
-        _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
+        _settings: dict[str, dict[str, typing.Any]] = {
             "enabled": {
                 "converter": bool,
                 "description": "Whether the Advent Calendar is enabled in this server.",
@@ -69,7 +71,9 @@ class AdventCalendar(Cog):
             },
             "custom_rewards_logs_channel": {
                 "converter": typing.Union[
-                    discord.TextChannel, discord.VoiceChannel, discord.Thread
+                    discord.TextChannel,
+                    discord.VoiceChannel,
+                    discord.Thread,
                 ],
                 "description": "The channel where custom rewards logs will be sent.",
             },
@@ -105,14 +109,14 @@ class AdventCalendar(Cog):
         self.merry_christmas_star_font_path: Path = (
             bundled_data_path(self) / "MerryChristmasStar.ttf"
         )
-        self.bold_font: typing.Dict[int, ImageFont.ImageFont] = {
+        self.bold_font: dict[int, ImageFont.ImageFont] = {
             size: ImageFont.truetype(str(self.bold_font_path), size=size) for size in {80, 100}
         }
-        self.merry_christmas_flake_font: typing.Dict[int, ImageFont.ImageFont] = {
+        self.merry_christmas_flake_font: dict[int, ImageFont.ImageFont] = {
             size: ImageFont.truetype(str(self.merry_christmas_flake_font_path), size=size)
             for size in {200, 325}
         }
-        self.merry_christmas_star_font: typing.Dict[int, ImageFont.ImageFont] = {
+        self.merry_christmas_star_font: dict[int, ImageFont.ImageFont] = {
             size: ImageFont.truetype(str(self.merry_christmas_star_font_path), size=size)
             for size in {200, 325}
         }
@@ -130,7 +134,7 @@ class AdventCalendar(Cog):
                 name="Cleanup Last Year's Opened Days",
                 function=self.cleanup_last_year_opened_days,
                 days=1,
-            )
+            ),
         )
 
     async def cog_unload(self) -> None:
@@ -140,11 +144,11 @@ class AdventCalendar(Cog):
     def align_text_center(
         self,
         draw: ImageDraw.Draw,
-        xy: typing.Tuple[int, int, int, int],
+        xy: tuple[int, int, int, int],
         text: str,
-        fill: typing.Optional[typing.Tuple[int, int, int, typing.Optional[int]]],
+        fill: tuple[int, int, int, int | None] | None,
         font: ImageFont.ImageFont,
-    ) -> typing.Tuple[int, int]:
+    ) -> tuple[int, int]:
         x1, y1, x2, y2 = xy
         text_size = font.getbbox(text)
         x = int((x2 - x1 - text_size[2]) / 2)
@@ -159,9 +163,9 @@ class AdventCalendar(Cog):
     def _generate_advent_calendar(
         self,
         today_day: int,
-        opened_days: typing.List[int],
+        opened_days: list[int],
         to_file: bool = True,
-    ) -> typing.Union[Image.Image, discord.File]:
+    ) -> Image.Image | discord.File:
         img: Image.Image = Image.new("RGBA", (2465, 1280), (0, 0, 0, 0))
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
         draw.rounded_rectangle(
@@ -191,7 +195,7 @@ class AdventCalendar(Cog):
             x: int,
             y: int,
             size: int,
-            color: typing.Tuple[typing.Tuple[int, int, int], typing.Tuple[int, int, int]],
+            color: tuple[tuple[int, int, int], tuple[int, int, int]],
         ) -> None:
             draw.polygon(
                 (
@@ -240,7 +244,9 @@ class AdventCalendar(Cog):
             else:
                 x_img = self.x.resize((size - 80, size - 80))
                 img.paste(
-                    x_img, (x + 40, y + 40, x + size - 40, y + size - 40), mask=x_img.split()[3]
+                    x_img,
+                    (x + 40, y + 40, x + size - 40, y + size - 40),
+                    mask=x_img.split()[3],
                 )
 
         colors = [
@@ -281,10 +287,10 @@ class AdventCalendar(Cog):
 
     async def generate_advent_calendar(
         self,
-        today_day: typing.Optional[int] = None,
-        opened_days: typing.List[int] = [],
+        today_day: int | None = None,
+        opened_days: list[int] = [],
         to_file: bool = True,
-    ) -> typing.Union[Image.Image, discord.File]:
+    ) -> Image.Image | discord.File:
         if today_day is None:
             today_day = datetime.date.today().day
         return await asyncio.to_thread(
@@ -295,8 +301,9 @@ class AdventCalendar(Cog):
         )
 
     def _generate_merry_christmas(
-        self, to_file: bool = True
-    ) -> typing.Union[Image.Image, discord.File]:
+        self,
+        to_file: bool = True,
+    ) -> Image.Image | discord.File:
         img: Image.Image = Image.new("RGBA", (1900, 450), (0, 0, 0, 0))
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
         # draw.rounded_rectangle(
@@ -321,25 +328,26 @@ class AdventCalendar(Cog):
         return discord.File(buffer, filename="merry_christmas.png")
 
     async def generate_merry_christmas(
-        self, to_file: bool = True
-    ) -> typing.Union[Image.Image, discord.File]:
+        self,
+        to_file: bool = True,
+    ) -> Image.Image | discord.File:
         return await asyncio.to_thread(
             self._generate_merry_christmas,
             to_file=to_file,
         )
 
     async def get_reward(
-        self, member: discord.Member, day: typing.Optional[int]
-    ) -> typing.Tuple[
-        typing.Optional[typing.Dict[str, typing.Union[str, int]]],
-        typing.Optional[
-            typing.Dict[typing.Literal["embed", "file"], typing.Union[discord.Embed, discord.File]]
-        ],
+        self,
+        member: discord.Member,
+        day: int | None,
+    ) -> tuple[
+        dict[str, str | int] | None,
+        dict[typing.Literal["embed", "file"], discord.Embed | discord.File] | None,
     ]:
         day_rewards = [
             reward
             for reward in await self.config.guild(member.guild).rewards.get_raw(
-                str(day) if day is not None else "null"
+                str(day) if day is not None else "null",
             )
             if not (
                 (
@@ -370,13 +378,13 @@ class AdventCalendar(Cog):
                     and (
                         (
                             custom_rewards_logs_channel_id := await self.config.guild(
-                                member.guild
+                                member.guild,
                             ).custom_rewards_logs_channel()
                         )
                         is None
                         or (
                             custom_rewards_logs_channel := member.guild.get_channel(
-                                custom_rewards_logs_channel_id
+                                custom_rewards_logs_channel_id,
                             )
                         )
                         is None
@@ -397,7 +405,7 @@ class AdventCalendar(Cog):
                         and any(
                             member.get_role(role_id) is not None
                             for role_id in await self.config.guild(
-                                member.guild
+                                member.guild,
                             ).priority_multiplier_roles()
                         )
                     )
@@ -408,7 +416,7 @@ class AdventCalendar(Cog):
         )[0]
         if reward["type"] is None:
             return None, None
-        elif reward["type"] == "role":
+        if reward["type"] == "role":
             try:
                 await member.add_roles(
                     role,
@@ -423,12 +431,10 @@ class AdventCalendar(Cog):
                     color=discord.Color.green(),
                 ),
             }
-        elif reward["type"] == "temp_role":
+        if reward["type"] == "temp_role":
             duration = datetime.timedelta(seconds=reward["duration"])
             try:
-                end_time: datetime.datetime = (
-                    datetime.datetime.now(tz=datetime.timezone.utc) + duration
-                )
+                end_time: datetime.datetime = datetime.datetime.now(tz=datetime.UTC) + duration
             except OverflowError:
                 return None, None
             end_time = end_time.replace(second=0 if end_time.second < 30 else 30)
@@ -446,48 +452,50 @@ class AdventCalendar(Cog):
                 "embed": discord.Embed(
                     title=_("🎁 You've received a **temporary role**! 🎁"),
                     description=_(
-                        "You've received the {role} role **for {duration_string}**!"
+                        "You've received the {role} role **for {duration_string}**!",
                     ).format(
-                        role=role.mention, duration_string=CogsUtils.get_interval_string(duration)
+                        role=role.mention,
+                        duration_string=CogsUtils.get_interval_string(duration),
                     ),
                     color=discord.Color.green(),
                 ),
             }
-        elif reward["type"] == "bank_credits":
+        if reward["type"] == "bank_credits":
             await bank.deposit_credits(member, reward["amount"])
             return reward, {
                 "embed": discord.Embed(
                     title=_("🎁 You've received **{amount} credits**! 🎁").format(
-                        amount=reward["amount"]
+                        amount=reward["amount"],
                     ),
                     color=discord.Color.green(),
                 ),
             }
-        elif reward["type"] == "levelup_xp":
+        if reward["type"] == "levelup_xp":
             await LevelUp.add_xp(member, xp=reward["amount"])
             return reward, {
                 "embed": discord.Embed(
                     title=_("🎁 You've received **{amount} XP**! 🎁").format(
-                        amount=reward["amount"]
+                        amount=reward["amount"],
                     ),
                     color=discord.Color.green(),
                 ).set_image(url="attachment://profile.webp"),
                 "file": (
                     file
                     if isinstance(
-                        (file := await LevelUp.get_user_profile_cached(member)), discord.File
+                        (file := await LevelUp.get_user_profile_cached(member)),
+                        discord.File,
                     )
                     else None
                 ),
             }
-        elif reward["type"] == "custom":
+        if reward["type"] == "custom":
             embed = discord.Embed(
                 title=_(
-                    "Advent Calendar — {member.display_name} received a **custom reward**"
+                    "Advent Calendar — {member.display_name} received a **custom reward**",
                 ).format(member=member)
                 + (f" for **day {day}**!" if day is not None else " as **final reward**!"),
                 color=discord.Color.green(),
-                timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                timestamp=datetime.datetime.now(tz=datetime.UTC),
             )
             embed.set_thumbnail(url=member.display_avatar)
             embed.add_field(name=_("Member:"), value=f"{member.mention} ({member.id})")
@@ -499,13 +507,13 @@ class AdventCalendar(Cog):
                     if (
                         (
                             custom_rewards_ping_role_id := await self.config.guild(
-                                member.guild
+                                member.guild,
                             ).custom_rewards_ping_role()
                         )
                         is not None
                         and (
                             custom_rewards_ping_role := member.guild.get_role(
-                                custom_rewards_ping_role_id
+                                custom_rewards_ping_role_id,
                             )
                         )
                         is not None
@@ -522,7 +530,7 @@ class AdventCalendar(Cog):
                     color=discord.Color.green(),
                 ),
             }
-        elif reward["type"] == "message":
+        if reward["type"] == "message":
             return reward, {
                 "embed": discord.Embed(
                     title=_("🎁 Here's a **message** for you! 🎁"),
@@ -530,6 +538,7 @@ class AdventCalendar(Cog):
                     color=discord.Color.green(),
                 ),
             }
+        return None
 
     async def cleanup_last_year_opened_days(self) -> None:
         today = datetime.date.today()
@@ -549,25 +558,25 @@ class AdventCalendar(Cog):
             first_december = today.replace(month=12, day=1)
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "The Advent Calendar is only available in December. **Come back in {interval_string}!** 🎄"
+                    "The Advent Calendar is only available in December. **Come back in {interval_string}!** 🎄",
                 ).format(
                     interval_string=CogsUtils.get_interval_string(first_december - today),
-                )
+                ),
             )
         config = await self.config.guild(ctx.guild).all()
         if not config["enabled"]:
             raise commands.UserFeedbackCheckFailure(
-                _("The Advent Calendar is not enabled in this server.")
+                _("The Advent Calendar is not enabled in this server."),
             )
         if config["whitelist_roles"] and not any(
             role.id in config["whitelist_roles"] for role in ctx.author.roles
         ):
             raise commands.UserFeedbackCheckFailure(
-                _("You don't have the required roles to access the Advent Calendar.")
+                _("You don't have the required roles to access the Advent Calendar."),
             )
         if any(role.id in config["blacklist_roles"] for role in ctx.author.roles):
             raise commands.UserFeedbackCheckFailure(
-                _("You're not allowed to access the Advent Calendar.")
+                _("You're not allowed to access the Advent Calendar."),
             )
 
         content, embeds, files = None, [], []
@@ -578,7 +587,7 @@ class AdventCalendar(Cog):
                 reward, kwargs = await self.get_reward(ctx.author, today_day)
                 if reward is not None:
                     content = _(
-                        "🎄 Here's your surprise for **day {today_day}** of the Advent Calendar! 🎄"
+                        "🎄 Here's your surprise for **day {today_day}** of the Advent Calendar! 🎄",
                     ).format(today_day=today_day)
                     if kwargs is not None:
                         embeds.append(kwargs["embed"])
@@ -590,19 +599,20 @@ class AdventCalendar(Cog):
                 await self.config.member(ctx.author).opened_days.set(opened_days)
             else:
                 content = _(
-                    "You've already opened your box for the day, **come back <t:{timestamp}:R>!** 😉 Here's your current Advent Calendar!"
+                    "You've already opened your box for the day, **come back <t:{timestamp}:R>!** 😉 Here's your current Advent Calendar!",
                 ).format(
                     timestamp=int(
                         datetime.datetime.combine(
-                            today + datetime.timedelta(days=1), datetime.time(0, 0, 0)
-                        ).timestamp()
-                    )
+                            today + datetime.timedelta(days=1),
+                            datetime.time(0, 0, 0),
+                        ).timestamp(),
+                    ),
                 )
         elif today_day == 25:
             embeds.append(
                 discord.Embed(
                     color=await ctx.embed_color(),
-                ).set_image(url="attachment://merry_christmas.png")
+                ).set_image(url="attachment://merry_christmas.png"),
             )
             files.append(await self.generate_merry_christmas())
             if len(opened_days) == 24 and None not in opened_days:
@@ -625,10 +635,10 @@ class AdventCalendar(Cog):
             .set_footer(
                 text=ctx.guild.name,
                 icon_url=ctx.guild.icon,
-            )
+            ),
         )
         files.append(
-            await self.generate_advent_calendar(today_day=today_day, opened_days=opened_days)
+            await self.generate_advent_calendar(today_day=today_day, opened_days=opened_days),
         )
         await ctx.send(
             (
@@ -657,13 +667,16 @@ class AdventCalendar(Cog):
     @commands.bot_has_permissions(embed_links=True, attach_files=True)
     @setadventcalendar.command()
     async def madvent(
-        self, ctx: commands.Context, *, member: discord.Member = commands.Author
+        self,
+        ctx: commands.Context,
+        *,
+        member: discord.Member = commands.Author,
     ) -> None:
         """Get the Advent Calendar for a member."""
         today = datetime.date.today()
         if not today.month == 12:
             raise commands.UserFeedbackCheckFailure(
-                _("The Advent Calendar is only available in December.")
+                _("The Advent Calendar is only available in December."),
             )
         opened_days = await self.config.member(member).opened_days()
         embed: discord.Embed = discord.Embed(
@@ -680,7 +693,8 @@ class AdventCalendar(Cog):
                 {
                     "embed": embed,
                     "file": await self.generate_advent_calendar(
-                        today_day=today.day, opened_days=opened_days
+                        today_day=today.day,
+                        opened_days=opened_days,
                     ),
                 },
             ],
@@ -689,13 +703,16 @@ class AdventCalendar(Cog):
     @commands.bot_has_permissions(embed_links=True, attach_files=True)
     @setadventcalendar.command()
     async def mstats(
-        self, ctx: commands.Context, *, member: discord.Member = commands.Author
+        self,
+        ctx: commands.Context,
+        *,
+        member: discord.Member = commands.Author,
     ) -> None:
         """Get the stats of the Advent Calendar for a member."""
         today = datetime.date.today()
         if not today.month == 12:
             raise commands.UserFeedbackCheckFailure(
-                _("The Advent Calendar is only available in December.")
+                _("The Advent Calendar is only available in December."),
             )
         opened_days = await self.config.member(member).opened_days()
         embed = discord.Embed(
@@ -705,7 +722,7 @@ class AdventCalendar(Cog):
                 if len(opened_days) == today.day
                 else (discord.Color.orange() if opened_days else discord.Color.red())
             ),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=datetime.datetime.now(tz=datetime.UTC),
         )
         embed.set_author(
             name=member.display_name,
@@ -731,7 +748,7 @@ class AdventCalendar(Cog):
         today = datetime.date.today()
         if not today.month == 12:
             raise commands.UserFeedbackCheckFailure(
-                _("The Advent Calendar is only available in December.")
+                _("The Advent Calendar is only available in December."),
             )
         members_data = await self.config.all_members(ctx.guild)
         opened_days = {member_id: data["opened_days"] for member_id, data in members_data.items()}
@@ -747,7 +764,7 @@ class AdventCalendar(Cog):
                 if members_all_boxes_opened
                 else (discord.Color.orange() if total_boxes_opened else discord.Color.red())
             ),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=datetime.datetime.now(tz=datetime.UTC),
         )
         embed.add_field(
             name=_("Total Boxes Opened:"),
@@ -801,7 +818,7 @@ class AdventCalendar(Cog):
                 line={"width": 14},
                 fill="tozeroy",
                 fillcolor="rgba(0,255,0,0.2)",
-            )
+            ),
         )
         fig.update_xaxes(type="category", tickvals=x)
         fig.update_yaxes(showgrid=True)
@@ -825,7 +842,7 @@ class AdventCalendar(Cog):
         today = datetime.date.today()
         if not today.month == 12:
             raise commands.UserFeedbackCheckFailure(
-                _("The Advent Calendar is only available in December.")
+                _("The Advent Calendar is only available in December."),
             )
         members_data = await self.config.all_members(ctx.guild)
         members = [
@@ -837,7 +854,9 @@ class AdventCalendar(Cog):
         ]
         if not members:
             raise commands.UserFeedbackCheckFailure(_("No member to ping."))
-        msg = _("**You haven't opened your box of the 🎄 Advent Calendar 🎄 for today yet! ^^**\n\n")
+        msg = _(
+            "**You haven't opened your box of the 🎄 Advent Calendar 🎄 for today yet! ^^**\n\n",
+        )
         pages = []
         for i, page in enumerate(
             pagify(
@@ -845,7 +864,7 @@ class AdventCalendar(Cog):
                     [member.mention for member in members],
                 ),
                 page_length=1500,
-            )
+            ),
         ):
             pages.append(f"{(msg if i == 0 else '')}||{page}||")
         for page in pages:

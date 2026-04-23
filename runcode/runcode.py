@@ -1,17 +1,17 @@
-﻿from AAA3A_utils import Cog, Menu  # isort:skip
-from redbot.core import commands, app_commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import io
 import re
 import textwrap
+import typing
 
 import aiohttp
+import discord
 from fuzzywuzzy import fuzz
+
+from AAA3A_utils import Cog, Menu
+from redbot.core import app_commands, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify
 
 from .data import LANGUAGES_FILES_EXTENSIONS, LANGUAGES_IDENTIFIERS, LANGUAGES_IMAGES
@@ -45,8 +45,8 @@ class WandboxLanguageConverter(commands.Converter):
                 return _language
         raise commands.BadArgument(
             _(
-                "Incorrect language identifier for your code.\nTo list all the supported languages identifiers, please use `{ctx.prefix}setruncode listidentifiers`."
-            ).format(ctx=ctx)
+                "Incorrect language identifier for your code.\nTo list all the supported languages identifiers, please use `{ctx.prefix}setruncode listidentifiers`.",
+            ).format(ctx=ctx),
         )
 
 
@@ -71,7 +71,7 @@ class TioLanguageConverter(commands.Converter):
 
 
 class ListConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> typing.List[str]:
+    async def convert(self, ctx: commands.Context, argument: str) -> list[str]:
         return list(re.split(r";|,|\|", argument))
 
 
@@ -79,10 +79,14 @@ class WandboxFlagsConverter(commands.FlagConverter):  # , prefix="--", delimiter
     engine: str = commands.Flag(name="engine", annotation=str, default=None)
     input: str = commands.Flag(name="input", annotation=str, default=None)
     compiler_options: str = commands.Flag(
-        name="compiler_options", annotation=ListConverter, default=None
+        name="compiler_options",
+        annotation=ListConverter,
+        default=None,
     )
     runtime_options: str = commands.Flag(
-        name="runtime_options", annotation=ListConverter, default=None
+        name="runtime_options",
+        annotation=ListConverter,
+        default=None,
     )
 
     async def convert(self, ctx: commands.Context, argument: str) -> typing.Any:
@@ -92,14 +96,18 @@ class WandboxFlagsConverter(commands.FlagConverter):  # , prefix="--", delimiter
 
 
 class TioFlagsConverter(commands.FlagConverter):
-    inputs: typing.List[str] = commands.Flag(name="inputs", annotation=ListConverter, default=None)
-    compiler_flags: typing.List[str] = commands.Flag(
-        name="compiler_flags", annotation=ListConverter, default=None
+    inputs: list[str] = commands.Flag(name="inputs", annotation=ListConverter, default=None)
+    compiler_flags: list[str] = commands.Flag(
+        name="compiler_flags",
+        annotation=ListConverter,
+        default=None,
     )
-    command_line_options: typing.List[str] = commands.Flag(
-        name="command_line_options", annotation=ListConverter, default=None
+    command_line_options: list[str] = commands.Flag(
+        name="command_line_options",
+        annotation=ListConverter,
+        default=None,
     )
-    args: typing.List[str] = commands.Flag(name="args", annotation=ListConverter, default=None)
+    args: list[str] = commands.Flag(name="args", annotation=ListConverter, default=None)
 
     async def convert(self, ctx: commands.Context, argument: str) -> typing.Any:
         if ":" not in argument:
@@ -114,14 +122,16 @@ class RunCode(Cog):
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self.wandbox_languages: typing.Dict[
-            str, typing.Dict[str, typing.Dict[str, WandboxEngine]]
+        self.wandbox_languages: dict[
+            str,
+            dict[str, dict[str, WandboxEngine]],
         ] = {}
-        self.tio_languages: typing.Dict[str, TioLanguage] = {}
+        self.tio_languages: dict[str, TioLanguage] = {}
 
-        self._session: typing.Optional[aiohttp.ClientSession] = None
-        self.history: typing.Dict[
-            typing.Union[discord.Member, discord.User], typing.List[WandboxResponse, TioResponse]
+        self._session: aiohttp.ClientSession | None = None
+        self.history: dict[
+            discord.Member | discord.User,
+            list[WandboxResponse, TioResponse],
         ] = {}
 
     async def cog_load(self) -> None:
@@ -136,8 +146,9 @@ class RunCode(Cog):
         await super().cog_unload()
 
     async def load_wandbox_languages(
-        self, force: typing.Optional[bool] = False
-    ) -> typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]]:
+        self,
+        force: bool | None = False,
+    ) -> dict[str, dict[str, dict[str, dict[str, str]]]]:
         if self.wandbox_languages and not force:
             return self.wandbox_languages
         self.wandbox_languages = {}
@@ -167,8 +178,9 @@ class RunCode(Cog):
         return self.wandbox_languages
 
     async def load_tio_languages(
-        self, force: typing.Optional[bool] = False
-    ) -> typing.Dict[str, typing.Dict[str, typing.Dict[str, typing.Dict[str, str]]]]:
+        self,
+        force: bool | None = False,
+    ) -> dict[str, dict[str, dict[str, dict[str, str]]]]:
         if self.tio_languages and not force:
             return self.tio_languages
         self.tio_languages = {}
@@ -182,9 +194,12 @@ class RunCode(Cog):
                 prettify=result[language].get("prettify", None),
                 value=language,
             )
+        return None
 
     def get_wandbox_request_from_eval(
-        self, language: typing.Union[str, WandboxEngine], code: str
+        self,
+        language: str | WandboxEngine,
+        code: str,
     ) -> WandboxRequest:
         if isinstance(language, WandboxEngine):
             engine = language
@@ -200,7 +215,7 @@ class RunCode(Cog):
                 else:
                     raise RuntimeError("Language not found.")
             engine: WandboxEngine = list(
-                list(self.wandbox_languages[language].values())[0].values()
+                list(self.wandbox_languages[language].values())[0].values(),
             )[0]
         return WandboxRequest(
             cog=self,
@@ -213,7 +228,9 @@ class RunCode(Cog):
         )  # compiler=DEFAULT_ENGINES[engine.language][1]
 
     def get_tio_request_from_eval(
-        self, language: typing.Union[str, TioLanguage], code: str
+        self,
+        language: str | TioLanguage,
+        code: str,
     ) -> WandboxRequest:
         if not isinstance(language, TioLanguage):
             matches = sorted(
@@ -235,9 +252,9 @@ class RunCode(Cog):
     async def get_code_from_context(
         self,
         ctx: commands.Context,
-        code: typing.Optional[str],
-        provided_language: typing.Optional[str],
-    ) -> typing.Tuple[str, str]:
+        code: str | None,
+        provided_language: str | None,
+    ) -> tuple[str, str]:
         _language = provided_language
         _code = None
 
@@ -248,15 +265,16 @@ class RunCode(Cog):
             buffer = io.BytesIO()
             await ctx.message.attachments[0].save(buffer)
             code = buffer.read().decode("utf-8")
-            if _language is None:
-                if (
-                    language_extension := ctx.message.attachments[0].filename.split(".")[-1]
-                ) != "txt":
-                    for language in LANGUAGES_FILES_EXTENSIONS:
-                        if language_extension in LANGUAGES_FILES_EXTENSIONS[language]:
-                            _language = language
-                            break
-                    _language = ctx.message.attachments[0].filename.split(".")[-1]
+            if (
+                _language is None
+                and (language_extension := ctx.message.attachments[0].filename.split(".")[-1])
+                != "txt"
+            ):
+                for language in LANGUAGES_FILES_EXTENSIONS:
+                    if language_extension in LANGUAGES_FILES_EXTENSIONS[language]:
+                        _language = language
+                        break
+                _language = ctx.message.attachments[0].filename.split(".")[-1]
         elif code is not None:
             if code.strip().startswith("url="):
                 url = code[4:].strip()
@@ -282,9 +300,7 @@ class RunCode(Cog):
 
         if ctx.interaction is None:
             begin = code.find("```")
-            language_identifier = code[
-                begin + 3 : code[begin + 3 :].find("\n") + begin + 3
-            ].lower()
+            language_identifier = code[begin + 3 : code[begin + 3 :].find("\n") + begin + 3].lower()
             no_code = False
             try:
                 end = code[begin + 3 + len(language_identifier) :].rfind("```")
@@ -294,7 +310,7 @@ class RunCode(Cog):
                 no_code = True
             if no_code:
                 raise commands.UserFeedbackCheckFailure(
-                    _("Incorrect syntax, please use Markdown's syntax for your code.")
+                    _("Incorrect syntax, please use Markdown's syntax for your code."),
                 )
             if _language is None:
                 for language in LANGUAGES_IDENTIFIERS:
@@ -304,8 +320,8 @@ class RunCode(Cog):
                 else:
                     raise commands.UserFeedbackCheckFailure(
                         _(
-                            "Incorrect language identifier for your code.\nTo list all the supported languages identifiers, please use `{ctx.prefix}setruncode listidentifiers`."
-                        ).format(ctx=ctx)
+                            "Incorrect language identifier for your code.\nTo list all the supported languages identifiers, please use `{ctx.prefix}setruncode listidentifiers`.",
+                        ).format(ctx=ctx),
                     )
             before = code[:begin]
             after = code[end + begin + 6 + len(language_identifier) :]
@@ -319,7 +335,7 @@ class RunCode(Cog):
             ]
         elif _language is None:
             raise commands.UserFeedbackCheckFailure(
-                _("Specify the language of your code with the `language` parameter.")
+                _("Specify the language of your code with the `language` parameter."),
             )
         else:
             _code = code
@@ -343,7 +359,8 @@ class RunCode(Cog):
             and getattr(_language, "name", None) != "Python 1"
         ):
             _code = wrapping[getattr(_language, "name", _language).split(" ")[0].lower()].replace(
-                "code", textwrap.indent(_code, "    ")
+                "code",
+                textwrap.indent(_code, "    "),
             )
             if getattr(_language, "name", _language).split(" ")[0].lower() == "python":
                 _code = (
@@ -359,11 +376,11 @@ class RunCode(Cog):
     async def runcode(
         self,
         ctx: commands.Context,
-        verbose: typing.Optional[bool] = False,
-        language: typing.Optional[WandboxLanguageConverter] = None,
-        parameters: typing.Optional[WandboxFlagsConverter] = None,
+        verbose: bool | None = False,
+        language: WandboxLanguageConverter | None = None,
+        parameters: WandboxFlagsConverter | None = None,
         *,
-        code: typing.Optional[str] = None,
+        code: str | None = None,
     ) -> None:
         """
         Run a code in a langage, with Wandbox API.
@@ -380,20 +397,22 @@ class RunCode(Cog):
         else:
             _parameters = {
                 key: getattr(parameters, key)
-                for key in parameters.get_flags().keys()
+                for key in parameters.get_flags()
                 if getattr(parameters, key)
             }
 
         raw_request = {}
 
         _parameters["code_language"], raw_request["code"] = await self.get_code_from_context(
-            ctx, code=code, provided_language=language
+            ctx,
+            code=code,
+            provided_language=language,
         )
         if _parameters["code_language"] is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "The language of your code could not be found. Specify it with the `language` parameter."
-                )
+                    "The language of your code could not be found. Specify it with the `language` parameter.",
+                ),
             )
 
         code_language = _parameters["code_language"]
@@ -409,7 +428,7 @@ class RunCode(Cog):
                             i += nb_engines
                         else:
                             raw_request["engine"]: WandboxEngine = list(
-                                self.wandbox_languages[code_language][engine_template].values()
+                                self.wandbox_languages[code_language][engine_template].values(),
                             )[engine_index - i - 1]
                             break
             except ValueError:
@@ -421,12 +440,12 @@ class RunCode(Cog):
             if "engine" not in raw_request:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "`{engine}` is not a correct engine for {code_language}\nTo list all the available engine for it, please use `{ctx.prefix}setruncode listengines {code_language}`."
-                    ).format(engine=engine, code_language=code_language, ctx=ctx)
+                        "`{engine}` is not a correct engine for {code_language}\nTo list all the available engine for it, please use `{ctx.prefix}setruncode listengines {code_language}`.",
+                    ).format(engine=engine, code_language=code_language, ctx=ctx),
                 )
         else:
             raw_request["engine"]: WandboxEngine = list(
-                list(self.wandbox_languages[code_language].values())[0].values()
+                list(self.wandbox_languages[code_language].values())[0].values(),
             )[0]
         raw_request["stdin"] = " ".join(_parameters.get("input", [""]))
         if "compiler_options" in _parameters:
@@ -434,8 +453,8 @@ class RunCode(Cog):
                 engine = raw_request["engine"]
                 await ctx.send(
                     _(
-                        "There is no options available for compilation using `{engine}`.\nIgnoring this option."
-                    ).format(engine=engine)
+                        "There is no options available for compilation using `{engine}`.\nIgnoring this option.",
+                    ).format(engine=engine),
                 )
                 raw_request["compiler_options"] = ""
             else:
@@ -447,8 +466,8 @@ class RunCode(Cog):
                 engine = raw_request["engine"]
                 await ctx.send(
                     _(
-                        "There is no options available for runtime execution `{engine}`.\nIgnoring this option."
-                    ).format(engine=engine)
+                        "There is no options available for runtime execution `{engine}`.\nIgnoring this option.",
+                    ).format(engine=engine),
                 )
                 raw_request["runtime_options"] = ""
             else:
@@ -461,7 +480,7 @@ class RunCode(Cog):
             response = await request.fetch_response()
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(
-                "The external server returned an error:\n" + box(str(e), lang="py")
+                "The external server returned an error:\n" + box(str(e), lang="py"),
             )
         if ctx.author not in self.history:
             self.history[ctx.author] = []
@@ -472,11 +491,11 @@ class RunCode(Cog):
     async def runtio(
         self,
         ctx: commands.Context,
-        verbose: typing.Optional[bool],
+        verbose: bool | None,
         language: TioLanguageConverter,
-        parameters: typing.Optional[WandboxFlagsConverter] = None,
+        parameters: WandboxFlagsConverter | None = None,
         *,
-        code: typing.Optional[str] = None,
+        code: str | None = None,
     ) -> None:
         """
         Run a code in a langage, with Tio API.
@@ -493,14 +512,16 @@ class RunCode(Cog):
         else:
             _parameters = {
                 key: getattr(parameters, key)
-                for key in parameters.get_flags().keys()
+                for key in parameters.get_flags()
                 if getattr(parameters, key)
             }
 
         raw_request = {}
 
         raw_request["language"], raw_request["code"] = await self.get_code_from_context(
-            ctx, code=code, provided_language=language
+            ctx,
+            code=code,
+            provided_language=language,
         )
 
         raw_request["inputs"] = _parameters.get("inputs", [])
@@ -512,7 +533,7 @@ class RunCode(Cog):
             response = await request.fetch_response()
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(
-                "The external server returned an error:\n" + box(str(e), lang="py")
+                "The external server returned an error:\n" + box(str(e), lang="py"),
             )
         if ctx.author not in self.history:
             self.history[ctx.author] = []
@@ -539,8 +560,10 @@ class RunCode(Cog):
 
     @runcode.autocomplete("language")
     async def runcode_language_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> typing.List[app_commands.Choice[str]]:
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> list[app_commands.Choice[str]]:
         return (
             [
                 app_commands.Choice(name=language, value=language)
@@ -556,8 +579,10 @@ class RunCode(Cog):
 
     @runtio.autocomplete("language")
     async def runtio_language_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> typing.List[app_commands.Choice[str]]:
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> list[app_commands.Choice[str]]:
         return (
             [
                 app_commands.Choice(name=language, value=language)
@@ -580,16 +605,18 @@ class RunCode(Cog):
 
     @configuration.command(name="listlanguages")
     async def _languages_list(
-        self, ctx: commands.Context, api: typing.Literal["wandbox", "tio"]
+        self,
+        ctx: commands.Context,
+        api: typing.Literal["wandbox", "tio"],
     ) -> None:
         """
         Shows a list of all the available languages, or Wandbox or Tio API.
         """
         if api == "wandbox":
-            keys: str = humanize_list([f"`{key}`" for key in self.wandbox_languages.keys()])
+            keys: str = humanize_list([f"`{key}`" for key in self.wandbox_languages])
         elif api == "tio":
             keys: str = humanize_list(
-                [f"[{key}]({value.link})" for key, value in self.tio_languages.items()]
+                [f"[{key}]({value.link})" for key, value in self.tio_languages.items()],
             )
         pages = list(pagify(keys, delims=[", ["], page_length=4000))
         embeds = []
@@ -621,14 +648,15 @@ class RunCode(Cog):
             else:
                 raise RuntimeError("Language not found.")
         keys: str = humanize_list(
-            [f"`{key}`" for key in list(self.wandbox_languages[language].values())[0].keys()]
+            [f"`{key}`" for key in list(self.wandbox_languages[language].values())[0]],
         )
         embed = discord.Embed(
             title=_("RunCode — Wandbox API Engines"),
             color=await ctx.embed_color(),
         )
         embed.set_author(
-            name=f"{language.capitalize()} language", icon_url=LANGUAGES_IMAGES[language]
+            name=f"{language.capitalize()} language",
+            icon_url=LANGUAGES_IMAGES[language],
         )
         embed.description = keys
         await ctx.send(embed=embed)
@@ -640,9 +668,9 @@ class RunCode(Cog):
         """
         result: str = "\n".join(
             [
-                f'**{language.capitalize()}**: {humanize_list([f"`{identifier}`" for identifier in identifiers])}'
+                f"**{language.capitalize()}**: {humanize_list([f'`{identifier}`' for identifier in identifiers])}"
                 for language, identifiers in LANGUAGES_IDENTIFIERS.items()
-            ]
+            ],
         )
         embed = discord.Embed(
             title=_("RunCode — Wandbox API Identifiers"),
@@ -658,9 +686,9 @@ class RunCode(Cog):
         """
         result: str = "\n".join(
             [
-                f'**{language.capitalize()}**: {humanize_list([f"`.{extension}`" for extension in extensions])}'
+                f"**{language.capitalize()}**: {humanize_list([f'`.{extension}`' for extension in extensions])}"
                 for language, extensions in LANGUAGES_FILES_EXTENSIONS.items()
-            ]
+            ],
         )
         embed = discord.Embed(
             title=_("Languages extensions"),

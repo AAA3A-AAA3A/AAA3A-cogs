@@ -1,14 +1,13 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
-import inspect
+import typing
 from functools import partial
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import inline, pagify
 
 from .converters import Emoji, EmojiCommandConverter
@@ -28,8 +27,8 @@ class MyMessageConverter(commands.MessageConverter):
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
-                )
+                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.",
+                ),
             )
         return message
 
@@ -50,7 +49,7 @@ class CommandsButtons(Cog):
         self.config.register_global(CONFIG_SCHEMA=None)
         self.config.register_guild(commands_buttons={})
 
-        self.cache: typing.List[commands.Context] = []
+        self.cache: list[commands.Context] = []
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -73,7 +72,8 @@ class CommandsButtons(Cog):
                         data = commands_buttons[message].pop(emoji)
                         data["emoji"] = emoji
                         config_identifier = CogsUtils.generate_key(
-                            length=5, existing_keys=commands_buttons[message]
+                            length=5,
+                            existing_keys=commands_buttons[message],
                         )
                         commands_buttons[message][config_identifier] = data
                 await self.config.guild_from_id(guild_id).commands_buttons.set(commands_buttons)
@@ -83,7 +83,7 @@ class CommandsButtons(Cog):
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         self.logger.info(
-            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
+            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog.",
         )
 
     async def load_buttons(self) -> None:
@@ -107,7 +107,9 @@ class CommandsButtons(Cog):
                     )
 
     async def on_button_interaction(
-        self, interaction: discord.Interaction, config_identifier: str
+        self,
+        interaction: discord.Interaction,
+        config_identifier: str,
     ) -> None:
         if await self.bot.cog_disabled_in_guild(self, interaction.guild):
             return
@@ -116,12 +118,14 @@ class CommandsButtons(Cog):
         config = await self.config.guild(interaction.guild).commands_buttons.all()
         if f"{interaction.channel.id}-{interaction.message.id}" not in config:
             await interaction.response.send_message(
-                _("This message is not in Config."), ephemeral=True
+                _("This message is not in Config."),
+                ephemeral=True,
             )
             return
         if config_identifier not in config[f"{interaction.channel.id}-{interaction.message.id}"]:
             await interaction.response.send_message(
-                _("This button is not in Config."), ephemeral=True
+                _("This button is not in Config."),
+                ephemeral=True,
             )
             return
         command = config[f"{interaction.channel.id}-{interaction.message.id}"][config_identifier][
@@ -139,15 +143,15 @@ class CommandsButtons(Cog):
             )[:5]
             modal = discord.ui.Modal(title=_("Invoke Command"))
             modal.on_submit = lambda interaction: interaction.response.defer()
-            text_inputs: typing.List[discord.ui.TextInput] = []
+            text_inputs: list[discord.ui.TextInput] = []
             for name, param in params:
                 text_input = discord.ui.TextInput(
                     label=f"{name.replace('_', ' ').title()}:",
                     style=discord.TextStyle.short,
-                    placeholder=repr(param)[repr(param).find(":") + 1 : -2][:100] if ":" in repr(param) else "Input",
-                    default=(
-                        str(param.default) if param.default != inspect._empty and False else None
-                    ),
+                    placeholder=repr(param)[repr(param).find(":") + 1 : -2][:100]
+                    if ":" in repr(param)
+                    else "Input",
+                    default=(str(param.default) if False else None),
                     required=param.required,
                 )
                 text_inputs.append(text_input)
@@ -160,7 +164,7 @@ class CommandsButtons(Cog):
                     (f'"{text_input.value}"' if " " in text_input.value else text_input.value)
                     for text_input in text_inputs
                     if text_input.value and str(text_input.value) != text_input.default
-                ]
+                ],
             )
         else:
             await interaction.response.defer(ephemeral=True)
@@ -177,7 +181,8 @@ class CommandsButtons(Cog):
 
         if not await discord.utils.async_all([check(context) for check in context.command.checks]):
             await interaction.followup.send(
-                _("You are not allowed to execute this command."), ephemeral=True
+                _("You are not allowed to execute this command."),
+                ephemeral=True,
             )
             return
 
@@ -190,7 +195,10 @@ class CommandsButtons(Cog):
 
     @commands.Cog.listener()
     async def on_command_error(
-        self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False
+        self,
+        ctx: commands.Context,
+        error: commands.CommandError,
+        unhandled_by_cog: bool = False,
     ) -> None:
         if ctx not in self.cache:
             return
@@ -228,10 +236,10 @@ class CommandsButtons(Cog):
         ctx: commands.Context,
         message: MyMessageConverter,
         command: str,
-        emoji: typing.Optional[Emoji],
-        style_button: typing.Optional[typing.Literal["1", "2", "3", "4"]] = "2",
+        emoji: Emoji | None,
+        style_button: typing.Literal["1", "2", "3", "4"] | None = "2",
         *,
-        text_button: typing.Optional[commands.Range[str, 1, 100]] = None,
+        text_button: commands.Range[str, 1, 100] | None = None,
     ) -> None:
         """Add a command-button for a message.
 
@@ -255,8 +263,8 @@ class CommandsButtons(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
-                )
+                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.",
+                ),
             )
         # if ctx.prefix != "/":
         new_ctx = await CogsUtils.invoke_command(
@@ -274,7 +282,7 @@ class CommandsButtons(Cog):
             raise commands.UserFeedbackCheckFailure(_("You can't execute yourself this command."))
         if emoji is None and text_button is None:
             raise commands.UserFeedbackCheckFailure(
-                _("You have to specify at least an emoji or a label.")
+                _("You have to specify at least an emoji or a label."),
             )
         if emoji is not None and ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
@@ -282,8 +290,8 @@ class CommandsButtons(Cog):
             except discord.HTTPException:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                    )
+                        "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.",
+                    ),
                 )
         config = await self.config.guild(ctx.guild).commands_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -292,10 +300,11 @@ class CommandsButtons(Cog):
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) > 25:
             raise commands.UserFeedbackCheckFailure(
-                _("I can't do more than 25 commands-buttons for one message.")
+                _("I can't do more than 25 commands-buttons for one message."),
             )
         config_identifier = CogsUtils.generate_key(
-            length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
+            length=5,
+            existing_keys=config[f"{message.channel.id}-{message.id}"],
         )
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
             "command": command,
@@ -322,7 +331,7 @@ class CommandsButtons(Cog):
         """
         if len(commands_buttons) == 0:
             raise commands.UserFeedbackCheckFailure(
-                _("You have not specified any valid command-button.")
+                _("You have not specified any valid command-button."),
             )
         channel_permissions = message.channel.permissions_for(ctx.me)
         if (
@@ -332,8 +341,8 @@ class CommandsButtons(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
-                )
+                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.",
+                ),
             )
         if ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
@@ -344,7 +353,7 @@ class CommandsButtons(Cog):
                         new_ctx = await ctx.bot.get_context(msg)
                         if not new_ctx.valid:
                             raise commands.UserFeedbackCheckFailure(
-                                _("At least one of these commands is invalid.")
+                                _("At least one of these commands is invalid."),
                             )
                     if emoji is None:
                         continue
@@ -352,8 +361,8 @@ class CommandsButtons(Cog):
             except discord.HTTPException:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                    )
+                        "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.",
+                    ),
                 )
         config = await self.config.guild(ctx.guild).commands_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -362,11 +371,12 @@ class CommandsButtons(Cog):
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(commands_buttons) > 25:
             raise commands.UserFeedbackCheckFailure(
-                _("I can't do more than 25 roles-buttons for one message.")
+                _("I can't do more than 25 roles-buttons for one message."),
             )
         for emoji, command in commands_buttons:
             config_identifier = CogsUtils.generate_key(
-                length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
+                length=5,
+                existing_keys=config[f"{message.channel.id}-{message.id}"],
             )
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
                 "command": command,
@@ -382,7 +392,10 @@ class CommandsButtons(Cog):
 
     @commandsbuttons.command(aliases=["-"])
     async def remove(
-        self, ctx: commands.Context, message: MyMessageConverter, config_identifier: str
+        self,
+        ctx: commands.Context,
+        message: MyMessageConverter,
+        config_identifier: str,
     ) -> None:
         """Remove a command-button for a message.
 
@@ -391,11 +404,11 @@ class CommandsButtons(Cog):
         config = await self.config.guild(ctx.guild).commands_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No command-button is configured for this message.")
+                _("No command-button is configured for this message."),
             )
         if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
             raise commands.UserFeedbackCheckFailure(
-                _("I wasn't watching for this button on this message.")
+                _("I wasn't watching for this button on this message."),
             )
         del config[f"{message.channel.id}-{message.id}"][config_identifier]
         if config[f"{message.channel.id}-{message.id}"] == {}:
@@ -417,7 +430,7 @@ class CommandsButtons(Cog):
         config = await self.config.guild(ctx.guild).commands_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No command-button is configured for this message.")
+                _("No command-button is configured for this message."),
             )
         try:
             await message.edit(view=None)
@@ -438,7 +451,7 @@ class CommandsButtons(Cog):
             _commands_buttons = list(commands_buttons.values()).copy()
         elif f"{message.channel.id}-{message.id}" not in commands_buttons:
             raise commands.UserFeedbackCheckFailure(
-                _("No command-button is configured for this message.")
+                _("No command-button is configured for this message."),
             )
         else:
             _commands_buttons = commands_buttons.copy()
@@ -448,7 +461,7 @@ class CommandsButtons(Cog):
         embed: discord.Embed = discord.Embed(
             title=_("Commands Buttons"),
             description=_(
-                "There is {len_commands_buttons} commands buttons in this server."
+                "There is {len_commands_buttons} commands buttons in this server.",
             ).format(len_commands_buttons=len(commands_buttons)),
             color=await ctx.embed_color(),
         )
@@ -458,18 +471,18 @@ class CommandsButtons(Cog):
             e = embed.copy()
             for command_button in li:
                 value = _("Message Jump Link: {message_jump_link}\n").format(
-                    message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{command_button['message'].replace('-', '/')}"
+                    message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{command_button['message'].replace('-', '/')}",
                 )
                 value += "\n".join(
                     [
                         f"• `{config_identifier}` - Emoji {(ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'].isdigit() else data['emoji']) if data['emoji'] is not None else '`None`'} - Label `{data['text_button']}` - Command `[p]{data['command']}`"
                         for config_identifier, data in command_button.items()
                         if config_identifier != "message"
-                    ]
+                    ],
                 )
                 for page in pagify(value, page_length=1024):
                     e.add_field(
-                        name="\u200B",
+                        name="\u200b",
                         value=page,
                         inline=False,
                     )
@@ -483,7 +496,9 @@ class CommandsButtons(Cog):
         await ctx.send(_("All commands-buttons purged."))
 
     def get_buttons(
-        self, config: typing.Dict[str, dict], message: typing.Union[discord.Message, str]
+        self,
+        config: dict[str, dict],
+        message: discord.Message | str,
     ) -> discord.ui.View:
         message = (
             f"{message.channel.id}-{message.id}"
@@ -505,13 +520,14 @@ class CommandsButtons(Cog):
                 label=config[message][config_identifier]["text_button"],
                 emoji=b,
                 style=discord.ButtonStyle(
-                    config[message][config_identifier].get("style_button", 2)
+                    config[message][config_identifier].get("style_button", 2),
                 ),
                 custom_id=f"commands_buttons {config_identifier}",
                 disabled=False,
             )
             button.callback = partial(
-                self.on_button_interaction, config_identifier=config_identifier
+                self.on_button_interaction,
+                config_identifier=config_identifier,
             )
             view.add_item(button)
         return view

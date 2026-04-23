@@ -1,6 +1,7 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
+import discord
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 _ = Translator("RumbleRoyaleUtils", __file__)
 
@@ -27,20 +28,20 @@ class AmIAliveView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.channel not in self.cog.rumbles:
             await interaction.response.send_message(
-                _("There is no active Rumble Royale in this channel."), ephemeral=True
+                _("There is no active Rumble Royale in this channel."),
+                ephemeral=True,
             )
             return False
         if interaction.user not in self.cog.rumbles[interaction.channel].players:
             await interaction.response.send_message(
-                _("You are not a participant in this Rumble Royale."), ephemeral=True
+                _("You are not a participant in this Rumble Royale."),
+                ephemeral=True,
             )
             return False
         return True
 
     @discord.ui.button(emoji="😃", label="Am I Alive?", style=discord.ButtonStyle.success)
-    async def am_i_alive(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def am_i_alive(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         embed: discord.Embed = discord.Embed(timestamp=interaction.message.created_at)
         embed.set_author(
             name=interaction.user.display_name,
@@ -55,7 +56,7 @@ class AmIAliveView(discord.ui.View):
                     _("- **🔪 Round {round_number}:** You killed {other}.").format(
                         round_number=event.round_number,
                         other=f"{event.other.mention} (`{event.other}`)",
-                    )
+                    ),
                 )
             elif event.type == "death":
                 description.append(
@@ -63,24 +64,24 @@ class AmIAliveView(discord.ui.View):
                         round_number=event.round_number,
                         killed=(
                             _(", killed by {other}").format(
-                                other=f"{event.other.mention} (`{event.other}`)"
+                                other=f"{event.other.mention} (`{event.other}`)",
                             )
                             if event.other is not None
                             else ""
                         ),
-                    )
+                    ),
                 )
             elif event.type == "revive":
                 description.append(
                     _("- **💖 Round {round_number}:** You were revived.").format(
                         round_number=event.round_number,
-                    )
+                    ),
                 )
             elif event.type == "apparition":
                 description.append(
                     _("- **👻 Round {round_number}:** You appeared.").format(
                         round_number=event.round_number,
-                    )
+                    ),
                 )
             description[-1] += f"\n-# {event.message.jump_url} {event.cause}"
         if alive:

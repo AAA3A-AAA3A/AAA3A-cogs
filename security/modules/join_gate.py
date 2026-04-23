@@ -1,22 +1,22 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 import re
+import typing
 
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
+from security.constants import POSSIBLE_ACTIONS, Emojis, get_correct_timeout_duration
+from security.views import DurationConverter, ToggleModuleButton
 
-from ..constants import POSSIBLE_ACTIONS, Emojis, get_correct_timeout_duration
-from ..views import DurationConverter, ToggleModuleButton
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
 
 
-def sum_dicts(*dicts: typing.Dict) -> typing.Dict:
+def sum_dicts(*dicts: dict) -> dict:
     dict0 = dicts[0]
     for d in dicts[1:]:
         dict0.update(d)
@@ -32,10 +32,10 @@ def check_regex_argument(argument: str) -> str:
     return argument
 
 
-JOIN_GATE_OPTIONS: typing.List[
-    typing.Dict[
+JOIN_GATE_OPTIONS: list[
+    dict[
         typing.Literal["name", "emoji", "description", "action", "param", "value", "check"],
-        typing.Union[str, typing.Tuple[str, typing.Any], typing.Callable],
+        str | tuple[str, typing.Any] | typing.Callable,
     ]
 ] = [
     {
@@ -52,13 +52,15 @@ JOIN_GATE_OPTIONS: typing.List[
         "description": "Target accounts with invite links in their global name/username.",
         "action": "kick",
         "value": "advertising_name",
-        "check": lambda member: not member.bot
-        and re.search(
-            r"(https?://)?(discord\.gg|discordapp\.com/invite)/[a-zA-Z0-9]+",
-            member.name,
-            re.IGNORECASE,
-        )
-        is not None,
+        "check": lambda member: (
+            not member.bot
+            and re.search(
+                r"(https?://)?(discord\.gg|discordapp\.com/invite)/[a-zA-Z0-9]+",
+                member.name,
+                re.IGNORECASE,
+            )
+            is not None
+        ),
     },
     {
         "name": "Account Age",
@@ -68,9 +70,8 @@ JOIN_GATE_OPTIONS: typing.List[
         "param": ("minimum_days", int, 7),
         "value": "account_age",
         "check": lambda member, minimum_days: (
-            datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at
-        ).days
-        < minimum_days,
+            (datetime.datetime.now(tz=datetime.UTC) - member.created_at).days < minimum_days
+        ),
     },
     {
         "name": "Username",
@@ -79,10 +80,12 @@ JOIN_GATE_OPTIONS: typing.List[
         "action": "ban",
         "param": ("pattern", check_regex_argument, None),
         "value": "username",
-        "check": lambda member, pattern: pattern is not None
-        and (
-            re.search(pattern, member.global_name) is not None
-            or re.search(pattern, member.name) is not None
+        "check": lambda member, pattern: (
+            pattern is not None
+            and (
+                re.search(pattern, member.global_name) is not None
+                or re.search(pattern, member.name) is not None
+            )
         ),
     },
     {
@@ -130,8 +133,10 @@ class JoinGateModule(Module):
         self.cog.bot.remove_listener(self.on_member_join)
 
     async def get_status(
-        self, guild: discord.Guild, check_enabled: bool = True
-    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
+        self,
+        guild: discord.Guild,
+        check_enabled: bool = True,
+    ) -> tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
             return "❌", _("Disabled"), _("Join Gate is currently disabled.")
@@ -159,7 +164,7 @@ class JoinGateModule(Module):
                 _("Missing Permissions"),
                 _("I need the {permissions} permission{s} to function properly.").format(
                     permissions=humanize_list(
-                        [f"`{permission}`" for permission in missing_permissions]
+                        [f"`{permission}`" for permission in missing_permissions],
                     ),
                     s="" if len(missing_permissions) == 1 else "s",
                 ),
@@ -167,13 +172,17 @@ class JoinGateModule(Module):
         return "✅", _("Enabled"), _("Join Gate is enabled and configured correctly.")
 
     async def get_settings(
-        self, guild: discord.Guild, view: discord.ui.View
-    ) -> typing.Tuple[str, str, typing.List[typing.Dict], typing.List[discord.ui.Item]]:
+        self,
+        guild: discord.Guild,
+        view: discord.ui.View,
+    ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         title = _("Security — {emoji} {name} {status}").format(
-            emoji=self.emoji, name=self.name, status=(await self.get_status(guild))[0]
+            emoji=self.emoji,
+            name=self.name,
+            status=(await self.get_status(guild))[0],
         )
         description = _(
-            "This module allows you to manage Join Gate options to protect your server from unwanted members/bots."
+            "This module allows you to manage Join Gate options to protect your server from unwanted members/bots.",
         )
         status = await self.get_status(guild)
         if status[0] == "⚠️":
@@ -183,13 +192,16 @@ class JoinGateModule(Module):
         for option in JOIN_GATE_OPTIONS:
             if "param" in option:
                 value = config["options"][option["value"]].get(
-                    option["param"][0], option["param"][2]
+                    option["param"][0],
+                    option["param"][2],
                 )
                 backstick = option["param"][0] == "pattern" and value is not None
             fields.append(
-                dict(
-                    name=f"{option['emoji']} {option['name']}",
-                    value=_("{description}\n**Enabled:** {enabled}\n**Action:** {action}").format(
+                {
+                    "name": f"{option['emoji']} {option['name']}",
+                    "value": _(
+                        "{description}\n**Enabled:** {enabled}\n**Action:** {action}",
+                    ).format(
                         description=option["description"],
                         enabled=("✅" if config["options"][option["value"]]["enabled"] else "❌"),
                         action=config["options"][option["value"]]["action"].title(),
@@ -199,8 +211,8 @@ class JoinGateModule(Module):
                         if "param" in option
                         else ""
                     ),
-                    inline=True,
-                )
+                    "inline": True,
+                },
             )
 
         components = [ToggleModuleButton(self, guild, view, config["enabled"])]
@@ -208,7 +220,9 @@ class JoinGateModule(Module):
             placeholder=_("Configure Option"),
             options=[
                 discord.SelectOption(
-                    emoji=option["emoji"], label=option["name"], value=option["value"]
+                    emoji=option["emoji"],
+                    label=option["name"],
+                    value=option["value"],
                 )
                 for option in JOIN_GATE_OPTIONS
             ],
@@ -216,14 +230,12 @@ class JoinGateModule(Module):
 
         async def configure_option_select_callback(interaction: discord.Interaction) -> None:
             option = next(
-                (
-                    opt
-                    for opt in JOIN_GATE_OPTIONS
-                    if opt["value"] == configure_option_select.values[0]
-                )
+                opt
+                for opt in JOIN_GATE_OPTIONS
+                if opt["value"] == configure_option_select.values[0]
             )
             await interaction.response.send_modal(
-                ConfigureOptionModal(self, guild, view, option, config["options"][option["value"]])
+                ConfigureOptionModal(self, guild, view, option, config["options"][option["value"]]),
             )
 
         configure_option_select.callback = configure_option_select_callback
@@ -256,7 +268,8 @@ class JoinGateModule(Module):
                     argument = duration_input.value
                 except commands.BadArgument as e:
                     await modal_interaction.followup.send(
-                        _("Invalid duration: {error}").format(error=str(e)), ephemeral=True
+                        _("Invalid duration: {error}").format(error=str(e)),
+                        ephemeral=True,
                     )
 
             modal.on_submit = on_submit
@@ -265,11 +278,11 @@ class JoinGateModule(Module):
                 return
             config["timeout_mute_duration"] = argument
             await self.config_value(guild).timeout_mute_duration.set(
-                config["timeout_mute_duration"]
+                config["timeout_mute_duration"],
             )
             await interaction.followup.send(
                 _("Timeout/Mute duration set to {duration}.").format(
-                    duration=CogsUtils.get_interval_string(duration)
+                    duration=CogsUtils.get_interval_string(duration),
                 ),
                 ephemeral=True,
             )
@@ -299,7 +312,8 @@ class JoinGateModule(Module):
                 and member.guild.me.guild_permissions.view_audit_log
             ):
                 async for entry in member.guild.audit_logs(
-                    limit=3, action=discord.AuditLogAction.bot_add
+                    limit=3,
+                    action=discord.AuditLogAction.bot_add,
                 ):
                     if entry.target.id == member.id:
                         responsible = entry.user
@@ -317,7 +331,7 @@ class JoinGateModule(Module):
                         i
                         for i, possible_action in enumerate(POSSIBLE_ACTIONS)
                         if possible_action["value"] == opt[1]["action"]
-                    )
+                    ),
                 ),
                 reverse=True,
             )[0]
@@ -332,10 +346,8 @@ class JoinGateModule(Module):
                 _("\n- Account Age: {account_age}\n- Minimum Age: {minimum_days} days").format(
                     account_age=CogsUtils.get_interval_string(
                         datetime.timedelta(
-                            days=(
-                                datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at
-                            ).days
-                        )
+                            days=(datetime.datetime.now(tz=datetime.UTC) - member.created_at).days,
+                        ),
                     ),
                     minimum_days=option_config["minimum_days"],
                 )
@@ -364,7 +376,7 @@ class JoinGateModule(Module):
                     guild=member.guild,
                     author=member.guild.me,
                     user=member,
-                    until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
+                    until=datetime.datetime.now(tz=datetime.UTC) + duration,
                     reason=audit_log_reason,
                 )
             elif action == "kick" and member.guild.me.guild_permissions.kick_members:
@@ -406,8 +418,8 @@ class ConfigureOptionModal(discord.ui.Modal):
         self.option_config = option_config
         super().__init__(
             title=_("Join Gate - {option}").format(
-                option=f"{self.option['emoji']} {self.option['name']}"
-            )
+                option=f"{self.option['emoji']} {self.option['name']}",
+            ),
         )
         self.enabled: discord.ui.TextInput = discord.ui.TextInput(
             label=_("Enabled:"),
@@ -418,7 +430,7 @@ class ConfigureOptionModal(discord.ui.Modal):
         self.add_item(self.enabled)
         self.action: discord.ui.TextInput = discord.ui.TextInput(
             label=_("Action ({actions}):").format(
-                actions="/".join([action["value"] for action in POSSIBLE_ACTIONS])
+                actions="/".join([action["value"] for action in POSSIBLE_ACTIONS]),
             ),
             style=discord.TextStyle.short,
             default=option_config["action"],
@@ -467,6 +479,7 @@ class ConfigureOptionModal(discord.ui.Modal):
         if param_value is not None:
             self.option_config[self.option["param"][0]] = param_value
         await self.module.config_value(self.guild).options.set_raw(
-            self.option["value"], value=self.option_config
+            self.option["value"],
+            value=self.option_config,
         )
         await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)

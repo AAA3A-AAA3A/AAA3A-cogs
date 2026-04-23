@@ -1,13 +1,12 @@
-from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import json
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify
 
 
@@ -16,7 +15,7 @@ def _(untranslated: str) -> str:  # `redgettext` will found these strings.
 
 
 ERROR_MESSAGE = _(
-    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}",
 )
 
 _: Translator = Translator("DiscordEdit", __file__)
@@ -42,12 +41,12 @@ class AutoModTriggerConverter(commands.Converter):
         except json.JSONDecodeError:
             raise commands.BadArgument(_("Invalid JSON."))
         if (
-            not isinstance(data, typing.Dict)
+            not isinstance(data, dict)
             or "trigger_type" not in data
             or "trigger_metadata" not in data
         ):
             raise commands.BadArgument(
-                _("Invalid data. Must be a dict with `trigger_type` and `trigger_metadara` keys.")
+                _("Invalid data. Must be a dict with `trigger_type` and `trigger_metadara` keys."),
             )
         try:
             trigger_type = int(data["trigger_type"])
@@ -55,7 +54,8 @@ class AutoModTriggerConverter(commands.Converter):
             raise commands.BadArgument(_("Invalid trigger type."))
         try:
             automod_trigger = discord.AutoModTrigger.from_data(
-                type=trigger_type, data=data["trigger_metadata"]
+                type=trigger_type,
+                data=data["trigger_metadata"],
             )
         except (TypeError, ValueError, KeyError):
             raise commands.BadArgument(_("Invalid trigger metadata."))
@@ -64,25 +64,27 @@ class AutoModTriggerConverter(commands.Converter):
 
 class AutoModRuleActionsConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.List[discord.AutoModAction]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> list[discord.AutoModAction]:
         try:
             data = json.loads(argument)
         except json.JSONDecodeError:
             raise commands.BadArgument(_("Invalid JSON."))
-        if not isinstance(data, typing.List):
+        if not isinstance(data, list):
             raise commands.BadArgument(
-                _("Invalid data. Must be a list of dicts with `type` and `data` keys.")
+                _("Invalid data. Must be a list of dicts with `type` and `data` keys."),
             )
         actions = []
         for action_dict in data:
             if (
-                not isinstance(action_dict, typing.Dict)
+                not isinstance(action_dict, dict)
                 or "type" not in action_dict
                 or "data" not in action_dict
             ):
                 raise commands.BadArgument(
-                    _("Invalid data. Must be a list of dicts with `type` and `data` keys.")
+                    _("Invalid data. Must be a list of dicts with `type` and `data` keys."),
                 )
             try:
                 action_type = int(action_dict["type"])
@@ -91,7 +93,8 @@ class AutoModRuleActionsConverter(commands.Converter):
             try:
                 discord.AutoModAction
                 automod_action = discord.AutoModRuleAction.from_data(
-                    type=action_type, data=action_dict["data"]
+                    type=action_type,
+                    data=action_dict["data"],
                 )
             except (TypeError, ValueError, KeyError):
                 raise commands.BadArgument(_("Invalid action metadata."))
@@ -143,11 +146,14 @@ class EditAutoMod(Cog):
         event_type = discord.AutoModRuleEventType.message_send
         try:
             rule = await ctx.guild.create_automod_rule(
-                name=name, event_type=event_type, trigger=trigger, actions=actions
+                name=name,
+                event_type=event_type,
+                trigger=trigger,
+                actions=actions,
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
         await ctx.send(_("AutoMod rule {rule.name} ({rule.id}) created.").format(rule=rule))
 
@@ -164,7 +170,7 @@ class EditAutoMod(Cog):
         )
         embed: discord.Embed = discord.Embed(color=await ctx.embed_color())
         embed.title = _("List of AutoMod rules in {guild.name} ({guild.id})").format(
-            guild=ctx.guild
+            guild=ctx.guild,
         )
         embeds = []
         pages = pagify(description, page_length=4096)
@@ -176,7 +182,11 @@ class EditAutoMod(Cog):
 
     @editautomod.command(name="name")
     async def editautomod_name(
-        self, ctx: commands.Context, rule: AutoModRuleConverter, *, name: str
+        self,
+        ctx: commands.Context,
+        rule: AutoModRuleConverter,
+        *,
+        name: str,
     ) -> None:
         """Edit AutoMod rule name."""
         try:
@@ -186,7 +196,7 @@ class EditAutoMod(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     # @editautomod.command(name="eventtype")
@@ -227,7 +237,7 @@ class EditAutoMod(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editautomod.command(name="actions")
@@ -251,12 +261,15 @@ class EditAutoMod(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editautomod.command(name="enabled")
     async def editautomod_enabled(
-        self, ctx: commands.Context, rule: AutoModRuleConverter, enabled: bool
+        self,
+        ctx: commands.Context,
+        rule: AutoModRuleConverter,
+        enabled: bool,
     ) -> None:
         """Edit AutoMod rule enabled."""
         try:
@@ -266,7 +279,7 @@ class EditAutoMod(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editautomod.command(name="exemptroles", aliases=["exempt_roles"])
@@ -285,7 +298,7 @@ class EditAutoMod(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editautomod.command(name="exemptchannels", aliases=["exempt_channels"])
@@ -295,9 +308,7 @@ class EditAutoMod(Cog):
         rule: AutoModRuleConverter,
         *,
         exempt_channels: commands.Greedy[
-            typing.Union[
-                discord.TextChannel, discord.VoiceChannel, discord.Thread, discord.ForumChannel
-            ]
+            discord.TextChannel | discord.VoiceChannel | discord.Thread | discord.ForumChannel
         ],
     ) -> None:
         """Edit AutoMod rule exempt channels."""
@@ -308,7 +319,7 @@ class EditAutoMod(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editautomod.command(name="delete", aliases=["-"])
@@ -324,25 +335,25 @@ class EditAutoMod(Cog):
                 embed: discord.Embed = discord.Embed()
                 embed.title = _("⚠️ - Delete AutoMod rule")
                 embed.description = _(
-                    "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
+                    "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?",
                 ).format(rule=rule, guild=ctx.guild)
                 embed.color = 0xF00020
                 content = ctx.author.mention
             else:
                 embed = None
                 content = f"{ctx.author.mention} " + _(
-                    "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?"
+                    "Do you really want to delete the AutoMod rule {rule.name} ({rule.id}) in {guild.name} ({guild.id})?",
                 ).format(rule=rule, guild=ctx.guild)
             if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
                 return
         try:
             await rule.delete(
-                reason=f"{ctx.author} ({ctx.author.id}) has deleted the AutoMod rule {rule.name} ({rule.id})."
+                reason=f"{ctx.author} ({ctx.author.id}) has deleted the AutoMod rule {rule.name} ({rule.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editautomod.command(name="view")
@@ -352,7 +363,9 @@ class EditAutoMod(Cog):
         rule: AutoModRuleConverter = None,
     ) -> None:
         await EditAutoModRuleView(
-            cog=self, rules=await ctx.guild.fetch_automod_rules(), rule=rule
+            cog=self,
+            rules=await ctx.guild.fetch_automod_rules(),
+            rule=rule,
         ).start(ctx)
 
 
@@ -360,13 +373,15 @@ class AutoModRulesSelect(discord.ui.Select):
     def __init__(
         self,
         parent: discord.ui.View,
-        rules: typing.List[discord.AutoModRule],
-        current_rule: typing.Optional[discord.AutoModRule] = None,
+        rules: list[discord.AutoModRule],
+        current_rule: discord.AutoModRule | None = None,
     ) -> None:
         self._parent: discord.ui.View = parent
         self._options = [
             discord.SelectOption(
-                label=f"{rule.name} ({rule.id})", value=str(rule.id), default=rule == current_rule
+                label=f"{rule.name} ({rule.id})",
+                value=str(rule.id),
+                default=rule == current_rule,
             )
             for rule in rules[:25]
         ]
@@ -402,11 +417,12 @@ class ChannelsRolesSelectView(discord.ui.View):
             )
         except discord.HTTPException as e:
             await interaction.response.send_message(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
             return
         await interaction.response.send_message(
-            _("Rule `{rule.name} ({rule.id})` edited.").format(rule=self.rule), ephemeral=True
+            _("Rule `{rule.name} ({rule.id})` edited.").format(rule=self.rule),
+            ephemeral=True,
         )
         await self._parent._update()
 
@@ -425,11 +441,12 @@ class ChannelsRolesSelectView(discord.ui.View):
             )
         except discord.HTTPException as e:
             await interaction.response.send_message(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
             return
         await interaction.response.send_message(
-            _("Rule `{rule.name} ({rule.id})` edited.").format(rule=self.rule), ephemeral=True
+            _("Rule `{rule.name} ({rule.id})` edited.").format(rule=self.rule),
+            ephemeral=True,
         )
         await self._parent._update()
 
@@ -438,15 +455,15 @@ class EditAutoModRuleView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        rules: typing.List[discord.AutoModRule],
-        rule: typing.Optional[discord.AutoModRule] = None,
+        rules: list[discord.AutoModRule],
+        rule: discord.AutoModRule | None = None,
     ) -> None:
         super().__init__(timeout=180)
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 
-        self.rules: typing.List[discord.AutoModRule] = rules
-        self.rule: typing.Optional[discord.AutoModRule] = rule
+        self.rules: list[discord.AutoModRule] = rules
+        self.rule: discord.AutoModRule | None = rule
 
         self._message: discord.Message = None
         self._embed: discord.Embed = None
@@ -464,7 +481,8 @@ class EditAutoModRuleView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -506,7 +524,9 @@ class EditAutoModRuleView(discord.ui.View):
             if self._rules_select is not None:
                 self.remove_item(self._rules_select)
             self._rules_select: AutoModRulesSelect = AutoModRulesSelect(
-                parent=self, rules=self.rules, current_rule=self.rule
+                parent=self,
+                rules=self.rules,
+                current_rule=self.rule,
             )
             self.add_item(self._rules_select)
         elif self._rules_select is not None:
@@ -519,8 +539,10 @@ class EditAutoModRuleView(discord.ui.View):
             self._message: discord.Message = await self._message.edit(embed=self._embed, view=self)
 
     async def get_embed(
-        self, ctx: commands.Context, rule: typing.Optional[discord.AutoModRule] = None
-    ) -> typing.List[discord.Embed]:
+        self,
+        ctx: commands.Context,
+        rule: discord.AutoModRule | None = None,
+    ) -> list[discord.Embed]:
         embed: discord.Embed = discord.Embed(color=await ctx.embed_color())
         if rule is None:
             embed.title = "Rule not provided."
@@ -533,7 +555,8 @@ class EditAutoModRuleView(discord.ui.View):
                 else f"{rule.name} ({rule.id})"
             )
             embed.set_author(
-                name=f"{rule.creator} ({rule.creator.id})", icon_url=rule.creator.display_avatar
+                name=f"{rule.creator} ({rule.creator.id})",
+                icon_url=rule.creator.display_avatar,
             )
             embed.add_field(name="Enabled State:", value=str(rule.enabled), inline=True)
             embed.add_field(name="Trigger:", value=repr(rule.trigger), inline=True)
@@ -561,7 +584,7 @@ class EditAutoModRuleView(discord.ui.View):
                                 )
                             )
                             for action in rule.actions
-                        ]
+                        ],
                     )
                     if rule.actions
                     else "None."
@@ -572,7 +595,7 @@ class EditAutoModRuleView(discord.ui.View):
                 name="Exempt Channels:",
                 value=(
                     humanize_list(
-                        [f"{channel.mention} ({channel.id})" for channel in rule.exempt_channels]
+                        [f"{channel.mention} ({channel.id})" for channel in rule.exempt_channels],
                     )
                     if rule.exempt_channels
                     else "None."
@@ -591,7 +614,9 @@ class EditAutoModRuleView(discord.ui.View):
         return embed
 
     async def _callback(
-        self, interaction: discord.Interaction, option: discord.SelectOption
+        self,
+        interaction: discord.Interaction,
+        option: discord.SelectOption,
     ) -> None:
         await interaction.response.defer()
         self.rule: discord.AutoModRule = discord.utils.get(self.rules, id=int(option.value))
@@ -599,9 +624,7 @@ class EditAutoModRuleView(discord.ui.View):
         await self._update()
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -622,12 +645,14 @@ class EditAutoModRuleView(discord.ui.View):
 
     @discord.ui.button(label="Edit Exempt Channels/Roles", style=discord.ButtonStyle.primary)
     async def edit_exempt_channels_roles(
-        self, interaction: discord.Interaction, button: discord.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.Button,
     ) -> None:
         view = ChannelsRolesSelectView(parent=self, rule=self.rule)
         await interaction.response.send_message(
             _(
-                "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`."
+                "Select channels/roles to exempt for the AutoMod rule `{rule.name} ({rule.id})`.",
             ).format(rule=self.rule),
             view=view,
             ephemeral=True,
@@ -635,7 +660,9 @@ class EditAutoModRuleView(discord.ui.View):
 
     @discord.ui.button(label="Enable/Disable", style=discord.ButtonStyle.secondary)
     async def enable_or_disable_rule(
-        self, interaction: discord.Interaction, button: discord.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.Button,
     ) -> None:
         try:
             self.rule = await self.rule.edit(
@@ -644,7 +671,7 @@ class EditAutoModRuleView(discord.ui.View):
             )
         except discord.HTTPException as e:
             await interaction.response.send_message(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
             return
         await interaction.response.send_message(
@@ -661,15 +688,16 @@ class EditAutoModRuleView(discord.ui.View):
     async def delete_rule(self, interaction: discord.Interaction, button: discord.Button) -> None:
         try:
             await self.rule.delete(
-                reason=f"{self.ctx.author} ({self.ctx.author.id}) has deleted the rule {self.rule.name} ({self.rule.id})."
+                reason=f"{self.ctx.author} ({self.ctx.author.id}) has deleted the rule {self.rule.name} ({self.rule.id}).",
             )
         except discord.HTTPException as e:
             await interaction.response.send_message(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
             return
         self._deleted: bool = True
         await interaction.response.send_message(
-            _("Rule `{rule.name} ({rule.id})` deleted.").format(rule=self.rule), ephemeral=True
+            _("Rule `{rule.name} ({rule.id})` deleted.").format(rule=self.rule),
+            ephemeral=True,
         )
         await self._update()

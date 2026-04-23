@@ -1,12 +1,9 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
-import datetime
-from collections import Counter
+import typing
 from pathlib import Path
+
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator
 
 
 def dashboard_page(*args, **kwargs):

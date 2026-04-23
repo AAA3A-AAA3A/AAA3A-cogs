@@ -1,12 +1,13 @@
-from AAA3A_utils import Cog, Settings  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import io
+import typing
 from copy import deepcopy
+
+import discord
+
+from AAA3A_utils import Cog, Settings
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 from .dashboard_integration import DashboardIntegration
 
@@ -40,9 +41,7 @@ class AntiNuke(DashboardIntegration, Cog):
             old_roles=[],
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "enabled": {
                 "converter": bool,
                 "description": "Enable of disable AntiNuke system.",
@@ -103,7 +102,7 @@ class AntiNuke(DashboardIntegration, Cog):
                 if members_data[guild] == {}:
                     del members_data[guild]
 
-    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
+    async def red_get_data_for_user(self, *, user_id: int) -> dict[str, io.BytesIO]:
         """Get all data about the user."""
         data = {
             Config.GLOBAL: {},
@@ -142,7 +141,9 @@ class AntiNuke(DashboardIntegration, Cog):
         actual_number_detected_bot = config["number_detected_bot"]
         logschannel = config["logschannel"]
         perp, reason = await self.get_audit_log_reason(
-            old_channel.guild, old_channel, discord.AuditLogAction.channel_delete
+            old_channel.guild,
+            old_channel,
+            discord.AuditLogAction.channel_delete,
         )
         logschannel = self.bot.get_channel(logschannel)
         if perp is None:
@@ -175,8 +176,8 @@ class AntiNuke(DashboardIntegration, Cog):
                 try:
                     await perp.send(
                         _(
-                            "All your roles have been taken away because you have deleted channel #{old_channel}.\nYour previous roles: {rolelist_name}"
-                        ).format(old_channel=old_channel, rolelist_name=rolelist_name)
+                            "All your roles have been taken away because you have deleted channel #{old_channel}.\nYour previous roles: {rolelist_name}",
+                        ).format(old_channel=old_channel, rolelist_name=rolelist_name),
                     )
                 except discord.HTTPException:
                     pass
@@ -187,7 +188,7 @@ class AntiNuke(DashboardIntegration, Cog):
                         await perp.remove_roles(
                             role,
                             reason=_(
-                                "All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server."
+                                "All roles in {perp} ({perp.id}) roles have been removed as a result of the antinuke system being triggered on this server.",
                             ).format(perp=perp),
                         )
                     except discord.HTTPException:
@@ -196,10 +197,10 @@ class AntiNuke(DashboardIntegration, Cog):
             if logschannel:
                 embed: discord.Embed = discord.Embed()
                 embed.title = _(
-                    "The user {perp} has deleted the channel #{old_channel.name}!"
+                    "The user {perp} has deleted the channel #{old_channel.name}!",
                 ).format(perp=perp, old_channel=old_channel)
                 embed.description = _(
-                    "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\nUser mention: {perp.mention} - User ID: {perp.id}"
+                    "To prevent him from doing anything else, I took away as many roles as my current permissions would allow.\nUser mention: {perp.mention} - User ID: {perp.id}",
                 ).format(perp=perp)
                 embed.color = discord.Color.dark_teal()
                 embed.set_author(
@@ -221,9 +222,9 @@ class AntiNuke(DashboardIntegration, Cog):
     async def get_audit_log_reason(
         self,
         guild: discord.Guild,
-        target: typing.Union[discord.abc.GuildChannel, discord.Member, discord.Role],
+        target: discord.abc.GuildChannel | discord.Member | discord.Role,
         action: discord.AuditLogAction,
-    ) -> typing.Tuple[typing.Optional[discord.abc.User], typing.Optional[str]]:
+    ) -> tuple[discord.abc.User | None, str | None]:
         perp = None
         reason = None
         if guild.me.guild_permissions.view_audit_log:
@@ -243,7 +244,10 @@ class AntiNuke(DashboardIntegration, Cog):
 
     @configuration.command(name="resetuser", aliases=["userreset"], usage="<int>")
     async def resetuser(
-        self, ctx: commands.Context, user: discord.Member, give_roles: bool = False
+        self,
+        ctx: commands.Context,
+        user: discord.Member,
+        give_roles: bool = False,
     ) -> None:
         """Reset number detected for a user."""
         if ctx.author.id != ctx.guild.owner.id:
@@ -262,7 +266,7 @@ class AntiNuke(DashboardIntegration, Cog):
                 await user.add_roles(
                     *old_roles,
                     reason=_(
-                        "All former roles of {user} ({user.id}) have been restored at the request of the server owner."
+                        "All former roles of {user} ({user.id}) have been restored at the request of the server owner.",
                     ).format(user=user),
                 )
                 await ctx.send(_("Restored roles for {user.name} ({user.id}).").format(user=user))

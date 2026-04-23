@@ -1,13 +1,13 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import functools
 import inspect
+import typing
 
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 
 
@@ -16,7 +16,7 @@ def _(untranslated: str) -> str:  # `redgettext` will found these strings.
 
 
 ERROR_MESSAGE = _(
-    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}",
 )
 
 _: Translator = Translator("DiscordEdit", __file__)
@@ -26,10 +26,12 @@ class DiscordEditView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        _object: typing.Union[
-            discord.Guild, discord.Role, discord.TextChannel, discord.Thread, discord.VoiceChannel
-        ],
-        parameters: typing.Dict[str, typing.Dict[str, typing.Any]],
+        _object: discord.Guild
+        | discord.Role
+        | discord.TextChannel
+        | discord.Thread
+        | discord.VoiceChannel,
+        parameters: dict[str, dict[str, typing.Any]],
         get_embed_function: typing.Any,
         audit_log_reason: str,
         _object_qualified_name: str,
@@ -38,15 +40,19 @@ class DiscordEditView(discord.ui.View):
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 
-        self._object: typing.Union[
-            discord.Guild, discord.Role, discord.TextChannel, discord.Thread, discord.VoiceChannel
-        ] = _object
-        self.parameters: typing.Dict[str, typing.Dict[str, typing.Any]] = parameters
+        self._object: (
+            discord.Guild
+            | discord.Role
+            | discord.TextChannel
+            | discord.Thread
+            | discord.VoiceChannel
+        ) = _object
+        self.parameters: dict[str, dict[str, typing.Any]] = parameters
         self.get_embed_function: typing.Any = get_embed_function
         self.audit_log_reason: str = audit_log_reason
         self._object_qualified_name: str = _object_qualified_name
 
-        self._chunked_parameters: typing.List[typing.List[str]] = []
+        self._chunked_parameters: list[list[str]] = []
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()
 
@@ -55,8 +61,8 @@ class DiscordEditView(discord.ui.View):
         self.remove_item(self.delete_button)
         self.remove_item(self.close_page)
 
-        self._chunked_parameters: typing.List[typing.List[str]] = list(
-            discord.utils.as_chunks(list(self.parameters), max_size=5)
+        self._chunked_parameters: list[list[str]] = list(
+            discord.utils.as_chunks(list(self.parameters), max_size=5),
         )
         for button_index in range(len(self._chunked_parameters)):
             button = discord.ui.Button(
@@ -78,7 +84,8 @@ class DiscordEditView(discord.ui.View):
             self.add_item(self.delete_button)
         self.add_item(self.close_page)
         self._message: discord.Message = await self.ctx.send(
-            embed=self.get_embed_function(), view=self
+            embed=self.get_embed_function(),
+            view=self,
         )
 
         await self._ready.wait()
@@ -87,7 +94,8 @@ class DiscordEditView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -107,7 +115,9 @@ class DiscordEditView(discord.ui.View):
 
     @discord.ui.button(label="Delete Object", style=discord.ButtonStyle.danger)
     async def delete_button(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer()
         ctx = await CogsUtils.invoke_command(
@@ -119,14 +129,13 @@ class DiscordEditView(discord.ui.View):
         )
         if not await discord.utils.async_all([check(ctx) for check in ctx.command.checks]):
             await interaction.followup.send(
-                _("You are not allowed to execute this command."), ephemeral=True
+                _("You are not allowed to execute this command."),
+                ephemeral=True,
             )
             return
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -135,12 +144,10 @@ class DiscordEditView(discord.ui.View):
         await CogsUtils.delete_message(self._message)
         self._ready.set()
 
-    async def edit_object_button(
-        self, interaction: discord.Interaction, button_index: int
-    ) -> None:
+    async def edit_object_button(self, interaction: discord.Interaction, button_index: int) -> None:
         modal: discord.ui.Modal = discord.ui.Modal(title=f"Edit {self._object_qualified_name}")
         modal.on_submit = lambda interaction: interaction.response.defer()
-        text_inputs: typing.Dict[str, discord.ui.TextInput] = {}
+        text_inputs: dict[str, discord.ui.TextInput] = {}
         for parameter in self._chunked_parameters[button_index]:
             text_input = discord.ui.TextInput(
                 label=parameter.replace("_", " ").title(),
@@ -188,9 +195,9 @@ class DiscordEditView(discord.ui.View):
             except discord.ext.commands.errors.CommandError as e:
                 await interaction.followup.send(
                     f"An error occurred when using the `{parameter}`"
-                    f" converter:\n{box(e, lang='py')}"
+                    f" converter:\n{box(e, lang='py')}",
                 )
-                return None
+                return
             else:
                 kwargs[parameter] = value
         try:

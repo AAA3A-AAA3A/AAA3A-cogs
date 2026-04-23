@@ -1,11 +1,3 @@
-from AAA3A_utils import Cog, Loop, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-import typing_extensions  # isort:skip
-
 import asyncio
 import base64
 import re
@@ -13,7 +5,14 @@ from io import BytesIO
 from uuid import UUID
 
 import aiohttp
+import discord
+import typing_extensions
 from mcstatus import JavaServer
+
+from AAA3A_utils import Cog, Loop, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, pagify
 
 # Credits:
@@ -45,11 +44,11 @@ class MCPlayer:
             response_data = None
         except aiohttp.ClientResponseError as e:
             raise commands.BadArgument(
-                _("Unable to get data from Minecraft API: {e.message}.").format(e=e)
+                _("Unable to get data from Minecraft API: {e.message}.").format(e=e),
             )
         if response_data is None or "id" not in response_data:
             raise commands.BadArgument(
-                _("{argument} not found on Mojang servers.").format(argument=argument)
+                _("{argument} not found on Mojang servers.").format(argument=argument),
             )
         uuid = str(response_data["id"])
         name = str(response_data["name"])
@@ -57,7 +56,7 @@ class MCPlayer:
             return cls(name=name, uuid=uuid)
         except ValueError:
             raise commands.BadArgument(
-                _("{argument} is found, but has incorrect UUID.").format(argument=argument)
+                _("{argument} is found, but has incorrect UUID.").format(argument=argument),
             )
 
 
@@ -68,8 +67,8 @@ class Minecraft(Cog):
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self._session: typing.Optional[aiohttp.ClientSession] = None
-        self.cache: typing.Dict[int, typing.Dict[str, dict]] = {}
+        self._session: aiohttp.ClientSession | None = None
+        self.cache: dict[int, dict[str, dict]] = {}
 
         self.config: Config = Config.get_conf(
             self,
@@ -91,7 +90,7 @@ class Minecraft(Cog):
                 name="Check Minecraft Servers",
                 function=self.check_servers,
                 minutes=1,
-            )
+            ),
         )
 
     async def cog_unload(self) -> None:
@@ -122,7 +121,7 @@ class Minecraft(Cog):
                     continue
                 if check_players and "sample" in status.raw["players"]:
                     players = {player["id"]: player for player in status.raw["players"]["sample"]}
-                    players = [players[_id] for _id in set(list(players.keys()))]
+                    players = [players[_id] for _id in set(players.keys())]
                 else:
                     players = {}
                 status.raw["players"]["sample"] = players
@@ -134,21 +133,22 @@ class Minecraft(Cog):
                         await self.clear_mcformatting(status.description)
                     ) and "This server is offline." in (
                         await self.clear_mcformatting(
-                            self.cache[channel.id][server_url]["status"].description
+                            self.cache[channel.id][server_url]["status"].description,
                         )
                     ):  # Minecraft ADS
                         continue
                     embed, icon = await self.get_embed(server, status)
                     servers = await self.config.channel(channel).servers()
-                    if isinstance(servers, typing.List):
-                        servers = {server: None for server in servers}
+                    if isinstance(servers, list):
+                        servers = dict.fromkeys(servers)
                     if (
                         await self.config.channel(channel).edit_last_message()
                         and servers[server_url] is not None
                     ):
                         try:
                             message = await channel.get_partial_message(servers[server_url]).edit(
-                                embed=embed, attachments=[icon]
+                                embed=embed,
+                                attachments=[icon],
                             )
                         except discord.HTTPException:
                             message = await channel.send(embed=embed, file=icon)
@@ -177,7 +177,7 @@ class Minecraft(Cog):
         icon = (
             discord.File(
                 icon_file := BytesIO(
-                    base64.b64decode(status.icon.removeprefix("data:image/png;base64,"))
+                    base64.b64decode(status.icon.removeprefix("data:image/png;base64,")),
                 ),
                 filename="icon.png",
             )
@@ -196,11 +196,11 @@ class Minecraft(Cog):
                         list(
                             pagify(
                                 await self.clear_mcformatting(
-                                    "\n".join([p.name for p in status.players.sample])
+                                    "\n".join([p.name for p in status.players.sample]),
                                 ),
                                 page_length=992,
-                            )
-                        )[0]
+                            ),
+                        )[0],
                     )
                     if status.players.sample
                     else ""
@@ -230,10 +230,10 @@ class Minecraft(Cog):
         for k, v in var.items():
             if k == key:
                 yield v
-            if isinstance(v, typing.Dict):
+            if isinstance(v, dict):
                 async for result in self.gen_dict_extract(key, v):
                     yield result
-            elif isinstance(v, typing.List):
+            elif isinstance(v, list):
                 for d in v:
                     async for result in self.gen_dict_extract(key, d):
                         yield result
@@ -246,7 +246,10 @@ class Minecraft(Cog):
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
     @minecraft.command()
     async def getplayerskin(
-        self, ctx: commands.Context, player: MCPlayer, overlay: bool = False
+        self,
+        ctx: commands.Context,
+        player: MCPlayer,
+        overlay: bool = False,
     ) -> None:
         """Get Minecraft Java player skin by name."""
         uuid = player.uuid
@@ -258,7 +261,7 @@ class Minecraft(Cog):
                 params="overlay" if overlay else None,
             ) as s:
                 files.append(
-                    discord.File(BytesIO(await s.read()), filename=f"{stripname}_head.png")
+                    discord.File(BytesIO(await s.read()), filename=f"{stripname}_head.png"),
                 )
             async with self._session.get(f"https://crafatar.com/skins/{uuid}") as s:
                 files.append(discord.File(BytesIO(await s.read()), filename=f"{stripname}.png"))
@@ -267,14 +270,15 @@ class Minecraft(Cog):
                 params="overlay" if overlay else None,
             ) as s:
                 files.append(
-                    discord.File(BytesIO(await s.read()), filename=f"{stripname}_body.png")
+                    discord.File(BytesIO(await s.read()), filename=f"{stripname}_body.png"),
                 )
         except aiohttp.ClientResponseError as e:
             raise commands.UserFeedbackCheckFailure(
-                _("Unable to get data from Crafatar: {}").format(e.message)
+                _("Unable to get data from Crafatar: {}").format(e.message),
             )
         embed: discord.Embed = discord.Embed(
-            timestamp=ctx.message.created_at, color=await ctx.embed_color()
+            timestamp=ctx.message.created_at,
+            color=await ctx.embed_color(),
         )
         embed.set_author(
             name=player.name,
@@ -296,8 +300,8 @@ class Minecraft(Cog):
         except Exception:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "No data found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable."
-                )
+                    "No data found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable.",
+                ),
             )
         embed, icon = await self.get_embed(server, status)
         await ctx.send(embed=embed, file=icon)
@@ -305,7 +309,10 @@ class Minecraft(Cog):
     @commands.admin_or_permissions(manage_guild=True)
     @minecraft.command(aliases=["add", "+"])
     async def addserver(
-        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], server_url: str
+        self,
+        ctx: commands.Context,
+        channel: discord.TextChannel | None,
+        server_url: str,
     ) -> None:
         """Add a Minecraft Java server in Config to get automatically new status."""
         if channel is None:
@@ -319,8 +326,8 @@ class Minecraft(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I don't have sufficient permissions in this channel to send messages with embeds."
-                )
+                    "I don't have sufficient permissions in this channel to send messages with embeds.",
+                ),
             )
         servers = await self.config.channel(channel).servers()
         if server_url.lower() in servers:
@@ -331,11 +338,11 @@ class Minecraft(Cog):
         except Exception:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "No data found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable."
-                )
+                    "No data found for this Minecraft server. Maybe it doesn't exist or its data are temporarily unavailable.",
+                ),
             )
-        if isinstance(servers, typing.List):
-            servers = {server: None for server in servers}
+        if isinstance(servers, list):
+            servers = dict.fromkeys(servers)
         servers[server_url.lower()] = None  # last message
         await self.config.channel(channel).servers.set(servers)
         await ctx.send(_("Server added to this channel."))
@@ -343,7 +350,10 @@ class Minecraft(Cog):
     @commands.admin_or_permissions(manage_guild=True)
     @minecraft.command(aliases=["remove", "-"])
     async def removeserver(
-        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], server_url: str
+        self,
+        ctx: commands.Context,
+        channel: discord.TextChannel | None,
+        server_url: str,
     ) -> None:
         """Remove a Minecraft Java server in Config."""
         if channel is None:
@@ -351,8 +361,8 @@ class Minecraft(Cog):
         servers = await self.config.channel(channel).servers()
         if server_url.lower() not in servers:
             raise commands.UserFeedbackCheckFailure(_("This server isn't in the Config."))
-        if isinstance(servers, typing.List):
-            servers = {server: None for server in servers}
+        if isinstance(servers, list):
+            servers = dict.fromkeys(servers)
         del servers[server_url.lower()]
         await self.config.channel(channel).servers.set(servers)
         await ctx.send(_("Server removed from this channel."))
@@ -360,7 +370,10 @@ class Minecraft(Cog):
     @commands.admin_or_permissions(manage_guild=True)
     @minecraft.command()
     async def checkplayers(
-        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], state: bool
+        self,
+        ctx: commands.Context,
+        channel: discord.TextChannel | None,
+        state: bool,
     ) -> None:
         """Include players joining or leaving the server in notifications."""
         if channel is None:
@@ -376,7 +389,10 @@ class Minecraft(Cog):
     @commands.admin_or_permissions(manage_guild=True)
     @minecraft.command()
     async def editlastmessage(
-        self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel], state: bool
+        self,
+        ctx: commands.Context,
+        channel: discord.TextChannel | None,
+        state: bool,
     ) -> None:
         """Edit the last message sent for changes."""
         if channel is None:
@@ -404,7 +420,8 @@ class Minecraft(Cog):
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(
-        self, assistant_cog: typing.Optional[commands.Cog] = None
+        self,
+        assistant_cog: commands.Cog | None = None,
     ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return self.get_minecraft_java_server_for_assistant
@@ -423,6 +440,7 @@ class Minecraft(Cog):
             },
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+        return None
 
     async def get_minecraft_java_server_for_assistant(self, server_url: str, *args, **kwargs):
         try:

@@ -1,13 +1,13 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 import functools
+import typing
 
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .constants import (
@@ -61,13 +61,16 @@ class WhitelistView(discord.ui.View):
 
         self.select.placeholder = _("Select whitelist types.")
         self.protected_roles_whitelist_select.placeholder = _(
-            "Select protected roles to whitelist."
+            "Select protected roles to whitelist.",
         )
         self.cancel.placeholder = _("Cancel")
         self.save.placeholder = _("Save")
 
     async def start(
-        self, ctx: commands.Context, _object: OBJECT_TYPING, duration: DurationConverter
+        self,
+        ctx: commands.Context,
+        _object: OBJECT_TYPING,
+        duration: DurationConverter,
     ) -> discord.Message:
         self.ctx: commands.Context = ctx
         self._object: OBJECT_TYPING = _object
@@ -83,8 +86,8 @@ class WhitelistView(discord.ui.View):
                 if isinstance(self._object, discord.Member)
                 else self._object.guild.icon
                 if isinstance(self._object, discord.Role)
-                else None
-            )
+                else None,
+            ),
         )
         embed.set_footer(
             text=_("{guild.name} | Developed by AAA3A").format(guild=ctx.guild),
@@ -117,7 +120,7 @@ class WhitelistView(discord.ui.View):
         self.remove_item(self.protected_roles_whitelist_select)
         if isinstance(self._object, discord.Member):
             embed.description = _(
-                "👤 **Target:** {member.mention} (`{member}`) {member_emoji}"
+                "👤 **Target:** {member.mention} (`{member}`) {member_emoji}",
             ).format(
                 member=_object,
                 member_emoji=await self.cog.get_member_emoji(_object),
@@ -127,7 +130,7 @@ class WhitelistView(discord.ui.View):
                 protected_role: whitelisted_members
                 for protected_role_id, whitelisted_members in (
                     await self.cog.config.guild(
-                        self._object.guild
+                        self._object.guild,
                     ).modules.protected_roles.protected_roles()
                 ).items()
                 if (protected_role := self._object.guild.get_role(int(protected_role_id)))
@@ -144,15 +147,16 @@ class WhitelistView(discord.ui.View):
                             label=protected_role.name,
                             value=str(protected_role.id),
                             default=str(protected_role.id) in self.protected_roles_whitelist,
-                        )
+                        ),
                     )
                 self.protected_roles_whitelist_select.max_values = len(
-                    self.protected_roles_whitelist_select.options
+                    self.protected_roles_whitelist_select.options,
                 )
                 self.add_item(self.protected_roles_whitelist_select)
         elif isinstance(self._object, discord.Role):
             embed.description = _("{emoji} **Target:** {role.mention} (`{role}`)").format(
-                emoji=Emojis.ROLE.value, role=_object
+                emoji=Emojis.ROLE.value,
+                role=_object,
             )
             self.config_value = self.cog.config.role(self._object).whitelist
         elif isinstance(self._object, discord.Webhook):
@@ -168,26 +172,26 @@ class WhitelistView(discord.ui.View):
             )
             self.config_value = self.cog.config.channel(self._object).whitelist
         if isinstance(self._object, discord.Member) and await self.cog.is_moderator_or_higher(
-            self._object
+            self._object,
         ):
             embed.add_field(
-                name="\u200B",
+                name="\u200b",
                 value=_(
-                    "ℹ️ Your staff members always possess these whitelist types: {staff_whitelist_types}."
+                    "ℹ️ Your staff members always possess these whitelist types: {staff_whitelist_types}.",
                 ).format(
                     staff_whitelist_types=humanize_list(
                         [
                             f"`{whitelist_type['name']}`"
                             for whitelist_type in self.whitelist_types
                             if whitelist_type["staff_allowed"]
-                        ]
-                    )
+                        ],
+                    ),
                 ),
             )
         self.initial_whitelist = self.whitelist = await self.config_value()
         if self.duration is not None:
             embed.description += _(
-                "\n⏳ **Duration:** {duration} (will be changed back after)"
+                "\n⏳ **Duration:** {duration} (will be changed back after)",
             ).format(duration=CogsUtils.get_interval_string(self.duration))
         for whitelist_type in self.whitelist_types:
             self.select.options.append(
@@ -197,7 +201,7 @@ class WhitelistView(discord.ui.View):
                     description=whitelist_type["description"],
                     value=whitelist_type["value"],
                     default=self.whitelist[whitelist_type["value"]],
-                )
+                ),
             )
         self.select.max_values = len(self.select.options)
         self._message: discord.Message = await ctx.send(embed=embed, view=self)
@@ -207,7 +211,8 @@ class WhitelistView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.ctx.author:
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -216,15 +221,13 @@ class WhitelistView(discord.ui.View):
         embed = self._message.embeds[0]
         if self.saved:
             if self.duration is not None:
-                expires_at = datetime.datetime.now(tz=datetime.timezone.utc) + self.duration
-                embed.description += _(
-                    "\n⏲️ **Expiration:** {F_timestamp} ({R_timestamp})"
-                ).format(
+                expires_at = datetime.datetime.now(tz=datetime.UTC) + self.duration
+                embed.description += _("\n⏲️ **Expiration:** {F_timestamp} ({R_timestamp})").format(
                     F_timestamp=discord.utils.format_dt(expires_at, style="F"),
                     R_timestamp=discord.utils.format_dt(expires_at, style="R"),
                 )
             embed.description += _(
-                "\n{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emoji}"
+                "\n{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emoji}",
             ).format(
                 emoji=Emojis.ISSUED_BY.value,
                 issued_by=self.ctx.author,
@@ -234,11 +237,11 @@ class WhitelistView(discord.ui.View):
             [
                 f"{'✅' if self.whitelist[whitelist_type['value']] else '❌'} {whitelist_type['name']}"
                 for whitelist_type in self.whitelist_types
-            ]
+            ],
         )
         if isinstance(self._object, discord.Member) and self.protected_roles_whitelist:
             embed.description += "\n\n" + _(
-                "**Protected Roles Whitelist:** {protected_roles}"
+                "**Protected Roles Whitelist:** {protected_roles}",
             ).format(
                 protected_roles=humanize_list(
                     [
@@ -246,7 +249,7 @@ class WhitelistView(discord.ui.View):
                         for protected_role_id in self.protected_roles_whitelist
                         if (protected_role := self._object.guild.get_role(int(protected_role_id)))
                         is not None
-                    ]
+                    ],
                 ),
             )
         try:
@@ -263,7 +266,9 @@ class WhitelistView(discord.ui.View):
 
     @discord.ui.select(placeholder="Select protected roles to whitelist.", min_values=0)
     async def protected_roles_whitelist_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         self.protected_roles_whitelist = select.values
@@ -277,14 +282,16 @@ class WhitelistView(discord.ui.View):
 
     @discord.ui.button(emoji="✅", label="Save", style=discord.ButtonStyle.success)
     async def save(
-        self, interaction: typing.Optional[discord.Interaction], button: discord.ui.Button
+        self,
+        interaction: discord.Interaction | None,
+        button: discord.ui.Button,
     ) -> None:
         if interaction is not None:
             await interaction.response.defer()
         await self.config_value.set(self.whitelist)
         if isinstance(self._object, discord.Member):
             protected_roles = await self.cog.config.guild(
-                self._object.guild
+                self._object.guild,
             ).modules.protected_roles.protected_roles()
             for protected_role_id, whitelisted_members in protected_roles.items():
                 if protected_role_id in self.protected_roles_whitelist:
@@ -294,7 +301,7 @@ class WhitelistView(discord.ui.View):
                     if self._object.id in whitelisted_members:
                         whitelisted_members.remove(self._object.id)
             await self.cog.config.guild(
-                self._object.guild
+                self._object.guild,
             ).modules.protected_roles.protected_roles.set(protected_roles)
         self.saved = True
         await self.on_timeout()
@@ -311,7 +318,7 @@ class WhitelistView(discord.ui.View):
             await self.config_value.set(self.initial_whitelist)
             if isinstance(self._object, discord.Member):
                 protected_roles = await self.cog.config.guild(
-                    self._object.guild
+                    self._object.guild,
                 ).modules.protected_roles.protected_roles()
                 for protected_role_id, whitelisted_members in protected_roles.items():
                     if protected_role_id in self.initial_protected_roles_whitelist:
@@ -321,7 +328,7 @@ class WhitelistView(discord.ui.View):
                         if self._object.id in whitelisted_members:
                             whitelisted_members.remove(self._object.id)
                 await self.cog.config.guild(
-                    self._object.guild
+                    self._object.guild,
                 ).modules.protected_roles.protected_roles.set(protected_roles)
 
 
@@ -355,7 +362,7 @@ class SettingsView(discord.ui.View):
                 emoji="🏘️",
                 label=_("Overview"),
                 value="overview",
-            )
+            ),
         )
         self.select.options.append(
             discord.SelectOption(
@@ -363,7 +370,7 @@ class SettingsView(discord.ui.View):
                 label=_("Authority Members"),
                 description=_("Manage Extra Owners and Trusted Admins."),
                 value="authority_members",
-            )
+            ),
         )
         for module in self.cog.modules.values():
             self.select.options.append(
@@ -372,7 +379,7 @@ class SettingsView(discord.ui.View):
                     label=module.name,
                     description=module.description,
                     value=module.key_name(),
-                )
+                ),
             )
         self._message: discord.Message = await self.ctx.send(
             embed=await self.get_embed(),
@@ -384,7 +391,8 @@ class SettingsView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.ctx.author:
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -449,7 +457,7 @@ class SettingsView(discord.ui.View):
             embed.description = _(
                 "**Quarantine Role:** {quarantine_role}\n"
                 "**Modlog Channel:** {modlog_channel}\n"
-                "**Modlog Ping Role:** {modlog_ping_role}"
+                "**Modlog Ping Role:** {modlog_ping_role}",
             ).format(
                 quarantine_role=f"{quarantine_role.mention} (`{quarantine_role}`)"
                 if quarantine_role is not None
@@ -470,10 +478,10 @@ class SettingsView(discord.ui.View):
                     not await self.cog.is_trusted_admin_or_higher(member)
                     for higer_role in higher_roles
                     for member in higer_role.members
-                ]
+                ],
             ):
                 embed.description += _(
-                    "\n⚠️ The bot can't manage {count} role(s) that are higher or equal than its top role: they are considered immune, but can't access features and settings."
+                    "\n⚠️ The bot can't manage {count} role(s) that are higher or equal than its top role: they are considered immune, but can't access features and settings.",
                 ).format(count=len(higher_roles))
             is_extra_owner_or_higher = await self.cog.is_extra_owner_or_higher(self.ctx.author)
             if quarantine_role is None:
@@ -503,7 +511,7 @@ class SettingsView(discord.ui.View):
             embed.title = _("Security — Authority Members")
             embed.description = _(
                 "💥 Trusted Admins and Extra Owners are **100% immune** to Security, meaning they will **NEVER** be punished by Security for anything they do.\n"
-                "**You should only give these levels to people you really trust!**"
+                "**You should only give these levels to people you really trust!**",
             )
             all_members = await self.cog.config.all_members(self.ctx.guild)
             extra_owners = [
@@ -524,11 +532,11 @@ class SettingsView(discord.ui.View):
                     [
                         f"- {member.mention} (`{member}`) {await self.cog.get_member_emoji(member)}"
                         for member in extra_owners
-                    ]
+                    ],
                 )
                 + ("\n" if extra_owners else "")
                 + _(
-                    "⚙️ *They can change **all settings** of Security, and can also manage Trusted Admins.*"
+                    "⚙️ *They can change **all settings** of Security, and can also manage Trusted Admins.*",
                 ),
                 inline=False,
             )
@@ -538,7 +546,7 @@ class SettingsView(discord.ui.View):
                     [
                         f"- {member.mention} (`{member}`) {await self.cog.get_member_emoji(member)}"
                         for member in trusted_admins
-                    ]
+                    ],
                 )
                 + ("\n" if trusted_admins else "")
                 + _("⚙️ *They can change **most settings** of Security.*"),
@@ -557,7 +565,8 @@ class SettingsView(discord.ui.View):
                 else (discord.Color.orange() if status[0] == "⚠️" else discord.Color.red())
             )
             embed.title, embed.description, embed._fields, components = await module.get_settings(
-                self.ctx.guild, self
+                self.ctx.guild,
+                self,
             )
             for component in components:
                 if (
@@ -579,7 +588,9 @@ class SettingsView(discord.ui.View):
 
     @discord.ui.button(emoji="🔑", label="Reset Recovery Key", style=discord.ButtonStyle.primary)
     async def reset_recovery_key(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
         fake_context = type(
@@ -598,7 +609,7 @@ class SettingsView(discord.ui.View):
         if not await CogsUtils.ConfirmationAsk(
             fake_context,
             _(
-                "⚠️ Are you sure you want to reset the recovery key? This will invalidate the current key and generate a new one."
+                "⚠️ Are you sure you want to reset the recovery key? This will invalidate the current key and generate a new one.",
             ),
             timeout_message=None,
             ephemeral=True,
@@ -608,12 +619,15 @@ class SettingsView(discord.ui.View):
             await self.cog.send_recovery_key(self.ctx.guild)
         except RuntimeError as e:
             await interaction.followup.send(
-                _("⚠️ Failed to reset recovery key: {error}").format(error=str(e)), ephemeral=True
+                _("⚠️ Failed to reset recovery key: {error}").format(error=str(e)),
+                ephemeral=True,
             )
 
     @discord.ui.button(label="Create Quarantine Role", style=discord.ButtonStyle.primary)
     async def create_quarantine_role(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer(thinking=True, ephemeral=True)
         try:
@@ -625,13 +639,16 @@ class SettingsView(discord.ui.View):
             )
             return
         await interaction.followup.send(
-            _("✅ Quarantine role has been created successfully."), ephemeral=True
+            _("✅ Quarantine role has been created successfully."),
+            ephemeral=True,
         )
         await self._message.edit(embed=await self.get_embed(), view=self)
 
     @discord.ui.button(label="Create Modlog Channel", style=discord.ButtonStyle.primary)
     async def create_modlog_channel(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer(thinking=True, ephemeral=True)
         try:
@@ -643,15 +660,21 @@ class SettingsView(discord.ui.View):
             )
             return
         await interaction.followup.send(
-            _("✅ Modlog channel has been created successfully."), ephemeral=True
+            _("✅ Modlog channel has been created successfully."),
+            ephemeral=True,
         )
         await self._message.edit(embed=await self.get_embed(), view=self)
 
     @discord.ui.select(
-        cls=discord.ui.RoleSelect, placeholder="Select Quarantine Role", min_values=0, max_values=1
+        cls=discord.ui.RoleSelect,
+        placeholder="Select Quarantine Role",
+        min_values=0,
+        max_values=1,
     )
     async def quarantine_role_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer(thinking=True, ephemeral=True)
         if select.values:
@@ -659,7 +682,7 @@ class SettingsView(discord.ui.View):
             if not quarantine_role.is_assignable():
                 await interaction.followup.send(
                     _(
-                        "⚠️ The selected role is not assignable by the bot. Please select a role that the bot can assign."
+                        "⚠️ The selected role is not assignable by the bot. Please select a role that the bot can assign.",
                     ),
                     ephemeral=True,
                 )
@@ -667,7 +690,7 @@ class SettingsView(discord.ui.View):
             await self.cog.config.guild(self.ctx.guild).quarantine_role.set(quarantine_role.id)
             await interaction.followup.send(
                 _(
-                    "⚠️ Quarantine role will lose all its permissions and overwrites will be added to each channel, when needed."
+                    "⚠️ Quarantine role will lose all its permissions and overwrites will be added to each channel, when needed.",
                 ),
                 ephemeral=True,
             )
@@ -687,18 +710,20 @@ class SettingsView(discord.ui.View):
         max_values=1,
     )
     async def modlog_channel_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer(thinking=True, ephemeral=True)
         if select.values:
             modlog_channel = select.values[0]
             permissions = interaction.guild.get_channel(modlog_channel.id).permissions_for(
-                self.ctx.guild.me
+                self.ctx.guild.me,
             )
             if not (permissions.view_channel and permissions.send_messages):
                 await interaction.followup.send(
                     _(
-                        "⚠️ The selected channel is not accessible by the bot. Please select a channel that the bot can access."
+                        "⚠️ The selected channel is not accessible by the bot. Please select a channel that the bot can access.",
                     ),
                     ephemeral=True,
                 )
@@ -723,7 +748,9 @@ class SettingsView(discord.ui.View):
         max_values=1,
     )
     async def modlog_ping_role_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer(ephemeral=True)
         if select.values:
@@ -735,10 +762,15 @@ class SettingsView(discord.ui.View):
         await self._message.edit(embed=await self.get_embed(), view=self)
 
     @discord.ui.select(
-        cls=discord.ui.UserSelect, placeholder="Manage Extra Owners", min_values=0, max_values=1
+        cls=discord.ui.UserSelect,
+        placeholder="Manage Extra Owners",
+        min_values=0,
+        max_values=1,
     )
     async def extra_owners_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         if not select.values:
             await interaction.response.defer()
@@ -747,7 +779,8 @@ class SettingsView(discord.ui.View):
         member = select.values[0]
         if await self.cog.is_owner_or_higher(member):
             await interaction.followup.send(
-                _("⚠️ This member is higher than Extra Owners."), ephemeral=True
+                _("⚠️ This member is higher than Extra Owners."),
+                ephemeral=True,
             )
             return
         level = await self.cog.config.member(member).level()
@@ -755,7 +788,7 @@ class SettingsView(discord.ui.View):
             await self.cog.config.member(member).level.clear()
             await interaction.followup.send(
                 _("✅ Member {member.mention} **is no longer an Extra Owner**.").format(
-                    member=member
+                    member=member,
                 ),
                 ephemeral=True,
             )
@@ -765,12 +798,13 @@ class SettingsView(discord.ui.View):
                     m
                     for m in (await self.cog.config.all_members(self.ctx.guild)).values()
                     if m["level"] == Levels.EXTRA_OWNER.name
-                ]
+                ],
             )
             >= 5
         ):
             await interaction.followup.send(
-                _("⚠️ You can't add more than **5 Extra Owners**."), ephemeral=True
+                _("⚠️ You can't add more than **5 Extra Owners**."),
+                ephemeral=True,
             )
         else:
             await self.cog.config.member(member).level.set(Levels.EXTRA_OWNER.name)
@@ -782,10 +816,15 @@ class SettingsView(discord.ui.View):
         await self._message.edit(embed=await self.get_embed(), view=self)
 
     @discord.ui.select(
-        cls=discord.ui.UserSelect, placeholder="Manage Trusted Admins", min_values=0, max_values=1
+        cls=discord.ui.UserSelect,
+        placeholder="Manage Trusted Admins",
+        min_values=0,
+        max_values=1,
     )
     async def trusted_admins_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         if not select.values:
             await interaction.response.defer()
@@ -794,7 +833,8 @@ class SettingsView(discord.ui.View):
         member = select.values[0]
         if await self.cog.is_owner_or_higher(member):
             await interaction.followup.send(
-                _("⚠️ This member is higher than Extra Owners."), ephemeral=True
+                _("⚠️ This member is higher than Extra Owners."),
+                ephemeral=True,
             )
             return
         level = await self.cog.config.member(member).level()
@@ -802,7 +842,7 @@ class SettingsView(discord.ui.View):
             await self.cog.config.member(member).level.clear()
             await interaction.followup.send(
                 _("✅ Member {member.mention} **is no longer a Trusted Admin**.").format(
-                    member=member
+                    member=member,
                 ),
                 ephemeral=True,
             )
@@ -812,12 +852,13 @@ class SettingsView(discord.ui.View):
                     m
                     for m in (await self.cog.config.all_members(self.ctx.guild)).values()
                     if m["level"] == Levels.TRUSTED_ADMIN.name
-                ]
+                ],
             )
             >= 8
         ):
             await interaction.followup.send(
-                _("⚠️ You can't add more than **8 Trusted Admins**."), ephemeral=True
+                _("⚠️ You can't add more than **8 Trusted Admins**."),
+                ephemeral=True,
             )
         else:
             await self.cog.config.member(member).level.set(Levels.TRUSTED_ADMIN.name)
@@ -852,7 +893,8 @@ class ToggleModuleButton(discord.ui.Button):
             ephemeral=True,
         )
         await self.initial_view._message.edit(
-            embed=await self.initial_view.get_embed(), view=self.initial_view
+            embed=await self.initial_view.get_embed(),
+            view=self.initial_view,
         )
 
 
@@ -862,7 +904,7 @@ class ActionsView(discord.ui.View):
         cog: commands.Cog,
         member: discord.Member,
         staff_allowed: bool = False,
-        context_message: typing.Optional[discord.Message] = None,
+        context_message: discord.Message | None = None,
     ) -> None:
         super().__init__(timeout=24 * 60)
         self.cog: commands.Cog = cog
@@ -871,20 +913,22 @@ class ActionsView(discord.ui.View):
         self.is_quarantined: bool = False
         self.is_timed_out: bool = False
         self.is_muted: bool = False
-        self.context_message: typing.Optional[discord.Message] = context_message
+        self.context_message: discord.Message | None = context_message
         self._message: discord.Message = None
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if not self.staff_allowed:
             if not await self.cog.is_trusted_admin_or_higher(interaction.user):
                 await interaction.response.send_message(
-                    _("You are not allowed to use this interaction."), ephemeral=True
+                    _("You are not allowed to use this interaction."),
+                    ephemeral=True,
                 )
                 return False
         else:
             if not await self.cog.is_moderator_or_higher(interaction.user):
                 await interaction.response.send_message(
-                    _("You are not allowed to use this interaction."), ephemeral=True
+                    _("You are not allowed to use this interaction."),
+                    ephemeral=True,
                 )
                 return False
         return True
@@ -897,7 +941,9 @@ class ActionsView(discord.ui.View):
             pass
 
     async def populate(
-        self, include_actions: bool = True, action: typing.Optional[str] = None
+        self,
+        include_actions: bool = True,
+        action: str | None = None,
     ) -> None:
         self.clear_items()
         if include_actions and self.member.guild.get_member(self.member.id) is not None:
@@ -908,7 +954,8 @@ class ActionsView(discord.ui.View):
                 action is not None and action == "timeout"
             )
             mute_check = (Mutes := self.cog.bot.get_cog("Mutes")) is not None and hasattr(
-                Mutes, "mute_user"
+                Mutes,
+                "mute_user",
             )
             self.is_muted = (
                 mute_check
@@ -951,7 +998,7 @@ class ActionsView(discord.ui.View):
                     label=_("View Context Message"),
                     style=discord.ButtonStyle.link,
                     url=self.context_message.jump_url,
-                )
+                ),
             )
 
     async def populate_again_after_duration(self, duration: datetime.timedelta) -> None:
@@ -963,13 +1010,17 @@ class ActionsView(discord.ui.View):
             pass
 
     async def action_callback(
-        self, interaction: discord.Interaction, action: typing.Dict[str, str]
+        self,
+        interaction: discord.Interaction,
+        action: dict[str, str],
     ) -> None:
         if not getattr(
-            interaction.user.guild_permissions, action["permission"]
+            interaction.user.guild_permissions,
+            action["permission"],
         ) and not await self.cog.is_trusted_admin_or_higher(interaction.user):
             await interaction.response.send_message(
-                _("You are not allowed to use this action."), ephemeral=True
+                _("You are not allowed to use this action."),
+                ephemeral=True,
             )
             return
         await self.populate(include_actions=False)
@@ -1026,7 +1077,8 @@ class ActionsView(discord.ui.View):
                     duration = await DurationConverter.convert(None, duration_input.value)
                 except commands.BadArgument as e:
                     await modal_interaction.followup.send(
-                        _("Invalid duration: {error}").format(error=str(e)), ephemeral=True
+                        _("Invalid duration: {error}").format(error=str(e)),
+                        ephemeral=True,
                     )
 
             modal.on_submit = on_submit
@@ -1046,7 +1098,7 @@ class ActionsView(discord.ui.View):
                 guild=self.member.guild,
                 author=interaction.user,
                 user=self.member,
-                until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
+                until=datetime.datetime.now(tz=datetime.UTC) + duration,
                 reason=reason,
             )
         elif action == "unmute":

@@ -1,6 +1,7 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-import typing  # isort:skip
+import typing
+
+from redbot.core import commands
+from redbot.core.bot import Red
 
 
 def dashboard_page(*args, **kwargs):
@@ -13,7 +14,7 @@ def dashboard_page(*args, **kwargs):
 
 class DashboardIntegration:
     bot: Red
-    documentations: typing.Dict[str, typing.Any]
+    documentations: dict[str, typing.Any]
 
     @commands.Cog.listener()
     async def on_dashboard_cog_add(self, dashboard_cog: commands.Cog) -> None:
@@ -22,7 +23,7 @@ class DashboardIntegration:
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
     @dashboard_page(name="sources", hidden=True)
-    async def rpc_callback_sources(self, **kwargs) -> typing.Dict[str, typing.Any]:
+    async def rpc_callback_sources(self, **kwargs) -> dict[str, typing.Any]:
         return {"status": 0, "data": {"sources": list(self.documentations.keys())}}
 
     @dashboard_page(name="rtfm", hidden=True)
@@ -30,10 +31,10 @@ class DashboardIntegration:
         self,
         source: str,
         query: str,
-        limit: typing.Optional[int] = 10,
-        with_std: typing.Optional[bool] = True,
+        limit: int | None = 10,
+        with_std: bool | None = True,
         **kwargs,
-    ) -> typing.Dict[str, typing.Any]:
+    ) -> dict[str, typing.Any]:
         if isinstance(limit, str):
             try:
                 limit = int(limit)
@@ -55,8 +56,11 @@ class DashboardIntegration:
 
     @dashboard_page(name="documentations", hidden=True)
     async def rpc_callback_documentations(
-        self, source: str, documentation: str, **kwargs
-    ) -> typing.Dict[str, typing.Any]:
+        self,
+        source: str,
+        documentation: str,
+        **kwargs,
+    ) -> dict[str, typing.Any]:
         if source not in self.documentations:
             return {"status": 1, "message": "Source not found."}
         _source = self.documentations[source]

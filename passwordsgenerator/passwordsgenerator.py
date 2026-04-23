@@ -1,14 +1,13 @@
-from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands, app_commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import typing
 
-import string
-
+import discord
 from password_generator import PasswordGenerator
 from password_strength import PasswordStats
 from passwordgenerator import pwgenerator as pw
+
+from AAA3A_utils import Cog
+from redbot.core import app_commands, commands
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box
 
 from .view import DEFAULT_INCLUDE_CHARACTERS, DEFAULT_LENGTHS, PasswordsGeneratorView
@@ -26,11 +25,11 @@ class PasswordsGenerator(Cog):
     def generate_password(
         self,
         easy_to_remember: bool = False,
-        lengths: typing.Dict[str, int] = {},
-        include_characters: typing.List[
+        lengths: dict[str, int] = {},
+        include_characters: list[
             typing.Literal["upper", "lower", "digits", "special"]
         ] = DEFAULT_INCLUDE_CHARACTERS,
-    ) -> typing.Tuple[str, float]:
+    ) -> tuple[str, float]:
         _lengths = DEFAULT_LENGTHS.copy()
         _lengths.update(lengths)
         lengths = _lengths
@@ -94,9 +93,9 @@ class PasswordsGenerator(Cog):
     async def generatepassword(
         self,
         ctx: commands.Context,
-        easy_to_remember: typing.Optional[bool] = False,
-        length: typing.Optional[commands.Range[int, 6, 1000]] = None,
-        include_special: typing.Optional[bool] = True,
+        easy_to_remember: bool | None = False,
+        length: commands.Range[int, 6, 1000] | None = None,
+        include_special: bool | None = True,
     ) -> None:
         """Generate a random password."""
         lengths = {"length": length} if length is not None else {}

@@ -1,17 +1,17 @@
-from AAA3A_utils import Cog, Settings, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 import random
 import re
+import typing
 from io import BytesIO
 
-from redbot.core.utils.chat_formatting import pagify
+import discord
 from wantedposter.wantedposter import CaptureCondition, WantedPoster
+
+from AAA3A_utils import Cog, Menu, Settings
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
+from redbot.core.utils.chat_formatting import pagify
 
 from .plugins.welcome import WelcomePlugin
 
@@ -35,7 +35,7 @@ class BountyConverter(commands.Converter):
             }
             if ext not in exts:
                 raise commands.BadArgument(
-                    _("The bounty must be a number or a number with a suffix (`k`, `m`, `b`).")
+                    _("The bounty must be a number or a number with a suffix (`k`, `m`, `b`)."),
                 )
             bounty = int(float(argument[:-1]) * exts[ext])
         # if bounty < 0:
@@ -47,16 +47,18 @@ class BountyConverter(commands.Converter):
 
 class LabelLinkConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.List[typing.Union[str, int]]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> list[str | int]:
         arg_split = re.split(r"[;,|\-]", argument)
         try:
             label, link = arg_split
         except ValueError:
             raise commands.BadArgument(
                 _(
-                    "LabelChannel must be a label followed by a channel separated by either `;`, `,`, `|`, or `-`."
-                )
+                    "LabelChannel must be a label followed by a channel separated by either `;`, `,`, `|`, or `-`.",
+                ),
             )
         if not 1 <= len(label) <= 50:
             raise commands.BadArgument(_("The label must be between 1 and 50 characters long."))
@@ -69,7 +71,7 @@ class LabelLinkConverter(commands.Converter):
 class OnePieceBounties(WelcomePlugin, Cog):
     """Give One Piece's bounties to your members, based on their time in the server, their level and their roles, then generate their wanted posters, and also welcome them when they join!"""
 
-    __authors__: typing.List[str] = ["AAA3A", "ultpanda"]
+    __authors__: list[str] = ["AAA3A", "ultpanda"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -101,9 +103,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
             accurate_joined_at=None,
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "base_bounty": {
                 "converter": BountyConverter,
                 "description": "Set the base bounty for all members.",
@@ -132,7 +132,9 @@ class OnePieceBounties(WelcomePlugin, Cog):
             },
             "welcome_channel": {
                 "converter": typing.Union[
-                    discord.TextChannel, discord.VoiceChannel, discord.Thread
+                    discord.TextChannel,
+                    discord.VoiceChannel,
+                    discord.Thread,
                 ],
                 "description": "Set the welcome channel.",
                 "path": ["plugins", "Welcome", "channel"],
@@ -181,29 +183,30 @@ class OnePieceBounties(WelcomePlugin, Cog):
             else:
                 bounty += random_obj.randint(10_000_000, 20_000_000)
 
-        if config["include_months_since_joining"]:
-            if (
+        if (
+            config["include_months_since_joining"]
+            and (
                 joined_at := (
                     member.joined_at
-                    if (
-                        accurate_joined_at := await self.config.member(member).accurate_joined_at()
-                    )
+                    if (accurate_joined_at := await self.config.member(member).accurate_joined_at())
                     is None
                     else datetime.datetime.fromisoformat(accurate_joined_at).replace(
-                        tzinfo=datetime.timezone.utc
+                        tzinfo=datetime.UTC,
                     )
                 )
-            ) is not None:
-                months = (datetime.datetime.now(tz=datetime.timezone.utc) - joined_at).days / 30
-                for i in range(1, int(months) + 2):
-                    random_obj.seed(f"{member.id}-month-{i}")
-                    year = i // 12
-                    min_bounty = 4_000_000 + (year * 1_500_000)
-                    max_bounty = 8_000_000 + (year * 1_500_000)
-                    bounty += int(
-                        random_obj.randint(min_bounty, max_bounty)
-                        * (months - i if i == int(months) else 1)
-                    )
+            )
+            is not None
+        ):
+            months = (datetime.datetime.now(tz=datetime.UTC) - joined_at).days / 30
+            for i in range(1, int(months) + 2):
+                random_obj.seed(f"{member.id}-month-{i}")
+                year = i // 12
+                min_bounty = 4_000_000 + (year * 1_500_000)
+                max_bounty = 8_000_000 + (year * 1_500_000)
+                bounty += int(
+                    random_obj.randint(min_bounty, max_bounty)
+                    * (months - i if i == int(months) else 1),
+                )
 
         if (
             config["include_levelup_levels"]
@@ -242,22 +245,24 @@ class OnePieceBounties(WelcomePlugin, Cog):
             return 1
         if bounty > 1_000_000_000:
             return round(bounty, -7)
-        elif bounty > 100_000_000:
+        if bounty > 100_000_000:
             return round(bounty, -6)
-        elif bounty > 10_000_000:
+        if bounty > 10_000_000:
             return round(bounty, -5)
-        elif bounty > 1_000_000:
+        if bounty > 1_000_000:
             return round(bounty, -4)
-        elif bounty > 100_000:
+        if bounty > 100_000:
             return round(bounty, -3)
-        elif bounty > 10_000:
+        if bounty > 10_000:
             return round(bounty, -2)
-        elif bounty > 1_000:
+        if bounty > 1_000:
             return round(bounty, -1)
         return bounty
 
     async def generate_wanted_poster(
-        self, member: discord.Member, bounty: int = None
+        self,
+        member: discord.Member,
+        bounty: int = None,
     ) -> discord.File:
         names = ["display_name", "global_name", "name"]
         for attr in names:
@@ -291,7 +296,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
         buffer.seek(0)
         return discord.File(buffer, filename="wanted_poster.png")
 
-    def get_bounty_tiers(self) -> typing.List[typing.Tuple[str, int]]:
+    def get_bounty_tiers(self) -> list[tuple[str, int]]:
         return [
             (_("Pirate King"), 3_000_000_000),
             (_("Emperor"), 1_000_000_000),
@@ -307,13 +312,14 @@ class OnePieceBounties(WelcomePlugin, Cog):
         return next((tier for tier, min_bounty in self.get_bounty_tiers() if bounty >= min_bounty))
 
     async def get_kwargs(
-        self, member: discord.Member
-    ) -> typing.Dict[str, typing.Union[discord.Embed, discord.File]]:
+        self,
+        member: discord.Member,
+    ) -> dict[str, discord.Embed | discord.File]:
         bounty = await self.get_bounty(member)
         bounty_tier = self.get_bounty_tier(bounty)
         embed: discord.Embed = discord.Embed(
             title=_(
-                "Marine HQ has issued a bounty of **{bounty:,}** {berries} for **{member.display_name}**, worthy of a **{bounty_tier} Level Threat**!"
+                "Marine HQ has issued a bounty of **{bounty:,}** {berries} for **{member.display_name}**, worthy of a **{bounty_tier} Level Threat**!",
             ).format(
                 member=member,
                 bounty=bounty,
@@ -321,7 +327,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 bounty_tier=bounty_tier,
             ),
             color=await self.bot.get_embed_color(member),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=datetime.datetime.now(tz=datetime.UTC),
         )
         embed.set_footer(
             text=member.guild.name,
@@ -349,6 +355,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
         if member.bot:
             return await ctx.send(_("Bots don't have a bounty!"))
         await ctx.send(**await self.get_kwargs(member))
+        return None
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
@@ -383,7 +390,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
                     ),
                     start=1,
                 )
-            ]
+            ],
         )
         if not description:
             raise commands.UserFeedbackCheckFailure(_("There are no bounties."))
@@ -414,6 +421,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
             return await ctx.send(_("The minimum bounty can't be higher than the maximum bounty!"))
         async with self.config.guild(ctx.guild).bonus_roles() as bonus_roles:
             bonus_roles[str(role.id)] = (min_bounty, max_bounty)
+        return None
 
     @setonepiecebounties.command(aliases=["removebr"])
     async def removebonusrole(self, ctx: commands.Context, role: discord.Role) -> None:
@@ -423,7 +431,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 del bonus_roles[str(role.id)]
             else:
                 raise commands.UserFeedbackCheckFailure(
-                    _("This role is not in the list of bonus roles.")
+                    _("This role is not in the list of bonus roles."),
                 )
 
     @setonepiecebounties.command(aliases=["listbr"])
@@ -442,7 +450,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 )
                 for role_id, bounties in bonus_roles.items()
                 if (role := ctx.guild.get_role(int(role_id))) is not None
-            ]
+            ],
         )
         embed: discord.Embed = discord.Embed(
             title=_("Bonus Roles"),
@@ -471,7 +479,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
         async with self.config.guild(ctx.guild).only_roles() as only_roles:
             if str(role.id) in only_roles:
                 raise commands.UserFeedbackCheckFailure(
-                    _("This role is already in the list of only roles.")
+                    _("This role is already in the list of only roles."),
                 )
             only_roles[str(role.id)] = only
 
@@ -483,7 +491,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 del only_roles[str(role.id)]
             else:
                 raise commands.UserFeedbackCheckFailure(
-                    _("This role is not in the list of only roles.")
+                    _("This role is not in the list of only roles."),
                 )
 
     @setonepiecebounties.command(aliases=["listor"])
@@ -497,7 +505,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 _("{role.mention}: ONLY {only}").format(role=role, only=only.upper())
                 for role_id, only in only_roles.items()
                 if (role := ctx.guild.get_role(int(role_id))) is not None
-            ]
+            ],
         )
         embed: discord.Embed = discord.Embed(
             title=_("Only Roles"),
@@ -518,7 +526,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
     async def addbonus(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member],
+        member: discord.Member | None,
         bonus: BountyConverter,
     ) -> None:
         """Add a bonus to a member's bounty."""
@@ -528,12 +536,13 @@ class OnePieceBounties(WelcomePlugin, Cog):
         current_bonus = await self.config.member(member).bonus()
         current_bonus += bonus
         await self.config.member(member).bonus.set(current_bonus)
+        return None
 
     @setonepiecebounties.command(aliases=["removeb"])
     async def removebonus(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member],
+        member: discord.Member | None,
         bonus: BountyConverter,
     ) -> None:
         """Remove a bonus from a member's bounty."""
@@ -543,16 +552,20 @@ class OnePieceBounties(WelcomePlugin, Cog):
         current_bonus = await self.config.member(member).bonus()
         current_bonus -= bonus
         await self.config.member(member).bonus.set(current_bonus)
+        return None
 
     @setonepiecebounties.command(aliases=["clearb"])
     async def clearbonus(
-        self, ctx: commands.Context, member: typing.Optional[discord.Member]
+        self,
+        ctx: commands.Context,
+        member: discord.Member | None,
     ) -> None:
         """Clear a member's bonus."""
         member = member or ctx.author
         if member.bot:
             return await ctx.send(_("Bots don't have a bounty!"))
         await self.config.member(member).bonus.clear()
+        return None
 
     @setonepiecebounties.command(aliases=["listbonus", "listb"])
     async def listbonuses(self, ctx: commands.Context) -> None:
@@ -569,7 +582,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 )
                 for member_id, bonus in bonuses.items()
                 if ((member := ctx.guild.get_member(member_id)) is not None and bonus["bonus"] > 0)
-            ]
+            ],
         )
         embed: discord.Embed = discord.Embed(
             title=_("Bonuses"),
@@ -599,6 +612,6 @@ class OnePieceBounties(WelcomePlugin, Cog):
             accurate_joined_at = datetime.datetime.strptime(date, "%Y-%m-%d")
         except ValueError:
             raise commands.UserFeedbackCheckFailure(
-                _("Please provide a date in the format `YYYY-MM-DD`.")
+                _("Please provide a date in the format `YYYY-MM-DD`."),
             )
         await self.config.member(member).accurate_joined_at.set(accurate_joined_at.isoformat())

@@ -1,11 +1,8 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import hmac
 import inspect
+import typing
 
+import discord
 from itsdangerous import BadData, SignatureExpired, URLSafeTimedSerializer
 from markupsafe import Markup
 from werkzeug.datastructures import ImmutableMultiDict
@@ -26,6 +23,9 @@ from wtforms.meta import DefaultMeta
 from wtforms.validators import ValidationError
 from wtforms.widgets import HiddenInput
 
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+
 INITIAL_INIT_FIELD = Field.__init__
 
 
@@ -33,9 +33,9 @@ async def get_form_class(
     _self,
     third_party_cog: commands.Cog,
     method: typing.Literal["HEAD", "GET", "OPTIONS", "POST", "PATCH", "DELETE"],
-    csrf_token: typing.Tuple[str, str],
+    csrf_token: tuple[str, str],
     wtf_csrf_secret_key: bytes,
-    data: typing.Dict[typing.Literal["form", "json"], typing.Dict[str, typing.Any]],
+    data: dict[typing.Literal["form", "json"], dict[str, typing.Any]],
     **kwargs,
 ):
     extra_notifications = []
@@ -45,7 +45,7 @@ async def get_form_class(
         return method in {"POST", "PUT", "PATCH", "DELETE"}
 
     class _FlaskFormCSRF(CSRF):
-        def setup_form(self, form) -> typing.List[typing.Tuple[str, UnboundField]]:
+        def setup_form(self, form) -> list[tuple[str, UnboundField]]:
             self.meta = form.meta
             return super().setup_form(form)
 
@@ -85,12 +85,12 @@ async def get_form_class(
             def csrf_time_limit(self) -> int:
                 return 3600
 
-            def wrap_formdata(self, form, formdata) -> typing.Optional[ImmutableMultiDict]:
+            def wrap_formdata(self, form, formdata) -> ImmutableMultiDict | None:
                 if formdata is _Auto:
                     if _is_submitted():
                         if data["form"]:
                             return ImmutableMultiDict(data["form"])
-                        elif data["json"]:
+                        if data["json"]:
                             return ImmutableMultiDict(data["json"])
                     return None
                 return formdata
@@ -110,20 +110,20 @@ async def get_form_class(
                 return True
             if any(field.data for field in self if isinstance(field, SubmitField)) and self.errors:
                 for field_name, error_messages in self.errors.items():
-                    if isinstance(error_messages[0], typing.Dict):
+                    if isinstance(error_messages[0], dict):
                         for sub_field_name, sub_error_messages in error_messages[0].items():
                             extra_notifications.append(
                                 {
                                     "message": f"{field_name}-{sub_field_name}: {' '.join(sub_error_messages)}",
                                     "category": "warning",
-                                }
+                                },
                             )
                         continue
                     extra_notifications.append(
                         {
                             "message": f"{field_name}: {' '.join(error_messages)}",
                             "category": "warning",
-                        }
+                        },
                     )
             return False
 
@@ -138,7 +138,7 @@ async def get_form_class(
                             field.data = [await validator.convert(value) for value in field.data]
                         except commands.BadArgument as e:
                             extra_notifications.append(
-                                {"message": f"{field.name}: {e}", "category": "warning"}
+                                {"message": f"{field.name}: {e}", "category": "warning"},
                             )
                             result = False
                         continue
@@ -149,7 +149,7 @@ async def get_form_class(
                         field.data = await validator.convert(field.data)
                     except commands.BadArgument as e:
                         extra_notifications.append(
-                            {"message": f"{field.name}: {e}", "category": "warning"}
+                            {"message": f"{field.name}: {e}", "category": "warning"},
                         )
                         result = False
             return result
@@ -177,18 +177,18 @@ async def get_form_class(
                 if not isinstance(field, BooleanField):
                     html_form.append('        <div class="form-group">')
                     html_form.append(
-                        f'            <label class="form-group-label">{field.label}</label>'
+                        f'            <label class="form-group-label">{field.label}</label>',
                     )
                     html_form.append(
-                        f'            {field(class_="form-control form-control-default")}'
+                        f"            {field(class_='form-control form-control-default')}",
                     )
                 else:
                     html_form.append('        <div class="form-check form-switch ps-0">')
                     html_form.append(
-                        f'            {field(class_="form-check-input ms-0", type="checkbox")}'
+                        f"            {field(class_='form-check-input ms-0', type='checkbox')}",
                     )
                     html_form.append(
-                        f'            <label class="form-check-label">{field.label}</label>'
+                        f'            <label class="form-check-label">{field.label}</label>',
                     )
                 html_form.append("        </div>")
                 # else:
@@ -203,7 +203,8 @@ async def get_form_class(
                     if field.render_kw is None:
                         field.render_kw = {}
                     field.render_kw.setdefault(
-                        "class", "btn mb-0 bg-gradient-success btn-md w-100 my-4"
+                        "class",
+                        "btn mb-0 bg-gradient-success btn-md w-100 my-4",
                     )
                     html_form.append(f"        {field()}")
             html_form.extend(["    </div>", "</form>"])
@@ -215,10 +216,13 @@ async def get_form_class(
             return
         if hasattr(field, "_value"):
             field._real_value = field._value
-        field._value = lambda: (field._real_value() if hasattr(field, "_real_value") else "") or (
-            (field.default if isinstance(field.default, typing.List) else str(field.default))
-            if field.default is not None
-            else ""
+        field._value = lambda: (
+            (field._real_value() if hasattr(field, "_real_value") else "")
+            or (
+                (field.default if isinstance(field.default, list) else str(field.default))
+                if field.default is not None
+                else ""
+            )
         )
         if isinstance(field, SelectFieldBase):
             old_choices_generator = field._choices_generator
@@ -231,7 +235,7 @@ async def get_form_class(
                         selected
                         or (
                             field.coerce(value) in field._value()
-                            if isinstance(field._value(), typing.List)
+                            if isinstance(field._value(), list)
                             else field.coerce(value) == field._value()
                         ),
                         render_kw,
@@ -245,7 +249,7 @@ async def get_form_class(
         def __init__(
             self,
             converter: typing.Callable[[str], typing.Any],
-            param: typing.Optional[discord.ext.commands.parameters.Parameter] = None,
+            param: discord.ext.commands.parameters.Parameter | None = None,
         ) -> None:
             self.converter: typing.Callable[[str], typing.Any] = converter
             self.param: discord.ext.commands.parameters.Parameter = (
@@ -285,22 +289,19 @@ async def get_form_class(
 
     def get_sorted_channels(
         guild: discord.Guild,
-        types: typing.Optional[typing.Tuple[discord.abc.GuildChannel]] = (
+        types: tuple[discord.abc.GuildChannel] | None = (
             discord.TextChannel,
             discord.VoiceChannel,
         ),
-        filter_func: typing.Optional[
-            typing.Callable[[discord.abc.GuildChannel], bool]
-        ] = discord.utils.MISSING,
-    ) -> typing.List[typing.Tuple[int, str]]:
+        filter_func: typing.Callable[[discord.abc.GuildChannel], bool]
+        | None = discord.utils.MISSING,
+    ) -> list[tuple[int, str]]:
         if filter_func is discord.utils.MISSING:
 
             def filter_func(channel: discord.abc.GuildChannel) -> bool:
                 bot_permissions = channel.permissions_for(guild.me)
                 member = guild.get_member(kwargs["user"].id)
-                member_permissions = (
-                    channel.permissions_for(member) if member is not None else None
-                )
+                member_permissions = channel.permissions_for(member) if member is not None else None
                 return (
                     bot_permissions.view_channel
                     and bot_permissions.send_messages
@@ -332,7 +333,8 @@ async def get_form_class(
                 channels.append(channel)
         channels += voice_channels
         for category in sorted(
-            categorized_channels.items(), key=lambda category: category[0].position
+            categorized_channels.items(),
+            key=lambda category: category[0].position,
         ):
             channels.extend(
                 sorted(
@@ -341,7 +343,7 @@ async def get_form_class(
                         1 if isinstance(channel, discord.VoiceChannel) else 0,
                         channel.position,
                     ),
-                )
+                ),
             )
         return [
             (
@@ -353,14 +355,13 @@ async def get_form_class(
 
     def get_sorted_roles(
         guild: discord.Guild,
-        filter_func: typing.Optional[
-            typing.Callable[[discord.Role], bool]
-        ] = discord.utils.MISSING,
-    ) -> typing.List[typing.Tuple[int, str]]:
+        filter_func: typing.Callable[[discord.Role], bool] | None = discord.utils.MISSING,
+    ) -> list[tuple[int, str]]:
         if filter_func is discord.utils.MISSING:
-            filter_func = (
-                lambda role: not role.is_bot_managed()
-            )  # and role.position < guild.me.top_role.position
+
+            def filter_func(role):
+                return not role.is_bot_managed()  # and role.position < guild.me.top_role.position
+
         return [
             (str(role.id), role.name)
             for role in sorted(guild.roles, reverse=True)

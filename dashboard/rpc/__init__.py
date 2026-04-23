@@ -1,16 +1,16 @@
-from redbot.core import commands, core_commands, i18n  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import base64
 import pathlib
 import random
 import re
 import time
+import typing
 
+import discord
+
+from redbot.core import commands, core_commands, i18n
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_list
 
@@ -55,13 +55,11 @@ class DashboardRPC:
         self.bot.register_rpc_handler(self.set_custom_pages)
 
         # Initialize handlers.
-        self.handlers: typing.Dict[str, typing.Any] = {}
+        self.handlers: dict[str, typing.Any] = {}
         self.handlers["cog_management"]: DashboardRPC_CogManagement = DashboardRPC_CogManagement(
-            self.cog
+            self.cog,
         )
-        self.handlers["default_cogs"]: DashboardRPC_DefaultCogs = DashboardRPC_DefaultCogs(
-            self.cog
-        )
+        self.handlers["default_cogs"]: DashboardRPC_DefaultCogs = DashboardRPC_DefaultCogs(self.cog)
         self.handlers["webhooks"]: DashboardRPC_Webhooks = DashboardRPC_Webhooks(self.cog)
         self.third_parties_handler: DashboardRPC_ThirdParties = DashboardRPC_ThirdParties(self.cog)
         self.handlers["third_parties"]: DashboardRPC_ThirdParties = self.third_parties_handler
@@ -69,11 +67,12 @@ class DashboardRPC:
         # Caches: you can thank Trusty for the cogs infos.
         self.invite_url: str = None
         self.owner: str = None
-        self.cogs_infos_cache: typing.Dict[str, typing.Dict[str, str]] = {}
-        self.guilds_cache: typing.Dict[
+        self.cogs_infos_cache: dict[str, dict[str, str]] = {}
+        self.guilds_cache: dict[
             int,
-            typing.Dict[
-                typing.Literal["guilds", "time"], typing.Union[typing.List[typing.Dict], int]
+            dict[
+                typing.Literal["guilds", "time"],
+                list[dict] | int,
             ],
         ] = {}
 
@@ -99,17 +98,18 @@ class DashboardRPC:
             handler.unload()
 
     @rpc_check()
-    async def check_version(self) -> typing.Dict[str, int]:
+    async def check_version(self) -> dict[str, int]:
         return {"version": self.bot.get_cog("Dashboard").rpc.version}
 
     @rpc_check()
-    async def get_data(self) -> typing.Dict[str, typing.Any]:
+    async def get_data(self) -> dict[str, typing.Any]:
         data = await self.cog.config.webserver()
         if data["ui"]["meta"]["title"] is None:
             data["ui"]["meta"]["title"] = _("{name} Dashboard").format(name=self.bot.user.name)
         else:
             data["ui"]["meta"]["title"] = data["ui"]["meta"]["title"].replace(
-                "{name}", self.bot.user.name
+                "{name}",
+                self.bot.user.name,
             )
         if data["ui"]["meta"]["icon"] is None:
             data["ui"]["meta"]["icon"] = self.bot.user.display_avatar.url
@@ -119,15 +119,16 @@ class DashboardRPC:
                 "{name} is based off the popular bot **Red-DiscordBot**, an open "
                 "source, multifunctional bot. It has *tons of features* including moderation, "
                 "audio, economy, fun and more! Here, you can control and interact with "
-                "{name}'s settings. **So what are you waiting for? Invite it now!**"
+                "{name}'s settings. **So what are you waiting for? Invite it now!**",
             ).format(name=self.bot.user.name)
         else:
             data["ui"]["meta"]["description"] = data["ui"]["meta"]["description"].replace(
-                "{name}", self.bot.user.name
+                "{name}",
+                self.bot.user.name,
             )
         if data["ui"]["meta"]["website_description"] is None:
             data["ui"]["meta"]["website_description"] = _(
-                "Interactive Dashboard to control and interact with {name}."
+                "Interactive Dashboard to control and interact with {name}.",
             ).format(name=self.bot.user.name)
         # if data["ui"]["meta"]["support_server"] is None:
         #     data["ui"]["meta"]["support_server"] = "https://discord.gg/red"
@@ -137,8 +138,8 @@ class DashboardRPC:
     async def get_variables(
         self,
         only_bot_variables: bool = False,
-        host_port: typing.Optional[typing.Tuple[str, int]] = None,
-    ) -> typing.Dict[str, typing.Any]:
+        host_port: tuple[str, int] | None = None,
+    ) -> dict[str, typing.Any]:
         variables = await self.get_bot_variables()
         variables.update(third_parties=await self.third_parties_handler.get_third_parties())
         variables.update(commands={} if only_bot_variables else await self.get_commands())
@@ -159,7 +160,7 @@ class DashboardRPC:
         return variables
 
     @rpc_check()
-    async def get_bot_variables(self) -> typing.Dict[str, typing.Any]:
+    async def get_bot_variables(self) -> dict[str, typing.Any]:
         bot_info = await self.bot._config.custom_info()
         prefixes = [
             p for p in await self.bot.get_valid_prefixes() if not re.match(r"<@!?([0-9]+)>", p)
@@ -211,7 +212,9 @@ class DashboardRPC:
             },
             "constants": {
                 "MIN_PREFIX_LENGTH": getattr(
-                    core_commands, "MINIMUM_PREFIX_LENGTH", 1
+                    core_commands,
+                    "MINIMUM_PREFIX_LENGTH",
+                    1,
                 ),  # Added by #6013 in Red 3.5.6.
                 "MAX_PREFIX_LENGTH": core_commands.MAX_PREFIX_LENGTH,
                 "MAX_DISCORD_PERMISSIONS_VALUE": discord.Permissions.all().value,
@@ -220,10 +223,10 @@ class DashboardRPC:
 
     async def build_cmd_list(
         self,
-        commands_list: typing.List[commands.Command],
+        commands_list: list[commands.Command],
         details: bool = True,
         is_owner: bool = False,
-    ) -> typing.List[typing.Dict[str, typing.Union[str, typing.List]]]:
+    ) -> list[dict[str, str | list]]:
         final = []
         async for command in AsyncIter(sorted(commands_list, key=lambda c: c.name)):
             if details:
@@ -251,23 +254,10 @@ class DashboardRPC:
                                 [
                                     permission.replace("_", " ").capitalize()
                                     for permission, value in dict(
-                                        command.requires.user_perms
+                                        command.requires.user_perms,
                                     ).items()
                                     if value
-                                ]
-                            )
-                            if command.requires.user_perms is not None
-                            else None
-                        ),
-                        "user_permissions": (
-                            "\n".join(
-                                [
-                                    permission.replace("_", " ").capitalize()
-                                    for permission, value in dict(
-                                        command.requires.user_perms
-                                    ).items()
-                                    if value
-                                ]
+                                ],
                             )
                             if command.requires.user_perms is not None
                             else None
@@ -277,9 +267,7 @@ class DashboardRPC:
                 except ValueError:
                     continue
                 if isinstance(command, commands.Group):
-                    details["subs"] = await self.build_cmd_list(
-                        command.commands, is_owner=is_owner
-                    )
+                    details["subs"] = await self.build_cmd_list(command.commands, is_owner=is_owner)
                 final.append(details)
             else:
                 if (
@@ -295,17 +283,16 @@ class DashboardRPC:
     @rpc_check()
     async def get_commands(
         self,
-    ) -> typing.Dict[
+    ) -> dict[
         str,
-        typing.Dict[
-            str, typing.Union[str, typing.List[typing.Dict[str, typing.Union[str, typing.List]]]]
+        dict[
+            str,
+            str | list[dict[str, str | list]],
         ],
     ]:
         returning = {}
         downloader_cog = self.bot.get_cog("Downloader")
-        installed_cogs = (
-            await downloader_cog.installed_cogs() if downloader_cog is not None else []
-        )
+        installed_cogs = await downloader_cog.installed_cogs() if downloader_cog is not None else []
         for cog in self.bot.cogs.copy().values():
             name = cog.qualified_name
             stripped = [c for c in cog.__cog_commands__ if c.parent is None]
@@ -339,13 +326,12 @@ class DashboardRPC:
                     author = "Cog Creators"
                     repo = "https://github.com/Cog-Creators/Red-DiscordBot"
                 elif (
-                    pathlib.Path(__import__(cog.__module__).__path__[0]).parent.name
-                    == "AAA3A-cogs"
+                    pathlib.Path(__import__(cog.__module__).__path__[0]).parent.name == "AAA3A-cogs"
                 ):  # Handle my repo's clones... :P
                     author = "AAA3A"
                     repo = "https://github.com/AAA3A-AAA3A/AAA3A-cogs"
             author = getattr(cog, "__authors__", []) or getattr(cog, "__author__", []) or author
-            if isinstance(author, (typing.List, typing.Tuple)):
+            if isinstance(author, (list, tuple)):
                 author = humanize_list(author)
             self.cogs_infos_cache[name] = {"author": author, "repo": repo}
             returning[name] = {
@@ -361,18 +347,18 @@ class DashboardRPC:
         async with self.cog.config.webserver.core.blacklisted_ips() as blacklisted_ips:
             blacklisted_ips.append(ip)
         await self.bot.send_to_owners(
-            f"[Dashboard] Detected suspicious activity from IP `{ip}`. They have been blacklisted."
+            f"[Dashboard] Detected suspicious activity from IP `{ip}`. They have been blacklisted.",
         )
 
     @rpc_check()
     async def get_user_guilds(
         self,
         user_id: int,
-        per_page: typing.Optional[typing.Union[int, str]] = None,
-        page: typing.Optional[typing.Union[int, str]] = None,
-        query: typing.Optional[str] = None,
-        filter: typing.Optional[typing.Literal["owner", "admin", "mod"]] = None,
-    ) -> typing.Dict[str, typing.Any]:
+        per_page: int | str | None = None,
+        page: int | str | None = None,
+        query: str | None = None,
+        filter: typing.Literal["owner", "admin", "mod"] | None = None,
+    ) -> dict[str, typing.Any]:
         user = self.bot.get_user(user_id)
         if user is None:
             # Bot doesn't even find user using bot.get_user, might as well spare all the data processing and return.
@@ -443,7 +429,7 @@ class DashboardRPC:
         user_id: int,
         guild_id: int,
         for_third_parties: bool = False,
-    ) -> typing.Dict[str, typing.Any]:
+    ) -> dict[str, typing.Any]:
         guild = self.bot.get_guild(guild_id)
         if guild is None:
             return {"status": 1}
@@ -554,7 +540,7 @@ class DashboardRPC:
         }
 
     @rpc_check()
-    async def leave_guild(self, user_id: int, guild_id: int) -> typing.Dict[str, int]:
+    async def leave_guild(self, user_id: int, guild_id: int) -> dict[str, int]:
         guild = self.bot.get_guild(guild_id)
         if guild is None:
             return {"status": 1}
@@ -565,8 +551,11 @@ class DashboardRPC:
 
     @rpc_check()
     async def set_guild_settings(
-        self, user_id: int, guild_id: int, settings: typing.Dict[str, typing.Any]
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+        self,
+        user_id: int,
+        guild_id: int,
+        settings: dict[str, typing.Any],
+    ) -> dict[str, int | str]:
         guild = self.bot.get_guild(guild_id)
         if guild is None:
             return {"status": 1}
@@ -598,7 +587,7 @@ class DashboardRPC:
                     command.requires.privilege_level is not None
                     and command.requires.privilege_level
                     > await commands.PrivilegeLevel.from_ctx(
-                        type("Context", (), {"bot": self.bot, "author": member, "guild": guild})
+                        type("Context", (), {"bot": self.bot, "author": member, "guild": guild}),
                     )
                 )
             ):
@@ -611,7 +600,7 @@ class DashboardRPC:
                     command.requires.privilege_level is None
                     or not command.requires.privilege_level
                     > await commands.PrivilegeLevel.from_ctx(
-                        type("Context", (), {"bot": self.bot, "author": member, "guild": guild})
+                        type("Context", (), {"bot": self.bot, "author": member, "guild": guild}),
                     )
                 ):
                     command.enable_in(guild)
@@ -632,8 +621,8 @@ class DashboardRPC:
     async def set_bot_profile(
         self,
         user_id: int,
-        settings: typing.Dict[str, typing.Any],
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+        settings: dict[str, typing.Any],
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         try:
@@ -645,7 +634,8 @@ class DashboardRPC:
             if settings["name"] != self.bot.user.name:
                 try:
                     await asyncio.wait_for(
-                        self.bot.get_cog("Core")._name(name=settings["name"]), timeout=30
+                        self.bot.get_cog("Core")._name(name=settings["name"]),
+                        timeout=30,
                     )
                 except TimeoutError:
                     return {
@@ -663,7 +653,7 @@ class DashboardRPC:
             return {"status": 1, "error": str(e)}
 
     @rpc_check()
-    async def get_dashboard_settings(self, user_id: int) -> typing.Dict[str, typing.Any]:
+    async def get_dashboard_settings(self, user_id: int) -> dict[str, typing.Any]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         config_group = self.cog.config.webserver.ui.meta
@@ -684,8 +674,8 @@ class DashboardRPC:
     async def set_dashboard_settings(
         self,
         user_id: int,
-        settings: typing.Dict[str, typing.Any],
-    ) -> typing.Dict[str, int]:
+        settings: dict[str, typing.Any],
+    ) -> dict[str, int]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         config_group = self.cog.config.webserver.ui.meta
@@ -698,12 +688,12 @@ class DashboardRPC:
         await config_group.default_background_theme.set(settings["default_background_theme"])
         await config_group.default_sidenav_theme.set(settings["default_sidenav_theme"])
         await self.cog.config.webserver.disabled_third_parties.set(
-            settings["disabled_third_parties"]
+            settings["disabled_third_parties"],
         )
         return {"status": 0}
 
     @rpc_check()
-    async def get_bot_settings(self, user_id: int) -> typing.Dict[str, typing.Any]:
+    async def get_bot_settings(self, user_id: int) -> dict[str, typing.Any]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         config_group = self.bot._config
@@ -739,8 +729,8 @@ class DashboardRPC:
     async def set_bot_settings(
         self,
         user_id: int,
-        settings: typing.Dict[str, typing.Any],
-    ) -> typing.Dict[str, int]:
+        settings: dict[str, typing.Any],
+    ) -> dict[str, int]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         config_group = self.bot._config
@@ -751,7 +741,8 @@ class DashboardRPC:
             if command_name in already_disabled_commands:
                 continue
             if (command := self.bot.get_command(command_name)) is None or isinstance(
-                command, commands.commands._RuleDropper
+                command,
+                commands.commands._RuleDropper,
             ):
                 settings["disabled_commands"].remove(command_name)
             else:
@@ -800,8 +791,10 @@ class DashboardRPC:
 
     @rpc_check()
     async def set_custom_pages(
-        self, user_id: int, custom_pages: typing.List[typing.Dict[str, str]]
-    ) -> typing.Dict[str, int]:
+        self,
+        user_id: int,
+        custom_pages: list[dict[str, str]],
+    ) -> dict[str, int]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         await self.cog.config.webserver.custom_pages.set(custom_pages)

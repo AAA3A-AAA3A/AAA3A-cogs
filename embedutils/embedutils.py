@@ -1,15 +1,15 @@
-from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands, app_commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import base64
 import json
+import typing
 from urllib.parse import quote
 
 import aiohttp
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import Config, app_commands, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import pagify, text_to_file
 
 from .converters import (
@@ -46,7 +46,7 @@ PASTEBIN_LIST_CONVERTER = PastebinListConverter(conversion_type="json")
 class EmbedUtils(DashboardIntegration, Cog):
     """Create, send, and store rich embeds, from Red-Web-Dashboard too!"""
 
-    __authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
+    __authors__: list[str] = ["PhenoM4n4n", "AAA3A"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -59,7 +59,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         self.config.register_global(stored_embeds={})
         self.config.register_guild(stored_embeds={})
 
-        self._session: typing.Optional[aiohttp.ClientSession] = None
+        self._session: aiohttp.ClientSession | None = None
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -78,8 +78,8 @@ class EmbedUtils(DashboardIntegration, Cog):
     async def embed(
         self,
         ctx: commands.Context,
-        channel_or_message: typing.Optional[MessageableOrMessageConverter],
-        color: typing.Optional[discord.Color],
+        channel_or_message: MessageableOrMessageConverter | None,
+        color: discord.Color | None,
         title: str,
         *,
         description: str,
@@ -112,7 +112,7 @@ class EmbedUtils(DashboardIntegration, Cog):
     async def embed_json(
         self,
         ctx: commands.Context,
-        channel_or_message: typing.Optional[MessageableOrMessageConverter] = None,
+        channel_or_message: MessageableOrMessageConverter | None = None,
         *,
         data: JSON_LIST_CONVERTER = None,
     ):
@@ -155,7 +155,7 @@ class EmbedUtils(DashboardIntegration, Cog):
     async def embed_yaml(
         self,
         ctx: commands.Context,
-        channel_or_message: typing.Optional[MessageableOrMessageConverter] = None,
+        channel_or_message: MessageableOrMessageConverter | None = None,
         *,
         data: YAML_LIST_CONVERTER = None,
     ):
@@ -195,7 +195,9 @@ class EmbedUtils(DashboardIntegration, Cog):
 
     @embed.command(name="fromfile", aliases=["jsonfile", "fromjsonfile", "fromdatafile"])
     async def embed_fromfile(
-        self, ctx: commands.Context, channel_or_message: MessageableOrMessageConverter = None
+        self,
+        ctx: commands.Context,
+        channel_or_message: MessageableOrMessageConverter = None,
     ):
         """Post an embed from a valid JSON file (upload it).
 
@@ -240,7 +242,9 @@ class EmbedUtils(DashboardIntegration, Cog):
 
     @embed.command(name="yamlfile", aliases=["fromyamlfile"])
     async def embed_yamlfile(
-        self, ctx: commands.Context, channel_or_message: MessageableOrMessageConverter = None
+        self,
+        ctx: commands.Context,
+        channel_or_message: MessageableOrMessageConverter = None,
     ):
         """Post an embed from a valid YAML file (upload it).
 
@@ -280,12 +284,13 @@ class EmbedUtils(DashboardIntegration, Cog):
             return await StringToEmbed.embed_convert_error(ctx, _("Embed Sending Error"), error)
 
     @embed.command(
-        name="pastebin", aliases=["frompastebin", "gist", "fromgist", "hastebin", "fromhastebin"]
+        name="pastebin",
+        aliases=["frompastebin", "gist", "fromgist", "hastebin", "fromhastebin"],
     )
     async def embed_pastebin(
         self,
         ctx: commands.Context,
-        channel_or_message: typing.Optional[MessageableOrMessageConverter] = None,
+        channel_or_message: MessageableOrMessageConverter | None = None,
         *,
         data: PASTEBIN_LIST_CONVERTER,
     ):
@@ -324,10 +329,10 @@ class EmbedUtils(DashboardIntegration, Cog):
     async def embed_message(
         self,
         ctx: commands.Context,
-        channel_or_message: typing.Optional[MessageableOrMessageConverter],
+        channel_or_message: MessageableOrMessageConverter | None,
         message: discord.Message = None,
         index: int = None,
-        include_content: typing.Optional[bool] = None,
+        include_content: bool | None = None,
     ):
         """Post embed(s) from an existing message.
 
@@ -339,7 +344,8 @@ class EmbedUtils(DashboardIntegration, Cog):
         """
         if message is None:
             if ctx.message.reference is not None and isinstance(
-                (reference := ctx.message.reference.resolved), discord.Message
+                (reference := ctx.message.reference.resolved),
+                discord.Message,
             ):
                 message = reference
             else:
@@ -389,7 +395,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         ctx: commands.Context,
         message: discord.Message = None,
         index: int = None,
-        include_content: typing.Optional[bool] = None,
+        include_content: bool | None = None,
     ):
         """Download a JSON file for a message's embed(s).
 
@@ -399,7 +405,8 @@ class EmbedUtils(DashboardIntegration, Cog):
         """
         if message is None:
             if ctx.message.reference is not None and isinstance(
-                (reference := ctx.message.reference.resolved), discord.Message
+                (reference := ctx.message.reference.resolved),
+                discord.Message,
             ):
                 message = reference
             else:
@@ -422,7 +429,8 @@ class EmbedUtils(DashboardIntegration, Cog):
 
     @commands.mod_or_permissions(manage_messages=True)
     @embed.command(
-        name="edit", usage="<message> <json|yaml|jsonfile|yamlfile|pastebin|message> [data]"
+        name="edit",
+        usage="<message> <json|yaml|jsonfile|yamlfile|pastebin|message> [data]",
     )
     async def embed_edit(
         self,
@@ -491,7 +499,8 @@ class EmbedUtils(DashboardIntegration, Cog):
             if data is not None:
                 message = await commands.MessageConverter().convert(ctx, argument=data)
             elif ctx.message.reference is not None and isinstance(
-                (reference := ctx.message.reference.resolved), discord.Message
+                (reference := ctx.message.reference.resolved),
+                discord.Message,
             ):
                 message = reference
             else:
@@ -517,8 +526,8 @@ class EmbedUtils(DashboardIntegration, Cog):
     async def embed_store(
         self,
         ctx: commands.Context,
-        global_level: typing.Optional[bool],
-        locked: typing.Optional[bool],
+        global_level: bool | None,
+        locked: bool | None,
         name: str,
         conversion_type: typing.Literal[
             "json",
@@ -591,7 +600,8 @@ class EmbedUtils(DashboardIntegration, Cog):
             if data is not None:
                 message = await commands.MessageConverter().convert(ctx, argument=data)
             elif ctx.message.reference is not None and isinstance(
-                (reference := ctx.message.reference.resolved), discord.Message
+                (reference := ctx.message.reference.resolved),
+                discord.Message,
             ):
                 message = reference
             else:
@@ -615,8 +625,8 @@ class EmbedUtils(DashboardIntegration, Cog):
             if not global_level and len(total_embeds) > embed_limit:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "This server has reached the embed limit of {embed_limit}. You must remove an embed with `{ctx.clean_prefix}embed unstore` before you can add a new one."
-                    ).format(embed_limit=embed_limit, ctx=ctx)
+                        "This server has reached the embed limit of {embed_limit}. You must remove an embed with `{ctx.clean_prefix}embed unstore` before you can add a new one.",
+                    ).format(embed_limit=embed_limit, ctx=ctx),
                 )
             stored_embeds[name] = {
                 "author": ctx.author.id,
@@ -624,13 +634,14 @@ class EmbedUtils(DashboardIntegration, Cog):
                 "locked": locked,
                 "uses": 0,
             }
+        return None
 
     @commands.mod_or_permissions(manage_guild=True)
     @embed.command(name="unstore", aliases=["unstoreembed"], usage="[global_level=False] <name>")
     async def embed_unstore(
         self,
         ctx: commands.Context,
-        global_level: typing.Optional[bool],
+        global_level: bool | None,
         name: str,
     ):
         """Remove a stored embed."""
@@ -643,7 +654,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         ).stored_embeds() as stored_embeds:
             if name not in stored_embeds:
                 raise commands.UserFeedbackCheckFailure(
-                    _("This is not a stored embed at this level.")
+                    _("This is not a stored embed at this level."),
                 )
             del stored_embeds[name]
 
@@ -658,7 +669,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         ).stored_embeds()
         if not stored_embeds:
             raise commands.UserFeedbackCheckFailure(
-                _("No stored embeds is configured at this level.")
+                _("No stored embeds is configured at this level."),
             )
         description = "\n".join(f"- `{name}`" for name in stored_embeds)
         embed: discord.Embed = discord.Embed(
@@ -675,10 +686,15 @@ class EmbedUtils(DashboardIntegration, Cog):
 
     @commands.mod_or_permissions(manage_guild=True)
     @embed.command(
-        name="info", aliases=["infostored", "infostoredembed"], usage="[global_level=False] <name>"
+        name="info",
+        aliases=["infostored", "infostoredembed"],
+        usage="[global_level=False] <name>",
     )
     async def embed_info(
-        self, ctx: commands.Context, global_level: typing.Optional[bool], name: str
+        self,
+        ctx: commands.Context,
+        global_level: bool | None,
+        name: str,
     ):
         """Get info about a stored embed."""
         if global_level is None:
@@ -707,10 +723,15 @@ class EmbedUtils(DashboardIntegration, Cog):
 
     @commands.mod_or_permissions(manage_guild=True)
     @embed.command(
-        name="downloadstored", aliases=["downloadstoredembed"], usage="[global_level=False] <name>"
+        name="downloadstored",
+        aliases=["downloadstoredembed"],
+        usage="[global_level=False] <name>",
     )
     async def embed_download_stored(
-        self, ctx: commands.Context, global_level: typing.Optional[bool], name: str
+        self,
+        ctx: commands.Context,
+        global_level: bool | None,
+        name: str,
     ):
         """Download a JSON file for a stored embed."""
         if global_level is None:
@@ -725,8 +746,9 @@ class EmbedUtils(DashboardIntegration, Cog):
         stored_embed = stored_embeds[name]
         await ctx.send(
             file=text_to_file(
-                text=json.dumps({"embed": stored_embed["embed"]}, indent=4), filename="embed.json"
-            )
+                text=json.dumps({"embed": stored_embed["embed"]}, indent=4),
+                filename="embed.json",
+            ),
         )
 
     @embed.command(
@@ -737,8 +759,8 @@ class EmbedUtils(DashboardIntegration, Cog):
     async def embed_post_stored(
         self,
         ctx: commands.Context,
-        channel_or_message: typing.Optional[MessageableOrMessageConverter],
-        global_level: typing.Optional[bool],
+        channel_or_message: MessageableOrMessageConverter | None,
+        global_level: bool | None,
         names: commands.Greedy[StrConverter],
     ):
         """Post stored embeds."""
@@ -763,7 +785,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                     )
                 ):
                     raise commands.UserFeedbackCheckFailure(
-                        _("`{name}` is not a stored embed at this level.").format(name=name)
+                        _("`{name}` is not a stored embed at this level.").format(name=name),
                     )
                 embeds.append(discord.Embed.from_dict(stored_embeds[name]["embed"]))
                 stored_embeds[name]["uses"] += 1
@@ -794,10 +816,10 @@ class EmbedUtils(DashboardIntegration, Cog):
     async def embed_post_webhook(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[MessageableConverter],
+        channel: MessageableConverter | None,
         username: commands.Range[str, 1, 80],
         avatar_url: str,
-        global_level: typing.Optional[bool],
+        global_level: bool | None,
         names: commands.Greedy[StrConverter],
     ):
         """Post stored embeds with a webhook."""
@@ -822,7 +844,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                     )
                 ):
                     raise commands.UserFeedbackCheckFailure(
-                        _("`{name}` is not a stored embed at this level.").format(name=name)
+                        _("`{name}` is not a stored embed at this level.").format(name=name),
                     )
                 embeds.append(discord.Embed.from_dict(stored_embeds[name]["embed"]))
                 stored_embeds[name]["uses"] += 1
@@ -842,28 +864,27 @@ class EmbedUtils(DashboardIntegration, Cog):
     async def dashboard(
         self,
         ctx: commands.Context,
-        conversion_type: typing.Optional[
-            typing.Literal[
-                "json",
-                "fromjson",
-                "fromdata",
-                "yaml",
-                "fromyaml",
-                "fromfile",
-                "jsonfile",
-                "fromjsonfile",
-                "fromdatafile",
-                "yamlfile",
-                "fromyamlfile",
-                "gist",
-                "pastebin",
-                "hastebin",
-                "message",
-                "frommessage",
-                "msg",
-                "frommsg",
-            ]
-        ] = None,
+        conversion_type: typing.Literal[
+            "json",
+            "fromjson",
+            "fromdata",
+            "yaml",
+            "fromyaml",
+            "fromfile",
+            "jsonfile",
+            "fromjsonfile",
+            "fromdatafile",
+            "yamlfile",
+            "fromyamlfile",
+            "gist",
+            "pastebin",
+            "hastebin",
+            "message",
+            "frommessage",
+            "msg",
+            "frommsg",
+        ]
+        | None = None,
         *,
         data: str = None,
     ) -> None:
@@ -871,8 +892,8 @@ class EmbedUtils(DashboardIntegration, Cog):
         if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
-                )
+                    "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>.",
+                ),
             )
         if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(_("You can't access the Dashboard."))
@@ -881,11 +902,9 @@ class EmbedUtils(DashboardIntegration, Cog):
             in await self.bot.get_cog("Dashboard").config.webserver.disabled_third_parties()
         ):
             raise commands.UserFeedbackCheckFailure(
-                _("This third party is disabled on the Dashboard.")
+                _("This third party is disabled on the Dashboard."),
             )
-        url = (
-            f"{dashboard_url[0]}/dashboard/{ctx.guild.id}/third-party/{self.qualified_name}/guild"
-        )
+        url = f"{dashboard_url[0]}/dashboard/{ctx.guild.id}/third-party/{self.qualified_name}/guild"
 
         if conversion_type is not None:
             if conversion_type in ("json", "fromjson", "fromdata"):
@@ -905,7 +924,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                     argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
                 except UnicodeDecodeError:
                     raise commands.UserFeedbackCheckFailure(
-                        _("Unreadable attachment with `utf-8`.")
+                        _("Unreadable attachment with `utf-8`."),
                     )
                 data = await JSON_LIST_CONVERTER.convert(ctx, argument=argument)
             elif conversion_type in ("yamlfile", "fromyamlfile"):
@@ -917,7 +936,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                     argument = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
                 except UnicodeDecodeError:
                     raise commands.UserFeedbackCheckFailure(
-                        _("Unreadable attachment with `utf-8`.")
+                        _("Unreadable attachment with `utf-8`."),
                     )
                 data = await YAML_LIST_CONVERTER.convert(ctx, argument=argument)
             elif conversion_type in ("gist", "pastebin", "hastebin"):
@@ -928,7 +947,8 @@ class EmbedUtils(DashboardIntegration, Cog):
                 if data is not None:
                     message = await commands.MessageConverter().convert(ctx, argument=data)
                 elif ctx.message.reference is not None and isinstance(
-                    (reference := ctx.message.reference.resolved), discord.Message
+                    (reference := ctx.message.reference.resolved),
+                    discord.Message,
                 ):
                     message = reference
                 else:
@@ -952,7 +972,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         file = None
         if len(url) <= 2048:
             embed.description = _(
-                "You can create and send rich embeds directly from the Dashboard!"
+                "You can create and send rich embeds directly from the Dashboard!",
             )
             embed.url = url
         elif len(url) <= 4096 - 15:

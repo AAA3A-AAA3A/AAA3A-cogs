@@ -1,6 +1,7 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-import typing  # isort:skip
+import typing
+
+from redbot.core import commands
+from redbot.core.bot import Red
 
 
 def dashboard_page(*args, **kwargs):

@@ -1,16 +1,17 @@
-from AAA3A_utils import Cog, Settings  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import argparse
 import asyncio
+import typing
+
+import discord
 
 # import importlib
 # import sys
 from fernet import Fernet
+
+from AAA3A_utils import Cog, Settings
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 from .rpc import DashboardRPC
 
@@ -32,7 +33,7 @@ class RedirectURIConverter(commands.Converter):
             raise commands.BadArgument(_("This is not a valid URL."))
         if not argument.endswith("/callback"):
             raise commands.BadArgument(
-                _("This is not a valid Dashboard redirect URI: it must end with `/callback`.")
+                _("This is not a valid Dashboard redirect URI: it must end with `/callback`."),
             )
         return argument
 
@@ -53,7 +54,7 @@ class Dashboard(Cog):
     ⚠️ This package is a fork of Neuro Assassin's work, and isn't endorsed by the Org at all.
     """
 
-    __authors__: typing.List[str] = ["AAA3A", "Neuro Assassin"]
+    __authors__: list[str] = ["AAA3A", "Neuro Assassin"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -186,7 +187,7 @@ class Dashboard(Cog):
             },
         )
 
-        _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
+        _settings: dict[str, dict[str, typing.Any]] = {
             "all_in_one": {
                 "converter": bool,
                 "description": "Run the webserver in the bot process, without having to open another window. You have to install Red-Web-Dashboard in your bot venv with Pip and reload the cog.",
@@ -239,7 +240,12 @@ class Dashboard(Cog):
             },
             "default_color": {
                 "converter": typing.Literal[
-                    "success", "danger", "primary", "info", "warning", "dark"
+                    "success",
+                    "danger",
+                    "primary",
+                    "info",
+                    "warning",
+                    "dark",
                 ],
                 "description": "Set the default Color of the dashboard.",
                 "path": ["webserver", "ui", "meta", "default_color"],
@@ -272,7 +278,7 @@ class Dashboard(Cog):
             commands_group=self.setdashboard,
         )
 
-        self.app: typing.Optional[typing.Any] = None
+        self.app: typing.Any | None = None
         self.rpc: DashboardRPC = DashboardRPC(bot=self.bot, cog=self)
 
     async def cog_load(self) -> None:
@@ -300,7 +306,7 @@ class Dashboard(Cog):
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         self.logger.info(
-            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
+            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog.",
         )
 
     async def cog_unload(self) -> None:
@@ -335,10 +341,17 @@ class Dashboard(Cog):
                 parser.add_argument("--port", dest="port", type=int, default=42356)
                 # parser.add_argument("--rpc-port", dest="rpcport", type=int, default=6133)
                 parser.add_argument(
-                    "--interval", dest="interval", type=int, default=5, help=argparse.SUPPRESS
+                    "--interval",
+                    dest="interval",
+                    type=int,
+                    default=5,
+                    help=argparse.SUPPRESS,
                 )
                 parser.add_argument(
-                    "--development", dest="dev", action="store_true", help=argparse.SUPPRESS
+                    "--development",
+                    dest="dev",
+                    action="store_true",
+                    help=argparse.SUPPRESS,
                 )
                 # parser.add_argument("--instance", dest="instance", type=str, default=None)
                 args = vars(parser.parse_args(args=flask_flags))
@@ -355,8 +368,8 @@ class Dashboard(Cog):
         if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
-                )
+                    "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>.",
+                ),
             )
         if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(_("You can't access the Dashboard."))
@@ -421,18 +434,22 @@ class Dashboard(Cog):
             async def interaction_check(_self, interaction: discord.Interaction) -> bool:
                 if interaction.user.id not in [ctx.author.id] + list(ctx.bot.owner_ids):
                     await interaction.response.send_message(
-                        _("You are not allowed to use this interaction."), ephemeral=True
+                        _("You are not allowed to use this interaction."),
+                        ephemeral=True,
                     )
                     return False
                 return True
 
             @discord.ui.button(label=_("Set Discord OAuth Secret"))
             async def set_secret_button(
-                _self, interaction: discord.Interaction, button: discord.ui.Button
+                _self,
+                interaction: discord.Interaction,
+                button: discord.ui.Button,
             ) -> None:
                 await interaction.response.send_modal(SecretModal())
 
         view = SecretView()
         view._message = await ctx.send(
-            _("Click on the button below to set a secret for Discord OAuth."), view=view
+            _("Click on the button below to set a secret for Discord OAuth."),
+            view=view,
         )

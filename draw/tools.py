@@ -1,18 +1,21 @@
-from redbot.core.bot import Red  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import typing
 
+import discord
 import numpy as np
 
-from .board import Board
 from .color import Color
 from .constants import MAIN_COLORS_DICT
+
+if typing.TYPE_CHECKING:
+    from redbot.core.bot import Red
+
+    from .board import Board
 
 
 class Tool(discord.ui.Button):
     """A template class for each of the tools."""
 
-    def __init__(self, view: discord.ui.View, *, primary: typing.Optional[bool] = True) -> None:
+    def __init__(self, view: discord.ui.View, *, primary: bool | None = True) -> None:
         super().__init__(
             emoji=self.emoji,
             style=(
@@ -162,12 +165,12 @@ class FillTool(Tool):
         self,
         *,
         interaction: discord.Interaction,
-        initial_coords: typing.Optional[typing.Tuple[int, int]] = None,
+        initial_coords: tuple[int, int] | None = None,
     ) -> bool:
         """The method that is called when the tool is used."""
         color = self.board.cursor
         if self.board.cursor_pixel == color:
-            return
+            return None
 
         # Use Breadth-First Search algorithm to fill an area.
         initial_coords = initial_coords or (
@@ -244,7 +247,8 @@ class DarkenTool(Tool):
     @staticmethod
     def edit(value: int) -> int:
         return max(
-            value - CHANGE_AMOUNT, 0
+            value - CHANGE_AMOUNT,
+            0,
         )  # The max func makes sure it doesn't go below 0 when decreasing, for example, black.
 
     async def use(self, *, interaction: discord.Interaction) -> bool:
@@ -281,7 +285,8 @@ class LightenTool(DarkenTool):
     @staticmethod
     def edit(value: int) -> int:
         return min(
-            value + CHANGE_AMOUNT, 255
+            value + CHANGE_AMOUNT,
+            255,
         )  # The min func makes sure it doesn't go above 255 when increasing, for example, white.
 
 

@@ -1,15 +1,15 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
+import typing
 
 import dateutil
+import discord
 import pytz
 import validators
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 from .converters import TimeConverter
 
@@ -22,7 +22,7 @@ class EditReminderModal(discord.ui.Modal):
     def __init__(
         self,
         parent: discord.ui.View,
-        timezone: typing.Optional[pytz.timezone] = pytz.timezone("UTC"),
+        timezone: pytz.timezone | None = pytz.timezone("UTC"),
     ) -> None:
         self._parent: discord.ui.View = parent
         self.reminder = self._parent.reminder
@@ -107,7 +107,7 @@ class EditReminderModal(discord.ui.Modal):
         ):
             try:
                 fake_context: commands.Context = await interaction.client.get_context(
-                    interaction.message
+                    interaction.message,
                 )
                 fake_context.author = interaction.user
                 __, expires_at, __ = await TimeConverter().convert(
@@ -145,14 +145,17 @@ class EditReminderModal(discord.ui.Modal):
                         self._parent._message = await self._parent._message.edit(
                             content=content,
                             allowed_mentions=discord.AllowedMentions(
-                                everyone=False, users=False, roles=False, replied_user=False
+                                everyone=False,
+                                users=False,
+                                roles=False,
+                                replied_user=False,
                             ),
                         )
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
             _("Your reminder **#{reminder_id}** has been successfully edited.").format(
-                reminder_id=self.reminder.id
+                reminder_id=self.reminder.id,
             ),
             ephemeral=True,
         )
@@ -166,7 +169,7 @@ class ReminderView(discord.ui.View):
         self.reminder = reminder
         if not me_too or self.reminder.content["type"] in ("command", "say"):
             self.remove_item(self.me_too)
-        self.me_too_members: typing.Dict[discord.Member, typing.Any] = {}
+        self.me_too_members: dict[discord.Member, typing.Any] = {}
 
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()
@@ -177,7 +180,8 @@ class ReminderView(discord.ui.View):
             and interaction.data["custom_id"] != "cross_button"
         ):
             await interaction.response.send_message(
-                "This reminder is already expired.", ephemeral=True
+                "This reminder is already expired.",
+                ephemeral=True,
             )
             await self.on_timeout()
             self.stop()
@@ -186,7 +190,8 @@ class ReminderView(discord.ui.View):
             return True
         if interaction.user.id not in [self.reminder.user_id] + list(self.cog.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -211,10 +216,12 @@ class ReminderView(discord.ui.View):
         custom_id="edit_reminder",
     )
     async def edit_reminder(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         timezone = pytz.timezone(
-            await self.cog.config.user_from_id(self.reminder.user_id).timezone() or "UTC"
+            await self.cog.config.user_from_id(self.reminder.user_id).timezone() or "UTC",
         )
         await interaction.response.send_modal(EditReminderModal(self, timezone=timezone))
 
@@ -225,7 +232,9 @@ class ReminderView(discord.ui.View):
         custom_id="add_edit_repeat_rules",
     )
     async def add_edit_repeat_rules(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         embed: discord.Embed = discord.Embed(
             title=_("Reminder #{reminder_id} Repeat Rules").format(reminder_id=self.reminder.id),
@@ -240,7 +249,10 @@ class ReminderView(discord.ui.View):
         view._message = await interaction.original_response()
 
     @discord.ui.button(
-        label="Me Too", emoji="🔔", style=discord.ButtonStyle.secondary, custom_id="me_too"
+        label="Me Too",
+        emoji="🔔",
+        style=discord.ButtonStyle.secondary,
+        custom_id="me_too",
     )
     async def me_too(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user.id == self.reminder.user_id:
@@ -249,7 +261,7 @@ class ReminderView(discord.ui.View):
                 ephemeral=True,
             )
             return
-        elif interaction.user in self.me_too_members:
+        if interaction.user in self.me_too_members:
             reminder = self.me_too_members[interaction.user]
             reminder.next_expires_at = None
             await reminder.delete()
@@ -261,7 +273,7 @@ class ReminderView(discord.ui.View):
         reminder_id = 1
         while reminder_id in self.cog.cache.get(interaction.user.id, {}):
             reminder_id += 1
-        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+        utc_now = datetime.datetime.now(tz=datetime.UTC)
         reminder = self.cog.Reminder(
             cog=self.cog,
             user_id=interaction.user.id,
@@ -292,19 +304,23 @@ class ReminderView(discord.ui.View):
         custom_id="delete_reminder",
     )
     async def delete_reminder(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         self.reminder.next_expires_at = None
         await self.reminder.delete()
         await interaction.response.send_message(
-            _("Reminder **#{reminder_id}** deleted.").format(reminder_id=self.reminder.id)
+            _("Reminder **#{reminder_id}** deleted.").format(reminder_id=self.reminder.id),
         )
         await self.on_timeout()
         self.stop()
 
     @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger, custom_id="cross_button")
     async def cross_button(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await CogsUtils.delete_message(self._message)
         self.stop()
@@ -334,7 +350,7 @@ class AddRepeatRuleModal(discord.ui.Modal):
     async def on_submit(self, interaction: discord.Interaction) -> None:
         try:
             fake_context: commands.Context = await interaction.client.get_context(
-                interaction.message
+                interaction.message,
             )
             fake_context.author = interaction.user
             utc_now, expires_at, repeat = await TimeConverter().convert(
@@ -360,8 +376,8 @@ class AddRepeatRuleModal(discord.ui.Modal):
                         "start_trigger": int(utc_now.timestamp()),
                         "first_trigger": None,
                         "last_trigger": None,
-                    }
-                )
+                    },
+                ),
             )
         await self.reminder.save()
         if self._parent._message is not None:
@@ -371,13 +387,14 @@ class AddRepeatRuleModal(discord.ui.Modal):
                 self._parent.remove_repeat_rule.disabled = False
                 self._parent.stop_repeat.disabled = False
                 self._parent._message = await self._parent._message.edit(
-                    embed=embed, view=self._parent
+                    embed=embed,
+                    view=self._parent,
                 )
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
             _("Your reminder **#{reminder_id}** has been successfully edited.").format(
-                reminder_id=self.reminder.id
+                reminder_id=self.reminder.id,
             ),
             ephemeral=True,
         )
@@ -412,14 +429,16 @@ class RemoveRepeatRuleModal(discord.ui.Modal):
             return
         if self.reminder.repeat is None:
             await interaction.response.send_message(
-                _("No existing repeat rule(s)."), ephemeral=True
+                _("No existing repeat rule(s)."),
+                ephemeral=True,
             )
             return
         try:
             del self.reminder.repeat.rules[index_number_repeat_rule - 1]
         except ValueError:
             await interaction.response.send_message(
-                _("No existing repeat rule found with this index number."), ephemeral=True
+                _("No existing repeat rule found with this index number."),
+                ephemeral=True,
             )
             return
         await self.reminder.save()
@@ -427,18 +446,19 @@ class RemoveRepeatRuleModal(discord.ui.Modal):
             try:
                 embed = self._parent._message.embeds[0]
                 embed.description = self.reminder.repeat.get_info() or _(
-                    "No existing repeat rule(s)."
+                    "No existing repeat rule(s).",
                 )
                 self._parent.remove_repeat_rule.disabled = not self.reminder.repeat.rules
                 self._parent.stop_repeat.disabled = not self.reminder.repeat.rules
                 self._parent._message = await self._parent._message.edit(
-                    embed=embed, view=self._parent
+                    embed=embed,
+                    view=self._parent,
                 )
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
             _("Your reminder **#{reminder_id}** has been successfully edited.").format(
-                reminder_id=self.reminder.id
+                reminder_id=self.reminder.id,
             ),
             ephemeral=True,
         )
@@ -461,7 +481,8 @@ class RepeatView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.reminder.user_id] + list(self.cog.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         if (
@@ -469,7 +490,8 @@ class RepeatView(discord.ui.View):
             and interaction.data["custom_id"] != "cross_button"
         ):
             await interaction.response.send_message(
-                "This reminder is already expired.", ephemeral=True
+                "This reminder is already expired.",
+                ephemeral=True,
             )
             await self.on_timeout()
             self.stop()
@@ -491,11 +513,14 @@ class RepeatView(discord.ui.View):
         custom_id="add_repeat_rule",
     )
     async def add_repeat_rule(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if self.reminder.repeat is not None and len(self.reminder.repeat.rules) > 10:
             await interaction.response.send_message(
-                _("A maximum of 10 repeat rules per reminder is supported."), ephemeral=True
+                _("A maximum of 10 repeat rules per reminder is supported."),
+                ephemeral=True,
             )
             return
         await interaction.response.send_modal(AddRepeatRuleModal(self))
@@ -507,11 +532,14 @@ class RepeatView(discord.ui.View):
         custom_id="remove_repeat_rule",
     )
     async def remove_repeat_rule(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if self.reminder.repeat is None:
             await interaction.response.send_message(
-                _("No existing repeat rule(s)."), ephemeral=True
+                _("No existing repeat rule(s)."),
+                ephemeral=True,
             )
             return
         await interaction.response.send_modal(RemoveRepeatRuleModal(self))
@@ -523,7 +551,9 @@ class RepeatView(discord.ui.View):
         custom_id="stop_repeat",
     )
     async def stop_repeat(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         self.reminder.repeat = None
         if self._message is not None:
@@ -534,12 +564,14 @@ class RepeatView(discord.ui.View):
             except discord.HTTPException:
                 pass
         await interaction.response.send_message(
-            _("Reminder **#{reminder_id}** edited.").format(reminder_id=self.reminder.id)
+            _("Reminder **#{reminder_id}** edited.").format(reminder_id=self.reminder.id),
         )
 
     @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger, custom_id="cross_button")
     async def cross_button(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await CogsUtils.delete_message(self._message)
         self.stop()
@@ -560,7 +592,7 @@ class SnoozeView(discord.ui.View):
                     label=_("Jump to original message"),
                     url=self.reminder.jump_url,
                     row=1,
-                )
+                ),
             )
 
         self._message: discord.Message = None
@@ -569,7 +601,8 @@ class SnoozeView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.reminder.user_id] + list(self.cog.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -591,12 +624,14 @@ class SnoozeView(discord.ui.View):
         self._ready.set()
 
     async def create_snooze_reminder(
-        self, interaction: discord.Interaction, timedelta: dateutil.relativedelta.relativedelta
+        self,
+        interaction: discord.Interaction,
+        timedelta: dateutil.relativedelta.relativedelta,
     ) -> typing.Any:
         reminder_id = 1
         while reminder_id in self.cog.cache.get(self.reminder.user_id, {}):
             reminder_id += 1
-        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+        utc_now = datetime.datetime.now(tz=datetime.UTC)
         expires_at = utc_now + timedelta
         reminder = self.cog.Reminder(
             cog=self.cog,
@@ -629,7 +664,9 @@ class SnoozeView(discord.ui.View):
         custom_id="mark_as_completed",
     )
     async def mark_as_completed(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer()
         await self.on_timeout()
@@ -642,28 +679,37 @@ class SnoozeView(discord.ui.View):
         custom_id="in_20_minutes",
     )
     async def in_20_minutes(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await self.create_snooze_reminder(
-            interaction=interaction, timedelta=dateutil.relativedelta.relativedelta(minutes=20)
+            interaction=interaction,
+            timedelta=dateutil.relativedelta.relativedelta(minutes=20),
         )
 
     @discord.ui.button(
-        label="In 1 Hour", emoji="⏱️", style=discord.ButtonStyle.secondary, custom_id="in_1_hour"
+        label="In 1 Hour",
+        emoji="⏱️",
+        style=discord.ButtonStyle.secondary,
+        custom_id="in_1_hour",
     )
     async def in_1_hour(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await self.create_snooze_reminder(
-            interaction=interaction, timedelta=dateutil.relativedelta.relativedelta(hours=1)
+            interaction=interaction,
+            timedelta=dateutil.relativedelta.relativedelta(hours=1),
         )
 
     @discord.ui.button(
-        label="In 3 Hours", emoji="⏱️", style=discord.ButtonStyle.secondary, custom_id="in_3_hours"
+        label="In 3 Hours",
+        emoji="⏱️",
+        style=discord.ButtonStyle.secondary,
+        custom_id="in_3_hours",
     )
-    async def in_3_hours(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def in_3_hours(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await self.create_snooze_reminder(
-            interaction=interaction, timedelta=dateutil.relativedelta.relativedelta(hours=3)
+            interaction=interaction,
+            timedelta=dateutil.relativedelta.relativedelta(hours=3),
         )
 
     @discord.ui.button(
@@ -678,7 +724,10 @@ class SnoozeView(discord.ui.View):
         tz = pytz.timezone(timezone)
         now = datetime.datetime.now(tz=tz)
         tomorrow = (now + dateutil.relativedelta.relativedelta(days=1)).replace(
-            hour=9, minute=0, second=0, microsecond=0
+            hour=9,
+            minute=0,
+            second=0,
+            microsecond=0,
         )
         delta = tomorrow - now
         await self.create_snooze_reminder(interaction=interaction, timedelta=delta)
@@ -696,7 +745,13 @@ class SnoozeView(discord.ui.View):
         now = datetime.datetime.now(tz=tz)
         next_monday = now + dateutil.relativedelta.relativedelta(days=(7 - now.weekday()))
         next_monday_9am = datetime.datetime(
-            next_monday.year, next_monday.month, next_monday.day, 9, 0, 0, tzinfo=tz
+            next_monday.year,
+            next_monday.month,
+            next_monday.day,
+            9,
+            0,
+            0,
+            tzinfo=tz,
         )
         delta = next_monday_9am - now
         await self.create_snooze_reminder(interaction=interaction, timedelta=delta)
@@ -709,21 +764,23 @@ class SnoozeView(discord.ui.View):
         row=1,
     )
     async def stop_repeat(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         self.reminder.next_expires_at = None
         await self.reminder.delete()
         await interaction.response.send_message(
-            _("Reminder **#{reminder_id}** deleted.").format(reminder_id=self.reminder.id)
+            _("Reminder **#{reminder_id}** deleted.").format(reminder_id=self.reminder.id),
         )
         await self.on_timeout()
         self.stop()
 
-    @discord.ui.button(
-        emoji="✖️", style=discord.ButtonStyle.danger, custom_id="cross_button", row=1
-    )
+    @discord.ui.button(emoji="✖️", style=discord.ButtonStyle.danger, custom_id="cross_button", row=1)
     async def cross_button(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await CogsUtils.delete_message(self._message)
         self.stop()

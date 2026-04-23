@@ -1,12 +1,11 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import traceback
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, pagify
 
 from .dashboard_integration import DashboardIntegration
@@ -36,12 +35,15 @@ class AutoTraceback(DashboardIntegration, Cog):
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self.tracebacks: typing.List[str] = []
+        self.tracebacks: list[str] = []
 
     @commands.is_owner()
     @commands.hybrid_command()
     async def traceback(
-        self, ctx: commands.Context, public: typing.Optional[bool] = True, index: int = 0
+        self,
+        ctx: commands.Context,
+        public: bool | None = True,
+        index: int = 0,
     ) -> None:
         """Sends to the owner the last command exception that has occurred.
 
@@ -85,19 +87,22 @@ class AutoTraceback(DashboardIntegration, Cog):
             except discord.HTTPException:
                 raise commands.UserFeedbackCheckFailure(
                     "I couldn't send the traceback message to you in DM. "
-                    "Either you blocked me or you disabled DMs in this server."
+                    "Either you blocked me or you disabled DMs in this server.",
                 )
 
     @commands.Cog.listener()
     async def on_command_error(
-        self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False
+        self,
+        ctx: commands.Context,
+        error: commands.CommandError,
+        unhandled_by_cog: bool = False,
     ) -> None:
         if await self.bot.cog_disabled_in_guild(cog=self, guild=ctx.guild):
             return
         if isinstance(error, IGNORED_ERRORS):
             return
         traceback_error = "".join(
-            traceback.format_exception(type(error), error, error.__traceback__)
+            traceback.format_exception(type(error), error, error.__traceback__),
         )
         _traceback_error = traceback_error.split("\n")
         _traceback_error[0] = _traceback_error[0] + (
@@ -116,7 +121,8 @@ class AutoTraceback(DashboardIntegration, Cog):
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(
-        self, assistant_cog: typing.Optional[commands.Cog] = None
+        self,
+        assistant_cog: commands.Cog | None = None,
     ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return self.get_last_command_error_traceback_for_assistant
@@ -126,9 +132,13 @@ class AutoTraceback(DashboardIntegration, Cog):
             "parameters": {"type": "object", "properties": {}, "required": []},
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+        return None
 
     async def get_last_command_error_traceback_for_assistant(
-        self, user: typing.Union[discord.Member, discord.User], *args, **kwargs
+        self,
+        user: discord.Member | discord.User,
+        *args,
+        **kwargs,
     ):
         if user.id not in self.bot.owner_ids:
             return "Only bot owners can view errors tracebacks."

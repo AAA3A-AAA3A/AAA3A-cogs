@@ -1,8 +1,7 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
 
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 
 try:
@@ -29,7 +28,8 @@ class ForumTagConverter(commands.Converter):
             not isinstance((profile := ctx.args[-1]), str)
             or (
                 forum_channel_id := await cog.config.guild(ctx.guild).profiles.get_raw(
-                    profile, "forum_channel"
+                    profile,
+                    "forum_channel",
                 )
             )
             is None
@@ -37,7 +37,7 @@ class ForumTagConverter(commands.Converter):
             or not isinstance(forum_channel, discord.ForumChannel)
         ):
             raise commands.BadArgument(
-                _("You must set the forum channel before setting a forum tag.")
+                _("You must set the forum channel before setting a forum tag."),
             )
         try:
             argument = int(argument)
@@ -49,20 +49,22 @@ class ForumTagConverter(commands.Converter):
                 [
                     f"`{f'{tag.emoji} ' if tag.emoji is not None else ''}{tag.name}` ({tag.id})"
                     for tag in forum_channel.available_tags
-                ]
+                ],
             )
             raise commands.BadArgument(
                 _(
-                    "The forum tag ID provided doesn't exist. The available tags are: {available_tags}."
-                ).format(available_tags=available_tags)
+                    "The forum tag ID provided doesn't exist. The available tags are: {available_tags}.",
+                ).format(available_tags=available_tags),
             )
         return argument
 
 
 class Emoji(commands.EmojiConverter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[str, discord.Emoji]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> str | discord.Emoji:
         # argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
@@ -104,23 +106,25 @@ class MyMessageConverter(commands.MessageConverter):
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
-                )
+                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.",
+                ),
             )
         return message
 
 
 class ModalConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Dict[str, typing.Union[str, bool, typing.Dict, typing.List]]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> dict[str, str | bool | dict | list]:
         try:
             argument_dict = yaml.safe_load(argument)
         except yaml.YAMLError:
             raise commands.BadArgument(
                 _(
-                    "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
-                )
+                    "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)",
+                ),
             )
         required_arguments = ["label"]
         optional_arguments = [
@@ -139,21 +143,22 @@ class ModalConverter(commands.Converter):
                 if arg not in input:
                     raise commands.BadArgument(
                         _("The argument `/{count}/{arg}` is required in the YAML.").format(
-                            count=count, arg=arg
-                        )
+                            count=count,
+                            arg=arg,
+                        ),
                     )
             for arg in input:
                 if arg not in required_arguments + optional_arguments:
                     raise commands.BadArgument(
                         _(
-                            "The argument `/{count}/{arg}` is invalid in the YAML. Check the spelling."
-                        ).format(count=count, arg=arg)
+                            "The argument `/{count}/{arg}` is invalid in the YAML. Check the spelling.",
+                        ).format(count=count, arg=arg),
                     )
             if len(input["label"]) > 45:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/modal/{count}/label` must be less than 45 characters long."
-                    ).format(count=count, arg=arg)
+                        "The argument `/modal/{count}/label` must be less than 45 characters long.",
+                    ).format(count=count, arg=arg),
                 )
             if "style" in input:
                 input["style"] = str(input["style"])
@@ -161,15 +166,15 @@ class ModalConverter(commands.Converter):
                     style = int(input["style"])
                 except ValueError:
                     raise commands.BadArgument(
-                        _(
-                            "The argument `/{count}/style` must be a number between 1 and 2."
-                        ).format(count=count)
+                        _("The argument `/{count}/style` must be a number between 1 and 2.").format(
+                            count=count,
+                        ),
                     )
                 if not 1 <= style <= 2:
                     raise commands.BadArgument(
-                        _(
-                            "The argument `/{count}/style` must be a number between 1 and 2."
-                        ).format(count=count)
+                        _("The argument `/{count}/style` must be a number between 1 and 2.").format(
+                            count=count,
+                        ),
                     )
                 input["style"] = style
             else:
@@ -180,10 +185,9 @@ class ModalConverter(commands.Converter):
                     lowered = argument.lower()
                     if lowered in {"yes", "y", "true", "t", "1", "enable", "on"}:
                         return True
-                    elif lowered in {"no", "n", "false", "f", "0", "disable", "off"}:
+                    if lowered in {"no", "n", "false", "f", "0", "disable", "off"}:
                         return False
-                    else:
-                        raise commands.BadBoolArgument(lowered)
+                    raise commands.BadBoolArgument(lowered)
 
                 input["required"] = str(input["required"])
                 try:
@@ -191,8 +195,8 @@ class ModalConverter(commands.Converter):
                 except commands.BadBoolArgument:
                     raise commands.BadArgument(
                         _(
-                            "The argument `/{count}/required` must be a boolean (True or False)."
-                        ).format(count=count)
+                            "The argument `/{count}/required` must be a boolean (True or False).",
+                        ).format(count=count),
                     )
             else:
                 input["required"] = True
@@ -201,31 +205,31 @@ class ModalConverter(commands.Converter):
             if len(input["default"]) > 4000:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/modal/{count}/default` must be less than 4000 characters long."
-                    ).format(count=count, arg=arg)
+                        "The argument `/modal/{count}/default` must be less than 4000 characters long.",
+                    ).format(count=count, arg=arg),
                 )
             if "placeholder" not in input or input["placeholder"] == "None":
                 input["placeholder"] = ""
             if len(input["placeholder"]) > 100:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/modal/{count}/placeholder` must be less than 100 characters long."
-                    ).format(count=count, arg=arg)
+                        "The argument `/modal/{count}/placeholder` must be less than 100 characters long.",
+                    ).format(count=count, arg=arg),
                 )
             if "min_length" not in input or input["min_length"] == "None":
                 input["min_length"] = None
             elif not 0 <= input["min_length"] <= 1000:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/modal/{count}/min_length` must be between 0 and 1000."
-                    ).format(count=count, arg=arg)
+                        "The argument `/modal/{count}/min_length` must be between 0 and 1000.",
+                    ).format(count=count, arg=arg),
                 )
             if "max_length" not in input or input["max_length"] == "None":
                 input["max_length"] = None
             elif not 1 <= input["max_length"] <= 1000:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/modal/{count}/max_length` must be between 0 and 1000."
-                    ).format(count=count, arg=arg)
+                        "The argument `/modal/{count}/max_length` must be between 0 and 1000.",
+                    ).format(count=count, arg=arg),
                 )
         return argument_dict

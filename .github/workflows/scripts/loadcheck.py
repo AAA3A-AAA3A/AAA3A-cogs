@@ -3,7 +3,7 @@ import os
 import subprocess
 import sys
 import time
-from typing import Any, Dict, Tuple
+from typing import Any
 
 from dotenv import load_dotenv
 from jsonrpc_websocket import Server
@@ -55,7 +55,7 @@ for cog in cogs:
     cogs.append(cog.lower())
 
 
-async def leswebsockets() -> Tuple[Dict[str, Any], Dict[str, Any]]:
+async def leswebsockets() -> tuple[dict[str, Any], dict[str, Any]]:
     print("Connecting to Red via RPC")
 
     server = Server("ws://localhost:6133")
@@ -63,10 +63,10 @@ async def leswebsockets() -> Tuple[Dict[str, Any], Dict[str, Any]]:
         await server.ws_connect()
 
         print("Loading cogs")
-        load_results: Dict[str, Any] = await server.CORE__LOAD(cogs)
+        load_results: dict[str, Any] = await server.CORE__LOAD(cogs)
         await asyncio.sleep(1)
         print("Unloading cogs")
-        unload_results: Dict[str, Any] = await server.CORE__UNLOAD(cogs)
+        unload_results: dict[str, Any] = await server.CORE__UNLOAD(cogs)
     finally:
         await server.close()
 

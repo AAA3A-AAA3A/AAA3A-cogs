@@ -1,8 +1,8 @@
-from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
+
+from AAA3A_utils import Cog
+from redbot.core import commands
+from redbot.core.i18n import Translator, cog_i18n
 
 from .utils import Emoji, EmojiLabelDescriptionValueConverter
 
@@ -25,8 +25,8 @@ class MyMessageConverter(commands.MessageConverter):
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
-                )
+                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.",
+                ),
             )
         return message
 
@@ -45,10 +45,10 @@ class settings(Cog):
         self,
         ctx: commands.Context,
         profile: ProfileConverter,
-        channel: typing.Optional[discord.TextChannel],
-        message: typing.Optional[MyMessageConverter],
+        channel: discord.TextChannel | None,
+        message: MyMessageConverter | None,
         reason_options: commands.Greedy[EmojiLabelDescriptionValueConverter],
-        emoji: typing.Optional[Emoji] = "🎟️",
+        emoji: Emoji | None = "🎟️",
         label: commands.Range[str, 1, 80] = None,
     ) -> None:
         """Send a message with a button to open a ticket or dropdown with possible reasons.
@@ -68,8 +68,8 @@ class settings(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I don't have sufficient permissions in this channel to view it and to send messages into."
-                )
+                    "I don't have sufficient permissions in this channel to view it and to send messages into.",
+                ),
             )
         if reason_options == []:
             reason_options = None
@@ -79,7 +79,8 @@ class settings(Cog):
         embed: discord.Embed = discord.Embed()
         embed.title = config["embed_button"]["title"]
         embed.description = config["embed_button"]["description"].replace(
-            "{prefix}", f"{ctx.prefix}"
+            "{prefix}",
+            f"{ctx.prefix}",
         )
         embed.set_image(url=config["embed_button"]["image"])
         embed.set_thumbnail(url=actual_thumbnail)
@@ -98,7 +99,7 @@ class settings(Cog):
                         "emoji": f"{getattr(emoji, 'id', emoji)}",
                         "custom_id": "create_ticket_button",
                         "disabled": False,
-                    }
+                    },
                 ],
             )
             if message is None:
@@ -110,10 +111,10 @@ class settings(Cog):
             await self.config.guild(ctx.guild).buttons.set(buttons_config)
         else:
             if len({value for __, __, __, value in reason_options}) != len(
-                [value for __, __, __, value in reason_options]
+                [value for __, __, __, value in reason_options],
             ):
                 raise commands.UserFeedbackCheckFailure(
-                    _("A different value must be provided for each dropdown option.")
+                    _("A different value must be provided for each dropdown option."),
                 )
             if ctx.interaction is None and ctx.bot_permissions.add_reactions:
                 try:
@@ -122,8 +123,8 @@ class settings(Cog):
                 except discord.HTTPException:
                     await ctx.send(
                         _(
-                            "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                        )
+                            "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.",
+                        ),
                     )
                     return
             dropdowns_config = await self.config.guild(ctx.guild).dropdowns.all()
@@ -159,8 +160,10 @@ class settings(Cog):
             await self.config.guild(ctx.guild).dropdowns.set(dropdowns_config)
 
     async def check_permissions_in_channel(
-        self, permissions: typing.List[str], channel: discord.TextChannel
-    ) -> typing.List[str]:
+        self,
+        permissions: list[str],
+        channel: discord.TextChannel,
+    ) -> list[str]:
         """Function to checks if the permissions are available in a guild.
         This will return a list of the missing permissions.
         """

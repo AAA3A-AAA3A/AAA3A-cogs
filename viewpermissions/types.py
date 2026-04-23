@@ -1,30 +1,36 @@
-import discord  # isort:skip
-import typing  # isort:skip
-
+import typing
 from dataclasses import dataclass
+
+import discord
 
 from redbot.core.utils.chat_formatting import pagify
 
 
 class SearchResults:
     def __init__(
-        self, query: str, url: str, results: typing.Dict[str, str]
+        self,
+        query: str,
+        url: str,
+        results: dict[str, str],
     ) -> None:  # set[str, str, bool]
         self.query: str = query
         self.url: str = url
-        self.results: typing.Dict[str, str] = results
+        self.results: dict[str, str] = results
 
-    def __list__(self) -> typing.Set:
+    def __list__(self) -> set:
         return self.results
 
     def to_embeds(
-        self, embed_color: discord.Color = discord.Color.green()
-    ) -> typing.List[discord.Embed]:
+        self,
+        embed_color: discord.Color = discord.Color.green(),
+    ) -> list[discord.Embed]:
         description = "\n".join(f"- [**`{name}`**]({url})" for name, url in self.results.items())
         embeds = []
         pages = list(pagify(description, page_length=4000, delims="\n"))  # delims="\n• "
         embed: discord.Embed = discord.Embed(
-            title=f'Results for the query "{self.query}"', url=self.url, color=embed_color
+            title=f'Results for the query "{self.query}"',
+            url=self.url,
+            color=embed_color,
         )
         embed.set_footer(text="Fetched from Food52.")
         for page in pages:
@@ -40,17 +46,17 @@ class Recipe:
     name: str
     category: str
     cuisine: str
-    author: typing.Dict[str, str]
+    author: dict[str, str]
     description: str
     _yield: str
     preparation_time: str
     cook_time: str
-    rating: typing.Optional[typing.Dict[str, typing.Union[float, int]]]
-    images_urls: typing.List[str]
-    ingredients: typing.List[str]
-    instructions: typing.Dict[str, typing.List[str]]
+    rating: dict[str, float | int] | None
+    images_urls: list[str]
+    ingredients: list[str]
+    instructions: dict[str, list[str]]
 
-    def to_json(self) -> typing.Dict[str, typing.Any]:
+    def to_json(self) -> dict[str, typing.Any]:
         return {
             v: getattr(self, v)
             for v in dir(self)
@@ -58,8 +64,9 @@ class Recipe:
         }
 
     def to_embeds(
-        self, embed_color: discord.Color = discord.Color.green()
-    ) -> typing.List[discord.Embed]:
+        self,
+        embed_color: discord.Color = discord.Color.green(),
+    ) -> list[discord.Embed]:
         embed: discord.Embed = discord.Embed(title=self.name, url=self.url, color=embed_color)
         embed.set_author(
             name=self.author["name"],

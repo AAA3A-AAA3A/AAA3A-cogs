@@ -1,6 +1,4 @@
-import discord  # isort:skip
-import typing  # isort:skip
-
+import discord
 
 NIGHT_COLOR: discord.Color = discord.Color.dark_blue()
 DAY_COLOR: discord.Color = discord.Color.gold()
@@ -17,7 +15,7 @@ ACHIEVEMENTS_COLOR: discord.Color = discord.Color.gold()
 DEVELOPER: int = 829612600059887649
 
 
-HELPERS: typing.List[int] = [
+HELPERS: list[int] = [
     919736854100725780,  # C
     760721560666767391,  # Masterodeath22
     958793099541352580,  # Cobra
@@ -26,7 +24,7 @@ HELPERS: typing.List[int] = [
 ]
 
 
-TESTERS: typing.List[int] = [
+TESTERS: list[int] = [
     DEVELOPER,
     919736854100725780,  # C
     760721560666767391,  # Masterodeath22
@@ -87,4 +85,4 @@ TESTERS: typing.List[int] = [
 ]
 
 
-SUPPORTERS: typing.List[int] = []
+SUPPORTERS: list[int] = []

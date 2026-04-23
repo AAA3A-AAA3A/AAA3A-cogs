@@ -1,10 +1,3 @@
-﻿from AAA3A_utils import Cog, Menu, Settings, CogsUtils  # isort:skip
-from redbot.core import commands, app_commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import ast
 import asyncio
 import collections
@@ -15,11 +8,17 @@ import re
 import subprocess
 import sys
 import textwrap
+import typing
 
 import aiohttp
+import discord
 import rich
 from pygments.styles import get_style_by_name
-from redbot.core import dev_commands
+
+from AAA3A_utils import Cog, CogsUtils, Menu, Settings
+from redbot.core import Config, app_commands, commands, dev_commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.predicates import MessagePredicate
 
@@ -65,14 +64,14 @@ def redirect(**kwargs):
 
 class DevOutput(dev_commands.DevOutput):
     def __init__(self, *args, **kwargs) -> None:
-        self._locals: typing.Dict[str, typing.Any] = kwargs.pop("_locals", {})
+        self._locals: dict[str, typing.Any] = kwargs.pop("_locals", {})
         self.prints: str = ""
         self.rich_tracebacks: bool = kwargs.pop("rich_tracebacks", False)
-        self.exc: typing.Optional[Exception] = None
+        self.exc: Exception | None = None
         super().__init__(*args, **kwargs)
 
     def __str__(self, output_mode: typing.Literal["repr", "repr_or_str", "str"] = "repr") -> str:
-        _console_custom_kwargs: typing.Dict[str, typing.Any] = self.env.get(
+        _console_custom_kwargs: dict[str, typing.Any] = self.env.get(
             "_console_custom",
             {
                 "width": 80,
@@ -86,7 +85,7 @@ class DevOutput(dev_commands.DevOutput):
             with console.capture() as captured:
                 if formatted_imports := self.env.get_formatted_imports():
                     console.print(
-                        rich.syntax.Syntax(formatted_imports, "pycon", theme=SolarizedCustom)
+                        rich.syntax.Syntax(formatted_imports, "pycon", theme=SolarizedCustom),
                     )
                 if self.prints:
                     console.print(self.prints)
@@ -95,8 +94,7 @@ class DevOutput(dev_commands.DevOutput):
                 if self.formatted_exc:
                     console.print(self.formatted_exc.strip())
                 elif (
-                    self.result is not None
-                    or self.always_include_result
+                    self.result is not None or self.always_include_result
                     # and not self.prints
                     # and not formatted_imports
                     # and not printed
@@ -117,7 +115,8 @@ class DevOutput(dev_commands.DevOutput):
                         console.print(self.format_exception(exc).strip())
             output = captured.get().strip()
         return CogsUtils.replace_var_paths(dev_commands.sanitize_output(self.ctx, output)).replace(
-            "```", "\u02CB\u02CB\u02CB"
+            "```",
+            "\u02cb\u02cb\u02cb",
         )
 
     async def send(
@@ -139,7 +138,9 @@ class DevOutput(dev_commands.DevOutput):
                 kwargs["file"] = self.result
             elif isinstance(self.result, discord.abc.Iterable):
                 kwargs = {"embeds": [], "files": []}
-                for element in (self.result if not isinstance(self.result, typing.Dict) else self.result.values()):
+                for element in (
+                    self.result if not isinstance(self.result, dict) else self.result.values()
+                ):
                     if isinstance(element, discord.Embed) and channel_permissions.embed_links:
                         if (
                             len(kwargs["embeds"]) < 10
@@ -148,7 +149,10 @@ class DevOutput(dev_commands.DevOutput):
                         ):
                             kwargs["embeds"].append(element)
                     elif isinstance(element, discord.File) and channel_permissions.attach_files:
-                        if (sum(len(file.fp.read()) for file in kwargs["files"]) + len(element.fp.read())) <= 6000:
+                        if (
+                            sum(len(file.fp.read()) for file in kwargs["files"])
+                            + len(element.fp.read())
+                        ) <= 6000:
                             kwargs["files"].append(element)
                 for key in ("embeds", "files"):
                     if not kwargs[key]:
@@ -180,7 +184,7 @@ class DevOutput(dev_commands.DevOutput):
                         )
                         else "❌"
                     )
-                )
+                ),
             )
         box_lang = (
             "ini" if self.ctx.command.name == "eshell" else ("ansi" if ansi_formatting else "py")
@@ -195,7 +199,7 @@ class DevOutput(dev_commands.DevOutput):
                             if "prefix_dev_output" in self.env
                             else None
                         )
-                        + self.__str__(output_mode=output_mode)
+                        + self.__str__(output_mode=output_mode),
                     )
                 ],
             )
@@ -219,7 +223,7 @@ class DevOutput(dev_commands.DevOutput):
                     commands.context.TICK
                     if not hasattr(commands.context, "MORE_TICKS")
                     else random.choice(list(commands.context.MORE_TICKS))
-                )
+                ),
             )
 
     @classmethod
@@ -229,7 +233,7 @@ class DevOutput(dev_commands.DevOutput):
         *,
         source: str,
         source_cache: dev_commands.SourceCache,
-        env: typing.Dict[str, typing.Any],
+        env: dict[str, typing.Any],
         **kwargs,
     ) -> "DevOutput":
         output = cls(
@@ -250,7 +254,7 @@ class DevOutput(dev_commands.DevOutput):
         *,
         source: str,
         source_cache: dev_commands.SourceCache,
-        env: typing.Dict[str, typing.Any],
+        env: dict[str, typing.Any],
         **kwargs,
     ) -> "DevOutput":
         output = cls(
@@ -271,7 +275,7 @@ class DevOutput(dev_commands.DevOutput):
         *,
         source: str,
         source_cache: dev_commands.SourceCache,
-        env: typing.Dict[str, typing.Any],
+        env: dict[str, typing.Any],
         **kwargs,
     ) -> "DevOutput":
         output = cls(
@@ -297,7 +301,7 @@ class DevOutput(dev_commands.DevOutput):
 
         self.env.update({"dev_output": self})
         self.env.update(**self._locals)
-        _console_custom_kwargs: typing.Dict[str, typing.Any] = self.env.get(
+        _console_custom_kwargs: dict[str, typing.Any] = self.env.get(
             "_console_custom",
             {
                 "width": 80,
@@ -335,7 +339,9 @@ class DevOutput(dev_commands.DevOutput):
 
         self.env.update({"dev_output": self})
         try:
-            parse = ast.parse("async def func():\n%s" % textwrap.indent(self.raw_source, "  "))
+            parse = ast.parse(
+                "async def func():\n{}".format(textwrap.indent(self.raw_source, "  ")),
+            )
             try:
                 return_found = [d for d in parse.body[0].body if isinstance(d, ast.Return)][0]
             except IndexError:
@@ -356,7 +362,7 @@ class DevOutput(dev_commands.DevOutput):
         except SyntaxError:
             pass
         self.env.update(**self._locals)
-        _console_custom_kwargs: typing.Dict[str, typing.Any] = self.env.get(
+        _console_custom_kwargs: dict[str, typing.Any] = self.env.get(
             "_console_custom",
             {
                 "width": 80,
@@ -393,7 +399,7 @@ class DevOutput(dev_commands.DevOutput):
 
         self.env.update({"dev_output": self})
         self.env.update(**self._locals)
-        _console_custom_kwargs: typing.Dict[str, typing.Any] = self.env.get(
+        _console_custom_kwargs: dict[str, typing.Any] = self.env.get(
             "_console_custom",
             {
                 "width": 80,
@@ -423,7 +429,7 @@ class DevOutput(dev_commands.DevOutput):
     def format_exception(self, exc: Exception, *, skip_frames: int = 1) -> str:
         if not self.rich_tracebacks:
             return super().format_exception(exc=exc, skip_frames=skip_frames)
-        _console_custom_kwargs: typing.Dict[str, typing.Any] = self.env.get(
+        _console_custom_kwargs: dict[str, typing.Any] = self.env.get(
             "_console_custom",
             {
                 "width": 80,
@@ -464,7 +470,11 @@ class DevOutput(dev_commands.DevOutput):
                             if sys.version_info >= (3, 10) and exc.end_lineno is not None:
                                 exc.end_lineno -= line_offset
                 rich_tb = rich.traceback.Traceback.from_exception(
-                    type(exc), exc, tb, extra_lines=0, theme=SolarizedCustom
+                    type(exc),
+                    exc,
+                    tb,
+                    extra_lines=0,
+                    theme=SolarizedCustom,
                 )
                 console.print(rich_tb)
             return captured.get().strip()
@@ -474,32 +484,34 @@ class DevOutput(dev_commands.DevOutput):
 class Dev(DashboardIntegration, Cog, dev_commands.Dev):
     """Various development focused utilities!"""
 
-    __authors__: typing.List[str] = ["Cog-Creators", "Zephyrkul (Zephyrkul#1089)", "AAA3A"]
+    __authors__: list[str] = ["Cog-Creators", "Zephyrkul (Zephyrkul#1089)", "AAA3A"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self.env_extensions: typing.Dict[str, typing.Any] = {}
+        self.env_extensions: dict[str, typing.Any] = {}
         self.source_cache: dev_commands.SourceCache = dev_commands.SourceCache()
-        self._session: typing.Optional[aiohttp.ClientSession] = None
+        self._session: aiohttp.ClientSession | None = None
         self.dev_space: DevSpace = DevSpace()
 
-        self._last_result: typing.Optional[typing.Any] = None
-        self._last_locals: typing.Dict[
-            typing.Union[discord.Member, discord.User], typing.Dict[str, typing.Any]
+        self._last_result: typing.Any | None = None
+        self._last_locals: dict[
+            discord.Member | discord.User,
+            dict[str, typing.Any],
         ] = {}
-        self.dev_outputs: typing.Dict[discord.Message, DevOutput] = {}
-        self.sessions: typing.Dict[int, bool] = {}
-        self._repl_tasks: typing.List[asyncio.Task] = []
-        self._bypass_cooldowns_task: typing.Optional[asyncio.Task] = None
+        self.dev_outputs: dict[discord.Message, DevOutput] = {}
+        self.sessions: dict[int, bool] = {}
+        self._repl_tasks: list[asyncio.Task] = []
+        self._bypass_cooldowns_task: asyncio.Task | None = None
 
         self.config: Config = Config.get_conf(
             self,
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
-        self.dev_global: typing.Dict[
-            str, typing.Union[typing.Literal["repr", "repr_or_str", "str"], bool]
+        self.dev_global: dict[
+            str,
+            typing.Literal["repr", "repr_or_str", "str"] | bool,
         ] = {
             "auto_imports": True,
             "output_mode": "repr",
@@ -523,9 +535,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
             use_extended_environment=True,
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "auto_imports": {
                 "converter": bool,
                 "description": "Enable or disable auto imports.",
@@ -589,10 +599,10 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
         if self._session is not None:
             await self._session.close()
         core_dev: dev_commands.Dev = dev_commands.Dev()
-        core_dev.env_extensions: typing.Dict[str, typing.Any] = self.env_extensions
+        core_dev.env_extensions: dict[str, typing.Any] = self.env_extensions
         core_dev.source_cache: dev_commands.SourceCache = self.source_cache
         core_dev.dev_space: DevSpace = self.dev_space
-        core_dev._last_result: typing.Optional[typing.Any] = self._last_result
+        core_dev._last_result: typing.Any | None = self._last_result
         # core_dev.sessions: typing.Dict[int, bool] = self.sessions
         for task in self._repl_tasks:
             task.cancel()
@@ -600,7 +610,9 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
         await super().cog_unload()
 
     def get_environment(
-        self, ctx: commands.Context, use_extended_environment: bool = True
+        self,
+        ctx: commands.Context,
+        use_extended_environment: bool = True,
     ) -> DevEnv:
         return DevEnv.get_environment(ctx, use_extended_environment=use_extended_environment)
 
@@ -609,18 +621,21 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
         ctx: commands.Context,
         type: typing.Literal["debug", "eval", "repl"],
         source: str,
-        env: typing.Optional[typing.Dict[str, typing.Any]] = None,
+        env: dict[str, typing.Any] | None = None,
         send_result: bool = False,
         wait: bool = True,
     ) -> bool:
-        tasks: typing.List[asyncio.Task] = [
-            asyncio.create_task(
-                ctx.bot.wait_for("message", check=MessagePredicate.cancelled(ctx))
-            ),
+        tasks: list[asyncio.Task] = [
+            asyncio.create_task(ctx.bot.wait_for("message", check=MessagePredicate.cancelled(ctx))),
             asyncio.create_task(
                 self._my_exec(
-                    ctx, type=type, source=source, env=env, send_result=send_result, wait=wait
-                )
+                    ctx,
+                    type=type,
+                    source=source,
+                    env=env,
+                    send_result=send_result,
+                    wait=wait,
+                ),
             ),
         ]
         done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
@@ -634,14 +649,15 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
         ctx: commands.Context,
         type: typing.Literal["debug", "eval", "repl"],
         source: str,
-        env: typing.Optional[typing.Dict[str, typing.Any]] = None,
+        env: dict[str, typing.Any] | None = None,
         send_result: bool = False,
         wait: bool = True,
     ) -> DevOutput:
         source = cleanup_code(source)
         if env is None:
             env = self.get_environment(
-                ctx, use_extended_environment=await self.config.use_extended_environment()
+                ctx,
+                use_extended_environment=await self.config.use_extended_environment(),
             )
         env["auto_imports"] = await self.config.auto_imports()
         if (
@@ -659,7 +675,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
         }
         mobile = ctx.author.is_on_mobile() if isinstance(ctx.author, discord.Member) else False
         if await self.config.ansi_formatting():
-            _console_custom_kwargs: typing.Dict[str, typing.Any] = {
+            _console_custom_kwargs: dict[str, typing.Any] = {
                 "width": 37 if mobile else 80,
                 "no_color": mobile,
                 "color_system": None if mobile else "standard",
@@ -667,7 +683,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                 "soft_wrap": False,
             }
         else:
-            _console_custom_kwargs: typing.Dict[str, typing.Any] = {
+            _console_custom_kwargs: dict[str, typing.Any] = {
                 "width": 80,
                 "no_color": True,
                 "color_system": None,
@@ -750,14 +766,15 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                     code = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
                 except UnicodeDecodeError:
                     raise commands.UserFeedbackCheckFailure(
-                        _("Unreadable attachment with `utf-8`.")
+                        _("Unreadable attachment with `utf-8`."),
                     )
             elif ctx.message.reference is not None and isinstance(
-                (reference := ctx.message.reference.resolved), discord.Message
+                (reference := ctx.message.reference.resolved),
+                discord.Message,
             ):
                 if (
                     match := re.compile(
-                        r"(debug|(jsk|jishaku) (py|python|eval|ev))(\n)?( )?(?P<code>(.|\n)*)"
+                        r"(debug|(jsk|jishaku) (py|python|eval|ev))(\n)?( )?(?P<code>(.|\n)*)",
                     ).search(reference.content)
                 ) is not None and match.groupdict()["code"].strip():
                     code = match.groupdict()["code"]
@@ -777,6 +794,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
             source=source,
             send_result=True,
         )
+        return None
 
     @commands.is_owner()
     @commands.hybrid_command(name="eval")
@@ -813,14 +831,15 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                     body = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
                 except UnicodeDecodeError:
                     raise commands.UserFeedbackCheckFailure(
-                        _("Unreadable attachment with `utf-8`.")
+                        _("Unreadable attachment with `utf-8`."),
                     )
             elif ctx.message.reference is not None and isinstance(
-                (reference := ctx.message.reference.resolved), discord.Message
+                (reference := ctx.message.reference.resolved),
+                discord.Message,
             ):
                 if (
                     match := re.compile(
-                        r"(eval|ev|e|(jsk|jishaku) (py|python|eval|ev)|(runcode|executecode) (py|python))(\n)?( )?(?P<body>(.|\n)*)"
+                        r"(eval|ev|e|(jsk|jishaku) (py|python|eval|ev)|(runcode|executecode) (py|python))(\n)?( )?(?P<body>(.|\n)*)",
                     ).search(reference.content)
                 ) is not None and match.groupdict()["body"].strip():
                     body = match.groupdict()["body"]
@@ -840,6 +859,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
             source=source,
             send_result=True,
         )
+        return None
 
     @commands.is_owner()
     @commands.hybrid_command()
@@ -874,30 +894,31 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
         if ctx.channel.id in self.sessions:
             if self.sessions[ctx.channel.id]:
                 await ctx.send(
-                    _("Already running a REPL session in this channel. Exit it with `quit`.")
+                    _("Already running a REPL session in this channel. Exit it with `quit`."),
                 )
             else:
                 await ctx.send(
                     _(
-                        "Already running a REPL session in this channel. Resume the REPL with `{prefix}replresume`."
-                    ).format(prefix=ctx.prefix)
+                        "Already running a REPL session in this channel. Resume the REPL with `{prefix}replresume`.",
+                    ).format(prefix=ctx.prefix),
                 )
             return
 
         env = self.get_environment(
-            ctx, use_extended_environment=await self.config.use_extended_environment()
+            ctx,
+            use_extended_environment=await self.config.use_extended_environment(),
         )
         env["_"] = None
         self.sessions[ctx.channel.id] = True
         await ctx.send(
             _(
-                "Enter code to execute or evaluate. `exit()` or `quit` to exit. `{prefix}replpause` to pause."
-            ).format(prefix=ctx.prefix)
+                "Enter code to execute or evaluate. `exit()` or `quit` to exit. `{prefix}replpause` to pause.",
+            ).format(prefix=ctx.prefix),
         )
 
         while True:
             task = asyncio.create_task(
-                ctx.bot.wait_for("message", check=MessagePredicate.regex(r"^`", ctx))
+                ctx.bot.wait_for("message", check=MessagePredicate.regex(r"^`", ctx)),
             )
             self._repl_tasks.append(task)
             try:
@@ -930,7 +951,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                     await response.add_reaction(
                         commands.context.TICK
                         if not hasattr(commands.context, "MORE_TICKS")
-                        else random.choice(list(commands.context.MORE_TICKS))
+                        else random.choice(list(commands.context.MORE_TICKS)),
                     )
             except discord.HTTPException:
                 pass
@@ -958,7 +979,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
     async def bypasscooldowns(
         self,
         ctx: commands.Context,
-        toggle: typing.Optional[bool] = None,
+        toggle: bool | None = None,
         *,
         time: TimeConverter = None,
     ) -> None:
@@ -974,22 +995,22 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
         if toggle:
             await ctx.send(
                 _(
-                    "Bot owners will now bypass all commands with cooldowns{optional_duration}."
+                    "Bot owners will now bypass all commands with cooldowns{optional_duration}.",
                 ).format(
                     optional_duration=(
                         "" if time is None else f" for {CogsUtils.get_interval_string(time)}"
-                    )
-                )
+                    ),
+                ),
             )
         else:
             await ctx.send(
                 _(
-                    "Bot owners will no longer bypass all commands with cooldowns{optional_duration}."
+                    "Bot owners will no longer bypass all commands with cooldowns{optional_duration}.",
                 ).format(
                     optional_duration=(
                         "" if time is None else f" for {CogsUtils.get_interval_string(time)}"
-                    )
-                )
+                    ),
+                ),
             )
         if time is not None:
             task = asyncio.create_task(asyncio.sleep(time.total_seconds()))
@@ -1006,7 +1027,11 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
     @commands.hybrid_command(name="eshell")
     @app_commands.allowed_installs(guilds=True, users=True)
     async def _eshell(
-        self, ctx: commands.Context, silent: typing.Optional[bool] = False, *, command: str = None
+        self,
+        ctx: commands.Context,
+        silent: bool | None = False,
+        *,
+        command: str = None,
     ) -> None:
         """Execute Shell commands.
 
@@ -1021,14 +1046,15 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                     command = (await ctx.message.attachments[0].read()).decode(encoding="utf-8")
                 except UnicodeDecodeError:
                     raise commands.UserFeedbackCheckFailure(
-                        _("Unreadable attachment with `utf-8`.")
+                        _("Unreadable attachment with `utf-8`."),
                     )
             elif ctx.message.reference is not None and isinstance(
-                (reference := ctx.message.reference.resolved), discord.Message
+                (reference := ctx.message.reference.resolved),
+                discord.Message,
             ):
                 if (
                     match := re.compile(
-                        r"(eshell|shell|qshell)(\n)?( )?(?P<command>(.|\n)*)"
+                        r"(eshell|shell|qshell)(\n)?( )?(?P<command>(.|\n)*)",
                     ).search(reference.content)
                 ) is not None and match.groupdict()["command"].strip():
                     command = match.groupdict()["command"]
@@ -1085,7 +1111,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
                 finally:
                     lines = [line async for line in process.stdout]
                     print(prefix + b"".join(lines).decode("utf-8", "replace").strip().replace("\\r", ""))
-                """
+                """,
             )
             .strip()
             .replace("COMMAND", command)
@@ -1112,7 +1138,8 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
     async def getenvironment(self, ctx: commands.Context, show_values: bool = True) -> None:
         """Display all Dev environment values."""
         env = self.get_environment(
-            ctx, use_extended_environment=await self.config.use_extended_environment()
+            ctx,
+            use_extended_environment=await self.config.use_extended_environment(),
         )
         formatted_env = env.get_formatted_env(show_values=show_values)
         await Menu(pages=formatted_env, lang="py").start(ctx)

@@ -1,10 +1,10 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands, bank  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
+
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import bank, commands
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("AdventCalendar", __file__)
 
@@ -15,7 +15,7 @@ class SetRewardsView(discord.ui.View):
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 
-        self.current_day: typing.Optional[int] = 1
+        self.current_day: int | None = 1
 
         self.role.label = _("Role")
         self.temp_role.label = _("Temp Role")
@@ -41,7 +41,8 @@ class SetRewardsView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -69,7 +70,7 @@ class SetRewardsView(discord.ui.View):
         )
         embed.set_thumbnail(url="attachment://christmas_tree.png")
         day_rewards = await self.cog.config.guild(self.ctx.guild).rewards.get_raw(
-            str(self.current_day) if self.current_day is not None else "null"
+            str(self.current_day) if self.current_day is not None else "null",
         )
         for reward in sorted(
             day_rewards,
@@ -92,11 +93,12 @@ class SetRewardsView(discord.ui.View):
                     continue
                 embed.add_field(
                     name=_(
-                        "• Role Reward ({priority} ; {percent}{multiplied_priority_percent})"
+                        "• Role Reward ({priority} ; {percent}{multiplied_priority_percent})",
                     ).format(
                         priority=reward["priority"],
                         percent=round(
-                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2
+                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100,
+                            2,
                         ),
                         multiplied_priority_percent=(
                             f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * (reward['priority_multiplier'] or 1) / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
@@ -113,11 +115,12 @@ class SetRewardsView(discord.ui.View):
                     continue
                 embed.add_field(
                     name=_(
-                        "• Temp Role Reward ({priority} ; {percent}%{multiplied_priority_percent})"
+                        "• Temp Role Reward ({priority} ; {percent}%{multiplied_priority_percent})",
                     ).format(
                         priority=reward["priority"],
                         percent=round(
-                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2
+                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100,
+                            2,
                         ),
                         multiplied_priority_percent=(
                             f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * (reward['priority_multiplier'] or 1) / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
@@ -131,11 +134,12 @@ class SetRewardsView(discord.ui.View):
             elif reward["type"] == "bank_credits":
                 embed.add_field(
                     name=_(
-                        "• Bank Credits Reward ({priority} ; {percent}%{multiplied_priority_percent})"
+                        "• Bank Credits Reward ({priority} ; {percent}%{multiplied_priority_percent})",
                     ).format(
                         priority=reward["priority"],
                         percent=round(
-                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2
+                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100,
+                            2,
                         ),
                         multiplied_priority_percent=(
                             f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * (reward['priority_multiplier'] or 1) / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
@@ -149,11 +153,12 @@ class SetRewardsView(discord.ui.View):
             elif reward["type"] == "levelup_xp":
                 embed.add_field(
                     name=_(
-                        "• LevelUp XP Reward ({priority} ; {percent}%{multiplied_priority_percent})"
+                        "• LevelUp XP Reward ({priority} ; {percent}%{multiplied_priority_percent})",
                     ).format(
                         priority=reward["priority"],
                         percent=round(
-                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2
+                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100,
+                            2,
                         ),
                         multiplied_priority_percent=(
                             f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * (reward['priority_multiplier'] or 1) / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
@@ -167,11 +172,12 @@ class SetRewardsView(discord.ui.View):
             elif reward["type"] == "custom":
                 embed.add_field(
                     name=_(
-                        "• Custom Reward ({priority} ; {percent}%{multiplied_priority_percent})"
+                        "• Custom Reward ({priority} ; {percent}%{multiplied_priority_percent})",
                     ).format(
                         priority=reward["priority"],
                         percent=round(
-                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2
+                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100,
+                            2,
                         ),
                         multiplied_priority_percent=(
                             f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * (reward['priority_multiplier'] or 1) / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
@@ -185,11 +191,12 @@ class SetRewardsView(discord.ui.View):
             elif reward["type"] == "message":
                 embed.add_field(
                     name=_(
-                        "• Message ({priority} ; {percent}%{multiplied_priority_percent})"
+                        "• Message ({priority} ; {percent}%{multiplied_priority_percent})",
                     ).format(
                         priority=reward["priority"],
                         percent=round(
-                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2
+                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100,
+                            2,
                         ),
                         multiplied_priority_percent=(
                             f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * (reward['priority_multiplier'] or 1) / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
@@ -203,11 +210,12 @@ class SetRewardsView(discord.ui.View):
             elif reward["type"] is None:
                 embed.add_field(
                     name=_(
-                        "• Nothing ({priority} ; {percent}%{multiplied_priority_percent})"
+                        "• Nothing ({priority} ; {percent}%{multiplied_priority_percent})",
                     ).format(
                         priority=reward["priority"],
                         percent=round(
-                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100, 2
+                            reward["priority"] / sum([r["priority"] for r in day_rewards]) * 100,
+                            2,
                         ),
                         multiplied_priority_percent=(
                             f" ; x{reward['priority_multiplier'] or 1} {round(reward['priority'] * (reward['priority_multiplier'] or 1) / sum([r['priority'] * (r['priority_multiplier'] or 1) for r in day_rewards]) * 100, 2)}%"
@@ -223,7 +231,7 @@ class SetRewardsView(discord.ui.View):
 
     async def _update(
         self,
-        page: typing.Optional[int] = discord.utils.MISSING,
+        page: int | None = discord.utils.MISSING,
         edit_message: bool = True,
     ) -> None:
         if page is not discord.utils.MISSING:
@@ -242,11 +250,11 @@ class SetRewardsView(discord.ui.View):
         self.levelup_xp.disabled = self.cog.bot.get_cog("LevelUp") is None
         self.custom_reward.disabled = (
             custom_rewards_logs_channel_id := await self.cog.config.guild(
-                self.ctx.guild
+                self.ctx.guild,
             ).custom_rewards_logs_channel()
         ) is None or self.ctx.guild.get_channel(custom_rewards_logs_channel_id) is None
         day_rewards = await self.cog.config.guild(self.ctx.guild).rewards.get_raw(
-            str(self.current_day) if self.current_day is not None else "null"
+            str(self.current_day) if self.current_day is not None else "null",
         )
         if len(day_rewards) >= 5:
             for button in [
@@ -261,7 +269,7 @@ class SetRewardsView(discord.ui.View):
                 button.disabled = True
         self.clear.disabled = not day_rewards
         self.clear_all.disabled = not any(
-            [reward for reward in (await self.cog.config.guild(self.ctx.guild).rewards()).values()]
+            reward for reward in (await self.cog.config.guild(self.ctx.guild).rewards()).values()
         )
         if edit_message:
             await self._message.edit(
@@ -270,15 +278,15 @@ class SetRewardsView(discord.ui.View):
             )
 
     @discord.ui.button(emoji="⏮️", style=discord.ButtonStyle.secondary, row=0)
-    async def first_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def first_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer()
         await self._update(page=1)
 
     @discord.ui.button(emoji="◀️", style=discord.ButtonStyle.secondary, row=0)
     async def previous_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer()
         if self.current_day == 1:
@@ -319,29 +327,29 @@ class SetRewardsView(discord.ui.View):
 
     @discord.ui.button(label="Temp Role", style=discord.ButtonStyle.success, row=1)
     async def temp_role(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        await interaction.response.send_modal(
-            TempRoleRewardModal(self.cog, self.current_day, self)
-        )
+        await interaction.response.send_modal(TempRoleRewardModal(self.cog, self.current_day, self))
 
     @discord.ui.button(label="Bank Credits", style=discord.ButtonStyle.success, row=1)
     async def bank_credits(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.send_modal(
-            BankCreditsRewardModal(self.cog, self.current_day, self)
+            BankCreditsRewardModal(self.cog, self.current_day, self),
         )
 
     @discord.ui.button(label="LevelUp XP", style=discord.ButtonStyle.success, row=1)
-    async def levelup_xp(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def levelup_xp(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.send_modal(
-            LevelUpXPRewardModal(self.cog, self.current_day, self)
+            LevelUpXPRewardModal(self.cog, self.current_day, self),
         )
 
     @discord.ui.button(label="Custom Reward", style=discord.ButtonStyle.success, row=1)
     async def custom_reward(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.send_modal(CustomRewardModal(self.cog, self.current_day, self))
 
@@ -373,7 +381,7 @@ class SetRewardsView(discord.ui.View):
             fake_context,
             (
                 _("Are you sure you want to clear all rewards for day {day}?").format(
-                    day=self.current_day
+                    day=self.current_day,
                 )
                 if self.current_day is not None
                 else _("Are you sure you want to clear all final rewards?")
@@ -383,7 +391,7 @@ class SetRewardsView(discord.ui.View):
         ):
             return
         await self.cog.config.guild(self.ctx.guild).rewards.clear_raw(
-            str(self.current_day) if self.current_day is not None else "null"
+            str(self.current_day) if self.current_day is not None else "null",
         )
         await self._update()
 
@@ -416,11 +424,16 @@ class SetRewardsView(discord.ui.View):
 
 class PriorityModal(discord.ui.Modal):
     def __init__(
-        self, cog: commands.Cog, day: typing.Optional[int], view: SetRewardsView, *, title: str
+        self,
+        cog: commands.Cog,
+        day: int | None,
+        view: SetRewardsView,
+        *,
+        title: str,
     ) -> None:
         super().__init__(title=title)
         self.cog: commands.Cog = cog
-        self.day: typing.Optional[int] = day
+        self.day: int | None = day
         self.view: SetRewardsView = view
 
         self.priority: discord.ui.TextInput = discord.ui.TextInput(
@@ -484,7 +497,7 @@ class RoleRewardModal(PriorityModal):
             return
         await interaction.response.defer()
         day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(
-            str(self.day) if self.day is not None else "null"
+            str(self.day) if self.day is not None else "null",
         )
         day_rewards.append(
             {
@@ -492,10 +505,11 @@ class RoleRewardModal(PriorityModal):
                 "priority": priority,
                 "priority_multiplier": priority_multiplier,
                 "role_id": role.id,
-            }
+            },
         )
         await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(
-            str(self.day) if self.day is not None else "null", value=day_rewards
+            str(self.day) if self.day is not None else "null",
+            value=day_rewards,
         )
         await self.view._update()
 
@@ -546,7 +560,7 @@ class TempRoleRewardModal(RoleRewardModal):
             return
         await interaction.response.defer()
         day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(
-            str(self.day) if self.day is not None else "null"
+            str(self.day) if self.day is not None else "null",
         )
         day_rewards.append(
             {
@@ -555,10 +569,11 @@ class TempRoleRewardModal(RoleRewardModal):
                 "priority_multiplier": priority_multiplier,
                 "role_id": role.id,
                 "duration": duration.total_seconds(),
-            }
+            },
         )
         await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(
-            str(self.day) if self.day is not None else "null", value=day_rewards
+            str(self.day) if self.day is not None else "null",
+            value=day_rewards,
         )
         await self.view._update()
 
@@ -593,12 +608,13 @@ class BankCreditsRewardModal(PriorityModal):
                 raise ValueError()
         except ValueError:
             await interaction.response.send_message(
-                _("The bank credits amount must be a positive number."), ephemeral=True
+                _("The bank credits amount must be a positive number."),
+                ephemeral=True,
             )
             return
         await interaction.response.defer()
         day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(
-            str(self.day) if self.day is not None else "null"
+            str(self.day) if self.day is not None else "null",
         )
         day_rewards.append(
             {
@@ -606,10 +622,11 @@ class BankCreditsRewardModal(PriorityModal):
                 "priority": priority,
                 "priority_multiplier": priority_multiplier,
                 "amount": amount,
-            }
+            },
         )
         await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(
-            str(self.day) if self.day is not None else "null", value=day_rewards
+            str(self.day) if self.day is not None else "null",
+            value=day_rewards,
         )
         await self.view._update()
 
@@ -644,12 +661,13 @@ class LevelUpXPRewardModal(PriorityModal):
                 raise ValueError()
         except ValueError:
             await interaction.response.send_message(
-                _("The XP amount must be a positive number."), ephemeral=True
+                _("The XP amount must be a positive number."),
+                ephemeral=True,
             )
             return
         await interaction.response.defer()
         day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(
-            str(self.day) if self.day is not None else "null"
+            str(self.day) if self.day is not None else "null",
         )
         day_rewards.append(
             {
@@ -657,10 +675,11 @@ class LevelUpXPRewardModal(PriorityModal):
                 "priority": priority,
                 "priority_multiplier": priority_multiplier,
                 "amount": amount,
-            }
+            },
         )
         await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(
-            str(self.day) if self.day is not None else "null", value=day_rewards
+            str(self.day) if self.day is not None else "null",
+            value=day_rewards,
         )
         await self.view._update()
 
@@ -691,7 +710,7 @@ class CustomRewardModal(PriorityModal):
             priority_multiplier = None
         await interaction.response.defer()
         day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(
-            str(self.day) if self.day is not None else "null"
+            str(self.day) if self.day is not None else "null",
         )
         day_rewards.append(
             {
@@ -699,10 +718,11 @@ class CustomRewardModal(PriorityModal):
                 "priority": priority,
                 "priority_multiplier": priority_multiplier,
                 "label": self.label.value,
-            }
+            },
         )
         await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(
-            str(self.day) if self.day is not None else "null", value=day_rewards
+            str(self.day) if self.day is not None else "null",
+            value=day_rewards,
         )
         await self.view._update()
 
@@ -733,7 +753,7 @@ class MessageModal(PriorityModal):
             priority_multiplier = None
         await interaction.response.defer()
         day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(
-            str(self.day) if self.day is not None else "null"
+            str(self.day) if self.day is not None else "null",
         )
         day_rewards.append(
             {
@@ -741,10 +761,11 @@ class MessageModal(PriorityModal):
                 "priority": priority,
                 "priority_multiplier": priority_multiplier,
                 "message": self.message.value,
-            }
+            },
         )
         await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(
-            str(self.day) if self.day is not None else "null", value=day_rewards
+            str(self.day) if self.day is not None else "null",
+            value=day_rewards,
         )
         await self.view._update()
 
@@ -766,16 +787,17 @@ class NothingModal(PriorityModal):
             priority_multiplier = None
         await interaction.response.defer()
         day_rewards = await self.cog.config.guild(self.view.ctx.guild).rewards.get_raw(
-            str(self.day) if self.day is not None else "null"
+            str(self.day) if self.day is not None else "null",
         )
         day_rewards.append(
             {
                 "type": None,
                 "priority": priority,
                 "priority_multiplier": priority_multiplier,
-            }
+            },
         )
         await self.cog.config.guild(self.view.ctx.guild).rewards.set_raw(
-            str(self.day) if self.day is not None else "null", value=day_rewards
+            str(self.day) if self.day is not None else "null",
+            value=day_rewards,
         )
         await self.view._update()

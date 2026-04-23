@@ -1,13 +1,13 @@
-from redbot.core import commands  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-import typing_extensions  # isort:skip
-
 import io
+import typing
 from dataclasses import dataclass
 
+import discord
 import numpy as np
+import typing_extensions
 from PIL import Image, ImageDraw
+
+from redbot.core import commands
 
 from .color import Color
 from .constants import (
@@ -39,13 +39,12 @@ class Board:
         self,
         cog: commands.Cog,
         *,
-        height: typing.Optional[int] = 9,
-        width: typing.Optional[int] = 9,
-        background: typing.Optional[
-            typing.Literal["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"]
-        ] = MAIN_COLORS[
-            -1
-        ],  # Literal[*MAIN_COLORS]
+        height: int | None = 9,
+        width: int | None = 9,
+        background: typing.Literal[
+            "🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent",
+        ]
+        | None = MAIN_COLORS[-1],  # Literal[*MAIN_COLORS]
     ) -> None:
         self.cog: commands.Cog = cog
 
@@ -56,26 +55,28 @@ class Board:
         self.cursor_display: bool = True
 
         self.initial_board: np.ndarray = np.full(
-            (self.height, self.width), self.background, dtype="object"
+            (self.height, self.width),
+            self.background,
+            dtype="object",
         )
-        self.board_history: typing.List[np.ndarray] = [self.initial_board.copy()]
+        self.board_history: list[np.ndarray] = [self.initial_board.copy()]
         self.board_index: int = 0
         self.set_attributes()
 
         # This is for the select tool.
-        self.initial_coords: typing.Tuple[int, int]
+        self.initial_coords: tuple[int, int]
         self.initial_row: int = 0
         self.initial_col: int = 0
-        self.final_coords: typing.Tuple[int, int]
+        self.final_coords: tuple[int, int]
         self.final_row: int = 0
         self.final_col: int = 0
 
         self.clear_cursors()
 
     def set_attributes(self) -> None:
-        self.row_labels: typing.Tuple[str] = ROW_ICONS[: self.height]
-        self.col_labels: typing.Tuple[str] = COLUMN_ICONS[: self.width]
-        self.centre: typing.Tuple[int, int] = (
+        self.row_labels: tuple[str] = ROW_ICONS[: self.height]
+        self.col_labels: tuple[str] = COLUMN_ICONS[: self.width]
+        self.centre: tuple[int, int] = (
             len(self.row_labels) // 2,
             len(self.col_labels) // 2,
         )
@@ -85,8 +86,8 @@ class Board:
         self.cursor_row, self.cursor_col = self.centre
         self.cursor_row_max = len(self.row_labels) - 1
         self.cursor_col_max = len(self.col_labels) - 1
-        self.cursor_coords: typing.List[typing.Tuple[int, int]] = [
-            (self.cursor_row, self.cursor_col)
+        self.cursor_coords: list[tuple[int, int]] = [
+            (self.cursor_row, self.cursor_col),
         ]
 
     def __str__(self) -> str:
@@ -142,7 +143,7 @@ class Board:
                         x += size + sp
                         continue
                     image: Image.Image = await self.cog.get_pixel(
-                        MAIN_COLORS_DICT.get(cursor, cursor)
+                        MAIN_COLORS_DICT.get(cursor, cursor),
                     )
                 elif _x == 0 and _y > 1:
                     emoji = row_labels[_y - 2]
@@ -181,12 +182,14 @@ class Board:
                                 )
                             else:
                                 draw.rounded_rectangle(
-                                    (x, y, x + size, y + size), radius=3, outline=(0, 0, 0, 255)
+                                    (x, y, x + size, y + size),
+                                    radius=3,
+                                    outline=(0, 0, 0, 255),
                                 )
                         x += size + sp
                         continue
                     image: Image.Image = await self.cog.get_pixel(
-                        MAIN_COLORS_DICT.get(pixel, pixel)
+                        MAIN_COLORS_DICT.get(pixel, pixel),
                     )
                 image = image.resize((size, size))
                 mask = Image.new("L", image.size, 0)
@@ -215,9 +218,7 @@ class Board:
                             == (0, 0, 0, 255)
                             else (
                                 MAIN_COLORS_DICT.get(self.cursor, self.cursor).RGBA
-                                if isinstance(
-                                    MAIN_COLORS_DICT.get(self.cursor, self.cursor), Color
-                                )
+                                if isinstance(MAIN_COLORS_DICT.get(self.cursor, self.cursor), Color)
                                 and self.cursor != "transparent"
                                 else (255, 0, 0, 255)
                             )
@@ -251,21 +252,23 @@ class Board:
     def modify(
         self,
         *,
-        height: typing.Optional[int] = None,
-        width: typing.Optional[int] = None,
-        background: typing.Optional[
-            typing.Literal["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"]
-        ] = None,  # typing.Literal[*MAIN_COLORS]
+        height: int | None = None,
+        width: int | None = None,
+        background: typing.Literal[
+            "🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent",
+        ]
+        | None = None,  # typing.Literal[*MAIN_COLORS]
     ) -> None:
         height = height or self.height
         width = width or self.width
         background = background or self.background
         if all(
-            (self.height == height, self.width == width, self.background == background)
+            (self.height == height, self.width == width, self.background == background),
         ):  # the attributes haven't been changed
             return
         if np.array_equal(
-            self.initial_board, self.board
+            self.initial_board,
+            self.board,
         ):  # Board has only background, so replace all pixels.
             self.__init__(cog=self.cog, height=height, width=width, background=background)
             return
@@ -326,8 +329,8 @@ class Board:
 
     def get_pixel(
         self,
-        row: typing.Optional[int] = None,
-        col: typing.Optional[int] = None,
+        row: int | None = None,
+        col: int | None = None,
     ) -> typing.Any:
         row = row if row is not None else self.cursor_row
         col = col if col is not None else self.cursor_col
@@ -339,7 +342,7 @@ class Board:
         cog: commands.Cog,
         board: np.ndarray,
         *,
-        background: typing.Optional[str] = MAIN_COLORS[-1],
+        background: str | None = MAIN_COLORS[-1],
     ) -> typing_extensions.Self:
         height = len(board)
         width = len(board[0])
@@ -349,7 +352,10 @@ class Board:
 
     @classmethod
     def from_str(
-        cls, string: str, *, background: typing.Optional[str] = None
+        cls,
+        string: str,
+        *,
+        background: str | None = None,
     ) -> typing_extensions.Self:
         lines = string.split("\n")[2:]
         board = [line.split(PADDING)[-1].split("\u200b") for line in lines]
@@ -363,9 +369,9 @@ class Board:
 
     def draw(
         self,
-        color: typing.Optional[typing.Union[str, discord.Emoji, int, Color]] = None,
+        color: str | discord.Emoji | int | Color | None = None,
         *,
-        coords: typing.Optional[typing.List[typing.Tuple[int, int]]] = None,
+        coords: list[tuple[int, int]] | None = None,
     ) -> bool:
         color = color or self.cursor
         color_pixel = getattr(color, "id", color)
@@ -386,14 +392,14 @@ class Board:
             self.board[row, col] = color_pixel
         return True
 
-    def clear_cursors(self, *, empty: typing.Optional[bool] = False) -> None:
+    def clear_cursors(self, *, empty: bool | None = False) -> None:
         self.cursor_coords = [(self.cursor_row, self.cursor_col)] if empty is False else []
 
     def move_cursor(
         self,
-        row_move: typing.Optional[int] = 0,
-        col_move: typing.Optional[int] = 0,
-        select: typing.Optional[bool] = False,
+        row_move: int | None = 0,
+        col_move: int | None = 0,
+        select: bool | None = False,
     ) -> None:
         self.clear_cursors()
         self.cursor_row = (self.cursor_row + row_move) % (self.cursor_row_max + 1)

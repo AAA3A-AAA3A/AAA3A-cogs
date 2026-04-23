@@ -1,8 +1,8 @@
-﻿from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
+
+from AAA3A_utils import Cog
+from redbot.core import commands
+from redbot.core.i18n import Translator, cog_i18n
 
 from .view import AcronymGameView
 
@@ -20,7 +20,7 @@ class AcronymGame(Cog):
     """Play a random match of Acrononym game, with Modals!"""
 
     @property
-    def games(self) -> typing.Dict[discord.Message, AcronymGameView]:
+    def games(self) -> dict[discord.Message, AcronymGameView]:
         return self.views
 
     @commands.guild_only()

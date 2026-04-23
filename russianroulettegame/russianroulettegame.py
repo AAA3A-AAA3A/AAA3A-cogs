@@ -1,11 +1,11 @@
-﻿from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import random
+
+import discord
+
+from AAA3A_utils import Cog
+from redbot.core import commands
+from redbot.core.i18n import Translator, cog_i18n
 
 from .views import JoinGameView, ShotView
 
@@ -20,7 +20,7 @@ class RussianRouletteGame(Cog):
     """Play the Russian Roulette game!"""
 
     @property
-    def games(self) -> typing.Dict[discord.Message, JoinGameView]:
+    def games(self) -> dict[discord.Message, JoinGameView]:
         return self.views
 
     @commands.guild_only()
@@ -59,41 +59,40 @@ class RussianRouletteGame(Cog):
                     players.remove(player)
                     await ctx.send(
                         _(
-                            "I got tired of waiting, so I decided to shoot {player.mention} myself."
-                        ).format(player=player)
+                            "I got tired of waiting, so I decided to shoot {player.mention} myself.",
+                        ).format(player=player),
                     )
                     continue
                 await ctx.send(
                     _(
-                        "{player.mention} put the gun up to their head and pulled the trigger..."
-                    ).format(player=player)
+                        "{player.mention} put the gun up to their head and pulled the trigger...",
+                    ).format(player=player),
                 )
                 await asyncio.sleep(2)
                 if i == bullet:
                     if random.random() >= 0.1:
                         players.remove(player)
                         await ctx.send(
-                            _("**💥 BANG!** {player.mention} is dead.").format(player=player)
+                            _("**💥 BANG!** {player.mention} is dead.").format(player=player),
                         )
                     else:
                         p = random.choice([p for p in players if p != player])
                         players.remove(p)
                         await ctx.send(
                             _(
-                                "**💥 BANG!** {player.mention} made a mistake and put their gun in the wrong direction, shooting {p.mention}."
+                                "**💥 BANG!** {player.mention} made a mistake and put their gun in the wrong direction, shooting {p.mention}.",
                             ).format(
                                 player=player,
                                 p=p,
-                            )
+                            ),
                         )
                     break
-                else:
-                    await ctx.send(_("Click. Nothing happened."))
+                await ctx.send(_("Click. Nothing happened."))
 
         winner = list(players)[0]
         embed = discord.Embed(
             title=_("Congratulations **{winner.display_name}**! You won the game!").format(
-                winner=winner
+                winner=winner,
             ),
             color=await ctx.embed_color(),
             timestamp=ctx.message.created_at,

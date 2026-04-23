@@ -1,8 +1,9 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-
 import datetime
+
+import discord
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("CtrlZ", __file__)
 
@@ -20,16 +21,16 @@ class DateTimeConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
         try:
             date_time = datetime.datetime.fromisoformat(argument).replace(
-                tzinfo=datetime.timezone.utc
+                tzinfo=datetime.UTC,
             )
         except ValueError:
             raise commands.BadArgument(
-                _("Invalid datetime format. Expected format is ISO (`YYYY-MM-DDTHH:MM:SS`).")
+                _("Invalid datetime format. Expected format is ISO (`YYYY-MM-DDTHH:MM:SS`)."),
             )
         if (
-            not (datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=7))
+            not (datetime.datetime.now(tz=datetime.UTC) - datetime.timedelta(days=7))
             <= date_time
-            <= datetime.datetime.now(tz=datetime.timezone.utc)
+            <= datetime.datetime.now(tz=datetime.UTC)
         ):
             raise commands.BadArgument(_("The date must be within the last 7 days."))
         return date_time

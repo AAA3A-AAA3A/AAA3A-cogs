@@ -1,15 +1,15 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import hashlib
+import typing
 
+import discord
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 
 _: Translator = Translator("PasswordsGenerator", __file__)
 
-DEFAULT_LENGTHS: typing.Dict[str, int] = {
+DEFAULT_LENGTHS: dict[str, int] = {
     "length": 16,
     "min_upper": 1,
     "min_lower": 1,
@@ -20,7 +20,7 @@ DEFAULT_LENGTHS: typing.Dict[str, int] = {
     "max_int_value": 1000,
     "number_of_elements": 4,
 }
-DEFAULT_INCLUDE_CHARACTERS: typing.List[str] = ["upper", "lower", "digits", "special"]
+DEFAULT_INCLUDE_CHARACTERS: list[str] = ["upper", "lower", "digits", "special"]
 
 
 class PasswordsGeneratorView(discord.ui.View):
@@ -28,8 +28,8 @@ class PasswordsGeneratorView(discord.ui.View):
         self,
         cog: commands.Cog,
         easy_to_remember: bool = False,
-        lengths: typing.Dict[str, int] = None,
-        include_characters: typing.List[
+        lengths: dict[str, int] = None,
+        include_characters: list[
             typing.Literal["upper", "lower", "digits", "special"]
         ] = DEFAULT_INCLUDE_CHARACTERS,
     ) -> None:
@@ -39,10 +39,10 @@ class PasswordsGeneratorView(discord.ui.View):
         self.current_password: str = None
 
         self.easy_to_remember: bool = easy_to_remember
-        self.lengths: typing.Dict[str, int] = lengths or {}
-        self.include_characters: typing.List[
-            typing.Literal["upper", "lower", "digits", "special"]
-        ] = include_characters
+        self.lengths: dict[str, int] = lengths or {}
+        self.include_characters: list[typing.Literal["upper", "lower", "digits", "special"]] = (
+            include_characters
+        )
 
         self.ephemeral.label = _("Ephemeral")
         self.lengths_button.label = _("Lengths")
@@ -124,7 +124,8 @@ class PasswordsGeneratorView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -163,7 +164,9 @@ class PasswordsGeneratorView(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.secondary)
     async def change_mode(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer()
         self.easy_to_remember = not self.easy_to_remember
@@ -171,16 +174,20 @@ class PasswordsGeneratorView(discord.ui.View):
 
     @discord.ui.button(emoji="📋", label="Lengths", style=discord.ButtonStyle.secondary)
     async def lengths_button(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.send_modal(LengthsModal(self))
 
     @discord.ui.select(placeholder="Include Characters", min_values=1, max_values=4)
     async def include_characters_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
-        self.include_characters = [option for option in select.values]
+        self.include_characters = list(select.values)
         await self._update()
 
     @discord.ui.button(emoji="#️⃣", label="Hashes", style=discord.ButtonStyle.secondary)
@@ -240,17 +247,20 @@ class LengthsModal(discord.ui.Modal):
                 value = int(value)
             except (ValueError, OverflowError):
                 await interaction.response.send_message(
-                    _("You must enter a valid number."), ephemeral=True
+                    _("You must enter a valid number."),
+                    ephemeral=True,
                 )
                 return
             if value <= 0:
                 await interaction.response.send_message(
-                    _("The value must be positive."), ephemeral=True
+                    _("The value must be positive."),
+                    ephemeral=True,
                 )
                 return
             if key != "max_int_value" and value > 500:
                 await interaction.response.send_message(
-                    _("The value must be less than 100."), ephemeral=True
+                    _("The value must be less than 100."),
+                    ephemeral=True,
                 )
                 return
             self.view.lengths[key] = value

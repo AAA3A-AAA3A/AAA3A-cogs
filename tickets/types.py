@@ -1,16 +1,16 @@
-from redbot.core import commands, modlog  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import copy
 import datetime
 import io
+import typing
 from dataclasses import _is_dataclass_instance, dataclass, field, fields
 
 import chat_exporter
+import discord
+
+from redbot.core import commands, modlog
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import bold, box, humanize_list
 
 from .views import ClosedTicketControls, TicketView
@@ -19,8 +19,8 @@ _: Translator = Translator("Tickets", __file__)
 
 
 def get_non_animated_asset(
-    asset: typing.Optional[discord.Asset] = None,
-) -> typing.Optional[discord.Asset]:
+    asset: discord.Asset | None = None,
+) -> discord.Asset | None:
     if asset is None:
         return None
     if not asset.is_animated():
@@ -42,17 +42,15 @@ def _asdict_inner(obj, dict_factory=dict):
             value = _asdict_inner(getattr(obj, f.name), dict_factory)
             result.append((f.name, value))
         return dict_factory(result)
-    elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
+    if isinstance(obj, tuple) and hasattr(obj, "_fields"):
         return type(obj)(*[_asdict_inner(v, dict_factory) for v in obj])
-    elif isinstance(obj, (list, tuple)):
+    if isinstance(obj, (list, tuple)):
         return type(obj)(_asdict_inner(v, dict_factory) for v in obj)
-    elif isinstance(obj, dict):
+    if isinstance(obj, dict):
         return type(obj)(
-            (_asdict_inner(k, dict_factory), _asdict_inner(v, dict_factory))
-            for k, v in obj.items()
+            (_asdict_inner(k, dict_factory), _asdict_inner(v, dict_factory)) for k, v in obj.items()
         )
-    else:
-        return copy.deepcopy(obj)
+    return copy.deepcopy(obj)
 
 
 @dataclass
@@ -67,40 +65,38 @@ class Ticket:
     channel_id: int = None
     message_id: int = None
 
-    profile: typing.Optional[str] = "main"
-    reason: typing.Optional[str] = None
-    category_label: typing.Optional[str] = None
-    owner_answers: typing.Dict[str, str] = field(default_factory=dict)
+    profile: str | None = "main"
+    reason: str | None = None
+    category_label: str | None = None
+    owner_answers: dict[str, str] = field(default_factory=dict)
 
     opened_at_timestamp: int = field(
         default_factory=lambda: int(
-            datetime.datetime.now(tz=datetime.timezone.utc)
-            .replace(second=0, microsecond=0)
-            .timestamp()
-        )
+            datetime.datetime.now(tz=datetime.UTC).replace(second=0, microsecond=0).timestamp(),
+        ),
     )
     is_claimed: bool = False
-    claimed_by_id: typing.Optional[int] = None
+    claimed_by_id: int | None = None
     claimed_at_timestamp: int = None
     is_closed: bool = False
-    closed_by_id: typing.Optional[int] = None
+    closed_by_id: int | None = None
     closed_at_timestamp: int = None
-    reopened_by_id: typing.Optional[int] = None
+    reopened_by_id: int | None = None
     reopened_at_timestamp: int = None
     is_locked: bool = False
-    locked_by_id: typing.Optional[int] = None
+    locked_by_id: int | None = None
     locked_at_timestamp: int = None
-    unlocked_by_id: typing.Optional[int] = None
+    unlocked_by_id: int | None = None
     unlocked_at_timestamp: int = None
     appeal_approved: bool = False
-    appeal_approved_by_id: typing.Optional[int] = None
+    appeal_approved_by_id: int | None = None
     appeal_approved_at_timestamp: int = None
-    deleted_by_id: typing.Optional[int] = None
+    deleted_by_id: int | None = None
     deleted_at_timestamp: int = None
 
-    members_ids: typing.List[int] = field(default_factory=list)
+    members_ids: list[int] = field(default_factory=list)
 
-    def to_dict(self) -> typing.Dict[str, typing.Any]:
+    def to_dict(self) -> dict[str, typing.Any]:
         return _asdict_inner(self)
 
     async def save(self) -> None:
@@ -128,7 +124,7 @@ class Ticket:
         self.guild_id = guild.id
 
     @property
-    def owner(self) -> typing.Optional[discord.Member]:
+    def owner(self) -> discord.Member | None:
         if (guild := self.guild) is None:
             return None
         return guild.get_member(self.owner_id)
@@ -140,20 +136,21 @@ class Ticket:
     @property
     def channel(
         self,
-    ) -> typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]]:
+    ) -> discord.TextChannel | discord.VoiceChannel | discord.Thread | None:
         if (guild := self.guild) is None:
             return None
         return guild.get_channel_or_thread(self.channel_id)
 
     @channel.setter
     def channel(
-        self, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+        self,
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
     ) -> None:
         self.guild_id = channel.guild.id
         self.channel_id = channel.id
 
     @property
-    def message(self) -> typing.Optional[discord.Message]:
+    def message(self) -> discord.Message | None:
         if (channel := self.channel) is None:
             return None
         if self.message_id is None:
@@ -168,171 +165,170 @@ class Ticket:
 
     @property
     def opened_at(self) -> datetime.datetime:
-        return datetime.datetime.fromtimestamp(self.opened_at_timestamp, tz=datetime.timezone.utc)
+        return datetime.datetime.fromtimestamp(self.opened_at_timestamp, tz=datetime.UTC)
 
     @opened_at.setter
     def opened_at(self, opened_at: datetime.datetime) -> None:
         self.opened_at_timestamp = int(opened_at.timestamp())
 
     @property
-    def claimed_by(self) -> typing.Optional[discord.Member]:
+    def claimed_by(self) -> discord.Member | None:
         if (guild := self.guild) is None:
             return None
         return guild.get_member(self.claimed_by_id)
 
     @claimed_by.setter
-    def claimed_by(self, claimed_by: typing.Optional[discord.Member]) -> None:
+    def claimed_by(self, claimed_by: discord.Member | None) -> None:
         if claimed_by is None:
             self.claimed_by_id = None
         else:
             self.claimed_by_id = claimed_by.id
 
     @property
-    def claimed_at(self) -> typing.Optional[datetime.datetime]:
+    def claimed_at(self) -> datetime.datetime | None:
         if self.claimed_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.claimed_at_timestamp, tz=datetime.timezone.utc)
+        return datetime.datetime.fromtimestamp(self.claimed_at_timestamp, tz=datetime.UTC)
 
     @claimed_at.setter
-    def claimed_at(self, claimed_at: typing.Optional[datetime.datetime]) -> None:
+    def claimed_at(self, claimed_at: datetime.datetime | None) -> None:
         self.claimed_at_timestamp = None if claimed_at is None else int(claimed_at.timestamp())
 
     @property
-    def closed_by(self) -> typing.Optional[discord.Member]:
+    def closed_by(self) -> discord.Member | None:
         if (guild := self.guild) is None:
             return None
         return guild.get_member(self.closed_by_id)
 
     @closed_by.setter
-    def closed_by(self, closed_by: typing.Optional[discord.Member]) -> None:
+    def closed_by(self, closed_by: discord.Member | None) -> None:
         if closed_by is None:
             self.closed_by_id = None
         else:
             self.closed_by_id = closed_by.id
 
     @property
-    def closed_at(self) -> typing.Optional[datetime.datetime]:
+    def closed_at(self) -> datetime.datetime | None:
         if self.closed_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.closed_at_timestamp, tz=datetime.timezone.utc)
+        return datetime.datetime.fromtimestamp(self.closed_at_timestamp, tz=datetime.UTC)
 
     @closed_at.setter
-    def closed_at(self, closed_at: typing.Optional[datetime.datetime]) -> None:
+    def closed_at(self, closed_at: datetime.datetime | None) -> None:
         self.closed_at_timestamp = None if closed_at is None else int(closed_at.timestamp())
 
     @property
-    def reopened_by(self) -> typing.Optional[discord.Member]:
+    def reopened_by(self) -> discord.Member | None:
         if (guild := self.guild) is None:
             return None
         return guild.get_member(self.reopened_by_id)
 
     @reopened_by.setter
-    def reopened_by(self, reopened_by: typing.Optional[discord.Member]) -> None:
+    def reopened_by(self, reopened_by: discord.Member | None) -> None:
         if reopened_by is None:
             self.reopened_by_id = None
         else:
             self.reopened_by_id = reopened_by.id
 
     @property
-    def locked_by(self) -> typing.Optional[discord.Member]:
+    def locked_by(self) -> discord.Member | None:
         if (guild := self.guild) is None:
             return None
         return guild.get_member(self.locked_by_id)
 
     @locked_by.setter
-    def locked_by(self, locked_by: typing.Optional[discord.Member]) -> None:
+    def locked_by(self, locked_by: discord.Member | None) -> None:
         if locked_by is None:
             self.locked_by_id = None
         else:
             self.locked_by_id = locked_by.id
 
     @property
-    def locked_at(self) -> typing.Optional[datetime.datetime]:
+    def locked_at(self) -> datetime.datetime | None:
         if self.locked_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.locked_at_timestamp, tz=datetime.timezone.utc)
+        return datetime.datetime.fromtimestamp(self.locked_at_timestamp, tz=datetime.UTC)
 
     @locked_at.setter
-    def locked_at(self, locked_at: typing.Optional[datetime.datetime]) -> None:
+    def locked_at(self, locked_at: datetime.datetime | None) -> None:
         self.locked_at_timestamp = None if locked_at is None else int(locked_at.timestamp())
 
     @property
-    def unlocked_by(self) -> typing.Optional[discord.Member]:
+    def unlocked_by(self) -> discord.Member | None:
         if (guild := self.guild) is None:
             return None
         return guild.get_member(self.unlocked_by_id)
 
     @unlocked_by.setter
-    def unlocked_by(self, unlocked_by: typing.Optional[discord.Member]) -> None:
+    def unlocked_by(self, unlocked_by: discord.Member | None) -> None:
         if unlocked_by is None:
             self.unlocked_by_id = None
         else:
             self.unlocked_by_id = unlocked_by.id
 
     @property
-    def unlocked_at(self) -> typing.Optional[datetime.datetime]:
+    def unlocked_at(self) -> datetime.datetime | None:
         if self.unlocked_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(
-            self.unlocked_at_timestamp, tz=datetime.timezone.utc
-        )
+        return datetime.datetime.fromtimestamp(self.unlocked_at_timestamp, tz=datetime.UTC)
 
     @unlocked_at.setter
-    def unlocked_at(self, unlocked_at: typing.Optional[datetime.datetime]) -> None:
+    def unlocked_at(self, unlocked_at: datetime.datetime | None) -> None:
         self.unlocked_at_timestamp = None if unlocked_at is None else int(unlocked_at.timestamp())
 
     @property
-    def appeal_approved_by(self) -> typing.Optional[discord.Member]:
+    def appeal_approved_by(self) -> discord.Member | None:
         if (guild := self.guild) is None:
             return None
         return guild.get_member(self.appeal_approved_by_id)
 
     @appeal_approved_by.setter
-    def appeal_approved_by(self, appeal_approved_by: typing.Optional[discord.Member]) -> None:
+    def appeal_approved_by(self, appeal_approved_by: discord.Member | None) -> None:
         if appeal_approved_by is None:
             self.appeal_approved_by_id = None
         else:
             self.appeal_approved_by_id = appeal_approved_by.id
 
     @property
-    def appeal_approved_at(self) -> typing.Optional[datetime.datetime]:
+    def appeal_approved_at(self) -> datetime.datetime | None:
         if self.appeal_approved_at_timestamp is None:
             return None
         return datetime.datetime.fromtimestamp(
-            self.appeal_approved_at_timestamp, tz=datetime.timezone.utc
+            self.appeal_approved_at_timestamp,
+            tz=datetime.UTC,
         )
 
     @appeal_approved_at.setter
-    def appeal_approved_at(self, appeal_approved_at: typing.Optional[datetime.datetime]) -> None:
+    def appeal_approved_at(self, appeal_approved_at: datetime.datetime | None) -> None:
         self.appeal_approved_at_timestamp = (
             None if appeal_approved_at is None else int(appeal_approved_at.timestamp())
         )
 
     @property
-    def deleted_by(self) -> typing.Optional[discord.Member]:
+    def deleted_by(self) -> discord.Member | None:
         if (guild := self.guild) is None:
             return None
         return guild.get_member(self.deleted_by_id)
 
     @deleted_by.setter
-    def deleted_by(self, deleted_by: typing.Optional[discord.Member]) -> None:
+    def deleted_by(self, deleted_by: discord.Member | None) -> None:
         if deleted_by is None:
             self.deleted_by_id = None
         else:
             self.deleted_by_id = deleted_by.id
 
     @property
-    def deleted_at(self) -> typing.Optional[datetime.datetime]:
+    def deleted_at(self) -> datetime.datetime | None:
         if self.deleted_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.deleted_at_timestamp, tz=datetime.timezone.utc)
+        return datetime.datetime.fromtimestamp(self.deleted_at_timestamp, tz=datetime.UTC)
 
     @deleted_at.setter
-    def deleted_at(self, deleted_at: typing.Optional[datetime.datetime]) -> None:
+    def deleted_at(self, deleted_at: datetime.datetime | None) -> None:
         self.deleted_at_timestamp = None if deleted_at is None else int(deleted_at.timestamp())
 
     @property
-    def members(self) -> typing.List[discord.Member]:
+    def members(self) -> list[discord.Member]:
         if (guild := self.guild) is None:
             return []
         return [
@@ -342,7 +338,7 @@ class Ticket:
         ]
 
     @members.setter
-    def members(self, members: typing.List[discord.Member]) -> None:
+    def members(self, members: list[discord.Member]) -> None:
         self.members_ids = [member.id for member in members]
 
     @property
@@ -351,9 +347,10 @@ class Ticket:
             return "🛡️"
         return "🔒" if self.is_closed else ("👥" if self.is_claimed else "❓")
 
-    async def channel_name(self, forum_channel: typing.Optional[bool] = None) -> str:
+    async def channel_name(self, forum_channel: bool | None = None) -> str:
         channel_name = await self.cog.config.guild(self.guild).profiles.get_raw(
-            self.profile, "channel_name"
+            self.profile,
+            "channel_name",
         )
         if channel_name is None:
             if forum_channel or (
@@ -371,7 +368,8 @@ class Ticket:
                 )
             else:
                 channel_name = "{emoji}-{profile}-{owner_name}".replace(
-                    "{profile}", "ticket" if self.profile == "main" else self.profile
+                    "{profile}",
+                    "ticket" if self.profile == "main" else self.profile,
                 )
 
         owner = self.owner if self.owner is not None else await self.bot.fetch_user(self.owner_id)
@@ -418,7 +416,7 @@ class Ticket:
             (
                 _(
                     "Claimed by: {claimed_by.mention}"
-                    "\nClaimed at: <t:{claimed_at}:F> (<t:{claimed_at}:R>)"
+                    "\nClaimed at: <t:{claimed_at}:F> (<t:{claimed_at}:R>)",
                 ).format(
                     claimed_by=(
                         self.claimed_by
@@ -429,7 +427,7 @@ class Ticket:
                             {
                                 "mention": f"<@{self.appeal_approved_by_id}>"
                                 if self.appeal_approved_by_id
-                                else _("Automatic")
+                                else _("Automatic"),
                             },
                         )
                     ),
@@ -441,7 +439,7 @@ class Ticket:
             + (
                 _(
                     "\nClosed by: {closed_by.mention}"
-                    "\nClosed at: <t:{closed_at}:F> (<t:{closed_at}:R>)"
+                    "\nClosed at: <t:{closed_at}:F> (<t:{closed_at}:R>)",
                 ).format(
                     closed_by=(
                         self.closed_by
@@ -452,7 +450,7 @@ class Ticket:
                             {
                                 "mention": f"<@{self.appeal_approved_by_id}>"
                                 if self.appeal_approved_by_id
-                                else _("Automatic")
+                                else _("Automatic"),
                             },
                         )
                     ),
@@ -464,7 +462,7 @@ class Ticket:
             + (
                 _(
                     "\nAppeal approved by: {appeal_approved_by.mention}"
-                    "\nAppeal approved at: <t:{appeal_approved_at}:F> (<t:{appeal_approved_at}:R>)"
+                    "\nAppeal approved at: <t:{appeal_approved_at}:F> (<t:{appeal_approved_at}:R>)",
                 ).format(
                     appeal_approved_by=(
                         self.appeal_approved_by
@@ -475,7 +473,7 @@ class Ticket:
                             {
                                 "mention": f"<@{self.appeal_approved_by_id}>"
                                 if self.appeal_approved_by_id
-                                else _("Automatic")
+                                else _("Automatic"),
                             },
                         )
                     ),
@@ -487,7 +485,7 @@ class Ticket:
             + (
                 _(
                     "\nDeleted by: {deleted_by.mention}"
-                    "\nDeleted at: <t:{deleted_at}:F> (<t:{deleted_at}:R>)"
+                    "\nDeleted at: <t:{deleted_at}:F> (<t:{deleted_at}:R>)",
                 ).format(
                     deleted_by=(
                         self.deleted_by
@@ -498,7 +496,7 @@ class Ticket:
                             {
                                 "mention": f"<@{self.deleted_by_id}>"
                                 if self.deleted_by_id
-                                else _("Automatic")
+                                else _("Automatic"),
                             },
                         )
                     ),
@@ -521,7 +519,7 @@ class Ticket:
         embed.timestamp = self.opened_at
         return embed
 
-    async def get_embeds(self) -> typing.List[discord.Embed]:
+    async def get_embeds(self) -> list[discord.Embed]:
         embeds = [await self.get_embed()]
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if (
@@ -555,15 +553,15 @@ class Ticket:
                         guild_id=self.guild.id,
                     ),
                     color=await self.bot.get_embed_color(self.guild.channels[0]),
-                )
+                ),
             )
         return embeds
 
     async def get_kwargs(
         self,
-    ) -> typing.Dict[
+    ) -> dict[
         typing.Literal["content", "embeds", "view", "allowed_mentions"],
-        typing.Union[str, discord.Embed, discord.ui.View],
+        str | discord.Embed | discord.ui.View,
     ]:
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         content = (
@@ -573,7 +571,7 @@ class Ticket:
                     ping_role
                     for ping_role_id in config["ping_roles"]
                     if (ping_role := self.guild.get_role(ping_role_id)) is not None
-                ]
+                ],
             )
             else ""
         )
@@ -599,9 +597,9 @@ class Ticket:
             "allowed_mentions": discord.AllowedMentions(roles=True),
         }
 
-    async def create(self) -> typing.Union[discord.TextChannel, discord.Thread]:
-        config: typing.Dict[str, typing.Any] = await self.cog.config.guild(
-            self.guild
+    async def create(self) -> discord.TextChannel | discord.Thread:
+        config: dict[str, typing.Any] = await self.cog.config.guild(
+            self.guild,
         ).profiles.get_raw(self.profile)
         if not config["enabled"]:
             raise RuntimeError(_("The creation of tickets is disabled for this profile."))
@@ -637,12 +635,12 @@ class Ticket:
                         ticket
                         for ticket in self.cog.tickets.get(self.guild_id, {}).values()
                         if ticket.owner_id == self.owner_id and not ticket.is_closed
-                    ]
+                    ],
                 )
                 >= config["max_open_tickets_by_member"]
             ):
                 raise RuntimeError(
-                    _("You have reached the maximum number of open tickets for this profile.")
+                    _("You have reached the maximum number of open tickets for this profile."),
                 )
             if (
                 config.get("appeals", {"enabled": False})["enabled"]
@@ -653,13 +651,13 @@ class Ticket:
                     await appeals_for_guild.fetch_ban(self.owner)
                 except discord.NotFound:
                     raise RuntimeError(
-                        _("You are not banned from the server, so you can't create a ticket.")
+                        _("You are not banned from the server, so you can't create a ticket."),
                     )
                 except discord.HTTPException:
                     pass
 
         audit_reason = _(
-            "Ticket creation for {ticket.owner.display_name} ({ticket.owner.id}) (profile `{ticket.profile}`)."
+            "Ticket creation for {ticket.owner.display_name} ({ticket.owner.id}) (profile `{ticket.profile}`).",
         ).format(ticket=self)
         if (
             (ticket_role_id := config.get("ticket_role")) is not None
@@ -681,8 +679,8 @@ class Ticket:
             if not forum_channel.permissions_for(forum_channel.guild.me).create_private_threads:
                 raise RuntimeError(
                     _(
-                        "I don't have the required permissions to create private threads in the forum/text channel configured."
-                    )
+                        "I don't have the required permissions to create private threads in the forum/text channel configured.",
+                    ),
                 )
             if isinstance(forum_channel, discord.ForumChannel):
                 applied_tags = [
@@ -710,8 +708,8 @@ class Ticket:
             if not category_open.permissions_for(self.guild.me).manage_channels:
                 raise RuntimeError(
                     _(
-                        "I don't have the required permissions to create text channels in the category configured."
-                    )
+                        "I don't have the required permissions to create text channels in the category configured.",
+                    ),
                 )
             self.channel = await self.guild.create_text_channel(
                 name=await self.channel_name(forum_channel=False),
@@ -747,9 +745,9 @@ class Ticket:
 
     async def get_channel_overwrites(
         self,
-    ) -> typing.Dict[typing.Union[discord.Member, discord.Role], discord.PermissionOverwrite]:
-        config: typing.Dict[str, typing.Any] = await self.cog.config.guild(
-            self.guild
+    ) -> dict[discord.Member | discord.Role, discord.PermissionOverwrite]:
+        config: dict[str, typing.Any] = await self.cog.config.guild(
+            self.guild,
         ).profiles.get_raw(self.profile)
         overwrites = {
             self.guild.default_role: discord.PermissionOverwrite(
@@ -825,8 +823,8 @@ class Ticket:
 
     async def close(
         self,
-        closer: typing.Optional[discord.Member] = None,
-        reason: typing.Optional[str] = None,
+        closer: discord.Member | None = None,
+        reason: str | None = None,
     ) -> None:
         if self.is_closed:
             raise RuntimeError(_("This ticket is already closed."))
@@ -850,7 +848,7 @@ class Ticket:
         # self.reopened_by = None
         # self.reopened_at = None
         self.closed_by = closer
-        self.closed_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.closed_at = datetime.datetime.now(tz=datetime.UTC)
         await self.save()
 
         await self.log_action(
@@ -862,7 +860,7 @@ class Ticket:
             audit_reason = _("Ticket closed (profile `{self.profile}`).").format(self=self)
         else:
             audit_reason = _(
-                "Ticket closed by {closer.display_name} ({closer.id}) (profile `{self.profile}`)."
+                "Ticket closed by {closer.display_name} ({closer.id}) (profile `{self.profile}`).",
             ).format(closer=closer, self=self)
         view = self.cog.views[self.message]
         await view._update()
@@ -921,8 +919,8 @@ class Ticket:
 
     async def reopen(
         self,
-        reopener: typing.Optional[discord.Member] = None,
-        reason: typing.Optional[str] = None,
+        reopener: discord.Member | None = None,
+        reason: str | None = None,
     ) -> None:
         if not self.is_closed:
             raise RuntimeError(_("This ticket is not closed."))
@@ -945,14 +943,14 @@ class Ticket:
         # self.closed_by = None
         # self.closed_at = None
         self.reopened_by = reopener
-        self.reopened_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.reopened_at = datetime.datetime.now(tz=datetime.UTC)
         await self.save()
 
         if reopener is None:
             audit_reason = _("Ticket reopened (profile `{self.profile}.`)").format(self=self)
         else:
             audit_reason = _(
-                "Ticket reopened by {reopener.display_name} ({reopener.id}) (profile `{self.profile}`)."
+                "Ticket reopened by {reopener.display_name} ({reopener.id}) (profile `{self.profile}`).",
             ).format(reopener=reopener, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
@@ -1006,11 +1004,11 @@ class Ticket:
             raise RuntimeError(_("This ticket is already claimed."))
         self.is_claimed = True
         self.claimed_by = claimer
-        self.claimed_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.claimed_at = datetime.datetime.now(tz=datetime.UTC)
         await self.save()
 
         audit_reason = _(
-            "Ticket claimed by {claimer.display_name} ({claimer.id}) (profile `{self.profile}`)."
+            "Ticket claimed by {claimer.display_name} ({claimer.id}) (profile `{self.profile}`).",
         ).format(claimer=claimer, self=self)
         await self.channel.edit(
             name=await self.channel_name(),
@@ -1070,7 +1068,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+                created_at=datetime.datetime.now(tz=datetime.UTC),
                 action_type="ticket_unclaimed",
                 user=self.owner or self.owner_id,
                 moderator=self.guild.me,
@@ -1078,7 +1076,7 @@ class Ticket:
             )
         await self.cog.send_ticket_log(self)
 
-    async def lock(self, locker: typing.Optional[discord.Member] = None) -> None:
+    async def lock(self, locker: discord.Member | None = None) -> None:
         if self.is_locked:
             raise RuntimeError(_("This ticket is already locked."))
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
@@ -1098,14 +1096,14 @@ class Ticket:
                 raise RuntimeError(_("You aren't allowed to lock this ticket!"))
         self.is_locked = True
         self.locked_by = locker
-        self.locked_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.locked_at = datetime.datetime.now(tz=datetime.UTC)
         await self.save()
 
         if locker is None:
             audit_reason = _("Ticket locked (profile `{self.profile}`).").format(self=self)
         else:
             audit_reason = _(
-                "Ticket locked by {locker.display_name} ({locker.id}) (profile `{self.profile}`)."
+                "Ticket locked by {locker.display_name} ({locker.id}) (profile `{self.profile}`).",
             ).format(locker=locker, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
@@ -1147,7 +1145,7 @@ class Ticket:
                 channel=self.channel,
             )
 
-    async def unlock(self, unlocker: typing.Optional[discord.Member] = None) -> None:
+    async def unlock(self, unlocker: discord.Member | None = None) -> None:
         if not self.is_locked:
             raise RuntimeError(_("This ticket is not locked."))
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
@@ -1169,14 +1167,14 @@ class Ticket:
         # self.locked_by = None
         # self.locked_at = None
         self.unlocked_by = unlocker
-        self.unlocked_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.unlocked_at = datetime.datetime.now(tz=datetime.UTC)
         await self.save()
 
         if unlocker is not None:
             audit_reason = _("Ticket unlocked (profile `{self.profile}`).").format(self=self)
         else:
             audit_reason = _(
-                "Ticket unlocked by {unlocker.display_name} ({unlocker.id}) (profile `{self.profile}`)."
+                "Ticket unlocked by {unlocker.display_name} ({unlocker.id}) (profile `{self.profile}`).",
             ).format(unlocker=unlocker, self=self)
         if isinstance(self.channel, discord.Thread):
             await self.channel.edit(
@@ -1218,7 +1216,7 @@ class Ticket:
                 channel=self.channel,
             )
 
-    async def approve_appeal(self, approver: typing.Optional[discord.Member] = None) -> None:
+    async def approve_appeal(self, approver: discord.Member | None = None) -> None:
         if self.appeal_approved:
             raise RuntimeError(_("This ticket appeal is already approved."))
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
@@ -1228,18 +1226,18 @@ class Ticket:
             raise RuntimeError(_("The server is not available."))
         if not guild.me.guild_permissions.ban_members:
             raise RuntimeError(
-                _("I don't have the required permissions to unban users in the server.")
+                _("I don't have the required permissions to unban users in the server."),
             )
         self.appeal_approved = True
         self.appeal_approved_by = approver
-        self.appeal_approved_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.appeal_approved_at = datetime.datetime.now(tz=datetime.UTC)
         await self.save()
 
         if approver is None:
             audit_reason = _("Ticket appeal approved.").format(self=self)
         else:
             audit_reason = _(
-                "Ticket appeal approved by {approver.display_name} ({approver.id})."
+                "Ticket appeal approved by {approver.display_name} ({approver.id}).",
             ).format(approver=approver, self=self)
 
         try:
@@ -1256,7 +1254,7 @@ class Ticket:
             )
         except discord.HTTPException as e:
             raise RuntimeError(
-                _("I couldn't unban the user.\n{error}").format(error=box(str(e), lang="py"))
+                _("I couldn't unban the user.\n{error}").format(error=box(str(e), lang="py")),
             )
         await self.log_action(
             action=_("🛡️ Ticket Appeal Approved"),
@@ -1268,7 +1266,7 @@ class Ticket:
                 "You can use the invite url below to join the server again:\n"
                 "https://discord.gg/{invite_code}\n"
                 "*If you still encounter any issues to join the server, try restarting your Discord client.*\n\n"
-                "Then, please close this ticket. Thank you!"
+                "Then, please close this ticket. Thank you!",
             ).format(
                 invite_code=config["appeals"]["invite_code"],
             ),
@@ -1296,7 +1294,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+                created_at=datetime.datetime.now(tz=datetime.UTC),
                 action_type="ticket_appeal_approved",
                 user=self.owner or self.owner_id,
                 moderator=self.guild.me,
@@ -1304,7 +1302,9 @@ class Ticket:
             )
 
     async def add_member(
-        self, member: discord.Member, author: typing.Optional[discord.Member] = None
+        self,
+        member: discord.Member,
+        author: discord.Member | None = None,
     ) -> None:
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if author is not None and not config["owner_can_add_members"]:
@@ -1334,19 +1334,19 @@ class Ticket:
         ):
             raise RuntimeError(
                 _(
-                    "This member has a role that allows them to access the ticket without being added manually."
-                )
+                    "This member has a role that allows them to access the ticket without being added manually.",
+                ),
             )
         self.members_ids.append(member.id)
         await self.save()
 
         if author is None:
             audit_reason = _(
-                "Member added to the ticket: {member.display_name} ({member.id})."
+                "Member added to the ticket: {member.display_name} ({member.id}).",
             ).format(member=member)
         else:
             audit_reason = _(
-                "Member added to the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id})."
+                "Member added to the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id}).",
             ).format(author=author, member=member)
         if isinstance(self.channel, discord.Thread):
             await self.channel.add_user(member)
@@ -1366,7 +1366,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+                created_at=datetime.datetime.now(tz=datetime.UTC),
                 action_type="ticket_member_added",
                 user=member,
                 moderator=author,
@@ -1374,7 +1374,9 @@ class Ticket:
             )
 
     async def remove_member(
-        self, member: discord.Member, author: typing.Optional[discord.Member] = None
+        self,
+        member: discord.Member,
+        author: discord.Member | None = None,
     ) -> None:
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if author is not None and not config["owner_can_remove_members"]:
@@ -1398,11 +1400,11 @@ class Ticket:
 
         if author is None:
             audit_reason = _(
-                "Member removed from the ticket: {member.display_name} ({member.id})."
+                "Member removed from the ticket: {member.display_name} ({member.id}).",
             ).format(member=member)
         else:
             audit_reason = _(
-                "Member removed from the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id})."
+                "Member removed from the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id}).",
             ).format(author=author, member=member)
         if isinstance(self.channel, discord.Thread):
             await self.channel.remove_user(member)
@@ -1424,7 +1426,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+                created_at=datetime.datetime.now(tz=datetime.UTC),
                 action_type="ticket_member_removed",
                 user=member,
                 moderator=author,
@@ -1434,17 +1436,17 @@ class Ticket:
     async def log_action(
         self,
         action: str,
-        author: typing.Optional[discord.Member] = None,
-        target: typing.Optional[discord.Member] = None,
-        reason: typing.Optional[str] = None,
+        author: discord.Member | None = None,
+        target: discord.Member | None = None,
+        reason: str | None = None,
     ) -> None:
         embed = discord.Embed(
             description=bold(
                 action
-                + (_(" by {author.mention}").format(author=author) if author is not None else "")
+                + (_(" by {author.mention}").format(author=author) if author is not None else ""),
             ),
             color=await self.bot.get_embed_color(self.channel),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=datetime.datetime.now(tz=datetime.UTC),
         )
         if target is not None:
             embed.add_field(
@@ -1465,15 +1467,15 @@ class Ticket:
             @classmethod
             async def export(
                 cls,
-                channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-                messages: typing.List[discord.Message],
+                channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+                messages: list[discord.Message],
                 tz_info="UTC",
-                guild: typing.Optional[discord.Guild] = None,
-                bot: typing.Optional[discord.Client] = None,
-                military_time: typing.Optional[bool] = False,
-                fancy_times: typing.Optional[bool] = True,
-                support_dev: typing.Optional[bool] = True,
-                attachment_handler: typing.Optional[typing.Any] = None,
+                guild: discord.Guild | None = None,
+                bot: discord.Client | None = None,
+                military_time: bool | None = False,
+                fancy_times: bool | None = True,
+                support_dev: bool | None = True,
+                attachment_handler: typing.Any | None = None,
             ):
                 if guild:
                     channel.guild = guild
@@ -1515,21 +1517,22 @@ class Ticket:
             fp=io.BytesIO(transcript.encode()),
         )
 
-    async def delete_channel(self, deleter: typing.Optional[discord.Member] = None) -> None:
+    async def delete_channel(self, deleter: discord.Member | None = None) -> None:
         self.deleted_by = deleter
-        self.deleted_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.deleted_at = datetime.datetime.now(tz=datetime.UTC)
         await self.save()
         if deleter is None:
             audit_reason = _("Ticket deleted (profile `{self.profile}`).").format(self=self)
         else:
             audit_reason = _(
-                "Ticket deleted by {deleter.display_name} ({deleter.id}) (profile `{self.profile}`)."
+                "Ticket deleted by {deleter.display_name} ({deleter.id}) (profile `{self.profile}`).",
             ).format(deleter=deleter, self=self)
 
         config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
         if (
             logs_channel_id := await self.cog.config.guild(self.guild).profiles.get_raw(
-                self.profile, "logs_channel"
+                self.profile,
+                "logs_channel",
             )
         ) and (logs_channel := self.guild.get_channel(logs_channel_id)) is not None:
             await logs_channel.send(
@@ -1537,10 +1540,10 @@ class Ticket:
                     discord.Embed(
                         title=_("🗑 Ticket Deleted"),
                         description=_("<@{self.owner_id}>'s ticket has been deleted.").format(
-                            self=self
+                            self=self,
                         ),
                         color=discord.Color.red(),
-                        timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                        timestamp=datetime.datetime.now(tz=datetime.UTC),
                     ),
                     await self.get_embed(for_logging=True),
                 ],
@@ -1557,7 +1560,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+                created_at=datetime.datetime.now(tz=datetime.UTC),
                 action_type="ticket_deleted",
                 user=self.owner or self.owner_id,
                 moderator=deleter,

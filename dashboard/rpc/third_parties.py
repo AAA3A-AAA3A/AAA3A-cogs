@@ -1,33 +1,35 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import base64
 import inspect
 import types
+import typing
 
+import discord
+from werkzeug.datastructures import ImmutableMultiDict
+
+from redbot.core import commands
 from redbot.core.i18n import (
     get_locale_from_guild,
     set_contextual_locale,
     set_contextual_regional_format,
 )  # NOQA
-from werkzeug.datastructures import ImmutableMultiDict
 
 from .form import INITIAL_INIT_FIELD, Field, get_form_class
 from .pagination import Pagination
 from .utils import rpc_check
 
+if typing.TYPE_CHECKING:
+    from redbot.core.bot import Red
+
 
 def dashboard_page(
-    name: typing.Optional[str] = None,
-    description: typing.Optional[str] = None,
-    methods: typing.Tuple[str] = ("GET",),
-    context_ids: typing.List[str] = None,
-    required_kwargs: typing.List[str] = None,
-    optional_kwargs: typing.List[str] = None,
+    name: str | None = None,
+    description: str | None = None,
+    methods: tuple[str] = ("GET",),
+    context_ids: list[str] = None,
+    required_kwargs: list[str] = None,
+    optional_kwargs: list[str] = None,
     is_owner: bool = False,
-    hidden: typing.Optional[bool] = None,
+    hidden: bool | None = None,
 ):
     if context_ids is None:
         context_ids = []
@@ -115,10 +117,11 @@ class DashboardRPC_ThirdParties:
         self.bot: Red = cog.bot
         self.cog: commands.Cog = cog
 
-        self.third_parties: typing.Dict[
-            str, typing.Dict[str, typing.Tuple[typing.Callable, typing.Dict[str, bool]]]
+        self.third_parties: dict[
+            str,
+            dict[str, tuple[typing.Callable, dict[str, bool]]],
         ] = {}
-        self.third_parties_cogs: typing.Dict[str, commands.Cog] = {}
+        self.third_parties_cogs: dict[str, commands.Cog] = {}
 
         self.bot.register_rpc_handler(self.oauth_receive)
         self.bot.register_rpc_handler(self.get_third_parties)
@@ -171,7 +174,7 @@ class DashboardRPC_ThirdParties:
                     page = func.__dashboard_params__["name"]
                     if page in _pages:
                         raise RuntimeError(
-                            f"The page {page} is already an existing page for this third party."
+                            f"The page {page} is already an existing page for this third party.",
                         )
                     _pages[page] = (func, func.__dashboard_params__)
             except TypeError:
@@ -182,8 +185,9 @@ class DashboardRPC_ThirdParties:
         self.third_parties_cogs[name] = cog
 
     def remove_third_party(
-        self, cog: commands.Cog
-    ) -> typing.Dict[str, typing.Tuple[typing.Callable, typing.Dict[str, bool]]]:
+        self,
+        cog: commands.Cog,
+    ) -> dict[str, tuple[typing.Callable, dict[str, bool]]]:
         name = cog.qualified_name
         try:
             del self.third_parties_cogs[name]
@@ -193,15 +197,17 @@ class DashboardRPC_ThirdParties:
 
     @rpc_check()
     async def oauth_receive(
-        self, user_id: int, payload: typing.Dict[str, str]
-    ) -> typing.Dict[str, int]:
+        self,
+        user_id: int,
+        payload: dict[str, str],
+    ) -> dict[str, int]:
         self.bot.dispatch("oauth_receive", user_id, payload)
         return {"status": 0}
 
     @rpc_check()
     async def get_third_parties(
         self,
-    ) -> typing.Dict[str, typing.Dict[str, typing.Tuple[typing.Callable, typing.Dict[str, bool]]]]:
+    ) -> dict[str, dict[str, tuple[typing.Callable, dict[str, bool]]]]:
         return {
             key: {k: v[1] for k, v in value.items()} for key, value in self.third_parties.items()
         }
@@ -213,15 +219,15 @@ class DashboardRPC_ThirdParties:
         name: str,
         page: str,
         request_url: str,
-        csrf_token: typing.Tuple[str, str],
+        csrf_token: tuple[str, str],
         wtf_csrf_secret_key: str,
-        context_ids: typing.Optional[typing.Dict[str, int]] = None,
-        required_kwargs: typing.Dict[str, typing.Any] = None,
-        optional_kwargs: typing.Dict[str, typing.Any] = None,
-        extra_kwargs: typing.Dict[str, typing.Any] = None,
-        data: typing.Dict[typing.Literal["form", "json"], typing.Dict[str, typing.Any]] = None,
-        lang_code: typing.Optional[str] = None,
-    ) -> typing.Dict[str, typing.Any]:
+        context_ids: dict[str, int] | None = None,
+        required_kwargs: dict[str, typing.Any] = None,
+        optional_kwargs: dict[str, typing.Any] = None,
+        extra_kwargs: dict[str, typing.Any] = None,
+        data: dict[typing.Literal["form", "json"], dict[str, typing.Any]] = None,
+        lang_code: str | None = None,
+    ) -> dict[str, typing.Any]:
         if context_ids is None:
             context_ids = {}
         if required_kwargs is None:
@@ -343,7 +349,8 @@ class DashboardRPC_ThirdParties:
             "json": ImmutableMultiDict(data["json"]),
         }
         kwargs["lang_code"] = lang_code or await get_locale_from_guild(
-            self.bot, guild=kwargs.get("guild")
+            self.bot,
+            guild=kwargs.get("guild"),
         )
         set_contextual_locale(kwargs["lang_code"].replace("_", "-"))
         set_contextual_regional_format(kwargs["lang_code"].replace("_", "-"))
@@ -358,7 +365,7 @@ class DashboardRPC_ThirdParties:
         kwargs["Pagination"] = Pagination
 
         result = await self.third_parties[name][page][0](**kwargs)
-        if "web_content" in result and isinstance(result["web_content"], typing.Dict):
+        if "web_content" in result and isinstance(result["web_content"], dict):
             for key, value in result["web_content"].items():
                 if isinstance(value, kwargs["Form"]):
                     result["web_content"][key] = str(value)

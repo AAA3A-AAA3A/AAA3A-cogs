@@ -1,9 +1,9 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import random
+
+import discord
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("OnePieceBounties", __file__)
 
@@ -13,9 +13,7 @@ class WelcomePlugin:
     async def on_member_join(
         self,
         member: discord.Member,
-        welcome_channel: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ] = None,
+        welcome_channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None = None,
     ) -> None:
         if welcome_channel is None:
             config = await self.config.guild(member.guild).plugins.Welcome()
@@ -44,7 +42,8 @@ class WelcomePlugin:
         await welcome_view.update_buttons(member.guild)
         welcome_view._message = await welcome_channel.send(
             content=_("## 🏴‍☠️ {member.mention} has joined **{guild.name}**!\n").format(
-                member=member, guild=member.guild
+                member=member,
+                guild=member.guild,
             ),
             **await self.get_kwargs(member),
             view=welcome_view,
@@ -59,7 +58,7 @@ class WelcomeView(discord.ui.View):
         super().__init__(timeout=60**2)
 
         self._message: discord.Message = None
-        self.toasters: typing.List[discord.Member] = []
+        self.toasters: list[discord.Member] = []
 
         self.toast.label = _("Toast")
         self.log_pose.label = _("Log Pose")
@@ -89,35 +88,34 @@ class WelcomeView(discord.ui.View):
             return
         if interaction.user in self.toasters:
             await interaction.response.send_message(
-                _("You've already toasted this member!"), ephemeral=True
+                _("You've already toasted this member!"),
+                ephemeral=True,
             )
             return
         toasts = [
             _('{user.mention} grins widely: "To {new_member.mention} joining our grand voyage!"'),
             _('{user.mention} raises a flag: "Another brave soul for our pirate crew!"'),
             _(
-                '{user.mention}: "May your log pose always point to adventure, {new_member.mention}!"'
+                '{user.mention}: "May your log pose always point to adventure, {new_member.mention}!"',
             ),
             _('{user.mention} slams down a mug: "To finding nakama in the vast blue sea!"'),
             _(
-                '{user.mention} declares: "Even the Pirate King needs a reliable crew like {new_member.mention}!"'
+                '{user.mention} declares: "Even the Pirate King needs a reliable crew like {new_member.mention}!"',
             ),
             _('{user.mention}: "To dreams as vast as the Grand Line!"'),
             _(
-                '{user.mention} toasts: "May your bounty rise with each adventure, {new_member.mention}!"'
+                '{user.mention} toasts: "May your bounty rise with each adventure, {new_member.mention}!"',
             ),
             _('{user.mention}: "The Will of D lives on in our new nakama!"'),
             _('{user.mention} raises a barrel of sake: "To the treasures we\'ll find together!"'),
             _('{user.mention}: "Even Gol D. Roger would welcome {new_member.mention} aboard!"'),
             _(
-                '{user.mention} cheers: "Your wanted poster just joined our wall of fame, {new_member.mention}!"'
+                '{user.mention} cheers: "Your wanted poster just joined our wall of fame, {new_member.mention}!"',
             ),
             _('{user.mention}: "To sailing beyond the Red Line with our new crewmate!"'),
+            _('{user.mention} toasts: "Even the All Blue isn\'t as vast as the adventures ahead!"'),
             _(
-                '{user.mention} toasts: "Even the All Blue isn\'t as vast as the adventures ahead!"'
-            ),
-            _(
-                '{user.mention}: "May your spirit be as unbreakable as Luffy\'s will, {new_member.mention}!"'
+                '{user.mention}: "May your spirit be as unbreakable as Luffy\'s will, {new_member.mention}!"',
             ),
             _('{user.mention} shares a toast: "To finding our own Laugh Tale together!"'),
         ]
@@ -131,14 +129,14 @@ class WelcomeView(discord.ui.View):
         channels = [
             channel
             for channel_id in await self.cog.config.guild(
-                interaction.guild
+                interaction.guild,
             ).plugins.Welcome.log_pose_channels()
             if (channel := interaction.guild.get_channel(channel_id)) is not None
         ]
         await interaction.response.send_message(
             _(
                 "# Navigator's Guide\n\n"
-                "Welcome aboard the {guild.name} ship! Here's your Log Pose to navigate our waters:\n"
+                "Welcome aboard the {guild.name} ship! Here's your Log Pose to navigate our waters:\n",
             ).format(guild=interaction.guild)
             + "\n".join(f"🏴‍☠️ {channel.mention}" for channel in channels)
             + _("\n\n*It's not about the destination, it's about the journey!*"),
@@ -147,7 +145,9 @@ class WelcomeView(discord.ui.View):
 
     @discord.ui.button(emoji="💰", label="Bounty Info", style=discord.ButtonStyle.danger)
     async def bounty_info(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.send_message(
             _(
@@ -155,12 +155,12 @@ class WelcomeView(discord.ui.View):
                 "In our crew, everyone gets a bounty when they join!\n\n"
                 "**Bounty Tiers:**\n{tiers}\n\n"
                 "Be active and helpful to raise your bounty over time!\n"
-                '*"Your bounty doesn\'t determine your worth to the crew."*'
+                '*"Your bounty doesn\'t determine your worth to the crew."*',
             ).format(
                 tiers="\n".join(
                     f"💰 **{tier[0]}**: **+ {tier[1]:,}** {_('berries') if tier[1] > 1 else _('berry')}"
                     for tier in self.cog.get_bounty_tiers()
-                )
+                ),
             ),
             ephemeral=True,
         )
@@ -175,5 +175,5 @@ class WelcomeView(discord.ui.View):
                     label=label_link[0],
                     url=label_link[1],
                     style=discord.ButtonStyle.link,
-                )
+                ),
             )

@@ -1,25 +1,25 @@
-from AAA3A_utils import Cog, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 # import aiohttp
 import asyncio
 import functools
 import time
+import typing
 
+import discord
 import requests
 from bs4 import BeautifulSoup
+
+from AAA3A_utils import Cog, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 # Credits:
 # General repo credits.
 
 _: Translator = Translator("KoFiTracker", __file__)
 
-HEADERS: typing.Dict[str, str] = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36"
+HEADERS: dict[str, str] = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36",
 }
 
 
@@ -71,16 +71,18 @@ class KoFiTracker(Cog):
         await super().cog_unload()
 
     @cache_results()
-    async def get_kofi_page_details(self, kofi_page_url: str) -> typing.Dict[str, str]:
+    async def get_kofi_page_details(self, kofi_page_url: str) -> dict[str, str]:
         kofi_page_url = kofi_page_url.removeprefix("https://ko-fi.com/").lower()
         # async with self._session.get(f"https://ko-fi.com/{kofi_page_url}") as r:
         #     data = await r.text()
         r = await asyncio.to_thread(
-            requests.get, url=f"https://ko-fi.com/{kofi_page_url}", headers=HEADERS
+            requests.get,
+            url=f"https://ko-fi.com/{kofi_page_url}",
+            headers=HEADERS,
         )
         data = r.text
         soup = BeautifulSoup(data, "lxml")
-        data = {
+        return {
             "url": f"https://ko-fi.com/{kofi_page_url}",
             "display_name": soup.select_one(".kfds-font-size-22 > span").text,
             "avatar_url": (
@@ -105,10 +107,9 @@ class KoFiTracker(Cog):
             ),
             "of_goal_total": getattr(soup.select_one(".goal-label"), "text", None),
         }
-        return data
 
     @commands.Cog.listener()
-    async def on_webhook_receive(self, payload: typing.Dict[str, typing.Any]) -> None:
+    async def on_webhook_receive(self, payload: dict[str, typing.Any]) -> None:
         if (
             payload.get("type") not in ("Donation", "Subscription", "Shop Order")
             or "verification_token" not in payload
@@ -132,7 +133,8 @@ class KoFiTracker(Cog):
                 kofi_page_details = await self.get_kofi_page_details(kofi_page_url)
                 embed: discord.Embed = discord.Embed(
                     title=_("New {type} on {display_name}'s KoFi").format(
-                        type=payload["type"], display_name=kofi_page_details["display_name"]
+                        type=payload["type"],
+                        display_name=kofi_page_details["display_name"],
                     ),
                     url=payload["url"],
                     color=discord.Color.red(),
@@ -157,7 +159,9 @@ class KoFiTracker(Cog):
                         embed.add_field(name=_("Tier:"), value=payload["tier_name"], inline=True)
                     if payload["is_first_subscription_payment"]:
                         embed.add_field(
-                            name="\u200b", value=_("(First Subscription Payment)"), inline=False
+                            name="\u200b",
+                            value=_("(First Subscription Payment)"),
+                            inline=False,
                         )
                 elif payload["type"] == "Shop Order":
                     embed.add_field(
@@ -166,7 +170,7 @@ class KoFiTracker(Cog):
                             [
                                 f"- **{item['quantity']}x** {item['variation_name']}"
                                 for item in payload["shop_items"]
-                            ]
+                            ],
                         ),
                         inline=True,
                     )
@@ -178,7 +182,7 @@ class KoFiTracker(Cog):
                                 "{street_address}\n"
                                 "{city}, {state_or_province} {postal_code}\n"
                                 "{country} ({country_code})\n"
-                                "{telephone}"
+                                "{telephone}",
                             ).format(**payload["shipping"]),
                             inline=False,
                         )
@@ -203,11 +207,11 @@ class KoFiTracker(Cog):
                     discord.ui.Button(
                         emoji="❤️",
                         label=_("Support {display_name} on KoFi!").format(
-                            display_name=kofi_page_details["display_name"]
+                            display_name=kofi_page_details["display_name"],
                         ),
                         url=kofi_page_details["url"],
                         style=discord.ButtonStyle.link,
-                    )
+                    ),
                 )
                 try:
                     await channel.send(embed=embed, view=view)
@@ -227,9 +231,7 @@ class KoFiTracker(Cog):
             raise commands.UserFeedbackCheckFailure(_("This KoFi page does not exist."))
 
         embed: discord.Embed = discord.Embed(
-            title=_("{display_name}'s KoFi").format(
-                display_name=kofi_page_details["display_name"]
-            ),
+            title=_("{display_name}'s KoFi").format(display_name=kofi_page_details["display_name"]),
             url=kofi_page_details["url"],
             color=discord.Color.red(),
         )
@@ -237,11 +239,15 @@ class KoFiTracker(Cog):
         embed.set_image(url=kofi_page_details["banner_url"])
         embed.add_field(name=_("About Me:"), value=kofi_page_details["about_me"], inline=False)
         embed.add_field(
-            name=_("Received Amount:"), value=kofi_page_details["received_amount"], inline=False
+            name=_("Received Amount:"),
+            value=kofi_page_details["received_amount"],
+            inline=False,
         )
         if kofi_page_details["goal_title"] is not None:
             embed.add_field(
-                name=_("Goal Title:"), value=kofi_page_details["goal_title"], inline=False
+                name=_("Goal Title:"),
+                value=kofi_page_details["goal_title"],
+                inline=False,
             )
             embed.add_field(
                 name=_("Goal Description:"),
@@ -254,7 +260,9 @@ class KoFiTracker(Cog):
                 inline=False,
             )
             embed.add_field(
-                name=_("Of Goal Total:"), value=kofi_page_details["of_goal_total"], inline=False
+                name=_("Of Goal Total:"),
+                value=kofi_page_details["of_goal_total"],
+                inline=False,
             )
         embed.set_footer(
             text=_("Fetched from KoFi."),
@@ -266,11 +274,11 @@ class KoFiTracker(Cog):
             discord.ui.Button(
                 emoji="❤️",
                 label=_("Support {display_name} on KoFi!").format(
-                    display_name=kofi_page_details["display_name"]
+                    display_name=kofi_page_details["display_name"],
                 ),
                 url=kofi_page_details["url"],
                 style=discord.ButtonStyle.link,
-            )
+            ),
         )
         await ctx.send(embed=embed, view=view)
 
@@ -285,9 +293,7 @@ class KoFiTracker(Cog):
     async def add(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         kofi_page_url: str,
         verification_token: str,
         types: commands.Greedy[typing.Literal["Donation", "Subscription", "Shop Order"]] = [
@@ -320,9 +326,7 @@ class KoFiTracker(Cog):
     async def remove(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         kofi_page_url: str,
     ) -> None:
         """Remove a KoFi page from tracking."""
@@ -339,9 +343,7 @@ class KoFiTracker(Cog):
     async def list(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
     ) -> None:
         """List the KoFi pages being tracked."""
         if channel is None:
@@ -360,7 +362,7 @@ class KoFiTracker(Cog):
                 [
                     f"- **[{kofi_page_url}](https://ko-fi.com/{kofi_page_url})**\n> {data}"
                     for kofi_page_url, data in k_pages
-                ]
+                ],
             )
             embeds.append(e)
         await Menu(pages=embeds).start(ctx)
@@ -372,8 +374,8 @@ class KoFiTracker(Cog):
         if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>."
-                )
+                    "Red-Web-Dashboard is not installed. Check <https://red-web-dashboard.readthedocs.io>.",
+                ),
             )
         if not dashboard_url[1] and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(_("You can't access the Dashboard."))
@@ -385,7 +387,7 @@ class KoFiTracker(Cog):
                 "**2.** Go to your page and click on the `Settings` button.\n"
                 "**3.** Go to the `Webhooks` section in `More`.\n"
                 "**4.** Set the webhook URL to {webhook_url} and click on `Update`.\n"
-                "**5.** Copy the `Verification Token` and use it with the command `{prefix}setkofitracker add <kofi_page_url> <verification_token>`."
+                "**5.** Copy the `Verification Token` and use it with the command `{prefix}setkofitracker add <kofi_page_url> <verification_token>`.",
             ).format(webhook_url=f"{dashboard_url[0]}/api/webhook", prefix=ctx.prefix),
         )
         await ctx.send(embed=embed)

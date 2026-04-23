@@ -1,19 +1,19 @@
-from AAA3A_utils import Cog, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import argparse
 import asyncio
 import datetime
 import functools
 import multiprocessing
 import re
+import typing
 from time import monotonic
 
 import dateparser
+import discord
+
+from AAA3A_utils import Cog, Menu
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import bold, box, underline
 from redbot.core.utils.common_filters import URL_RE
 
@@ -46,7 +46,7 @@ class DiscordSearch(Cog):
     async def discordsearch(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[discord.TextChannel],
+        channel: discord.TextChannel | None,
         args: commands.Greedy[StrConverter],
     ) -> None:
         """Search for a message on Discord in a channel.
@@ -101,9 +101,7 @@ class DiscordSearch(Cog):
             bold("Authors:")
             + " "
             + (
-                ", ".join([author.mention for author in authors])
-                if authors is not None
-                else "None"
+                ", ".join([author.mention for author in authors]) if authors is not None else "None"
             ),
             bold("Mentions:")
             + " "
@@ -123,9 +121,12 @@ class DiscordSearch(Cog):
             bold("Limit:") + " " + f"{limit}",
         ]
         start = monotonic()
-        messages: typing.List[discord.Message] = []
+        messages: list[discord.Message] = []
         async for message in channel.history(
-            limit=limit, oldest_first=False, before=before, after=after
+            limit=limit,
+            oldest_first=False,
+            before=before,
+            after=after,
         ):
             if message.id == ctx.message.id:
                 continue
@@ -154,15 +155,15 @@ class DiscordSearch(Cog):
                     loop = asyncio.get_running_loop()
                     new_task = loop.run_in_executor(None, task)
                     search = await asyncio.wait_for(new_task, timeout=trigger_timeout + 5)
-                except (multiprocessing.TimeoutError, asyncio.TimeoutError):
+                except (TimeoutError, multiprocessing.TimeoutError):
                     raise commands.UserFeedbackCheckFailure(
-                        _("Your regex process took too long. Removing from memory.")
+                        _("Your regex process took too long. Removing from memory."),
                     )
                 except ValueError:
                     continue
                 except Exception as e:
                     raise commands.UserFeedbackCheckFailure(
-                        _("There is an error in your regex.\n{e}").format(e=box(str(e), lang="py"))
+                        _("There is an error in your regex.\n{e}").format(e=box(str(e), lang="py")),
                     )
                 else:
                     if not search:
@@ -209,7 +210,7 @@ class DiscordSearch(Cog):
                 )
                 embed.timestamp = message.created_at
                 embed.set_thumbnail(
-                    url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg"
+                    url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg",
                 )
                 embed.set_footer(
                     text=f"Page {i}/{len(messages)}",
@@ -222,7 +223,7 @@ class DiscordSearch(Cog):
             embed.add_field(name="Result:", value=_("Sorry, I could not find any results."))
             embed.timestamp = datetime.datetime.now()
             embed.set_thumbnail(
-                url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg"
+                url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg",
             )
             embed.set_footer(
                 text="Page 1/1",
@@ -233,7 +234,8 @@ class DiscordSearch(Cog):
         total = round(end - start, 1)
         for embed in embeds:
             embed.title = _("Search in #{channel.name} ({channel.id}) in {total}s").format(
-                channel=channel, total=total
+                channel=channel,
+                total=total,
             )
         await Menu(pages=embeds).start(ctx)
 
@@ -307,9 +309,7 @@ class SearchArgs:
             else args.before
         )
         self.after = (
-            await DateConverter().convert(ctx, args.after)
-            if args.after is not None
-            else args.after
+            await DateConverter().convert(ctx, args.after) if args.after is not None else args.after
         )
         if args.pinned is not None:
             args.pinned = str(args.pinned)

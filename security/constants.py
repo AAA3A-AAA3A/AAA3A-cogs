@@ -1,9 +1,10 @@
-from redbot.core import commands  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
+import typing
 from enum import Enum
+
+import discord
+
+from redbot.core import commands
 
 
 class Levels(Enum):
@@ -104,12 +105,18 @@ class Emojis(Enum):
     ONBOARDING = "🚀"
 
 
-WHITELIST_TYPES: typing.List[
-    typing.Dict[
+WHITELIST_TYPES: list[
+    dict[
         typing.Literal[
-            "name", "emoji", "description", "value", "channels", "categories", "staff_allowed"
+            "name",
+            "emoji",
+            "description",
+            "value",
+            "channels",
+            "categories",
+            "staff_allowed",
         ],
-        typing.Union[str, bool],
+        str | bool,
     ]
 ] = [
     {
@@ -382,9 +389,7 @@ class WhitelistTypeConverter(commands.Converter):
         raise commands.BadArgument(f"Unknown whitelist type: {argument}")
 
 
-POSSIBLE_ACTIONS: typing.List[
-    typing.Dict[typing.Literal["name", "emoji", "value", "permission"], str]
-] = [
+POSSIBLE_ACTIONS: list[dict[typing.Literal["name", "emoji", "value", "permission"], str]] = [
     {
         "name": "Timeout",
         "emoji": Emojis.TIMEOUT.value,
@@ -418,7 +423,7 @@ POSSIBLE_ACTIONS: typing.List[
 ]
 
 
-DANGEROUS_PERMISSIONS: typing.List[str] = [
+DANGEROUS_PERMISSIONS: list[str] = [
     "administrator",
     "manage_guild",
     "manage_roles",
@@ -432,16 +437,17 @@ DANGEROUS_PERMISSIONS: typing.List[str] = [
 
 
 def get_correct_timeout_duration(
-    member: discord.Member, duration: datetime.timedelta
+    member: discord.Member,
+    duration: datetime.timedelta,
 ) -> datetime.timedelta:
     if member.is_timed_out():
-        duration += member.timed_out_until - datetime.datetime.now(datetime.timezone.utc)
+        duration += member.timed_out_until - datetime.datetime.now(datetime.UTC)
     return min(duration, datetime.timedelta(days=28))
 
 
 def get_non_animated_asset(
-    asset: typing.Optional[discord.Asset] = None,
-) -> typing.Optional[discord.Asset]:
+    asset: discord.Asset | None = None,
+) -> discord.Asset | None:
     if asset is None:
         return None
     if not asset.is_animated():
@@ -455,4 +461,4 @@ def get_non_animated_asset(
 
 
 def clean_backticks(text: str) -> str:
-    return text.replace("`", "\u02CB")
+    return text.replace("`", "\u02cb")

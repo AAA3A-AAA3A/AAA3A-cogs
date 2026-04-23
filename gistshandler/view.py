@@ -1,13 +1,12 @@
-from AAA3A_utils import Menu, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 
+import discord
 import gists
+
+from AAA3A_utils import CogsUtils, Menu
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 
 _: Translator = Translator("GistsHandler", __file__)
@@ -17,8 +16,8 @@ class FilesSelect(discord.ui.Select):
     def __init__(
         self,
         parent: discord.ui.View,
-        files: typing.List[gists.File],
-        current_file: typing.Optional[gists.File] = None,
+        files: list[gists.File],
+        current_file: gists.File | None = None,
     ) -> None:
         self._parent: discord.ui.View = parent
         self._options = [
@@ -95,7 +94,9 @@ class CreateGistModal(discord.ui.Modal):
             return
         try:
             gist = await self._parent.cog.gists_client.create_gist(
-                files=[file], description=description, public=public
+                files=[file],
+                description=description,
+                public=public,
             )
         except gists.AuthorizationFailure:
             await interaction.response.send_message(_("GitHub token is invalid or expired."))
@@ -106,7 +107,8 @@ class CreateGistModal(discord.ui.Modal):
         self._parent._deleted_at: datetime.datetime = None
         await self._parent._update()
         await interaction.response.send_message(
-            _("Gist `{gist.id}` created.").format(gist=gist), ephemeral=True
+            _("Gist `{gist.id}` created.").format(gist=gist),
+            ephemeral=True,
         )
 
 
@@ -180,7 +182,9 @@ class EditGistModal(discord.ui.Modal):
         files.remove(self.file)
         if old_file_content != "":
             old_file = gists.File(
-                name=old_file_old_name, new_name=old_file_name, content=old_file_content
+                name=old_file_old_name,
+                new_name=old_file_name,
+                content=old_file_content,
             )
             files.append(old_file)
         else:
@@ -200,13 +204,15 @@ class EditGistModal(discord.ui.Modal):
             return
         except gists.NotFound:
             await interaction.response.send_message(
-                _("You're not allowed to edit this gist."), ephemeral=True
+                _("You're not allowed to edit this gist."),
+                ephemeral=True,
             )
             return
         self._parent.file = old_file or new_file
         await self._parent._update()
         await interaction.response.send_message(
-            _("Gist `{gist.id}` updated.").format(gist=self.gist), ephemeral=True
+            _("Gist `{gist.id}` updated.").format(gist=self.gist),
+            ephemeral=True,
         )
 
 
@@ -214,15 +220,15 @@ class GistsHandlerView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        gist: typing.Optional[gists.Gist] = None,
-        file: typing.Optional[gists.File] = None,
+        gist: gists.Gist | None = None,
+        file: gists.File | None = None,
     ) -> None:
         super().__init__(timeout=180)
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 
-        self.gist: typing.Optional[gists.Gist] = gist
-        self.file: typing.Optional[gists.File] = file
+        self.gist: gists.Gist | None = gist
+        self.file: gists.File | None = file
 
         self._message: discord.Message = None
         self._embed: discord.Embed = None
@@ -244,7 +250,8 @@ class GistsHandlerView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -281,13 +288,17 @@ class GistsHandlerView(discord.ui.View):
             if self._files_select is not None:
                 self.remove_item(self._files_select)
             self._files_select: FilesSelect = FilesSelect(
-                parent=self, files=self.gist.files, current_file=self.file
+                parent=self,
+                files=self.gist.files,
+                current_file=self.file,
             )
             self.add_item(self._files_select)
             if self._button_url is not None:
                 self.remove_item(self._button_url)
             self._button_url: discord.ui.Button = discord.ui.Button(
-                label="View on GitHub", url=self.gist.url, style=discord.ButtonStyle.url
+                label="View on GitHub",
+                url=self.gist.url,
+                style=discord.ButtonStyle.url,
             )
             self.add_item(self._button_url)
         if self._message is None:
@@ -299,8 +310,8 @@ class GistsHandlerView(discord.ui.View):
     async def get_embed(
         self,
         ctx: commands.Context,
-        gist: typing.Optional[gists.Gist] = None,
-        file: typing.Optional[gists.File] = None,
+        gist: gists.Gist | None = None,
+        file: gists.File | None = None,
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(color=await ctx.embed_color())
         if gist is None:
@@ -334,7 +345,7 @@ class GistsHandlerView(discord.ui.View):
             )
             content = file.content.replace("`", "`\u200b")
             content = (
-                f"{content[:1024 - 4 - length]}\n..."
+                f"{content[: 1024 - 4 - length]}\n..."
                 if len(content) > (1024 - length)
                 else content
             )
@@ -344,9 +355,7 @@ class GistsHandlerView(discord.ui.View):
         return embed
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -382,18 +391,22 @@ class GistsHandlerView(discord.ui.View):
             return
         except gists.NotFound:
             await interaction.response.send_message(
-                _("You're not allowed to delete this gist."), ephemeral=True
+                _("You're not allowed to delete this gist."),
+                ephemeral=True,
             )
             return
         self._deleted: bool = True
-        self._deleted_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
+        self._deleted_at: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
         await interaction.response.send_message(
-            _("Gist `{gist.id}` deleted.").format(gist=self.gist), ephemeral=True
+            _("Gist `{gist.id}` deleted.").format(gist=self.gist),
+            ephemeral=True,
         )
         await self._update()
 
     async def _callback(
-        self, interaction: discord.Interaction, option: discord.SelectOption
+        self,
+        interaction: discord.Interaction,
+        option: discord.SelectOption,
     ) -> None:
         await interaction.response.defer()
         self.file: gists.File = discord.utils.get(self.gist.files, name=option.value)

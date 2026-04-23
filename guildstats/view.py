@@ -1,10 +1,11 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
+import typing
+
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("GuildStats", __file__)
 
@@ -13,27 +14,23 @@ class GuildStatsView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        _object: typing.Union[
-            discord.Member,
-            typing.Tuple[discord.Member, typing.Literal["activities"]],
-            discord.Role,
+        _object: discord.Member
+        | tuple[discord.Member, typing.Literal["activities"]]
+        | discord.Role
+        | discord.Guild
+        | tuple[
             discord.Guild,
-            typing.Tuple[
-                discord.Guild,
-                typing.Union[
-                    typing.Literal["messages", "voice", "activities"],
-                    typing.Tuple[
-                        typing.Literal["top"],
-                        typing.Literal["messages", "voice"],
-                        typing.Literal["members", "channels"],
-                    ],
-                    typing.Tuple[typing.Literal["activity"], str],
-                ],
-            ],
-            discord.CategoryChannel,
-            discord.TextChannel,
-            discord.VoiceChannel,
-        ],
+            typing.Literal["messages", "voice", "activities"]
+            | tuple[
+                typing.Literal["top"],
+                typing.Literal["messages", "voice"],
+                typing.Literal["members", "channels"],
+            ]
+            | tuple[typing.Literal["activity"], str],
+        ]
+        | discord.CategoryChannel
+        | discord.TextChannel
+        | discord.VoiceChannel,
         members_type: typing.Literal["humans", "bots", "both"] = "humans",
         show_graphic_in_main: bool = False,
         graphic_mode: bool = False,
@@ -42,27 +39,25 @@ class GuildStatsView(discord.ui.View):
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 
-        self._object: typing.Union[
-            discord.Member,
-            typing.Tuple[discord.Member, typing.Literal["activities"]],
-            discord.Role,
-            discord.Guild,
-            typing.Tuple[
+        self._object: (
+            discord.Member
+            | tuple[discord.Member, typing.Literal["activities"]]
+            | discord.Role
+            | discord.Guild
+            | tuple[
                 discord.Guild,
-                typing.Union[
-                    typing.Literal["messages", "voice", "activities"],
-                    typing.Tuple[
-                        typing.Literal["top"],
-                        typing.Literal["messages", "voice"],
-                        typing.Literal["members", "channels"],
-                    ],
-                    typing.Tuple[typing.Literal["activity"], str],
-                ],
-            ],
-            discord.CategoryChannel,
-            discord.TextChannel,
-            discord.VoiceChannel,
-        ] = _object
+                typing.Literal["messages", "voice", "activities"]
+                | tuple[
+                    typing.Literal["top"],
+                    typing.Literal["messages", "voice"],
+                    typing.Literal["members", "channels"],
+                ]
+                | tuple[typing.Literal["activity"], str],
+            ]
+            | discord.CategoryChannel
+            | discord.TextChannel
+            | discord.VoiceChannel
+        ) = _object
         self.members_type: typing.Literal["humans", "bots", "both"] = members_type
         self.show_graphic_in_main: bool = show_graphic_in_main
         self.graphic_mode: bool = graphic_mode
@@ -74,7 +69,9 @@ class GuildStatsView(discord.ui.View):
         self.ctx: commands.Context = ctx
         if self.graphic_mode:
             file: discord.File = await self.cog.generate_graphic(
-                self._object, members_type=self.members_type, to_file=True
+                self._object,
+                members_type=self.members_type,
+                to_file=True,
             )
         else:
             file: discord.File = await self.cog.generate_image(
@@ -91,7 +88,8 @@ class GuildStatsView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -111,13 +109,17 @@ class GuildStatsView(discord.ui.View):
 
     @discord.ui.button(emoji="📈", custom_id="change_mode", style=discord.ButtonStyle.secondary)
     async def change_mode(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer(thinking=False)  # thinking=True
         self.graphic_mode: bool = not self.graphic_mode
         if self.graphic_mode:
             file: discord.File = await self.cog.generate_graphic(
-                self._object, members_type=self.members_type, to_file=True
+                self._object,
+                members_type=self.members_type,
+                to_file=True,
             )
         else:
             file: discord.File = await self.cog.generate_image(
@@ -134,12 +136,16 @@ class GuildStatsView(discord.ui.View):
 
     @discord.ui.button(emoji="🔄", custom_id="reload_page", style=discord.ButtonStyle.secondary)
     async def reload_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer(thinking=False)  # thinking=True
         if self.graphic_mode:
             file: discord.File = await self.cog.generate_graphic(
-                self._object, members_type=self.members_type, to_file=True
+                self._object,
+                members_type=self.members_type,
+                to_file=True,
             )
         else:
             file: discord.File = await self.cog.generate_image(
@@ -155,9 +161,7 @@ class GuildStatsView(discord.ui.View):
         await self._message.edit(attachments=[file])
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:

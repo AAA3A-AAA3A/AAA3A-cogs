@@ -1,14 +1,14 @@
-from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
+import typing
 from copy import copy
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import commands
+from redbot.core.bot import Red
 from redbot.core.commands.converter import get_timedelta_converter
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, pagify
 
 from .view import DiscordEditView
@@ -25,7 +25,7 @@ def _(untranslated: str) -> str:  # `redgettext` will found these strings.
 
 
 ERROR_MESSAGE = _(
-    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}",
 )
 
 _: Translator = Translator("DiscordEdit", __file__)
@@ -38,11 +38,11 @@ class PositionConverter(commands.Converter):
         except ValueError:
             raise commands.BadArgument("The position must be an integer.")
         max_guild_text_channels_position = len(
-            [c for c in ctx.guild.channels if isinstance(c, discord.TextChannel)]
+            [c for c in ctx.guild.channels if isinstance(c, discord.TextChannel)],
         )
         if position <= 0 or position >= max_guild_text_channels_position + 1:
             raise commands.BadArgument(
-                f"The indicated position must be between 1 and {max_guild_text_channels_position}."
+                f"The indicated position must be between 1 and {max_guild_text_channels_position}.",
             )
         position -= 1
         return position
@@ -66,8 +66,7 @@ class VideoQualityModeConverter(commands.Converter):
             raise commands.BadArgument(_("The video quality mode must be `1` or `2`."))
         if video_quality_mode in {1, 2}:
             return discord.VideoQualityMode(video_quality_mode)
-        else:
-            raise commands.BadArgument(_("The video quality mode must be `1` or `2`."))
+        raise commands.BadArgument(_("The video quality mode must be `1` or `2`."))
 
 
 @cog_i18n(_)
@@ -78,7 +77,9 @@ class EditVoiceChannel(Cog):
         super().__init__(bot=bot)
 
     async def check_voice_channel(
-        self, ctx: commands.Context, channel: discord.VoiceChannel
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
     ) -> bool:
         # if (
         #     not channel.permissions_for(ctx.author).manage_channels
@@ -93,8 +94,8 @@ class EditVoiceChannel(Cog):
         if not channel.permissions_for(ctx.me).manage_channels:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I can not edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission."
-                ).format(channel=channel)
+                    "I can not edit the voice channel {channel.mention} ({channel.id}) because I don't have the `manage_channel` permission.",
+                ).format(channel=channel),
             )
         return True
 
@@ -110,7 +111,7 @@ class EditVoiceChannel(Cog):
     async def editvoicechannel_create(
         self,
         ctx: commands.Context,
-        category: typing.Optional[discord.CategoryChannel] = None,
+        category: discord.CategoryChannel | None = None,
         *,
         name: commands.Range[str, 1, 100],
     ) -> None:
@@ -123,7 +124,7 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @commands.bot_has_permissions(embed_links=True)
@@ -139,7 +140,7 @@ class EditVoiceChannel(Cog):
         )
         embed: discord.Embed = discord.Embed(color=await ctx.embed_color())
         embed.title = _("List of voice channels in {guild.name} ({guild.id})").format(
-            guild=ctx.guild
+            guild=ctx.guild,
         )
         embeds = []
         pages = pagify(description, page_length=4096)
@@ -166,7 +167,7 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editvoicechannel.command(name="invite")
@@ -174,10 +175,10 @@ class EditVoiceChannel(Cog):
         self,
         ctx: commands.Context,
         channel: discord.VoiceChannel,
-        max_age: typing.Optional[float] = None,
-        max_uses: typing.Optional[int] = None,
-        temporary: typing.Optional[bool] = False,
-        unique: typing.Optional[bool] = True,
+        max_age: float | None = None,
+        max_uses: int | None = None,
+        temporary: bool | None = False,
+        unique: bool | None = True,
     ) -> None:
         """Create an invite for a voice channel.
 
@@ -197,7 +198,7 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
         else:
             await ctx.send(invite.url)
@@ -218,12 +219,15 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editvoicechannel.command(name="bitrate")
     async def editvoicechannel_bitrate(
-        self, ctx: commands.Context, channel: discord.VoiceChannel, bitrate: int
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        bitrate: int,
     ) -> None:
         """Edit voice channel bitrate.
 
@@ -242,12 +246,15 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editvoicechannel.command(name="nsfw")
     async def editvoicechannel_nsfw(
-        self, ctx: commands.Context, channel: discord.VoiceChannel, nsfw: bool = None
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        nsfw: bool = None,
     ) -> None:
         """Edit voice channel nsfw."""
         await self.check_voice_channel(ctx, channel)
@@ -260,7 +267,7 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editvoicechannel.command(name="userlimit", aliases=["user_limit"])
@@ -282,12 +289,16 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editvoicechannel.command(name="position")
     async def editvoicechannel_position(
-        self, ctx: commands.Context, channel: discord.VoiceChannel, *, position: PositionConverter
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        *,
+        position: PositionConverter,
     ) -> None:
         """Edit voice channel position.
 
@@ -302,12 +313,15 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editvoicechannel.command(name="syncpermissions", aliases=["sync_permissions"])
     async def editvoicechannel_sync_permissions(
-        self, ctx: commands.Context, channel: discord.VoiceChannel, sync_permissions: bool = None
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
+        sync_permissions: bool = None,
     ) -> None:
         """Edit voice channel sync permissions."""
         await self.check_voice_channel(ctx, channel)
@@ -320,7 +334,7 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editvoicechannel.command(name="category")
@@ -339,7 +353,7 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editvoicechannel.command(name="slowmodedelay", aliases=["slowmode_delay"])
@@ -364,7 +378,7 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editvoicechannel.command(name="videoqualitymode", aliases=["video_quality_mode"])
@@ -387,7 +401,7 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @commands.has_permissions(manage_roles=True)
@@ -397,10 +411,8 @@ class EditVoiceChannel(Cog):
         self,
         ctx: commands.Context,
         channel: discord.VoiceChannel,
-        roles_or_users: commands.Greedy[
-            typing.Union[discord.Member, discord.Role, typing.Literal["everyone"]]
-        ],
-        true_or_false: typing.Optional[bool],
+        roles_or_users: commands.Greedy[discord.Member | discord.Role | typing.Literal["everyone"]],
+        true_or_false: bool | None,
         permissions: commands.Greedy[PermissionConverter],
     ) -> None:
         """Edit voice channel overwrites/permissions.
@@ -446,7 +458,7 @@ class EditVoiceChannel(Cog):
                 targets.append(ctx.guild.default_role)
         if not targets:
             raise commands.UserFeedbackCheckFailure(
-                _("You need to provide a role or user you want to edit permissions for.")
+                _("You need to provide a role or user you want to edit permissions for."),
             )
         # for target in targets:
         #     if (
@@ -461,15 +473,15 @@ class EditVoiceChannel(Cog):
         #         raise commands.UserFeedbackCheckFailure(_("I can't change the permissions of a role/member higher up the hierarchy than my top role."))
         if not permissions:
             raise commands.UserFeedbackCheckFailure(
-                _("You need to provide at least one permission.")
+                _("You need to provide at least one permission."),
             )
         channel_permissions = channel.permissions_for(ctx.author)
         for permission in permissions:
             if not getattr(channel_permissions, permission):
                 raise commands.UserFeedbackCheckFailure(
                     _("You don't have the permission `{permission_name}` in this channel.").format(
-                        permission_name=permission
-                    )
+                        permission_name=permission,
+                    ),
                 )
         bot_channel_permissions = channel.permissions_for(ctx.me)
         fake_channel_object = copy(channel)
@@ -477,11 +489,11 @@ class EditVoiceChannel(Cog):
         for target in targets:
             if target in overwrites:
                 overwrites[target].update(
-                    **{permission: true_or_false for permission in permissions}
+                    **dict.fromkeys(permissions, true_or_false),
                 )
             else:
                 perm = discord.PermissionOverwrite(
-                    **{permission: true_or_false for permission in permissions}
+                    **dict.fromkeys(permissions, true_or_false),
                 )
                 overwrites[target] = perm
         new_channel_permissions = fake_channel_object.permissions_for(ctx.author)
@@ -492,7 +504,7 @@ class EditVoiceChannel(Cog):
             and getattr(new_channel_permissions, permission) is False
         ]:
             raise commands.UserFeedbackCheckFailure(
-                _("You can't remove permissions from you in this channel.")
+                _("You can't remove permissions from you in this channel."),
             )
         new_bot_channel_permissions = fake_channel_object.permissions_for(ctx.me)
         if [
@@ -502,7 +514,7 @@ class EditVoiceChannel(Cog):
             and getattr(new_bot_channel_permissions, permission) is False
         ]:
             raise commands.UserFeedbackCheckFailure(
-                _("You can't remove permissions from the bot in this channel.")
+                _("You can't remove permissions from the bot in this channel."),
             )
         try:
             await channel.edit(
@@ -511,7 +523,7 @@ class EditVoiceChannel(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editvoicechannel.command(name="delete")
@@ -528,30 +540,32 @@ class EditVoiceChannel(Cog):
                 embed: discord.Embed = discord.Embed()
                 embed.title = _("⚠️ - Delete voice channel")
                 embed.description = _(
-                    "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
+                    "Do you really want to delete the voice channel {channel.mention} ({channel.id})?",
                 ).format(channel=channel)
                 embed.color = 0xF00020
                 content = ctx.author.mention
             else:
                 embed = None
                 content = f"{ctx.author.mention} " + _(
-                    "Do you really want to delete the voice channel {channel.mention} ({channel.id})?"
+                    "Do you really want to delete the voice channel {channel.mention} ({channel.id})?",
                 ).format(channel=channel)
             if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
                 return
         try:
             await channel.delete(
-                reason=f"{ctx.author} ({ctx.author.id}) has deleted the voice channel #!{channel.name} ({channel.id})."
+                reason=f"{ctx.author} ({ctx.author.id}) has deleted the voice channel #!{channel.name} ({channel.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editvoicechannel.command(name="view", aliases=["-"])
     async def editvoicechannel_view(
-        self, ctx: commands.Context, channel: discord.VoiceChannel
+        self,
+        ctx: commands.Context,
+        channel: discord.VoiceChannel,
     ) -> None:
         """View and edit voice channel."""
         await self.check_voice_channel(ctx, channel)
@@ -571,14 +585,15 @@ class EditVoiceChannel(Cog):
 
         def get_embed() -> discord.Embed:
             embed: discord.Embed = discord.Embed(
-                title=f"Voice Channel #!{channel.name} ({channel.id})", color=embed_color
+                title=f"Voice Channel #!{channel.name} ({channel.id})",
+                color=embed_color,
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
             embed.description = "\n".join(
                 [
                     f"• `{parameter}`: {repr(getattr(channel, parameters[parameter].get('attribute_name', parameter)))}"
                     for parameter in parameters
-                ]
+                ],
             )
             return embed
 

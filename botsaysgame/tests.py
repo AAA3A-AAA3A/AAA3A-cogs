@@ -1,14 +1,15 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import random
+import typing
+
+import discord
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("BotSaysGame", __file__)
 
 
-WORDS: typing.List[str] = [
+WORDS: list[str] = [
     "apple",
     "school",
     "home",
@@ -29,7 +30,7 @@ WORDS: typing.List[str] = [
     "television",
     "because",
 ]
-REACTIONS: typing.List[str] = [
+REACTIONS: list[str] = [
     "👍",
     "👎",
     "😂",
@@ -62,22 +63,22 @@ def get_on_message_without_command_listener(test: "Test") -> typing.Callable:
 
 
 class Test:
-    def __init__(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
+    def __init__(self, ctx: commands.Context, players: list[discord.Member]) -> None:
         self.ctx: commands.Context = ctx
         self.players: discord.Member = players
         self.lowered_time: bool = False
 
-        self.answer: typing.Optional[str] = None
-        self.listener: typing.Optional[typing.Callable] = None
-        self.success: typing.List[discord.Member] = []
-        self.fail: typing.List[discord.Member] = []
+        self.answer: str | None = None
+        self.listener: typing.Callable | None = None
+        self.success: list[discord.Member] = []
+        self.fail: list[discord.Member] = []
 
     async def initialize(
         self,
-    ) -> typing.Tuple[str, typing.Optional[discord.ui.View], typing.List[str]]:
+    ) -> tuple[str, discord.ui.View | None, list[str]]:
         raise NotImplementedError()
 
-    async def check(self, player: discord.Member, answer: typing.Optional[str]) -> None:
+    async def check(self, player: discord.Member, answer: str | None) -> None:
         if player in self.success or player in self.fail:
             return
         if answer is None or await self.answer_check(player, answer):
@@ -88,7 +89,7 @@ class Test:
     async def answer_check(self, player: discord.Member, answer: str) -> None:
         return answer == self.answer
 
-    async def get_eliminated_players(self) -> typing.List[discord.Member]:
+    async def get_eliminated_players(self) -> list[discord.Member]:
         if self.listener is not None:
             self.ctx.bot.remove_listener(self.listener)
         return [player for player in self.players if player not in self.success]
@@ -104,18 +105,18 @@ class BaseView(discord.ui.View):
         if interaction.user not in self.test.players:
             await interaction.response.send_message(
                 _(
-                    "You are not a player in this game or you are already eliminated during a previous round!"
+                    "You are not a player in this game or you are already eliminated during a previous round!",
                 ),
                 ephemeral=True,
             )
             return False
-        elif interaction.user in self.test.success:
+        if interaction.user in self.test.success:
             await interaction.response.send_message(
                 _("You already succeeded in this round!"),
                 ephemeral=True,
             )
             return False
-        elif interaction.user in self.test.fail:
+        if interaction.user in self.test.fail:
             await interaction.response.send_message(
                 _("You are already eliminated!"),
                 ephemeral=True,
@@ -155,7 +156,7 @@ class BaseModal(discord.ui.Modal):
 class ColorButtonTest(Test):
     async def initialize(
         self,
-    ) -> typing.Tuple[str, typing.Optional[discord.ui.View], typing.List[str]]:
+    ) -> tuple[str, discord.ui.View | None, list[str]]:
         colors = ["green", "red", "blue", "dark"]
         self.answer = random.choice(colors)
         type = random.choice(["label", "style"])
@@ -201,7 +202,7 @@ class ColorButtonTest(Test):
 class SelectionTest(Test):
     async def initialize(
         self,
-    ) -> typing.Tuple[str, typing.Optional[discord.ui.View], typing.List[str]]:
+    ) -> tuple[str, discord.ui.View | None, list[str]]:
         words = random.sample(WORDS, 5)
         self.answer = random.choice(words)
         view: BaseView = BaseView(self)
@@ -223,7 +224,7 @@ class SelectionTest(Test):
 class WriteWordTest(Test):
     async def initialize(
         self,
-    ) -> typing.Tuple[str, typing.Optional[discord.ui.View], typing.List[str]]:
+    ) -> tuple[str, discord.ui.View | None, list[str]]:
         self.answer = random.choice(WORDS)
         self.listener = get_on_message_without_command_listener(self)
         self.ctx.bot.add_listener(self.listener)
@@ -233,7 +234,7 @@ class WriteWordTest(Test):
 class PingMemberTest(Test):
     async def initialize(
         self,
-    ) -> typing.Tuple[str, typing.Optional[discord.ui.View], typing.List[str]]:
+    ) -> tuple[str, discord.ui.View | None, list[str]]:
         player = random.choice(self.players)
         self.answer = player.mention
         self.listener = get_on_message_without_command_listener(self)
@@ -244,7 +245,7 @@ class PingMemberTest(Test):
 class QuickMath(Test):
     async def initialize(
         self,
-    ) -> typing.Tuple[str, typing.Optional[discord.ui.View], typing.List[str]]:
+    ) -> tuple[str, discord.ui.View | None, list[str]]:
         a = random.randint(1, 100)
         b = random.randint(1, 100)
         self.answer = str(a - b)
@@ -263,7 +264,7 @@ class QuickMath(Test):
 
 
 class ReactionTest(Test):
-    async def initialize(self) -> typing.Tuple[str, typing.Optional[discord.ui.View]]:
+    async def initialize(self) -> tuple[str, discord.ui.View | None]:
         reactions = random.sample(REACTIONS, 5)
         self.answer = random.choice(reactions)
 
@@ -282,14 +283,14 @@ class ReactionTest(Test):
 
 
 class EnglishWordTest(Test):
-    def __init__(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
+    def __init__(self, ctx: commands.Context, players: list[discord.Member]) -> None:
         super().__init__(ctx, players)
-        self.previously_used_words: typing.List[str] = []
-        self.used_words: typing.List[str] = []
+        self.previously_used_words: list[str] = []
+        self.used_words: list[str] = []
 
     async def initialize(
         self,
-    ) -> typing.Tuple[str, typing.Optional[discord.ui.View], typing.List[str]]:
+    ) -> tuple[str, discord.ui.View | None, list[str]]:
         view: BaseView = BaseView(self)
         button: discord.ui.Button = discord.ui.Button(
             label=_("Submit!"),
@@ -303,7 +304,7 @@ class EnglishWordTest(Test):
         view.add_item(button)
         return (
             _(
-                "Click the button then provide one ENGLISH word between five and ten letters in the box provided. You can only use each word once."
+                "Click the button then provide one ENGLISH word between five and ten letters in the box provided. You can only use each word once.",
             ),
             view,
             [],
@@ -320,7 +321,7 @@ class EnglishWordTest(Test):
         return True
 
 
-TESTS: typing.List[typing.Type[Test]] = [
+TESTS: list[type[Test]] = [
     ColorButtonTest,
     SelectionTest,
     WriteWordTest,

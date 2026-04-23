@@ -1,13 +1,12 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
-from redbot.core import commands, app_commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import typing
 
-import asyncio
+import discord
 
+from AAA3A_utils import Cog, CogsUtils, Settings
+from redbot.core import Config, app_commands, commands
+from redbot.core.bot import Red
 from redbot.core.commands.converter import parse_timedelta, timedelta
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.predicates import MessagePredicate
 
 from .constants import ACTIONS_DICT
@@ -29,8 +28,7 @@ class TimeDeltaConverter(commands.Converter):
         delta = parse_timedelta(argument)
         if delta is not None:
             return argument
-        else:
-            raise commands.BadArgument("Wrong timedelta.")
+        raise commands.BadArgument("Wrong timedelta.")
 
 
 @app_commands.context_menu(name="Sanction Member")
@@ -72,12 +70,13 @@ class SimpleSanction(DashboardIntegration, Cog):
             thumbnail="https://i.imgur.com/Bl62rGd.png",
         )
 
-        self.actions: typing.Dict[str, Action] = {
+        self.actions: dict[str, Action] = {
             key: Action(cog=self, key=key, **value) for key, value in ACTIONS_DICT.items()
         }
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], typing.Any, str]]
+        _settings: dict[
+            str,
+            dict[str, list[str] | typing.Any | str],
         ] = {
             "use_warn_system": {
                 "converter": bool,
@@ -144,12 +143,12 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def _sanction(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
-        duration_for_mute_or_ban: typing.Optional[TimeDeltaConverter] = None,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
+        duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
         reason: str = None,
     ) -> None:
@@ -189,12 +188,12 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def sanction_0(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
-        duration_for_mute_or_ban: typing.Optional[TimeDeltaConverter] = None,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
+        duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
         reason: str = None,
     ) -> None:
@@ -225,11 +224,11 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def sanction_1(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
         *,
         reason: str = None,
     ) -> None:
@@ -260,12 +259,12 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def sanction_2(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
-        duration_for_mute_or_ban: typing.Optional[TimeDeltaConverter] = None,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
+        duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
         reason: str = None,
     ) -> None:
@@ -296,11 +295,11 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def sanction_3(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
         *,
         reason: str = None,
     ) -> None:
@@ -333,11 +332,11 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def sanction_4(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
         *,
         reason: str = None,
     ) -> None:
@@ -370,12 +369,12 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def sanction_5(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
-        duration_for_mute_or_ban: typing.Optional[TimeDeltaConverter] = None,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
+        duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
         reason: str = None,
     ) -> None:
@@ -409,11 +408,11 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def sanction_6(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
         *,
         reason: str = None,
     ) -> None:
@@ -444,11 +443,11 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def sanction_7(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
         *,
         reason: str = None,
     ) -> None:
@@ -479,11 +478,11 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def sanction_8(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
         *,
         reason: str = None,
     ) -> None:
@@ -514,12 +513,12 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def sanction_9(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
-        duration_for_mute_or_ban: typing.Optional[TimeDeltaConverter] = None,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
+        duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
         reason: str = None,
     ) -> None:
@@ -552,12 +551,12 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def sanction_10(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
-        duration_for_mute_or_ban: typing.Optional[TimeDeltaConverter] = None,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
+        duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
         reason: str = None,
     ) -> None:
@@ -586,13 +585,13 @@ class SimpleSanction(DashboardIntegration, Cog):
     async def call_sanction(
         self,
         ctx: commands.Context,
-        action: typing.Optional[Action] = None,
-        member: typing.Optional[discord.Member] = None,
-        confirmation: typing.Optional[bool] = None,
-        show_author: typing.Optional[bool] = None,
-        finish_message: typing.Optional[bool] = None,
-        fake_action: typing.Optional[bool] = False,
-        duration: typing.Optional[TimeDeltaConverter] = None,
+        action: Action | None = None,
+        member: discord.Member | None = None,
+        confirmation: bool | None = None,
+        show_author: bool | None = None,
+        finish_message: bool | None = None,
+        fake_action: bool | None = False,
+        duration: typing.Optional[TimeDeltaConverter] = None,  # noqa: UP045
         reason: str = None,
     ) -> None:
         config = await self.config.guild(ctx.guild).all()
@@ -609,7 +608,7 @@ class SimpleSanction(DashboardIntegration, Cog):
             embed: discord.Embed = discord.Embed()
             embed.title = _("Sanction Member")
             embed.description = _(
-                "Which member do you want to sanction? (Type `cancel` to cancel.)"
+                "Which member do you want to sanction? (Type `cancel` to cancel.)",
             )
             embed.color = await ctx.embed_color()
             message = await ctx.send(embed=embed)
@@ -625,7 +624,7 @@ class SimpleSanction(DashboardIntegration, Cog):
                 if msg.content.lower() == "cancel":
                     return
                 member = pred.result
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 raise commands.UserFeedbackCheckFailure(_("Timed out, please try again."))
 
         if action is not None:

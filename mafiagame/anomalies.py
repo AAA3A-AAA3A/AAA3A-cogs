@@ -1,9 +1,10 @@
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import os
 import random
+import typing
+
+import discord
+
+from redbot.core.i18n import Translator
 
 from .constants import ANOMALIES_COLOR
 from .roles import Jester, PlagueDoctor
@@ -18,7 +19,7 @@ class Anomaly:
     name: str
     emoji: str
     description: str
-    message: typing.Optional[str] = None
+    message: str | None = None
 
     @classmethod
     def image_name(cls) -> str:
@@ -33,7 +34,9 @@ class Anomaly:
         return get_image(os.path.join("anomalies", cls.image_name()))
 
     @classmethod
-    def get_kwargs(cls) -> typing.Dict[typing.Literal["embed", "file"], typing.Union[discord.Embed, discord.File]]:
+    def get_kwargs(
+        cls,
+    ) -> dict[typing.Literal["embed", "file"], discord.Embed | discord.File]:
         _: Translator = Translator("MafiaGame", __file__)
         embed: discord.Embed = discord.Embed(
             title=_("Anomaly — **{emoji} {name}**!").format(name=cls.name, emoji=cls.emoji),
@@ -67,10 +70,10 @@ class ClownFestival(Anomaly):
     name: str = "Clown Fest"
     emoji: str = "🤡"
     description: str = _(
-        "Everyone except Mafia side's players and Plague Doctor turn into the Jester for one day, then return to their normal selves."
+        "Everyone except Mafia side's players and Plague Doctor turn into the Jester for one day, then return to their normal selves.",
     )
     message: str = _(
-        "Some weird gas filled up the sky, and you were suddenly turned into a **Jester**! You will return to your normal self the following night."
+        "Some weird gas filled up the sky, and you were suddenly turned into a **Jester**! You will return to your normal self the following night.",
     )
 
     @classmethod
@@ -95,18 +98,16 @@ class BlindingLights(Anomaly):
     name: str = "Blinding Lights"
     emoji: str = "💡"
     description: str = _(
-        "Random amount of players will be blinded and unable to perform their roles."
+        "Random amount of players will be blinded and unable to perform their roles.",
     )
     message: str = _(
-        "A blinding light filled the sky! You were blinded and unable to perform your task tonight... if you were going to anyways..."
+        "A blinding light filled the sky! You were blinded and unable to perform your task tonight... if you were going to anyways...",
     )
 
     @classmethod
     async def start(cls, game) -> None:
         game.current_anomaly_players = dict.fromkeys(
-            random.sample(
-                game.alive_players, k=random.randint(1, len(game.alive_players))
-            )
+            random.sample(game.alive_players, k=random.randint(1, len(game.alive_players))),
         )
         await super().start(game)
 
@@ -119,7 +120,7 @@ class DejaVu(Anomaly):
     name: str = "Deja Vu"
     emoji: str = "🔄"
     description: str = _(
-        "Town gets another chance to lynch someone! The second chance to vote immediately appears after someone is lynched or no one was hanged."
+        "Town gets another chance to lynch someone! The second chance to vote immediately appears after someone is lynched or no one was hanged.",
     )
 
 
@@ -127,7 +128,7 @@ class TalkingDead(Anomaly):
     name: str = "Talking Dead"
     emoji: str = "🗣️"
     description: str = _(
-        "Some dead can talk! But not vote because, you know, dead people can't vote."
+        "Some dead can talk! But not vote because, you know, dead people can't vote.",
     )
     message: str = _("You suddenly feel a surge of energy, and you can talk to the living!")
 
@@ -138,9 +139,7 @@ class TalkingDead(Anomaly):
     @classmethod
     async def start(cls, game) -> None:
         game.current_anomaly_players = dict.fromkeys(
-            random.sample(
-                game.dead_players, k=random.randint(1, len(game.dead_players))
-            )
+            random.sample(game.dead_players, k=random.randint(1, len(game.dead_players))),
         )
         if not isinstance(game.channel, discord.Thread):
             try:
@@ -149,7 +148,9 @@ class TalkingDead(Anomaly):
                     overwrites.setdefault(
                         player.member,
                         discord.PermissionOverwrite(
-                            view_channel=True, read_messages=True, attach_files=False
+                            view_channel=True,
+                            read_messages=True,
+                            attach_files=False,
                         ),
                     )
                     overwrites[player.member].send_messages = True
@@ -168,7 +169,9 @@ class TalkingDead(Anomaly):
                     overwrites.setdefault(
                         player.member,
                         discord.PermissionOverwrite(
-                            view_channel=True, read_messages=True, attach_files=False
+                            view_channel=True,
+                            read_messages=True,
+                            attach_files=False,
                         ),
                     )
                     overwrites[player.member].send_messages = False
@@ -190,7 +193,7 @@ class FoggyMist(Anomaly):
     name: str = "Foggy Mist"
     emoji: str = "🌫️"
     description: str = _(
-        "Messages from last night disappeared! Who killed who? Who saved who? Who knows? Only thing you know is who's dead..."
+        "Messages from last night disappeared! Who killed who? Who saved who? Who knows? Only thing you know is who's dead...",
     )
 
 
@@ -209,7 +212,8 @@ class AcidRain(Anomaly):
         kwargs = cls.get_kwargs()
         embed: discord.Embed = discord.Embed(
             title=_("{player.member.display_name} is {the_or_a} **{player.role.name}**!").format(
-                player=player, the_or_a=player.role.the_or_a(player.game)
+                player=player,
+                the_or_a=player.role.the_or_a(player.game),
             ),
             color=player.role.color(),
         )
@@ -271,15 +275,13 @@ class CatsTongue(Anomaly):
     name: str = "Cat's Tongue"
     emoji: str = "😼"
     description: str = _(
-        "The cat has gotten your tongue! Random amount of peope can't speak, but they can vote."
+        "The cat has gotten your tongue! Random amount of peope can't speak, but they can vote.",
     )
 
     @classmethod
     async def start(cls, game) -> None:
         game.current_anomaly_players = dict.fromkeys(
-            random.sample(
-                game.alive_players, k=random.randint(1, len(game.alive_players))
-            )
+            random.sample(game.alive_players, k=random.randint(1, len(game.alive_players))),
         )
         await super().start(game)
 
@@ -294,7 +296,7 @@ class CatsTongue(Anomaly):
 #     description: str = _("Some roles will have their necronomicon status toggled! If it was on before, it'll be off and vice versa.")
 
 
-ANOMALIES: typing.List[typing.Type[Anomaly]] = [
+ANOMALIES: list[type[Anomaly]] = [
     ClownFestival,
     BlindingLights,
     DejaVu,

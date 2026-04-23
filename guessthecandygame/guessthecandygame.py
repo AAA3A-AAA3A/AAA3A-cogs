@@ -1,11 +1,10 @@
-﻿from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
 
+from AAA3A_utils import Cog
+from redbot.core import commands
+from redbot.core.bot import Red
 from redbot.core.data_manager import bundled_data_path
+from redbot.core.i18n import Translator, cog_i18n
 
 from .view import GuessTheCandyGameView
 
@@ -23,8 +22,8 @@ class GuessTheCandyGame(Cog):
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self.candies: typing.Dict[str, discord.File] = {}
-        self.shadows: typing.Dict[str, discord.File] = {}
+        self.candies: dict[str, discord.File] = {}
+        self.shadows: dict[str, discord.File] = {}
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -42,14 +41,16 @@ class GuessTheCandyGame(Cog):
         }
 
     @property
-    def games(self) -> typing.Dict[discord.Message, GuessTheCandyGameView]:
+    def games(self) -> dict[discord.Message, GuessTheCandyGameView]:
         return self.views
 
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True, attach_files=True)
     @commands.hybrid_command(aliases=["guessthecandygame", "gtc"])
     async def guessthecandy(
-        self, ctx: commands.Context, difficulty: commands.Range[int, 5, 23] = 5
+        self,
+        ctx: commands.Context,
+        difficulty: commands.Range[int, 5, 23] = 5,
     ) -> None:
         """Recognise the correct candy as fast as you can..."""
         await GuessTheCandyGameView(cog=self, difficulty=difficulty).start(ctx)

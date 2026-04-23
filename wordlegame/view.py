@@ -1,12 +1,10 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
-import asyncio
 import random
 
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate
 
@@ -33,7 +31,7 @@ class Lang(discord.Enum):
     TURKCE: str = "tr"
 
 
-DIACRITIC_SYMBOLS: typing.Dict[str, str] = {
+DIACRITIC_SYMBOLS: dict[str, str] = {
     "a": "àáâãäå",
     "c": "ç",
     "e": "èéêë",
@@ -62,17 +60,17 @@ class WordleGameView(discord.ui.View):
 
         self.word: str = None
         self.has_won: bool = False
-        self.attempts: typing.List[str] = []
+        self.attempts: list[str] = []
         self._message: discord.Message = None
 
-    async def start(self, ctx: commands.Context) -> typing.Tuple[bool, typing.List[str]]:
+    async def start(self, ctx: commands.Context) -> tuple[bool, list[str]]:
         self.ctx: commands.Context = ctx
 
         if not (words := self.cog.words[self.lang.value][self.length]):
             raise commands.UserFeedbackCheckFailure(
                 _("There are no words in this language with {length} letters.").format(
-                    length=self.length
-                )
+                    length=self.length,
+                ),
             )
         self.word: str = random.choice(words)
         self._message: discord.Message = await ctx.send(
@@ -103,7 +101,7 @@ class WordleGameView(discord.ui.View):
                 if guess.content.lower() == "cancel":
                     await self.ctx.send(
                         _("You have cancelled the game. The word was: **{word}**.").format(
-                            word=self.word
+                            word=self.word,
                         ),
                         reference=self._message.to_reference(fail_if_not_exists=False),
                         allowed_mentions=discord.AllowedMentions(replied_user=False),
@@ -112,8 +110,8 @@ class WordleGameView(discord.ui.View):
 
                 attempt = guess.content.lower().translate(
                     str.maketrans(
-                        {v: key for key, value in DIACRITIC_SYMBOLS.items() for v in value}
-                    )
+                        {v: key for key, value in DIACRITIC_SYMBOLS.items() for v in value},
+                    ),
                 )
                 if attempt not in self.cog.dictionaries[self.lang.value][self.length]:
                     if ctx.bot_permissions.add_reactions:
@@ -145,7 +143,7 @@ class WordleGameView(discord.ui.View):
                 self.cog.views[self._message] = self
                 if attempt == self.word:
                     self.has_won = True
-        except asyncio.TimeoutError:
+        except TimeoutError:
             await self.ctx.send(
                 _("You took too long to guess the word. The word was: **{word}**.").format(
                     word=self.word,
@@ -166,7 +164,8 @@ class WordleGameView(discord.ui.View):
             return True
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -190,7 +189,9 @@ class WordleGameView(discord.ui.View):
         custom_id="WordleGameView_explanation",
     )
     async def explanation(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.send_message(
             embed=discord.Embed(
@@ -202,7 +203,7 @@ class WordleGameView(discord.ui.View):
                     "• If the letter is **⬛ Grey**, it is not in the word.\n"
                     "You can cancel the game at any time by clicking on the button or typing `cancel`.\n\n"
                     "**Launch a new game by executing `{prefix}wordle`!**\n"
-                    "Available languages: `en`, `fr`, `de`, `es`, `it`, `pt`, `nl`, `cs`, `el`, `id`, `ie`, `ph`, `pl`, `ua`, `ru`, `sv` and `tr`."
+                    "Available languages: `en`, `fr`, `de`, `es`, `it`, `pt`, `nl`, `cs`, `el`, `id`, `ie`, `ph`, `pl`, `ua`, `ru`, `sv` and `tr`.",
                 ).format(prefix=self.ctx.prefix),
                 color=await self.ctx.embed_color(),
             ),
@@ -212,7 +213,7 @@ class WordleGameView(discord.ui.View):
     @discord.ui.button(emoji="✖️", label=_("Cancel"), style=discord.ButtonStyle.danger)
     async def cancel(
         self,
-        interaction: typing.Optional[discord.Interaction],
+        interaction: discord.Interaction | None,
         button: discord.ui.Button,
     ) -> None:
         if interaction is not None:

@@ -1,14 +1,14 @@
-﻿from AAA3A_utils import Cog, Menu, Settings  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import io
+import typing
 from copy import deepcopy
 
+import discord
 from prettytable import PrettyTable
+
+from AAA3A_utils import Cog, Menu, Settings
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, pagify
 
 from .dashboard_integration import DashboardIntegration
@@ -47,9 +47,7 @@ class MemoryGame(DashboardIntegration, Cog):
             games=0,
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "max_wrong_matches": {
                 "converter": commands.Range[int, 0, 50],
                 "description": "Set the maximum tries for each game. Use `0` for no limit.",
@@ -105,7 +103,7 @@ class MemoryGame(DashboardIntegration, Cog):
                 if _guilds_data[guild] == {}:
                     del _guilds_data[guild]
 
-    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
+    async def red_get_data_for_user(self, *, user_id: int) -> dict[str, io.BytesIO]:
         """Get all data about the user."""
         data = {
             Config.GLOBAL: {},
@@ -132,13 +130,15 @@ class MemoryGame(DashboardIntegration, Cog):
         return {f"{self.qualified_name}.json": file}
 
     @property
-    def games(self) -> typing.Dict[discord.Message, MemoryGameView]:
+    def games(self) -> dict[discord.Message, MemoryGameView]:
         return self.views
 
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command()
     async def memorygame(
-        self, ctx: commands.Context, difficulty: typing.Literal["3x3", "4x4", "5x5"] = "5x5"
+        self,
+        ctx: commands.Context,
+        difficulty: typing.Literal["3x3", "4x4", "5x5"] = "5x5",
     ) -> None:
         """Play to Memory game. Choose between `3x3`, `4x4` and `5x5` versions."""
         if ctx.guild is not None:
@@ -150,7 +150,9 @@ class MemoryGame(DashboardIntegration, Cog):
             member_config["games"] += 1
             await self.config.member(ctx.author).set(member_config)
         await MemoryGameView(
-            cog=self, difficulty=difficulty, max_wrong_matches=max_wrong_matches
+            cog=self,
+            difficulty=difficulty,
+            max_wrong_matches=max_wrong_matches,
         ).start(ctx)
 
     @commands.bot_has_permissions(embed_links=True)
@@ -188,7 +190,7 @@ class MemoryGame(DashboardIntegration, Cog):
                     data["score"],
                     data["wins"],
                     data["games"],
-                ]
+                ],
             )
         for page in pagify(str(table), page_length=2000):
             embed = discord.Embed(title=_("MemoryGame Leaderboard"))

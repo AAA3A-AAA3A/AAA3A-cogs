@@ -1,13 +1,12 @@
-from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 
 import aiohttp
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, pagify
 
 try:
@@ -23,7 +22,7 @@ def _(untranslated: str) -> str:  # `redgettext` will found these strings.
 
 
 ERROR_MESSAGE = _(
-    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}",
 )
 
 _: Translator = Translator("DiscordEdit", __file__)
@@ -33,7 +32,8 @@ class EmojiOrUrlConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str):
         try:
             return await discord.ext.commands.converter.CONVERTER_MAPPING[discord.Emoji]().convert(
-                ctx, argument
+                ctx,
+                argument,
             )
         except commands.BadArgument:
             pass
@@ -52,8 +52,8 @@ class PositionConverter(commands.Converter):
         if position <= 0 or position >= max_guild_roles_position + 1:
             raise commands.BadArgument(
                 _(
-                    "The indicated position must be between 1 and {max_guild_roles_position}."
-                ).format(max_guild_roles_position=max_guild_roles_position)
+                    "The indicated position must be between 1 and {max_guild_roles_position}.",
+                ).format(max_guild_roles_position=max_guild_roles_position),
             )
         _list = list(range(max_guild_roles_position - 1))[::-1]
         position = _list[position - 1]
@@ -102,13 +102,13 @@ class EditRole(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I can not let you edit @{role.name} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy."
+                    "I can not let you edit @{role.name} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy.",
                 ).format(role=role),
             )
         if not ctx.me.top_role > role:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I can not edit @{role.name} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy."
+                    "I can not edit @{role.name} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy.",
                 ).format(role=role),
             )
         return True
@@ -125,7 +125,7 @@ class EditRole(Cog):
     async def editrole_create(
         self,
         ctx: commands.Context,
-        color: typing.Optional[commands.ColorConverter] = None,
+        color: commands.ColorConverter | None = None,
         *,
         name: commands.Range[str, 1, 100],
     ) -> None:
@@ -138,7 +138,7 @@ class EditRole(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @commands.bot_has_permissions(embed_links=True)
@@ -164,7 +164,11 @@ class EditRole(Cog):
 
     @editrole.command(name="name")
     async def editrole_name(
-        self, ctx: commands.Context, role: discord.Role, *, name: commands.Range[str, 1, 100]
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+        *,
+        name: commands.Range[str, 1, 100],
     ) -> None:
         """Edit role name."""
         await self.check_role(ctx, role)
@@ -175,12 +179,15 @@ class EditRole(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editrole.command(name="color", aliases=["colour"])
     async def editrole_color(
-        self, ctx: commands.Context, role: discord.Role, color: discord.Color
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+        color: discord.Color,
     ) -> None:
         """Edit role color."""
         await self.check_role(ctx, role)
@@ -191,12 +198,15 @@ class EditRole(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editrole.command(name="hoist")
     async def editrole_hoist(
-        self, ctx: commands.Context, role: discord.Role, hoist: bool = None
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+        hoist: bool = None,
     ) -> None:
         """Edit role hoist."""
         await self.check_role(ctx, role)
@@ -209,7 +219,7 @@ class EditRole(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editrole.command(name="displayicon", aliases=["icon", "display_icon"])
@@ -226,8 +236,8 @@ class EditRole(Cog):
         if "ROLE_ICONS" not in ctx.guild.features:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This server doesn't have the `ROLE_ICONS` feature. This server needs more boosts to perform this action."
-                )
+                    "This server doesn't have the `ROLE_ICONS` feature. This server needs more boosts to perform this action.",
+                ),
             )
         await self.check_role(ctx, role)
         if len(ctx.message.attachments) > 0:
@@ -250,9 +260,7 @@ class EditRole(Cog):
                     except aiohttp.InvalidURL:
                         return await ctx.send("That URL is invalid.")
                     except aiohttp.ClientError:
-                        return await ctx.send(
-                            "Something went wrong while trying to get the image."
-                        )
+                        return await ctx.send("Something went wrong while trying to get the image.")
         # else:
         #     raise commands.UserInputError()  # Send the command help if no attachment, no Unicode/custom emoji and no URL.
         try:
@@ -262,12 +270,15 @@ class EditRole(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editrole.command(name="mentionable")
     async def editrole_mentionable(
-        self, ctx: commands.Context, role: discord.Role, mentionable: bool = None
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+        mentionable: bool = None,
     ) -> None:
         """Edit role mentionable."""
         await self.check_role(ctx, role)
@@ -280,12 +291,15 @@ class EditRole(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editrole.command(name="position")
     async def editrole_position(
-        self, ctx: commands.Context, role: discord.Role, position: PositionConverter
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+        position: PositionConverter,
     ) -> None:
         """Edit role position.
 
@@ -299,7 +313,7 @@ class EditRole(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editrole.command(name="permissions")
@@ -347,15 +361,15 @@ class EditRole(Cog):
         await self.check_role(ctx, role)
         if not permissions:
             raise commands.UserFeedbackCheckFailure(
-                _("You need to provide at least one permission.")
+                _("You need to provide at least one permission."),
             )
         role_permissions = role.permissions
         for permission in permissions:
             if not getattr(ctx.author.guild_permissions, permission):
                 raise commands.UserFeedbackCheckFailure(
                     _("You don't have the permission `{permission_name}` in this guild.").format(
-                        permission_name=permission
-                    )
+                        permission_name=permission,
+                    ),
                 )
             setattr(role_permissions, permission, true_or_false)
         try:
@@ -365,7 +379,7 @@ class EditRole(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editrole.command(name="delete", aliases=["-"])
@@ -382,25 +396,25 @@ class EditRole(Cog):
                 embed: discord.Embed = discord.Embed()
                 embed.title = _("⚠️ - Delete role")
                 embed.description = _(
-                    "Do you really want to delete the role {role.mention} ({role.id})?"
+                    "Do you really want to delete the role {role.mention} ({role.id})?",
                 ).format(role=role)
                 embed.color = 0xF00020
                 content = ctx.author.mention
             else:
                 embed = None
                 content = f"{ctx.author.mention} " + _(
-                    "Do you really want to delete the role {role.mention} ({role.id})?"
+                    "Do you really want to delete the role {role.mention} ({role.id})?",
                 ).format(role=role)
             if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
                 return
         try:
             await role.delete(
-                reason=f"{ctx.author} ({ctx.author.id}) has deleted the role {role.name} ({role.id})."
+                reason=f"{ctx.author} ({ctx.author.id}) has deleted the role {role.name} ({role.id}).",
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editrole.command(name="view")
@@ -423,14 +437,15 @@ class EditRole(Cog):
 
         def get_embed() -> discord.Embed:
             embed: discord.Embed = discord.Embed(
-                title=f"Role {role.name} ({role.id})", color=embed_color
+                title=f"Role {role.name} ({role.id})",
+                color=embed_color,
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
             embed.description = "\n".join(
                 [
                     f"• `{parameter}`: {repr(getattr(role, parameters[parameter].get('attribute_name', parameter)))}"
                     for parameter in parameters
-                ]
+                ],
             )
             return embed
 

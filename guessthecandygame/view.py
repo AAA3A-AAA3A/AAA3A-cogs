@@ -1,11 +1,11 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 import random
+
+import discord
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("GuessTheCandyGame", __file__)
 
@@ -21,7 +21,7 @@ class GuessTheCandyGameView(discord.ui.View):
         self.cog: commands.Cog = cog
         self.difficulty: int = difficulty
 
-        self.candies: typing.List[str] = []
+        self.candies: list[str] = []
         self.candy: str = None
         self.start_time: datetime.datetime = None
         self.lock: asyncio.Lock = asyncio.Lock()
@@ -34,7 +34,7 @@ class GuessTheCandyGameView(discord.ui.View):
         embed: discord.Embed = discord.Embed(
             title=_("🎃 Guess The Candy 🎃"),
             description=_(
-                "Recognise the correct candy as fast as you can, from the displayed shadow!"
+                "Recognise the correct candy as fast as you can, from the displayed shadow!",
             ),
             color=await self.ctx.embed_color(),
         )
@@ -54,7 +54,7 @@ class GuessTheCandyGameView(discord.ui.View):
             file=discord.File(self.cog.shadows[self.candy], filename="shadow.png"),
         )
         self.cog.views[self._message] = self
-        self.start_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.start_time: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
 
     async def on_timeout(self) -> None:
         for child in self.children:
@@ -85,10 +85,10 @@ class GuessTheCandyGameView(discord.ui.View):
             embed: discord.Embed = discord.Embed(
                 title=_("🎃 Guess The Candy 🎃"),
                 description=_(
-                    "**Congratulations!** You've correctly guessed it's **{candy}**, in **{time} seconds**!"
+                    "**Congratulations!** You've correctly guessed it's **{candy}**, in **{time} seconds**!",
                 ).format(
                     candy=self.candy,
-                    time=f"{(datetime.datetime.now(tz=datetime.timezone.utc) - self.start_time).total_seconds():.2f}",
+                    time=f"{(datetime.datetime.now(tz=datetime.UTC) - self.start_time).total_seconds():.2f}",
                 ),
                 color=await self.ctx.embed_color(),
             )

@@ -1,21 +1,23 @@
-from redbot.core import commands  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import typing
+
+import discord
+
+from redbot.core import commands
 
 
 class Module:
     name: str
     emoji: str
     description: str
-    default_config: typing.Dict[str, typing.Any]
+    default_config: dict[str, typing.Any]
     configurable_by_trusted_admins: bool = True
 
     def __init__(self, cog: commands.Cog) -> None:
         self.cog: commands.Cog = cog
 
     @classmethod
-    def key_name(self) -> str:
-        return self.name.lower().replace(" ", "_")
+    def key_name(cls) -> str:
+        return cls.name.lower().replace(" ", "_")
 
     def config_value(self, guild: discord.Guild) -> typing.Any:
         return getattr(self.cog.config.guild(guild).modules, self.key_name())
@@ -27,11 +29,15 @@ class Module:
         raise NotImplementedError()
 
     async def get_status(
-        self, guild: discord.Guild, check_enabled: bool = True
-    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
+        self,
+        guild: discord.Guild,
+        check_enabled: bool = True,
+    ) -> tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
         raise NotImplementedError()
 
     async def get_settings(
-        self, guild: discord.Guild, view: discord.ui.View
-    ) -> typing.Tuple[str, str, typing.List[typing.Dict], typing.List[discord.ui.Item]]:
+        self,
+        guild: discord.Guild,
+        view: discord.ui.View,
+    ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         raise NotImplementedError()

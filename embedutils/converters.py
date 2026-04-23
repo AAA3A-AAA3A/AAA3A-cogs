@@ -1,17 +1,16 @@
-from AAA3A_utils import Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import io
 import json
 import re
 import textwrap
+import typing
 
 import aiohttp
+import discord
 import yaml
-from redbot.core import dev_commands
+
+from AAA3A_utils import Menu
+from redbot.core import commands, dev_commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 
 _: Translator = Translator("EmbedUtils", __file__)
@@ -33,9 +32,13 @@ def cleanup_code(code: str) -> str:
 
 class StringToEmbed(commands.Converter):
     def __init__(
-        self, *, conversion_type: str = "json", validate: bool = False, allow_content: bool = True
+        self,
+        *,
+        conversion_type: str = "json",
+        validate: bool = False,
+        allow_content: bool = True,
     ) -> None:
-        self.CONVERSION_TYPES: typing.Dict[str, typing.Any] = {
+        self.CONVERSION_TYPES: dict[str, typing.Any] = {
             "json": self.load_from_json,
             "yaml": self.load_from_yaml,
         }
@@ -47,17 +50,19 @@ class StringToEmbed(commands.Converter):
             self.converter = self.CONVERSION_TYPES[self.conversion_type]
         except KeyError as exc:
             raise ValueError(
-                f"`{conversion_type}` is not a valid conversion type for Embed conversion."
+                f"`{conversion_type}` is not a valid conversion type for Embed conversion.",
             ) from exc
 
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Dict[typing.Literal["content", "embed"], typing.Union[discord.Embed, str]]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> dict[typing.Literal["content", "embed"], discord.Embed | str]:
         argument = cleanup_code(argument)
         data = await self.converter(ctx, argument=argument)
 
-        content = self.get_content(data) if isinstance(data, typing.Dict) else None
-        if isinstance(data, typing.List):
+        content = self.get_content(data) if isinstance(data, dict) else None
+        if isinstance(data, list):
             data = data[0]
         elif "embed" in data:
             data = data["embed"]
@@ -67,8 +72,8 @@ class StringToEmbed(commands.Converter):
             raise commands.BadArgument(
                 _(
                     "This doesn't seem to be properly formatted embed {conversion_type}. "
-                    "Refer to the link on `{ctx.clean_prefix}help {ctx.command.qualified_name}`."
-                ).format(conversion_type=self.conversion_type.upper(), ctx=ctx)
+                    "Refer to the link on `{ctx.clean_prefix}help {ctx.command.qualified_name}`.",
+                ).format(conversion_type=self.conversion_type.upper(), ctx=ctx),
             )
         self.check_data_type(ctx, data=data)
 
@@ -82,13 +87,16 @@ class StringToEmbed(commands.Converter):
             raise commands.BadArgument(
                 _(
                     "This doesn't seem to be properly formatted embed {conversion_type}. "
-                    "Refer to the link on `{ctx.clean_prefix}help {ctx.command.qualified_name}`."
-                ).format(conversion_type=self.conversion_type.upper(), ctx=ctx)
+                    "Refer to the link on `{ctx.clean_prefix}help {ctx.command.qualified_name}`.",
+                ).format(conversion_type=self.conversion_type.upper(), ctx=ctx),
             )
 
     async def load_from_json(
-        self, ctx: commands.Context, argument: str, **kwargs
-    ) -> typing.Dict[str, typing.Any]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+        **kwargs,
+    ) -> dict[str, typing.Any]:
         try:
             data = json.loads(argument)
         except json.decoder.JSONDecodeError as error:
@@ -98,8 +106,11 @@ class StringToEmbed(commands.Converter):
         return data
 
     async def load_from_yaml(
-        self, ctx: commands.Context, argument: str, **kwargs
-    ) -> typing.Dict[str, typing.Any]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+        **kwargs,
+    ) -> dict[str, typing.Any]:
         try:
             data = yaml.safe_load(argument)
         except Exception as error:
@@ -109,16 +120,23 @@ class StringToEmbed(commands.Converter):
         return data
 
     def get_content(
-        self, data: typing.Dict[str, typing.Any], *, content: str = None
-    ) -> typing.Optional[str]:
+        self,
+        data: dict[str, typing.Any],
+        *,
+        content: str = None,
+    ) -> str | None:
         content = data.pop("content", content)
         if content is not None and not self.allow_content:
             raise commands.BadArgument(_("The `content` field is not supported for this command."))
         return content
 
     async def create_embed(
-        self, ctx: commands.Context, data: typing.Dict[str, typing.Any], *, content: str = None
-    ) -> typing.Dict[typing.Literal["content", "embed"], typing.Union[discord.Embed, str]]:
+        self,
+        ctx: commands.Context,
+        data: dict[str, typing.Any],
+        *,
+        content: str = None,
+    ) -> dict[typing.Literal["content", "embed"], discord.Embed | str]:
         content = self.get_content(data, content=content)
 
         if data.get("color") is None:
@@ -139,13 +157,15 @@ class StringToEmbed(commands.Converter):
         if length > 6000:
             raise commands.BadArgument(
                 _("Embed size exceeds Discord limit of 6000 characters ({length}).").format(
-                    length=length
-                )
+                    length=length,
+                ),
             )
         return {"content": content, "embed": embed}
 
     async def validate_embed(
-        self, ctx: commands.Context, kwargs: typing.Dict[str, typing.Union[discord.Embed, str]]
+        self,
+        ctx: commands.Context,
+        kwargs: dict[str, discord.Embed | str],
     ) -> None:
         try:
             await ctx.channel.send(**kwargs)  # ignore tips/monkeypatch cogs
@@ -154,9 +174,7 @@ class StringToEmbed(commands.Converter):
             raise commands.BadArgument()
 
     @staticmethod
-    async def embed_convert_error(
-        ctx: commands.Context, error_type: str, error: Exception
-    ) -> None:
+    async def embed_convert_error(ctx: commands.Context, error_type: str, error: Exception) -> None:
         if getattr(ctx, "__is_mocked__", False):
             raise commands.BadArgument(f"{error_type}: `{type(error).__name__}`")
         embed: discord.Embed = discord.Embed(
@@ -165,9 +183,9 @@ class StringToEmbed(commands.Converter):
             color=await ctx.embed_color(),
         )
         embed.set_footer(
-            text=_(
-                "Use `{ctx.prefix}help {ctx.command.qualified_name}` to see an example."
-            ).format(ctx=ctx)
+            text=_("Use `{ctx.prefix}help {ctx.command.qualified_name}` to see an example.").format(
+                ctx=ctx,
+            ),
         )
         await Menu(pages=[embed]).start(ctx)
 
@@ -178,21 +196,24 @@ class ListStringToEmbed(StringToEmbed):
         self.limit: int = min(limit, 10)
 
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Dict[
-        typing.Literal["content", "embeds"], typing.Union[typing.List[discord.Embed], str]
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> dict[
+        typing.Literal["content", "embeds"],
+        list[discord.Embed] | str,
     ]:
         argument = cleanup_code(argument)
         data = await self.converter(ctx, argument=argument, data_type=(dict, list))
 
-        content = data.get("content") if isinstance(data, typing.Dict) else None
-        if isinstance(data, typing.List):
+        content = data.get("content") if isinstance(data, dict) else None
+        if isinstance(data, list):
             pass
         elif "embed" in data:
             data = [data["embed"]]
         elif "embeds" in data:
             data = data["embeds"]
-            if isinstance(data, typing.Dict):
+            if isinstance(data, dict):
                 data = list(data.values())
         elif "content" in data:
             data = []
@@ -207,18 +228,19 @@ class ListStringToEmbed(StringToEmbed):
             embeds.append(embed)
             if i > self.limit:
                 raise commands.BadArgument(
-                    _("Embed limit reached ({limit}).").format(limit=self.limit)
+                    _("Embed limit reached ({limit}).").format(limit=self.limit),
                 )
         if content or embeds:
             return {"content": content, "embeds": embeds}
-        else:
-            raise commands.BadArgument(_("Failed to convert input into embeds."))
+        raise commands.BadArgument(_("Failed to convert input into embeds."))
 
 
 class MessageableConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> discord.TextChannel | discord.VoiceChannel | discord.Thread:
         for converter in (
             commands.TextChannelConverter,
             commands.VoiceChannelConverter,
@@ -236,8 +258,8 @@ class MessageableConverter(commands.Converter):
         if not (bot_permissions.send_messages and bot_permissions.embed_links):
             raise commands.BadArgument(
                 _("I do not have permissions to send embeds in {channel.mention}.").format(
-                    channel=channel
-                )
+                    channel=channel,
+                ),
             )
         permissions = channel.permissions_for(ctx.author)
         if not (
@@ -245,8 +267,8 @@ class MessageableConverter(commands.Converter):
         ):
             raise commands.BadArgument(
                 _("You do not have permissions to send embeds in {channel.mention}.").format(
-                    channel=channel
-                )
+                    channel=channel,
+                ),
             )
         return channel
 
@@ -257,26 +279,28 @@ class MyMessageConverter(commands.MessageConverter):
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I have to be the author of the message. You can use the command without providing a message to send one."
-                )
+                    "I have to be the author of the message. You can use the command without providing a message to send one.",
+                ),
             )
         ctx.message.channel = message.channel
         fake_context = await ctx.bot.get_context(ctx.message)
         if not await discord.utils.async_all(
-            [check(fake_context) for check in ctx.bot.get_cog("EmbedUtils").embed_edit.checks]
+            [check(fake_context) for check in ctx.bot.get_cog("EmbedUtils").embed_edit.checks],
         ):
             raise commands.BadArgument(
                 _(
-                    "You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`)."
-                )
+                    "You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`).",
+                ),
             )
         return message
 
 
 class MessageableOrMessageConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread, discord.Message]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> discord.TextChannel | discord.VoiceChannel | discord.Thread | discord.Message:
         try:
             return await MessageableConverter().convert(ctx, argument=argument)
         except commands.BadArgument as e:
@@ -287,11 +311,11 @@ class MessageableOrMessageConverter(commands.Converter):
 
 
 GITHUB_RE = re.compile(
-    r"https://(?:www\.)?github\.com/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/blob/(?P<path>[^#>]+)"
+    r"https://(?:www\.)?github\.com/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/blob/(?P<path>[^#>]+)",
 )
 GITHUB_GIST_RE = re.compile(
     r"https://(?:www\.)?gist\.github\.com/([a-zA-Z0-9-]+)/(?P<gist_id>[a-zA-Z0-9]+)/*"
-    r"(?P<revision>[a-zA-Z0-9]*)/*(#file-(?P<file_path>[^#>]+))?"
+    r"(?P<revision>[a-zA-Z0-9]*)/*(#file-(?P<file_path>[^#>]+))?",
 )
 PASTEBIN_RE = re.compile(r"https://(?:www\.)?pastebin\.com/(?P<paste_id>[a-zA-Z0-9]+)/*")
 HASTEBIN_RE = re.compile(r"https://(?:www\.)?hastebin\.com/(?P<paste_id>[a-zA-Z0-9]+)/*")
@@ -301,10 +325,12 @@ GITHUB_HEADERS = {"Accept": "application/vnd.github.v3.raw"}
 
 class PastebinMixin:
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Dict[
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> dict[
         typing.Literal["content", "embed", "embeds"],
-        typing.Union[discord.Embed, typing.List[discord.Embed], str],
+        discord.Embed | list[discord.Embed] | str,
     ]:
         async def _fetch_response(url: str, response_format: str, **kwargs) -> typing.Any:
             if "github.com" in url:
@@ -315,17 +341,19 @@ class PastebinMixin:
                     kwargs["headers"]["Authorization"] = f"Token {token}"
             try:
                 async with ctx.bot.get_cog("EmbedUtils")._session.get(
-                    url, raise_for_status=True, **kwargs
+                    url,
+                    raise_for_status=True,
+                    **kwargs,
                 ) as response:
                     if response_format == "text":
                         return await response.text()
                     return await response.json() if response_format == "json" else None
             except (aiohttp.ClientResponseError, aiohttp.ClientError) as error:
                 raise commands.BadArgument(
-                    f"Failed to fetch the content from the URL: {url}\n{box(error.message, lang='py')}"
+                    f"Failed to fetch the content from the URL: {url}\n{box(error.message, lang='py')}",
                 )
 
-        def _find_ref(path: str, refs: typing.List[dict]) -> typing.Tuple[str, str]:
+        def _find_ref(path: str, refs: list[dict]) -> tuple[str, str]:
             ref, file_path = path.split("/", 1)
             for possible_ref in refs:
                 if path.startswith(possible_ref["name"] + "/"):
@@ -342,7 +370,8 @@ class PastebinMixin:
                 headers=GITHUB_HEADERS,
             )
             tags = await _fetch_response(
-                f"https://api.github.com/repos/{_match['repo']}/tags", response_format="json"
+                f"https://api.github.com/repos/{_match['repo']}/tags",
+                response_format="json",
             )
             refs = branches + tags
             ref, file_path = _find_ref(_match["path"], refs)
@@ -371,7 +400,8 @@ class PastebinMixin:
         elif _match := list(PASTEBIN_RE.finditer(argument)):
             _match = _match[0].groupdict()
             argument = await _fetch_response(
-                f"https://pastebin.com/raw/{_match['paste_id']}", response_format="text"
+                f"https://pastebin.com/raw/{_match['paste_id']}",
+                response_format="text",
             )
         elif (_match := list(HASTEBIN_RE.finditer(argument))) and (
             token := (await ctx.bot.get_shared_api_tokens(service_name="hastebin")).get("token")
@@ -384,7 +414,7 @@ class PastebinMixin:
             )
         else:
             raise commands.BadArgument(
-                f"`{argument}` is not a valid code GitHub/Gist/Pastebin/Hastebin link."
+                f"`{argument}` is not a valid code GitHub/Gist/Pastebin/Hastebin link.",
             )
         return await super().convert(ctx, argument=argument)
 

@@ -1,15 +1,14 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import random
 import time
+import typing
 
-from redbot.core import bank
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import bank, commands
 from redbot.core.errors import BalanceTooHigh
+from redbot.core.i18n import Translator
 
 # GAME_EMOJIS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"]
 GAME_EMOJIS = ["🏆", "🎯", "🎲", "⚽", "🏀", "🏓", "🥁", "🎮", "🎳", "🎻", "🎖️", "🏹"]
@@ -22,23 +21,23 @@ class MemoryGameView(discord.ui.View):
         self,
         cog: commands.Cog,
         difficulty: typing.Literal["3x3", "4x4", "5x5"] = "5x5",
-        max_wrong_matches: typing.Optional[int] = None,
+        max_wrong_matches: int | None = None,
     ) -> None:
         super().__init__(timeout=60 * 10)
         self.ctx: commands.Context = None
         self.cog: commands.Cog = cog
         self.difficulty: typing.Literal["3x3", "4x4", "5x5"] = difficulty
-        self.max_wrong_matches: typing.Optional[int] = max_wrong_matches
+        self.max_wrong_matches: int | None = max_wrong_matches
 
         self._message: discord.Message = None
-        self._solution: typing.List[str] = []
-        self._solution_display: typing.List[typing.List[str]] = []
-        self._custom_ids: typing.Dict[str, str] = {}
-        self._found: typing.List[str] = []
-        self._selected: typing.Optional[str] = None
+        self._solution: list[str] = []
+        self._solution_display: list[list[str]] = []
+        self._custom_ids: dict[str, str] = {}
+        self._found: list[str] = []
+        self._selected: str | None = None
 
-        self._start: typing.Optional[float] = None
-        self._end: typing.Optional[float] = None
+        self._start: float | None = None
+        self._end: float | None = None
         self._tries: int = 0
         self._wrong_matches: int = 0
 
@@ -64,9 +63,7 @@ class MemoryGameView(discord.ui.View):
             description=_("Find all the pairs of emojis!"),
             color=await self.ctx.embed_color(),
         )
-        embed.set_author(
-            name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar
-        )
+        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
         self._message: discord.Message = await self.ctx.send(embed=embed, view=self)
         self.cog.views[self._message] = self
         self._start = time.monotonic()
@@ -75,7 +72,8 @@ class MemoryGameView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -93,7 +91,7 @@ class MemoryGameView(discord.ui.View):
         except discord.HTTPException:
             pass
 
-    def get_emojis(self) -> typing.Tuple[typing.List[str], typing.List[typing.List[str]]]:
+    def get_emojis(self) -> tuple[list[str], list[list[str]]]:
         emojis = GAME_EMOJIS.copy()
         if self.difficulty == "3x3":
             random.shuffle(emojis)
@@ -138,7 +136,8 @@ class MemoryGameView(discord.ui.View):
             if self._selected is None:
                 self._selected = interaction.data["custom_id"]
                 button: discord.ui.Button = discord.utils.get(
-                    self.children, custom_id=self._selected
+                    self.children,
+                    custom_id=self._selected,
                 )
                 button.label = self._custom_ids[self._selected]
                 self._message: discord.Message = await self._message.edit(view=self)
@@ -149,10 +148,12 @@ class MemoryGameView(discord.ui.View):
                 or self._selected == interaction.data["custom_id"]
             ):
                 button1: discord.ui.Button = discord.utils.get(
-                    self.children, custom_id=self._selected
+                    self.children,
+                    custom_id=self._selected,
                 )
                 button2: discord.ui.Button = discord.utils.get(
-                    self.children, custom_id=interaction.data["custom_id"]
+                    self.children,
+                    custom_id=interaction.data["custom_id"],
                 )
                 button1.style = discord.ButtonStyle.danger
                 button2.style = discord.ButtonStyle.danger
@@ -171,7 +172,8 @@ class MemoryGameView(discord.ui.View):
                 return
             button1: discord.ui.Button = discord.utils.get(self.children, custom_id=self._selected)
             button2: discord.ui.Button = discord.utils.get(
-                self.children, custom_id=interaction.data["custom_id"]
+                self.children,
+                custom_id=interaction.data["custom_id"],
             )
             button1.style = discord.ButtonStyle.success
             button2.style = discord.ButtonStyle.success
@@ -213,7 +215,7 @@ class MemoryGameView(discord.ui.View):
                         - (game_time * reduction_per_second)
                         - (self._wrong_matches * reduction_per_wrong_match)
                     )
-                    * (int(self.difficulty[0]) / 5)
+                    * (int(self.difficulty[0]) / 5),
                 ),
                 0,
             )
@@ -227,17 +229,16 @@ class MemoryGameView(discord.ui.View):
                 except BalanceTooHigh as e:
                     await bank.set_balance(self.ctx.author, e.max_balance)
         embed: discord.Embed = discord.Embed(
-            title=_("Memory Game"), color=await self.ctx.embed_color()
+            title=_("Memory Game"),
+            color=await self.ctx.embed_color(),
         )
-        embed.set_author(
-            name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar
-        )
+        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
         embed.description = _(
-            "You won in {game_time} seconds, with {tries} tries and {wrong_matches} wrong matches!"
+            "You won in {game_time} seconds, with {tries} tries and {wrong_matches} wrong matches!",
         ).format(game_time=game_time, tries=self._tries, wrong_matches=self._wrong_matches)
         if final_prize is not None:
             embed.description += _(
-                " You win {final_prize} credits on the bank economy system!"
+                " You win {final_prize} credits on the bank economy system!",
             ).format(final_prize=final_prize)
         self._message: discord.Message = await self._message.edit(embed=embed, view=self)
         await self.on_timeout()
@@ -251,13 +252,12 @@ class MemoryGameView(discord.ui.View):
             member_config["games"] += 1
             await self.cog.config.member(self.ctx.author).set(member_config)
         embed: discord.Embed = discord.Embed(
-            title=_("Memory Game"), color=await self.ctx.embed_color()
+            title=_("Memory Game"),
+            color=await self.ctx.embed_color(),
         )
-        embed.set_author(
-            name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar
-        )
+        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.display_avatar)
         embed.description = _(
-            "You lose, because you tried too many times ({tries} tries and {wrong_matches} wrong matches)."
+            "You lose, because you tried too many times ({tries} tries and {wrong_matches} wrong matches).",
         ).format(tries=self._tries, wrong_matches=self._wrong_matches)
         self._message: discord.Message = await self._message.edit(embed=embed, view=self)
         await self.on_timeout()

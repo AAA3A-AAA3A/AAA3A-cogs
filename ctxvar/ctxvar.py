@@ -1,10 +1,3 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import ast
 import datetime
 import inspect
@@ -14,11 +7,16 @@ import textwrap
 import time
 import traceback
 import types
+import typing
 from copy import copy
 
+import discord
 import rich
 from discord_markdown_ast_parser import parse_to_dict
-from redbot.core import dev_commands
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import commands, dev_commands
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import bold, box
 
 # Credits:
@@ -56,7 +54,8 @@ class WhatIsConverter(commands.Converter):
         for _type in _types:
             try:
                 return await discord.ext.commands.converter.CONVERTER_MAPPING[_type]().convert(
-                    ctx, argument
+                    ctx,
+                    argument,
                 )
             except commands.BadArgument:
                 pass
@@ -79,20 +78,22 @@ class WhatIsConverter(commands.Converter):
         except NameError:
             raise commands.UserFeedbackCheckFailure(
                 _("I couldn't find any cog, command, or object named `{thing}`.").format(
-                    thing=thing
-                )
+                    thing=thing,
+                ),
             )
         except Exception as e:
             raise commands.UserFeedbackCheckFailure(
-                box("".join(traceback.format_exception_only(type(e), e)), lang="py")
+                box("".join(traceback.format_exception_only(type(e), e)), lang="py"),
             )
         return _object
 
 
 class MessageOrStrConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[discord.Message, str]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> discord.Message | str:
         try:
             return await commands.MessageConverter().convert(ctx, argument=argument)
         except commands.BadArgument:
@@ -115,14 +116,14 @@ class CtxVar(Cog):
     async def ctx(
         self,
         ctx: commands.Context,
-        message: typing.Optional[commands.MessageConverter] = None,
-        args: typing.Optional[str] = None,
+        message: commands.MessageConverter | None = None,
+        args: str | None = None,
     ) -> None:
         """Display a list of all attributes and their values of the 'ctx' class instance or its sub-attributes."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
             raise commands.UserFeedbackCheckFailure(
-                _("The cog Dev must be loaded, to make sure you know what you are doing.")
+                _("The cog Dev must be loaded, to make sure you know what you are doing."),
             )
         if message is None:
             message = ctx.message
@@ -133,7 +134,7 @@ class CtxVar(Cog):
             for arg in args:
                 if not hasattr(instance, arg):
                     raise commands.UserFeedbackCheckFailure(
-                        _("The argument you specified is not a subclass of the instance.")
+                        _("The argument you specified is not a subclass of the instance."),
                     )
                 instance = getattr(instance, arg)
         if len(f"{bold(full_instance_name)}") > 256:
@@ -141,11 +142,11 @@ class CtxVar(Cog):
         embed: discord.Embed = discord.Embed()
         embed.title = f"**{full_instance_name}**"
         embed.description = _(
-            "Here are all the variables and their associated values that can be used in this instance class."
+            "Here are all the variables and their associated values that can be used in this instance class.",
         )
         embed.color = 0x01D758
         embed.set_thumbnail(
-            url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png"
+            url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/2048px-Python-logo-notext.svg.png",
         )
         embeds = []
         for li in discord.utils.as_chunks(
@@ -162,8 +163,9 @@ class CtxVar(Cog):
                             value=box(
                                 CogsUtils.replace_var_paths(
                                     dev_commands.sanitize_output(
-                                        ctx, str(getattr(instance, x))[:100]
-                                    )
+                                        ctx,
+                                        str(getattr(instance, x))[:100],
+                                    ),
                                 ),
                                 "py",
                             ),
@@ -177,13 +179,16 @@ class CtxVar(Cog):
     @commands.is_owner()
     @ctxvar.command(name="dir")
     async def _dir(
-        self, ctx: commands.Context, thing: str, search: typing.Optional[str] = None
+        self,
+        ctx: commands.Context,
+        thing: str,
+        search: str | None = None,
     ) -> None:
         """Display a list of all attributes of the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
             raise commands.UserFeedbackCheckFailure(
-                _("The cog Dev must be loaded, to make sure you know what you are doing.")
+                _("The cog Dev must be loaded, to make sure you know what you are doing."),
             )
         thing = cleanup_code(thing)
         env = Dev.get_environment(ctx)
@@ -201,19 +206,19 @@ class CtxVar(Cog):
         except NameError:
             raise commands.UserFeedbackCheckFailure(
                 _("I couldn't find any cog, command, or object named `{thing}`.").format(
-                    thing=thing
-                )
+                    thing=thing,
+                ),
             )
         except Exception as e:
             raise commands.UserFeedbackCheckFailure(
-                box("".join(traceback.format_exception_only(type(e), e)), lang="py")
+                box("".join(traceback.format_exception_only(type(e), e)), lang="py"),
             )
 
         result = "[\n" + (
             "\n".join([f"    '{attr}'," for attr in dir(_object)])
             if search is None
             else "\n".join(
-                [f"    '{attr}'," for attr in dir(_object) if search.lower() in attr.lower()]
+                [f"    '{attr}'," for attr in dir(_object) if search.lower() in attr.lower()],
             )
         )
         if result[-1] == ",":
@@ -228,13 +233,17 @@ class CtxVar(Cog):
     @commands.is_owner()
     @ctxvar.command(name="inspect")
     async def _inspect(
-        self, ctx: commands.Context, show_all: typing.Optional[bool], *, thing: str
+        self,
+        ctx: commands.Context,
+        show_all: bool | None,
+        *,
+        thing: str,
     ) -> None:
         """Execute `rich.help(obj=object, ...)` on the provided object (debug not async)."""
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
             raise commands.UserFeedbackCheckFailure(
-                _("The cog Dev must be loaded, to make sure you know what you are doing.")
+                _("The cog Dev must be loaded, to make sure you know what you are doing."),
             )
         thing = cleanup_code(thing)
         env = Dev.get_environment(ctx)
@@ -252,15 +261,15 @@ class CtxVar(Cog):
         except NameError:
             raise commands.UserFeedbackCheckFailure(
                 _("I couldn't find any cog, command, or object named `{thing}`.").format(
-                    thing=thing
-                )
+                    thing=thing,
+                ),
             )
         except Exception as e:
             raise commands.UserFeedbackCheckFailure(
-                box("".join(traceback.format_exception_only(type(e), e)), lang="py")
+                box("".join(traceback.format_exception_only(type(e), e)), lang="py"),
             )
 
-        kwargs: typing.Dict[str, typing.Any] = {
+        kwargs: dict[str, typing.Any] = {
             "width": 80,
             "no_color": True,
             "color_system": None,
@@ -307,7 +316,7 @@ class CtxVar(Cog):
     async def _dump_ast(
         self,
         ctx: commands.Context,
-        include_attributes: typing.Optional[bool] = False,
+        include_attributes: bool | None = False,
         *,
         thing: str,
     ) -> None:
@@ -315,7 +324,7 @@ class CtxVar(Cog):
         Dev = ctx.bot.get_cog("Dev")
         if not Dev:
             raise commands.UserFeedbackCheckFailure(
-                _("The cog Dev must be loaded, to make sure you know what you are doing.")
+                _("The cog Dev must be loaded, to make sure you know what you are doing."),
             )
         thing = cleanup_code(thing)
         env = Dev.get_environment(ctx)
@@ -333,12 +342,12 @@ class CtxVar(Cog):
         except NameError:
             raise commands.UserFeedbackCheckFailure(
                 _("I couldn't find any cog, command, or object named `{thing}`.").format(
-                    thing=thing
-                )
+                    thing=thing,
+                ),
             )
         except Exception as e:
             raise commands.UserFeedbackCheckFailure(
-                box("".join(traceback.format_exception_only(type(e), e)), lang="py")
+                box("".join(traceback.format_exception_only(type(e), e)), lang="py"),
             )
 
         result = ast.dump(
@@ -355,7 +364,8 @@ class CtxVar(Cog):
         """List attributes of the provided object like dpy objects (debug not async)."""
         _object = thing
         if hasattr(_object, "original_context") and isinstance(
-            _object.original_context, commands.Context
+            _object.original_context,
+            commands.Context,
         ):
             _object = _object.original_context
         result = {}
@@ -372,19 +382,19 @@ class CtxVar(Cog):
             if isinstance(
                 value,
                 (
-                    typing.List,
-                    typing.Tuple,
-                    typing.Dict,
-                    typing.Set,
+                    list,
+                    tuple,
+                    dict,
+                    set,
                     types.MappingProxyType,
                     discord.utils.SequenceProxy,
                 ),
             ):
-                result2[
-                    attr.replace("_", " ").capitalize()
-                ] = f"{value.__class__.__name__} - {len(value)}"
+                result2[attr.replace("_", " ").capitalize()] = (
+                    f"{value.__class__.__name__} - {len(value)}"
+                )
                 continue
-            elif isinstance(value, datetime.datetime):
+            if isinstance(value, datetime.datetime):
                 _time = int(value.timestamp())
                 now = int(time.time())
                 time_elapsed = int(now - _time)
@@ -426,7 +436,8 @@ class CtxVar(Cog):
             )
         result.update(**result2)
         _result = dev_commands.sanitize_output(
-            ctx, "".join(f"\n[{k}] : {r}" for k, r in result.items())
+            ctx,
+            "".join(f"\n[{k}] : {r}" for k, r in result.items()),
         )
         await Menu(pages=_result.strip(), lang="ini").start(ctx)
 
@@ -445,12 +456,10 @@ class CtxVar(Cog):
                 parse_to_dict(
                     message_or_content.content
                     if isinstance(message_or_content, discord.Message)
-                    else message_or_content
+                    else message_or_content,
                 ),
                 indent=4,
             )
         except (ValueError, TypeError):
-            raise commands.UserFeedbackCheckFailure(
-                _("Error in the module used for this command.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("Error in the module used for this command."))
         await Menu(pages=result.strip(), lang="py").start(ctx)

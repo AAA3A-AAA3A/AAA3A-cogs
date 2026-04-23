@@ -1,12 +1,13 @@
-from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red, NotMessage  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import io
+import typing
 from copy import deepcopy
+
+import discord
+
+from AAA3A_utils import Cog
+from redbot.core import Config, commands
+from redbot.core.bot import NotMessage, Red
+from redbot.core.i18n import Translator, cog_i18n
 
 # Credits:
 # General repo credits.
@@ -27,10 +28,10 @@ class MemberPrefix(Cog):
             identifier=205192943327321000143939875896557571750,  # 647053803629
             force_registration=True,
         )
-        self.memberprefix_global: typing.Dict[str, bool] = {
+        self.memberprefix_global: dict[str, bool] = {
             "use_normal_prefixes": True,
         }
-        self.memberprefix_member: typing.Dict[str, typing.List[str]] = {
+        self.memberprefix_member: dict[str, list[str]] = {
             "custom_prefixes": [],
         }
         self.config.register_global(use_normal_prefixes=True)
@@ -86,7 +87,7 @@ class MemberPrefix(Cog):
                 if members_data[guild] == {}:
                     del members_data[guild]
 
-    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
+    async def red_get_data_for_user(self, *, user_id: int) -> dict[str, io.BytesIO]:
         """Get all data about the user."""
         data = {
             Config.GLOBAL: {},
@@ -113,8 +114,10 @@ class MemberPrefix(Cog):
         return {f"{self.qualified_name}.json": file}
 
     async def prefix_manager(
-        self, bot: Red, message: typing.Union[discord.Message, NotMessage]
-    ) -> typing.List[str]:
+        self,
+        bot: Red,
+        message: discord.Message | NotMessage,
+    ) -> list[str]:
         if (
             not isinstance(message, discord.Message)
             or message.guild is None
@@ -123,7 +126,8 @@ class MemberPrefix(Cog):
         ):
             return await self.original_prefix_manager(bot, message)
         custom_prefixes = await self.config.member_from_ids(
-            message.guild.id, message.author.id
+            message.guild.id,
+            message.author.id,
         ).custom_prefixes()
         if custom_prefixes == []:
             return await self.original_prefix_manager(bot, message)
@@ -142,7 +146,9 @@ class MemberPrefix(Cog):
     @commands.guild_only()
     @commands.hybrid_command(aliases=["memberprefixes"], invoke_without_command=True)
     async def memberprefix(
-        self, ctx: commands.Context, prefixes: commands.Greedy[StrConverter]
+        self,
+        ctx: commands.Context,
+        prefixes: commands.Greedy[StrConverter],
     ) -> None:
         """Sets [botname]'s prefix(es) for you only.
         Warning: This is not additive. It will replace all current prefixes.
@@ -162,25 +168,25 @@ class MemberPrefix(Cog):
         if any(len(x) > 25 for x in prefixes):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "A prefix is above the maximal length (25 characters).\nThis is possible for global or per-server prefixes, but not for per-member prefixes."
-                )
+                    "A prefix is above the maximal length (25 characters).\nThis is possible for global or per-server prefixes, but not for per-member prefixes.",
+                ),
             )
         if any(prefix.startswith("/") for prefix in prefixes):
             raise commands.UserFeedbackCheckFailure(
-                _("Prefixes cannot start with `/`, as it conflicts with Discord's slash commands.")
+                _("Prefixes cannot start with `/`, as it conflicts with Discord's slash commands."),
             )
         await self.config.member(ctx.author).custom_prefixes.set(prefixes)
         if len(prefixes) == 1:
             await ctx.send(
                 _(
-                    "Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
-                )
+                    "Prefix for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them.",
+                ),
             )
         else:
             await ctx.send(
                 _(
-                    "Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them."
-                )
+                    "Prefixes for you only set. You can use current prefixes or mention the bot to invoke a command, or reset your prefixes with the same command if you forget them.",
+                ),
             )
 
     @commands.is_owner()
@@ -191,7 +197,10 @@ class MemberPrefix(Cog):
 
     @configuration.command()
     async def resetmemberprefix(
-        self, ctx: commands.Context, guild: discord.Guild, user: discord.User
+        self,
+        ctx: commands.Context,
+        guild: discord.Guild,
+        user: discord.User,
     ) -> None:
         """Clear prefixes for a specified member in a specified server."""
         await self.config.member_from_ids(guild.id, user.id).clear()

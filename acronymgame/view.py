@@ -1,15 +1,15 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 import random
 import string
+import typing
 from collections import Counter
 
+import discord
 from prettytable import PrettyTable
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list
 
 _: Translator = Translator("AcronymGame", __file__)
@@ -21,7 +21,9 @@ class JoinGameModal(discord.ui.Modal):
         self._parent: discord.ui.View = parent
         self.answer: discord.ui.TextInput = discord.ui.TextInput(
             label=_("Answer for {acronym} acronym").format(acronym=self._parent.acronym),
-            placeholder=_("Your full name for {acronym} acronym").format(acronym=self._parent.acronym),
+            placeholder=_("Your full name for {acronym} acronym").format(
+                acronym=self._parent.acronym,
+            ),
             default=None,
             style=discord.TextStyle.short,
             custom_id="description",
@@ -37,26 +39,25 @@ class JoinGameModal(discord.ui.Modal):
         if interaction.user in self._parent.players:
             await interaction.response.send_message(
                 _("You have already joined this game, with `{answer}` answer.").format(
-                    answer=self._parent.players[interaction.user]
+                    answer=self._parent.players[interaction.user],
                 ),
                 ephemeral=True,
             )
             return
         if len(self._parent.players) >= 20:
-            await interaction.response.send_message(
-                _("Sorry, maximum 20 players."), ephemeral=True
-            )
+            await interaction.response.send_message(_("Sorry, maximum 20 players."), ephemeral=True)
             return
         if self._parent._mode != "join":
             await interaction.response.send_message(
-                _("Sorry, the vote has already started."), ephemeral=True
+                _("Sorry, the vote has already started."),
+                ephemeral=True,
             )
             return
         answer = self.answer.value.strip()
         if len(answer.split(" ")) != len(self._parent.acronym):
             await interaction.response.send_message(
                 _("Sorry, the number of words in your answer must be {len_words}.").format(
-                    len_words=len(self._parent.acronym)
+                    len_words=len(self._parent.acronym),
                 ),
                 ephemeral=True,
             )
@@ -65,7 +66,7 @@ class JoinGameModal(discord.ui.Modal):
             if answer.split(" ")[i][0].upper() != letter.upper():
                 await interaction.response.send_message(
                     _(
-                        "Sorry, the initial of each word in your answer must be each letter of the acronym ({acronym})."
+                        "Sorry, the initial of each word in your answer must be each letter of the acronym ({acronym}).",
                     ).format(acronym=self._parent.acronym),
                     ephemeral=True,
                 )
@@ -77,20 +78,22 @@ class JoinGameModal(discord.ui.Modal):
         for num, (__, answer) in enumerate(self._parent.players.items()):
             table.add_row([num + 1, answer])
         embed.description = _(
-            "Join the game by clicking on the button below and entering your acronym. Maximum 20 players.\n"
+            "Join the game by clicking on the button below and entering your acronym. Maximum 20 players.\n",
         ) + box(str(table), lang="py")
         self._parent._message: discord.Message = await self._parent._message.edit(embed=embed)
         await interaction.response.send_message(
-            _("Game joined with `{answer}` answer.").format(answer=answer), ephemeral=True
+            _("Game joined with `{answer}` answer.").format(answer=answer),
+            ephemeral=True,
         )
 
 
 class AnswerSelect(discord.ui.Select):
-    def __init__(self, parent: discord.ui.View, players: typing.Dict[discord.Member, int]) -> None:
+    def __init__(self, parent: discord.ui.View, players: dict[discord.Member, int]) -> None:
         self._parent: discord.ui.View = parent
         self._options = [
             discord.SelectOption(
-                label=f"{answer[:97]}..." if len(answer) > 100 else answer, value=str(num + 1)
+                label=f"{answer[:97]}..." if len(answer) > 100 else answer,
+                value=str(num + 1),
             )
             for num, (_, answer) in enumerate(players.items())
         ]
@@ -115,11 +118,11 @@ class AcronymGameView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self.acronym: str = None
-        self.players: typing.Dict[discord.Member, str] = {}
+        self.players: dict[discord.Member, str] = {}
         self.votes: Counter[int, int] = Counter()
 
         self._message: discord.Message = None
-        self._voters: typing.Dict[discord.Member, int] = {}
+        self._voters: dict[discord.Member, int] = {}
         self._mode: typing.Literal["join", "vote"] = None
 
     async def start(self, ctx: commands.Context) -> discord.Message:
@@ -127,12 +130,17 @@ class AcronymGameView(discord.ui.View):
         self.acronym: str = self.get_acronym()
         embed: discord.Embed = discord.Embed(
             title=_("Acronym Game"),
-            description=_("Click the button below to **join the party**! Please note that the maximum amount of players is **20**."),
+            description=_(
+                "Click the button below to **join the party**! Please note that the maximum amount of players is **20**.",
+            ),
             color=await self.ctx.embed_color(),
         )
         embed.add_field(name=_("Random Acronym:"), value=self.acronym)
         end_time = int((datetime.datetime.now() + datetime.timedelta(seconds=120)).timestamp())
-        embed.add_field(name=_("End time for joining:"), value=f"<t:{end_time}:T> (<t:{end_time}:R>)")
+        embed.add_field(
+            name=_("End time for joining:"),
+            value=f"<t:{end_time}:T> (<t:{end_time}:R>)",
+        )
         embed.set_author(
             name=_("Hosted by {host.display_name}").format(host=self.ctx.author),
             icon_url=self.ctx.author.display_avatar,
@@ -146,9 +154,7 @@ class AcronymGameView(discord.ui.View):
         if len(self.players) < 3:
             await self.on_timeout()
             self.stop()
-            raise commands.UserFeedbackCheckFailure(
-                _("At least three players are needed to play!")
-            )
+            raise commands.UserFeedbackCheckFailure(_("At least three players are needed to play!"))
         table = PrettyTable()
         table.field_names = ["#", "Answer"]
         for num, (__, answer) in enumerate(self.players.items()):
@@ -158,7 +164,7 @@ class AcronymGameView(discord.ui.View):
             color=await self.ctx.embed_color(),
         )
         embed.description = _(
-            "Use the dropdown below to vote for the best answer for the random acronym. All guild members can vote.\n"
+            "Use the dropdown below to vote for the best answer for the random acronym. All guild members can vote.\n",
         ) + box(str(table), lang="py")
         embed.add_field(name="Random Acronym", value=self.acronym)
         end_time = int((datetime.datetime.now() + datetime.timedelta(seconds=60)).timestamp())
@@ -195,20 +201,20 @@ class AcronymGameView(discord.ui.View):
                     ),
                     answer,
                     self.votes[list(self.players).index(player) + 1],
-                ]
+                ],
             )
         embed: discord.Embed = discord.Embed(
-            title="Acronym Game", color=await self.ctx.embed_color()
+            title="Acronym Game",
+            color=await self.ctx.embed_color(),
         )
-        embed.description = _("Here is the leaderboard for this game:") + box(
-            str(table), lang="py"
-        )
+        embed.description = _("Here is the leaderboard for this game:") + box(str(table), lang="py")
         embed.add_field(name="Random Acronym", value=self.acronym)
         self._message: discord.Message = await self._message.edit(embed=embed, view=self)
         await self._message.reply(
             _("Winner{s}: {winners}!").format(
-                winners=humanize_list(winners), s="s" if len(winners) > 1 else ""
-            )
+                winners=humanize_list(winners),
+                s="s" if len(winners) > 1 else "",
+            ),
         )
         return self._message
 
@@ -228,32 +234,39 @@ class AcronymGameView(discord.ui.View):
         return "".join(
             [
                 random.choice(string.ascii_uppercase) for __ in range(4)
-            ]  # range(random.choice(range(4, 5)))
+            ],  # range(random.choice(range(4, 5)))
         )
 
     @discord.ui.button(label="Join Game", emoji="🎮", style=discord.ButtonStyle.success)
     async def join_button(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         modal = JoinGameModal(self)
         await interaction.response.send_modal(modal)
 
     async def _callback(
-        self, interaction: discord.Interaction, option: discord.SelectOption
+        self,
+        interaction: discord.Interaction,
+        option: discord.SelectOption,
     ) -> None:
         if interaction.user in self._voters:
             await interaction.response.send_message(
-                _("You have already voted in this game."), ephemeral=True
+                _("You have already voted in this game."),
+                ephemeral=True,
             )
             return
         value = int(option.value)
         if interaction.user == list(self.players)[value - 1]:
             await interaction.response.send_message(
-                _("You can't vote for yourself."), ephemeral=True
+                _("You can't vote for yourself."),
+                ephemeral=True,
             )
             return
         self._voters[interaction.user] = value
         self.votes[value] += 1
         await interaction.response.send_message(
-            _("Vote given for answer {num}.").format(num=value), ephemeral=True
+            _("Vote given for answer {num}.").format(num=value),
+            ephemeral=True,
         )

@@ -1,13 +1,13 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
+import typing
 from functools import partial
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import pagify
 
 from .converters import Emoji, EmojiRoleConverter
@@ -27,8 +27,8 @@ class MyMessageConverter(commands.MessageConverter):
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
-                )
+                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.",
+                ),
             )
         return message
 
@@ -73,7 +73,8 @@ class RolesButtons(Cog):
                         data = roles_buttons[message].pop(emoji)
                         data["emoji"] = emoji
                         config_identifier = CogsUtils.generate_key(
-                            length=5, existing_keys=roles_buttons[message]
+                            length=5,
+                            existing_keys=roles_buttons[message],
                         )
                         roles_buttons[message][config_identifier] = data
                 await self.config.guild_from_id(guild_id).roles_buttons.set(roles_buttons)
@@ -83,7 +84,7 @@ class RolesButtons(Cog):
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         self.logger.info(
-            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
+            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog.",
         )
 
     async def load_buttons(self) -> None:
@@ -107,7 +108,9 @@ class RolesButtons(Cog):
                     )
 
     async def on_button_interaction(
-        self, interaction: discord.Interaction, config_identifier: str
+        self,
+        interaction: discord.Interaction,
+        config_identifier: str,
     ) -> None:
         if await self.bot.cog_disabled_in_guild(self, interaction.guild):
             return
@@ -129,7 +132,7 @@ class RolesButtons(Cog):
         if role is None:
             await interaction.followup.send(
                 _(
-                    "The role ({role_id}) I have to give you no longer exists. Please notify an administrator of this server."
+                    "The role ({role_id}) I have to give you no longer exists. Please notify an administrator of this server.",
                 ).format(role=role),
                 ephemeral=True,
             )
@@ -149,13 +152,13 @@ class RolesButtons(Cog):
                 await interaction.user.add_roles(
                     role,
                     reason=_(
-                        "Role-button of {interaction.message.id} in {interaction.channel.id}."
+                        "Role-button of {interaction.message.id} in {interaction.channel.id}.",
                     ).format(interaction=interaction),
                 )
             except discord.HTTPException:
                 await interaction.followup.send(
                     _(
-                        "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server."
+                        "I could not add the {role.mention} ({role.id}) role to you. Please notify an administrator of this server.",
                     ).format(role=role),
                     ephemeral=True,
                 )
@@ -174,7 +177,7 @@ class RolesButtons(Cog):
             except discord.HTTPException:
                 await interaction.followup.send(
                     _(
-                        "I could not remove the role {role.mention} ({role.id}) role from you. Please notify an administrator of this server."
+                        "I could not remove the role {role.mention} ({role.id}) role from you. Please notify an administrator of this server.",
                     ).format(role=role),
                     ephemeral=True,
                 )
@@ -188,9 +191,9 @@ class RolesButtons(Cog):
             for emoji in config[f"{interaction.channel.id}-{interaction.message.id}"]:
                 if emoji == config_identifier:
                     continue
-                other_role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][
-                    emoji
-                ]["role"]
+                other_role_id = config[f"{interaction.channel.id}-{interaction.message.id}"][emoji][
+                    "role"
+                ]
                 other_role = interaction.guild.get_role(other_role_id)
                 if other_role is None or other_role not in interaction.user.roles:
                     continue
@@ -226,10 +229,10 @@ class RolesButtons(Cog):
         ctx: commands.Context,
         message: MyMessageConverter,
         role: discord.Role,  # commands.Greedy[discord.Role]
-        emoji: typing.Optional[Emoji],
-        style_button: typing.Optional[typing.Literal["1", "2", "3", "4"]] = "2",
+        emoji: Emoji | None,
+        style_button: typing.Literal["1", "2", "3", "4"] | None = "2",
         *,
-        text_button: typing.Optional[commands.Range[str, 1, 100]] = None,
+        text_button: commands.Range[str, 1, 100] | None = None,
     ) -> None:
         """Add a role-button for a message.
 
@@ -253,12 +256,12 @@ class RolesButtons(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
-                )
+                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.",
+                ),
             )
         if emoji is None and text_button is None:
             raise commands.UserFeedbackCheckFailure(
-                _("You have to specify at least an emoji or a label.")
+                _("You have to specify at least an emoji or a label."),
             )
         if emoji is not None and ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
@@ -266,8 +269,8 @@ class RolesButtons(Cog):
             except discord.HTTPException:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                    )
+                        "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.",
+                    ),
                 )
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -276,10 +279,11 @@ class RolesButtons(Cog):
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) > 25:
             raise commands.UserFeedbackCheckFailure(
-                _("I can't do more than 25 roles-buttons for one message.")
+                _("I can't do more than 25 roles-buttons for one message."),
             )
         config_identifier = CogsUtils.generate_key(
-            length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
+            length=5,
+            existing_keys=config[f"{message.channel.id}-{message.id}"],
         )
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
             "role": role.id,  # [role.id for role in set(roles)]
@@ -306,7 +310,7 @@ class RolesButtons(Cog):
         """
         if len(roles_buttons) == 0:
             raise commands.UserFeedbackCheckFailure(
-                _("You have not specified any valid role-button.")
+                _("You have not specified any valid role-button."),
             )
         channel_permissions = message.channel.permissions_for(ctx.me)
         if (
@@ -316,8 +320,8 @@ class RolesButtons(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
-                )
+                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.",
+                ),
             )
         if ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
@@ -328,8 +332,8 @@ class RolesButtons(Cog):
             except discord.HTTPException:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                    )
+                        "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.",
+                    ),
                 )
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -338,11 +342,12 @@ class RolesButtons(Cog):
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(roles_buttons) > 25:
             raise commands.UserFeedbackCheckFailure(
-                _("I can't do more than 25 roles-buttons for one message.")
+                _("I can't do more than 25 roles-buttons for one message."),
             )
         for emoji, role in roles_buttons:
             config_identifier = CogsUtils.generate_key(
-                length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
+                length=5,
+                existing_keys=config[f"{message.channel.id}-{message.id}"],
             )
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
                 "role": role.id,
@@ -360,13 +365,11 @@ class RolesButtons(Cog):
     async def create(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         roles_buttons: commands.Greedy[EmojiRoleConverter],
-        color: typing.Optional[commands.ColorConverter] = None,
+        color: commands.ColorConverter | None = None,
         *,
-        title: typing.Optional[str] = None,
+        title: str | None = None,
     ) -> None:
         """Create a message with a nice embed and roles-buttons.
 
@@ -377,21 +380,19 @@ class RolesButtons(Cog):
         channel = channel or ctx.channel
         if not channel.permissions_for(ctx.me).send_messages:
             raise commands.UserFeedbackCheckFailure(
-                _("I don't have the permission to send messages in this channel.")
+                _("I don't have the permission to send messages in this channel."),
             )
         if not channel.permissions_for(ctx.me).add_reactions:
             raise commands.UserFeedbackCheckFailure(
-                _("I don't have the permission to add reactions in this channel.")
+                _("I don't have the permission to add reactions in this channel."),
             )
         if not roles_buttons:
             raise commands.UserFeedbackCheckFailure(
-                _("You have not specified any valid role-button.")
+                _("You have not specified any valid role-button."),
             )
         embed: discord.Embed = discord.Embed(
             title=title,
-            description="\n".join(
-                [f"- {emoji} - {role.mention}" for emoji, role in roles_buttons]
-            ),
+            description="\n".join([f"- {emoji} - {role.mention}" for emoji, role in roles_buttons]),
             color=color or await ctx.embed_color(),
         )
         message = await channel.send(embed=embed)
@@ -418,16 +419,20 @@ class RolesButtons(Cog):
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No role-button is configured for this message. e")
+                _("No role-button is configured for this message. e"),
             )
         await self.config.guild(ctx.guild).modes.set_raw(
-            f"{message.channel.id}-{message.id}", value=mode
+            f"{message.channel.id}-{message.id}",
+            value=mode,
         )
         await ctx.send(_("Mode set for the roles-buttons of this message."))
 
     @rolesbuttons.command(aliases=["-"])
     async def remove(
-        self, ctx: commands.Context, message: MyMessageConverter, config_identifier: str
+        self,
+        ctx: commands.Context,
+        message: MyMessageConverter,
+        config_identifier: str,
     ) -> None:
         """Remove a role-button for a message.
 
@@ -436,19 +441,17 @@ class RolesButtons(Cog):
         config = await self.config.guild(ctx.guild).roles_buttons()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No role-button is configured for this message.")
+                _("No role-button is configured for this message."),
             )
         if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
             raise commands.UserFeedbackCheckFailure(
-                _("I wasn't watching for this button on this message.")
+                _("I wasn't watching for this button on this message."),
             )
         del config[f"{message.channel.id}-{message.id}"][config_identifier]
         if config[f"{message.channel.id}-{message.id}"] == {}:
             del config[f"{message.channel.id}-{message.id}"]
             await message.edit(view=None)
-            await self.config.guild(ctx.guild).modes.clear_raw(
-                f"{message.channel.id}-{message.id}"
-            )
+            await self.config.guild(ctx.guild).modes.clear_raw(f"{message.channel.id}-{message.id}")
         else:
             view = self.get_buttons(config, message)
             message = await message.edit(view=view)
@@ -465,7 +468,7 @@ class RolesButtons(Cog):
         config = await self.config.guild(ctx.guild).roles_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No role-button is configured for this message.")
+                _("No role-button is configured for this message."),
             )
         try:
             await message.edit(view=None)
@@ -487,7 +490,7 @@ class RolesButtons(Cog):
             _roles_buttons = list(roles_buttons.values()).copy()
         elif f"{message.channel.id}-{message.id}" not in roles_buttons:
             raise commands.UserFeedbackCheckFailure(
-                _("No role-button is configured for this message.")
+                _("No role-button is configured for this message."),
             )
         else:
             _roles_buttons = roles_buttons.copy()
@@ -497,7 +500,7 @@ class RolesButtons(Cog):
         embed: discord.Embed = discord.Embed(
             title=_("Roles Buttons"),
             description=_("There is {len_roles_buttons} roles buttons in this server.").format(
-                len_roles_buttons=len(roles_buttons)
+                len_roles_buttons=len(roles_buttons),
             ),
             color=await ctx.embed_color(),
         )
@@ -507,14 +510,14 @@ class RolesButtons(Cog):
             e = embed.copy()
             for role_button in li:
                 value = _("Message Jump Link: {message_jump_link}\n").format(
-                    message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{role_button['message'].replace('-', '/')}"
+                    message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{role_button['message'].replace('-', '/')}",
                 )
                 value += "\n".join(
                     [
                         f"• `{config_identifier}` - Emoji {(ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'].isdigit() else data['emoji']) if data['emoji'] is not None else '`None`'} - Label `{data['text_button']}` - Role {role.mention if (role := ctx.guild.get_role(data['role'])) else 'Role not found.'} ({data['role']})"
                         for config_identifier, data in role_button.items()
                         if config_identifier != "message"
-                    ]
+                    ],
                 )
                 for page in pagify(value, page_length=1024):
                     e.add_field(
@@ -533,8 +536,8 @@ class RolesButtons(Cog):
 
     def get_buttons(
         self,
-        config: typing.Dict[str, dict],
-        message: typing.Union[discord.Message, str],
+        config: dict[str, dict],
+        message: discord.Message | str,
     ) -> discord.ui.View:
         message = (
             f"{message.channel.id}-{message.id}"
@@ -556,13 +559,14 @@ class RolesButtons(Cog):
                 label=config[message][config_identifier]["text_button"],
                 emoji=b,
                 style=discord.ButtonStyle(
-                    config[message][config_identifier].get("style_button", 2)
+                    config[message][config_identifier].get("style_button", 2),
                 ),
                 custom_id=f"roles_buttons {config_identifier}",
                 disabled=False,
             )
             button.callback = partial(
-                self.on_button_interaction, config_identifier=config_identifier
+                self.on_button_interaction,
+                config_identifier=config_identifier,
             )
             view.add_item(button)
         return view

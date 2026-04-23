@@ -1,9 +1,8 @@
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import random
 
+import discord
+
+from redbot.core.i18n import Translator
 
 # These will be imported from `mafiagame.roles` to avoid circular imports.
 ROLES = []
@@ -26,7 +25,8 @@ class FamineApocalypse:
         player.famine_used_apocalypses.append(cls)
         await interaction.followup.send(
             _("You have chosen to bring forth the **{emoji} {name}** apocalypse!").format(
-                emoji=cls.emoji, name=_(cls.name)
+                emoji=cls.emoji,
+                name=_(cls.name),
             ),
             ephemeral=True,
         )
@@ -43,7 +43,9 @@ class FamineApocalypse:
 class LifeDeathSwap(FamineApocalypse):
     name: str = _("Life/Death Swap")
     emoji: str = "🔄"
-    description: str = _("Swap all living players with dead players. You'll appear as a dead player for 1 day.")
+    description: str = _(
+        "Swap all living players with dead players. You'll appear as a dead player for 1 day.",
+    )
 
     @classmethod
     async def action(cls, night, player, __) -> None:
@@ -51,7 +53,9 @@ class LifeDeathSwap(FamineApocalypse):
         for p in night.game.players:
             p.is_dead = not p.is_dead
         embed: discord.Embed = discord.Embed(
-            title=_("The **{emoji} {name}** famine apocalypse has occurred! All living players are now dead, and all dead players are now alive! This effect will last for 1 day.").format(
+            title=_(
+                "The **{emoji} {name}** famine apocalypse has occurred! All living players are now dead, and all dead players are now alive! This effect will last for 1 day.",
+            ).format(
                 emoji=cls.emoji,
                 name=_(cls.name),
             ),
@@ -69,7 +73,9 @@ class LifeDeathSwap(FamineApocalypse):
             p.is_dead = p not in player.famine_alive_players_before_life_death_swap
         player.famine_alive_players_before_life_death_swap = []
         embed: discord.Embed = discord.Embed(
-            title=_("The **{emoji} {name}** famine apocalypse has ended! Everyone has returned to their original state.").format(
+            title=_(
+                "The **{emoji} {name}** famine apocalypse has ended! Everyone has returned to their original state.",
+            ).format(
                 emoji=cls.emoji,
                 name=_(cls.name),
             ),
@@ -110,7 +116,12 @@ class SilencedForever(FamineApocalypse):
         view = await perform_action_select_targets[0](
             targets_number=1,
             self_allowed=False,
-        )(night, player, interaction, content=_("Select a player to permanently remove their vote."))
+        )(
+            night,
+            player,
+            interaction,
+            content=_("Select a player to permanently remove their vote."),
+        )
         await view.wait()
         if player in night.targets:
             await super().perform_action(night, player, interaction)
@@ -119,7 +130,9 @@ class SilencedForever(FamineApocalypse):
     async def action(cls, night, player, target) -> None:
         target.extra_votes -= 1
         embed: discord.Embed = discord.Embed(
-            title=_("You have been silenced forever by the **{emoji} {name}** Famine's apocalypse! You can no longer vote.").format(
+            title=_(
+                "You have been silenced forever by the **{emoji} {name}** Famine's apocalypse! You can no longer vote.",
+            ).format(
                 emoji=cls.emoji,
                 name=_(cls.name),
             ),
@@ -153,7 +166,9 @@ class Resurrection(FamineApocalypse):
     async def action(cls, night, player, target) -> None:
         target.is_dead = False
         embed: discord.Embed = discord.Embed(
-            title=_("You have been resurrected by the **{emoji} {name}** Famine's apocalypse!").format(
+            title=_(
+                "You have been resurrected by the **{emoji} {name}** Famine's apocalypse!",
+            ).format(
                 emoji=cls.emoji,
                 name=_(cls.name),
             ),
@@ -175,7 +190,7 @@ class NeutralChaos(FamineApocalypse):
     async def action(cls, night, player, __) -> None:
         target = random.choice([p for p in night.game.alive_players if p != player])
         new_role = random.choice(
-            [role for role in ROLES if role.side == "Neutral" and role != target.role]
+            [role for role in ROLES if role.side == "Neutral" and role != target.role],
         )
         await target.change_role(
             new_role,
@@ -205,7 +220,9 @@ class EternalDistraction(FamineApocalypse):
     async def action(cls, night, player, target) -> None:
         target.is_distracted = True
         embed: discord.Embed = discord.Embed(
-            title=_("You have been eternally distracted by the **{emoji} {name}** Famine's apocalypse! You can no longer perform night actions.").format(
+            title=_(
+                "You have been eternally distracted by the **{emoji} {name}** Famine's apocalypse! You can no longer perform night actions.",
+            ).format(
                 emoji=cls.emoji,
                 name=_(cls.name),
             ),
@@ -226,7 +243,9 @@ class VoteCollapse(FamineApocalypse):
     @classmethod
     async def action(cls, night, player, __) -> None:
         embed: discord.Embed = discord.Embed(
-            title=_("The vote requirement has been changed to 0 for today by the **{emoji} {name}** Famine's apocalypse!").format(
+            title=_(
+                "The vote requirement has been changed to 0 for today by the **{emoji} {name}** Famine's apocalypse!",
+            ).format(
                 emoji=cls.emoji,
                 name=_(cls.name),
             ),
@@ -239,14 +258,14 @@ class VoteCollapse(FamineApocalypse):
         )
 
 
-FAMINE_APOCALYPSES: typing.List[typing.Type[FamineApocalypse]] = [
+FAMINE_APOCALYPSES: list[type[FamineApocalypse]] = [
     # LifeDeathSwap,  #  No purpose...
     MassExecution,
     SilencedForever,
     Resurrection,
     NeutralChaos,
     EternalDistraction,
-    VoteCollapse
+    VoteCollapse,
 ]
 
 

@@ -1,23 +1,22 @@
-from AAA3A_utils import Cog, CogsUtils, Loop, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import base64
 import datetime
 import functools
 import secrets
+import typing
 from collections import Counter
 from io import BytesIO
 
+import discord
 import numpy as np
 import onetimepass
 import qrcode
 from PIL import Image, ImageDraw
-from redbot.core import modlog
+
+from AAA3A_utils import Cog, CogsUtils, Loop, Menu
+from redbot.core import Config, commands, modlog
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify, text_to_file
 
 from .constants import (
@@ -66,8 +65,8 @@ class ObjectConverter(commands.Converter):
             pass
         raise commands.BadArgument(
             _(
-                "Could not find a member, role, text channel, voice channel, category channel, or webhook."
-            )
+                "Could not find a member, role, text channel, voice channel, category channel, or webhook.",
+            ),
         )
 
 
@@ -82,8 +81,10 @@ class AuditLogActionConverter(commands.Converter):
 
 class AnyOrMemberOrUserConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Optional[typing.Union[discord.Member, discord.User]]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> discord.Member | discord.User | None:
         if argument.lower() == "any":
             return None
         try:
@@ -94,8 +95,8 @@ class AnyOrMemberOrUserConverter(commands.Converter):
             except commands.BadArgument:
                 raise commands.BadArgument(
                     _(
-                        "Could not find a member or user with the provided argument. You can also use `any` to apply to any."
-                    )
+                        "Could not find a member or user with the provided argument. You can also use `any` to apply to any.",
+                    ),
                 )
 
 
@@ -158,8 +159,8 @@ class Security(Cog):
             },
         )
 
-        self.modules: typing.Dict[str, Module] = {}
-        self.tasks: typing.List[asyncio.Task] = []
+        self.modules: dict[str, Module] = {}
+        self.tasks: list[asyncio.Task] = []
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -199,7 +200,7 @@ class Security(Cog):
                     "image": Emojis.NOTIFY.value,
                     "case_str": _("Detected"),
                 },
-            ]
+            ],
         )
         self.loops.append(
             Loop(
@@ -207,7 +208,7 @@ class Security(Cog):
                 name="Cleanup Task",
                 function=self.cleanup_task,
                 minutes=1,
-            )
+            ),
         )
 
     async def cog_unload(self) -> None:
@@ -222,21 +223,21 @@ class Security(Cog):
     async def get_member_level(self, member: discord.Member) -> Levels:
         if member == member.guild.me:
             return Levels.ME
-        elif member == member.guild.owner:
+        if member == member.guild.owner:
             return Levels.OWNER
         level = await self.config.member(member).level()
         if level == "EXTRA_OWNER":
             return Levels.EXTRA_OWNER
-        elif level == "TRUSTED_ADMIN":
+        if level == "TRUSTED_ADMIN":
             return Levels.TRUSTED_ADMIN
-        elif member.bot:
+        if member.bot:
             return Levels.BOT
-        elif member.guild_permissions.administrator or await self.bot.is_admin(member):
+        if member.guild_permissions.administrator or await self.bot.is_admin(member):
             return Levels.ADMIN
-        elif member.guild_permissions.manage_messages or await self.bot.is_mod(member):
+        if member.guild_permissions.manage_messages or await self.bot.is_mod(member):
             return Levels.MODERATOR
-        elif datetime.datetime.now(
-            tz=datetime.timezone.utc
+        if datetime.datetime.now(
+            tz=datetime.UTC,
         ) - member.joined_at >= datetime.timedelta(days=7):
             return Levels.MEMBER
         return Levels.NEW
@@ -250,7 +251,7 @@ class Security(Cog):
     async def is_trusted_admin_or_higher(self, member: discord.Member) -> bool:
         return (await self.get_member_level(member)).value <= Levels.TRUSTED_ADMIN.value
 
-    def is_trusted_admin_or_higher_level(func):
+    def is_trusted_admin_or_higher_level(self):
         async def predicate(ctx: commands.Context) -> bool:
             cog = ctx.bot.get_cog("Security")
             if not await cog.is_trusted_admin_or_higher(ctx.author):
@@ -262,7 +263,7 @@ class Security(Cog):
                         reason=_("Tried to bypass the trusted admin or higher check."),
                         logs=[
                             _(
-                                "{author.mention} (`{author}`) tried to bypass the check of the `{command}` command."
+                                "{author.mention} (`{author}`) tried to bypass the check of the `{command}` command.",
                             ).format(author=ctx.author, command=ctx.command.qualified_name),
                         ],
                         trigger_messages=[ctx.message],
@@ -271,7 +272,7 @@ class Security(Cog):
                 return False
             return True
 
-        callback = func.callback if isinstance(func, commands.HybridCommand) else func
+        callback = self.callback if isinstance(self, commands.HybridCommand) else self
 
         @functools.wraps(callback)
         async def new_func(self, ctx: commands.Context, *args, **kwargs):
@@ -279,9 +280,9 @@ class Security(Cog):
                 raise commands.UserFeedbackCheckFailure(_("Don't try to bypass the checks!"))
             return await callback(self, ctx, *args, **kwargs)
 
-        if isinstance(func, commands.HybridCommand):
-            func.callback = new_func
-            final = func
+        if isinstance(self, commands.HybridCommand):
+            self.callback = new_func
+            final = self
         else:
             final = new_func
         return commands.check(predicate)(final)
@@ -314,7 +315,7 @@ class Security(Cog):
             and not _whitelist_type["channels"]
         ) or (_type is discord.CategoryChannel and not _whitelist_type["categories"]):
             raise ValueError(
-                f"Whitelist type `{whitelist_type}` is not applicable to {_object.__class__.__name__}."
+                f"Whitelist type `{whitelist_type}` is not applicable to {_object.__class__.__name__}.",
             )
         if _type is discord.Member:
             if await self.is_trusted_admin_or_higher(_object):
@@ -324,28 +325,30 @@ class Security(Cog):
             if _object.top_role >= _object.guild.me.top_role:
                 return True
             return await self.config.member(_object).whitelist.get_raw(whitelist_type) or any(
-                [await self.is_whitelisted(role, whitelist_type) for role in _object.roles]
+                [await self.is_whitelisted(role, whitelist_type) for role in _object.roles],
             )
-        elif _type is discord.Role:
+        if _type is discord.Role:
             return await self.config.role(_object).whitelist.get_raw(whitelist_type)
-        elif _type in (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel):
+        if _type in (discord.TextChannel, discord.VoiceChannel, discord.ForumChannel):
             return await self.config.channel(_object).whitelist.get_raw(whitelist_type) or (
                 getattr(_object, "category", None) is not None
                 and await self.is_whitelisted(_object.category, whitelist_type)
             )
-        elif _type is discord.CategoryChannel:
+        if _type is discord.CategoryChannel:
             return await self.config.channel(_object).whitelist.get_raw(whitelist_type)
-        elif _type is discord.Thread:
+        if _type is discord.Thread:
             return getattr(_object, "parent", None) is not None and await self.is_whitelisted(
-                _object.parent, whitelist_type
+                _object.parent,
+                whitelist_type,
             )
-        elif _type is discord.Webhook:
+        if _type is discord.Webhook:
             return await self.config.custom("webhook", _object.id).whitelist.get_raw(
-                whitelist_type
+                whitelist_type,
             ) or (
                 getattr(_object, "channel", None) is not None
                 and await self.is_whitelisted(_object.channel, whitelist_type)
             )
+        return None
 
     async def is_message_whitelisted(
         self,
@@ -358,7 +361,8 @@ class Security(Cog):
             or (
                 message.webhook_id is not None
                 and await self.is_whitelisted(
-                    discord.Object(message.webhook_id, type=discord.Webhook), whitelist_type
+                    discord.Object(message.webhook_id, type=discord.Webhook),
+                    whitelist_type,
                 )
             )
         )
@@ -381,13 +385,13 @@ class Security(Cog):
                     description=_(
                         "You're the new owner of **{guild.name}**! You are now considered the main owner of this server and can manage settings and Extra Owners.\n\n"
                         "Security was already configured there, you should **check its settings to ensure everything is set up correctly**, by executing the `{prefix}security` command.\n"
-                        "Furthermore, you must **regenerate the recovery key**, as the previous owner had access to it and in case you lose your account."
+                        "Furthermore, you must **regenerate the recovery key**, as the previous owner had access to it and in case you lose your account.",
                     ).format(
                         guild=guild,
                         prefix=(await self.bot.get_valid_prefixes(guild))[-1],
                     ),
                     color=discord.Color.red(),
-                    timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                    timestamp=datetime.datetime.now(tz=datetime.UTC),
                 )
                 embed.set_author(
                     name=guild.owner.name,
@@ -407,13 +411,11 @@ class Security(Cog):
                             await guild.fetch_member(member_id)
                         except discord.NotFound:
                             await self.config.member_from_ids(guild.id, member_id).level.clear()
-                            await self.config.member_from_ids(
-                                guild.id, member_id
-                            ).whitelist.clear()
+                            await self.config.member_from_ids(guild.id, member_id).whitelist.clear()
                         except discord.HTTPException:
                             pass
             if protected_role_ids := await self.config.guild(
-                guild
+                guild,
             ).modules.protected_roles.protected_roles():
                 for role_id in protected_role_ids:
                     if guild.get_role(int(role_id)) is None:
@@ -421,7 +423,7 @@ class Security(Cog):
                             await guild.fetch_role(int(role_id))
                         except discord.NotFound:
                             await self.config.guild(
-                                guild
+                                guild,
                             ).modules.protected_roles.protected_roles.clear_raw(role_id)
                         except discord.HTTPException:
                             pass
@@ -437,12 +439,12 @@ class Security(Cog):
     async def quarantine_member(
         self,
         member: discord.Member,
-        issued_by: typing.Optional[discord.Member] = None,
-        reason: typing.Optional[str] = None,
-        logs: typing.List[str] = None,
-        trigger_messages: typing.List[discord.Message] = [],
-        current_ctx: typing.Optional[commands.Context] = None,
-        context_message: typing.Optional[discord.Message] = None,
+        issued_by: discord.Member | None = None,
+        reason: str | None = None,
+        logs: list[str] = None,
+        trigger_messages: list[discord.Message] = [],
+        current_ctx: commands.Context | None = None,
+        context_message: discord.Message | None = None,
     ) -> None:
         member_config = await self.config.member(member).all()
         if member_config["quarantined"]:
@@ -452,8 +454,8 @@ class Security(Cog):
         if member.top_role >= member.guild.me.top_role:
             raise RuntimeError(
                 _(
-                    "This member is immune to quarantine because they are higher or equal than me in the role hierarchy."
-                )
+                    "This member is immune to quarantine because they are higher or equal than me in the role hierarchy.",
+                ),
             )
         if not member.guild.me.guild_permissions.manage_roles:
             raise RuntimeError(_("I don't have permission to manage roles in this guild."))
@@ -461,7 +463,7 @@ class Security(Cog):
             embed: discord.Embed = discord.Embed(
                 title=_("Confirm Quarantine"),
                 description=_("Are you sure you want to quarantine {member.mention}?").format(
-                    member=member
+                    member=member,
                 ),
                 color=Colors.QUARANTINE.value,
             )
@@ -473,24 +475,25 @@ class Security(Cog):
         member_config["quarantined"] = True
         member_emoji = await self.get_member_emoji(member)
         audit_log_reason = (
-            f"Automated quarantine with Security."
+            "Automated quarantine with Security."
             if issued_by is None
             else f"Quarantine issued by {issued_by.display_name} ({issued_by.id}) with Security."
         )
         try:
             quarantine_role: discord.Role = await self.create_or_update_quarantine_role(
-                guild=member.guild
+                guild=member.guild,
             )
             try:
                 unassignable_roles = [role for role in member.roles if not role.is_assignable()]
                 if (
                     integration_role := next(
-                        (role for role in member.roles if role.is_bot_managed()), None
+                        (role for role in member.roles if role.is_bot_managed()),
+                        None,
                     )
                 ) is not None:
-                    member_config[
-                        "integration_role_permissions_before_quarantine"
-                    ] = integration_role.permissions.value
+                    member_config["integration_role_permissions_before_quarantine"] = (
+                        integration_role.permissions.value
+                    )
                     await integration_role.edit(
                         permissions=discord.Permissions.none(),
                         reason=audit_log_reason,
@@ -505,8 +508,9 @@ class Security(Cog):
             except discord.HTTPException as e:
                 raise RuntimeError(
                     _("Failed to quarantine {member.mention}: {error}").format(
-                        member=member, error=str(e)
-                    )
+                        member=member,
+                        error=str(e),
+                    ),
                 )
         except RuntimeError:
             raise
@@ -528,12 +532,12 @@ class Security(Cog):
     async def unquarantine_member(
         self,
         member: discord.Member,
-        issued_by: typing.Optional[discord.Member] = None,
-        reason: typing.Optional[str] = None,
-        logs: typing.List[str] = None,
-        trigger_messages: typing.List[discord.Message] = [],
-        context_message: typing.Optional[discord.Message] = None,
-        current_ctx: typing.Optional[commands.Context] = None,
+        issued_by: discord.Member | None = None,
+        reason: str | None = None,
+        logs: list[str] = None,
+        trigger_messages: list[discord.Message] = [],
+        context_message: discord.Message | None = None,
+        current_ctx: commands.Context | None = None,
     ) -> None:
         member_config = await self.config.member(member).all()
         if not member_config["quarantined"]:
@@ -544,7 +548,7 @@ class Security(Cog):
             embed: discord.Embed = discord.Embed(
                 title=_("Confirm Unquarantine"),
                 description=_("Are you sure you want to unquarantine {member.mention}?").format(
-                    member=member
+                    member=member,
                 ),
                 color=Colors.QUARANTINE.value,
             )
@@ -555,7 +559,7 @@ class Security(Cog):
                 return
         member_config["quarantined"] = False
         audit_log_reason = (
-            f"Automated unquarantine with Security."
+            "Automated unquarantine with Security."
             if issued_by is None
             else f"Unquarantine issued by {issued_by.display_name} ({issued_by.id}) with Security."
         )
@@ -573,11 +577,12 @@ class Security(Cog):
             member_config["roles_before_quarantine"] = []
             if (
                 integration_role_permissions := member_config.get(
-                    "integration_role_permissions_before_quarantine"
+                    "integration_role_permissions_before_quarantine",
                 )
             ) is not None:
                 integration_role = next(
-                    (role for role in member.roles if role.is_bot_managed()), None
+                    (role for role in member.roles if role.is_bot_managed()),
+                    None,
                 )
                 if integration_role is not None:
                     await integration_role.edit(
@@ -588,8 +593,9 @@ class Security(Cog):
         except discord.HTTPException as e:
             raise RuntimeError(
                 _("Failed to unquarantine {member.mention}: {error}").format(
-                    member=member, error=str(e)
-                )
+                    member=member,
+                    error=str(e),
+                ),
             )
         await self.config.member(member).set(member_config)
         await self.send_modlog(
@@ -617,29 +623,32 @@ class Security(Cog):
             "notify",
         ],
         member: discord.Member,
-        issued_by: typing.Optional[discord.Member] = None,
-        reason: typing.Optional[str] = None,
-        logs: typing.List[str] = None,
-        duration: typing.Optional[datetime.timedelta] = None,
-        member_emoji: typing.Optional[str] = None,  # Because quarantining changes the status.
+        issued_by: discord.Member | None = None,
+        reason: str | None = None,
+        logs: list[str] = None,
+        duration: datetime.timedelta | None = None,
+        member_emoji: str | None = None,  # Because quarantining changes the status.
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title={
                 "quarantine": _("{member.display_name} has been quarantined! {emoji}").format(
-                    emoji=Emojis.QUARANTINE.value, member=member
+                    emoji=Emojis.QUARANTINE.value,
+                    member=member,
                 ),
                 "unquarantine": _("{member.display_name} has been unquarantined! {emoji}").format(
-                    emoji=Emojis.UNQUARANTINE.value, member=member
+                    emoji=Emojis.UNQUARANTINE.value,
+                    member=member,
                 ),
                 "timeout": _(
-                    "{member.display_name} has been timed out for {duration}! {emoji}"
+                    "{member.display_name} has been timed out for {duration}! {emoji}",
                 ).format(
                     emoji=Emojis.TIMEOUT.value,
                     member=member,
                     duration=CogsUtils.get_interval_string(duration),
                 ),
                 "untimeout": _("{member.display_name} has been untimed out! {emoji}").format(
-                    emoji=Emojis.TIMEOUT.value, member=member
+                    emoji=Emojis.TIMEOUT.value,
+                    member=member,
                 ),
                 "mute": _("{member.display_name} has been muted for {duration}! {emoji}").format(
                     emoji=Emojis.MUTE.value,
@@ -647,25 +656,27 @@ class Security(Cog):
                     duration=CogsUtils.get_interval_string(duration),
                 ),
                 "unmute": _("{member.display_name} has been unmuted! {emoji}").format(
-                    emoji=Emojis.MUTE.value, member=member
+                    emoji=Emojis.MUTE.value,
+                    member=member,
                 ),
                 "kick": _("{member.display_name} has been kicked! {emoji}").format(
-                    emoji=Emojis.KICK.value, member=member
+                    emoji=Emojis.KICK.value,
+                    member=member,
                 ),
                 "ban": _("{member.display_name} has been banned! {emoji}").format(
-                    emoji=Emojis.BAN.value, member=member
+                    emoji=Emojis.BAN.value,
+                    member=member,
                 ),
                 "notify": _("{member.display_name} has been detected! {emoji}").format(
-                    emoji=Emojis.NOTIFY.value, member=member
+                    emoji=Emojis.NOTIFY.value,
+                    member=member,
                 ),
             }[action],
             color=getattr(Colors, action.upper().removeprefix("UN")).value,
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=datetime.datetime.now(tz=datetime.UTC),
         )
         embed.set_thumbnail(url=member.display_avatar)
-        embed.set_footer(
-            text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon)
-        )
+        embed.set_footer(text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon))
         description = _("{emoji} **Member:** {member.mention} (`{member}`) {member_emoji}").format(
             emoji=Emojis.MEMBER.value,
             member=member,
@@ -673,14 +684,15 @@ class Security(Cog):
         )
         if issued_by is not None:
             description += _(
-                "\n{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emoji}"
+                "\n{emoji} **Issued by:** {issued_by.mention} (`{issued_by}`) {issued_by_emoji}",
             ).format(
                 emoji=Emojis.ISSUED_BY.value,
                 issued_by=issued_by,
                 issued_by_emoji=await self.get_member_emoji(issued_by),
             )
         description += _("\n{emoji} **Reason:** *{reason}*").format(
-            emoji=Emojis.REASON.value, reason=reason or _("No reason provided.")
+            emoji=Emojis.REASON.value,
+            reason=reason or _("No reason provided."),
         )
         if logs:
             description += f"\n{Emojis.LOGS.value} **Logs:**\n" + "\n".join(
@@ -727,14 +739,14 @@ class Security(Cog):
             "notify",
         ],
         member: discord.Member,
-        issued_by: typing.Optional[discord.Member] = None,
-        reason: typing.Optional[str] = None,
-        logs: typing.List[str] = None,
-        duration: typing.Optional[datetime.timedelta] = None,
-        trigger_messages: typing.List[discord.Message] = [],
-        context_message: typing.Optional[discord.Message] = None,
-        current_ctx: typing.Optional[typing.Union[commands.Context, discord.Message]] = None,
-        member_emoji: typing.Optional[str] = None,  # Because quarantining changes the status.
+        issued_by: discord.Member | None = None,
+        reason: str | None = None,
+        logs: list[str] = None,
+        duration: datetime.timedelta | None = None,
+        trigger_messages: list[discord.Message] = [],
+        context_message: discord.Message | None = None,
+        current_ctx: commands.Context | discord.Message | None = None,
+        member_emoji: str | None = None,  # Because quarantining changes the status.
     ) -> None:
         embed: discord.Embed = await self.get_modlog_embed(
             member=member,
@@ -785,12 +797,12 @@ class Security(Cog):
         self.views[view._message] = view
         if include_actions and duration is not None:
             self.tasks.append(
-                asyncio.create_task(view.populate_again_after_duration(duration=duration))
+                asyncio.create_task(view.populate_again_after_duration(duration=duration)),
             )
         await modlog.create_case(
             bot=self.bot,
             guild=member.guild,
-            created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+            created_at=datetime.datetime.now(tz=datetime.UTC),
             action_type=action
             if action not in ("mute", "unmute")
             else f"s{action}",  # server mute/unmute
@@ -799,40 +811,46 @@ class Security(Cog):
         )
         if issued_by is None and not member.bot:
             embed.title = {
-                "quarantine": _(
-                    "{member.display_name}, you have been quarantined! {emoji}"
-                ).format(emoji=Emojis.QUARANTINE.value, member=member),
+                "quarantine": _("{member.display_name}, you have been quarantined! {emoji}").format(
+                    emoji=Emojis.QUARANTINE.value,
+                    member=member,
+                ),
                 "unquarantine": _(
-                    "{member.display_name}, you have been unquarantined! {emoji}"
+                    "{member.display_name}, you have been unquarantined! {emoji}",
                 ).format(emoji=Emojis.UNQUARANTINE.value, member=member),
                 "timeout": _(
-                    "{member.display_name}, you have been timed out for {duration}! {emoji}"
+                    "{member.display_name}, you have been timed out for {duration}! {emoji}",
                 ).format(
                     emoji=Emojis.TIMEOUT.value,
                     member=member,
                     duration=CogsUtils.get_interval_string(duration),
                 ),
                 "untimeout": _("{member.display_name}, you have been untimed out! {emoji}").format(
-                    emoji=Emojis.TIMEOUT.value, member=member
+                    emoji=Emojis.TIMEOUT.value,
+                    member=member,
                 ),
                 "mute": _(
-                    "{member.display_name}, you have been muted for {duration}! {emoji}"
+                    "{member.display_name}, you have been muted for {duration}! {emoji}",
                 ).format(
                     emoji=Emojis.MUTE.value,
                     member=member,
                     duration=CogsUtils.get_interval_string(duration),
                 ),
                 "unmute": _("{member.display_name}, you have been unmuted! {emoji}").format(
-                    emoji=Emojis.MUTE.value, member=member
+                    emoji=Emojis.MUTE.value,
+                    member=member,
                 ),
                 "kick": _("{member.display_name}, you have been kicked! {emoji}").format(
-                    emoji=Emojis.KICK.value, member=member
+                    emoji=Emojis.KICK.value,
+                    member=member,
                 ),
                 "ban": _("{member.display_name}, you have been banned! {emoji}").format(
-                    emoji=Emojis.BAN.value, member=member
+                    emoji=Emojis.BAN.value,
+                    member=member,
                 ),
                 "notify": _("{member.display_name}, you have been detected! {emoji}").format(
-                    emoji=Emojis.NOTIFY.value, member=member
+                    emoji=Emojis.NOTIFY.value,
+                    member=member,
                 ),
             }
             embed.description = embed.description.split("\n", maxsplit=1)[1]
@@ -868,7 +886,7 @@ class Security(Cog):
                 await self.config.guild(guild).quarantine_role.set(quarantine_role.id)
             except discord.HTTPException as e:
                 raise RuntimeError(
-                    _("Failed to create the quarantine role: {error}").format(error=str(e))
+                    _("Failed to create the quarantine role: {error}").format(error=str(e)),
                 )
         elif quarantine_role._permissions:
             try:
@@ -878,7 +896,7 @@ class Security(Cog):
                 )
             except discord.HTTPException as e:
                 raise RuntimeError(
-                    _("Failed to update the quarantine role: {error}").format(error=str(e))
+                    _("Failed to update the quarantine role: {error}").format(error=str(e)),
                 )
         for channel in guild.channels:
             if quarantine_role not in channel.overwrites:
@@ -896,7 +914,7 @@ class Security(Cog):
                             "read_message_history": False,
                             "add_reactions": False,
                             "embed_links": False,
-                        }
+                        },
                     )
                 if isinstance(channel, (discord.VoiceChannel, discord.CategoryChannel)):
                     overwrites.update(
@@ -904,7 +922,7 @@ class Security(Cog):
                             "connect": False,
                             "speak": False,
                             "stream": False,
-                        }
+                        },
                     )
                 try:
                     await channel.set_permissions(
@@ -920,7 +938,7 @@ class Security(Cog):
         self,
         guild: discord.Guild,
         channel_name: str = "🛡️・security-modlog",
-        channel_category: typing.Optional[discord.CategoryChannel] = None,
+        channel_category: discord.CategoryChannel | None = None,
     ) -> discord.TextChannel:
         if (
             (modlog_channel_id := await self.config.guild(guild).modlog_channel()) is not None
@@ -949,26 +967,26 @@ class Security(Cog):
             return modlog_channel
         except discord.HTTPException as e:
             raise RuntimeError(
-                _("Failed to create the modlog channel: {error}").format(error=str(e))
+                _("Failed to create the modlog channel: {error}").format(error=str(e)),
             )
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member) -> None:
         if await self.is_quarantined(member):
             await self.config.member(member).quarantined.set(
-                False
+                False,
             )  # Reset quarantine status to allow re-quarantine.
             await self.quarantine_member(
                 member,
                 reason=_("Member joined while already quarantined."),
                 logs=[
                     _(
-                        "Member {member.mention} (`{member}`) was quarantined before leaving the server."
+                        "Member {member.mention} (`{member}`) was quarantined before leaving the server.",
                     ).format(
                         member=member,
                     ),
                     _(
-                        "{member.mention} (`{member}`) has joined again while already quarantined."
+                        "{member.mention} (`{member}`) has joined again while already quarantined.",
                     ).format(
                         member=member,
                     ),
@@ -1013,7 +1031,7 @@ class Security(Cog):
                 reason=_("Tried to edit roles of a quarantined member."),
                 logs=[
                     _(
-                        "Member {member.mention} (`{member}`) tried to {action} to/from the quarantined member {quarantined_member.mention} (`{quarantined_member.id}`)."
+                        "Member {member.mention} (`{member}`) tried to {action} to/from the quarantined member {quarantined_member.mention} (`{quarantined_member.id}`).",
                     ).format(
                         member=moderator,
                         quarantined_member=member,
@@ -1025,10 +1043,10 @@ class Security(Cog):
                                             [
                                                 f"{role.mention} (`{role}`)"
                                                 for role in entry.after.roles
-                                            ]
+                                            ],
                                         ),
                                         s="" if len(entry.after.roles) == 1 else "s",
-                                    )
+                                    ),
                                 ]
                                 if entry.after.roles
                                 else []
@@ -1040,14 +1058,14 @@ class Security(Cog):
                                             [
                                                 f"{role.mention} (`{role}`)"
                                                 for role in entry.before.roles
-                                            ]
+                                            ],
                                         ),
                                         s="" if len(entry.before.roles) == 1 else "s",
-                                    )
+                                    ),
                                 ]
                                 if entry.before.roles
                                 else []
-                            )
+                            ),
                         ),
                     ),
                 ],
@@ -1065,7 +1083,8 @@ class Security(Cog):
 
     @commands.Cog.listener("on_audit_log_entry_create")
     async def on_me_entry(
-        self, entry: discord.AuditLogEntry
+        self,
+        entry: discord.AuditLogEntry,
     ) -> None:  # Handle commands to find the right responsible of an action.
         if entry.user != entry.guild.me:
             return
@@ -1099,10 +1118,10 @@ class Security(Cog):
         embed: discord.Embed = discord.Embed(
             title=_("⚠️ I left or was kicked from {guild.name}! ⚠️").format(guild=guild),
             description=_(
-                "**The Security system can't function properly without me! If you're not responsible for this, you must check what is happening in your server IMMEDIATELY!**"
+                "**The Security system can't function properly without me! If you're not responsible for this, you must check what is happening in your server IMMEDIATELY!**",
             ),
             color=discord.Color.red(),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=datetime.datetime.now(tz=datetime.UTC),
         )
         embed.set_thumbnail(url=get_non_animated_asset(guild.icon))
         embed.set_footer(
@@ -1175,15 +1194,15 @@ class Security(Cog):
         self,
         ctx: commands.Context,
         _object: ObjectConverter,
-        duration: typing.Optional[DurationConverter] = None,
+        duration: typing.Optional[DurationConverter] = None,  # noqa: UP045
         whitelist_types: commands.Greedy[WhitelistTypeConverter] = [],
     ) -> None:
         """Whitelist a member, role, text channel, voice channel, category channel, or webhook from Security."""
         if isinstance(_object, discord.Member) and await self.is_trusted_admin_or_higher(_object):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "You can't whitelist a trusted admin or higher, they are already fully whitelisted from Security."
-                )
+                    "You can't whitelist a trusted admin or higher, they are already fully whitelisted from Security.",
+                ),
             )
         view: WhitelistView = WhitelistView(self)
         await view.start(ctx, _object, duration=duration)
@@ -1200,8 +1219,8 @@ class Security(Cog):
     async def lastactions(
         self,
         ctx: commands.Context,
-        member: typing.Optional[typing.Union[discord.Member, discord.User]] = None,
-        action: typing.Optional[AuditLogActionConverter] = None,
+        member: discord.Member | discord.User | None = None,
+        action: AuditLogActionConverter | None = None,
     ) -> None:
         """View the last audit log entries for the server or a member/user."""
         audit_log_entries = list(
@@ -1213,8 +1232,8 @@ class Security(Cog):
                         user=member if member is not None else discord.utils.MISSING,
                         action=action if action is not None else discord.utils.MISSING,
                     )
-                ]
-            )
+                ],
+            ),
         )
         if member is not None:
             params = {"target_id": member.id}
@@ -1233,9 +1252,7 @@ class Security(Cog):
                 params=params,
             )
             raw_entries, state = data.get("audit_log_entries", []), ctx.guild._state
-            users = (
-                discord.User(data=raw_user, state=state) for raw_user in data.get("users", [])
-            )
+            users = (discord.User(data=raw_user, state=state) for raw_user in data.get("users", []))
             user_map = {user.id: user for user in users}
             integrations = (
                 discord.PartialIntegration(data=raw_i, guild=self)
@@ -1277,14 +1294,14 @@ class Security(Cog):
                             > audit_log_entries[0].created_at
                         )
                     )
-                ]
+                ],
             )
             audit_log_entries.sort(key=lambda entry: entry.created_at)
         if not audit_log_entries:
             raise commands.UserFeedbackCheckFailure(_("No audit log entries found."))
 
         logging_module = self.modules["logging"]
-        embeds: typing.List[discord.Embed] = [
+        embeds: list[discord.Embed] = [
             await logging_module.get_embed(
                 ctx.guild,
                 event,
@@ -1305,12 +1322,10 @@ class Security(Cog):
     async def lastpayouts(
         self,
         ctx: commands.Context,
-        leaderboard: typing.Optional[
-            typing.Literal["ileaderboard", "rleaderboard", "ilb", "rlb"]
-        ] = None,
-        sorted_by: typing.Optional[typing.Literal["payout", "amount"]] = "payout",
-        issued_by: typing.Optional[typing.Union[AnyOrMemberOrUserConverter]] = None,
-        recipient: typing.Optional[typing.Union[AnyOrMemberOrUserConverter]] = None,
+        leaderboard: typing.Literal["ileaderboard", "rleaderboard", "ilb", "rlb"] | None = None,
+        sorted_by: typing.Literal["payout", "amount"] | None = "payout",
+        issued_by: AnyOrMemberOrUserConverter | None = None,
+        recipient: AnyOrMemberOrUserConverter | None = None,
     ) -> None:
         """View the last payouts for the server or a member/user."""
         if issued_by is None:
@@ -1327,7 +1342,8 @@ class Security(Cog):
             payouts = [
                 Payout(**payout, issued_by_id=issued_by.id)
                 for payout in await self.config.member_from_ids(
-                    ctx.guild.id, issued_by.id
+                    ctx.guild.id,
+                    issued_by.id,
                 ).payouts()
                 if recipient is None or payout["recipient_id"] == recipient.id
             ]
@@ -1336,11 +1352,11 @@ class Security(Cog):
         embed: discord.Embed = discord.Embed(
             title=_("Last Payouts ({number})").format(number=len(payouts)),
             color=Colors.DANK_POOL_PROTECTION.value,
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=datetime.datetime.now(tz=datetime.UTC),
         )
 
         async def format_member_user(
-            member_user: typing.Union[discord.Member, discord.User, int]
+            member_user: discord.Member | discord.User | int,
         ) -> str:
             if isinstance(member_user, int):
                 return f"`{member_user}`"
@@ -1354,13 +1370,15 @@ class Security(Cog):
         if leaderboard is None:
             if issued_by is not None:
                 constant_description += _("**{emoji} Issued by:** {display}\n").format(
-                    emoji=Emojis.ISSUED_BY.value, display=await format_member_user(issued_by)
+                    emoji=Emojis.ISSUED_BY.value,
+                    display=await format_member_user(issued_by),
                 )
                 if recipient is None:
                     embed.set_thumbnail(url=get_non_animated_asset(issued_by.display_avatar))
             if recipient is not None:
                 constant_description += _("**{emoji} Recipient:** {display}\n").format(
-                    emoji=Emojis.MEMBER.value, display=await format_member_user(recipient)
+                    emoji=Emojis.MEMBER.value,
+                    display=await format_member_user(recipient),
                 )
                 if issued_by is None:
                     embed.set_thumbnail(url=get_non_animated_asset(recipient.display_avatar))
@@ -1369,7 +1387,7 @@ class Security(Cog):
                     f"**{i}.** {discord.utils.format_dt(payout.issued_at, style='f')} ({discord.utils.format_dt(payout.issued_at, style='R')}) - **{payout.display_amount}**"
                     + (
                         _("\n- **Issued by:** {display}").format(
-                            display=await format_member_user(payout_issued_by)
+                            display=await format_member_user(payout_issued_by),
                         )
                         if issued_by is None
                         and (payout_issued_by := await payout.get_issued_by(ctx.bot, ctx.guild))
@@ -1378,7 +1396,7 @@ class Security(Cog):
                     )
                     + (
                         _("\n- **Recipient:** {display}").format(
-                            display=await format_member_user(payout_recipient)
+                            display=await format_member_user(payout_recipient),
                         )
                         if recipient is None
                         and (payout_recipient := await payout.get_recipient(ctx.bot, ctx.guild))
@@ -1386,10 +1404,10 @@ class Security(Cog):
                         else ""
                     )
                     + _("\n- **Message:** {message_jump_url}").format(
-                        message_jump_url=payout.get_jump_url(ctx.guild)
+                        message_jump_url=payout.get_jump_url(ctx.guild),
                     )
                     for i, payout in enumerate(payouts, start=1)
-                ]
+                ],
             )
         else:
             if leaderboard in ("ileaderboard", "ilb"):
@@ -1412,7 +1430,7 @@ class Security(Cog):
                             payout.recipient_id
                             for payout in payouts
                             if payout.recipient_id is not None
-                        ]
+                        ],
                     )
                 else:
                     mapping = {}
@@ -1431,7 +1449,7 @@ class Security(Cog):
                         i=i,
                         display=await format_member_user(
                             await get_or_fetch_member_or_user(ctx.bot, ctx.guild, member_id)
-                            or member_id
+                            or member_id,
                         ),
                         total_payouts=format_amount(
                             total_payouts := (
@@ -1447,9 +1465,9 @@ class Security(Cog):
                                             else payout.recipient_id
                                         )
                                         == member_id
-                                    ]
+                                    ],
                                 )
-                            )
+                            ),
                         ),
                         s="" if total_payouts == 1 else "s",
                     )
@@ -1465,7 +1483,7 @@ class Security(Cog):
                                 )
                                 == member_id
                                 and payout.item is None
-                            )
+                            ),
                         ),
                         total_items=format_amount(
                             total_items := sum(
@@ -1478,7 +1496,7 @@ class Security(Cog):
                                 )
                                 == member_id
                                 and payout.item is not None
-                            )
+                            ),
                         ),
                         s="" if total_items == 1 else "s",
                     )
@@ -1486,21 +1504,19 @@ class Security(Cog):
                         counter.most_common(len(counter)),
                         start=1,
                     )
-                ]
+                ],
             )
         constant_description += _(
-            "**{emoji} Total:** **⏣ {total_amount} & {total_items} item{s}**\n"
+            "**{emoji} Total:** **⏣ {total_amount} & {total_items} item{s}**\n",
         ).format(
             emoji=Emojis.DANK_POOL_PROTECTION.value,
             total_amount=format_amount(
-                sum(payout.quantity for payout in payouts if payout.item is None)
+                sum(payout.quantity for payout in payouts if payout.item is None),
             ),
             total_items=format_amount(
-                (
-                    total_items := sum(
-                        payout.quantity for payout in payouts if payout.item is not None
-                    )
-                )
+                total_items := sum(
+                    payout.quantity for payout in payouts if payout.item is not None
+                ),
             ),
             s="" if total_items == 1 else "s",
         )
@@ -1585,7 +1601,7 @@ class Security(Cog):
                 "- This will allow you to recover access to Security in this server, as an Extra Owner.\n"
                 "- **Keep this key safe**, as it is the only way to recover access to Security if you lose your account.\n"
                 "- This key is only valid for this server and will not work in other servers, and won't give you Discord ownership.\n"
-                "**Do not share this key with anyone else! Anyone could use it to gain full access to Security in this server!**"
+                "**Do not share this key with anyone else! Anyone could use it to gain full access to Security in this server!**",
             ),
             color=discord.Color.red(),
         )
@@ -1615,20 +1631,20 @@ class Security(Cog):
         if await self.is_extra_owner_or_higher(member):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "You already have access to Security as an Extra Owner or higher in this server."
-                )
+                    "You already have access to Security as an Extra Owner or higher in this server.",
+                ),
             )
         recovery_key = await self.config.guild(guild).recovery_key()
         if recovery_key is None:
             raise commands.UserFeedbackCheckFailure(
-                _("This server does not have a recovery key set.")
+                _("This server does not have a recovery key set."),
             )
         if recovery_key_or_code == recovery_key or onetimepass.valid_totp(
             recovery_key_or_code,
             secret=recovery_key,
         ):
             raise commands.UserFeedbackCheckFailure(
-                _("The provided recovery key or code is invalid.")
+                _("The provided recovery key or code is invalid."),
             )
         await self.config.member(member).level.set(Levels.EXTRA_OWNER.value)
         if await self.is_quarantined(member):
@@ -1640,6 +1656,6 @@ class Security(Cog):
             )
         await ctx.send(
             _("✅ You have successfully recovered access to Security in **{guild.name}**.").format(
-                guild=guild
-            )
+                guild=guild,
+            ),
         )

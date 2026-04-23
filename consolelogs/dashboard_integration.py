@@ -1,7 +1,8 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import typing  # isort:skip
+import typing
+
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("ConsoleLogs", __file__)
 
@@ -25,7 +26,7 @@ class DashboardIntegration:
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
     @dashboard_page(name=None, description="Display the console logs.", is_owner=True)
-    async def rpc_callback(self, **kwargs) -> typing.Dict[str, typing.Any]:
+    async def rpc_callback(self, **kwargs) -> dict[str, typing.Any]:
         console_logs = self.console_logs
         source = """
             {% for console_log in console_logs %}

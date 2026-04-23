@@ -1,14 +1,13 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 
 import aiohttp
+import discord
+
+from AAA3A_utils import Cog, CogsUtils
+from redbot.core import commands
+from redbot.core.bot import Red
 from redbot.core.commands.converter import get_timedelta_converter
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box
 
 from .view import DiscordEditView
@@ -25,7 +24,7 @@ def _(untranslated: str) -> str:  # `redgettext` will found these strings.
 
 
 ERROR_MESSAGE = _(
-    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}",
 )
 
 _: Translator = Translator("DiscordEdit", __file__)
@@ -44,7 +43,7 @@ class LocaleConverter(commands.Converter):
             return discord.Locale(argument)
         except ValueError:
             raise commands.BadArgument(
-                _("Converting to `Locale` failed for parameter `preferred_locale`.")
+                _("Converting to `Locale` failed for parameter `preferred_locale`."),
             )
 
 
@@ -57,17 +56,16 @@ class VerificationLevelConverter(commands.Converter):
         except ValueError:
             raise commands.BadArgument(
                 _(
-                    "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."
-                )
+                    "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`.",
+                ),
             )
         if verification_level in {0, 1, 2, 3, 4}:
             return discord.VerificationLevel(verification_level)
-        else:
-            raise commands.BadArgument(
-                _(
-                    "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`."
-                )
-            )
+        raise commands.BadArgument(
+            _(
+                "The verification level must be `none`, `low`, `medium`, `high`, `highest`, `0`, `1`, `2`, `3` or `4`.",
+            ),
+        )
 
 
 class DefaultNotificationsConverter(commands.Converter):
@@ -78,8 +76,7 @@ class DefaultNotificationsConverter(commands.Converter):
             raise commands.BadArgument(_("The video quality mode must be `0` or `1`."))
         if notifications_level in {0, 1}:
             return discord.NotificationLevel(notifications_level)
-        else:
-            raise commands.BadArgument(_("The video quality mode must be `0` or `1`."))
+        raise commands.BadArgument(_("The video quality mode must be `0` or `1`."))
 
 
 class SystemChannelFlagsConverter(commands.Converter):
@@ -114,21 +111,21 @@ class EditGuild(Cog):
         self,
         ctx: commands.Context,
         name: commands.Range[str, 2, 100],
-        template_code: typing.Optional[str] = None,
+        template_code: str | None = None,
     ) -> None:
         """Create a guild with the bot as owner."""
         try:
             guild = await ctx.bot.create_guild(name=name, code=template_code)
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
         channel = next((c for c in guild.channels if c.type == discord.ChannelType.text), None)
         if channel is None:
             channel = await guild.create_text_channel(name="general")
         invite_url = (await channel.create_invite()).url
         await ctx.send(
-            f"**Guild name:** {guild.name}\n**Guild ID:** {guild.id}\n**First channel's ID**: {channel.id}\n**Invite URL:** {invite_url}"
+            f"**Guild name:** {guild.name}\n**Guild ID:** {guild.id}\n**First channel's ID**: {channel.id}\n**Invite URL:** {invite_url}",
         )
 
     @commands.is_owner()
@@ -142,19 +139,22 @@ class EditGuild(Cog):
             await template.delete()
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
         channel = next((c for c in guild.channels if c.type == discord.ChannelType.text), None)
         if channel is None:
             channel = await guild.create_text_channel(name="general")
         invite_url = (await channel.create_invite()).url
         await ctx.send(
-            f"**Guild name:** {guild.name}\n**Guild ID:** {guild.id}\n**First channel's ID**: {channel.id}\n**Invite URL:** {invite_url}"
+            f"**Guild name:** {guild.name}\n**Guild ID:** {guild.id}\n**First channel's ID**: {channel.id}\n**Invite URL:** {invite_url}",
         )
 
     @editguild.command(name="name")
     async def editguild_name(
-        self, ctx: commands.Context, *, name: commands.Range[str, 2, 100]
+        self,
+        ctx: commands.Context,
+        *,
+        name: commands.Range[str, 2, 100],
     ) -> None:
         """Edit guild name."""
         guild = ctx.guild
@@ -165,12 +165,15 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="description")
     async def editguild_description(
-        self, ctx: commands.Context, *, description: typing.Optional[str] = None
+        self,
+        ctx: commands.Context,
+        *,
+        description: str | None = None,
     ) -> None:
         """Edit guild description."""
         guild = ctx.guild
@@ -181,7 +184,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="icon")
@@ -216,7 +219,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="banner")
@@ -233,8 +236,8 @@ class EditGuild(Cog):
         if "BANNER" not in ctx.guild.features:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This server doesn't have the `BANNER` feature. This server needs more boosts to perform this action."
-                )
+                    "This server doesn't have the `BANNER` feature. This server needs more boosts to perform this action.",
+                ),
             )
         if len(ctx.message.attachments) > 0:
             banner = await ctx.message.attachments[0].read()  # Read an optional attachment.
@@ -257,7 +260,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="splash", aliases=["invite_splash"])
@@ -274,8 +277,8 @@ class EditGuild(Cog):
         if "INVITE_SPLASH" not in ctx.guild.features:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This server doesn't have the `INVITE_SPLASH` feature. This server needs more boosts to perform this action."
-                )
+                    "This server doesn't have the `INVITE_SPLASH` feature. This server needs more boosts to perform this action.",
+                ),
             )
         if len(ctx.message.attachments) > 0:
             splash = await ctx.message.attachments[0].read()  # Read an optional attachment.
@@ -298,7 +301,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="discoverysplash", aliases=["discovery_splash"])
@@ -315,8 +318,8 @@ class EditGuild(Cog):
         if "DISCOVERABLE" not in ctx.guild.features:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This server doesn't have the `DISCOVERABLE` feature. This server needs more boosts to perform this action."
-                )
+                    "This server doesn't have the `DISCOVERABLE` feature. This server needs more boosts to perform this action.",
+                ),
             )
         if len(ctx.message.attachments) > 0:
             discovery_splash = await ctx.message.attachments[
@@ -341,7 +344,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="community")
@@ -355,12 +358,15 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="afkchannel", aliases=["afk_channel"])
     async def editguild_afk_channel(
-        self, ctx: commands.Context, *, afk_channel: typing.Optional[discord.VoiceChannel] = None
+        self,
+        ctx: commands.Context,
+        *,
+        afk_channel: discord.VoiceChannel | None = None,
     ) -> None:
         """Edit guild afkchannel."""
         guild = ctx.guild
@@ -371,7 +377,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="afktimeout", aliases=["afk_timeout"])
@@ -385,7 +391,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @commands.is_owner()
@@ -403,14 +409,14 @@ class EditGuild(Cog):
                 embed: discord.Embed = discord.Embed()
                 embed.title = _(":⚠️ - Change Guild Owner")
                 embed.description = _(
-                    "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
+                    "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?",
                 ).format(guild=guild)
                 embed.color = 0xF00020
                 content = ctx.author.mention
             else:
                 embed = None
                 content = f"{ctx.author.mention} " + _(
-                    "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?"
+                    "Do you really want to change guild owner of the guild {guild.name} ({guild.id})?",
                 ).format(guild=guild)
             if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
@@ -422,12 +428,14 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="verificationlevel", aliases=["verification_level"])
     async def editguild_verification_level(
-        self, ctx: commands.Context, verification_level: VerificationLevelConverter
+        self,
+        ctx: commands.Context,
+        verification_level: VerificationLevelConverter,
     ) -> None:
         """Edit guild verification level."""
         guild = ctx.guild
@@ -438,14 +446,17 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(
-        name="defaultnotifications", aliases=["notificationslevel", "default_notifications"]
+        name="defaultnotifications",
+        aliases=["notificationslevel", "default_notifications"],
     )
     async def editguild_default_notifications(
-        self, ctx: commands.Context, default_notifications: DefaultNotificationsConverter
+        self,
+        ctx: commands.Context,
+        default_notifications: DefaultNotificationsConverter,
     ) -> None:
         """Edit guild notification level."""
         guild = ctx.guild
@@ -456,12 +467,14 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="explicitcontentfilter", aliases=["explicit_content_filter"])
     async def editguild_explicit_content_filter(
-        self, ctx: commands.Context, explicit_content_filter: discord.ContentFilter
+        self,
+        ctx: commands.Context,
+        explicit_content_filter: discord.ContentFilter,
     ) -> None:
         """Edit guild explicit content filter."""
         guild = ctx.guild
@@ -472,7 +485,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="vanitycode", aliases=["vanity_code"])
@@ -486,12 +499,14 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="systemchannel", aliases=["system_channel"])
     async def editguild_system_channel(
-        self, ctx: commands.Context, system_channel: typing.Optional[discord.TextChannel] = None
+        self,
+        ctx: commands.Context,
+        system_channel: discord.TextChannel | None = None,
     ) -> None:
         """Edit guild system channel."""
         guild = ctx.guild
@@ -502,12 +517,14 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="systemchannelflags", aliases=["system_channel_flags"])
     async def editguild_system_channel_flags(
-        self, ctx: commands.Context, system_channel_flags: SystemChannelFlagsConverter
+        self,
+        ctx: commands.Context,
+        system_channel_flags: SystemChannelFlagsConverter,
     ) -> None:
         """Edit guild system channel flags."""
         guild = ctx.guild
@@ -518,12 +535,14 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="preferredlocale", aliases=["preferred_locale"])
     async def editguild_preferred_locale(
-        self, ctx: commands.Context, preferred_locale: LocaleConverter
+        self,
+        ctx: commands.Context,
+        preferred_locale: LocaleConverter,
     ) -> None:
         """Edit guild preferred locale.
 
@@ -566,12 +585,14 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="ruleschannel", aliases=["rules_channel"])
     async def editguild_rules_channel(
-        self, ctx: commands.Context, rules_channel: typing.Optional[discord.TextChannel] = None
+        self,
+        ctx: commands.Context,
+        rules_channel: discord.TextChannel | None = None,
     ) -> None:
         """Edit guild rules channel."""
         guild = ctx.guild
@@ -582,14 +603,14 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="publicupdateschannel", aliases=["public_updates_channel"])
     async def editguild_public_updates_channel(
         self,
         ctx: commands.Context,
-        public_updates_channel: typing.Optional[discord.TextChannel] = None,
+        public_updates_channel: discord.TextChannel | None = None,
     ) -> None:
         """Edit guild public updates channel."""
         guild = ctx.guild
@@ -600,7 +621,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(
@@ -609,7 +630,9 @@ class EditGuild(Cog):
         with_app_command=False,
     )
     async def editguild_premium_progress_bar_enabled(
-        self, ctx: commands.Context, premium_progress_bar_enabled: bool = None
+        self,
+        ctx: commands.Context,
+        premium_progress_bar_enabled: bool = None,
     ) -> None:
         """Edit guild premium progress bar enabled."""
         guild = ctx.guild
@@ -622,7 +645,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="discoverable")
@@ -636,12 +659,14 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="invitesdisabled", aliases=["invites_disabled"])
     async def editguild_invites_disabled(
-        self, ctx: commands.Context, invites_disabled: bool
+        self,
+        ctx: commands.Context,
+        invites_disabled: bool,
     ) -> None:
         """Edit guild invites disabled state."""
         guild = ctx.guild
@@ -652,7 +677,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="widgetenabled", aliases=["widget_enabled"], with_app_command=False)
@@ -666,12 +691,14 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="widgetchannel", aliases=["widget_channel"], with_app_command=False)
     async def editguild_widget_channel(
-        self, ctx: commands.Context, widget_channel: discord.abc.GuildChannel = None
+        self,
+        ctx: commands.Context,
+        widget_channel: discord.abc.GuildChannel = None,
     ) -> None:
         """Edit guild invites widget channel."""
         guild = ctx.guild
@@ -682,14 +709,18 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(
-        name="raidalertsdisabled", aliases=["raid_alerts_disabled"], with_app_command=False
+        name="raidalertsdisabled",
+        aliases=["raid_alerts_disabled"],
+        with_app_command=False,
     )
     async def editguild_raid_alerts_disabled(
-        self, ctx: commands.Context, raid_alerts_disabled: bool
+        self,
+        ctx: commands.Context,
+        raid_alerts_disabled: bool,
     ) -> None:
         """Edit guild invites raid alerts disabled state."""
         guild = ctx.guild
@@ -700,14 +731,18 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(
-        name="safetyalertschannel", aliases=["safety_alerts_channel"], with_app_command=False
+        name="safetyalertschannel",
+        aliases=["safety_alerts_channel"],
+        with_app_command=False,
     )
     async def editguild_safety_alerts_channel(
-        self, ctx: commands.Context, safety_alerts_channel: discord.TextChannel = None
+        self,
+        ctx: commands.Context,
+        safety_alerts_channel: discord.TextChannel = None,
     ) -> None:
         """Edit guild invites safety alerts channel."""
         guild = ctx.guild
@@ -718,7 +753,7 @@ class EditGuild(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @commands.is_owner()
@@ -735,14 +770,14 @@ class EditGuild(Cog):
                 embed: discord.Embed = discord.Embed()
                 embed.title = _("⚠️ - Delete Guild")
                 embed.description = _(
-                    "Do you really want to delete the guild {guild.name} ({guild.id})?"
+                    "Do you really want to delete the guild {guild.name} ({guild.id})?",
                 ).format(guild=guild)
                 embed.color = 0xF00020
                 content = ctx.author.mention
             else:
                 embed = None
                 content = f"{ctx.author.mention} " + _(
-                    "Do you really want to delete the guild {guild.name} ({guild.id})?"
+                    "Do you really want to delete the guild {guild.name} ({guild.id})?",
                 ).format(guild=guild)
             if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
@@ -751,7 +786,7 @@ class EditGuild(Cog):
             await guild.delete()
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editguild.command(name="view")
@@ -787,15 +822,16 @@ class EditGuild(Cog):
 
         def get_embed() -> discord.Embed:
             embed: discord.Embed = discord.Embed(
-                title=f"Guild {guild.name} ({guild.id})", color=embed_color
+                title=f"Guild {guild.name} ({guild.id})",
+                color=embed_color,
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
             embed.description = "\n".join(
                 [
                     f"• `{parameter}`: {repr(getattr(guild, parameters[parameter].get('attribute_name', parameter)))}"
                     for parameter in parameters
                     if hasattr(guild, parameter)
-                ]
+                ],
             )
             return embed
 

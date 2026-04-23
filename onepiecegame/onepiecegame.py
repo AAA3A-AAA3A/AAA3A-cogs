@@ -1,21 +1,23 @@
-from AAA3A_utils import Cog, Menu  # isort:skip
-from redbot.core import commands, Config, app_commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import io
 import json
-from pathlib import Path
+import typing
 
+import discord
 from fuzzywuzzy import process
 from PIL import Image, ImageDraw, ImageFont
+
+from AAA3A_utils import Cog, Menu
+from redbot.core import Config, app_commands, commands
+from redbot.core.bot import Red
 from redbot.core.data_manager import bundled_data_path
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box
 
 from .type import ARCS, Character
 from .view import OnePieceGameView
+
+if typing.TYPE_CHECKING:
+    from pathlib import Path
 
 # Credits:
 # General repo credits.
@@ -24,7 +26,7 @@ from .view import OnePieceGameView
 _: Translator = Translator("OnePieceGame", __file__)
 
 
-CLASSIC_MODE_KEYS: typing.List[str] = [
+CLASSIC_MODE_KEYS: list[str] = [
     "gender",
     "affiliation",
     "devil_fruit",
@@ -53,8 +55,8 @@ class OnePieceGame(Cog):
             games=0,
         )
 
-        self.characters: typing.List[Character] = []
-        self.character_autocomplete_data: typing.List[str] = []
+        self.characters: list[Character] = []
+        self.character_autocomplete_data: list[str] = []
         self.image_path: Path = None
         self.font: ImageFont.FreeTypeFont = None
         self.wanted_poster_template: bytes = None
@@ -63,7 +65,7 @@ class OnePieceGame(Cog):
     async def cog_load(self) -> None:
         await super().cog_load()
         data_path = bundled_data_path(self)
-        with open(data_path / "characters.json", mode="rt", encoding="utf-8") as f:
+        with open(data_path / "characters.json", encoding="utf-8") as f:
             for character_data in json.loads(f.read()):
                 self.characters.append(Character(self, **character_data))
                 self.character_autocomplete_data.append(character_data["name"])
@@ -75,10 +77,10 @@ class OnePieceGame(Cog):
             self.brook_wanted_poster = f.read()
 
     @property
-    def games(self) -> typing.Dict[discord.Message, OnePieceGameView]:
+    def games(self) -> dict[discord.Message, OnePieceGameView]:
         return self.views
 
-    async def get_character_by_name(self, name: str) -> typing.Optional[Character]:
+    async def get_character_by_name(self, name: str) -> Character | None:
         if (
             character_name := process.extractOne(
                 name,
@@ -112,7 +114,7 @@ class OnePieceGame(Cog):
         self,
         mode: typing.Literal["classic", "devil_fruit", "wanted_poster"],
         character: Character,
-        attempts: typing.List[Character] = [],
+        attempts: list[Character] = [],
     ) -> discord.File:
         length, width, height, between, between_characters, border, header = (
             len(attempts),
@@ -216,10 +218,7 @@ class OnePieceGame(Cog):
                                             - 200,
                                         ),
                                         (
-                                            (j + 1) * (width + between)
-                                            + border
-                                            + width // 2
-                                            - 100,
+                                            (j + 1) * (width + between) + border + width // 2 - 100,
                                             header
                                             + i * (height + between_characters)
                                             + border
@@ -227,10 +226,7 @@ class OnePieceGame(Cog):
                                             + 200,
                                         ),
                                         (
-                                            (j + 1) * (width + between)
-                                            + border
-                                            + width // 2
-                                            + 100,
+                                            (j + 1) * (width + between) + border + width // 2 + 100,
                                             header
                                             + i * (height + between_characters)
                                             + border
@@ -252,10 +248,7 @@ class OnePieceGame(Cog):
                                             + 200,
                                         ),
                                         (
-                                            (j + 1) * (width + between)
-                                            + border
-                                            + width // 2
-                                            - 100,
+                                            (j + 1) * (width + between) + border + width // 2 - 100,
                                             header
                                             + i * (height + between_characters)
                                             + border
@@ -263,10 +256,7 @@ class OnePieceGame(Cog):
                                             - 200,
                                         ),
                                         (
-                                            (j + 1) * (width + between)
-                                            + border
-                                            + width // 2
-                                            + 100,
+                                            (j + 1) * (width + between) + border + width // 2 + 100,
                                             header
                                             + i * (height + between_characters)
                                             + border
@@ -382,14 +372,14 @@ class OnePieceGame(Cog):
         ctx: commands.Context,
         mode: typing.Literal["classic", "devil_fruit", "wanted_poster"],
         character: Character,
-        attempts: typing.List[Character] = [],
+        attempts: list[Character] = [],
         each_attempt_decreases_blurry_level: bool = True,
         show_colors: bool = False,
-    ) -> typing.Dict[
+    ) -> dict[
         typing.Literal["embeds", "files", "allowed_mentions"],
-        typing.Union[discord.Embed, discord.File, discord.AllowedMentions],
+        discord.Embed | discord.File | discord.AllowedMentions,
     ]:
-        embeds: typing.List[discord.Embed] = [
+        embeds: list[discord.Embed] = [
             discord.Embed(
                 title=_("One Piece Game - {mode}").format(
                     mode={
@@ -400,11 +390,11 @@ class OnePieceGame(Cog):
                 ),
                 description={
                     "classic": _(
-                        "Guess the character from its characteristics! Make a guess to reveal more of the character."
+                        "Guess the character from its characteristics! Make a guess to reveal more of the character.",
                     ),
                     "devil_fruit": _("Guess the character from its devil fruit name!"),
                     "wanted_poster": _(
-                        "Use the blurry wanted poster to guess the character! Each guess will reveal more of the poster."
+                        "Use the blurry wanted poster to guess the character! Each guess will reveal more of the poster.",
                     ),
                 }[mode],
                 color=await ctx.embed_color(),
@@ -426,16 +416,17 @@ class OnePieceGame(Cog):
             files.append(
                 await character.get_wanted_poster_file(
                     blurry_level=max(
-                        8 - (len(attempts) if each_attempt_decreases_blurry_level else 0), 0
+                        8 - (len(attempts) if each_attempt_decreases_blurry_level else 0),
+                        0,
                     ),
                     show_colors=show_colors,
-                )
+                ),
             )
         if attempts:
             embeds.append(
                 discord.Embed(
                     color=await ctx.embed_color(),
-                ).set_image(url="attachment://tries.png")
+                ).set_image(url="attachment://tries.png"),
             )
             files.append(
                 await self.generate_image(mode, character, attempts),
@@ -445,10 +436,10 @@ class OnePieceGame(Cog):
                 discord.Embed(
                     title=_("You guessed it!"),
                     description=_("The character was: **{character.name}**.").format(
-                        character=character
+                        character=character,
                     ),
                     color=await ctx.embed_color(),
-                ).set_image(url="attachment://character.png")
+                ).set_image(url="attachment://character.png"),
             )
             files.append(
                 await character.get_image_file(),
@@ -468,7 +459,7 @@ class OnePieceGame(Cog):
         self,
         mode: typing.Literal["classic", "devil_fruit", "wanted_poster"],
         character: Character,
-    ) -> typing.Dict[str, typing.Dict[typing.Literal["tries", "value"], typing.Union[int, str]]]:
+    ) -> dict[str, dict[typing.Literal["tries", "value"], int | str]]:
         if mode == "classic":
             return {
                 _("First Apparition hint"): {
@@ -485,7 +476,7 @@ class OnePieceGame(Cog):
                     else _("Unknown"),
                 },
             }
-        elif mode == "devil_fruit":
+        if mode == "devil_fruit":
             return {
                 _("Type hint"): {
                     "tries": 5,
@@ -496,13 +487,14 @@ class OnePieceGame(Cog):
                     "value": f">>> {character.devil_fruit['translated_name']}",
                 },
             }
-        elif mode == "wanted_poster":
+        if mode == "wanted_poster":
             return {
                 _("Bounty hint"): {
                     "tries": 10,
                     "value": character.bounty_display if character.bounty is not None else "❌",
                 },
             }
+        return None
 
     @commands.max_concurrency(1, commands.BucketType.member)
     @commands.guild_only()
@@ -531,7 +523,7 @@ class OnePieceGame(Cog):
         self,
         interaction: discord.Interaction,
         current: str,
-    ) -> typing.List[app_commands.Choice[str]]:
+    ) -> list[app_commands.Choice[str]]:
         """Autocomplete a character name."""
         if not current:
             return [
@@ -574,7 +566,8 @@ class OnePieceGame(Cog):
             embed.add_field(
                 name=f"{i}. {arc}",
                 value=_("Chapters **{start}** to **{end}**").format(
-                    start=start, end=end if end is not None else _("ongoing")
+                    start=start,
+                    end=end if end is not None else _("ongoing"),
                 ),
                 inline=True,
             )

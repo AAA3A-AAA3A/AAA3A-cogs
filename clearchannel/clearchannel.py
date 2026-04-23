@@ -1,11 +1,10 @@
-from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
 
+from AAA3A_utils import Cog, CogsUtils, Settings
 from AAA3A_utils.settings import CustomMessageConverter
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 from .dashboard_integration import DashboardIntegration
 
@@ -38,9 +37,7 @@ class ClearChannel(DashboardIntegration, Cog):
             prompt_message={},
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "channel_delete": {
                 "converter": bool,
                 "description": "If this option is disabled, the bot will not delete the original channel: it will duplicate it as normal, but move it to the end of the server's channel list.",
@@ -97,11 +94,13 @@ class ClearChannel(DashboardIntegration, Cog):
                 embed: discord.Embed = discord.Embed()
                 embed.title = _("⚠️ - ClearChannel")
                 embed.description = _(
-                    "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n⚠ The channel will be cloned, and then **deleted**."
+                    "Do you really want to delete ALL messages from channel {old_channel.mention} ({old_channel.id})?\n⚠ The channel will be cloned, and then **deleted**.",
                 ).format(old_channel=old_channel)
                 embed.color = 0xF00020
                 if not await CogsUtils.ConfirmationAsk(
-                    ctx, content=f"{ctx.author.mention}", embed=embed
+                    ctx,
+                    content=f"{ctx.author.mention}",
+                    embed=embed,
                 ):
                     await CogsUtils.delete_message(ctx.message)
                     return
@@ -122,7 +121,9 @@ class ClearChannel(DashboardIntegration, Cog):
                         _kwargs.update(kwargs)
 
                 await CustomMessageConverter(**config["prompt_message"]).send_message(
-                    ctx, channel=FakeChannel(), env=env
+                    ctx,
+                    channel=FakeChannel(),
+                    env=env,
                 )
                 if not await CogsUtils.ConfirmationAsk(ctx, **_kwargs):
                     await CogsUtils.delete_message(ctx.message)
@@ -142,9 +143,11 @@ class ClearChannel(DashboardIntegration, Cog):
             position=channel_position,
             reason=reason,
         )
-        self.logger.info(
-            f"{ctx.author} ({ctx.author.id}) deleted ALL messages in channel {old_channel.name} ({old_channel.id})."
-        ),
+        (
+            self.logger.info(
+                f"{ctx.author} ({ctx.author.id}) deleted ALL messages in channel {old_channel.name} ({old_channel.id}).",
+            ),
+        )
         if config["first_message"]:
             if not config["custom_message"]:
                 embed: discord.Embed = discord.Embed()
@@ -168,13 +171,15 @@ class ClearChannel(DashboardIntegration, Cog):
                     "channel_id": new_channel.id,
                 }
                 await CustomMessageConverter(**config["custom_message"]).send_message(
-                    ctx, channel=new_channel, env=env
+                    ctx,
+                    channel=new_channel,
+                    env=env,
                 )
         if config["author_dm"]:
             await ctx.author.send(
                 _(
-                    "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id})."
-                ).format(old_channel=old_channel, new_channel=new_channel)
+                    "All messages in channel #{old_channel.name} ({old_channel.id}) have been deleted! You can find the new channel, with the same permissions: #{new_channel.name} ({new_channel.id}).",
+                ).format(old_channel=old_channel, new_channel=new_channel),
             )
 
     @commands.guild_only()

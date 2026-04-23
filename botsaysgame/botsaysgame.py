@@ -1,13 +1,12 @@
-﻿from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 import random
 
+import discord
+
+from AAA3A_utils import Cog
+from redbot.core import commands
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list
 from redbot.core.utils.menus import start_adding_reactions
 
@@ -25,7 +24,7 @@ class BotSaysGame(Cog):
     """Play the Bot Says... game, where the bot says something easy to do, and you have to do it to not be eliminated!"""
 
     @property
-    def games(self) -> typing.Dict[discord.Message, JoinGameView]:
+    def games(self) -> dict[discord.Message, JoinGameView]:
         return self.views
 
     @commands.guild_only()
@@ -60,12 +59,12 @@ class BotSaysGame(Cog):
                 "{players}\n\n"
                 "{bot.display_name} says...\n"
                 "> # {request}\n\n"
-                "-# Time ends {timestamp}"
+                "-# Time ends {timestamp}",
             ).format(
                 players=humanize_list([player.mention for player in players]),
                 bot=ctx.guild.me,
                 request=request,
-                timestamp=f"<t:{int((datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=time)).timestamp())}:R>",
+                timestamp=f"<t:{int((datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(seconds=time)).timestamp())}:R>",
             )
             message = await ctx.send(embed=embed, view=view)
             if view is not None:
@@ -85,18 +84,18 @@ class BotSaysGame(Cog):
                 await ctx.send(
                     embed=discord.Embed(
                         title=_(
-                            "All players would be eliminated this round! I let you continue..."
+                            "All players would be eliminated this round! I let you continue...",
                         ),
                         color=await ctx.embed_color(),
-                    )
+                    ),
                 )
                 continue
-            elif not eliminated:
+            if not eliminated:
                 await ctx.send(
                     embed=discord.Embed(
                         title=_("No one was eliminated this round!"),
                         color=await ctx.embed_color(),
-                    )
+                    ),
                 )
                 continue
             players = [player for player in players if player not in eliminated]
@@ -111,7 +110,7 @@ class BotSaysGame(Cog):
         winner = list(players)[0]
         embed: discord.Embed = discord.Embed(
             title=_("Congratulations **{winner.display_name}**! You won the game!").format(
-                winner=winner
+                winner=winner,
             ),
             color=await ctx.embed_color(),
             timestamp=ctx.message.created_at,

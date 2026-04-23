@@ -1,25 +1,24 @@
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands, errors  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import functools
 import io
 import logging
 import time
+import typing
 
+import discord
 import matplotlib.pyplot as plt
 import numpy as np
 from geopy import Nominatim
+
+from AAA3A_utils import Cog
+from redbot.core import commands, errors
+from redbot.core.i18n import Translator, cog_i18n
 
 try:
     from mpl_toolkits.basemap import Basemap
 except ImportError:
     raise errors.CogLoadError(
-        "The module `mpl_toolkits.basemap` were not found. Please execute the command `[p]pipinstall basemap`. A restart of the bot isn't necessary."
+        "The module `mpl_toolkits.basemap` were not found. Please execute the command `[p]pipinstall basemap`. A restart of the bot isn't necessary.",
     )
 
 # Credits:
@@ -30,12 +29,15 @@ _: Translator = Translator("GetLoc", __file__)
 
 
 CT = typing.TypeVar(
-    "CT", bound=typing.Callable[..., typing.Any]
+    "CT",
+    bound=typing.Callable[..., typing.Any],
 )  # defined CT as a type variable that is bound to a callable that can take any argument and return any value.
 
 
 async def run_blocking_func(
-    func: typing.Callable[..., typing.Any], *args: typing.Any, **kwargs: typing.Any
+    func: typing.Callable[..., typing.Any],
+    *args: typing.Any,
+    **kwargs: typing.Any,
 ) -> typing.Any:
     partial = functools.partial(func, *args, **kwargs)
     loop = asyncio.get_running_loop()
@@ -74,7 +76,10 @@ class GetLoc(Cog):
         cmap = plt.get_cmap("gist_earth")
         # call the basemap and use orthographic projection at viewing angle
         m1 = Basemap(
-            projection="ortho", lat_0=lat_viewing_angle, lon_0=lon_viewing_angle, resolution=None
+            projection="ortho",
+            lat_0=lat_viewing_angle,
+            lon_0=lon_viewing_angle,
+            resolution=None,
         )
         # define map coordinates from full-scale globe
         map_coords_xy = [m1.llcrnrx, m1.llcrnry, m1.urcrnrx, m1.urcrnry]
@@ -108,10 +113,24 @@ class GetLoc(Cog):
         # scatter to indicate lat/lon point
         x, y = m(lon_viewing_angle, lat_viewing_angle)
         m.scatter(
-            x, y, marker="o", color="#DDDDDD", s=3000, zorder=10, alpha=0.7, edgecolor="#000000"
+            x,
+            y,
+            marker="o",
+            color="#DDDDDD",
+            s=3000,
+            zorder=10,
+            alpha=0.7,
+            edgecolor="#000000",
         )
         m.scatter(
-            x, y, marker="o", color="#000000", s=100, zorder=10, alpha=0.7, edgecolor="#000000"
+            x,
+            y,
+            marker="o",
+            color="#000000",
+            s=100,
+            zorder=10,
+            alpha=0.7,
+            edgecolor="#000000",
         )
         plt.annotate(
             title,
@@ -121,8 +140,8 @@ class GetLoc(Cog):
             textcoords="offset points",
             color="k",
             fontsize=12,
-            bbox=dict(facecolor="w", alpha=0.5),
-            arrowprops=dict(arrowstyle="fancy", color="k"),
+            bbox={"facecolor": "w", "alpha": 0.5},
+            arrowprops={"arrowstyle": "fancy", "color": "k"},
             zorder=20,
         )
         # save figure at 150 dpi and show it
@@ -136,7 +155,7 @@ class GetLoc(Cog):
     async def getloc(
         self,
         ctx: commands.Context,
-        with_map: typing.Optional[bool] = True,
+        with_map: bool | None = True,
         *,
         adress_or_coordinates: str,
     ) -> None:
@@ -152,8 +171,8 @@ class GetLoc(Cog):
         if localisation is None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "The address or contact details you have provided do not lead to any results. Are you sure of your input?"
-                )
+                    "The address or contact details you have provided do not lead to any results. Are you sure of your input?",
+                ),
             )
         data = {
             "Display Name": localisation.raw.get("display_name", None),
@@ -172,7 +191,7 @@ class GetLoc(Cog):
         embed: discord.Embed = discord.Embed()
         embed.title = "Location"
         embed.set_thumbnail(
-            url="https://img.myloview.fr/papiers-peints/globe-terrestre-dessin-colore-700-218492153.jpg"
+            url="https://img.myloview.fr/papiers-peints/globe-terrestre-dessin-colore-700-218492153.jpg",
         )
         embed.description = "\n".join([f"**{name}**: {value}" for name, value in data.items()])
 
@@ -180,7 +199,7 @@ class GetLoc(Cog):
             embed.set_image(url="attachment://map.png")
             _map = await self.get_map(
                 title=", ".join(
-                    data["Display Name"].split(", ")[:2]
+                    data["Display Name"].split(", ")[:2],
                 ),  # (Latitude {localisation.latitude}) ; Longitude {localisation.longitude})",
                 latitude=localisation.latitude,
                 longitude=localisation.longitude,
@@ -197,12 +216,15 @@ class GetLoc(Cog):
         embed.set_footer(text=f"Generated in {end - start}s.")
 
         await ctx.reply(
-            embed=embed, file=file, allowed_mentions=discord.AllowedMentions(replied_user=False)
+            embed=embed,
+            file=file,
+            allowed_mentions=discord.AllowedMentions(replied_user=False),
         )
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(
-        self, assistant_cog: typing.Optional[commands.Cog] = None
+        self,
+        assistant_cog: commands.Cog | None = None,
     ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return self.get_informations_about_place_for_assistant
@@ -221,6 +243,7 @@ class GetLoc(Cog):
             },
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+        return None
 
     async def get_informations_about_place_for_assistant(self, query: str, *args, **kwargs):
         loc = Nominatim(user_agent="GetLoc")

@@ -1,15 +1,15 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
+import typing
 from collections import defaultdict, deque
 from io import BytesIO
 
 import chat_exporter
+import discord
 
-from ..constants import Colors, Emojis, Levels, get_non_animated_asset
-from ..views import ToggleModuleButton
+from redbot.core import commands
+from redbot.core.i18n import Translator
+from security.constants import Colors, Emojis, Levels, get_non_animated_asset
+from security.views import ToggleModuleButton
+
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
@@ -31,9 +31,9 @@ class UnauthorizedTextChannelDeletionsModule(Module):
 
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)
-        self.messages_cache: typing.Dict[
-            discord.TextChannel, typing.List[discord.Message]
-        ] = defaultdict(lambda: deque(maxlen=30))
+        self.messages_cache: dict[discord.TextChannel, list[discord.Message]] = defaultdict(
+            lambda: deque(maxlen=30),
+        )
 
     async def load(self) -> None:
         self.cog.bot.add_listener(self.on_audit_log_entry_create)
@@ -44,8 +44,10 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         self.cog.bot.remove_listener(self.on_message)
 
     async def get_status(
-        self, guild: discord.Guild, check_enabled: bool = True
-    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
+        self,
+        guild: discord.Guild,
+        check_enabled: bool = True,
+    ) -> tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
             return "❎", _("Disabled"), _("This module is currently disabled.")
@@ -56,14 +58,18 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         )
 
     async def get_settings(
-        self, guild: discord.Guild, view: discord.ui.View
-    ) -> typing.Tuple[str, str, typing.List[typing.Dict], typing.List[discord.ui.Item]]:
+        self,
+        guild: discord.Guild,
+        view: discord.ui.View,
+    ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         config = await self.config_value(guild)()
         title = _("Security — {emoji} {name} {status}").format(
-            emoji=self.emoji, name=self.name, status=(await self.get_status(guild))[0]
+            emoji=self.emoji,
+            name=self.name,
+            status=(await self.get_status(guild))[0],
         )
         description = _(
-            "This module monitors unauthorized text channel deletions and retrieves the last messages from the deleted channel."
+            "This module monitors unauthorized text channel deletions and retrieves the last messages from the deleted channel.",
         )
         status = await self.get_status(guild)
         if status[0] == "⚠️":
@@ -118,7 +124,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
             await interaction.response.defer()
             config["dm_extra_owners_and_higher"] = not config["dm_extra_owners_and_higher"]
             await self.config_value(guild).dm_extra_owners_and_higher.set(
-                config["dm_extra_owners_and_higher"]
+                config["dm_extra_owners_and_higher"],
             )
             await view._message.edit(embed=await view.get_embed(), view=view)
 
@@ -165,7 +171,8 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         if config["specific_channels"] and channel.id not in config["specific_channels"]:
             return
         if await self.cog.is_whitelisted(
-            responsible, "unauthorized_text_channel_deletions"
+            responsible,
+            "unauthorized_text_channel_deletions",
         ) or await self.cog.is_whitelisted(
             discord.Object(id=channel.id, type=discord.TextChannel),
             "unauthorized_text_channel_deletions",
@@ -185,9 +192,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         )
 
         embed = discord.Embed(
-            title=_("Unauthorized Text Channel Deletion Detected {emoji}").format(
-                emoji=self.emoji
-            ),
+            title=_("Unauthorized Text Channel Deletion Detected {emoji}").format(emoji=self.emoji),
             color=Colors.UNAUTHORIZED_TEXT_CHANNEL_DELETIONS.value,
             timestamp=entry.created_at,
         )
@@ -197,7 +202,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         )
         embed.description = _(
             "🛡️ **Responsible:** {responsible.mention} (`{responsible}`) {responsible_emojis} - `{responsible.id}`\n"
-            "#️⃣ **Target:** `{channel_name}` - `{channel.id}`"
+            "#️⃣ **Target:** `{channel_name}` - `{channel.id}`",
         ).format(
             responsible=responsible,
             responsible_emojis=await self.cog.get_member_emoji(responsible),
@@ -209,7 +214,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
             embed.add_field(
                 name="\u200b",
                 value=_(
-                    "You can find the last {count} message{s} in this channel in the transcript."
+                    "You can find the last {count} message{s} in this channel in the transcript.",
                 ).format(count=len(messages), s="" if len(messages) == 1 else "s"),
             )
 
@@ -217,17 +222,15 @@ class UnauthorizedTextChannelDeletionsModule(Module):
                 @classmethod
                 async def export(
                     cls,
-                    channel: typing.Union[
-                        discord.TextChannel, discord.VoiceChannel, discord.Thread
-                    ],
-                    messages: typing.List[discord.Message],
+                    channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+                    messages: list[discord.Message],
                     tz_info="UTC",
-                    guild: typing.Optional[discord.Guild] = None,
-                    bot: typing.Optional[discord.Client] = None,
-                    military_time: typing.Optional[bool] = False,
-                    fancy_times: typing.Optional[bool] = True,
-                    support_dev: typing.Optional[bool] = True,
-                    attachment_handler: typing.Optional[typing.Any] = None,
+                    guild: discord.Guild | None = None,
+                    bot: discord.Client | None = None,
+                    military_time: bool | None = False,
+                    fancy_times: bool | None = True,
+                    support_dev: bool | None = True,
+                    attachment_handler: typing.Any | None = None,
                 ):
                     if guild:
                         channel.guild = guild

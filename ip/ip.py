@@ -1,10 +1,9 @@
-from AAA3A_utils import Cog, Settings  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import typing  # isort:skip
-
 import aiohttp
+
+from AAA3A_utils import Cog, Settings
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 from .dashboard_integration import DashboardIntegration
 
@@ -32,9 +31,7 @@ class Ip(DashboardIntegration, Cog):
         )
         self.config.register_global(port="0000")
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "port": {
                 "converter": commands.Range[str, 4, 4],
                 "description": "Set the port.",
@@ -52,7 +49,7 @@ class Ip(DashboardIntegration, Cog):
             commands_group=self.ip_group,
         )
 
-        self._session: typing.Optional[aiohttp.ClientSession] = None
+        self._session: aiohttp.ClientSession | None = None
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -86,5 +83,5 @@ class Ip(DashboardIntegration, Cog):
         ip = await self.get_public_ip()
         port = await self.config.port()
         await ctx.send(
-            _("The Administrator Panel website is http://{ip}:{port}/.").format(ip=ip, port=port)
+            _("The Administrator Panel website is http://{ip}:{port}/.").format(ip=ip, port=port),
         )

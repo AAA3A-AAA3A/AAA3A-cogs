@@ -1,12 +1,12 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import os
+import typing
 
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .converters import ListStringToEmbed
@@ -36,7 +36,7 @@ class DashboardIntegration:
     @dashboard_page(name=None, description="Create rich Embeds!")
     async def dashboard_editor(self, **kwargs) -> None:
         file_path = os.path.join(os.path.dirname(__file__), "editor.html")
-        with open(file_path, "rt", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             source = f.read()
         return {"status": 0, "web_content": {"source": source, "standalone": True}}
 
@@ -60,12 +60,12 @@ class DashboardIntegration:
                 "status": 0,
                 "error_code": 403,
                 "message": _(
-                    "I or you don't have permissions to send messages or embeds in any channel in this guild."
+                    "I or you don't have permissions to send messages or embeds in any channel in this guild.",
                 ),
             }
 
         file_path = os.path.join(os.path.dirname(__file__), "editor.html")
-        with open(file_path, "rt", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             source = f.read()
 
         import wtforms
@@ -95,7 +95,7 @@ class DashboardIntegration:
                 validators=[
                     wtforms.validators.DataRequired(),
                     kwargs["DpyObjectConverter"](
-                        typing.Union[discord.TextChannel, discord.VoiceChannel]
+                        typing.Union[discord.TextChannel, discord.VoiceChannel],
                     ),
                 ],
             )
@@ -106,8 +106,8 @@ class DashboardIntegration:
         send_form_string = f"""
             <form action="" method="POST" role="form" enctype="multipart/form-data">
                 {send_form.hidden_tag()}
-                {send_form.channels() }
-                {send_form.submit(onclick='this.parentElement.querySelector("#send_form_username").value = document.querySelector(".editSenderUsername").value; this.parentElement.querySelector("#send_form_avatar").value = document.querySelector(".editSenderAvatar").value; this.parentElement.querySelector("#send_form_data").value = (JSON.stringify(typeof jsonCode === "object" ? jsonCode : json));', style="cursor: pointer; margin-left: 105px;") }
+                {send_form.channels()}
+                {send_form.submit(onclick='this.parentElement.querySelector("#send_form_username").value = document.querySelector(".editSenderUsername").value; this.parentElement.querySelector("#send_form_avatar").value = document.querySelector(".editSenderAvatar").value; this.parentElement.querySelector("#send_form_data").value = (JSON.stringify(typeof jsonCode === "object" ? jsonCode : json));', style="cursor: pointer; margin-left: 105px;")}
             </form>
         """
 
@@ -120,7 +120,7 @@ class DashboardIntegration:
                             {
                                 "message": f"{channel.name} ({channel.id}): I don't have permissions to manage webhooks in this channel.",
                                 "category": "danger",
-                            }
+                            },
                         )
                         continue
                     if not is_owner and not channel.permissions_for(member).manage_webhooks:
@@ -128,12 +128,13 @@ class DashboardIntegration:
                             {
                                 "message": f"{channel.name} ({channel.id}): You don't have permissions to manage webhooks in this channel.",
                                 "category": "danger",
-                            }
+                            },
                         )
                         continue
                     try:
                         hook: discord.Webhook = await CogsUtils.get_hook(
-                            bot=self.bot, channel=channel
+                            bot=self.bot,
+                            channel=channel,
                         )
                         await hook.send(
                             **send_form.data.data,
@@ -146,7 +147,7 @@ class DashboardIntegration:
                             {
                                 "message": f"{channel.name} ({channel.id}): {str(error)}",
                                 "category": "danger",
-                            }
+                            },
                         )
                 else:
                     try:
@@ -156,18 +157,18 @@ class DashboardIntegration:
                             {
                                 "message": f"{channel.name} ({channel.id}): {str(e)}",
                                 "category": "danger",
-                            }
+                            },
                         )
             s = "s" if len(send_form.channels.data) > 1 else ""
             self.logger.trace(
-                f"{len(send_form.channels.data)} message{s} sent in {humanize_list([f'`#{channel.name}` ({channel.id})' for channel in send_form.channels.data])} in `{guild.name}` ({guild.id}), from the Dashboard by `{user.display_name}` ({user.id})."
+                f"{len(send_form.channels.data)} message{s} sent in {humanize_list([f'`#{channel.name}` ({channel.id})' for channel in send_form.channels.data])} in `{guild.name}` ({guild.id}), from the Dashboard by `{user.display_name}` ({user.id}).",
             )
             if not notifications:
                 notifications.append(
                     {
                         "message": _("Message{s} sent successfully!").format(s=s),
                         "category": "success",
-                    }
+                    },
                 )
             return {
                 "status": 0,

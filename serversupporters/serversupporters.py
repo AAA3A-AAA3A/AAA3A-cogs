@@ -1,18 +1,20 @@
-from AAA3A_utils import Cog, Settings, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
-import asyncio
 import datetime
 import re
+import typing
 from collections import defaultdict
 
+import discord
+
+from AAA3A_utils import Cog, Menu, Settings
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import pagify
 
 from .converter import RoleHierarchyConverter
+
+if typing.TYPE_CHECKING:
+    import asyncio
 
 # Credits:
 # General repo credits.
@@ -21,8 +23,8 @@ _: Translator = Translator("ServerSupporters", __file__)
 
 
 def get_non_animated_asset(
-    asset: typing.Optional[discord.Asset] = None,
-) -> typing.Optional[discord.Asset]:
+    asset: discord.Asset | None = None,
+) -> discord.Asset | None:
     if asset is None:
         return None
     if not asset.is_animated():
@@ -55,14 +57,16 @@ class ServerSupporters(Cog):
             tag_abandon_channel=None,
         )
 
-        _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
+        _settings: dict[str, dict[str, typing.Any]] = {
             "enabled": {
                 "converter": bool,
                 "description": "Whether the server supporters system is enabled.",
             },
             "logs_channel": {
                 "converter": typing.Union[
-                    discord.TextChannel, discord.VoiceChannel, discord.Thread
+                    discord.TextChannel,
+                    discord.VoiceChannel,
+                    discord.Thread,
                 ],
                 "description": "The channel where logs will be sent.",
             },
@@ -91,12 +95,12 @@ class ServerSupporters(Cog):
             commands_group=self.setserversupporters,
         )
 
-        self._startup_sync_task: typing.Optional[asyncio.Task] = None
+        self._startup_sync_task: asyncio.Task | None = None
         self._invite_regex = re.compile(
             r"(discord\.(?:gg|io|me|li)|discord(?:app)?\.com\/invite|\.gg)\/(\S+)",
             re.I,
         )
-        self.cache: typing.Dict[discord.Member, bool] = defaultdict(bool)
+        self.cache: dict[discord.Member, bool] = defaultdict(bool)
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -111,9 +115,10 @@ class ServerSupporters(Cog):
     async def _startup_resync(self) -> None:
         await self.bot.wait_until_ready()
         for guild in self.bot.guilds:
-            if not await self.config.guild(
-                guild
-            ).enabled() or await self.bot.cog_disabled_in_guild(self, guild):
+            if not await self.config.guild(guild).enabled() or await self.bot.cog_disabled_in_guild(
+                self,
+                guild,
+            ):
                 continue
             try:
                 await self.sync_guild_roles(guild)
@@ -124,8 +129,10 @@ class ServerSupporters(Cog):
                 )
 
     async def get_role(
-        self, member: discord.Member, _type: typing.Literal["tag", "status"]
-    ) -> typing.Optional[discord.Role]:
+        self,
+        member: discord.Member,
+        _type: typing.Literal["tag", "status"],
+    ) -> discord.Role | None:
         if member.guild.me is None or not member.guild.me.guild_permissions.manage_roles:
             return None
         if _type == "tag":
@@ -153,7 +160,7 @@ class ServerSupporters(Cog):
                 else _("Server {_type} Supporter Removed...")
             ).format(_type=_("Tag") if _type == "tag" else _("Status")),
             color=discord.Color.green() if enabled else discord.Color.red(),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=datetime.datetime.now(tz=datetime.UTC),
         )
         embed.set_author(
             name=member.display_name,
@@ -163,15 +170,13 @@ class ServerSupporters(Cog):
         if (role := await self.get_role(member, _type)) is not None:
             if enabled:
                 embed.description = _(
-                    "{member.mention} has been given the **{role.mention}** role for being a server supporter."
+                    "{member.mention} has been given the **{role.mention}** role for being a server supporter.",
                 ).format(member=member, role=role, _type=_type)
             else:
                 embed.description = _(
-                    "{member.mention} has been removed from the **{role.mention}** role for no longer being a server supporter."
+                    "{member.mention} has been removed from the **{role.mention}** role for no longer being a server supporter.",
                 ).format(member=member, role=role, _type=_type)
-        embed.set_footer(
-            text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon)
-        )
+        embed.set_footer(text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon))
         return embed
 
     async def log(
@@ -195,20 +200,19 @@ class ServerSupporters(Cog):
             if (
                 (
                     tag_abandon_channel_id := await self.config.guild(
-                        member.guild
+                        member.guild,
                     ).tag_abandon_channel()
                 )
                 is None
-                or (tag_abandon_channel := member.guild.get_channel(tag_abandon_channel_id))
-                is None
+                or (tag_abandon_channel := member.guild.get_channel(tag_abandon_channel_id)) is None
                 or (tag_supporter_role := await self.get_role(member, "tag")) is None
             ):
                 return
             try:
                 await tag_abandon_channel.send(
                     _(
-                        "Hello {member.mention}! By taking the **{member.guild.name}** tag off, you will lose access to the {tag_supporter_role.mention} role and its perks..."
-                    ).format(member=member, tag_supporter_role=tag_supporter_role)
+                        "Hello {member.mention}! By taking the **{member.guild.name}** tag off, you will lose access to the {tag_supporter_role.mention} role and its perks...",
+                    ).format(member=member, tag_supporter_role=tag_supporter_role),
                 )
             except discord.HTTPException as e:
                 self.logger.error(
@@ -251,7 +255,9 @@ class ServerSupporters(Cog):
                 return False
 
     async def check_invites_in_status(
-        self, guild: discord.Guild, status: typing.Optional[str]
+        self,
+        guild: discord.Guild,
+        status: str | None,
     ) -> bool:
         if not status:
             return False
@@ -313,7 +319,7 @@ class ServerSupporters(Cog):
         self,
         member: discord.Member,
         _type: typing.Literal["tag", "status"],
-        user_payload: typing.Optional[typing.Dict[str, typing.Any]] = None,
+        user_payload: dict[str, typing.Any] | None = None,
     ) -> bool:
         if _type == "tag":
             if discord.version_info >= (2, 6, 0):
@@ -322,24 +328,23 @@ class ServerSupporters(Cog):
                     and member.primary_guild.identity_enabled
                     and member.primary_guild.id == member.guild.id
                 )
-            else:
-                if user_payload is None:
-                    try:
-                        user_payload = await self.bot.http.request(
-                            discord.http.Route(
-                                "GET",
-                                "/users/{user_id}",
-                                user_id=member.id,
-                            )
-                        )
-                    except discord.HTTPException:
-                        return False
-                return (
-                    user_payload["clan"] is not None
-                    and user_payload["clan"]["identity_enabled"]
-                    and user_payload["clan"]["identity_guild_id"] == str(member.guild.id)
-                )
-        elif _type == "status":
+            if user_payload is None:
+                try:
+                    user_payload = await self.bot.http.request(
+                        discord.http.Route(
+                            "GET",
+                            "/users/{user_id}",
+                            user_id=member.id,
+                        ),
+                    )
+                except discord.HTTPException:
+                    return False
+            return (
+                user_payload["clan"] is not None
+                and user_payload["clan"]["identity_enabled"]
+                and user_payload["clan"]["identity_guild_id"] == str(member.guild.id)
+            )
+        if _type == "status":
             return (
                 bool(member.activities)
                 and (
@@ -393,9 +398,10 @@ class ServerSupporters(Cog):
             return
 
         for guild in self.bot.guilds:
-            if not await self.config.guild(
-                guild
-            ).enabled() or await self.bot.cog_disabled_in_guild(self, guild):
+            if not await self.config.guild(guild).enabled() or await self.bot.cog_disabled_in_guild(
+                self,
+                guild,
+            ):
                 continue
             if (member := guild.get_member(after.id)) is None:
                 continue
@@ -424,7 +430,9 @@ class ServerSupporters(Cog):
 
     @setserversupporters.command(aliases=["list"])
     async def listsupporters(
-        self, ctx: commands.Context, _type: typing.Literal["tag", "status"]
+        self,
+        ctx: commands.Context,
+        _type: typing.Literal["tag", "status"],
     ) -> None:
         """List all members with the status supporter role."""
         if _type == "tag":
@@ -443,7 +451,9 @@ class ServerSupporters(Cog):
                     after = discord.Object(id=int(data[-1]["user"]["id"]))
                     for raw_member in reversed(data):
                         member = discord.Member(
-                            data=raw_member, guild=ctx.guild, state=ctx.guild._state
+                            data=raw_member,
+                            guild=ctx.guild,
+                            state=ctx.guild._state,
                         )
                         if member.bot:
                             continue
@@ -452,9 +462,7 @@ class ServerSupporters(Cog):
                     if len(data) < 1000:
                         break
         else:
-            members = [
-                member for member in ctx.guild.members if await self.check(member, "status")
-            ]
+            members = [member for member in ctx.guild.members if await self.check(member, "status")]
         embed: discord.Embed = discord.Embed(
             title=_("{count} Server {_type} Supporter{s}").format(
                 count=len(members),
@@ -478,9 +486,9 @@ class ServerSupporters(Cog):
         """Force update the roles of all members in the guild."""
         if not await self.config.guild(ctx.guild).enabled():
             raise commands.UserFeedbackCheckFailure(
-                _("The Server Supporters system is not enabled.")
+                _("The Server Supporters system is not enabled."),
             )
         updated_count = await self.sync_guild_roles(ctx.guild)
         await ctx.send(
-            _("Force update complete. {count} role changes made.").format(count=updated_count)
+            _("Force update complete. {count} role changes made.").format(count=updated_count),
         )

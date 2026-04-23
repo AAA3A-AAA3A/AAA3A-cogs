@@ -1,17 +1,17 @@
-from AAA3A_utils import Cog, CogsUtils, Settings  # isort:skip
-from redbot.core import commands, app_commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
+import typing
 
+import discord
 from expr import EvaluatorError, evaluate
 from expr.builtin import pi, tau
+
+from AAA3A_utils import Cog, CogsUtils, Settings
+from redbot.core import Config, app_commands, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box
 
-from .view import CalculatorView  # isort:skip
+from .view import CalculatorView
 
 # from TagScriptEngine import Interpreter, block
 
@@ -37,7 +37,7 @@ class Calculator(Cog):
         #     block.RangeBlock(),
         # ]
         # self.engine: Interpreter = Interpreter(blocks)
-        self.x: typing.Dict[str, str] = {
+        self.x: dict[str, str] = {
             "1": "¹",
             "2": "²",
             "3": "³",
@@ -48,11 +48,12 @@ class Calculator(Cog):
             "8": "⁸",
             "9": "⁹",
         }
-        self.history: typing.Dict[
-            typing.Union[discord.Member, discord.User], typing.Tuple[str]
+        self.history: dict[
+            discord.Member | discord.User,
+            tuple[str],
         ] = {}
 
-        self.cache: typing.List[discord.Message] = []
+        self.cache: list[discord.Message] = []
 
         self.config: Config = Config.get_conf(
             self,
@@ -74,7 +75,7 @@ class Calculator(Cog):
             default_result_codeblock=True,
         )
 
-        _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
+        _settings: dict[str, dict[str, typing.Any]] = {
             "auto_calculations": {
                 "converter": bool,
                 "description": "Toggle the auto calculations.",
@@ -214,7 +215,10 @@ class Calculator(Cog):
         return f"{result}".replace(",", " ") if result is not None else _("Error!")
 
     async def get_embed(
-        self, ctx: commands.Context, expression: typing.Optional[str], result: typing.Optional[str]
+        self,
+        ctx: commands.Context,
+        expression: str | None,
+        result: str | None,
     ) -> discord.Embed:
         if not expression:
             expression = None
@@ -225,9 +229,7 @@ class Calculator(Cog):
             color=await ctx.embed_color(),
         )
         result_codeblock = (
-            await self.config.guild(ctx.guild).result_codeblock()
-            if ctx.guild is not None
-            else None
+            await self.config.guild(ctx.guild).result_codeblock() if ctx.guild is not None else None
         )
         if result_codeblock is None:
             result_codeblock = await self.config.default_result_codeblock()
@@ -241,7 +243,8 @@ class Calculator(Cog):
             expression = str(expression).replace("|", "")
             if result_codeblock:
                 embed.description = box(f"> {expression}", lang="fix") + box(
-                    f"= {result}", lang="fix"
+                    f"= {result}",
+                    lang="fix",
                 )
             else:
                 embed.description = f"`> {expression}`\n= **{result}**"
@@ -252,9 +255,9 @@ class Calculator(Cog):
             simple_embed = await self.config.default_simple_embed()
         if not simple_embed:
             embed.set_thumbnail(
-                url="https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png"
+                url="https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png",
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
             if ctx.guild:
                 embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
             else:
@@ -303,9 +306,7 @@ class Calculator(Cog):
             result = f"{await self.calculate(calculation)}"
             if ctx.author not in self.history:
                 self.history[ctx.author] = []
-            self.history[ctx.author].append(
-                (calculation.replace("|", ""), result.replace("|", ""))
-            )
+            self.history[ctx.author].append((calculation.replace("|", ""), result.replace("|", "")))
             await ctx.send(
                 embed=await self.get_embed(ctx, calculation, result),
                 reference=ctx.message.to_reference(fail_if_not_exists=False),
@@ -317,7 +318,8 @@ class Calculator(Cog):
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:
         if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=message.guild
+            cog=self,
+            guild=message.guild,
         ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
             return
         if message.webhook_id is not None or message.author.bot:
@@ -382,11 +384,11 @@ class Calculator(Cog):
         if fake_context.valid:  # Prevent CCs, aliases and tags from triggering.
             return
         if not await discord.utils.async_all(
-            [check(await self.bot.get_context(message)) for check in self._calculate.checks]
+            [check(await self.bot.get_context(message)) for check in self._calculate.checks],
         ):
             return
         if (result := await self.calculate(message.content)) == _(
-            "Error!"
+            "Error!",
         ) or result == message.content:
             return
 
@@ -413,7 +415,7 @@ class Calculator(Cog):
                 message=message,
             )
             return
-        elif (
+        if (
             react_calculations
             and message.channel.id not in react_calculations_ignored_channels
             and message.channel.category_id not in react_calculations_ignored_channels
@@ -435,7 +437,9 @@ class Calculator(Cog):
             return
         if (
             message := discord.utils.get(
-                self.cache, channel__id=payload.channel_id, id=payload.message_id
+                self.cache,
+                channel__id=payload.channel_id,
+                id=payload.message_id,
             )
         ) is None:
             return
@@ -447,10 +451,11 @@ class Calculator(Cog):
                 [
                     user.id
                     async for user in discord.utils.get(
-                        (await message.channel.fetch_message(message.id)).reactions, emoji="🔢"
+                        (await message.channel.fetch_message(message.id)).reactions,
+                        emoji="🔢",
                     ).users()
                     if user.bot
-                ]
+                ],
             ).index(self.bot.user.id)
             != 0
         ):
@@ -473,7 +478,9 @@ class Calculator(Cog):
     @commands.is_owner()
     @setcalculator.command()
     async def defaultreactcalculations(
-        self, ctx: commands.Context, default_react_calculations: bool
+        self,
+        ctx: commands.Context,
+        default_react_calculations: bool,
     ) -> None:
         """Set the default state of the react calculations."""
         await self.config.default_react_calculations.set(default_react_calculations)
@@ -481,7 +488,9 @@ class Calculator(Cog):
     @commands.is_owner()
     @setcalculator.command()
     async def defaultautocalculations(
-        self, ctx: commands.Context, default_auto_calculations: bool
+        self,
+        ctx: commands.Context,
+        default_auto_calculations: bool,
     ) -> None:
         """Set the default state of the auto calculations."""
         await self.config.default_auto_calculations.set(default_auto_calculations)
@@ -495,7 +504,9 @@ class Calculator(Cog):
     @commands.is_owner()
     @setcalculator.command()
     async def defaultresultcodeblock(
-        self, ctx: commands.Context, default_result_codeblock: bool
+        self,
+        ctx: commands.Context,
+        default_result_codeblock: bool,
     ) -> None:
         """Set the default state of the result codeblock mode."""
         await self.config.default_result_codeblock.set(default_result_codeblock)

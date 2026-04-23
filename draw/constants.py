@@ -1,10 +1,9 @@
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
 
 from .color import Color
 
 
-def base_colors_options() -> typing.List[discord.SelectOption]:
+def base_colors_options() -> list[discord.SelectOption]:
     return [
         discord.SelectOption(label="Red", emoji="🟥", value="🟥"),
         discord.SelectOption(label="Orange", emoji="🟧", value="🟧"),
@@ -19,7 +18,7 @@ def base_colors_options() -> typing.List[discord.SelectOption]:
     ]
 
 
-MAIN_COLORS_DICT: typing.Dict[str, Color] = {
+MAIN_COLORS_DICT: dict[str, Color] = {
     "🟥": Color((255, 0, 0, 255)),
     "🟧": Color((255, 130, 0, 255)),
     "🟨": Color((255, 255, 0, 255)),
@@ -30,22 +29,22 @@ MAIN_COLORS_DICT: typing.Dict[str, Color] = {
     "⬛": Color((0, 0, 0, 255)),
     "⬜": Color((255, 255, 255, 255)),
 }
-MAIN_COLORS: typing.List[str] = list(MAIN_COLORS_DICT.keys()) + ["transparent"]
+MAIN_COLORS: list[str] = list(MAIN_COLORS_DICT.keys()) + ["transparent"]
 
 MIN_HEIGHT_OR_WIDTH: int = 5
 MAX_HEIGHT_OR_WIDTH: int = 17
 
 
 def base_height_or_width_select_options(
-    prefix: typing.Optional[str] = "",
-) -> typing.List[discord.SelectOption]:
+    prefix: str | None = "",
+) -> list[discord.SelectOption]:
     return [
         discord.SelectOption(label=f"{f'{prefix} = ' if prefix else prefix}{n}", value=n)
         for n in range(MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH + 1)
     ]
 
 
-ROW_ICONS_DICT: typing.Dict[str, int] = {
+ROW_ICONS_DICT: dict[str, int] = {
     "🇦": 799628816846815233,
     "🇧": 799628882713509891,
     "🇨": 799620822716383242,
@@ -65,7 +64,7 @@ ROW_ICONS_DICT: typing.Dict[str, int] = {
     "🇶": 799621417049260042,
 }
 ROW_ICONS = list(ROW_ICONS_DICT.keys())
-COLUMN_ICONS_DICT: typing.Dict[typing.Union[str, int], int] = {
+COLUMN_ICONS_DICT: dict[str | int, int] = {
     "0️⃣": 1000010892500537437,
     "1️⃣": 1000010893981143040,
     "2️⃣": 1000010895331692555,
@@ -86,7 +85,7 @@ COLUMN_ICONS_DICT: typing.Dict[typing.Union[str, int], int] = {
 }
 COLUMN_ICONS = list(COLUMN_ICONS_DICT.keys())
 
-LETTER_TO_NUMBER: typing.Dict[str, int] = {
+LETTER_TO_NUMBER: dict[str, int] = {
     "A": 0,
     "B": 1,
     "C": 2,
@@ -114,14 +113,14 @@ LETTER_TO_NUMBER: typing.Dict[str, int] = {
     "Y": 24,
     "Z": 25,
 }
-ALPHABETS: typing.Tuple[str] = tuple(LETTER_TO_NUMBER.keys())
-NUMBERS: typing.Tuple[int] = tuple(LETTER_TO_NUMBER.values())
+ALPHABETS: tuple[str] = tuple(LETTER_TO_NUMBER.keys())
+NUMBERS: tuple[int] = tuple(LETTER_TO_NUMBER.values())
 
 u200b: str = "\u200b"
 PADDING: str = f" {u200b}" * 6
 LB: str = "\n"
 
-DEFAULT_CACHE: typing.List[typing.Union[str, int]] = (
+DEFAULT_CACHE: list[str | int] = (
     list(MAIN_COLORS_DICT.keys())
     + list(MAIN_COLORS_DICT.values())
     + ROW_ICONS

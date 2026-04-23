@@ -1,7 +1,7 @@
-import typing  # isort:skip
+import typing
 
 
-class Pagination(typing.List):
+class Pagination(list):
     """Pagination system for lists."""
 
     DEFAULT_PER_PAGE: int = 20
@@ -16,7 +16,7 @@ class Pagination(typing.List):
         self.default_page: int = kwargs.pop("default_page", 1)
         super().__init__(*args, **kwargs)
 
-    def to_dict(self) -> typing.Dict[str, typing.Any]:
+    def to_dict(self) -> dict[str, typing.Any]:
         return {
             "items": list(self),
             "total": self.total,
@@ -37,19 +37,19 @@ class Pagination(typing.List):
         return self.page < self.pages
 
     @property
-    def elements_numbers(self) -> typing.List[int]:
+    def elements_numbers(self) -> list[int]:
         return list(range(1, self.total + 1))
 
     @property
-    def pages_numbers(self) -> typing.List[int]:
+    def pages_numbers(self) -> list[int]:
         return list(range(1, self.pages + 1))
 
     @classmethod
     def from_list(
         cls,
-        items: typing.List[typing.Any],
-        per_page: typing.Optional[typing.Union[int, str]] = None,
-        page: typing.Optional[typing.Union[int, str]] = None,
+        items: list[typing.Any],
+        per_page: int | str | None = None,
+        page: int | str | None = None,
         default_per_page: int = DEFAULT_PER_PAGE,
         default_page: int = DEFAULT_PAGE,
     ) -> typing.Any:

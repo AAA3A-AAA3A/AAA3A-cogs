@@ -1,10 +1,9 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
 
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import pagify
 
 from .converters import Emoji, EmojiUrlConverter, UrlConverter
@@ -22,8 +21,8 @@ class MyMessageConverter(commands.MessageConverter):
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
-                )
+                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.",
+                ),
             )
         return message
 
@@ -64,7 +63,8 @@ class UrlButtons(Cog):
                         data = url_buttons[message].pop(emoji)
                         data["emoji"] = emoji
                         config_identifier = CogsUtils.generate_key(
-                            length=5, existing_keys=url_buttons[message]
+                            length=5,
+                            existing_keys=url_buttons[message],
                         )
                         url_buttons[message][config_identifier] = data
                 await self.config.guild_from_id(guild_id).url_buttons.set(url_buttons)
@@ -74,7 +74,7 @@ class UrlButtons(Cog):
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         self.logger.info(
-            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
+            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog.",
         )
 
     @commands.Cog.listener()
@@ -101,9 +101,9 @@ class UrlButtons(Cog):
         ctx: commands.Context,
         message: MyMessageConverter,
         url: UrlConverter,
-        emoji: typing.Optional[Emoji],
+        emoji: Emoji | None,
         *,
-        text_button: typing.Optional[commands.Range[str, 1, 100]] = None,
+        text_button: commands.Range[str, 1, 100] | None = None,
     ) -> None:
         """Add a url-button for a message."""
         channel_permissions = message.channel.permissions_for(ctx.me)
@@ -114,14 +114,14 @@ class UrlButtons(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
-                )
+                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.",
+                ),
             )
         if not url.startswith("http"):
             raise commands.UserFeedbackCheckFailure(_("Url must start with `https` or `http`."))
         if emoji is None and text_button is None:
             raise commands.UserFeedbackCheckFailure(
-                _("You have to specify at least an emoji or a label.")
+                _("You have to specify at least an emoji or a label."),
             )
         if emoji is not None and ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
@@ -129,8 +129,8 @@ class UrlButtons(Cog):
             except discord.HTTPException:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                    )
+                        "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.",
+                    ),
                 )
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -139,10 +139,11 @@ class UrlButtons(Cog):
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) >= 25:
             raise commands.UserFeedbackCheckFailure(
-                _("I can't do more than 25 url-buttons for one message.")
+                _("I can't do more than 25 url-buttons for one message."),
             )
         config_identifier = CogsUtils.generate_key(
-            length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
+            length=5,
+            existing_keys=config[f"{message.channel.id}-{message.id}"],
         )
         config[f"{message.channel.id}-{message.id}"][config_identifier] = {
             "url": url,
@@ -167,7 +168,7 @@ class UrlButtons(Cog):
         """
         if len(url_buttons) == 0:
             raise commands.UserFeedbackCheckFailure(
-                _("You have not specified any valid url-button.")
+                _("You have not specified any valid url-button."),
             )
         if ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
@@ -178,8 +179,8 @@ class UrlButtons(Cog):
             except discord.HTTPException:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                    )
+                        "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.",
+                    ),
                 )
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -188,11 +189,12 @@ class UrlButtons(Cog):
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(url_buttons) >= 25:
             raise commands.UserFeedbackCheckFailure(
-                _("I can't do more than 25 url-buttons for one message.")
+                _("I can't do more than 25 url-buttons for one message."),
             )
         for emoji, url in url_buttons:
             config_identifier = CogsUtils.generate_key(
-                length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
+                length=5,
+                existing_keys=config[f"{message.channel.id}-{message.id}"],
             )
             config[f"{message.channel.id}-{message.id}"][config_identifier] = {
                 "url": url,
@@ -206,7 +208,10 @@ class UrlButtons(Cog):
 
     @urlbuttons.command(aliases=["-"])
     async def remove(
-        self, ctx: commands.Context, message: MyMessageConverter, config_identifier: str
+        self,
+        ctx: commands.Context,
+        message: MyMessageConverter,
+        config_identifier: str,
     ) -> None:
         """Remove a url-button for a message.
 
@@ -215,11 +220,11 @@ class UrlButtons(Cog):
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No url-button is configured for this message.")
+                _("No url-button is configured for this message."),
             )
         if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
             raise commands.UserFeedbackCheckFailure(
-                _("I wasn't watching for this button on this message.")
+                _("I wasn't watching for this button on this message."),
             )
         del config[f"{message.channel.id}-{message.id}"][config_identifier]
         if config[f"{message.channel.id}-{message.id}"] == {}:
@@ -240,7 +245,7 @@ class UrlButtons(Cog):
         config = await self.config.guild(ctx.guild).url_buttons.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No role-button is configured for this message.")
+                _("No role-button is configured for this message."),
             )
         try:
             await message.edit(view=None)
@@ -261,7 +266,7 @@ class UrlButtons(Cog):
             _url_buttons = list(url_buttons.values()).copy()
         elif f"{message.channel.id}-{message.id}" not in url_buttons:
             raise commands.UserFeedbackCheckFailure(
-                _("No url-button is configured for this message.")
+                _("No url-button is configured for this message."),
             )
         else:
             _url_buttons = url_buttons.copy()
@@ -271,7 +276,7 @@ class UrlButtons(Cog):
         embed: discord.Embed = discord.Embed(
             title=_("URL Buttons"),
             description=_("There is {len_url_buttons} url buttons in this server.").format(
-                len_url_buttons=len(url_buttons)
+                len_url_buttons=len(url_buttons),
             ),
             color=await ctx.embed_color(),
         )
@@ -281,18 +286,18 @@ class UrlButtons(Cog):
             e = embed.copy()
             for url_button in li:
                 value = _("Message Jump Link: {message_jump_link}\n").format(
-                    message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{url_button['message'].replace('-', '/')}"
+                    message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{url_button['message'].replace('-', '/')}",
                 )
                 value += "\n".join(
                     [
                         f"• `{config_identifier}` - Emoji {(ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'].isdigit() else data['emoji']) if data['emoji'] is not None else '`None`'} - Label `{data['text_button']}` - URL `{data['url']}`"
                         for config_identifier, data in url_button.items()
                         if config_identifier != "message"
-                    ]
+                    ],
                 )
                 for page in pagify(value, page_length=1024):
                     e.add_field(
-                        name="\u200B",
+                        name="\u200b",
                         value=page,
                         inline=False,
                     )
@@ -306,7 +311,9 @@ class UrlButtons(Cog):
         await ctx.send(_("All url-buttons purged."))
 
     def get_buttons(
-        self, config: typing.Dict, message: typing.Union[discord.Message, str]
+        self,
+        config: dict,
+        message: discord.Message | str,
     ) -> discord.ui.View:
         message = (
             f"{message.channel.id}-{message.id}"
@@ -329,6 +336,6 @@ class UrlButtons(Cog):
                     emoji=b,
                     label=config[message][config_identifier]["text_button"],
                     url=config[message][config_identifier]["url"],
-                )
+                ),
             )
         return view

@@ -1,12 +1,12 @@
-from AAA3A_utils import Cog, Settings  # isort:skip
-from redbot.core import commands, Config, modlog  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import os
+import typing
 
+import discord
+
+from AAA3A_utils import Cog, Settings
+from redbot.core import Config, commands, modlog
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box
 
 # Credits:
@@ -38,7 +38,7 @@ class Honeypot(Cog):
             ban_delete_message_days=3,
         )
 
-        _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
+        _settings: dict[str, dict[str, typing.Any]] = {
             "enabled": {
                 "converter": bool,
                 "description": "Toggle the cog.",
@@ -49,7 +49,9 @@ class Honeypot(Cog):
             },
             "logs_channel": {
                 "converter": typing.Union[
-                    discord.TextChannel, discord.VoiceChannel, discord.Thread
+                    discord.TextChannel,
+                    discord.VoiceChannel,
+                    discord.Thread,
                 ],
                 "description": "The channel to send the logs to.",
             },
@@ -134,9 +136,7 @@ class Honeypot(Cog):
                     ) is not None:
                         await message.author.add_roles(mute_role, reason=reason)
                     else:
-                        failed = _(
-                            "**Failed:** The mute role is not set or doesn't exist anymore."
-                        )
+                        failed = _("**Failed:** The mute role is not set or doesn't exist anymore.")
                 elif action == "kick":
                     await message.author.kick(reason=reason)
                 elif action == "ban":
@@ -146,7 +146,7 @@ class Honeypot(Cog):
                     )
             except discord.HTTPException as e:
                 failed = _(
-                    "**Failed:** An error occurred while trying to take action against the member:\n"
+                    "**Failed:** An error occurred while trying to take action against the member:\n",
                 ) + box(str(e), lang="py")
             else:
                 await modlog.create_case(
@@ -205,8 +205,8 @@ class Honeypot(Cog):
         ) is not None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "The honeypot channel already exists: {honeypot_channel.mention} ({honeypot_channel.id})."
-                ).format(honeypot_channel=honeypot_channel)
+                    "The honeypot channel already exists: {honeypot_channel.mention} ({honeypot_channel.id}).",
+                ).format(honeypot_channel=honeypot_channel),
             )
         honeypot_channel = await ctx.guild.create_text_channel(
             name="honeypot",
@@ -220,7 +220,9 @@ class Honeypot(Cog):
                     manage_channels=True,
                 ),
                 ctx.guild.default_role: discord.PermissionOverwrite(
-                    view_channel=True, read_messages=True, send_messages=True
+                    view_channel=True,
+                    read_messages=True,
+                    send_messages=True,
                 ),
             },
             reason=f"Honeypot channel creation requested by {ctx.author.display_name} ({ctx.author.id}).",
@@ -228,7 +230,7 @@ class Honeypot(Cog):
         embed = discord.Embed(
             title=_("⚠️ DO NOT POST HERE! ⚠️"),
             description=_(
-                "An action will be immediately taken against you if you send a message in this channel."
+                "An action will be immediately taken against you if you send a message in this channel.",
             ),
             color=discord.Color.red(),
         )
@@ -253,6 +255,6 @@ class Honeypot(Cog):
         await ctx.send(
             _(
                 "The honeypot channel has been set to {honeypot_channel.mention} ({honeypot_channel.id}). You can now start attracting self bots/scammers!\n"
-                "Please make sure to enable the cog and set the logs channel, the action to take, the role to ping (and the mute role) if you haven't already."
-            ).format(honeypot_channel=honeypot_channel)
+                "Please make sure to enable the cog and set the logs channel, the action to take, the role to ping (and the mute role) if you haven't already.",
+            ).format(honeypot_channel=honeypot_channel),
         )

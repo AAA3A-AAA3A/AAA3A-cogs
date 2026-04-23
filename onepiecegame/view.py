@@ -1,17 +1,17 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
-import asyncio
 import functools
 import random
+import typing
 
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate
 
-from .type import Character
+if typing.TYPE_CHECKING:
+    from .type import Character
 
 _: Translator = Translator("OnePieceGame", __file__)
 
@@ -28,17 +28,18 @@ class OnePieceGameView(discord.ui.View):
         self.mode: typing.Literal["classic", "devil_fruit", "wanted_poster"] = mode
 
         self.character: Character = None
-        self.hints: typing.Dict[
-            str, typing.Dict[typing.Literal["tries", "value"], typing.Union[int, str]]
+        self.hints: dict[
+            str,
+            dict[typing.Literal["tries", "value"], int | str],
         ] = {}
         self.has_won: bool = False
-        self.attempts: typing.List[Character] = []
+        self.attempts: list[Character] = []
         self._message: discord.Message = None
 
         self.each_attempt_decreases_blurry_level: bool = True
         self.show_colors: bool = False
 
-    async def start(self, ctx: commands.Context) -> typing.Tuple[bool, typing.List[str]]:
+    async def start(self, ctx: commands.Context) -> tuple[bool, list[str]]:
         self.ctx: commands.Context = ctx
 
         self.remove_item(self.select_wanted_poster_options)
@@ -50,11 +51,11 @@ class OnePieceGameView(discord.ui.View):
                     character
                     for character in self.cog.characters
                     if character.devil_fruit is not None
-                ]
+                ],
             )
         elif self.mode == "wanted_poster":
             self.character: Character = random.choice(
-                [character for character in self.cog.characters if character.bounty is not None]
+                [character for character in self.cog.characters if character.bounty is not None],
             )
             self.select_wanted_poster_options.options = [
                 discord.SelectOption(
@@ -104,13 +105,13 @@ class OnePieceGameView(discord.ui.View):
             while not self.has_won:
                 guess = await self.ctx.bot.wait_for(
                     "message_without_command",
-                    check=lambda message: (MessagePredicate.same_context(ctx)(message)),
+                    check=lambda message: MessagePredicate.same_context(ctx)(message),
                     timeout=60 * 5,
                 )
                 if guess.content.lower() == "cancel":
                     await self.ctx.send(
                         _(
-                            "You have cancelled the game. The character was: **{character.name}**."
+                            "You have cancelled the game. The character was: **{character.name}**.",
                         ).format(character=self.character),
                         reference=self._message.to_reference(fail_if_not_exists=False),
                         allowed_mentions=discord.AllowedMentions(replied_user=False),
@@ -130,7 +131,8 @@ class OnePieceGameView(discord.ui.View):
                 self.attempts.append(attempt)
                 for button in self.children:
                     if isinstance(
-                        button, discord.ui.Button
+                        button,
+                        discord.ui.Button,
                     ) and button.emoji == discord.PartialEmoji.from_str("💡"):
                         hint_label = button.label.split(" (")[0]
                         button.disabled = len(self.attempts) < self.hints[hint_label]["tries"]
@@ -158,10 +160,10 @@ class OnePieceGameView(discord.ui.View):
                 self.cog.views[self._message] = self
                 if attempt == self.character:
                     self.has_won = True
-        except asyncio.TimeoutError:
+        except TimeoutError:
             await self.ctx.send(
                 _(
-                    "You took too long to guess the character. The character was: **{character.name}**."
+                    "You took too long to guess the character. The character was: **{character.name}**.",
                 ).format(
                     character=self.character,
                 ),
@@ -179,7 +181,8 @@ class OnePieceGameView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -200,7 +203,7 @@ class OnePieceGameView(discord.ui.View):
     @discord.ui.button(emoji="✖️", label=_("Cancel"), style=discord.ButtonStyle.danger)
     async def cancel(
         self,
-        interaction: typing.Optional[discord.Interaction],
+        interaction: discord.Interaction | None,
         button: discord.ui.Button,
     ) -> None:
         if interaction is not None:

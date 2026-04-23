@@ -1,12 +1,13 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import typing
 
+import discord
 from fuzzywuzzy import StringMatcher
 
-from ..constants import DANGEROUS_PERMISSIONS, Emojis
-from ..views import ToggleModuleButton
+from redbot.core import commands
+from redbot.core.i18n import Translator
+from security.constants import DANGEROUS_PERMISSIONS, Emojis
+from security.views import ToggleModuleButton
+
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
@@ -31,8 +32,10 @@ class AntiImpersonationModule(Module):
         self.cog.bot.remove_listener(self.on_member_update)
 
     async def get_status(
-        self, guild: discord.Guild, check_enabled: bool = True
-    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
+        self,
+        guild: discord.Guild,
+        check_enabled: bool = True,
+    ) -> tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
             return "❌", "Disabled", "Anti Impersonation is currently disabled."
@@ -47,16 +50,18 @@ class AntiImpersonationModule(Module):
     async def get_settings(self, guild: discord.Guild, view: discord.ui.View):
         status = await self.get_status(guild)
         title = _("Security — {emoji} {name} {status}").format(
-            emoji=self.emoji, name=self.name, status=status[0]
+            emoji=self.emoji,
+            name=self.name,
+            status=status[0],
         )
         description = _(
-            "Protect your server from impersonation attacks by checking new members and member updates to ensure their display name, their name and their global name aren't similar to members with dangerous permissions.\n"
+            "Protect your server from impersonation attacks by checking new members and member updates to ensure their display name, their name and their global name aren't similar to members with dangerous permissions.\n",
         )
         if status[0] == "⚠️":
             description += f"{status[0]} **{status[1]}**: {status[2]}\n"
         config = await self.config_value(guild)()
         description += _(
-            "\n**Similarity Ratio:** {ratio}\nA similarity ratio of {ratio} means that names that are {percent}% similar will be flagged as potential impersonation attempts. You can adjust this ratio."
+            "\n**Similarity Ratio:** {ratio}\nA similarity ratio of {ratio} means that names that are {percent}% similar will be flagged as potential impersonation attempts. You can adjust this ratio.",
         ).format(
             ratio=config["similarity_ratio"],
             percent=config["similarity_ratio"] * 100,
@@ -77,7 +82,7 @@ class AntiImpersonationModule(Module):
             await self.config_value(guild).quarantine.set(config["quarantine"])
             await interaction.followup.send(
                 _("Automatic Quarantine is now {status}.").format(
-                    status="enabled" if config["quarantine"] else "disabled"
+                    status="enabled" if config["quarantine"] else "disabled",
                 ),
                 ephemeral=True,
             )
@@ -95,7 +100,7 @@ class AntiImpersonationModule(Module):
             interaction: discord.Interaction,
         ) -> None:
             await interaction.response.send_modal(
-                ConfigureSimilarityRatioModal(self, guild, view, config)
+                ConfigureSimilarityRatioModal(self, guild, view, config),
             )
 
         configure_similarity_ratio_button.callback = configure_similarity_ratio_button_callback
@@ -107,9 +112,9 @@ class AntiImpersonationModule(Module):
         config = await self.config_value(member.guild)()
         if not only_check:
             if not config["enabled"]:
-                return
+                return None
             if await self.cog.is_whitelisted(member, "anti_impersonation"):
-                return
+                return None
         similarity_ratio = config["similarity_ratio"]
         for other_member in member.guild.members:
             if other_member == member:
@@ -121,11 +126,11 @@ class AntiImpersonationModule(Module):
                 continue
             if self.is_similar(member.display_name, other_member.display_name, similarity_ratio):
                 log = _(
-                    "{member.mention} (`{member.name}`) has a similar display name to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.display_name}` vs `{other_member.display_name}`."
+                    "{member.mention} (`{member.name}`) has a similar display name to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.display_name}` vs `{other_member.display_name}`.",
                 ).format(member=member, other_member=other_member)
             elif self.is_similar(member.name, other_member.name, similarity_ratio):
                 log = _(
-                    "{member.mention} (`{member.name}`) has a similar name to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.name}` vs `{other_member.name}`."
+                    "{member.mention} (`{member.name}`) has a similar name to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.name}` vs `{other_member.name}`.",
                 ).format(member=member, other_member=other_member)
             elif (
                 member.global_name is not None
@@ -133,7 +138,7 @@ class AntiImpersonationModule(Module):
                 and self.is_similar(member.global_name, other_member.global_name, similarity_ratio)
             ):
                 log = _(
-                    "{member.mention} (`{member.name}`) has a similar global name to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.global_name}` vs `{other_member.global_name}`."
+                    "{member.mention} (`{member.name}`) has a similar global name to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.global_name}` vs `{other_member.global_name}`.",
                 ).format(member=member, other_member=other_member)
             else:
                 continue

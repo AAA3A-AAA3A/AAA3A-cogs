@@ -1,7 +1,8 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import typing  # isort:skip
+import typing
+
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("AutoTraceback", __file__)
 
@@ -29,7 +30,7 @@ class DashboardIntegration:
         description="Display the traceback of the last occured exceptions.",
         is_owner=True,
     )
-    async def rpc_callback(self, **kwargs) -> typing.Dict[str, typing.Any]:
+    async def rpc_callback(self, **kwargs) -> dict[str, typing.Any]:
         tracebacks = self.tracebacks.copy()
         if not tracebacks:
             return {"status": 0, "error_title": _("No exception has occurred yet.")}

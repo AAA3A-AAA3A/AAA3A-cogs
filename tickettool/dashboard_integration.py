@@ -1,6 +1,7 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-import typing  # isort:skip
+import typing
+
+from redbot.core import commands
+from redbot.core.bot import Red
 
 
 def dashboard_page(*args, **kwargs):
@@ -22,8 +23,10 @@ class DashboardIntegration:
 
     @dashboard_page(name="transcript")
     async def rpc_callback_transcript(
-        self, attachment_url: str, **kwargs
-    ) -> typing.Dict[str, typing.Any]:
+        self,
+        attachment_url: str,
+        **kwargs,
+    ) -> dict[str, typing.Any]:
         if not attachment_url.startswith("https://cdn.discordapp.com/attachments/"):
             if len(attachment_url.split("-")) >= 3:
                 attachment_url = f"{attachment_url.split('-')[0]}/{attachment_url.split('-')[1]}/{'-'.join(attachment_url.split('-')[2:])}"

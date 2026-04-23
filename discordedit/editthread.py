@@ -1,14 +1,14 @@
-from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 import re
+import typing
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import commands
+from redbot.core.bot import Red
 from redbot.core.commands.converter import get_timedelta_converter
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, pagify
 
 try:
@@ -30,7 +30,7 @@ def _(untranslated: str) -> str:  # `redgettext` will found these strings.
 
 
 ERROR_MESSAGE = _(
-    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}"
+    "I attempted to do something that Discord denied me permissions for. Your command failed to successfully complete.\n{error}",
 )
 
 _: Translator = Translator("DiscordEdit", __file__)
@@ -38,8 +38,10 @@ _: Translator = Translator("DiscordEdit", __file__)
 
 class Emoji(commands.EmojiConverter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[str, discord.Emoji]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> str | discord.Emoji:
         # argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
@@ -77,8 +79,10 @@ class Emoji(commands.EmojiConverter):
 
 class ForumTagConverter(discord.ext.commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> tuple[discord.Role, discord.PartialEmoji | str]:
         arg_split = re.split(r";|,|\||-", argument)
         try:
             try:
@@ -89,8 +93,8 @@ class ForumTagConverter(discord.ext.commands.Converter):
         except ValueError:
             raise commands.BadArgument(
                 _(
-                    "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
-                )
+                    "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`.",
+                ),
             )
         emoji = await Emoji().convert(ctx, emoji.strip())
         return discord.ForumTag(name=name, emoji=emoji, moderated=moderated)
@@ -104,7 +108,9 @@ class EditThread(Cog):
         super().__init__(bot=bot)
 
     async def check_thread(
-        self, ctx: commands.Context, thread: typing.Optional[discord.Thread]
+        self,
+        ctx: commands.Context,
+        thread: discord.Thread | None,
     ) -> bool:
         # if (
         #     not thread.permissions_for(ctx.author).manage_channels
@@ -120,8 +126,8 @@ class EditThread(Cog):
         if not thread.permissions_for(ctx.me).manage_channels:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission."
-                ).format(thread=thread)
+                    "I can not edit the thread {thread.mention} ({thread.id}) because you don't have the `manage_channel` permission.",
+                ).format(thread=thread),
             )
         return True
 
@@ -138,8 +144,8 @@ class EditThread(Cog):
     async def editthread_create(
         self,
         ctx: commands.Context,
-        channel: typing.Optional[discord.TextChannel] = None,
-        message: typing.Optional[commands.MessageConverter] = None,
+        channel: discord.TextChannel | None = None,
+        message: commands.MessageConverter | None = None,
         *,
         name: commands.Range[str, 1, 100],
     ) -> None:
@@ -158,7 +164,7 @@ class EditThread(Cog):
             await thread.add_user(ctx.author)
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @commands.bot_has_permissions(embed_links=True)
@@ -172,7 +178,7 @@ class EditThread(Cog):
             [
                 f"- {thread.mention} ({thread.id}) - {len(await thread.fetch_members())} members"
                 for thread in ctx.guild.threads
-            ]
+            ],
         )
         embed: discord.Embed = discord.Embed(color=await ctx.embed_color())
         embed.title = _("List of threads in {guild.name} ({guild.id})").format(guild=ctx.guild)
@@ -188,7 +194,7 @@ class EditThread(Cog):
     async def editthread_name(
         self,
         ctx: commands.Context,
-        thread: typing.Optional[discord.Thread],
+        thread: discord.Thread | None,
         name: commands.Range[str, 1, 100],
     ) -> None:
         """Edit thread name."""
@@ -205,12 +211,15 @@ class EditThread(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editthread.command(name="archived")
     async def editthread_archived(
-        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], archived: bool = None
+        self,
+        ctx: commands.Context,
+        thread: discord.Thread | None,
+        archived: bool = None,
     ) -> None:
         """Edit thread archived."""
         if thread is None:
@@ -227,12 +236,15 @@ class EditThread(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editthread.command(name="locked")
     async def editthread_locked(
-        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], locked: bool = None
+        self,
+        ctx: commands.Context,
+        thread: discord.Thread | None,
+        locked: bool = None,
     ) -> None:
         """Edit thread locked."""
         if thread is None:
@@ -250,12 +262,15 @@ class EditThread(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editthread.command(name="pinned")
     async def editthread_pinned(
-        self, ctx: commands.Context, thread: typing.Optional[discord.Thread], pinned: bool
+        self,
+        ctx: commands.Context,
+        thread: discord.Thread | None,
+        pinned: bool,
     ) -> None:
         """Edit thread pinned."""
         if thread is None:
@@ -271,14 +286,14 @@ class EditThread(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editthread.command(name="invitable")
     async def editthread_invitable(
         self,
         ctx: commands.Context,
-        thread: typing.Optional[discord.Thread],
+        thread: discord.Thread | None,
         invitable: bool = None,
     ) -> None:
         """Edit thread invitable."""
@@ -297,14 +312,14 @@ class EditThread(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editthread.command(name="autoarchiveduration", aliases=["auto_archive_duration"])
     async def editthread_auto_archive_duration(
         self,
         ctx: commands.Context,
-        thread: typing.Optional[discord.Thread],
+        thread: discord.Thread | None,
         auto_archive_duration: typing.Literal[60, 1440, 4320, 10080],
     ) -> None:
         """Edit thread auto archive duration."""
@@ -321,14 +336,14 @@ class EditThread(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editthread.command(name="slowmodedelay", aliases=["slowmode_delay"])
     async def editthread_slowmode_delay(
         self,
         ctx: commands.Context,
-        thread: typing.Optional[discord.Thread],
+        thread: discord.Thread | None,
         slowmode_delay: TimedeltaConverter,
     ) -> None:
         """Edit thread slowmode delay."""
@@ -345,14 +360,14 @@ class EditThread(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editthread.command(name="appliedtags", aliases=["applied_tags"])
     async def editthread_applied_tags(
         self,
         ctx: commands.Context,
-        thread: typing.Optional[discord.Thread],
+        thread: discord.Thread | None,
         applied_tags: commands.Greedy[ForumTagConverter],
     ) -> None:
         """Edit thread applied tags.
@@ -375,14 +390,14 @@ class EditThread(Cog):
             )
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editthread.command(name="adduser", aliases=["addmember", "add_user", "add_member"])
     async def editthread_add_user(
         self,
         ctx: commands.Context,
-        thread: typing.Optional[discord.Thread],
+        thread: discord.Thread | None,
         member: discord.Member,
     ) -> None:
         """Add member to thread."""
@@ -398,16 +413,14 @@ class EditThread(Cog):
             await thread.add_user(member)
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
-    @editthread.command(
-        name="removeuser", aliases=["removemember", "remove_user", "remove_member"]
-    )
+    @editthread.command(name="removeuser", aliases=["removemember", "remove_user", "remove_member"])
     async def editthread_remove_user(
         self,
         ctx: commands.Context,
-        thread: typing.Optional[discord.Thread],
+        thread: discord.Thread | None,
         member: discord.Member,
     ) -> None:
         """Remove member from thread."""
@@ -421,14 +434,14 @@ class EditThread(Cog):
             await thread.remove_user(member)
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editthread.command(name="delete")
     async def editthread_delete(
         self,
         ctx: commands.Context,
-        thread: typing.Optional[discord.Thread],
+        thread: discord.Thread | None,
         confirmation: bool = False,
     ) -> None:
         """Delete a thread."""
@@ -443,14 +456,14 @@ class EditThread(Cog):
                 embed: discord.Embed = discord.Embed()
                 embed.title = _("⚠️ - Delete thread")
                 embed.description = _(
-                    "Do you really want to delete the thread {thread.mention} ({thread.id})?"
+                    "Do you really want to delete the thread {thread.mention} ({thread.id})?",
                 ).format(thread=thread)
                 embed.color = 0xF00020
                 content = ctx.author.mention
             else:
                 embed = None
                 content = f"{ctx.author.mention} " + _(
-                    "Do you really want to delete the thread {thread.mention} ({thread.id})?"
+                    "Do you really want to delete the thread {thread.mention} ({thread.id})?",
                 ).format(thread=thread)
             if not await CogsUtils.ConfirmationAsk(ctx, content=content, embed=embed):
                 await CogsUtils.delete_message(ctx.message)
@@ -459,7 +472,7 @@ class EditThread(Cog):
             await thread.delete()  # Not supported: reason=f"{ctx.author} ({ctx.author.id}) has deleted the thread #{thread.name} ({thread.id})."
         except discord.HTTPException as e:
             raise commands.UserFeedbackCheckFailure(
-                _(ERROR_MESSAGE).format(error=box(e, lang="py"))
+                _(ERROR_MESSAGE).format(error=box(e, lang="py")),
             )
 
     @editthread.command(name="view", aliases=["-"])
@@ -485,15 +498,16 @@ class EditThread(Cog):
 
         def get_embed() -> discord.Embed:
             embed: discord.Embed = discord.Embed(
-                title=f"Thread #{thread.name} ({thread.id})", color=embed_color
+                title=f"Thread #{thread.name} ({thread.id})",
+                color=embed_color,
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
             embed.description = "\n".join(
                 [
                     f"• `{parameter}`: {repr(getattr(thread, parameters[parameter].get('attribute_name', parameter)))}"
                     for parameter in parameters
                     if hasattr(thread, parameter)
-                ]
+                ],
             )
             return embed
 

@@ -1,18 +1,18 @@
-from AAA3A_utils import CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 import json
 import time
+import typing
 import zlib
 from dataclasses import dataclass
 from functools import partial
 
 import aiohttp
+import discord
 from humanfriendly import format_timespan
+
+from AAA3A_utils import CogsUtils, Menu
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, inline, pagify
 
 from .data import LANGUAGES_IDENTIFIERS, LANGUAGES_IMAGES
@@ -63,7 +63,7 @@ class WandboxRequest:
 
     def to_embed(
         self,
-        with_code: typing.Optional[bool] = False,
+        with_code: bool | None = False,
         embed_color: discord.Color = discord.Color.green(),
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
@@ -82,7 +82,7 @@ class WandboxRequest:
                     [
                         box(code, lang=LANGUAGES_IDENTIFIERS[self.engine.language][0])
                         for code in self.codes
-                    ]
+                    ],
                 )
             pages = list(pagify(description, delims=["\n"], page_length=4000))
             if len(pages) == 1:
@@ -106,7 +106,7 @@ class WandboxRequest:
             )
         return embed
 
-    async def fetch_response(self, raw: typing.Optional[bool] = False) -> "WandboxResponse":
+    async def fetch_response(self, raw: bool | None = False) -> "WandboxResponse":
         start = time.monotonic()
         data = json.dumps(self.to_request_parameters())
         async with self.cog._session.post(
@@ -151,7 +151,7 @@ class WandboxResponse:
     permlink: str
     url: str
 
-    async def send(self, ctx: commands.Context, verbose: typing.Optional[bool] = False) -> None:
+    async def send(self, ctx: commands.Context, verbose: bool | None = False) -> None:
         if (
             not verbose
             and not self.signal
@@ -168,7 +168,7 @@ class WandboxResponse:
                     label=_("View on Wandbox"),
                     style=discord.ButtonStyle.link,
                     url=self.url,
-                )
+                ),
             )
             await menu.start(ctx)
             return
@@ -176,7 +176,7 @@ class WandboxResponse:
             title=_("RunCode Response (with Wandbox API)"),
             url=self.url,
         )
-        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+        embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
         run_time = format_timespan(self.run_time)
         embed.set_footer(text=f"Ran in {run_time}.")
         embed.set_author(
@@ -205,7 +205,7 @@ class WandboxResponse:
                     self.request.engine.template
                 ][self.request.engine.name].display_compile_command
                 + (f" {self.request.compiler_options}" if self.request.compiler_options else "")
-                + (f" {self.request.runtime_options}" if self.request.runtime_options else "")
+                + (f" {self.request.runtime_options}" if self.request.runtime_options else ""),
             ),
             inline=True,
         )
@@ -228,7 +228,7 @@ class WandboxResponse:
             pagify(
                 description,
                 page_length=4000 if len(embed) < 2000 else len(embed) < 2000,
-            )
+            ),
         )
         embeds = []
         for page in pages:
@@ -243,7 +243,7 @@ class TioLanguage:
     name: str
     link: str
     prettify: str
-    value: typing.Dict[str, typing.Any]
+    value: dict[str, typing.Any]
 
 
 @dataclass(frozen=True)
@@ -252,10 +252,10 @@ class TioRequest:
     language: TioLanguage
     # Web request
     code: str
-    inputs: typing.List[str]
-    compiler_flags: typing.List[str]
-    command_line_options: typing.List[str]
-    args: typing.List[str]
+    inputs: list[str]
+    compiler_flags: list[str]
+    command_line_options: list[str]
+    args: list[str]
 
     def to_request_parameters(self):
         return {
@@ -269,7 +269,7 @@ class TioRequest:
 
     def to_embed(
         self,
-        with_code: typing.Optional[bool] = False,
+        with_code: bool | None = False,
         embed_color: discord.Color = discord.Color.green(),
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
@@ -302,11 +302,10 @@ class TioRequest:
             name, obj = couple[0], couple[1]
             if not obj:
                 return b""
-            elif type(obj) == list:
+            if type(obj) == list:
                 content = [f"V{name}", str(len(obj))] + obj
                 return to_bytes("\x00".join(content) + "\x00")
-            else:
-                return to_bytes(f"F{name}\x00{len(to_bytes(obj))}\x00{obj}\x00")
+            return to_bytes(f"F{name}\x00{len(to_bytes(obj))}\x00{obj}\x00")
 
         strings = self.to_request_parameters()
         bytes_ = b"".join(map(_to_tio_string, zip(strings.keys(), strings.values()))) + b"R"
@@ -315,8 +314,7 @@ class TioRequest:
             raw_response: str = await r.text(encoding="utf-8")
             raw_response = raw_response.replace(raw_response[:16], "")  # remove token
         end = time.monotonic()
-        response = TioResponse(request=self, run_time=int(end - start), result=raw_response)
-        return response
+        return TioResponse(request=self, run_time=int(end - start), result=raw_response)
 
 
 @dataclass(frozen=True)
@@ -326,7 +324,7 @@ class TioResponse:
     # Web request
     result: str
 
-    async def send(self, ctx: commands.Context, verbose: typing.Optional[bool] = False) -> None:
+    async def send(self, ctx: commands.Context, verbose: bool | None = False) -> None:
         output = self.result
         if not verbose:
             try:
@@ -342,7 +340,7 @@ class TioResponse:
             title=_("RunCode Response (with Tio API)"),
             url=self.request.language.link,
         )
-        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+        embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
         run_time = format_timespan(self.run_time)
         embed.set_footer(text=f"Ran in {run_time}.")
         embed.set_author(name=f"{self.request.language.name.capitalize()} language")
@@ -361,7 +359,7 @@ class TioResponse:
             pagify(
                 description,
                 page_length=4000 if len(embed) < 2000 else len(embed) < 2000,
-            )
+            ),
         )
         embeds = []
         for page in pages:

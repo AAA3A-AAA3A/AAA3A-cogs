@@ -1,8 +1,3 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 import functools
@@ -10,8 +5,11 @@ import time
 from collections import Counter
 from random import randint
 
-from redbot.core import bank
+import discord
+
+from redbot.core import bank, commands
 from redbot.core.errors import BalanceTooHigh
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 
 _: Translator = Translator("FastClickGame", __file__)
@@ -23,18 +21,18 @@ class FastClickGameView(discord.ui.View):
         cog: commands.Cog,
         rounds: int = 1,
         buttons: int = 5,
-        players: typing.List[discord.Member] = [],
+        players: list[discord.Member] = [],
     ) -> None:
         super().__init__(timeout=60 * 10)
         self.ctx: commands.Context = None
         self.cog: commands.Cog = cog
         self.rounds: int = rounds
         self.buttons: int = buttons
-        self.players: typing.List[discord.Member] = players
+        self.players: list[discord.Member] = players
 
         self._message: discord.Message = None
-        self.winners: typing.List[discord.Member] = []
-        self.times: typing.List[float] = []
+        self.winners: list[discord.Member] = []
+        self.times: list[float] = []
         self.start_time: float = 0
         self.event: asyncio.Event = asyncio.Event()
         self.lock: asyncio.Lock = asyncio.Lock()
@@ -52,14 +50,15 @@ class FastClickGameView(discord.ui.View):
             self.add_item(button)
 
         embed: discord.Embed = discord.Embed(
-            title=_("Fast Click Game"), color=await self.ctx.embed_color()
+            title=_("Fast Click Game"),
+            color=await self.ctx.embed_color(),
         )
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
         embed.description = _(
-            "⏳ The game will start {timestamp}, first one to click the 🟩 button wins.\n> **{rounds} round{s}** to play."
+            "⏳ The game will start {timestamp}, first one to click the 🟩 button wins.\n> **{rounds} round{s}** to play.",
         ).format(
             timestamp=discord.utils.format_dt(
-                datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=5),
+                datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(seconds=5),
                 "R",
             ),
             rounds=self.rounds,
@@ -72,7 +71,8 @@ class FastClickGameView(discord.ui.View):
             self.event.clear()
             await asyncio.sleep(5 if current_round == 1 else 3)
             embed.title = _("Fast Click Game - Round {current_round}/{total_rounds}").format(
-                current_round=current_round, total_rounds=self.rounds
+                current_round=current_round,
+                total_rounds=self.rounds,
             )
             embed.description = _("🖱️ To win you must be the first to press the 🟩 button.")
             success_i = randint(0, self.buttons - 1)
@@ -85,10 +85,10 @@ class FastClickGameView(discord.ui.View):
             self.start_time = time.time()
             try:
                 await asyncio.wait_for(self.event.wait(), timeout=180)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 await self.on_timeout()
                 await self._message.reply(_("No one clicked the button in time."))
-                return
+                return None
             winner = self.winners[-1]
             embed.description = (
                 _("🏆 {winner.mention} has won this round!\n")
@@ -102,8 +102,7 @@ class FastClickGameView(discord.ui.View):
                 winner=winner,
                 click_time=self.times[-1],
                 timestamp=discord.utils.format_dt(
-                    datetime.datetime.now(tz=datetime.timezone.utc)
-                    + datetime.timedelta(seconds=3),
+                    datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(seconds=3),
                     "R",
                 ),
             )
@@ -123,7 +122,7 @@ class FastClickGameView(discord.ui.View):
         winners_mentions = humanize_list([winner.mention for winner in winners])
         embed.title = _("Fast Click Game - Winner{s}").format(s="s" if len(winners) > 1 else "")
         embed.description = _(
-            "**🏆 {winners} won with {fastest_clicks} fastest click{s}!**"
+            "**🏆 {winners} won with {fastest_clicks} fastest click{s}!**",
         ).format(
             winners=winners_mentions,
             fastest_clicks=max_fastest_clicks,
@@ -163,7 +162,8 @@ class FastClickGameView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if self.is_duel and interaction.user not in self.players:
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True

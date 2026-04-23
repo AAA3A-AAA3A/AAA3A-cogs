@@ -1,11 +1,10 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import re
 
+import discord
 import validators
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 try:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
@@ -28,8 +27,10 @@ class UrlConverter(commands.Converter):
 
 class Emoji(commands.EmojiConverter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[str, discord.Emoji]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> str | discord.Emoji:
         # argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
@@ -67,16 +68,18 @@ class Emoji(commands.EmojiConverter):
 
 class EmojiUrlConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Tuple[str, typing.Union[discord.PartialEmoji, str]]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> tuple[str, discord.PartialEmoji | str]:
         arg_split = re.split(r"[;,|\-]", argument)
         try:
             emoji, url = arg_split
         except ValueError:
             raise commands.BadArgument(
                 _(
-                    "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`."
-                )
+                    "Emoji Url must be an emoji followed by a url separated by either `;`, `,`, `|`, or `-`.",
+                ),
             )
         emoji = await Emoji().convert(ctx, emoji.strip())
         url = await UrlConverter().convert(ctx, argument=url)

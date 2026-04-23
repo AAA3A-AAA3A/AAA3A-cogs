@@ -1,20 +1,21 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
+import typing
 
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import pagify
 
-from .types import Documentation
+if typing.TYPE_CHECKING:
+    from .types import Documentation
 
 _: Translator = Translator("GetDocs", __file__)
 
 
 class DocsSelect(discord.ui.Select):
-    def __init__(self, parent: discord.ui.View, results: typing.List[str]) -> None:
+    def __init__(self, parent: discord.ui.View, results: list[str]) -> None:
         self._parent: discord.ui.View = parent
         self._options = [discord.SelectOption(label=name, value=name) for name in results]
         super().__init__(
@@ -36,19 +37,22 @@ class GetDocsView(discord.ui.View):
 
         self.query: str = query
         self.source = source
-        self.results: typing.List[str] = None
+        self.results: list[str] = None
 
         self._message: discord.Message = None
         self._current: Documentation = None
-        self._mode: typing.Literal[
-            "documentation", "parameters", "examples", "attributes"
-        ] = "documentation"
+        self._mode: typing.Literal["documentation", "parameters", "examples", "attributes"] = (
+            "documentation"
+        )
         self._ready: asyncio.Event = asyncio.Event()
 
     async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.results = await self.source.search(
-            self.query, limit=25, exclude_std=True, with_raw_search=True
+            self.query,
+            limit=25,
+            exclude_std=True,
+            with_raw_search=True,
         )
         if not self.results:
             raise RuntimeError(_("No results found."))
@@ -64,7 +68,8 @@ class GetDocsView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -116,18 +121,24 @@ class GetDocsView(discord.ui.View):
         #     content = "⚠️ The documentation cache is not yet fully built, building now."
         if self._message is None:
             self._message: discord.Message = await self.ctx.send(
-                content=content, embed=embed, view=self
+                content=content,
+                embed=embed,
+                view=self,
             )
             self.cog.views[self._message] = self
         else:
             self._message: discord.Message = await self._message.edit(
-                content=content, embed=embed, view=self
+                content=content,
+                embed=embed,
+                view=self,
             )
         self._mode = "documentation"
 
     @discord.ui.button(label="Show Parameters", custom_id="show_parameters", row=1)
     async def show_parameters(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if not self._current:
             return await interaction.response.send_message(
@@ -146,11 +157,10 @@ class GetDocsView(discord.ui.View):
             self._mode == "parameters"
         ):  # back / self._message.embeds[0].title.startswith("Parameters")
             await self._update(self._current.name)
-            return
-        else:
-            self.show_parameters.label = "Hide Parameters"
-            self.show_examples.label = "Show Examples"
-            self.show_attributes.label = "Show Attributes"
+            return None
+        self.show_parameters.label = "Hide Parameters"
+        self.show_examples.label = "Show Examples"
+        self.show_attributes.label = "Show Attributes"
 
         # Attributes pagination
         back_button: discord.ui.Button = discord.utils.get(self.children, custom_id="back_button")
@@ -234,10 +244,13 @@ class GetDocsView(discord.ui.View):
             self.add_item(next_button)
             self._message: discord.Message = await self._message.edit(embed=embeds[0], view=self)
         self._mode = "parameters"
+        return None
 
     @discord.ui.button(label="Show Examples", custom_id="show_examples", row=1)
     async def show_examples(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if not self._current:
             return await interaction.response.send_message(
@@ -254,11 +267,10 @@ class GetDocsView(discord.ui.View):
             self._mode == "examples"
         ):  # back / self._message.embeds[0].title.startswith("Example") and self._message.embeds[0].title.endswith(":")
             await self._update(self._current.name)
-            return
-        else:
-            self.show_parameters.label = "Show Parameters"
-            self.show_examples.label = "Hide Examples"
-            self.show_attributes.label = "Show Attributes"
+            return None
+        self.show_parameters.label = "Show Parameters"
+        self.show_examples.label = "Hide Examples"
+        self.show_attributes.label = "Show Attributes"
 
         if back_button := discord.utils.get(self.children, custom_id="back_button"):
             self.remove_item(back_button)
@@ -266,14 +278,18 @@ class GetDocsView(discord.ui.View):
             self.remove_item(next_button)
 
         embeds = self._current.examples.to_embeds(
-            self.ctx, embed_color=await self.ctx.embed_color()
+            self.ctx,
+            embed_color=await self.ctx.embed_color(),
         )
         self._message: discord.Message = await self._message.edit(embeds=embeds[:10], view=self)
         self._mode = "examples"
+        return None
 
     @discord.ui.button(label="Show Attributes", custom_id="show_attributes", row=1)
     async def show_attributes(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if not self._current:
             return await interaction.response.send_message(
@@ -290,11 +306,10 @@ class GetDocsView(discord.ui.View):
             self._mode == "attributes"
         ):  # back / self._message.embeds[0].title.startswith(tuple([x.title() for x in self._current.attributes.__dataclass_fields__.keys()]))
             await self._update(self._current.name)
-            return
-        else:
-            self.show_parameters.label = "Show Parameters"
-            self.show_examples.label = "Show Examples"
-            self.show_attributes.label = "Hide Attributes"
+            return None
+        self.show_parameters.label = "Show Parameters"
+        self.show_examples.label = "Show Examples"
+        self.show_attributes.label = "Hide Attributes"
 
         # Attributes pagination
         if back_button := discord.utils.get(self.children, custom_id="back_button"):
@@ -332,11 +347,10 @@ class GetDocsView(discord.ui.View):
         else:
             self._message: discord.Message = await self._message.edit(embeds=embeds, view=self)
         self._mode = "attributes"
+        return None
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page", row=1)
-    async def close_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:

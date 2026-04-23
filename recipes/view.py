@@ -1,9 +1,10 @@
-from AAA3A_utils import Menu, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-
 import asyncio
+
+import discord
+
+from AAA3A_utils import CogsUtils, Menu
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 from .types import Recipe
 
@@ -47,7 +48,7 @@ class RecipesView(discord.ui.View):
                 label=_("View recipe on Food52"),
                 url=self.recipe.url,
                 style=discord.ButtonStyle.url,
-            )
+            ),
         )
         if self.recipe.instructions:
             self.add_item(InstructionsSectionsSelect(parent=self, recipe=self.recipe))
@@ -59,7 +60,8 @@ class RecipesView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -78,9 +80,7 @@ class RecipesView(discord.ui.View):
         self._ready.set()
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -99,6 +99,6 @@ class RecipesView(discord.ui.View):
             [
                 f"**{n}.** {instruction}"
                 for n, instruction in enumerate(self.recipe.instructions[option.value], start=1)
-            ]
+            ],
         )
         await Menu(pages=[embed]).start(self.ctx)

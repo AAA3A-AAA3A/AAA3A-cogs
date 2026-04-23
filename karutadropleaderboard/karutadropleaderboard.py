@@ -1,12 +1,12 @@
-﻿from AAA3A_utils import Cog, Menu, Settings, Loop  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
+import typing
 
+import discord
+
+from AAA3A_utils import Cog, Loop, Menu, Settings
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import pagify
 
 from .dashboard_integration import DashboardIntegration
@@ -41,9 +41,7 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
             last_drops={},
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "enabled": {
                 "converter": bool,
                 "description": "Enable or disable the feature.",
@@ -80,7 +78,7 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
                 name="Cleanup Last Drops",
                 function=self.cleanup_last_drops,
                 hours=1,
-            )
+            ),
         )
 
     @commands.Cog.listener()
@@ -103,7 +101,7 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
         await self.config.member(member).set(member_data)
 
     async def cleanup_last_drops(self) -> None:
-        now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        now_timestamp = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
         for guild_id, data in (await self.config.all_members()).items():
             for member_id, member_data in data.items():
                 if "last_drops" not in member_data:
@@ -176,7 +174,7 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
             icon_url=member.display_avatar,
         )
         member_data = await self.config.member(member).all()
-        now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        now_timestamp = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
         embed.description = "\n".join(
             f"- {'✅' if int(drop) > (now_timestamp - 43200) else '⏲️'} {discord.utils.format_dt(datetime.datetime.fromtimestamp(int(drop)), style='R')} {message_jump_url}"
             for drop, message_jump_url in list(member_data["last_drops"].items())[-10:]
@@ -190,7 +188,7 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
         embed.add_field(
             name=(_("✅ Requirement met!") if requirement_met else _("❌ Requirement not met!")),
             value=_(
-                "{within_last_12_hours} drop{s}/{drop_requirement} in the last 12 hours..."
+                "{within_last_12_hours} drop{s}/{drop_requirement} in the last 12 hours...",
             ).format(
                 within_last_12_hours=within_last_12_hours,
                 s="" if within_last_12_hours == 1 else "s",

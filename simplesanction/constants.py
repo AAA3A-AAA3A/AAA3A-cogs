@@ -1,11 +1,8 @@
-import typing  # isort:skip
-
-
 def _(untranslated: str) -> str:  # `redgettext` will found these strings.
     return untranslated
 
 
-ACTIONS_DICT: typing.Dict[str, typing.Dict[str, str]] = {
+ACTIONS_DICT: dict[str, dict[str, str]] = {
     "userinfo": {
         "label": "UserInfo",
         "emoji": "ℹ️",
@@ -25,11 +22,11 @@ ACTIONS_DICT: typing.Dict[str, typing.Dict[str, str]] = {
         "warn_system_command": "warn 1 {member.id} {reason}",
         "duration_ask_message": None,
         "reason_ask_message": _(
-            "Why do you want to warn {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+            "Why do you want to warn {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)",
         ),
         "confirmation_ask_message": None,
         "finish_message": _(
-            "The member {member.display_name} ({member.id}) has received a warning."
+            "The member {member.display_name} ({member.id}) has received a warning.",
         ),
     },
     "ban": {
@@ -40,10 +37,10 @@ ACTIONS_DICT: typing.Dict[str, typing.Dict[str, str]] = {
         "warn_system_command": "warn 5 {member.id} {reason}",
         "duration_ask_message": None,
         "reason_ask_message": _(
-            "Why do you want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+            "Why do you want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)",
         ),
         "confirmation_ask_message": _(
-            "Do you really want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+            "Do you really want to ban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)",
         ),
         "finish_message": _("The member {member.display_name} ({member.id}) has been banned."),
     },
@@ -55,10 +52,10 @@ ACTIONS_DICT: typing.Dict[str, typing.Dict[str, str]] = {
         "warn_system_command": "warn 4 {member.id} {reason}",
         "duration_ask_message": None,
         "reason_ask_message": _(
-            "Why do you want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+            "Why do you want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)",
         ),
         "confirmation_ask_message": _(
-            "Do you really want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+            "Do you really want to softban {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)",
         ),
         "finish_message": _("The member {member.display_name} ({member.id}) has been softbanned."),
     },
@@ -69,16 +66,16 @@ ACTIONS_DICT: typing.Dict[str, typing.Dict[str, str]] = {
         "command": "tempban {member.id} {duration} {reason}",
         "warn_system_command": "warn 5 {member.id} {duration} {reason}",
         "duration_ask_message": _(
-            "How long do you want to tempban {member.display_name} ({member.id})? (Type `cancel` to cancel.)"
+            "How long do you want to tempban {member.display_name} ({member.id})? (Type `cancel` to cancel.)",
         ),
         "reason_ask_message": _(
-            "Why do you want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+            "Why do you want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)",
         ),
         "confirmation_ask_message": _(
-            "Do you really want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+            "Do you really want to tempban {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)",
         ),
         "finish_message": _(
-            "The member {member.display_name} ({member.id}) has been tempbanned and will be unbanned in {duration}."
+            "The member {member.display_name} ({member.id}) has been tempbanned and will be unbanned in {duration}.",
         ),
     },
     "kick": {
@@ -89,10 +86,10 @@ ACTIONS_DICT: typing.Dict[str, typing.Dict[str, str]] = {
         "warn_system_command": "warn 3 {member.id} {reason}",
         "duration_ask_message": None,
         "reason_ask_message": _(
-            "Why do you want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+            "Why do you want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)",
         ),
         "confirmation_ask_message": _(
-            "Do you really want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+            "Do you really want to kick {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)",
         ),
         "finish_message": _("The member {member.display_name} ({member.id}) has been kicked."),
     },
@@ -104,10 +101,10 @@ ACTIONS_DICT: typing.Dict[str, typing.Dict[str, str]] = {
         "warn_system_command": "warn 2 {member.id} {reason}",
         "duration_ask_message": None,
         "reason_ask_message": _(
-            "Why do you want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+            "Why do you want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)",
         ),
         "confirmation_ask_message": _(
-            "Do you really want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)"
+            "Do you really want to mute {member.display_name} ({member.id})? (Type `cancel` to cancel or `not` to none.)",
         ),
         "finish_message": _("The member {member.display_name} ({member.id}) has been muted."),
     },
@@ -119,13 +116,13 @@ ACTIONS_DICT: typing.Dict[str, typing.Dict[str, str]] = {
         "warn_system_command": None,
         "duration_ask_message": None,
         "reason_ask_message": _(
-            "Why do you want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)"
+            "Why do you want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)",
         ),
         "confirmation_ask_message": _(
-            "Do you really want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)"
+            "Do you really want to mute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel or `not` to none.)",
         ),
         "finish_message": _(
-            "The member {member.display_name} ({member.id}) has been muted in {channel.mention}."
+            "The member {member.display_name} ({member.id}) has been muted in {channel.mention}.",
         ),
     },
     "tempmute": {
@@ -135,16 +132,16 @@ ACTIONS_DICT: typing.Dict[str, typing.Dict[str, str]] = {
         "command": "mute {member.id} {duration} {reason}",
         "warn_system_command": "warn 2 {member.id} {duration} {reason}",
         "duration_ask_message": _(
-            "How long do you want to tempmute {member.display_name} ({member.id})? (Type `cancel` to cancel.)"
+            "How long do you want to tempmute {member.display_name} ({member.id})? (Type `cancel` to cancel.)",
         ),
         "reason_ask_message": _(
-            "Why do you want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+            "Why do you want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)",
         ),
         "confirmation_ask_message": _(
-            "Do you really want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)"
+            "Do you really want to tempmute {member.display_name} ({member.id}) during {duration}? (Type `cancel` to cancel or `not` to none.)",
         ),
         "finish_message": _(
-            "The member {member.display_name} ({member.id}) has been tempmuted and will be unmuted in {duration}."
+            "The member {member.display_name} ({member.id}) has been tempmuted and will be unmuted in {duration}.",
         ),
     },
     "tempmutechannel": {
@@ -154,16 +151,16 @@ ACTIONS_DICT: typing.Dict[str, typing.Dict[str, str]] = {
         "command": "mutechannel {member.id} {duration} {reason}",
         "warn_system_command": None,
         "duration_ask_message": _(
-            "How long do you want to tempmute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel.)"
+            "How long do you want to tempmute {member.display_name} ({member.id}) in {channel.mention}? (Type `cancel` to cancel.)",
         ),
         "reason_ask_message": _(
-            "Why do you want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)"
+            "Why do you want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)",
         ),
         "confirmation_ask_message": _(
-            "Do you really want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)"
+            "Do you really want to tempmute {member.display_name} ({member.id}) in {channel.mention} during {duration}? (Type `cancel` to cancel or `not` to none.)",
         ),
         "finish_message": _(
-            "The member {member.display_name} ({member.id}) has been tempmuted in {channel.mention} and will be unmuted in {duration}."
+            "The member {member.display_name} ({member.id}) has been tempmuted in {channel.mention} and will be unmuted in {duration}.",
         ),
     },
 }

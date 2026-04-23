@@ -1,14 +1,14 @@
-from AAA3A_utils import Cog, Loop, CogsUtils, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 import io
+import typing
 from copy import deepcopy
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Loop, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list, pagify
 
 # Credits:
@@ -27,8 +27,10 @@ DurationConverter: commands.converter.TimedeltaConverter = commands.converter.Ti
 
 class OptionalDurationConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Optional[datetime.timedelta]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> datetime.timedelta | None:
         if argument.lower() == "none":
             return None
         return await DurationConverter.convert(ctx, argument=argument)
@@ -38,7 +40,7 @@ class OptionalDurationConverter(commands.Converter):
 class TempRoles(Cog):
     """A cog to assign temporary roles to users, expiring after a set duration!"""
 
-    __authors__: typing.List[str] = ["AAA3A", "Obi-Wan3"]
+    __authors__: list[str] = ["AAA3A", "Obi-Wan3"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -64,7 +66,7 @@ class TempRoles(Cog):
                 name="Check TempRoles",
                 function=self.temp_roles_loop,
                 seconds=30,
-            )
+            ),
         )
 
     async def red_delete_data_for_user(
@@ -87,7 +89,7 @@ class TempRoles(Cog):
                 if not members_data[guild]:
                     del members_data[guild]
 
-    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
+    async def red_get_data_for_user(self, *, user_id: int) -> dict[str, io.BytesIO]:
         """Get all data about the user."""
         data = {
             Config.GLOBAL: {},
@@ -114,7 +116,7 @@ class TempRoles(Cog):
 
     async def temp_roles_loop(self, utc_now: datetime.datetime = None) -> bool:
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.UTC)
         executed = False
         member_group = self.config._get_base_group(self.config.MEMBER)
         async with member_group.all() as members_data:
@@ -130,13 +132,15 @@ class TempRoles(Cog):
                         "temp_roles"
                     ].items():
                         if datetime.datetime.fromtimestamp(
-                            expires_times, tz=datetime.timezone.utc
+                            expires_times,
+                            tz=datetime.UTC,
                         ) <= utc_now.replace(microsecond=0):
                             executed = True
                             if (temp_role := guild.get_role(int(temp_role_id))) is not None:
                                 try:
                                     await member.remove_roles(
-                                        temp_role, reason="Temp Role automatically unassigned."
+                                        temp_role,
+                                        reason="Temp Role automatically unassigned.",
                                     )
                                 except discord.HTTPException as e:
                                     self.logger.error(
@@ -147,7 +151,7 @@ class TempRoles(Cog):
                                     if (
                                         (
                                             logs_channel_id := await self.config.guild(
-                                                guild
+                                                guild,
                                             ).logs_channel()
                                         )
                                         is not None
@@ -159,10 +163,10 @@ class TempRoles(Cog):
                                             embed=discord.Embed(
                                                 title=_("Temp Roles"),
                                                 description=_(
-                                                    "Temp Role {temp_role.mention} ({temp_role.id}) has been automatically unassigned from {member.mention} ({member.id})."
+                                                    "Temp Role {temp_role.mention} ({temp_role.id}) has been automatically unassigned from {member.mention} ({member.id}).",
                                                 ).format(temp_role=temp_role, member=member),
                                                 color=await self.bot.get_embed_color(logs_channel),
-                                            )
+                                            ),
                                         )
                             del members_data[guild_id][member_id]["temp_roles"][temp_role_id]
                     if not members_data[guild_id][member_id]["temp_roles"]:
@@ -184,8 +188,8 @@ class TempRoles(Cog):
         }
         for role, duration in joining_temp_roles.items():
             try:
-                end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(
-                    seconds=duration
+                end_time = datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(
+                    seconds=duration,
                 )
             except OverflowError:
                 continue
@@ -203,8 +207,8 @@ class TempRoles(Cog):
                 )
             else:
                 member_temp_roles = await self.config.member(member).temp_roles()
-                end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(
-                    seconds=duration
+                end_time = datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(
+                    seconds=duration,
                 )
                 member_temp_roles[str(role.id)] = int(end_time.replace(microsecond=0).timestamp())
                 await self.config.member(member).temp_roles.set(member_temp_roles)
@@ -218,10 +222,10 @@ class TempRoles(Cog):
                         embed=discord.Embed(
                             title=_("Joining Temp Roles"),
                             description=_(
-                                "Joining Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires in {duration_string}."
+                                "Joining Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires in {duration_string}.",
                             ).format(role=role, member=member, duration_string=duration_string),
                             color=await self.bot.get_embed_color(logs_channel),
-                        )
+                        ),
                     )
 
     @commands.Cog.listener()
@@ -242,15 +246,15 @@ class TempRoles(Cog):
                     auto_temp_roles = await self.config.guild(after.guild).auto_temp_roles()
                     duration = datetime.timedelta(seconds=auto_temp_roles[str(role.id)])
                     try:
-                        end_time = datetime.datetime.now(tz=datetime.timezone.utc) + duration
+                        end_time = datetime.datetime.now(tz=datetime.UTC) + duration
                     except OverflowError:
                         continue
                     end_time = end_time.replace(second=0 if end_time.second < 30 else 30)
                     duration_string = CogsUtils.get_interval_string(duration)
                     member_temp_roles = await self.config.member(after).temp_roles()
-                    end_time = datetime.datetime.now(tz=datetime.timezone.utc) + duration
+                    end_time = datetime.datetime.now(tz=datetime.UTC) + duration
                     member_temp_roles[str(role.id)] = int(
-                        end_time.replace(microsecond=0).timestamp()
+                        end_time.replace(microsecond=0).timestamp(),
                     )
                     await self.config.member(after).temp_roles.set(member_temp_roles)
                     if (
@@ -263,10 +267,10 @@ class TempRoles(Cog):
                             embed=discord.Embed(
                                 title=_("Auto Temp Roles"),
                                 description=_(
-                                    "Auto Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires in {duration_string}."
+                                    "Auto Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires in {duration_string}.",
                                 ).format(role=role, member=after, duration_string=duration_string),
                                 color=await self.bot.get_embed_color(logs_channel),
-                            )
+                            ),
                         )
 
     @commands.guild_only()
@@ -296,16 +300,20 @@ class TempRoles(Cog):
                 if not await CogsUtils.ConfirmationAsk(
                     ctx,
                     content=_(
-                        "This role is already a TempRole of this member. Do you want to edit the duration?\nCurrently, this Temp Role expires {timestamp}."
+                        "This role is already a TempRole of this member. Do you want to edit the duration?\nCurrently, this Temp Role expires {timestamp}.",
                     ).format(timestamp=f"<t:{int(member_temp_roles[str(role.id)])}:R>"),
                 ):
                     return await CogsUtils.delete_message(ctx.message)
                 return await self.edit.callback(
-                    self, ctx, member=member, role=role, duration=duration
+                    self,
+                    ctx,
+                    member=member,
+                    role=role,
+                    duration=duration,
                 )
         elif role in member.roles:
             raise commands.UserFeedbackCheckFailure(
-                _("This member already has {role.mention} ({role.id}).").format(role=role)
+                _("This member already has {role.mention} ({role.id}).").format(role=role),
             )
         if not role.is_assignable():
             raise commands.UserFeedbackCheckFailure(_("This role can't be assigned."))
@@ -315,15 +323,13 @@ class TempRoles(Cog):
             and (member.top_role > ctx.author.top_role or member == ctx.guild.owner)
         ):
             raise commands.UserFeedbackCheckFailure(
-                _("You can't assign this role to this member, due to the Discord role hierarchy.")
+                _("You can't assign this role to this member, due to the Discord role hierarchy."),
             )
         try:
-            end_time: datetime.datetime = (
-                datetime.datetime.now(tz=datetime.timezone.utc) + duration
-            )
+            end_time: datetime.datetime = datetime.datetime.now(tz=datetime.UTC) + duration
         except OverflowError:
             raise commands.UserFeedbackCheckFailure(
-                _("The time set is way too high, consider setting something reasonable.")
+                _("The time set is way too high, consider setting something reasonable."),
             )
         end_time = end_time.replace(second=0 if end_time.second < 30 else 30)
         duration_string = CogsUtils.get_interval_string(duration)
@@ -344,7 +350,7 @@ class TempRoles(Cog):
                     title=_("Temp Roles"),
                     description=(_("Self ") if ctx.command.name == "selfassign" else "")
                     + _(
-                        "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {duration_string}."
+                        "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {duration_string}.",
                     ).format(
                         role=role,
                         member=member,
@@ -352,12 +358,12 @@ class TempRoles(Cog):
                         duration_string=duration_string,
                     ),
                     color=await ctx.bot.get_embed_color(logs_channel),
-                )
+                ),
             )
         await ctx.send(
             (_("Self ") if ctx.command.name == "selfassign" else "")
             + _(
-                "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires **in {duration_string}** ({timestamp})."
+                "Temp Role {role.mention} ({role.id}) has been assigned to {member.mention} ({member.id}). Expires **in {duration_string}** ({timestamp}).",
             ).format(
                 role=role,
                 member=member,
@@ -366,6 +372,7 @@ class TempRoles(Cog):
             ),
             allowed_mentions=discord.AllowedMentions(roles=False, users=False),
         )
+        return None
 
     @commands.admin_or_permissions(manage_roles=True)
     @temproles.command()
@@ -380,16 +387,12 @@ class TempRoles(Cog):
         """Edit a TempRole for a member, for a specified duration."""
         member_temp_roles = await self.config.member(member).temp_roles()
         if str(role.id) not in member_temp_roles:
-            raise commands.UserFeedbackCheckFailure(
-                _("This role isn't a TempRole of this member.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("This role isn't a TempRole of this member."))
         try:
-            end_time: datetime.datetime = (
-                datetime.datetime.now(tz=datetime.timezone.utc) + duration
-            )
+            end_time: datetime.datetime = datetime.datetime.now(tz=datetime.UTC) + duration
         except OverflowError:
             raise commands.UserFeedbackCheckFailure(
-                _("The time set is way too high, consider setting something reasonable.")
+                _("The time set is way too high, consider setting something reasonable."),
             )
         end_time = end_time.replace(second=0 if end_time.second < 30 else 30)
         duration_string = CogsUtils.get_interval_string(duration)
@@ -408,7 +411,7 @@ class TempRoles(Cog):
                 embed=discord.Embed(
                     title=_("Temp Roles"),
                     description=_(
-                        "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {duration_string}."
+                        "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}) by {author.mention} ({author.id}). Expires in {duration_string}.",
                     ).format(
                         role=role,
                         member=member,
@@ -416,11 +419,11 @@ class TempRoles(Cog):
                         duration_string=duration_string,
                     ),
                     color=await ctx.bot.get_embed_color(logs_channel),
-                )
+                ),
             )
         await ctx.send(
             _(
-                "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}). Expires **in {duration_string}** ({timestamp})."
+                "Temp Role {role.mention} ({role.id}) has been edited for {member.mention} ({member.id}). Expires **in {duration_string}** ({timestamp}).",
             ).format(
                 role=role,
                 member=member,
@@ -433,17 +436,19 @@ class TempRoles(Cog):
     @commands.admin_or_permissions(manage_roles=True)
     @temproles.command(aliases=["remove", "-"])
     async def unassign(
-        self, ctx: commands.Context, member: discord.Member, role: discord.Role
+        self,
+        ctx: commands.Context,
+        member: discord.Member,
+        role: discord.Role,
     ) -> None:
         """Unassign/Remove a TempRole from a member."""
         member_temp_roles = await self.config.member(member).temp_roles()
         if str(role.id) not in member_temp_roles:
-            raise commands.UserFeedbackCheckFailure(
-                _("This role isn't a temprole of this member.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("This role isn't a temprole of this member."))
         try:
             await member.remove_roles(
-                role, reason=f"Temp Role unassigned by {ctx.author} ({ctx.author.id})."
+                role,
+                reason=f"Temp Role unassigned by {ctx.author} ({ctx.author.id}).",
             )
         except discord.HTTPException:
             pass
@@ -458,14 +463,14 @@ class TempRoles(Cog):
                 embed=discord.Embed(
                     title=_("Temp Roles"),
                     description=_(
-                        "TempRole {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id}) by {author.mention} ({author.id})."
+                        "TempRole {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id}) by {author.mention} ({author.id}).",
                     ).format(role=role, member=member, author=ctx.author),
                     color=await ctx.bot.get_embed_color(logs_channel),
-                )
+                ),
             )
         await ctx.send(
             _(
-                "Temp Role {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id})."
+                "Temp Role {role.mention} ({role.id}) has been unassigned from {member.mention} ({member.id}).",
             ).format(role=role, member=member),
             allowed_mentions=discord.AllowedMentions(roles=False, users=False),
         )
@@ -476,8 +481,8 @@ class TempRoles(Cog):
     async def list(
         self,
         ctx: commands.Context,
-        member: typing.Optional[discord.Member] = None,
-        role: typing.Optional[discord.Role] = None,
+        member: discord.Member | None = None,
+        role: discord.Role | None = None,
     ) -> None:
         """List active Temp Roles on this server, for optional specified member and/or role."""
         embed: discord.Embed = discord.Embed(
@@ -492,7 +497,8 @@ class TempRoles(Cog):
                 description = _("This member hasn't this Temp Role.")
         elif member is not None:
             embed.set_author(
-                name=f"{member.display_name} ({member.id})", icon_url=member.display_avatar
+                name=f"{member.display_name} ({member.id})",
+                icon_url=member.display_avatar,
             )
             if not (temp_roles := await self.config.member(member).temp_roles()):
                 description = _("This member hasn't any Temp Roles.")
@@ -502,7 +508,7 @@ class TempRoles(Cog):
                         f"- {temp_role.mention} ({temp_role_id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)"
                         for temp_role_id, end_time in temp_roles.items()
                         if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None
-                    ]
+                    ],
                 )
         elif role is not None:
             embed.set_author(text=f"{role.name} ({role.id})", icon_url=role.icon)
@@ -521,7 +527,7 @@ class TempRoles(Cog):
                     [
                         f"- {member.mention} ({member.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)"
                         for member, end_time in temp_roles_members.items()
-                    ]
+                    ],
                 )
         else:
             description = []
@@ -535,7 +541,7 @@ class TempRoles(Cog):
                     if (temp_role := ctx.guild.get_role(int(temp_role_id))) is not None
                 }:
                     description.append(
-                        f"- {member.mention} ({member.id}): {humanize_list([f'{temp_role.mention} ({temp_role.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)' for temp_role, end_time in member_temp_roles.items()])}."
+                        f"- {member.mention} ({member.id}): {humanize_list([f'{temp_role.mention} ({temp_role.id}) - <t:{int(end_time)}:R> (<t:{int(end_time)}:F>)' for temp_role, end_time in member_temp_roles.items()])}.",
                     )
             if description:
                 description = "\n".join(description)
@@ -558,7 +564,9 @@ class TempRoles(Cog):
     @commands.admin_or_permissions(administrator=True)
     @temproles.command()
     async def logschannel(
-        self, ctx: commands.Context, logs_channel: discord.TextChannel = None
+        self,
+        ctx: commands.Context,
+        logs_channel: discord.TextChannel = None,
     ) -> None:
         """Set the logs channel for Temp Roles."""
         if logs_channel is None:
@@ -567,7 +575,7 @@ class TempRoles(Cog):
         else:
             if not logs_channel.permissions_for(ctx.me).embed_links:
                 raise commands.UserFeedbackCheckFailure(
-                    _("I need of the `embed_links` permission in the logs channel.")
+                    _("I need of the `embed_links` permission in the logs channel."),
                 )
             await self.config.guild(ctx.guild).logs_channel.set(logs_channel.id)
             await ctx.send(_("Logs channel set."))
@@ -578,8 +586,8 @@ class TempRoles(Cog):
         self,
         ctx: commands.Context,
         role: discord.Role,
-        min_duration: typing.Optional[OptionalDurationConverter] = datetime.timedelta(days=1),
-        max_duration: typing.Optional[OptionalDurationConverter] = datetime.timedelta(days=365),
+        min_duration: typing.Optional[OptionalDurationConverter] = datetime.timedelta(days=1),  # noqa: UP045
+        max_duration: typing.Optional[OptionalDurationConverter] = datetime.timedelta(days=365),  # noqa: UP045
     ) -> None:
         """Add an allowed self Temp Role.
 
@@ -592,13 +600,13 @@ class TempRoles(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy."
-                ).format(role=role)
+                    "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy.",
+                ).format(role=role),
             )
         allowed_self_temp_roles = await self.config.guild(ctx.guild).allowed_self_temp_roles()
         if str(role.id) in allowed_self_temp_roles:
             raise commands.UserFeedbackCheckFailure(
-                _("This role is already an allowed self temp role.")
+                _("This role is already an allowed self temp role."),
             )
         allowed_self_temp_roles[str(role.id)] = {
             "min_time": None if min_duration is None else int(min_duration.total_seconds()),
@@ -613,43 +621,45 @@ class TempRoles(Cog):
         """Remove an allowed self Temp Role."""
         allowed_self_temp_roles = await self.config.guild(ctx.guild).allowed_self_temp_roles()
         if str(role.id) not in allowed_self_temp_roles:
-            raise commands.UserFeedbackCheckFailure(
-                _("This role isn't an allowed self temp role.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("This role isn't an allowed self temp role."))
         del allowed_self_temp_roles[str(role.id)]
         await self.config.guild(ctx.guild).allowed_self_temp_roles.set(allowed_self_temp_roles)
         await ctx.send(_("Allowed self Temp Role removed."))
 
     @temproles.command(aliases=["selfadd"])
     async def selfassign(
-        self, ctx: commands.Context, role: discord.Role, *, duration: DurationConverter
+        self,
+        ctx: commands.Context,
+        role: discord.Role,
+        *,
+        duration: DurationConverter,
     ) -> None:
         """Assign/Add an allowed self Temp Role to yourself, for a specified duration."""
         if str(role.id) not in (
             allowed_self_temp_roles := await self.config.guild(ctx.guild).allowed_self_temp_roles()
         ):
             raise commands.UserFeedbackCheckFailure(
-                _("This role isn't an allowed self Temp Role on this server.")
+                _("This role isn't an allowed self Temp Role on this server."),
             )
         if allowed_self_temp_roles[str(role.id)]["min_time"] is not None:
             min_duration = datetime.timedelta(
-                seconds=allowed_self_temp_roles[str(role.id)]["min_time"]
+                seconds=allowed_self_temp_roles[str(role.id)]["min_time"],
             )
             if duration < min_duration:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "The duration for this role must be greater than {min_duration_string}."
-                    ).format(min_duration_string=CogsUtils.get_interval_string(min_duration))
+                        "The duration for this role must be greater than {min_duration_string}.",
+                    ).format(min_duration_string=CogsUtils.get_interval_string(min_duration)),
                 )
         if allowed_self_temp_roles[str(role.id)]["max_time"] is not None:
             max_duration = datetime.timedelta(
-                seconds=allowed_self_temp_roles[str(role.id)]["max_time"]
+                seconds=allowed_self_temp_roles[str(role.id)]["max_time"],
             )
             if duration > max_duration:
                 raise commands.UserFeedbackCheckFailure(
-                    _(
-                        "The duration for this role must be less than {max_duration_string}."
-                    ).format(max_duration_string=CogsUtils.get_interval_string(max_duration))
+                    _("The duration for this role must be less than {max_duration_string}.").format(
+                        max_duration_string=CogsUtils.get_interval_string(max_duration),
+                    ),
                 )
         await self.assign.callback(self, ctx, member=ctx.author, role=role, duration=duration)
 
@@ -685,7 +695,8 @@ class TempRoles(Cog):
         pages = list(pagify(description, page_length=3000))
         for page in pages:
             embed: discord.Embed = discord.Embed(
-                title=_("Self Temp Roles"), color=await ctx.embed_color()
+                title=_("Self Temp Roles"),
+                color=await ctx.embed_color(),
             )
             embed.description = page
             embeds.append(embed)
@@ -710,8 +721,8 @@ class TempRoles(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy."
-                ).format(role=role)
+                    "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy.",
+                ).format(role=role),
             )
         joining_temp_roles = await self.config.guild(ctx.guild).joining_temp_roles()
         if str(role.id) in joining_temp_roles:
@@ -742,13 +753,14 @@ class TempRoles(Cog):
                 f"- {role.mention} ({role.id}) - {CogsUtils.get_interval_string(duration)}."
                 for role_id, duration in joining_temp_roles.items()
                 if (role := ctx.guild.get_role(int(role_id))) is not None
-            ]
+            ],
         )
         embeds = []
         pages = list(pagify(description, page_length=3000))
         for page in pages:
             embed: discord.Embed = discord.Embed(
-                title=_("Joining Temp Roles"), color=await ctx.embed_color()
+                title=_("Joining Temp Roles"),
+                color=await ctx.embed_color(),
             )
             embed.description = page
             embeds.append(embed)
@@ -773,8 +785,8 @@ class TempRoles(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy."
-                ).format(role=role)
+                    "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy.",
+                ).format(role=role),
             )
         auto_temp_roles = await self.config.guild(ctx.guild).auto_temp_roles()
         if str(role.id) in auto_temp_roles:
@@ -805,13 +817,14 @@ class TempRoles(Cog):
                 f"- {role.mention} ({role.id}) - {CogsUtils.get_interval_string(duration)}."
                 for role_id, duration in auto_temp_roles.items()
                 if (role := ctx.guild.get_role(int(role_id))) is not None
-            ]
+            ],
         )
         embeds = []
         pages = list(pagify(description, page_length=3000))
         for page in pages:
             embed: discord.Embed = discord.Embed(
-                title=_("Auto Temp Roles"), color=await ctx.embed_color()
+                title=_("Auto Temp Roles"),
+                color=await ctx.embed_color(),
             )
             embed.description = page
             embeds.append(embed)

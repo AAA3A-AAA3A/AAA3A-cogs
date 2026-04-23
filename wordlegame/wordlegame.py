@@ -1,15 +1,15 @@
-﻿from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import io
+import typing
 from collections import defaultdict
 
+import discord
 from PIL import Image, ImageDraw, ImageFont
+
+from AAA3A_utils import Cog
+from redbot.core import Config, commands
+from redbot.core.bot import Red
 from redbot.core.data_manager import bundled_data_path
+from redbot.core.i18n import Translator, cog_i18n
 
 from .view import Lang, WordleGameView
 
@@ -37,11 +37,11 @@ class WordleGame(Cog):
             guess_distribution=[0] * 10,
         )
 
-        self.words: typing.Dict[str, typing.Dict[int, typing.List[str]]] = defaultdict(
-            lambda: defaultdict(list)
+        self.words: dict[str, dict[int, list[str]]] = defaultdict(
+            lambda: defaultdict(list),
         )
-        self.dictionaries: typing.Dict[str, typing.Dict[int, typing.List[str]]] = defaultdict(
-            lambda: defaultdict(list)
+        self.dictionaries: dict[str, dict[int, list[str]]] = defaultdict(
+            lambda: defaultdict(list),
         )
         self.font: ImageFont.FreeTypeFont = None
 
@@ -51,7 +51,8 @@ class WordleGame(Cog):
         for lang in Lang:
             for dirname in ("words", "dictionaries"):
                 with (data_path / dirname / f"{lang.value}.txt").open(
-                    mode="rt", encoding="utf-8"
+                    mode="rt",
+                    encoding="utf-8",
                 ) as file:
                     for word in file.read().split("\n"):
                         if word == "cancel":
@@ -60,13 +61,13 @@ class WordleGame(Cog):
         self.font = ImageFont.truetype(str(data_path / "ClearSans-Bold.ttf"), 80)
 
     @property
-    def games(self) -> typing.Dict[discord.Message, WordleGameView]:
+    def games(self) -> dict[discord.Message, WordleGameView]:
         return self.views
 
     async def generate_image(
         self,
         word: str,
-        attempts: typing.List[str] = [],
+        attempts: list[str] = [],
         max_attempts: int = 6,
     ) -> discord.File:
         length, size, between, border = len(word), 70, 10, 5
@@ -117,9 +118,7 @@ class WordleGame(Cog):
                     [
                         (
                             border + (j + 1) * between + j * size,
-                            border
-                            + (len(attempts) + i + 1) * between
-                            + (len(attempts) + i) * size,
+                            border + (len(attempts) + i + 1) * between + (len(attempts) + i) * size,
                         ),
                         (
                             border + (j + 1) * between + (j + 1) * size,
@@ -141,11 +140,11 @@ class WordleGame(Cog):
         ctx: commands.Context,
         lang: Lang,
         word: str,
-        attempts: typing.List[str] = [],
+        attempts: list[str] = [],
         max_attempts: int = 6,
-    ) -> typing.Dict[
+    ) -> dict[
         typing.Literal["embed", "file", "allowed_mentions"],
-        typing.Union[discord.Embed, discord.File, discord.AllowedMentions],
+        discord.Embed | discord.File | discord.AllowedMentions,
     ]:
         embed: discord.Embed = discord.Embed(
             title=_("{flag} Wordle Game - {attempts}/{max_attempts} attempts").format(
@@ -185,9 +184,9 @@ class WordleGame(Cog):
     async def wordle(
         self,
         ctx: commands.Context,
-        lang: typing.Optional[Lang] = Lang.ENGLISH,
-        length: typing.Optional[commands.Range[int, 4, 11]] = 5,
-        max_attempts: typing.Optional[commands.Range[int, 5, 10]] = 6,
+        lang: Lang | None = Lang.ENGLISH,
+        length: commands.Range[int, 4, 11] | None = 5,
+        max_attempts: commands.Range[int, 5, 10] | None = 6,
     ) -> None:
         """Play a match of Wordle game.
 
@@ -221,7 +220,7 @@ class WordleGame(Cog):
         embed = discord.Embed(
             title=_("Wordle Game Stats"),
             description=_(
-                ">>> **Games played**: {games}\n**Wins**: {wins}\n**Win rate:** {win_rate:.2%}"
+                ">>> **Games played**: {games}\n**Wins**: {wins}\n**Win rate:** {win_rate:.2%}",
             ).format(
                 games=data["games"],
                 wins=data["wins"],
@@ -241,11 +240,13 @@ class WordleGame(Cog):
                 value="\n".join(
                     [
                         _("- **{count}** guess{es} with {i} attempts").format(
-                            count=count, i=i, es="es" if count > 1 else ""
+                            count=count,
+                            i=i,
+                            es="es" if count > 1 else "",
                         )
                         for i, count in enumerate(data["guess_distribution"], start=1)
                         if count > 0
-                    ]
+                    ],
                 ),
             )
         embed.set_footer(

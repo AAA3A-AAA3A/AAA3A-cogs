@@ -1,15 +1,17 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
+import typing
 
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
 from redbot.core.commands.converter import parse_timedelta
+from redbot.core.i18n import Translator
 
 from .constants import ACTIONS_DICT
-from .types import Action
+
+if typing.TYPE_CHECKING:
+    from .types import Action
 
 _: Translator = Translator("SimpleSanction", __file__)
 
@@ -19,27 +21,27 @@ class SimpleSanctionView(discord.ui.View):
         self,
         cog: commands.Cog,
         member: discord.Member,
-        duration: typing.Optional[str] = None,
-        reason: typing.Optional[str] = "The reason was not given.",
-        finish_message_enabled: typing.Optional[bool] = True,
-        reason_required: typing.Optional[bool] = True,
-        confirmation: typing.Optional[bool] = False,
-        show_author: typing.Optional[bool] = True,
-        fake_action: typing.Optional[bool] = False,
+        duration: str | None = None,
+        reason: str | None = "The reason was not given.",
+        finish_message_enabled: bool | None = True,
+        reason_required: bool | None = True,
+        confirmation: bool | None = False,
+        show_author: bool | None = True,
+        fake_action: bool | None = False,
     ) -> None:
         super().__init__(timeout=180)
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
 
         self.member: discord.Member = member
-        self.duration: typing.Optional[str] = duration
-        self.reason: typing.Optional[str] = reason
+        self.duration: str | None = duration
+        self.reason: str | None = reason
 
-        self.finish_message_enabled: typing.Optional[bool] = finish_message_enabled
-        self.reason_required: typing.Optional[bool] = reason_required
-        self.confirmation: typing.Optional[bool] = confirmation
-        self.show_author: typing.Optional[bool] = show_author
-        self.fake_action: typing.Optional[bool] = fake_action
+        self.finish_message_enabled: bool | None = finish_message_enabled
+        self.reason_required: bool | None = reason_required
+        self.confirmation: bool | None = confirmation
+        self.show_author: bool | None = show_author
+        self.fake_action: bool | None = fake_action
 
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()
@@ -64,7 +66,8 @@ class SimpleSanctionView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -83,9 +86,7 @@ class SimpleSanctionView(discord.ui.View):
         self._ready.set()
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:
@@ -96,10 +97,11 @@ class SimpleSanctionView(discord.ui.View):
 
     async def get_embed(self) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
-            title=_("Sanction Member"), color=await self.ctx.embed_color()
+            title=_("Sanction Member"),
+            color=await self.ctx.embed_color(),
         )
         embed.description = _(
-            "This tool allows you to easily sanction a server member.\nMember mention: {member.mention} - Member ID: {member.id}"
+            "This tool allows you to easily sanction a server member.\nMember mention: {member.mention} - Member ID: {member.id}",
         ).format(member=self.member)
         embed.set_thumbnail(url=await self.cog.config.guild(self.ctx.guild).thumbnail())
         embed.color = await self.ctx.embed_color()
@@ -117,7 +119,7 @@ class SimpleSanctionView(discord.ui.View):
             inline=False,
             name="Possible actions:",
             value=" - ".join(
-                [f"{action.emoji} {action.label}" for action in self.cog.actions.values()]
+                [f"{action.emoji} {action.label}" for action in self.cog.actions.values()],
             ),
             # value=f"ℹ️ UserInfo - ⚠️ Warn - 🔨 Ban - 🔂 SoftBan - 💨 TempBan\n👢 Kick - 🔇 Mute - 👊 MuteChannel - ⏳ TempMute\n⌛ TempMuteChannel - ❌ Cancel",
         )
@@ -125,7 +127,9 @@ class SimpleSanctionView(discord.ui.View):
             embed.add_field(inline=False, name=_("Reason:"), value=f"{self.reason}")
         if self.duration is not None:
             embed.add_field(
-                inline=False, name=_("Duration:"), value=f"{parse_timedelta(self.duration)}"
+                inline=False,
+                name=_("Duration:"),
+                value=f"{parse_timedelta(self.duration)}",
             )
         return embed
 
@@ -133,7 +137,7 @@ class SimpleSanctionView(discord.ui.View):
         if self.fake_action:
             await interaction.response.send_message(
                 _(
-                    "You are using this command in Fake mode, so no action will be taken, but I will pretend it is the case."
+                    "You are using this command in Fake mode, so no action will be taken, but I will pretend it is the case.",
                 ),
                 ephemeral=True,
             )

@@ -1,21 +1,20 @@
 import copy
 import datetime
+import typing
 from dataclasses import _is_dataclass_instance, dataclass, fields
 
+import discord
 import pycountry
 from mimesis.enums import Gender
 from mimesis.locales import Locale
+
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list, inline
-
-import discord  # isort:skip
-import typing  # isort:skip
-
 
 _: Translator = Translator("FakeIdentities", __file__)
 
 
-LOCALES: typing.Dict[Locale, typing.Any] = dict(
+LOCALES: dict[Locale, typing.Any] = dict(
     sorted(
         {
             locale: country
@@ -27,11 +26,11 @@ LOCALES: typing.Dict[Locale, typing.Any] = dict(
             )
         }.items(),
         key=lambda x: x[1].name,
-    )
+    ),
 )
 
 
-def get_pages() -> typing.Dict[str, typing.Dict[str, typing.Any]]:
+def get_pages() -> dict[str, dict[str, typing.Any]]:
     return {
         "main": {
             "emoji": "🏠",
@@ -105,21 +104,19 @@ def _asdict_inner(obj, dict_factory=dict):
             value = _asdict_inner(getattr(obj, f.name), dict_factory)
             result.append((f.name, value))
         return dict_factory(result)
-    elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
+    if isinstance(obj, tuple) and hasattr(obj, "_fields"):
         return type(obj)(*[_asdict_inner(v, dict_factory) for v in obj])
-    elif isinstance(obj, (list, tuple)):
+    if isinstance(obj, (list, tuple)):
         return type(obj)(_asdict_inner(v, dict_factory) for v in obj)
-    elif isinstance(obj, dict):
+    if isinstance(obj, dict):
         return type(obj)(
-            (_asdict_inner(k, dict_factory), _asdict_inner(v, dict_factory))
-            for k, v in obj.items()
+            (_asdict_inner(k, dict_factory), _asdict_inner(v, dict_factory)) for k, v in obj.items()
         )
-    elif isinstance(obj, datetime.date):
+    if isinstance(obj, datetime.date):
         return obj.isoformat()
-    elif hasattr(obj, "value"):
+    if hasattr(obj, "value"):
         return obj.value
-    else:
-        return copy.deepcopy(obj)
+    return copy.deepcopy(obj)
 
 
 @dataclass(frozen=True)
@@ -151,9 +148,9 @@ class FakeIdentity:
     favorite: "Favorite"
 
     partner: typing.Optional["SecondaryIdentity"] = None
-    children: typing.List["SecondaryIdentity"] = None
+    children: list["SecondaryIdentity"] = None
 
-    def to_dict(self) -> typing.Dict[str, typing.Any]:
+    def to_dict(self) -> dict[str, typing.Any]:
         return _asdict_inner(self)
 
     def to_embed(self, page: str = "main") -> discord.Embed:
@@ -185,7 +182,7 @@ class FakeIdentity:
                         _v = inline(_v)
                     value.append(f"**{f.name.replace('_', ' ').title()}**: {_v}")
                 value = "\n".join(value)
-            elif isinstance(v, typing.List):
+            elif isinstance(v, list):
                 value = humanize_list([_v.to_string() for _v in v])
             else:
                 value = str(v)
@@ -200,10 +197,10 @@ class FakeIdentity:
 
 @dataclass(frozen=True)
 class Name:
-    title: typing.Optional[str]
+    title: str | None
     first: str
     last: str
-    surname: typing.Optional[str]
+    surname: str | None
 
 
 @dataclass(frozen=True)
@@ -216,7 +213,7 @@ class Birth:
 class Communication:
     email: str
     phone: str
-    cell: typing.Optional[str]
+    cell: str | None
 
 
 @dataclass(frozen=True)
@@ -337,7 +334,7 @@ class Computer:
 
     def to_string(self) -> str:
         return _(
-            "\n- OS: {os}\n- Manufacturer: {manufacturer}\n- CPU: {cpu} ({cpu_codename}) {cpu_frequency} ({generation})\n- Graphics: {graphics}\n- RAM: {ram_size} {ram_type}\n- Resolution: {resolution}\n- Screen Size: {screen_size}\n- Storage: {ssd_or_hdd}\n- MAC Address: `{mac_address}`\n- IP v4: `{ip_v4}`\n- IP v6: `{ip_v6}`"
+            "\n- OS: {os}\n- Manufacturer: {manufacturer}\n- CPU: {cpu} ({cpu_codename}) {cpu_frequency} ({generation})\n- Graphics: {graphics}\n- RAM: {ram_size} {ram_type}\n- Resolution: {resolution}\n- Screen Size: {screen_size}\n- Storage: {ssd_or_hdd}\n- MAC Address: `{mac_address}`\n- IP v4: `{ip_v4}`\n- IP v6: `{ip_v6}`",
         ).format(
             os=self.os,
             manufacturer=self.manufacturer,
@@ -368,7 +365,7 @@ class Phone:
 
     def to_string(self) -> str:
         return _(
-            "\n- Model: {model}\n- RAM: {ram_size}\n- MAC Address: `{mac_address}`\n- IP v4: `{ip_v4}`\n- IP v6: `{ip_v6}`"
+            "\n- Model: {model}\n- RAM: {ram_size}\n- MAC Address: `{mac_address}`\n- IP v4: `{ip_v4}`\n- IP v6: `{ip_v6}`",
         ).format(
             model=self.model,
             ram_size=self.ram_size,
@@ -398,7 +395,7 @@ class Food:
 
     def to_string(self) -> str:
         return _(
-            "\n- Dish: {dish}\n- Vegetable: {vegetable}\n- Fruit: {fruit}\n- Drink: {drink}\n- Spices: {spices}"
+            "\n- Dish: {dish}\n- Vegetable: {vegetable}\n- Fruit: {fruit}\n- Drink: {drink}\n- Spices: {spices}",
         ).format(
             dish=self.dish,
             vegetable=self.vegetable,
@@ -415,6 +412,5 @@ class SecondaryIdentity:
 
     def to_string(self) -> str:
         return (
-            (f"{self.name.title} " if self.name.title is not None else "")
-            + f"{self.name.first} {self.name.last} ({self.birth.age} years old - {self.birth.date})"
-        )
+            f"{self.name.title} " if self.name.title is not None else ""
+        ) + f"{self.name.first} {self.name.last} ({self.birth.age} years old - {self.birth.date})"

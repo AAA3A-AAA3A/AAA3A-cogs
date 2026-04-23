@@ -1,7 +1,7 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
+import discord
 
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 
 _: Translator = Translator("RumbleNotifier", __file__)
@@ -30,7 +30,8 @@ class RumbleNotifierView(discord.ui.View):
             or not await self.cog.config.guild(interaction.guild).subscribing()
         ):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         if not (
@@ -40,7 +41,7 @@ class RumbleNotifierView(discord.ui.View):
         ):
             await interaction.response.send_message(
                 _(
-                    "I don't have the required permissions to assign the role. Please contact an administrator."
+                    "I don't have the required permissions to assign the role. Please contact an administrator.",
                 ),
             )
             return False
@@ -53,14 +54,17 @@ class RumbleNotifierView(discord.ui.View):
         custom_id="RumbleNotifier_unsubscribe",
     )
     async def unsubscribe(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
         role_id = await self.cog.config.guild(interaction.guild).role()
         role = interaction.guild.get_role(role_id)
         if role not in interaction.user.roles:
             await interaction.followup.send(
-                _("You are already unsubscribed from the Rumble notifications."), ephemeral=True
+                _("You are already unsubscribed from the Rumble notifications."),
+                ephemeral=True,
             )
             return
         try:
@@ -68,12 +72,13 @@ class RumbleNotifierView(discord.ui.View):
         except discord.HTTPException as e:
             await interaction.followup.send(
                 _(
-                    "An error occurred while trying to remove the role. Please contact an administrator.\n"
+                    "An error occurred while trying to remove the role. Please contact an administrator.\n",
                 )
                 + box(str(e), lang="py"),
             )
         await interaction.followup.send(
-            _("You have been removed from the Rumble notifications."), ephemeral=True
+            _("You have been removed from the Rumble notifications."),
+            ephemeral=True,
         )
 
     @discord.ui.button(
@@ -88,7 +93,8 @@ class RumbleNotifierView(discord.ui.View):
         role = interaction.guild.get_role(role_id)
         if role in interaction.user.roles:
             await interaction.followup.send(
-                _("You are already subscribed to the Rumble notifications."), ephemeral=True
+                _("You are already subscribed to the Rumble notifications."),
+                ephemeral=True,
             )
             return
         try:
@@ -96,10 +102,11 @@ class RumbleNotifierView(discord.ui.View):
         except discord.HTTPException as e:
             await interaction.followup.send(
                 _(
-                    "An error occurred while trying to add the role. Please contact an administrator.\n"
+                    "An error occurred while trying to add the role. Please contact an administrator.\n",
                 )
                 + box(str(e), lang="py"),
             )
         await interaction.followup.send(
-            _("You have been added to the Rumble notifications."), ephemeral=True
+            _("You have been added to the Rumble notifications."),
+            ephemeral=True,
         )

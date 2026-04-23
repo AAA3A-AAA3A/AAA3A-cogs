@@ -9,21 +9,23 @@ setlocal ENABLEDELAYEDEXPANSION
 goto %1
 
 :reformat
-isort .
-black .
-exit /B %ERRORLEVEL%
-
-:isort
-isort .
+ruff format .
+if errorlevel 1 exit /B %ERRORLEVEL%
+ruff check . --fix --unsafe-fixes
 exit /B %ERRORLEVEL%
 
 :black
-black .
+ruff format .
+exit /B %ERRORLEVEL%
+
+:isort
+ruff check . --select I --fix
 exit /B %ERRORLEVEL%
 
 :stylediff
-isort --atomic --check --diff --line-length 99 --use-parentheses .
-black --check --diff -l 99 .
+ruff check .
+if errorlevel 1 exit /B %ERRORLEVEL%
+ruff format . --check
 exit /B %ERRORLEVEL%
 
 :crowdin
@@ -35,8 +37,8 @@ echo Usage:
 echo   make ^<command^>
 echo.
 echo Commands:
-echo   reformat                   Reformat all .py files being tracked by git.
-echo   isort                      Reformat all .py files only with isort.
-echo   black                      Reformat all .py files only with black.
-echo   stylediff                  Check .py files for style diffs.
+echo   reformat                   Apply Ruff fixes + format all .py files.
+echo   black                      Format all .py files via Ruff.
+echo   isort                      Sort imports via Ruff (rule I).
+echo   stylediff                  Check lint + formatting without modifying files.
 echo   crowdin                    Create translations source files.

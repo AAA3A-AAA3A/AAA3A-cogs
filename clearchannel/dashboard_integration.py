@@ -1,5 +1,5 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
+from redbot.core import commands
+from redbot.core.bot import Red
 
 
 class DashboardIntegration:

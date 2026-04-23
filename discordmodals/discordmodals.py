@@ -1,17 +1,17 @@
-from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import json
 import re
+import typing
 from copy import deepcopy
 from functools import partial
 
+import discord
 import yaml
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 try:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
@@ -32,16 +32,18 @@ class MyMessageConverter(commands.MessageConverter):
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
-                )
+                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.",
+                ),
             )
         return message
 
 
 class Emoji(commands.EmojiConverter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[str, discord.Emoji]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> str | discord.Emoji:
         # argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
@@ -79,8 +81,10 @@ class Emoji(commands.EmojiConverter):
 
 class RoleOrMemberConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[discord.Role, discord.Member]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> discord.Role | discord.Member:
         try:
             return await commands.RoleConverter().convert(ctx, argument=argument)
         except commands.BadArgument as e:
@@ -94,23 +98,24 @@ def convert_to_bool(argument: typing.Any) -> bool:
     lowered = str(argument).lower().strip()
     if lowered in {"yes", "y", "true", "t", "1", "enable", "on"}:
         return True
-    elif lowered in {"no", "n", "false", "f", "0", "disable", "off"}:
+    if lowered in {"no", "n", "false", "f", "0", "disable", "off"}:
         return False
-    else:
-        raise commands.BadBoolArgument(lowered)
+    raise commands.BadBoolArgument(lowered)
 
 
 class ModalConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Dict[str, typing.Union[str, bool, typing.Dict, typing.List]]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> dict[str, str | bool | dict | list]:
         try:
             argument_dict = yaml.safe_load(argument)
         except yaml.YAMLError:
             raise commands.BadArgument(
                 _(
-                    "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)"
-                )
+                    "Error parsing YAML. Please make sure the format is valid (a YAML validator may help)",
+                ),
             )
         # general
         required_arguments = ["title", "button", "modal"]
@@ -127,14 +132,14 @@ class ModalConverter(commands.Converter):
         for arg in required_arguments:
             if arg not in argument_dict:
                 raise commands.BadArgument(
-                    _("The argument `/{arg}` is required in the root in the YAML.").format(arg=arg)
+                    _("The argument `/{arg}` is required in the root in the YAML.").format(arg=arg),
                 )
         for arg in argument_dict:
             if arg not in required_arguments + optional_arguments:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/{arg}` is invalid in in the YAML. Check the spelling."
-                    ).format(arg=arg)
+                        "The argument `/{arg}` is invalid in in the YAML. Check the spelling.",
+                    ).format(arg=arg),
                 )
         # button
         required_arguments = ["label"]
@@ -142,18 +147,19 @@ class ModalConverter(commands.Converter):
         for arg in required_arguments:
             if arg not in argument_dict["button"]:
                 raise commands.BadArgument(
-                    _("The argument `/button/{arg}` is required in the YAML.").format(arg=arg)
+                    _("The argument `/button/{arg}` is required in the YAML.").format(arg=arg),
                 )
         for arg in argument_dict["button"]:
             if arg not in required_arguments + optional_arguments:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/button/{arg}` is invalid in the YAML. Check the spelling."
-                    ).format(arg=arg)
+                        "The argument `/button/{arg}` is invalid in the YAML. Check the spelling.",
+                    ).format(arg=arg),
                 )
         if "emoji" in argument_dict["button"]:
             argument_dict["button"]["emoji"] = await Emoji().convert(
-                ctx, argument=argument_dict["button"]["emoji"]
+                ctx,
+                argument=argument_dict["button"]["emoji"],
             )
         if "style" in argument_dict["button"]:
             argument_dict["button"]["style"] = str(argument_dict["button"]["style"])
@@ -161,19 +167,19 @@ class ModalConverter(commands.Converter):
                 style = int(argument_dict["button"]["style"])
             except ValueError:
                 raise commands.BadArgument(
-                    _("The argument `/button/style` must be a number between 1 and 4.")
+                    _("The argument `/button/style` must be a number between 1 and 4."),
                 )
             if not 1 <= style <= 4:
                 raise commands.BadArgument(
-                    _("The argument `/button/style` must be a number between 1 and 4.")
+                    _("The argument `/button/style` must be a number between 1 and 4."),
                 )
             argument_dict["button"]["style"] = style
         else:
             argument_dict["button"]["style"] = 2
         # modal
-        if not isinstance(argument_dict["modal"], typing.List):
+        if not isinstance(argument_dict["modal"], list):
             raise commands.BadArgument(
-                _("The argument `/button/modal` must be a list of text inputs.")
+                _("The argument `/button/modal` must be a list of text inputs."),
             )
         required_arguments = ["label"]
         optional_arguments = [
@@ -192,21 +198,22 @@ class ModalConverter(commands.Converter):
                 if arg not in input:
                     raise commands.BadArgument(
                         _("The argument `/modal/{count}/{arg}` is required in the YAML.").format(
-                            count=count, arg=arg
-                        )
+                            count=count,
+                            arg=arg,
+                        ),
                     )
             for arg in input:
                 if arg not in required_arguments + optional_arguments:
                     raise commands.BadArgument(
                         _(
-                            "The argument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling."
-                        ).format(count=count, arg=arg)
+                            "The argument `/modal/{count}/{arg}` is invalid in the YAML. Check the spelling.",
+                        ).format(count=count, arg=arg),
                     )
             if len(input["label"]) > 45:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/modal/{count}/label` must be less than 45 characters long."
-                    ).format(count=count, arg=arg)
+                        "The argument `/modal/{count}/label` must be less than 45 characters long.",
+                    ).format(count=count, arg=arg),
                 )
             if "style" in input:
                 input["style"] = str(input["style"])
@@ -215,14 +222,14 @@ class ModalConverter(commands.Converter):
                 except ValueError:
                     raise commands.BadArgument(
                         _(
-                            "The argument `/modal/{count}/style` must be a number between 1 and 2."
-                        ).format(count=count)
+                            "The argument `/modal/{count}/style` must be a number between 1 and 2.",
+                        ).format(count=count),
                     )
                 if not 1 <= style <= 2:
                     raise commands.BadArgument(
                         _(
-                            "The argument `/modal/{count}/style` must be a number between 1 and 2."
-                        ).format(count=count)
+                            "The argument `/modal/{count}/style` must be a number between 1 and 2.",
+                        ).format(count=count),
                     )
                 input["style"] = style
             else:
@@ -233,8 +240,8 @@ class ModalConverter(commands.Converter):
                 except commands.BadBoolArgument:
                     raise commands.BadArgument(
                         _(
-                            "The argument `/modal/{count}/required` must be a boolean (True or False)."
-                        ).format(count=count)
+                            "The argument `/modal/{count}/required` must be a boolean (True or False).",
+                        ).format(count=count),
                     )
             else:
                 input["required"] = True
@@ -243,32 +250,32 @@ class ModalConverter(commands.Converter):
             if len(input["default"]) > 4000:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/modal/{count}/default` must be less than 4000 characters long."
-                    ).format(count=count, arg=arg)
+                        "The argument `/modal/{count}/default` must be less than 4000 characters long.",
+                    ).format(count=count, arg=arg),
                 )
             if "placeholder" not in input or input["placeholder"] == "None":
                 input["placeholder"] = ""
             if len(input["placeholder"]) > 100:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/modal/{count}/placeholder` must be less than 100 characters long."
-                    ).format(count=count, arg=arg)
+                        "The argument `/modal/{count}/placeholder` must be less than 100 characters long.",
+                    ).format(count=count, arg=arg),
                 )
             if "min_length" not in input or input["min_length"] == "None":
                 input["min_length"] = None
             elif not 0 <= input["min_length"] <= 4000:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/modal/{count}/min_length` must be between 0 and 4000."
-                    ).format(count=count, arg=arg)
+                        "The argument `/modal/{count}/min_length` must be between 0 and 4000.",
+                    ).format(count=count, arg=arg),
                 )
             if "max_length" not in input or input["max_length"] == "None":
                 input["max_length"] = None
             elif not 1 <= input["max_length"] <= 4000:
                 raise commands.BadArgument(
                     _(
-                        "The argument `/modal/{count}/max_length` must be between 0 and 4000."
-                    ).format(count=count, arg=arg)
+                        "The argument `/modal/{count}/max_length` must be between 0 and 4000.",
+                    ).format(count=count, arg=arg),
                 )
         # channel
         if "channel" in argument_dict:
@@ -292,7 +299,7 @@ class ModalConverter(commands.Converter):
                 argument_dict["anonymous"] = convert_to_bool(argument_dict["anonymous"])
             except commands.BadBoolArgument:
                 raise commands.BadArgument(
-                    _("The argument `/anonymous` must be a boolean (True or False).")
+                    _("The argument `/anonymous` must be a boolean (True or False)."),
                 )
         # unique_answer
         if "unique_answer" not in argument_dict:
@@ -302,7 +309,7 @@ class ModalConverter(commands.Converter):
                 argument_dict["unique_answer"] = convert_to_bool(argument_dict["unique_answer"])
             except commands.BadBoolArgument:
                 raise commands.BadArgument(
-                    _("The argument `/unique_answer` must be a boolean (True or False).")
+                    _("The argument `/unique_answer` must be a boolean (True or False)."),
                 )
         # messages
         if "messages" in argument_dict:
@@ -393,7 +400,7 @@ class DiscordModals(Cog):
                             "custom_id": f"DiscordModals_{CogsUtils.generate_key(length=10)}",
                         }
                         button_data.update(
-                            **guilds_data[guild]["modals"][modal]["button"]["buttons"][0]
+                            **guilds_data[guild]["modals"][modal]["button"]["buttons"][0],
                         )
                         guilds_data[guild]["modals"][modal]["button"] = button_data
                         for key in ("members", "check", "function", "function_args"):
@@ -420,7 +427,7 @@ class DiscordModals(Cog):
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         self.logger.info(
-            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
+            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog.",
         )
 
     async def load_buttons(self) -> None:
@@ -437,7 +444,7 @@ class DiscordModals(Cog):
                     if "custom_id" not in button:
                         button["custom_id"] = f"DiscordModals_{CogsUtils.generate_key(length=10)}"
                     button["style"] = discord.ButtonStyle(
-                        button["style"]
+                        button["style"],
                     )  # if "style" in button else discord.ButtonStyle.secondary  # `style` can don't exist in modals after the data migration
                     button = discord.ui.Button(**button)
                     button.callback = self.send_modal
@@ -454,13 +461,15 @@ class DiscordModals(Cog):
     async def send_modal(self, interaction: discord.Interaction) -> None:
         if await self.bot.cog_disabled_in_guild(cog=self, guild=interaction.guild):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return
         config = await self.config.guild(interaction.message.guild).modals()
         if f"{interaction.message.channel.id}-{interaction.message.id}" not in config:
             await interaction.response.send_message(
-                _("This message is not in Config."), ephemeral=True
+                _("This message is not in Config."),
+                ephemeral=True,
             )
             return
         config = config[f"{interaction.message.channel.id}-{interaction.message.id}"]
@@ -475,12 +484,14 @@ class DiscordModals(Cog):
             )
         ):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return
         if config["unique_answer"] and interaction.user.id in config["existing_answers"]:
             await interaction.response.send_message(
-                "You have already answered this Modal.", ephemeral=True
+                "You have already answered this Modal.",
+                ephemeral=True,
             )
             return
         try:
@@ -508,11 +519,14 @@ class DiscordModals(Cog):
             )
             if not interaction.response.is_done():
                 await interaction.response.send_message(
-                    _("Sorry. An error has occurred."), ephemeral=True
+                    _("Sorry. An error has occurred."),
+                    ephemeral=True,
                 )
 
     async def send_embed_with_responses(
-        self, interaction: discord.Interaction, inputs: typing.List[discord.ui.TextInput]
+        self,
+        interaction: discord.Interaction,
+        inputs: list[discord.ui.TextInput],
     ) -> None:
         config = await self.config.guild(interaction.message.guild).modals()
         if f"{interaction.message.channel.id}-{interaction.message.id}" not in config:
@@ -525,7 +539,7 @@ class DiscordModals(Cog):
             if channel is None:
                 await interaction.followup.send(
                     _(
-                        "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server."
+                        "The channel in which I was to send the results of this Modal no longer exists. Please notify an administrator of this server.",
                     ),
                     ephemeral=True,
                 )
@@ -536,11 +550,11 @@ class DiscordModals(Cog):
                     channel_permissions.view_channel,
                     channel_permissions.send_messages,
                     channel_permissions.embed_links,
-                ]
+                ],
             ):
                 await interaction.followup.send(
                     _(
-                        "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server."
+                        "I don't have sufficient permissions in the destination channel (view channel, send messages, send embeds). Please notify an administrator of this server.",
                     ),
                     ephemeral=True,
                 )
@@ -580,7 +594,7 @@ class DiscordModals(Cog):
                 if role is None:
                     await interaction.followup.send(
                         _(
-                            "The role that was to be assigned no longer exists. Please notify an administrator."
+                            "The role that was to be assigned no longer exists. Please notify an administrator.",
                         ),
                         ephemeral=True,
                     )
@@ -590,7 +604,7 @@ class DiscordModals(Cog):
                 except discord.HTTPException:
                     await interaction.followup.send(
                         _(
-                            "The role that was to be assigned could not be assigned. Please notify an administrator."
+                            "The role that was to be assigned could not be assigned. Please notify an administrator.",
                         ),
                         ephemeral=True,
                     )
@@ -600,13 +614,15 @@ class DiscordModals(Cog):
                 exc_info=e,
             )
             await interaction.followup.send(
-                config["messages"]["error"] or _("Sorry. An error has occurred."), ephemeral=True
+                config["messages"]["error"] or _("Sorry. An error has occurred."),
+                ephemeral=True,
             )
         else:
             if interaction.user.id not in config["existing_answers"]:
                 config["existing_answers"].append(interaction.user.id)
                 await self.config.guild(interaction.guild).modals.set_raw(
-                    f"{interaction.message.channel.id}-{interaction.message.id}", value=config
+                    f"{interaction.message.channel.id}-{interaction.message.id}",
+                    value=config,
                 )
             await interaction.followup.send(
                 config["messages"]["submit"] or _("Thank you for sending this Modal!"),
@@ -632,7 +648,11 @@ class DiscordModals(Cog):
 
     @discordmodals.command(aliases=["+"])
     async def add(
-        self, ctx: commands.Context, message: MyMessageConverter, *, argument: ModalConverter
+        self,
+        ctx: commands.Context,
+        message: MyMessageConverter,
+        *,
+        argument: ModalConverter,
     ) -> None:
         """Add a Modal for a message.
 
@@ -670,7 +690,7 @@ class DiscordModals(Cog):
         config = await self.config.guild(ctx.guild).modals.all()
         if f"{message.channel.id}-{message.id}" in config:
             raise commands.UserFeedbackCheckFailure(_("This message already has a Modal."))
-        elif message.components:
+        if message.components:
             raise commands.UserFeedbackCheckFailure(_("This message already has components."))
         try:
             button = argument["button"]
@@ -684,7 +704,7 @@ class DiscordModals(Cog):
             self.views[message] = view
         except discord.HTTPException:
             raise commands.UserFeedbackCheckFailure(
-                _("Sorry. An error occurred when I tried to put the button on the message.")
+                _("Sorry. An error occurred when I tried to put the button on the message."),
             )
         modal = discord.ui.Modal(
             title=argument["title"],
@@ -751,13 +771,13 @@ class DiscordModals(Cog):
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
         embed.set_footer(
-            text=_("There is {len_modals} modals in this server.").format(len_modals=len(modals))
+            text=_("There is {len_modals} modals in this server.").format(len_modals=len(modals)),
         )
         embeds = []
         for modal in _modals:
             e = embed.copy()
             e.description = _("Message Jump Link: {message_jump_link}\n").format(
-                message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{modal['message'].replace('-', '/')}"
+                message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{modal['message'].replace('-', '/')}",
             )
             del modal["message"]
             e.description += f"\n{box(json.dumps(modal, indent=4), lang='py')}"

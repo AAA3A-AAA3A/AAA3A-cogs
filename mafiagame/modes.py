@@ -1,9 +1,9 @@
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import random
+import typing
 
+import discord
+
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .constants import MODES_COLOR
@@ -46,22 +46,17 @@ class Mode:
     emoji: str
     description: str
 
-    roles: typing.Dict[
-        typing.Union[int, typing.Tuple[typing.Optional[int], typing.Optional[int]]],
-        typing.Dict[
+    roles: dict[
+        int | tuple[int | None, int | None],
+        dict[
             typing.Literal["must", "may", "choices"],
-            typing.Union[
-                typing.List[typing.Type[Role]],
-                typing.Tuple[
-                    typing.Optional[int], typing.Optional[int], typing.List[typing.Type[Role]]
-                ],
-            ],
+            list[type[Role]] | tuple[int | None, int | None, list[type[Role]]],
         ],
     ]
-    amounts: typing.Dict[int, typing.Dict[typing.Literal["villagers", "mafia", "neutral"], int]]
+    amounts: dict[int, dict[typing.Literal["villagers", "mafia", "neutral"], int]]
 
     @classmethod
-    def get_kwargs(cls) -> typing.Dict[str, typing.Union[discord.Embed, discord.File]]:
+    def get_kwargs(cls) -> dict[str, discord.Embed | discord.File]:
         _: Translator = Translator("MafiaGame", __file__)
         embed: discord.Embed = discord.Embed(
             title=_("Mode — **{emoji} {name}**").format(emoji=cls.emoji, name=cls.name),
@@ -113,7 +108,7 @@ class Mode:
                 embed.add_field(
                     name=_("{players_number} Players").format(players_number=players_number),
                     value=_(
-                        "- Villagers: {villagers}\n" "- Mafia: {mafia}\n" "- Neutral: {neutral}"
+                        "- Villagers: {villagers}\n- Mafia: {mafia}\n- Neutral: {neutral}",
                     ).format(
                         villagers=amounts["villagers"],
                         mafia=amounts["mafia"],
@@ -130,12 +125,12 @@ class Mode:
     def get_roles(
         cls,
         players_number: int,
-        config: typing.Dict[str, typing.Any] = {
+        config: dict[str, typing.Any] = {
             "disabled_roles": [],
             "more_roles": False,
             "custom_roles": [],
         },
-    ) -> typing.List[typing.Type[Role]]:
+    ) -> list[type[Role]]:
         specificities = next(
             (
                 roles
@@ -159,13 +154,13 @@ class Mode:
             for amount, choices in specificities["choices"]:
                 choices = [role for role in choices if role.name not in config["disabled_roles"]]
                 if amount is not None:
-                    if not isinstance(amount, typing.Tuple):
+                    if not isinstance(amount, tuple):
                         roles.extend(random.sample(choices, k=amount))
                     else:
                         roles.extend(random.sample(choices, k=random.randint(*amount)))
                 elif len(roles) < players_number:
                     roles.extend(
-                        random.sample(choices, min(len(choices), players_number - len(roles)))
+                        random.sample(choices, min(len(choices), players_number - len(roles))),
                     )
         if len(roles) < players_number:
             roles.extend([Villager] * (players_number - len(roles)))
@@ -302,7 +297,7 @@ class Crimson(Mode):
                         Link,
                         Alchemist,
                     ],
-                )
+                ),
             ],
         },
         (8, 10): {
@@ -474,12 +469,12 @@ class Random(Mode):
     def get_roles(
         cls,
         players_number: int,
-        config: typing.Dict[str, typing.Any] = {
+        config: dict[str, typing.Any] = {
             "disabled_roles": [],
             "more_roles": False,
             "custom_roles": [],
         },
-    ) -> typing.List[typing.Type[Role]]:
+    ) -> list[type[Role]]:
         roles = [GodFather]
         possible_roles = [
             role
@@ -515,19 +510,19 @@ class Custom(Mode):
     name: str = "Custom"
     emoji: str = "🔧"
     description: str = _(
-        "A mode where you can choose all the roles. Use `[p]setmafia customroles` to configure this mode."
+        "A mode where you can choose all the roles. Use `[p]setmafia customroles` to configure this mode.",
     )
 
     @classmethod
     def get_roles(
         cls,
         players_number: int,
-        config: typing.Dict[str, typing.Any] = {
+        config: dict[str, typing.Any] = {
             "disabled_roles": [],
             "more_roles": False,
             "custom_roles": [],
         },
-    ) -> typing.List[typing.Type[Role]]:
+    ) -> list[type[Role]]:
         roles = [discord.utils.get(ROLES, name=role) for role in config["custom_roles"]]
         if GodFather not in roles:
             roles.insert(0, GodFather)
@@ -539,4 +534,4 @@ class Custom(Mode):
         return roles
 
 
-MODES: typing.List[typing.Type[Mode]] = [Classic, Crazy, Chaos, Corona, Crimson, Random, Custom]
+MODES: list[type[Mode]] = [Classic, Crazy, Chaos, Corona, Crimson, Random, Custom]

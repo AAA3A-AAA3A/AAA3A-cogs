@@ -1,10 +1,11 @@
-from AAA3A_utils import Cog, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import typing
 
+import discord
+
+from AAA3A_utils import Cog, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list
 
 # Credits:
@@ -35,8 +36,9 @@ class OnlyAllow(Cog):
             allowed_commands=[],
         )
 
-        self.cache: typing.Dict[
-            int, typing.Dict[typing.Literal["allowed_cogs", "allowed_commands"], typing.List[str]]
+        self.cache: dict[
+            int,
+            dict[typing.Literal["allowed_cogs", "allowed_commands"], list[str]],
         ] = {}
 
     async def cog_load(self) -> None:
@@ -54,13 +56,15 @@ class OnlyAllow(Cog):
         if not await self.check_command(ctx):
             raise commands.CheckFailure(
                 _(
-                    "Only specific cogs and commands are allowed in this server. Ask to a bot owner to add the cog(s) or the command(s) you want to use."
-                )
+                    "Only specific cogs and commands are allowed in this server. Ask to a bot owner to add the cog(s) or the command(s) you want to use.",
+                ),
             )
         return True
 
     async def check_command(
-        self, ctx: commands.Context, command: typing.Optional[commands.Command] = None
+        self,
+        ctx: commands.Context,
+        command: commands.Command | None = None,
     ) -> bool:
         if command is None:
             command = ctx.command
@@ -111,7 +115,7 @@ class OnlyAllow(Cog):
     async def addcog(
         self,
         ctx: commands.Context,
-        guild: typing.Optional[GuildConverter],
+        guild: GuildConverter | None,
         *,
         cog: commands.converter.CogConverter,
     ) -> None:
@@ -127,7 +131,7 @@ class OnlyAllow(Cog):
     async def addcommand(
         self,
         ctx: commands.Context,
-        guild: typing.Optional[GuildConverter],
+        guild: GuildConverter | None,
         *,
         command: commands.converter.CommandConverter,
     ) -> None:
@@ -136,7 +140,7 @@ class OnlyAllow(Cog):
         async with self.config.guild(guild).all() as data:
             if command.qualified_name in data["allowed_commands"]:
                 raise commands.BadArgument(
-                    _("This command is already in the allowed commands list.")
+                    _("This command is already in the allowed commands list."),
                 )
             data["allowed_commands"].append(command.qualified_name)
         self.cache[guild.id] = data
@@ -145,7 +149,7 @@ class OnlyAllow(Cog):
     async def removecog(
         self,
         ctx: commands.Context,
-        guild: typing.Optional[GuildConverter],
+        guild: GuildConverter | None,
         *,
         cog: commands.converter.CogConverter,
     ) -> None:
@@ -163,7 +167,7 @@ class OnlyAllow(Cog):
     async def removecommand(
         self,
         ctx: commands.Context,
-        guild: typing.Optional[GuildConverter],
+        guild: GuildConverter | None,
         *,
         command: commands.converter.CommandConverter,
     ) -> None:
@@ -178,7 +182,7 @@ class OnlyAllow(Cog):
         self.cache[guild.id] = data
 
     @onlyallow.command()
-    async def clear(self, ctx: commands.Context, guild: typing.Optional[GuildConverter]) -> None:
+    async def clear(self, ctx: commands.Context, guild: GuildConverter | None) -> None:
         """Clear the allowed cogs and commands list in a server or the current one."""
         guild = guild or ctx.guild
         await self.config.guild(guild).clear()
@@ -211,6 +215,6 @@ class OnlyAllow(Cog):
                         title=f"{title} ({len(items)}):",
                         description=humanize_list([f"`{item}`" for item in items]),
                         color=await ctx.embed_color(),
-                    )
+                    ),
                 )
         await Menu(pages=[{"embeds": embeds}]).start(ctx=ctx)

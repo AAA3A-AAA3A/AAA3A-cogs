@@ -1,27 +1,27 @@
-from AAA3A_utils import CogsUtils, Loop  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 import functools
+import typing
 from collections import defaultdict
 
-from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
+import discord
 
-from ..constants import Emojis, clean_backticks, get_non_animated_asset
-from ..views import ToggleModuleButton
+from AAA3A_utils import CogsUtils, Loop
+from redbot.core import commands
+from redbot.core.i18n import Translator
+from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
+from security.constants import Emojis, clean_backticks, get_non_animated_asset
+from security.views import ToggleModuleButton
+
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
 
 
-LOGGING_EVENTS: typing.Dict[
+LOGGING_EVENTS: dict[
     str,
-    typing.Dict[
+    dict[
         str,
-        typing.Union[str, typing.List[typing.Dict[str, typing.Union[str, discord.Color, bool]]]],
+        str | list[dict[str, str | discord.Color | bool]],
     ],
 ] = {
     "join_leave": {
@@ -456,14 +456,14 @@ class LoggingModule(Module):
 
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)
-        self.webhooks: typing.Dict[discord.TextChannel, discord.Webhook] = {}
-        self.invites_cache: typing.Dict[
+        self.webhooks: dict[discord.TextChannel, discord.Webhook] = {}
+        self.invites_cache: dict[
             discord.Guild,
-            typing.Dict[
+            dict[
                 str,
-                typing.Dict[
+                dict[
                     typing.Literal["uses", "max_uses", "inviter"],
-                    typing.Union[typing.Optional[int], discord.Member, discord.User],
+                    int | None | discord.Member | discord.User,
                 ],
             ],
         ] = defaultdict(dict)
@@ -498,8 +498,10 @@ class LoggingModule(Module):
         self.cog.bot.remove_listener(self.on_audit_log_entry_create)
 
     async def get_status(
-        self, guild: discord.Guild, check_enabled: bool = True
-    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
+        self,
+        guild: discord.Guild,
+        check_enabled: bool = True,
+    ) -> tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
             return "❌", _("Disabled"), _("Logging is currently disabled.")
@@ -527,7 +529,7 @@ class LoggingModule(Module):
                 "⚠️",
                 _("Warning"),
                 _(
-                    "The bot lacks the `View Audit Log` permission, which will limit logging capabilities a lot."
+                    "The bot lacks the `View Audit Log` permission, which will limit logging capabilities a lot.",
                 ),
             )
         if config["use_webhooks"] and not guild.me.guild_permissions.manage_webhooks:
@@ -539,14 +541,18 @@ class LoggingModule(Module):
         return "✅", _("Enabled"), _("Logging is enabled and configured.")
 
     async def get_settings(
-        self, guild: discord.Guild, view: discord.ui.View
-    ) -> typing.Tuple[str, str, typing.List[typing.Dict], typing.List[discord.ui.Item]]:
+        self,
+        guild: discord.Guild,
+        view: discord.ui.View,
+    ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         config = await self.config_value(guild)()
         title = _("Security — {emoji} {name} {status}").format(
-            emoji=self.emoji, name=self.name, status=(await self.get_status(guild))[0]
+            emoji=self.emoji,
+            name=self.name,
+            status=(await self.get_status(guild))[0],
         )
         description = _(
-            "Configure logging for various events in your server. You can enable or disable specific events, set the logging channel, and more."
+            "Configure logging for various events in your server. You can enable or disable specific events, set the logging channel, and more.",
         )
         status = await self.get_status(guild)
         if status[0] == "⚠️":
@@ -570,12 +576,12 @@ class LoggingModule(Module):
                     "name": f"{data['emoji']} {data['name']}:",
                     "value": "",
                     "inline": True,
-                }
+                },
             )
             first_state = list(category_config.values())[0]["enabled"]
             if all(event["enabled"] == first_state for event in category_config.values()):
                 fields[-1]["value"] += _("**Enabled:** {state}").format(
-                    state="✅" if first_state else "❌"
+                    state="✅" if first_state else "❌",
                 )
             else:
                 fields[-1]["value"] += _("**Enabled:** 🔀 (Different States)")
@@ -586,18 +592,16 @@ class LoggingModule(Module):
                     and (channel := guild.get_channel(first_channel_id)) is not None
                 ):
                     fields[-1]["value"] += _(
-                        "\n**Channel:** {channel.mention} (`{channel}`)"
+                        "\n**Channel:** {channel.mention} (`{channel}`)",
                     ).format(channel=channel)
                 else:
                     fields[-1]["value"] += _("\n**Channel:** None")
             else:
                 fields[-1]["value"] += "\n**Channel:** 🔀 (Different Channels)"
             first_ignore_bots = list(category_config.values())[0]["ignore_bots"]
-            if all(
-                event["ignore_bots"] == first_ignore_bots for event in category_config.values()
-            ):
+            if all(event["ignore_bots"] == first_ignore_bots for event in category_config.values()):
                 fields[-1]["value"] += _("\n**Ignore Bots:** {state}").format(
-                    state="✅" if first_ignore_bots else "❌"
+                    state="✅" if first_ignore_bots else "❌",
                 )
             else:
                 fields[-1]["value"] += "\n**Ignore Bots:** 🔀 (Different States)"
@@ -620,7 +624,7 @@ class LoggingModule(Module):
             await self.config_value(guild).use_webhooks.set(config["use_webhooks"])
             await interaction.followup.send(
                 _("Logging using webhooks is now {status}.").format(
-                    status=_("enabled") if config["use_webhooks"] else _("disabled")
+                    status=_("enabled") if config["use_webhooks"] else _("disabled"),
                 ),
                 ephemeral=True,
             )
@@ -653,7 +657,7 @@ class LoggingModule(Module):
             if not await CogsUtils.ConfirmationAsk(
                 fake_context,
                 _(
-                    "⚠️ Are you sure you want to create a new logging category with some channels? That will overwrite the current logging channel for all events."
+                    "⚠️ Are you sure you want to create a new logging category with some channels? That will overwrite the current logging channel for all events.",
                 ),
                 timeout_message=None,
                 ephemeral=True,
@@ -663,10 +667,13 @@ class LoggingModule(Module):
                 name=_("📁・Logs"),
                 overwrites={
                     guild.default_role: discord.PermissionOverwrite(
-                        view_channel=False, send_messages=False
+                        view_channel=False,
+                        send_messages=False,
                     ),
                     guild.me: discord.PermissionOverwrite(
-                        view_channel=True, send_messages=True, embed_links=True
+                        view_channel=True,
+                        send_messages=True,
+                        embed_links=True,
                     ),
                 },
                 reason=_("Created by Security's Logging Module."),
@@ -679,7 +686,7 @@ class LoggingModule(Module):
                         category=category.replace("_", "-"),
                     ),
                     topic=_("This channel is used for logging {category} events.").format(
-                        category=LOGGING_EVENTS[category]["name"]
+                        category=LOGGING_EVENTS[category]["name"],
                     ),
                     reason=_("Created by Security's Logging Module."),
                 )
@@ -688,7 +695,7 @@ class LoggingModule(Module):
             await self.config_value(guild).set(config)
             await interaction.followup.send(
                 _("✅ A new logging category has been created: {category_channel.name}.").format(
-                    category=category
+                    category=category,
                 ),
                 ephemeral=True,
             )
@@ -721,7 +728,7 @@ class LoggingModule(Module):
             if not await CogsUtils.ConfirmationAsk(
                 fake_context,
                 _(
-                    "⚠️ Are you sure you want to create a new logging channel? That will overwrite the current logging channel for all events."
+                    "⚠️ Are you sure you want to create a new logging channel? That will overwrite the current logging channel for all events.",
                 ),
                 timeout_message=None,
                 ephemeral=True,
@@ -732,10 +739,13 @@ class LoggingModule(Module):
                 topic=_("This channel is used for logging various events."),
                 overwrites={
                     guild.default_role: discord.PermissionOverwrite(
-                        view_channel=False, send_messages=False
+                        view_channel=False,
+                        send_messages=False,
                     ),
                     guild.me: discord.PermissionOverwrite(
-                        view_channel=True, send_messages=True, embed_links=True
+                        view_channel=True,
+                        send_messages=True,
+                        embed_links=True,
                     ),
                 },
                 reason=_("Created by Security's Logging Module."),
@@ -747,7 +757,7 @@ class LoggingModule(Module):
             await self.config_value(guild).set(config)
             await interaction.followup.send(
                 _("✅ A new logging channel has been created: {channel.mention}.").format(
-                    channel=channel
+                    channel=channel,
                 ),
                 ephemeral=True,
             )
@@ -782,7 +792,7 @@ class LoggingModule(Module):
             await self.config_value(guild).events.set(config["events"])
             await interaction.response.send_message(
                 _("✅ All logging events have been **{state}**.").format(
-                    state=_("enabled") if new_state else _("disabled")
+                    state=_("enabled") if new_state else _("disabled"),
                 ),
                 ephemeral=True,
             )
@@ -817,7 +827,7 @@ class LoggingModule(Module):
             await self.config_value(guild).events.set(config["events"])
             await interaction.response.send_message(
                 _("✅ All logging events will now **{state}** bots.").format(
-                    state=_("ignore") if new_state else _("log")
+                    state=_("ignore") if new_state else _("log"),
                 ),
                 ephemeral=True,
             )
@@ -839,9 +849,7 @@ class LoggingModule(Module):
                     event["channel"] = channel.id
             await self.config_value(guild).events.set(config["events"])
             await interaction.response.send_message(
-                _("✅ All events will now be logged in {channel.mention}.").format(
-                    channel=channel
-                ),
+                _("✅ All events will now be logged in {channel.mention}.").format(channel=channel),
                 ephemeral=True,
             )
             await view._message.edit(embed=await view.get_embed(), view=view)
@@ -877,28 +885,29 @@ class LoggingModule(Module):
         return title, description, fields, components
 
     async def get_event(
-        self, guild: discord.Guild, event_value: str
-    ) -> typing.Dict[str, typing.Any]:
+        self,
+        guild: discord.Guild,
+        event_value: str,
+    ) -> dict[str, typing.Any]:
         config = await self.config_value(guild)()
         for category, events in config["events"].items():
             if event_value in events:
                 event = events[event_value]
                 event["name"] = next(
-                    (
-                        e["name"]
-                        for e in LOGGING_EVENTS[category]["events"]
-                        if e["value"] == event_value
-                    )
+                    e["name"]
+                    for e in LOGGING_EVENTS[category]["events"]
+                    if e["value"] == event_value
                 )
                 event["category"] = category
                 event["value"] = event_value
                 return event
+        return None
 
     async def check_config(
         self,
         guild: discord.Guild,
-        event: typing.Dict[str, typing.Any],
-        responsible: typing.Optional[discord.Member],
+        event: dict[str, typing.Any],
+        responsible: discord.Member | None,
         target=None,
     ) -> discord.TextChannel:
         config = await self.config_value(guild)()
@@ -907,21 +916,25 @@ class LoggingModule(Module):
         if responsible is not None:
             if event.get("ignore_bots", False) and responsible.bot:
                 return False
-            if event["value"] in ("message_edit", "message_delete") and (
-                await self.cog.is_whitelisted(responsible, "logging_message_log")
-                or await self.cog.is_message_whitelisted(target, "logging_message_log")
-            ):
-                return False
-            elif event["value"] in (
-                "channel_update",
-                "overwrite_create",
-                "overwrite_delete",
-                "overwrite_update",
-            ) and await self.cog.is_whitelisted(target, "logging_channel_update_overwrites_log"):
-                return False
-            elif event["value"] in ("reaction_add", "reaction_remove") and (
-                await self.cog.is_whitelisted(responsible, "logging_reaction_log")
-                or await self.cog.is_message_whitelisted(target, "logging_reaction_log")
+            if (
+                event["value"] in ("message_edit", "message_delete")
+                and (
+                    await self.cog.is_whitelisted(responsible, "logging_message_log")
+                    or await self.cog.is_message_whitelisted(target, "logging_message_log")
+                )
+                or event["value"]
+                in (
+                    "channel_update",
+                    "overwrite_create",
+                    "overwrite_delete",
+                    "overwrite_update",
+                )
+                and await self.cog.is_whitelisted(target, "logging_channel_update_overwrites_log")
+                or event["value"] in ("reaction_add", "reaction_remove")
+                and (
+                    await self.cog.is_whitelisted(responsible, "logging_reaction_log")
+                    or await self.cog.is_message_whitelisted(target, "logging_reaction_log")
+                )
             ):
                 return False
         elif event["value"] in (
@@ -943,30 +956,25 @@ class LoggingModule(Module):
     async def get_embed(
         self,
         guild: discord.Guild,
-        event: typing.Dict[str, typing.Any],
-        responsible: typing.Optional[discord.Member],
-        target: typing.Optional[
-            typing.Union[
-                discord.Member,
-                discord.abc.GuildChannel,
-                discord.Thread,
-                discord.Message,
-                discord.Role,
-                discord.Emoji,
-                discord.Sticker,
-                discord.ScheduledEvent,
-            ]
-        ] = None,
-        reason: typing.Optional[str] = None,
-        entry: typing.Optional[discord.AuditLogEntry] = None,
+        event: dict[str, typing.Any],
+        responsible: discord.Member | None,
+        target: discord.Member
+        | discord.abc.GuildChannel
+        | discord.Thread
+        | discord.Message
+        | discord.Role
+        | discord.Emoji
+        | discord.Sticker
+        | discord.ScheduledEvent
+        | None = None,
+        reason: str | None = None,
+        entry: discord.AuditLogEntry | None = None,
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
             title=f"{event['name']} {event['emoji']}",
             color=discord.Color(event["color"]),
             timestamp=(
-                entry.created_at
-                if entry is not None
-                else datetime.datetime.now(datetime.timezone.utc)
+                entry.created_at if entry is not None else datetime.datetime.now(datetime.UTC)
             ),
         )
 
@@ -977,7 +985,7 @@ class LoggingModule(Module):
             )
             if isinstance(responsible, discord.Member):
                 embed.description = _(
-                    "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) {responsible_emojis} - `{responsible.id}`"
+                    "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) {responsible_emojis} - `{responsible.id}`",
                 ).format(
                     emoji=Emojis.ISSUED_BY.value,
                     responsible=responsible,
@@ -985,7 +993,7 @@ class LoggingModule(Module):
                 )
             elif isinstance(responsible, discord.User):
                 embed.description = _(
-                    "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) - `{responsible.id}`"
+                    "{emoji} **Responsible:** {responsible.mention} (`{responsible}`) - `{responsible.id}`",
                 ).format(emoji=Emojis.ISSUED_BY.value, responsible=responsible)
         else:
             embed.description = ""
@@ -995,7 +1003,7 @@ class LoggingModule(Module):
                 url=get_non_animated_asset(
                     target.display_avatar
                     if isinstance(target, (discord.Member, discord.User))
-                    else (target.icon if isinstance(target, discord.Role) else None)
+                    else (target.icon if isinstance(target, discord.Role) else None),
                 ),
             )
             if isinstance(target, discord.Object) and target.type in (
@@ -1008,7 +1016,7 @@ class LoggingModule(Module):
                     pass
             if isinstance(target, discord.Member):
                 embed.description += "\n" + _(
-                    "{emoji} **Target Member:** {member.mention} (`{member}`) {member_emoji} - `{member.id}`"
+                    "{emoji} **Target Member:** {member.mention} (`{member}`) {member_emoji} - `{member.id}`",
                 ).format(
                     emoji=Emojis.MEMBER.value,
                     member=target,
@@ -1016,11 +1024,11 @@ class LoggingModule(Module):
                 )
             elif isinstance(target, discord.User):
                 embed.description += "\n" + _(
-                    "{emoji} **Target User:** {user.mention} (`{user}`) - `{user.id}`"
+                    "{emoji} **Target User:** {user.mention} (`{user}`) - `{user.id}`",
                 ).format(emoji=Emojis.MEMBER.value, user=target)
             elif isinstance(target, discord.Role):
                 embed.description += "\n" + _(
-                    "{emoji} **Target Role:** {role.mention} (`{role}`) - `{role.id}`"
+                    "{emoji} **Target Role:** {role.mention} (`{role}`) - `{role.id}`",
                 ).format(emoji=Emojis.ROLE.value, role=target)
             elif isinstance(
                 target,
@@ -1032,22 +1040,22 @@ class LoggingModule(Module):
                 ),
             ):
                 embed.description += "\n" + _(
-                    "{emoji} **Target Channel:** {channel.mention} (`{channel}`) - `{channel.id}`"
+                    "{emoji} **Target Channel:** {channel.mention} (`{channel}`) - `{channel.id}`",
                 ).format(emoji=Emojis.CHANNEL.value, channel=target)
             elif isinstance(target, discord.Thread):
                 embed.description += "\n" + _(
-                    "{emoji} **Target Thread:** {thread.mention} (`{thread}`) - `{thread.id}`"
+                    "{emoji} **Target Thread:** {thread.mention} (`{thread}`) - `{thread.id}`",
                 ).format(
                     emoji=Emojis.THREAD.value,
                     thread=target,
                 )
             elif isinstance(target, discord.Message):
                 embed.description += "\n" + _(
-                    "{emoji} **Target Message:** {message.jump_url}"
+                    "{emoji} **Target Message:** {message.jump_url}",
                 ).format(emoji=Emojis.MESSAGE.value, message=target)
                 if target.author != responsible:
                     embed.description += _(
-                        "\n- **Author:** {target.author.mention} (`{target.author}`){member_emoji} - `{target.author.id}`"
+                        "\n- **Author:** {target.author.mention} (`{target.author}`){member_emoji} - `{target.author.id}`",
                     ).format(
                         target=target,
                         member_emoji=(
@@ -1067,25 +1075,25 @@ class LoggingModule(Module):
                         else f"https://discord.com/channels/{target.guild.id}/{target.channel.id}/{target.reference.message_id}"
                     )
                     embed.description += _(
-                        "\n- **Replying to:** [Jump to Message]({jump_link})"
+                        "\n- **Replying to:** [Jump to Message]({jump_link})",
                     ).format(jump_link=jump_link)
             elif isinstance(target, discord.Emoji):
                 embed.description += "\n" + _(
-                    "{emoji} **Target Emoji:** `{target.name}` - `{target.id}`"
+                    "{emoji} **Target Emoji:** `{target.name}` - `{target.id}`",
                 ).format(
                     emoji=Emojis.EMOJI.value,
                     target=target,
                 )
             elif isinstance(target, discord.Sticker):
                 embed.description += "\n" + _(
-                    "{emoji} **Target Sticker:** `{sticker.name}` - `{sticker.id}`"
+                    "{emoji} **Target Sticker:** `{sticker.name}` - `{sticker.id}`",
                 ).format(
                     emoji=Emojis.STICKER.value,
                     sticker=target,
                 )
             elif isinstance(target, discord.ScheduledEvent):
                 embed.description += "\n" + _(
-                    "{emoji} **Target Scheduled Event:** `{event.name}` - `{event.id}`"
+                    "{emoji} **Target Scheduled Event:** `{event.name}` - `{event.id}`",
                 ).format(emoji=Emojis.SCHEDULED_EVENT.value, event=target)
             elif (
                 isinstance(target, discord.Object)
@@ -1094,35 +1102,36 @@ class LoggingModule(Module):
             ):
                 if event["value"] == "channel_delete":
                     embed.description += "\n" + _(
-                        "{emoji} **Target Channel:** `{target_name}` - `{target.id}`"
+                        "{emoji} **Target Channel:** `{target_name}` - `{target.id}`",
                     ).format(emoji=Emojis.CHANNEL.value, target_name=before.name, target=target)
                 elif event["value"] == "thread_delete":
                     embed.description += "\n" + _(
-                        "{emoji} **Target Thread:** `{target_name}` - `{target.id}`"
+                        "{emoji} **Target Thread:** `{target_name}` - `{target.id}`",
                     ).format(emoji=Emojis.THREAD.value, target_name=before.name, target=target)
                 elif event["value"] == "role_delete":
                     embed.description += "\n" + _(
-                        "{emoji} **Target Role:** `{target_name}` - `{target.id}`"
+                        "{emoji} **Target Role:** `{target_name}` - `{target.id}`",
                     ).format(emoji=Emojis.ROLE.value, target_name=before.name, target=target)
                 else:
-                    embed.description += "\n" + _(
-                        "🗑️ **Target:** `{target.id}`"
-                    ).format(target=target)
+                    embed.description += "\n" + _("🗑️ **Target:** `{target.id}`").format(
+                        target=target,
+                    )
         elif event["value"] in ("member_join", "member_leave"):
             embed.set_thumbnail(url=get_non_animated_asset(responsible.display_avatar))
 
         if entry is not None and (extra := entry.extra) is not None:
             if isinstance(extra, discord.Member):
                 embed.description += _(
-                    "\n{emoji} **Target Member:** {member.mention} (`{member}`) - `{member.id}`"
+                    "\n{emoji} **Target Member:** {member.mention} (`{member}`) - `{member.id}`",
                 ).format(emoji=Emojis.MEMBER.value, member=extra)
             elif isinstance(extra, discord.Role):
                 embed.description += _(
-                    "\n{emoji} **Target Role:** {role.mention} (`{role}`) - `{role.id}`"
+                    "\n{emoji} **Target Role:** {role.mention} (`{role}`) - `{role.id}`",
                 ).format(emoji=Emojis.ROLE.value, role=extra)
         if reason is not None:
             embed.description += _("\n{emoji} **Reason:**\n>>> {reason}").format(
-                emoji=Emojis.REASON.value, reason=reason
+                emoji=Emojis.REASON.value,
+                reason=reason,
             )
 
         if entry is not None:
@@ -1130,18 +1139,18 @@ class LoggingModule(Module):
             def get_formatting(value: typing.Any) -> str:
                 if isinstance(value, str):
                     return f"`{value}`"
-                elif isinstance(value, bool):
+                if isinstance(value, bool):
                     return "✅" if value else "❌"
-                elif isinstance(value, discord.Color):
+                if isinstance(value, discord.Color):
                     return f"`#{value.value:06X}`"
-                elif isinstance(value, discord.Permissions):
+                if isinstance(value, discord.Permissions):
                     return f"`Permissions({value.value})`"
-                elif isinstance(value, (discord.Member, discord.User, discord.Role)):
+                if isinstance(value, (discord.Member, discord.User, discord.Role)):
                     return f"{value.mention} (`{value}`) - `{value.id}`"
-                elif (
-                    isinstance(value, typing.List)
+                if (
+                    isinstance(value, list)
                     and value
-                    and isinstance(value[0], typing.Tuple)
+                    and isinstance(value[0], tuple)
                     and isinstance(value[0][1], discord.PermissionOverwrite)
                 ):
                     result = ""
@@ -1154,9 +1163,13 @@ class LoggingModule(Module):
                             target_display = f"{target.type.__name__} `{target.id}`"
                         result += f"\n  - {target_display} - `PermissionOverwrite({len(overwrite._values)} permissions)`"
                     return result
-                elif isinstance(value, typing.List) and value and isinstance(value[0], discord.AutoModRuleAction):
+                if (
+                    isinstance(value, list)
+                    and value
+                    and isinstance(value[0], discord.AutoModRuleAction)
+                ):
                     return humanize_list([a.type.name.replace("_", " ").title() for a in value])
-                elif isinstance(value, discord.AutoModTrigger):
+                if isinstance(value, discord.AutoModTrigger):
                     return f"`{value.type.name.replace('_', ' ').title()}`"
                 return f"`{value}`"
 
@@ -1253,11 +1266,11 @@ class LoggingModule(Module):
                                 continue
                             for permission, value in role.permissions:
                                 if value and not getattr(
-                                    entry.target.guild_permissions, permission, False
+                                    entry.target.guild_permissions,
+                                    permission,
+                                    False,
                                 ):
-                                    removed_permissions.append(
-                                        permission.replace("_", " ").title()
-                                    )
+                                    removed_permissions.append(permission.replace("_", " ").title())
             if added_permissions or removed_permissions:
                 embed.add_field(
                     name=_("Permissions Changes:"),
@@ -1293,7 +1306,8 @@ class LoggingModule(Module):
             else:
                 if (webhook := self.webhooks.get(channel)) is None:
                     self.webhooks[channel] = webhook = await CogsUtils.get_hook(
-                        self.cog.bot, channel
+                        self.cog.bot,
+                        channel,
                     )
                 try:
                     return await webhook.send(
@@ -1331,7 +1345,7 @@ class LoggingModule(Module):
                 for invite in invites
             }
 
-    async def get_join_method(self, member: discord.Member) -> typing.Optional[str]:
+    async def get_join_method(self, member: discord.Member) -> str | None:
         view_audit_logs, manage_guild = (
             member.guild.me.guild_permissions.view_audit_log,
             member.guild.me.guild_permissions.manage_guild,
@@ -1339,16 +1353,17 @@ class LoggingModule(Module):
         if member.bot:
             if view_audit_logs:
                 async for entry in member.guild.audit_logs(
-                    limit=3, action=discord.AuditLogAction.bot_add
+                    limit=3,
+                    action=discord.AuditLogAction.bot_add,
                 ):
                     if entry.target.id == member.id:
                         return _("- Added by {user.mention} (`{user}`) - `{user.id}`").format(
-                            user=entry.user
+                            user=entry.user,
                         )
             return None
         if "VANITY_URL" in member.guild.features and member.guild.vanity_url is not None:
             possible_invite = _("- {vanity_url} (Vanity URL)").format(
-                vanity_url=member.guild.vanity_url
+                vanity_url=member.guild.vanity_url,
             )
         else:
             possible_invite = None
@@ -1361,7 +1376,7 @@ class LoggingModule(Module):
                         continue
                     if invite.uses > invites[invite.code]["uses"]:
                         possible_invite = _(
-                            "- https://discord.gg/{invite.code}\n- Invited by {inviter.mention} (`{inviter}`) - `{inviter.id}`"
+                            "- https://discord.gg/{invite.code}\n- Invited by {inviter.mention} (`{inviter}`) - `{inviter.id}`",
                         ).format(invite=invite, inviter=invite.inviter)
                         break
             if possible_invite is None:
@@ -1371,17 +1386,18 @@ class LoggingModule(Module):
                     except discord.NotFound:
                         if data["max_uses"] is not None and (data["max_uses"] - data["uses"]) == 1:
                             possible_invite = _(
-                                "- https://discord.gg/{code}\n- Invited by {inviter.mention} (`{inviter}`) - `{inviter.id}`"
+                                "- https://discord.gg/{code}\n- Invited by {inviter.mention} (`{inviter}`) - `{inviter.id}`",
                             ).format(code=code, inviter=data["inviter"])
                             break
             await self.cache_invites()  # Refresh cache.
         if possible_invite is None and view_audit_logs:
             async for entry in member.guild.audit_logs(
-                limit=1, action=discord.AuditLogAction.invite_create
+                limit=1,
+                action=discord.AuditLogAction.invite_create,
             ):
                 if entry.target.id == member.id:
                     possible_invite = _(
-                        "- https://discord.gg/{entry.target.code}\n- Invited by {entry.user.mention} (`{entry.user}`) - `{entry.user.id}`"
+                        "- https://discord.gg/{entry.target.code}\n- Invited by {entry.user.mention} (`{entry.user}`) - `{entry.user.id}`",
                     ).format(entry=entry)
                     break
         return possible_invite
@@ -1402,7 +1418,7 @@ class LoggingModule(Module):
                         f"{role.mention} (`{role.name}`)"
                         for role in reversed(member.roles)
                         if not role.is_default()
-                    ]
+                    ],
                 )
                 or _("None"),
             )
@@ -1429,7 +1445,7 @@ class LoggingModule(Module):
                     f"{role.mention} (`{role.name}`)"
                     for role in reversed(member.roles)
                     if not role.is_default()
-                ]
+                ],
             )
             or _("None"),
         )
@@ -1472,7 +1488,9 @@ class LoggingModule(Module):
             return
         responsible = message.author if message is not None else None
         async for entry in guild.audit_logs(
-            limit=3, action=discord.AuditLogAction.message_delete, oldest_first=False
+            limit=3,
+            action=discord.AuditLogAction.message_delete,
+            oldest_first=False,
         ):
             if entry.extra.channel.id == message_channel.id and (
                 message is None or entry.target.id == message.author.id
@@ -1480,7 +1498,10 @@ class LoggingModule(Module):
                 responsible = entry.user
                 break
         embed: discord.Embed = await self.get_embed(
-            guild, event, responsible, message or message_channel
+            guild,
+            event,
+            responsible,
+            message or message_channel,
         )
         if message is not None:
             embed.description += (
@@ -1490,13 +1511,13 @@ class LoggingModule(Module):
             )
             if message.attachments:
                 embed.description += "\n" + _("{emoji} **Attachments:**").format(
-                    emoji=Emojis.FILE.value
+                    emoji=Emojis.FILE.value,
                 )
                 for attachment in message.attachments:
                     embed.description += f"\n- [{attachment.filename}]({attachment.url})"
             if message.stickers:
                 embed.description += "\n" + _("{emoji} **Stickers:**").format(
-                    emoji=Emojis.STICKER.value
+                    emoji=Emojis.STICKER.value,
                 )
                 for sticker in message.stickers:
                     embed.description += f"\n- [{sticker.name}]({sticker.url}) (`{sticker.id}`)"
@@ -1513,7 +1534,9 @@ class LoggingModule(Module):
             return
         responsible = None
         async for entry in guild.audit_logs(
-            limit=3, action=discord.AuditLogAction.message_bulk_delete, oldest_first=False
+            limit=3,
+            action=discord.AuditLogAction.message_bulk_delete,
+            oldest_first=False,
         ):
             if entry.target.id == payload.channel_id:
                 responsible = entry.user
@@ -1552,7 +1575,10 @@ class LoggingModule(Module):
         event = await self.get_event(reaction.message.guild, "reaction_add")
         if not (
             channel := await self.check_config(
-                reaction.message.guild, event, user, reaction.message
+                reaction.message.guild,
+                event,
+                user,
+                reaction.message,
             )
         ):
             return
@@ -1563,7 +1589,8 @@ class LoggingModule(Module):
             reaction.message,
         )
         embed.description += _("\n{emoji} **Reaction:** {reaction}").format(
-            emoji=Emojis.EMOJI.value, reaction=reaction.emoji
+            emoji=Emojis.EMOJI.value,
+            reaction=reaction.emoji,
         )
         await self.send_log(channel, embed=embed)
 
@@ -1573,7 +1600,10 @@ class LoggingModule(Module):
         event = await self.get_event(reaction.message.guild, "reaction_remove")
         if not (
             channel := await self.check_config(
-                reaction.message.guild, event, user, reaction.message
+                reaction.message.guild,
+                event,
+                user,
+                reaction.message,
             )
         ):
             return
@@ -1584,7 +1614,8 @@ class LoggingModule(Module):
             reaction.message,
         )
         embed.description += _("\n{emoji} **Reaction Removed:** {reaction}").format(
-            emoji=Emojis.EMOJI.value, reaction=reaction.emoji
+            emoji=Emojis.EMOJI.value,
+            reaction=reaction.emoji,
         )
         await self.send_log(channel, embed=embed)
 
@@ -1663,7 +1694,7 @@ class ConfigureEventCategoryView(discord.ui.View):
                     ),
                 )
                 + _("\n- Ignore Bots: {ignore_bots}").format(
-                    ignore_bots="✅" if category_config[event["value"]]["ignore_bots"] else "❌"
+                    ignore_bots="✅" if category_config[event["value"]]["ignore_bots"] else "❌",
                 )
                 for event in LOGGING_EVENTS[self.category]["events"]
             ),
@@ -1706,14 +1737,17 @@ class ConfigureEventCategoryView(discord.ui.View):
 
     @discord.ui.button(label="Toggle All")
     async def toggle_event_category(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         category_config = await self.module.config_value(self.guild).events.get_raw(self.category)
         new_state = not list(category_config.values())[0]["enabled"]
         for event in category_config.values():
             event["enabled"] = new_state
         await self.module.config_value(self.guild).events.set_raw(
-            self.category, value=category_config
+            self.category,
+            value=category_config,
         )
         await interaction.response.send_message(
             _("✅ All {category_name} events have been {state}.").format(
@@ -1733,14 +1767,17 @@ class ConfigureEventCategoryView(discord.ui.View):
 
     @discord.ui.button(label="Ignore Bots")
     async def ignore_bots(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         category_config = await self.module.config_value(self.guild).events.get_raw(self.category)
         new_state = not list(category_config.values())[0]["ignore_bots"]
         for event in category_config.values():
             event["ignore_bots"] = new_state
         await self.module.config_value(self.guild).events.set_raw(
-            self.category, value=category_config
+            self.category,
+            value=category_config,
         )
         await interaction.response.send_message(
             _("✅ All {category_name} events will now {state} bots.").format(
@@ -1764,14 +1801,17 @@ class ConfigureEventCategoryView(discord.ui.View):
         placeholder="Select a channel to log events...",
     )
     async def select_logging_channel(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         category_config = await self.module.config_value(self.guild).events.get_raw(self.category)
         channel = select.values[0]
         for event in category_config.values():
             event["channel"] = channel.id
         await self.module.config_value(self.guild).events.set_raw(
-            self.category, value=category_config
+            self.category,
+            value=category_config,
         )
         await interaction.response.send_message(
             _("✅ All {category_name} events will now be logged in {channel.mention}.").format(
@@ -1791,14 +1831,21 @@ class ConfigureEventCategoryView(discord.ui.View):
 
     @discord.ui.select(placeholder="Select an event to configure...")
     async def configure_event_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         event = next(
             (e for e in LOGGING_EVENTS[self.category]["events"] if e["value"] == select.values[0]),
         )
         await ConfigureEventView(
-            self.module, self.guild, self.parent_view, self, self.category, event
+            self.module,
+            self.guild,
+            self.parent_view,
+            self,
+            self.category,
+            event,
         ).start(interaction)
 
 
@@ -1810,13 +1857,13 @@ class ConfigureEventView(discord.ui.View):
         parent_view: discord.ui.View,
         category_view: ConfigureEventCategoryView,
         category: str,
-        event: typing.Dict[str, typing.Any],
+        event: dict[str, typing.Any],
     ) -> None:
         super().__init__(timeout=None)
         self.module: LoggingModule = module
         self.guild: discord.Guild = guild
         self.category: str = category
-        self.event: typing.Dict[str, typing.Any] = event
+        self.event: dict[str, typing.Any] = event
         self.parent_view: discord.ui.View = parent_view
         self.category_view: ConfigureEventCategoryView = category_view
         self._message: discord.Message = None
@@ -1835,7 +1882,8 @@ class ConfigureEventView(discord.ui.View):
 
     async def get_embed(self) -> discord.Embed:
         event_config = await self.module.config_value(self.guild).events.get_raw(
-            self.category, self.event["value"]
+            self.category,
+            self.event["value"],
         )
         channel = (
             channel
@@ -1849,7 +1897,7 @@ class ConfigureEventView(discord.ui.View):
                 event_name=self.event["name"],
             ),
             description=_(
-                "This event is currently **{state}**.\n**Logging Channel:** {channel}\n**Ignore Bots:** {ignore_bots}"
+                "This event is currently **{state}**.\n**Logging Channel:** {channel}\n**Ignore Bots:** {ignore_bots}",
             ).format(
                 state=_("enabled") if event_config["enabled"] else _("disabled"),
                 channel=f"{channel.mention} (`{channel}`)" if channel is not None else _("None"),
@@ -1879,15 +1927,20 @@ class ConfigureEventView(discord.ui.View):
 
     @discord.ui.button(label="Toggle Event")
     async def toggle_event(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         event_config = await self.module.config_value(self.guild).events.get_raw(
-            self.category, self.event["value"]
+            self.category,
+            self.event["value"],
         )
         new_state = not event_config["enabled"]
         event_config["enabled"] = new_state
         await self.module.config_value(self.guild).events.set_raw(
-            self.category, self.event["value"], value=event_config
+            self.category,
+            self.event["value"],
+            value=event_config,
         )
         await interaction.response.send_message(
             _("✅ {event_name} has been {state}.").format(
@@ -1914,14 +1967,19 @@ class ConfigureEventView(discord.ui.View):
 
     @discord.ui.button(label="Ignore Bots")
     async def ignore_bots(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         event_config = await self.module.config_value(self.guild).events.get_raw(
-            self.category, self.event["value"]
+            self.category,
+            self.event["value"],
         )
         event_config["ignore_bots"] = not event_config["ignore_bots"]
         await self.module.config_value(self.guild).events.set_raw(
-            self.category, self.event["value"], value=event_config
+            self.category,
+            self.event["value"],
+            value=event_config,
         )
         await interaction.response.send_message(
             _("✅ {event_name} will now {state} bots.").format(
@@ -1952,15 +2010,20 @@ class ConfigureEventView(discord.ui.View):
         placeholder="Select a channel to log this event...",
     )
     async def channel_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         event_config = await self.module.config_value(self.guild).events.get_raw(
-            self.category, self.event["value"]
+            self.category,
+            self.event["value"],
         )
         channel = select.values[0]
         event_config["channel"] = channel.id
         await self.module.config_value(self.guild).events.set_raw(
-            self.category, self.event["value"], value=event_config
+            self.category,
+            self.event["value"],
+            value=event_config,
         )
         await interaction.response.send_message(
             _("✅ {event_name} events will now be logged in {channel.mention}.").format(

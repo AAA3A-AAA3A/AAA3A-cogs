@@ -1,14 +1,12 @@
-﻿from AAA3A_utils import Cog, Settings, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 
+import discord
 from prettytable import PrettyTable
-from redbot.core import bank
+
+from AAA3A_utils import Cog, Menu, Settings
+from redbot.core import Config, bank, commands
 from redbot.core.errors import BalanceTooHigh
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, pagify
 
 from .views import JoinGameView, RolloutGameView
@@ -41,9 +39,7 @@ class RolloutGame(Cog):
             games=0,
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "red_economy": {
                 "converter": bool,
                 "description": "If this option is enabled, the cog will give credits to the user each time the game is won.",
@@ -70,7 +66,7 @@ class RolloutGame(Cog):
         await self.settings.add_commands()
 
     @property
-    def games(self) -> typing.Dict[discord.Message, JoinGameView]:
+    def games(self) -> dict[discord.Message, JoinGameView]:
         return self.views
 
     @commands.guild_only()
@@ -131,7 +127,7 @@ class RolloutGame(Cog):
         if winner is not None:
             embed: discord.Embed = discord.Embed(
                 title=_("Congratulations **{winner.display_name}**! You won the game!").format(
-                    winner=winner
+                    winner=winner,
                 ),
                 color=await ctx.embed_color(),
                 timestamp=ctx.message.created_at,
@@ -182,7 +178,7 @@ class RolloutGame(Cog):
                     data["score"],
                     data["wins"],
                     data["games"],
-                ]
+                ],
             )
         for page in pagify(str(table), page_length=2000):
             embed = discord.Embed(title="RolloutGame Leaderboard")

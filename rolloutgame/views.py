@@ -1,11 +1,10 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 from random import choice
 
+import discord
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 
 _: Translator = Translator("RolloutGame", __file__)
@@ -18,7 +17,7 @@ class JoinGameView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self.host: discord.Member = None
-        self.players: typing.List[discord.Member] = []
+        self.players: list[discord.Member] = []
         self._message: discord.Message = None
 
         self.cancelled: bool = True
@@ -35,7 +34,7 @@ class JoinGameView(discord.ui.View):
         embed: discord.Embed = discord.Embed(
             title=_("Rollout Game"),
             description=_(
-                "Click the button below to **join the party**! Please note that the maximum amount of players is **50**."
+                "Click the button below to **join the party**! Please note that the maximum amount of players is **50**.",
             ),
             color=await self.ctx.embed_color(),
             timestamp=ctx.message.created_at,
@@ -45,7 +44,7 @@ class JoinGameView(discord.ui.View):
             value=_(
                 "- At each round, select a number between 1 and 25 within 30 seconds.\n"
                 "- If the bot rolls the number you selected, you lose.\n"
-                "- The last player standing wins the game!"
+                "- The last player standing wins the game!",
             ),
         )
         embed.set_author(
@@ -73,17 +72,19 @@ class JoinGameView(discord.ui.View):
     async def join(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user in self.players:
             await interaction.response.send_message(
-                _("You have already joined the game!"), ephemeral=True
+                _("You have already joined the game!"),
+                ephemeral=True,
             )
             return
         if len(self.players) >= 50:
             await interaction.response.send_message(
-                _("The game is full, you can't join!"), ephemeral=True
+                _("The game is full, you can't join!"),
+                ephemeral=True,
             )
             return
         self.players.append(interaction.user)
         self.view_players.label = _("View Players ({len_players})").format(
-            len_players=len(self.players)
+            len_players=len(self.players),
         )
         try:
             await self._message.edit(view=self)
@@ -95,12 +96,13 @@ class JoinGameView(discord.ui.View):
     async def leave(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user not in self.players:
             await interaction.response.send_message(
-                _("You have not joined the game!"), ephemeral=True
+                _("You have not joined the game!"),
+                ephemeral=True,
             )
             return
         self.players.remove(interaction.user)
         self.view_players.label = _("View Players ({len_players})").format(
-            len_players=len(self.players)
+            len_players=len(self.players),
         )
         try:
             await self._message.edit(view=self)
@@ -110,11 +112,14 @@ class JoinGameView(discord.ui.View):
 
     @discord.ui.button(label="View Players (1)", style=discord.ButtonStyle.secondary)
     async def view_players(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if not self.players:
             await interaction.response.send_message(
-                _("No one has joined the game yet!"), ephemeral=True
+                _("No one has joined the game yet!"),
+                ephemeral=True,
             )
             return
         embed = discord.Embed(
@@ -133,7 +138,9 @@ class JoinGameView(discord.ui.View):
 
     @discord.ui.button(label="Start Game!", style=discord.ButtonStyle.primary)
     async def start_button(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if not (
             interaction.user == self.host
@@ -145,7 +152,8 @@ class JoinGameView(discord.ui.View):
             return
         if len(self.players) < 2:
             await interaction.response.send_message(
-                _("You need at least 2 players to start the game!"), ephemeral=True
+                _("You need at least 2 players to start the game!"),
+                ephemeral=True,
             )
             return
         self.cancelled: bool = False
@@ -161,9 +169,7 @@ class JoinGameView(discord.ui.View):
             or interaction.user.guild_permissions.manage_guild
             or interaction.user.id in interaction.client.owner_ids
         ):
-            await interaction.response.send_message(
-                _("You can't cancel the game!"), ephemeral=True
-            )
+            await interaction.response.send_message(_("You can't cancel the game!"), ephemeral=True)
             return
         try:
             await self._message.delete()
@@ -180,24 +186,24 @@ class RolloutGameView(discord.ui.View):
 
         self._message: discord.Message = None
         self.host: discord.Member = None
-        self.players: typing.List[discord.Member] = []
+        self.players: list[discord.Member] = []
         self.round: int = 1
-        self.disabled_numbers: typing.List[int] = []
-        self._choices: typing.Dict[discord.Member, int] = {}
+        self.disabled_numbers: list[int] = []
+        self._choices: dict[discord.Member, int] = {}
         self._number: int = None
 
     async def start(
         self,
         ctx: commands.Context,
-        players: typing.List[discord.Member],
+        players: list[discord.Member],
         round: int = 1,
-        disabled_numbers: typing.List[int] = [],
+        disabled_numbers: list[int] = [],
     ) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.host: discord.Member = ctx.author
-        self.players: typing.List[discord.Member] = players
+        self.players: list[discord.Member] = players
         self.round: int = round
-        self.disabled_numbers: typing.List[int] = disabled_numbers
+        self.disabled_numbers: list[int] = disabled_numbers
         embed: discord.Embed = discord.Embed(
             title=_("Rollout Game — Round {round}").format(round=round),
             description=_("Select a number between 1 and 25. Choose is limited to 30 seconds."),
@@ -217,7 +223,7 @@ class RolloutGameView(discord.ui.View):
         self._number = choice([i for i in range(1, 25 + 1) if i not in self.disabled_numbers])
         embed.add_field(
             name="Time Left:",
-            value=f"<t:{int((datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=30)).timestamp())}:R>",
+            value=f"<t:{int((datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(seconds=30)).timestamp())}:R>",
         )
         self._message: discord.Message = await ctx.send(
             content=humanize_list([player.mention for player in self.players]),
@@ -247,7 +253,8 @@ class RolloutGameView(discord.ui.View):
             return
         if interaction.user in self._choices:
             await interaction.response.send_message(
-                _("You have already selected a number!"), ephemeral=True
+                _("You have already selected a number!"),
+                ephemeral=True,
             )
             return
         await interaction.response.defer(ephemeral=True)
@@ -255,16 +262,12 @@ class RolloutGameView(discord.ui.View):
         self._choices[interaction.user] = number
         for button in self.children:
             players = [
-                player
-                for player in self._choices
-                if self._choices[player] == int(button.custom_id)
+                player for player in self._choices if self._choices[player] == int(button.custom_id)
             ]
             if players:
                 button.style = discord.ButtonStyle.primary
                 button.label = (
-                    f"{button.custom_id} ({len(players)})"
-                    if len(players) > 1
-                    else button.custom_id
+                    f"{button.custom_id} ({len(players)})" if len(players) > 1 else button.custom_id
                 )
             else:
                 button.style = discord.ButtonStyle.secondary
@@ -272,14 +275,15 @@ class RolloutGameView(discord.ui.View):
         try:
             await self._message.edit(
                 content=humanize_list(
-                    [player.mention for player in self.players if player not in self._choices]
+                    [player.mention for player in self.players if player not in self._choices],
                 ),
                 view=self,
             )
         except discord.HTTPException:
             pass
         await interaction.followup.send(
-            _("You have selected the number {number}!").format(number=number), ephemeral=True
+            _("You have selected the number {number}!").format(number=number),
+            ephemeral=True,
         )
 
     async def choose_number(self) -> int:
@@ -315,7 +319,7 @@ class RolloutGameView(discord.ui.View):
                 )
                 raise TimeoutError()
             embed.description = _(
-                "The bot has rolled the number {number}! However, since all remaining players have been eliminated, the round will be restarted."
+                "The bot has rolled the number {number}! However, since all remaining players have been eliminated, the round will be restarted.",
             ).format(number=number)
             await self.ctx.send(
                 embed=embed,
@@ -330,7 +334,7 @@ class RolloutGameView(discord.ui.View):
         else:
             embed.description += (
                 _("\n\n**{number} players have been eliminated this round:**").format(
-                    number=len(eleminated_players)
+                    number=len(eleminated_players),
                 )
                 if len(eleminated_players) > 1
                 else _("\n\n**1 player has been eliminated this round:**")
@@ -338,14 +342,15 @@ class RolloutGameView(discord.ui.View):
             for eleminated in eleminated_players_wrong_number:
                 embed.description += _(
                     _("\n- **{eleminated.display_name}** - Selected the number {number}.").format(
-                        eleminated=eleminated, number=number
-                    )
+                        eleminated=eleminated,
+                        number=number,
+                    ),
                 ).format(eleminated=eleminated)
             for eleminated in eliminated_players_timeout:
                 embed.description += _(
                     _(
-                        "\n- **{eleminated.display_name}** - Did not select a number in time."
-                    ).format(eleminated=eleminated)
+                        "\n- **{eleminated.display_name}** - Did not select a number in time.",
+                    ).format(eleminated=eleminated),
                 ).format(eleminated=eleminated)
         await self.ctx.send(
             content=("💀 " if eleminated_players else "")

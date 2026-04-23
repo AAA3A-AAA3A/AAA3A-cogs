@@ -1,14 +1,14 @@
-from redbot.core import app_commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
+import typing
 
+import discord
+
+from redbot.core import app_commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
+from security.constants import Colors, Emojis, get_non_animated_asset
+from security.views import ActionsView, ToggleModuleButton
 
-from ..constants import Colors, Emojis, get_non_animated_asset
-from ..views import ActionsView, ToggleModuleButton
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
@@ -49,8 +49,10 @@ class ReportsModule(Module):
         self.cog.bot.tree.remove_command(report_message.name)
 
     async def get_status(
-        self, guild: discord.Guild, check_enabled: bool = True
-    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
+        self,
+        guild: discord.Guild,
+        check_enabled: bool = True,
+    ) -> tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
             return "❎", _("Disabled"), _("Reports are currently disabled.")
@@ -59,11 +61,15 @@ class ReportsModule(Module):
         return "✅", _("Enabled"), _("Reports are enabled and configured.")
 
     async def get_settings(
-        self, guild: discord.Guild, view: discord.ui.View
-    ) -> typing.Tuple[str, str, typing.List[typing.Dict], typing.List[discord.ui.Item]]:
+        self,
+        guild: discord.Guild,
+        view: discord.ui.View,
+    ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         config = await self.config_value(guild)()
         title = _("Security — {emoji} {name} {status}").format(
-            emoji=self.emoji, name=self.name, status=(await self.get_status(guild))[0]
+            emoji=self.emoji,
+            name=self.name,
+            status=(await self.get_status(guild))[0],
         )
         description = _("Configure how members can report other members and messages to staff.")
         status = await self.get_status(guild)
@@ -191,29 +197,26 @@ class ReportsModule(Module):
     async def report(
         self,
         interaction: discord.Interaction,
-        target: typing.Union[discord.Member, discord.Message],
+        target: discord.Member | discord.Message,
     ) -> None:
         config = await self.config_value(interaction.guild)()
         if not config["enabled"]:
             await interaction.response.send_message(
-                _("Reports are currently disabled."), ephemeral=True
+                _("Reports are currently disabled."),
+                ephemeral=True,
             )
             return
         if (channel_id := config["channel"]) is None or interaction.guild.get_channel(
-            channel_id
+            channel_id,
         ) is None:
-            await interaction.response.send_message(
-                _("Report channel is not set."), ephemeral=True
-            )
+            await interaction.response.send_message(_("Report channel is not set."), ephemeral=True)
             return
         member = target if isinstance(target, discord.Member) else target.author
         if member.bot:
             await interaction.response.send_message(_("You can't report a bot."), ephemeral=True)
             return
         if member == interaction.user:
-            await interaction.response.send_message(
-                _("You can't report yourself."), ephemeral=True
-            )
+            await interaction.response.send_message(_("You can't report yourself."), ephemeral=True)
             return
         if (
             await self.cog.is_whitelisted(member, "reports")
@@ -221,7 +224,8 @@ class ReportsModule(Module):
             else await self.cog.is_message_whitelisted(target, "reports")
         ):
             await interaction.response.send_message(
-                _("You can't report this target."), ephemeral=True
+                _("You can't report this target."),
+                ephemeral=True,
             )
             return
         await interaction.response.send_modal(ReasonModal(self, interaction.guild, target))
@@ -232,16 +236,16 @@ class ReasonModal(discord.ui.Modal):
         self,
         module: ReportsModule,
         guild: discord.Guild,
-        target: typing.Union[discord.Member, discord.Message],
+        target: discord.Member | discord.Message,
     ) -> None:
         super().__init__(
             title=_("Report")
             + " "
-            + (_("Member") if isinstance(target, discord.Member) else _("Message"))
+            + (_("Member") if isinstance(target, discord.Member) else _("Message")),
         )
         self.module: ReportsModule = module
         self.guild: discord.Guild = guild
-        self.target: typing.Union[discord.Member, discord.Message] = target
+        self.target: discord.Member | discord.Message = target
         self.reason = discord.ui.TextInput(
             label=_("Reason:"),
             style=discord.TextStyle.paragraph,
@@ -260,10 +264,11 @@ class ReasonModal(discord.ui.Modal):
                 emoji=self.module.emoji,
             ),
             color=Colors.REPORTS.value,
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=datetime.datetime.now(tz=datetime.UTC),
         )
         embed.description = _("👤 **Member:** {member.mention} (`{member}`) {member_emoji}").format(
-            member=member, member_emoji=await self.module.cog.get_member_emoji(member)
+            member=member,
+            member_emoji=await self.module.cog.get_member_emoji(member),
         )
         if not config["anonymous"]:
             embed.set_author(
@@ -271,27 +276,26 @@ class ReasonModal(discord.ui.Modal):
                 icon_url=get_non_animated_asset(interaction.user.display_avatar),
             )
             embed.description += _(
-                "\n{emoji} **Reporter:** {reporter.mention} (`{reporter}`) {reporter_emojis}"
+                "\n{emoji} **Reporter:** {reporter.mention} (`{reporter}`) {reporter_emojis}",
             ).format(
                 emoji=Emojis.ISSUED_BY.value,
                 reporter=interaction.user,
                 reporter_emojis=await self.module.cog.get_member_emoji(interaction.user),
             )
         if isinstance(self.target, discord.Message):
-            embed.description += _(
-                "\n{emoji} **Channel:** {channel.mention} (`{channel}`)"
-            ).format(
+            embed.description += _("\n{emoji} **Channel:** {channel.mention} (`{channel}`)").format(
                 emoji=Emojis.CHANNEL.value,
                 channel=self.target.channel,
             )
             embed.description += _("\n{emoji} **Message:** {jump_url}").format(
-                emoji=Emojis.MESSAGE.value, jump_url=self.target.jump_url
+                emoji=Emojis.MESSAGE.value,
+                jump_url=self.target.jump_url,
             )
             if self.target.content:
                 embed.description += f"\n{box(self.target.content)}"
             if self.target.attachments:
                 embed.description += _("\n{emoji} **Attachments:**").format(
-                    emoji=Emojis.ATTACHMENTS.value
+                    emoji=Emojis.ATTACHMENTS.value,
                 ) + "\n".join(
                     f" - [{attachment.filename}]({attachment.url})"
                     for attachment in self.target.attachments

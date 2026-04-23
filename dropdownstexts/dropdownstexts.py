@@ -1,13 +1,12 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 from functools import partial
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import pagify
 
 from .converters import Emoji, EmojiLabelTextConverter
@@ -26,8 +25,8 @@ class MyMessageConverter(commands.MessageConverter):
         if message.author != ctx.me:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one."
-                )
+                    "I have to be the author of the message. You can use EmbedUtils by AAA3A to send one.",
+                ),
             )
         return message
 
@@ -45,7 +44,7 @@ class DropdownsTexts(Cog):
             force_registration=True,
         )
         self.CONFIG_SCHEMA: int = 3
-        self.dropdowns_texts_global: typing.Dict[str, typing.Optional[int]] = {
+        self.dropdowns_texts_global: dict[str, int | None] = {
             "CONFIG_SCHEMA": None,
         }
         self.dropdowns_texts_guild = {
@@ -75,7 +74,8 @@ class DropdownsTexts(Cog):
                         data = dropdowns_texts[message].pop(emoji)
                         data["emoji"] = emoji
                         config_identifier = CogsUtils.generate_key(
-                            length=5, existing_keys=dropdowns_texts[message]
+                            length=5,
+                            existing_keys=dropdowns_texts[message],
                         )
                         dropdowns_texts[message][config_identifier] = data
                 await self.config.guild_from_id(guild_id).dropdowns_texts.set(dropdowns_texts)
@@ -88,7 +88,7 @@ class DropdownsTexts(Cog):
                     for custom_id in dropdowns_texts[message]:
                         if "text" in dropdowns_texts[message][custom_id]:
                             dropdowns_texts[message][custom_id]["data"] = {
-                                "content": dropdowns_texts[message][custom_id].pop("text")
+                                "content": dropdowns_texts[message][custom_id].pop("text"),
                             }
                 await self.config.guild_from_id(guild_id).dropdowns_texts.set(dropdowns_texts)
             CONFIG_SCHEMA = 3
@@ -97,7 +97,7 @@ class DropdownsTexts(Cog):
             CONFIG_SCHEMA = self.CONFIG_SCHEMA
             await self.config.CONFIG_SCHEMA.set(CONFIG_SCHEMA)
         self.logger.info(
-            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog."
+            f"The Config schema has been successfully modified to {self.CONFIG_SCHEMA} for the {self.qualified_name} cog.",
         )
 
     async def load_dropdowns(self) -> None:
@@ -121,7 +121,9 @@ class DropdownsTexts(Cog):
                     )
 
     async def on_dropdown_interaction(
-        self, interaction: discord.Interaction, dropdown: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        dropdown: discord.ui.Select,
     ) -> None:
         if await self.bot.cog_disabled_in_guild(self, interaction.guild):
             return
@@ -179,7 +181,7 @@ class DropdownsTexts(Cog):
         self,
         ctx: commands.Context,
         message: MyMessageConverter,
-        emoji: typing.Optional[Emoji],
+        emoji: Emoji | None,
         label: commands.Range[str, 1, 100],
         *,
         text_or_message: commands.Range[str, 1, 2000],
@@ -193,8 +195,8 @@ class DropdownsTexts(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
-                )
+                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.",
+                ),
             )
         if emoji is not None and ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
@@ -202,8 +204,8 @@ class DropdownsTexts(Cog):
             except discord.HTTPException:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                    )
+                        "The emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.",
+                    ),
                 )
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -212,10 +214,11 @@ class DropdownsTexts(Cog):
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) > 25:
             raise commands.UserFeedbackCheckFailure(
-                _("I can't do more than 25 dropdown-texts for one message.")
+                _("I can't do more than 25 dropdown-texts for one message."),
             )
         config_identifier = CogsUtils.generate_key(
-            length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
+            length=5,
+            existing_keys=config[f"{message.channel.id}-{message.id}"],
         )
         try:
             text_or_message = await commands.MessageConverter().convert(ctx, text_or_message)
@@ -253,7 +256,7 @@ class DropdownsTexts(Cog):
         """Add dropdown-texts for a message."""
         if len(dropdown_texts) == 0:
             raise commands.UserFeedbackCheckFailure(
-                _("You have not specified any valid dropdown-text.")
+                _("You have not specified any valid dropdown-text."),
             )
         channel_permissions = message.channel.permissions_for(ctx.me)
         if (
@@ -263,8 +266,8 @@ class DropdownsTexts(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel."
-                )
+                    "I don't have sufficient permissions on the channel where the message you specified is located.\nI need the permissions to see the messages in that channel.",
+                ),
             )
         if ctx.interaction is None and ctx.bot_permissions.add_reactions:
             try:
@@ -275,8 +278,8 @@ class DropdownsTexts(Cog):
             except discord.HTTPException:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server."
-                    )
+                        "An emoji you selected seems invalid. Check that it is an emoji. If you have Nitro, you may have used a custom emoji from another server.",
+                    ),
                 )
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
@@ -285,11 +288,12 @@ class DropdownsTexts(Cog):
             config[f"{message.channel.id}-{message.id}"] = {}
         if len(config[f"{message.channel.id}-{message.id}"]) + len(dropdown_texts) > 25:
             raise commands.UserFeedbackCheckFailure(
-                _("I can't do more than 25 dropdown-texts for one message.")
+                _("I can't do more than 25 dropdown-texts for one message."),
             )
         for emoji, label, text_or_message in dropdown_texts:
             config_identifier = CogsUtils.generate_key(
-                length=5, existing_keys=config[f"{message.channel.id}-{message.id}"]
+                length=5,
+                existing_keys=config[f"{message.channel.id}-{message.id}"],
             )
             try:
                 text_or_message = await commands.MessageConverter().convert(ctx, text_or_message)
@@ -331,11 +335,11 @@ class DropdownsTexts(Cog):
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No dropdown-texts is configured for this message.")
+                _("No dropdown-texts is configured for this message."),
             )
         if config_identifier not in config[f"{message.channel.id}-{message.id}"]:
             raise commands.UserFeedbackCheckFailure(
-                _("I wasn't watching for this dropdown-text on this message.")
+                _("I wasn't watching for this dropdown-text on this message."),
             )
         del config[f"{message.channel.id}-{message.id}"][config_identifier]
         if config[f"{message.channel.id}-{message.id}"] == {}:
@@ -357,7 +361,7 @@ class DropdownsTexts(Cog):
         config = await self.config.guild(ctx.guild).dropdowns_texts.all()
         if f"{message.channel.id}-{message.id}" not in config:
             raise commands.UserFeedbackCheckFailure(
-                _("No dropdown-texts is configured for this message.")
+                _("No dropdown-texts is configured for this message."),
             )
         try:
             await message.edit(view=None)
@@ -378,7 +382,7 @@ class DropdownsTexts(Cog):
             _dropdowns_texts = list(dropdowns_texts.values()).copy()
         elif f"{message.channel.id}-{message.id}" not in dropdowns_texts:
             raise commands.UserFeedbackCheckFailure(
-                _("No dropdown-text is configured for this message.")
+                _("No dropdown-text is configured for this message."),
             )
         else:
             _dropdowns_texts = dropdowns_texts.copy()
@@ -388,29 +392,29 @@ class DropdownsTexts(Cog):
         embed: discord.Embed = discord.Embed(
             title=_("Dropdowns Texts"),
             description=_("There is {len_dropdowns_texts} dropdowns texts in this server.").format(
-                len_dropdowns_texts=len(dropdowns_texts)
+                len_dropdowns_texts=len(dropdowns_texts),
             ),
             color=await ctx.embed_color(),
         )
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon)
         embeds = []
-        break_line, fake_backstick = "\n", "\u02CB"
+        break_line, fake_backstick = "\n", "\u02cb"
         for li in discord.utils.as_chunks(_dropdowns_texts, max_size=5):
             e = embed.copy()
             for dropdown_text in li:
                 value = _("Message Jump Link: {message_jump_link}\n").format(
-                    message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{dropdown_text['message'].replace('-', '/')}"
+                    message_jump_link=f"https://discord.com/channels/{ctx.guild.id}/{dropdown_text['message'].replace('-', '/')}",
                 )
                 value += "\n".join(
                     [
                         f"• `{config_identifier}` - Emoji {(ctx.bot.get_emoji(int(data['emoji'])) if data['emoji'].isdigit() else data['emoji']) if data['emoji'] is not None else '`None`'} - Label `{data['label']}`{' - Text `' + data['data']['embed']['description'].replace(break_line, ' ').replace('`', fake_backstick) + '`' if 'embed' in data['data'] else ''}"
                         for config_identifier, data in dropdown_text.items()
                         if config_identifier != "message"
-                    ]
+                    ],
                 )
                 for page in pagify(value, page_length=1024):
                     e.add_field(
-                        name="\u200B",
+                        name="\u200b",
                         value=page,
                         inline=False,
                     )
@@ -424,7 +428,9 @@ class DropdownsTexts(Cog):
         await ctx.send(_("All dropdowns-texts purged."))
 
     def get_dropdown(
-        self, config: typing.Dict, message: typing.Union[discord.Message, str]
+        self,
+        config: dict,
+        message: discord.Message | str,
     ) -> discord.ui.View:
         message = (
             f"{message.channel.id}-{message.id}"
@@ -448,7 +454,7 @@ class DropdownsTexts(Cog):
                     label=config[message][config_identifier]["label"],
                     value=config_identifier,
                     emoji=e,
-                )
+                ),
             )
             # all_options.append({"label": config[message][option]["label"], "emoji": e})
         dropdown = discord.ui.Select(

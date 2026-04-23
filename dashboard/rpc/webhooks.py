@@ -1,8 +1,11 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-import typing  # isort:skip
+import typing
+
+from redbot.core import commands
 
 from .utils import rpc_check
+
+if typing.TYPE_CHECKING:
+    from redbot.core.bot import Red
 
 
 class DashboardRPC_Webhooks:
@@ -16,8 +19,6 @@ class DashboardRPC_Webhooks:
         self.bot.unregister_rpc_handler(self.webhook_receive)
 
     @rpc_check()
-    async def webhook_receive(
-        self, payload: typing.Dict[str, typing.Any]
-    ) -> typing.Dict[str, int]:
+    async def webhook_receive(self, payload: dict[str, typing.Any]) -> dict[str, int]:
         self.bot.dispatch("webhook_receive", payload)
         return {"status": 0}

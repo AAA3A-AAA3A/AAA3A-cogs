@@ -1,15 +1,17 @@
-from redbot.core import errors  # isort:skip
 import importlib
 import sys
+
+from redbot.core import errors
 
 try:
     import AAA3A_utils
 except ModuleNotFoundError:
     raise errors.CogLoadError(
-        "The needed utils to run the cog were not found. Please execute the command `[p]pipinstall git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git`. A restart of the bot isn't necessary."
+        "The needed utils to run the cog were not found. Please execute the command `[p]pipinstall git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git`. A restart of the bot isn't necessary.",
     )
 modules = sorted(
-    [module for module in sys.modules if module.split(".")[0] == "AAA3A_utils"], reverse=True
+    [module for module in sys.modules if module.split(".")[0] == "AAA3A_utils"],
+    reverse=True,
 )
 for module in modules:
     try:
@@ -33,7 +35,7 @@ del AAA3A_utils
 #         "The needed utils to run the cog has a lower version than the one supported by this version of the cog. Please execute the command `[p]pipinstall --upgrade git+https://github.com/AAA3A-AAA3A/AAA3A_utils.git`. A restart of the bot isn't necessary."
 #     )
 
-from redbot.core.bot import Red  # isort:skip
+from redbot.core.bot import Red
 from redbot.core.utils import get_end_user_data_statement
 
 from .guessthecandygame import GuessTheCandyGame

@@ -1,14 +1,14 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import io
 import textwrap
+import typing
 
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
 from redbot.core.dev_commands import START_CODE_BLOCK_RE
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("Dev", __file__)
 
@@ -81,7 +81,8 @@ class ExecuteView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -101,24 +102,26 @@ class ExecuteView(discord.ui.View):
 
     @discord.ui.button(label=_("Execute Debug"), custom_id="execute_debug")
     async def execute_debug(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.send_modal(
-            ExecuteModal(cog=self.cog, ctx=self.ctx, choice="debug")
+            ExecuteModal(cog=self.cog, ctx=self.ctx, choice="debug"),
         )
 
     @discord.ui.button(label=_("Execute Eval"), custom_id="execute_eval")
     async def execute_eval(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.send_modal(
-            ExecuteModal(cog=self.cog, ctx=self.ctx, choice="eval")
+            ExecuteModal(cog=self.cog, ctx=self.ctx, choice="eval"),
         )
 
     @discord.ui.button(style=discord.ButtonStyle.danger, emoji="✖️", custom_id="close_page")
-    async def close_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def close_page(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         try:
             await interaction.response.defer()
         except discord.errors.NotFound:

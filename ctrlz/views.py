@@ -1,8 +1,8 @@
-from AAA3A_utils import CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
+
+from AAA3A_utils import CogsUtils, Menu
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("CtrlZ", __file__)
 
@@ -14,8 +14,8 @@ class BaseView(discord.ui.View):
         self.ctx: commands.Context = None
         self._message: discord.Message = None
 
-        self.audit_logs: typing.List[discord.AuditLogEntry] = []
-        self.displayed_actions: typing.List[discord.AuditLogAction] = []
+        self.audit_logs: list[discord.AuditLogEntry] = []
+        self.displayed_actions: list[discord.AuditLogAction] = []
         self.current_audit_log: discord.AuditLogEntry = None
 
         self.create_actions.placeholder = _("Create Actions")
@@ -26,7 +26,8 @@ class BaseView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -46,18 +47,18 @@ class BaseView(discord.ui.View):
     async def start(
         self,
         ctx: commands.Context,
-        audit_logs: typing.List[discord.AuditLogEntry],
-        displayed_actions: typing.List[discord.AuditLogAction] = None,
+        audit_logs: list[discord.AuditLogEntry],
+        displayed_actions: list[discord.AuditLogAction] = None,
     ) -> discord.Message:
         self.ctx: commands.Context = ctx
-        self.audit_logs: typing.List[discord.AuditLogEntry] = audit_logs
-        self.displayed_actions: typing.List[discord.AuditLogAction] = [
+        self.audit_logs: list[discord.AuditLogEntry] = audit_logs
+        self.displayed_actions: list[discord.AuditLogAction] = [
             action
             for action in displayed_actions or []
             if any(audit_log.action == action for audit_log in self.audit_logs)
         ]
         self.displayed_actions = self.displayed_actions or list(
-            set([audit_log.action for audit_log in self.audit_logs])
+            {audit_log.action for audit_log in self.audit_logs},
         )
         self.current_audit_log = self.audit_logs[-1]
         await self._update()
@@ -73,7 +74,9 @@ class BaseView(discord.ui.View):
         audit_logs_actions = await self.cog.get_audit_logs_actions()
         if create_actions := [
             discord.SelectOption(
-                label=label, value=action.name, default=action in self.displayed_actions
+                label=label,
+                value=action.name,
+                default=action in self.displayed_actions,
             )
             for action, label in audit_logs_actions["create"].items()
             if any(audit_log.action == action for audit_log in self.audit_logs)
@@ -85,7 +88,9 @@ class BaseView(discord.ui.View):
             self.remove_item(self.create_actions)
         if update_actions := [
             discord.SelectOption(
-                label=label, value=action.name, default=action in self.displayed_actions
+                label=label,
+                value=action.name,
+                default=action in self.displayed_actions,
             )
             for action, label in audit_logs_actions["update"].items()
             if any(audit_log.action == action for audit_log in self.audit_logs)
@@ -95,7 +100,9 @@ class BaseView(discord.ui.View):
             self.add_item(self.update_actions)
         if delete_actions := [
             discord.SelectOption(
-                label=label, value=action.name, default=action in self.displayed_actions
+                label=label,
+                value=action.name,
+                default=action in self.displayed_actions,
             )
             for action, label in audit_logs_actions["delete"].items()
             if any(audit_log.action == action for audit_log in self.audit_logs)
@@ -107,9 +114,7 @@ class BaseView(discord.ui.View):
             self.add_item(button)
 
         displayed_audit_logs = [
-            audit_log
-            for audit_log in self.audit_logs
-            if audit_log.action in self.displayed_actions
+            audit_log for audit_log in self.audit_logs if audit_log.action in self.displayed_actions
         ]
         try:
             if page == 1:
@@ -122,9 +127,7 @@ class BaseView(discord.ui.View):
                 ]
             elif page == -2:
                 self.current_audit_log = displayed_audit_logs[0]
-            elif page == 2:
-                self.current_audit_log = displayed_audit_logs[-1]
-            elif self.current_audit_log not in displayed_audit_logs:
+            elif page == 2 or self.current_audit_log not in displayed_audit_logs:
                 self.current_audit_log = displayed_audit_logs[-1]
         except StopIteration:
             pass
@@ -149,7 +152,9 @@ class BaseView(discord.ui.View):
 
     @discord.ui.select(placeholder="Create Actions", min_values=0)
     async def create_actions(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         _old = self.displayed_actions.copy()
@@ -168,7 +173,9 @@ class BaseView(discord.ui.View):
 
     @discord.ui.select(placeholder="Update Actions", min_values=0)
     async def update_actions(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         _old = self.displayed_actions.copy()
@@ -187,7 +194,9 @@ class BaseView(discord.ui.View):
 
     @discord.ui.select(placeholder="Delete Actions", min_values=0)
     async def delete_actions(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         _old = self.displayed_actions.copy()
@@ -246,7 +255,8 @@ class BaseView(discord.ui.View):
         else:
             await self.change_page()
             await interaction.followup.send(
-                _("✅ This Audit Log has been reverted successfully."), ephemeral=True
+                _("✅ This Audit Log has been reverted successfully."),
+                ephemeral=True,
             )
 
 
@@ -288,7 +298,7 @@ class CtrlZView(BaseView):
 class CtrlZMassView(BaseView):
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog=cog)
-        self.ignored_audit_logs: typing.List[discord.AuditLogEntry] = []
+        self.ignored_audit_logs: list[discord.AuditLogEntry] = []
 
     async def _update(self, page: int = 0) -> None:
         await super()._update(page=page)
@@ -311,9 +321,7 @@ class CtrlZMassView(BaseView):
         await self.change_page()
 
     @discord.ui.button(emoji="↩️", label="Revert All", style=discord.ButtonStyle.red)
-    async def revert_all(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
+    async def revert_all(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer(ephemeral=True)
         await self.on_timeout()
         fake_context = type(
@@ -347,7 +355,8 @@ class CtrlZMassView(BaseView):
         ]
         if not audit_logs:
             await interaction.followup.send(
-                _("❌ There are no audit logs to revert."), ephemeral=True
+                _("❌ There are no audit logs to revert."),
+                ephemeral=True,
             )
             return
         embed: discord.Embed = discord.Embed(
@@ -391,7 +400,7 @@ class CtrlZMassView(BaseView):
                             else ""
                         )
                     )
-                    + f" — {e}"
+                    + f" — {e}",
                 )
             try:
                 embed.set_field_at(

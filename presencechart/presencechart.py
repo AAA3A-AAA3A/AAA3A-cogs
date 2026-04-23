@@ -1,16 +1,16 @@
-from AAA3A_utils import Cog, Loop, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 import io
+import typing
 from copy import deepcopy
 
+import discord
 import plotly.graph_objects as go
 from PIL import Image, ImageDraw
+
+from AAA3A_utils import Cog, Loop, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 # Credits:
 # General repo credits.
@@ -33,7 +33,7 @@ class PresenceChart(Cog):
         self.config.register_global(ignored_users=[])
         self.config.register_user(presence_data=[])
 
-        self.presence_map: typing.Dict[
+        self.presence_map: dict[
             typing.Literal["online", "dnd", "idle", "offline"],
             typing.Literal["Online", "Do Not Dirstub", "Idle", "Offline"],
         ] = {
@@ -42,8 +42,9 @@ class PresenceChart(Cog):
             "idle": "Idle",
             "offline": "Offline",
         }
-        self.presence_data_cache: typing.Dict[
-            int, typing.Tuple[int, typing.Tuple[discord.Status, discord.Status]]
+        self.presence_data_cache: dict[
+            int,
+            tuple[int, tuple[discord.Status, discord.Status]],
         ] = {}
 
     async def cog_load(self) -> None:
@@ -54,7 +55,7 @@ class PresenceChart(Cog):
                 name="Save PresenceChart Data",
                 function=self.save_to_config,
                 minutes=5,
-            )
+            ),
         )
 
     async def red_delete_data_for_user(
@@ -77,7 +78,7 @@ class PresenceChart(Cog):
             global_data["ignored_users"].remove(user_id)
         await self.config.set(global_data)
 
-    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
+    async def red_get_data_for_user(self, *, user_id: int) -> dict[str, io.BytesIO]:
         """Get all data about the user."""
         await self.save_to_config()  # To clean up the cache too.
         data = {
@@ -109,13 +110,14 @@ class PresenceChart(Cog):
 
     async def generate_chart(
         self,
-        member_or_role: typing.Union[discord.Member, discord.User, discord.Guild],
-        presence_timers: typing.Dict[
-            typing.Literal["online", "idle", "do_not_disturb", "offline"], int
+        member_or_role: discord.Member | discord.User | discord.Guild,
+        presence_timers: dict[
+            typing.Literal["online", "idle", "do_not_disturb", "offline"],
+            int,
         ],
         frame_mode: bool = True,
         to_file: bool = True,
-    ) -> typing.Union[Image.Image, discord.File]:
+    ) -> Image.Image | discord.File:
         img: Image.Image = Image.new("RGBA", (1600, 1000), (0, 0, 0, 0))
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
         draw.rounded_rectangle((0, 0, img.width, img.height), radius=50, fill=(32, 34, 37))
@@ -125,17 +127,17 @@ class PresenceChart(Cog):
             title_text=(
                 (
                     _("{member_or_role.guild.name} Members' Presence").format(
-                        member_or_role=member_or_role
+                        member_or_role=member_or_role,
                     )
                     if member_or_role == member_or_role.guild.default_role
                     else _("{member_or_role.guild.name} {member_or_role.name}' Presence").format(
-                        member_or_role=member_or_role
+                        member_or_role=member_or_role,
                     )
                 )
                 if isinstance(member_or_role, discord.Role)
                 else (
                     _("{member_or_role.display_name}'s Presence").format(
-                        member_or_role=member_or_role
+                        member_or_role=member_or_role,
                     )
                 )
             ),
@@ -189,7 +191,7 @@ class PresenceChart(Cog):
                 textfont={"size": 60, "color": "rgb(255,255,255)"},
                 marker={"line": {"color": "rgb(0,0,0)", "width": 0}, "colors": colors},
                 direction="clockwise",
-            )
+            ),
         )
 
         if not isinstance(member_or_role, discord.Role) or member_or_role.guild.icon:
@@ -272,9 +274,9 @@ class PresenceChart(Cog):
                         changed_at = data[0]
                         if changed_at < int(
                             (
-                                datetime.datetime.now(tz=datetime.timezone.utc)
+                                datetime.datetime.now(tz=datetime.UTC)
                                 - datetime.timedelta(days=100)
-                            ).timestamp()
+                            ).timestamp(),
                         ):
                             del users_data[user_id]["presence_data"][i - deleted_count]
                             deleted_count += 1
@@ -301,7 +303,7 @@ class PresenceChart(Cog):
             status,
         ):  # Discord dispatches this event for every guild the user is in.
             return
-        time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
         self.presence_data_cache[after._user.id] = (time, (old_status, status))
 
     @commands.guild_only()
@@ -310,8 +312,8 @@ class PresenceChart(Cog):
     async def presencechart(
         self,
         ctx: commands.Context,
-        days_number: typing.Optional[commands.Range[int, 1, 100]] = 30,
-        frame_mode: typing.Optional[bool] = True,
+        days_number: commands.Range[int, 1, 100] | None = 30,
+        frame_mode: bool | None = True,
         *,
         member: discord.Member = commands.Author,
     ) -> None:
@@ -322,8 +324,8 @@ class PresenceChart(Cog):
     async def member(
         self,
         ctx: commands.Context,
-        days_number: typing.Optional[commands.Range[int, 1, 100]] = 30,
-        frame_mode: typing.Optional[bool] = True,
+        days_number: commands.Range[int, 1, 100] | None = 30,
+        frame_mode: bool | None = True,
         *,
         member: discord.Member = commands.Author,
     ) -> None:
@@ -332,11 +334,11 @@ class PresenceChart(Cog):
         if member.id in ignored_users:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This user is in the ignored users list (`{prefix}presencechart ignoreme`)."
-                ).format(prefix=ctx.prefix)
+                    "This user is in the ignored users list (`{prefix}presencechart ignoreme`).",
+                ).format(prefix=ctx.prefix),
             )
         presence_data = await self.config.user(member._user).presence_data()
-        presence_timers: typing.Dict[typing.Literal["online", "dnd", "idle", "offline"], int] = {}
+        presence_timers: dict[typing.Literal["online", "dnd", "idle", "offline"], int] = {}
         if (
             len(presence_data) <= 1
         ):  # In this case, `member.raw_status` should be the same than in Config.
@@ -344,7 +346,7 @@ class PresenceChart(Cog):
                 member.raw_status if member.raw_status in self.presence_map else "online"
             ] = 100
         else:
-            now_time = datetime.datetime.now(tz=datetime.timezone.utc)
+            now_time = datetime.datetime.now(tz=datetime.UTC)
             if days_number is not None:
                 time_delta = now_time - datetime.timedelta(days=days_number)
                 time_delta_timestamp = int(time_delta.timestamp())
@@ -376,7 +378,7 @@ class PresenceChart(Cog):
     @presencechart.command(aliases=["server"])
     async def guild(self, ctx: commands.Context, frame_mode: bool = True) -> None:
         """Make a chart with the different Discord statuses (presence) of all members of the guild/server."""
-        presence_timers: typing.Dict[typing.Literal["online", "dnd", "idle", "offline"], int] = {}
+        presence_timers: dict[typing.Literal["online", "dnd", "idle", "offline"], int] = {}
         for member in ctx.guild.default_role.members:
             status = member.raw_status if member.raw_status in self.presence_map else "online"
             if status not in presence_timers:
@@ -394,12 +396,12 @@ class PresenceChart(Cog):
     async def role(
         self,
         ctx: commands.Context,
-        frame_mode: typing.Optional[bool] = True,
+        frame_mode: bool | None = True,
         *,
         role: discord.Role,
     ) -> None:
         """Make a chart with the different Discord statuses (presence) of all members of the specfied role."""
-        presence_timers: typing.Dict[typing.Literal["online", "dnd", "idle", "offline"], int] = {}
+        presence_timers: dict[typing.Literal["online", "dnd", "idle", "offline"], int] = {}
         for member in role.members:
             status = member.raw_status if member.raw_status in self.presence_map else "online"
             if status not in presence_timers:
@@ -417,15 +419,15 @@ class PresenceChart(Cog):
     async def ignoreme(self, ctx: commands.Context) -> None:
         """Asking PresenceChart to ignore your statuses (presence)."""
         user = ctx.author
-        ignored_users: typing.List[int] = await self.config.ignored_users()
+        ignored_users: list[int] = await self.config.ignored_users()
         if user.id not in ignored_users:
             ignored_users.append(user.id)
             await self.red_delete_data_for_user(requester="user", user_id=user.id)
             await self.config.ignored_users.set(ignored_users)
             await ctx.send(
                 _(
-                    "You will no longer be seen by this cog and the data I held on you have been deleted."
-                )
+                    "You will no longer be seen by this cog and the data I held on you have been deleted.",
+                ),
             )
         else:
             ignored_users.remove(user.id)

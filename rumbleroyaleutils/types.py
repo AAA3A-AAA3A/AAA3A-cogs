@@ -1,7 +1,7 @@
-import discord  # isort:skip
-import typing  # isort:skip
-
+import typing
 from dataclasses import dataclass, field
+
+import discord
 
 
 @dataclass
@@ -10,18 +10,18 @@ class PlayerEvent:
     type: typing.Literal["kill", "death", "revive", "apparition"]
     cause: str
     message: discord.Message
-    other: typing.Optional[discord.Member] = None
+    other: discord.Member | None = None
 
 
 @dataclass
 class RumbleRoyale:
     first_message: discord.Message
     host: discord.User
-    players: typing.Dict[
+    players: dict[
         discord.Member,
-        typing.List[PlayerEvent],
+        list[PlayerEvent],
     ] = field(default_factory=dict)
-    views: typing.List[discord.ui.View] = field(default_factory=list)
+    views: list[discord.ui.View] = field(default_factory=list)
 
     @property
     def is_started(self) -> bool:

@@ -1,17 +1,16 @@
-from AAA3A_utils import Cog, Menu  # isort:skip
-from redbot.core import commands, app_commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import json
 import re
 from html import unescape
 from urllib.parse import quote_plus, unquote_plus
 
 import aiohttp
+import discord
 from bs4 import BeautifulSoup
+
+from AAA3A_utils import Cog, Menu
+from redbot.core import app_commands, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, humanize_list
 
 from .types import Recipe, SearchResults
@@ -35,8 +34,8 @@ class Recipes(Cog):
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self._session: typing.Optional[aiohttp.ClientSession] = None
-        self.cache: typing.Dict[str, Recipe] = {}
+        self._session: aiohttp.ClientSession | None = None
+        self.cache: dict[str, Recipe] = {}
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -47,8 +46,10 @@ class Recipes(Cog):
         await super().cog_unload()
 
     async def get_query_results(
-        self, query: str, limit: int = 15
-    ) -> typing.Tuple[str, SearchResults]:
+        self,
+        query: str,
+        limit: int = 15,
+    ) -> tuple[str, SearchResults]:
         url = f"https://food52.com/recipes/search?q={quote_plus(query)}"
         async with self._session.get(url) as r:
             content = await r.text()
@@ -126,17 +127,17 @@ class Recipes(Cog):
                         "Instructions": [
                             unquote(instruction["text"])
                             for instruction in json_content["recipeInstructions"]
-                        ]
+                        ],
                     }
                 )
                 if not json_content["recipeInstructions"]
-                or isinstance(json_content["recipeInstructions"][0], typing.Dict)
+                or isinstance(json_content["recipeInstructions"][0], dict)
                 else (
                     {
                         "Main section": [
                             unquote(instruction["text"])
                             for instruction in json_content["recipeInstructions"][0]
-                        ]
+                        ],
                     }
                 )
             ),
@@ -157,7 +158,7 @@ class Recipes(Cog):
             recipe = await self.get_recipe(url)
         except json.JSONDecodeError as e:
             raise commands.UserFeedbackCheckFailure(
-                _("Error in parsing the response.\n{error}").format(error=box(str(e), lang="py"))
+                _("Error in parsing the response.\n{error}").format(error=box(str(e), lang="py")),
             )
         await RecipesView(cog=self, recipe=recipe).start(ctx)
 
@@ -165,7 +166,11 @@ class Recipes(Cog):
     @commands.hybrid_command(aliases=["searchrecipe"])
     @app_commands.allowed_installs(guilds=True, users=True)
     async def searchrecipes(
-        self, ctx: commands.Context, limit: typing.Optional[int] = 15, *, query: str
+        self,
+        ctx: commands.Context,
+        limit: int | None = 15,
+        *,
+        query: str,
     ) -> None:
         """Search cooking recipes on Food52, from a query."""
         url, results = await self.get_query_results(query, limit=limit)
@@ -178,13 +183,14 @@ class Recipes(Cog):
                 label=_("View results on Food52"),
                 url=url,
                 style=discord.ButtonStyle.url,
-            )
+            ),
         )
         await menu.start(ctx)
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(
-        self, assistant_cog: typing.Optional[commands.Cog] = None
+        self,
+        assistant_cog: commands.Cog | None = None,
     ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return get_recipe_for_assistant
@@ -203,6 +209,7 @@ class Recipes(Cog):
             },
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+        return None
 
     async def get_recipe_for_assistant(self, query: str, *args, **kwargs):
         __, results = await self.get_query_results(query, limit=1)
@@ -225,15 +232,14 @@ class Recipes(Cog):
             "Instructions": "\n"
             + "\n\n".join(
                 [
-                    f"\n\n• {section}\n"
-                    "\n".join(
+                    f"\n\n• {section}\n\n".join(
                         [
                             f"    **{n}.** {instruction}"
                             for n, instruction in enumerate(recipe.instructions[section], start=1)
-                        ]
+                        ],
                     )
                     for section in recipe.instructions
-                ]
+                ],
             ),
         }
         return [f"{key}: {value}\n" for key, value in data.items() if value is not None]

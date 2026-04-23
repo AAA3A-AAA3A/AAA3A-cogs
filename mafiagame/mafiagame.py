@@ -1,13 +1,13 @@
-﻿from AAA3A_utils import Cog, Settings, Menu, Loop, CogsUtils  # isort:skip
-from AAA3A_utils.context import is_dev  # isort:skip
-from redbot.core import commands, app_commands, Config  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
+import typing
 from copy import deepcopy
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings
+from AAA3A_utils.context import is_dev
+from redbot.core import Config, app_commands, commands
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_timedelta
 
 from .anomalies import ANOMALIES, Anomaly
@@ -35,7 +35,7 @@ class RoleConverter(commands.Converter):
             if argument == role.name.lower().replace(" ", ""):
                 if ctx.command.name == "disabledroles" and isinstance(role, (GodFather, Villager)):
                     raise commands.BadArgument(
-                        _("You can't disable the GodFather or the Villager role.")
+                        _("You can't disable the GodFather or the Villager role."),
                     )
                 if role is not Developer or ctx.author.id == DEVELOPER:
                     return role
@@ -150,9 +150,7 @@ class MafiaGame(Cog):
             temp_banned_until=None,
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             # General settings.
             "category": {
                 "converter": discord.CategoryChannel,
@@ -347,8 +345,8 @@ class MafiaGame(Cog):
             commands_group=self.setmafia,
         )
 
-        self.games: typing.Dict[discord.Guild, Game] = {}
-        self.last_games: typing.Dict[discord.Guild, Game] = {}
+        self.games: dict[discord.Guild, Game] = {}
+        self.last_games: dict[discord.Guild, Game] = {}
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -359,7 +357,7 @@ class MafiaGame(Cog):
                 name="Check Temp Bans",
                 function=self.check_temp_bans,
                 seconds=30,
-            )
+            ),
         )
         if is_dev(self.bot):
             self.bot.add_dev_env_value(
@@ -380,12 +378,13 @@ class MafiaGame(Cog):
                 for member_id in _members_data[guild_id]:
                     if (
                         temp_banned_until := _members_data[guild_id][member_id].get(
-                            "temp_banned_until"
+                            "temp_banned_until",
                         )
                     ) is not None and datetime.datetime.now(
-                        tz=datetime.timezone.utc
+                        tz=datetime.UTC,
                     ) > datetime.datetime.fromtimestamp(
-                        temp_banned_until, tz=datetime.timezone.utc
+                        temp_banned_until,
+                        tz=datetime.UTC,
                     ):
                         del members_data[guild_id][member_id]["temp_banned_until"]
 
@@ -415,12 +414,11 @@ class MafiaGame(Cog):
             ):
                 for p in game.alive_players:
                     if p.role is not None and (
-                        (p.role.side == "Mafia" and p.role.name != "Alchemist")
-                        or p.is_town_traitor
+                        (p.role.side == "Mafia" and p.role.name != "Alchemist") or p.is_town_traitor
                     ):  # and p != player
                         try:
                             await p.member.send(
-                                f"📨 **{player.member.display_name} ({player.role.display_name(game)}{_(' - Town Traitor') if player.is_town_traitor else ''})**: {message.content}"
+                                f"📨 **{player.member.display_name} ({player.role.display_name(game)}{_(' - Town Traitor') if player.is_town_traitor else ''})**: {message.content}",
                             )
                         except discord.HTTPException:
                             pass
@@ -438,7 +436,7 @@ class MafiaGame(Cog):
             and ctx.command.name in ("start", "tempban", "unban", "afkkill")
         ):
             raise commands.UserFeedbackCheckFailure(
-                _("This command doesn't work as user installable.")
+                _("This command doesn't work as user installable."),
             )
         return True
 
@@ -455,7 +453,9 @@ class MafiaGame(Cog):
     @commands.bot_has_permissions(manage_channels=True)
     @mafia.command()
     async def start(
-        self, ctx: commands.Context, mode: typing.Optional[ModeConverter] = None
+        self,
+        ctx: commands.Context,
+        mode: ModeConverter | None = None,
     ) -> None:
         """Start a game of Mafia!"""
         if self.games.get(ctx.guild) is not None:
@@ -475,7 +475,7 @@ class MafiaGame(Cog):
             else ctx.me.guild_permissions
         ).manage_channels:
             raise commands.UserFeedbackCheckFailure(
-                _("I don't have the permission to create channels in the category.")
+                _("I don't have the permission to create channels in the category."),
             )
         join_view: JoinGameView = JoinGameView(
             self,
@@ -505,10 +505,11 @@ class MafiaGame(Cog):
         """End the current game of Mafia."""
         if (game := self.games.get(ctx.guild)) is None:
             raise commands.UserFeedbackCheckFailure(
-                _("No game is currently running in this guild.")
+                _("No game is currently running in this guild."),
             )
         if not confirm and not await CogsUtils.ConfirmationAsk(
-            ctx, _("Are you sure you want to end the current game of Mafia?")
+            ctx,
+            _("Are you sure you want to end the current game of Mafia?"),
         ):
             return
         await game.end()
@@ -580,8 +581,10 @@ class MafiaGame(Cog):
 
     @anomaly.autocomplete("anomaly")
     async def mafia_anomaly_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> typing.List[app_commands.Choice[str]]:
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> list[app_commands.Choice[str]]:
         return [
             app_commands.Choice(name=anomaly.name, value=anomaly.name)
             for anomaly in ANOMALIES
@@ -592,9 +595,9 @@ class MafiaGame(Cog):
     async def achievements(
         self,
         ctx: commands.Context,
-        role: typing.Optional[RoleConverter] = None,
+        role: RoleConverter | None = None,
         *,
-        user: typing.Optional[discord.User] = commands.Author,
+        user: discord.User | None = commands.Author,
     ) -> None:
         """Show your achievements or the achievements of a specific member."""
         if user.bot:
@@ -608,7 +611,7 @@ class MafiaGame(Cog):
                 _("General Achievements")
                 if role is None
                 else _("Achievements — {role_name}").format(
-                    role_name=role.display_name(theme=theme)
+                    role_name=role.display_name(theme=theme),
                 )
             ),
             color=ACHIEVEMENTS_COLOR,
@@ -635,12 +638,10 @@ class MafiaGame(Cog):
             embed.set_footer(text=_("✅ All achievements completed!"))
         else:
             embed.set_footer(
-                text=_(
-                    "Completed {completed} out of {total} achievements ({percentage}%)!"
-                ).format(
+                text=_("Completed {completed} out of {total} achievements ({percentage}%)!").format(
                     completed=completed,
                     total=len(achievements),
-                    percentage=f"{completed/len(achievements)*100:.2f}",
+                    percentage=f"{completed / len(achievements) * 100:.2f}",
                 ),
             )
         if role is None:
@@ -676,15 +677,17 @@ class MafiaGame(Cog):
                 {
                     "embed": embed,
                     "file": None if role is None else role.get_image(theme=theme),
-                }
+                },
             ],
         ).start(ctx)
 
     @achievements.autocomplete("role")
     @role.autocomplete("role")
     async def mafia_role_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> typing.List[app_commands.Choice[str]]:
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> list[app_commands.Choice[str]]:
         return [
             app_commands.Choice(name=role.name, value=role.name)
             for role in ROLES
@@ -704,15 +707,15 @@ class MafiaGame(Cog):
             raise commands.UserFeedbackCheckFailure(_("A bot can't play a Mafia game."))
         await self.config.member(member).temp_banned_until.set(
             int(
-                (datetime.datetime.now(tz=datetime.timezone.utc) + duration)
+                (datetime.datetime.now(tz=datetime.UTC) + duration)
                 .replace(second=0, microsecond=0)
-                .timestamp()
-            )
+                .timestamp(),
+            ),
         )
         await ctx.send(
             _(
-                "This member has been **temporarily banned for {duration}** from the Mafia games in this server."
-            ).format(duration=humanize_timedelta(timedelta=duration))
+                "This member has been **temporarily banned for {duration}** from the Mafia games in this server.",
+            ).format(duration=humanize_timedelta(timedelta=duration)),
         )
 
     @commands.mod_or_permissions(manage_guild=True)
@@ -723,7 +726,7 @@ class MafiaGame(Cog):
             raise commands.UserFeedbackCheckFailure(_("A bot can't play a Mafia game."))
         if await self.config.member(member).temp_banned_until() is None:
             raise commands.UserFeedbackCheckFailure(
-                _("The member is not banned from the Mafia games in this server.")
+                _("The member is not banned from the Mafia games in this server."),
             )
         await self.config.member(member).temp_banned_until.clear()
         await ctx.send(_("This member has been **unbanned** from the Mafia games in this server."))
@@ -738,11 +741,11 @@ class MafiaGame(Cog):
             raise commands.UserFeedbackCheckFailure(_("A game is not running in this guild."))
         if (player := game.get_player(member)) is None:
             raise commands.UserFeedbackCheckFailure(
-                _("This member is not playing the Mafia game in this server.")
+                _("This member is not playing the Mafia game in this server."),
             )
         if player.is_dead:
             raise commands.UserFeedbackCheckFailure(
-                _("This player is already dead in the Mafia game in this server.")
+                _("This player is already dead in the Mafia game in this server."),
             )
         await player.kill(cause="afk")
         await ctx.send(_("This player has been **killed** from the Mafia game in this server."))
@@ -756,7 +759,7 @@ class MafiaGame(Cog):
             raise commands.UserFeedbackCheckFailure(_("A game is already running in this guild."))
         if (threshold := await self.config.guild(ctx.guild).poll_threshold()) is None:
             raise commands.UserFeedbackCheckFailure(
-                _("The poll threshold is not set in this server.")
+                _("The poll threshold is not set in this server."),
             )
         if any(
             ctx.author.get_role(role_id)
@@ -764,7 +767,7 @@ class MafiaGame(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "You aren't allowed to join a Mafia game in this server because you have a blacklisted role!"
+                    "You aren't allowed to join a Mafia game in this server because you have a blacklisted role!",
                 ),
             )
         if (
@@ -772,17 +775,20 @@ class MafiaGame(Cog):
         ) is not None:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "You are **temporarily banned for {duration}** from joining Mafia games in this server!"
+                    "You are **temporarily banned for {duration}** from joining Mafia games in this server!",
                 ).format(
                     duration=humanize_timedelta(
-                        timedelta=datetime.datetime.fromtimestamp(temp_banned_until, tz=datetime.timezone.utc)
-                        - datetime.datetime.now(tz=datetime.timezone.utc)
-                    )
+                        timedelta=datetime.datetime.fromtimestamp(
+                            temp_banned_until,
+                            tz=datetime.UTC,
+                        )
+                        - datetime.datetime.now(tz=datetime.UTC),
+                    ),
                 ),
             )
         if any(game for game in self.games.values() if game.get_player(ctx.author) is not None):
             raise commands.UserFeedbackCheckFailure(
-                _("You are already in a game of Mafia in another server!")
+                _("You are already in a game of Mafia in another server!"),
             )
         poll_view: PollView = PollView(self, threshold)
         await poll_view.start(ctx)

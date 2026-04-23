@@ -1,7 +1,7 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 try:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
@@ -26,7 +26,8 @@ class TeamConverter(commands.Converter):
                     return team
                 if (
                     team := discord.utils.get(
-                        cog.teams[ctx.guild.id].values(), display_emoji=argument
+                        cog.teams[ctx.guild.id].values(),
+                        display_emoji=argument,
                     )
                 ) is not None:
                     return team
@@ -35,8 +36,10 @@ class TeamConverter(commands.Converter):
 
 class Emoji(commands.EmojiConverter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[str, discord.Emoji]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> str | discord.Emoji:
         if argument in EMOJI_DATA:
             return argument
         if argument in {
@@ -80,8 +83,10 @@ class UrlConverter(commands.Converter):
 
 class TeamOrMemberConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[Team, discord.Member]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> Team | discord.Member:
         for converter in (TeamConverter, commands.MemberConverter):
             try:
                 return await converter().convert(ctx, argument)

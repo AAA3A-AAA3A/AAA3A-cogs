@@ -14,16 +14,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 from copy import copy
+
+import discord
+
+from AAA3A_utils import Cog, CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator, cog_i18n
 
 # Credits:
 # General repo credits.
@@ -32,7 +31,9 @@ from copy import copy
 _: Translator = Translator("Sudo", __file__)
 
 TimeDeltaConverter: commands.converter.timedelta = commands.TimedeltaConverter(
-    minimum=datetime.timedelta(seconds=10), maximum=datetime.timedelta(days=1), default_unit="m"
+    minimum=datetime.timedelta(seconds=10),
+    maximum=datetime.timedelta(days=1),
+    default_unit="m",
 )
 
 
@@ -43,7 +44,7 @@ class Sudo(Cog):
     ⚠️ This cog makes bot owners unable to be perceived as bot owners in commands while the cog is loaded unless the `[p]su` command is used.
     """
 
-    __authors__: typing.List[str] = ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"]
+    __authors__: list[str] = ["AAA3A", "Draper", "jack1142 (Jackenmen#6607)"]
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -58,7 +59,8 @@ class Sudo(Cog):
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):
         if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=message.guild
+            cog=self,
+            guild=message.guild,
         ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
             return
         if message.webhook_id is not None or message.author.bot:
@@ -81,9 +83,9 @@ class Sudo(Cog):
             message=context.message,
         )
 
-    def decorator(all_owner_ids: typing.Optional[bool], bot_owner_ids: typing.Optional[bool]):
+    def decorator(self: bool | None, bot_owner_ids: bool | None):
         async def pred(ctx: commands.Context) -> bool:
-            if all_owner_ids and (
+            if self and (
                 ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids
                 and ctx.author.id not in ctx.bot.owner_ids
             ):

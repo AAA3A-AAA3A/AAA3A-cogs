@@ -1,11 +1,11 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
+import typing
 from unittest.mock import patch
 
+import discord
+
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list, inline
 
 from .utils import rpc_check
@@ -16,18 +16,18 @@ _: Translator = Translator("Dashboard", __file__)
 class FakeContext:
     def __init__(self, bot: Red) -> None:
         self.bot: Red = bot
-        self.contents: typing.List[str] = []
+        self.contents: list[str] = []
 
     async def send(self, message: str, **kwargs) -> None:
         self.contents.append(message)
 
-    def get_notifications(self) -> typing.List[typing.Dict[str, str]]:
+    def get_notifications(self) -> list[dict[str, str]]:
         content = "\n".join(self.contents)
         notifications = []
         for line in content.split("\n"):
             if not line:
                 continue
-            elif (
+            if (
                 line.startswith((_("Successfully"), _("Pinned"), _("Enabled"), _("Disabled")))
                 or _("successfully") in line
             ):
@@ -120,8 +120,9 @@ class DashboardRPC_CogManagement:
 
     @rpc_check()
     async def get_cogs(
-        self, user_id: int
-    ) -> typing.Dict[str, typing.Union[int, typing.Dict[str, bool]]]:
+        self,
+        user_id: int,
+    ) -> dict[str, int | dict[str, bool]]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         all_cogs = await self.bot._cog_mgr.available_modules()
@@ -132,14 +133,16 @@ class DashboardRPC_CogManagement:
                 sorted(
                     {cog: cog in loaded_cogs for cog in all_cogs}.items(),
                     key=lambda cog: (not cog[1], cog[0].lower()),
-                )
+                ),
             ),
         }
 
     @rpc_check()
     async def set_cogs(
-        self, user_id: int, cogs: typing.Dict[str, bool]
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+        self,
+        user_id: int,
+        cogs: dict[str, bool],
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         all_cogs = set(await self.bot._cog_mgr.available_modules())
@@ -159,7 +162,7 @@ class DashboardRPC_CogManagement:
                             packs=humanize_list([inline(package) for package in loaded]),
                         ),
                         "category": "success",
-                    }
+                    },
                 )
             if failed := outcomes.get("failed_packages"):
                 status = 1
@@ -169,7 +172,7 @@ class DashboardRPC_CogManagement:
                             packs=humanize_list([inline(package) for package in failed]),
                         ),
                         "category": "danger",
-                    }
+                    },
                 )
             if failed_with_reason := outcomes.get("failed_with_reason_packages"):
                 status = 1
@@ -177,13 +180,13 @@ class DashboardRPC_CogManagement:
                     [
                         f"{inline(package)}: {reason}"
                         for package, reason in failed_with_reason.items()
-                    ]
+                    ],
                 )
                 notifications.append(
                     {
                         "message": _("Failed with reasons:\n{reasons}").format(reasons=reasons),
                         "category": "danger",
-                    }
+                    },
                 )
 
         if to_unload := [
@@ -199,7 +202,7 @@ class DashboardRPC_CogManagement:
                             packs=humanize_list([inline(package) for package in unloaded]),
                         ),
                         "category": "success",
-                    }
+                    },
                 )
 
         return {
@@ -209,8 +212,10 @@ class DashboardRPC_CogManagement:
 
     @rpc_check()
     async def get_repos(
-        self, user_id: int, include_data: bool = True
-    ) -> typing.Dict[str, typing.Union[int, typing.List[typing.Dict[str, str]]]]:
+        self,
+        user_id: int,
+        include_data: bool = True,
+    ) -> dict[str, int | list[dict[str, str]]]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         if (Downloader := self.bot.get_cog("Downloader")) is None:
@@ -249,7 +254,7 @@ class DashboardRPC_CogManagement:
                                     "author": humanize_list(cog.author) if cog.author else None,
                                     "tags": humanize_list([inline(tag) for tag in cog.tags]),
                                     "requirements": humanize_list(
-                                        [inline(req) for req in cog.requirements]
+                                        [inline(req) for req in cog.requirements],
                                     ),
                                     "end_user_data_statement": cog.end_user_data_statement,
                                 }
@@ -261,7 +266,7 @@ class DashboardRPC_CogManagement:
                                 cog[1]["hidden"],
                                 cog[0].lower(),
                             ),
-                        )
+                        ),
                     ),
                 }
                 for repo in sorted(
@@ -277,8 +282,8 @@ class DashboardRPC_CogManagement:
         user_id: int,
         name: str,
         repo_url: str,
-        branch: typing.Optional[str] = None,
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+        branch: str | None = None,
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         if (Downloader := self.bot.get_cog("Downloader")) is None:
@@ -298,7 +303,7 @@ class DashboardRPC_CogManagement:
         }
 
     @rpc_check()
-    async def update_repos(self, user_id: int) -> typing.Dict[str, typing.Union[int, str]]:
+    async def update_repos(self, user_id: int) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         if (Downloader := self.bot.get_cog("Downloader")) is None:
@@ -313,7 +318,7 @@ class DashboardRPC_CogManagement:
         }
 
     @rpc_check()
-    async def update_cogs(self, user_id: int) -> typing.Dict[str, typing.Union[int, str]]:
+    async def update_cogs(self, user_id: int) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         if (Downloader := self.bot.get_cog("Downloader")) is None:
@@ -331,20 +336,25 @@ class DashboardRPC_CogManagement:
 
     @rpc_check()
     async def update_repo(
-        self, user_id: int, name: str
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+        self,
+        user_id: int,
+        name: str,
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         if (Downloader := self.bot.get_cog("Downloader")) is None:
             return {"status": 1}
         repo = Downloader._repo_manager.get_repo(name)
         if repo is None:
-            status, notifications = 1, [
-                {
-                    "message": _("The repo name you provided does not exist."),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _("The repo name you provided does not exist."),
+                        "category": "danger",
+                    },
+                ],
+            )
         else:
             fake_ctx = FakeContext(self.bot)
             await Downloader._repo_update(
@@ -353,7 +363,7 @@ class DashboardRPC_CogManagement:
             )
             notifications = fake_ctx.get_notifications()
             status = int(
-                any(notification["category"] == "danger" for notification in notifications)
+                any(notification["category"] == "danger" for notification in notifications),
             )
         return {
             "status": status,
@@ -362,19 +372,24 @@ class DashboardRPC_CogManagement:
 
     @rpc_check()
     async def update_cogs_from_repo(
-        self, user_id: int, name: str
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+        self,
+        user_id: int,
+        name: str,
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         if (Downloader := self.bot.get_cog("Downloader")) is None:
             return {"status": 1}
         if (repo := Downloader._repo_manager.get_repo(name)) is None:
-            status, notifications = 1, [
-                {
-                    "message": _("The repo name you provided does not exist."),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _("The repo name you provided does not exist."),
+                        "category": "danger",
+                    },
+                ],
+            )
         else:
             fake_ctx = FakeContext(self.bot)
             await Downloader._cog_update_logic(
@@ -383,7 +398,7 @@ class DashboardRPC_CogManagement:
             )
             notifications = fake_ctx.get_notifications()
             status = int(
-                any(notification["category"] == "danger" for notification in notifications)
+                any(notification["category"] == "danger" for notification in notifications),
             )
         return {
             "status": status,
@@ -392,19 +407,24 @@ class DashboardRPC_CogManagement:
 
     @rpc_check()
     async def remove_repo(
-        self, user_id: int, name: str
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+        self,
+        user_id: int,
+        name: str,
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         if (Downloader := self.bot.get_cog("Downloader")) is None:
             return {"status": 1}
         if Downloader._repo_manager.get_repo(name) is None:
-            status, notifications = 1, [
-                {
-                    "message": _("The repo name you provided does not exist."),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _("The repo name you provided does not exist."),
+                        "category": "danger",
+                    },
+                ],
+            )
         else:
             await Downloader._repo_manager.delete_repo(name)
             notifications = [
@@ -424,18 +444,21 @@ class DashboardRPC_CogManagement:
         user_id: int,
         repo_name: str,
         name: str,
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         if (Downloader := self.bot.get_cog("Downloader")) is None:
             return {"status": 1}
         if (repo := Downloader._repo_manager.get_repo(repo_name)) is None:
-            status, notifications = 1, [
-                {
-                    "message": _("The repo name you provided does not exist."),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _("The repo name you provided does not exist."),
+                        "category": "danger",
+                    },
+                ],
+            )
         else:
             fake_ctx = FakeContext(self.bot)
             await Downloader._cog_installrev(
@@ -446,7 +469,7 @@ class DashboardRPC_CogManagement:
             )
             notifications = fake_ctx.get_notifications()
             status = int(
-                any(notification["category"] == "danger" for notification in notifications)
+                any(notification["category"] == "danger" for notification in notifications),
             )
         return {
             "status": status,
@@ -459,34 +482,43 @@ class DashboardRPC_CogManagement:
         user_id: int,
         repo_name: str,
         name: str,
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         if (Downloader := self.bot.get_cog("Downloader")) is None:
             return {"status": 1}
         if (repo := Downloader._repo_manager.get_repo(repo_name)) is None:
-            status, notifications = 1, [
-                {
-                    "message": _("The repo name you provided does not exist."),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _("The repo name you provided does not exist."),
+                        "category": "danger",
+                    },
+                ],
+            )
         elif (cog := discord.utils.get(await Downloader.installed_cogs(), name=name)) is None:
-            status, notifications = 1, [
-                {
-                    "message": _("The cog name you provided does not exist."),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _("The cog name you provided does not exist."),
+                        "category": "danger",
+                    },
+                ],
+            )
         elif cog.repo != repo:
-            status, notifications = 1, [
-                {
-                    "message": _(
-                        "The cog you provided isn't installed from the repo you provided."
-                    ),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _(
+                            "The cog you provided isn't installed from the repo you provided.",
+                        ),
+                        "category": "danger",
+                    },
+                ],
+            )
         else:
             fake_ctx = FakeContext(self.bot)
             await Downloader._cog_update_logic(
@@ -495,7 +527,7 @@ class DashboardRPC_CogManagement:
             )
             notifications = fake_ctx.get_notifications()
             status = int(
-                any(notification["category"] == "danger" for notification in notifications)
+                any(notification["category"] == "danger" for notification in notifications),
             )
         return {
             "status": status,
@@ -508,34 +540,43 @@ class DashboardRPC_CogManagement:
         user_id: int,
         repo_name: str,
         name: str,
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         if (Downloader := self.bot.get_cog("Downloader")) is None:
             return {"status": 1}
         if (repo := Downloader._repo_manager.get_repo(repo_name)) is None:
-            status, notifications = 1, [
-                {
-                    "message": _("The repo name you provided does not exist."),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _("The repo name you provided does not exist."),
+                        "category": "danger",
+                    },
+                ],
+            )
         elif (cog := discord.utils.get(await Downloader.installed_cogs(), name=name)) is None:
-            status, notifications = 1, [
-                {
-                    "message": _("The cog name you provided does not exist."),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _("The cog name you provided does not exist."),
+                        "category": "danger",
+                    },
+                ],
+            )
         elif cog.repo != repo:
-            status, notifications = 1, [
-                {
-                    "message": _(
-                        "The cog you provided isn't installed from the repo you provided."
-                    ),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _(
+                            "The cog you provided isn't installed from the repo you provided.",
+                        ),
+                        "category": "danger",
+                    },
+                ],
+            )
         else:
             fake_ctx = FakeContext(self.bot)
             await (Downloader._cog_pin if not cog.pinned else Downloader._cog_unpin)(
@@ -544,7 +585,7 @@ class DashboardRPC_CogManagement:
             )
             notifications = fake_ctx.get_notifications()
             status = int(
-                any(notification["category"] == "danger" for notification in notifications)
+                any(notification["category"] == "danger" for notification in notifications),
             )
         return {
             "status": status,
@@ -557,34 +598,43 @@ class DashboardRPC_CogManagement:
         user_id: int,
         repo_name: str,
         name: str,
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         if (Downloader := self.bot.get_cog("Downloader")) is None:
             return {"status": 1}
         if (repo := Downloader._repo_manager.get_repo(repo_name)) is None:
-            status, notifications = 1, [
-                {
-                    "message": _("The repo name you provided does not exist."),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _("The repo name you provided does not exist."),
+                        "category": "danger",
+                    },
+                ],
+            )
         elif (cog := discord.utils.get(await Downloader.installed_cogs(), name=name)) is None:
-            status, notifications = 1, [
-                {
-                    "message": _("The cog name you provided does not exist."),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _("The cog name you provided does not exist."),
+                        "category": "danger",
+                    },
+                ],
+            )
         elif cog.repo != repo:
-            status, notifications = 1, [
-                {
-                    "message": _(
-                        "The cog you provided isn't installed from the repo you provided."
-                    ),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _(
+                            "The cog you provided isn't installed from the repo you provided.",
+                        ),
+                        "category": "danger",
+                    },
+                ],
+            )
         else:
             fake_ctx = FakeContext(self.bot)
             await Downloader._cog_uninstall(
@@ -593,7 +643,7 @@ class DashboardRPC_CogManagement:
             )
             notifications = fake_ctx.get_notifications()
             status = int(
-                any(notification["category"] == "danger" for notification in notifications)
+                any(notification["category"] == "danger" for notification in notifications),
             )
         return {
             "status": status,
@@ -604,11 +654,9 @@ class DashboardRPC_CogManagement:
     async def get_application_commands(
         self,
         user_id: int,
-    ) -> typing.Dict[
+    ) -> dict[
         str,
-        typing.Union[
-            int, typing.Dict[str, typing.List[typing.Dict[typing.Literal["type", "name"], str]]]
-        ],
+        int | dict[str, list[dict[typing.Literal["type", "name"], str]]],
     ]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
@@ -641,25 +689,31 @@ class DashboardRPC_CogManagement:
     async def sync_application_commands(
         self,
         user_id: int,
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         try:
             commands = await self.bot.tree.sync()
         except Exception as e:
-            status, notifications = 1, [
-                {
-                    "message": _("Failed to sync commands: {error}").format(error=str(e)),
-                    "category": "danger",
-                },
-            ]
+            status, notifications = (
+                1,
+                [
+                    {
+                        "message": _("Failed to sync commands: {error}").format(error=str(e)),
+                        "category": "danger",
+                    },
+                ],
+            )
         else:
-            status, notifications = 0, [
-                {
-                    "message": _("Synced {count} commands.").format(count=len(commands)),
-                    "category": "success",
-                },
-            ]
+            status, notifications = (
+                0,
+                [
+                    {
+                        "message": _("Synced {count} commands.").format(count=len(commands)),
+                        "category": "success",
+                    },
+                ],
+            )
         return {
             "status": status,
             "notifications": notifications,
@@ -667,8 +721,10 @@ class DashboardRPC_CogManagement:
 
     @rpc_check()
     async def set_application_commands(
-        self, user_id: int, commands: typing.Dict[str, typing.List[typing.Dict[str, str]]]
-    ) -> typing.Dict[str, typing.Union[int, str]]:
+        self,
+        user_id: int,
+        commands: dict[str, list[dict[str, str]]],
+    ) -> dict[str, int | str]:
         if user_id not in self.bot.owner_ids:
             return {"status": 1}
         application_commands = (await self.get_application_commands(user_id))[

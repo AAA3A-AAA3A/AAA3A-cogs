@@ -1,14 +1,14 @@
-﻿from AAA3A_utils import Cog, Menu, Settings, CogsUtils  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import io
+import typing
 from copy import deepcopy
 
+import discord
 from prettytable import PrettyTable
+
+from AAA3A_utils import Cog, CogsUtils, Menu, Settings
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, pagify
 
 from .dashboard_integration import DashboardIntegration
@@ -42,9 +42,7 @@ class FastClickGame(DashboardIntegration, Cog):
             games=0,
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "red_economy": {
                 "converter": bool,
                 "description": "If this option is enabled, the cog will give credits to the user each time the game is won.",
@@ -88,7 +86,7 @@ class FastClickGame(DashboardIntegration, Cog):
                 if _guilds_data[guild] == {}:
                     del _guilds_data[guild]
 
-    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
+    async def red_get_data_for_user(self, *, user_id: int) -> dict[str, io.BytesIO]:
         """Get all data about the user."""
         data = {
             Config.GLOBAL: {},
@@ -115,7 +113,7 @@ class FastClickGame(DashboardIntegration, Cog):
         return {f"{self.qualified_name}.json": file}
 
     @property
-    def games(self) -> typing.Dict[discord.Message, FastClickGameView]:
+    def games(self) -> dict[discord.Message, FastClickGameView]:
         return self.views
 
     @commands.guild_only()
@@ -144,7 +142,7 @@ class FastClickGame(DashboardIntegration, Cog):
             title=_("Fast Click Game"),
             color=await ctx.embed_color(),
             description=_("Do you want to play Fast Click Game with {ctx.author.mention}?").format(
-                ctx=ctx
+                ctx=ctx,
             ),
         )
         fake_ctx = type(
@@ -155,7 +153,7 @@ class FastClickGame(DashboardIntegration, Cog):
         if not await CogsUtils.ConfirmationAsk(fake_ctx, content=player.mention, embed=embed):
             return
         await FastClickGameView(cog=self, rounds=1, buttons=5, players=[ctx.author, player]).start(
-            ctx
+            ctx,
         )
 
     @fastclickgame.command(aliases=["lb"])
@@ -192,7 +190,7 @@ class FastClickGame(DashboardIntegration, Cog):
                     data["score"],
                     data["wins"],
                     data["games"],
-                ]
+                ],
             )
         for page in pagify(str(table), page_length=2000):
             embed = discord.Embed(title="Fast Click Game - Leaderboard")

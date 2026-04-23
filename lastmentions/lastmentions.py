@@ -1,16 +1,16 @@
-from AAA3A_utils import Cog, Menu, Settings, Loop  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 import io
+import typing
 
+import discord
 import plotly.graph_objects as go
 from PIL import Image, ImageDraw
+
+from AAA3A_utils import Cog, Loop, Menu, Settings
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import pagify
 
 # Credits:
@@ -25,14 +25,14 @@ class MemberOrChannelConverter(commands.Converter):
         self,
         ctx: commands.Context,
         argument: str,
-    ) -> typing.Union[
-        discord.Member,
-        discord.TextChannel,
-        discord.VoiceChannel,
-        discord.Thread,
-        discord.CategoryChannel,
-        discord.ForumChannel,
-    ]:
+    ) -> (
+        discord.Member
+        | discord.TextChannel
+        | discord.VoiceChannel
+        | discord.Thread
+        | discord.CategoryChannel
+        | discord.ForumChannel
+    ):
         for converter in (
             commands.MemberConverter,
             commands.TextChannelConverter,
@@ -52,7 +52,7 @@ class MemberOrChannelConverter(commands.Converter):
 class LastMentions(Cog):
     """Check the last mentions you received easily and get your or server statistics!"""
 
-    __authors__: typing.List[str] = ["AAA3A", "evanroby"]
+    __authors__: list[str] = ["AAA3A", "evanroby"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -78,7 +78,7 @@ class LastMentions(Cog):
             ignored_channels=[],
         )
 
-        _settings: typing.Dict[str, typing.Dict[str, typing.Any]] = {
+        _settings: dict[str, dict[str, typing.Any]] = {
             "enabled": {
                 "converter": bool,
                 "description": "Toggle the cog in the server.",
@@ -125,7 +125,7 @@ class LastMentions(Cog):
                 name="Cleanup Last Mentions",
                 function=self.cleanup_last_mentions,
                 hours=1,
-            )
+            ),
         )
 
     async def cleanup_last_mentions(self) -> None:
@@ -136,9 +136,9 @@ class LastMentions(Cog):
                 retention_days = await self.config.guild_from_id(int(guild_id)).retention_days()
                 retention_timestamp = int(
                     (
-                        datetime.datetime.now(datetime.timezone.utc)
+                        datetime.datetime.now(datetime.UTC)
                         - datetime.timedelta(days=retention_days)
-                    ).timestamp()
+                    ).timestamp(),
                 )
                 for member_data in members_data[guild_id].values():
                     if not (last_mentions := member_data.get("last_mentions", [])):
@@ -196,7 +196,7 @@ class LastMentions(Cog):
                         timestamp
                         for timestamp in member_data["all_mention_timestamps"]
                         if timestamp >= message_timestamp - 300
-                    ]
+                    ],
                 )
                 >= config["max_mentions_per_5_minutes"]
             ):
@@ -215,7 +215,7 @@ class LastMentions(Cog):
                     "content": message.content,
                     "attachments": len(message.attachments),
                     "reply_to": message.reference.message_id if message.reference else None,
-                }
+                },
             )
             member_data["all_mention_timestamps"].append(message_timestamp)
             await self.config.member(mention).set(member_data)
@@ -226,7 +226,7 @@ class LastMentions(Cog):
         if message.guild is None:
             return
         if not await self.config.guild(
-            message.guild
+            message.guild,
         ).enabled() or await self.bot.cog_disabled_in_guild(self, message.guild):
             return
         if message.author.bot and await self.config.guild(message.guild).ignore_bots():
@@ -286,7 +286,7 @@ class LastMentions(Cog):
                         if last_mention["content"]
                         else ""
                         + _("+ {attachments} attachments").format(
-                            attachments=last_mention["attachments"]
+                            attachments=last_mention["attachments"],
                         )
                     )
                     if last_mention["attachments"] > 0
@@ -297,7 +297,8 @@ class LastMentions(Cog):
             if (channel := ctx.guild.get_channel(last_mention["channel_id"])) is not None
             and (
                 created_at := datetime.datetime.fromtimestamp(
-                    last_mention["timestamp"], tz=datetime.timezone.utc
+                    last_mention["timestamp"],
+                    tz=datetime.UTC,
                 )
             )
         )
@@ -325,9 +326,7 @@ class LastMentions(Cog):
         else:
             ignored_channels = await self.config.member(ctx.author).ignored_channels()
             if member_or_channel.id in ignored_channels:
-                raise commands.UserFeedbackCheckFailure(
-                    _("You are already ignoring this channel.")
-                )
+                raise commands.UserFeedbackCheckFailure(_("You are already ignoring this channel."))
             ignored_channels.append(member_or_channel.id)
             await self.config.member(ctx.author).ignored_channels.set(ignored_channels)
         await self.config.member(ctx.author).last_mentions.set(
@@ -342,7 +341,7 @@ class LastMentions(Cog):
                     not isinstance(member_or_channel, discord.Member)
                     and last_mention["channel_id"] != member_or_channel.id
                 )
-            ]
+            ],
         )
 
     @lastmentions.command()
@@ -381,7 +380,7 @@ class LastMentions(Cog):
         """Show your statistics for Last Mentions."""
         if not await self.config.guild(ctx.guild).enabled():
             raise commands.UserFeedbackCheckFailure(
-                _("Last Mentions is not enabled in this server.")
+                _("Last Mentions is not enabled in this server."),
             )
         if not (
             all_mention_timestamps := await self.config.member(ctx.author).all_mention_timestamps()
@@ -397,7 +396,7 @@ class LastMentions(Cog):
             icon_url=ctx.author.display_avatar,
         )
         embed.description = _(
-            "You have received a total of **{total_mentions} mentions** since the feature was enabled."
+            "You have received a total of **{total_mentions} mentions** since the feature was enabled.",
         ).format(total_mentions=len(all_mention_timestamps))
         embed.set_image(url="attachment://image.png")
         file = await asyncio.to_thread(
@@ -412,7 +411,7 @@ class LastMentions(Cog):
         """Show the server statistics for Last Mentions."""
         if not await self.config.guild(ctx.guild).enabled():
             raise commands.UserFeedbackCheckFailure(
-                _("Last Mentions is not enabled in this server.")
+                _("Last Mentions is not enabled in this server."),
             )
         members_data = {
             member_id: member_data
@@ -433,7 +432,7 @@ class LastMentions(Cog):
         embed.description = _(
             "- **Mentions recorded:** {total_mentions}\n"
             "- **Members with mentions:** {members_with_mentions}\n"
-            "- **Average mentions per member:** {average_mentions_per_member:.2f}\n"
+            "- **Average mentions per member:** {average_mentions_per_member:.2f}\n",
         ).format(
             total_mentions=total_mentions,
             members_with_mentions=members_with_mentions,
@@ -474,9 +473,9 @@ class LastMentions(Cog):
 
     def generate_graphic(
         self,
-        all_mention_timestamps: typing.List[int],
+        all_mention_timestamps: list[int],
         to_file: bool = True,
-    ) -> typing.Union[Image.Image, discord.File]:
+    ) -> Image.Image | discord.File:
         img: Image.Image = Image.new("RGBA", (1500, 800), (0, 0, 0, 0))
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
         draw.rounded_rectangle((0, 0, img.size[0], img.size[1]), radius=15, fill=(32, 34, 37))
@@ -493,19 +492,15 @@ class LastMentions(Cog):
         y = []
         for i in x:
             start = int(
-                (
-                    datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=-i + 1)
-                ).timestamp()
+                (datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=-i + 1)).timestamp(),
             )
             end = int(
-                (
-                    datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=-i)
-                ).timestamp()
+                (datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=-i)).timestamp(),
             )
             y.append(
                 len(
-                    [timestamp for timestamp in all_mention_timestamps if start <= timestamp < end]
-                )
+                    [timestamp for timestamp in all_mention_timestamps if start <= timestamp < end],
+                ),
             )
         fig.add_trace(
             go.Scatter(
@@ -517,7 +512,7 @@ class LastMentions(Cog):
                 line={"width": 14},
                 fill="tozeroy",
                 fillcolor="rgba(0,255,0,0.2)",
-            )
+            ),
         )
         fig.update_xaxes(type="category", tickvals=x)
         fig.update_yaxes(showgrid=True)
@@ -561,7 +556,7 @@ class LastMentions(Cog):
                 if members_data[guild] == {}:
                     del members_data[guild]
 
-    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
+    async def red_get_data_for_user(self, *, user_id: int) -> dict[str, io.BytesIO]:
         """Get all data about the user."""
         data = {
             Config.GLOBAL: {},

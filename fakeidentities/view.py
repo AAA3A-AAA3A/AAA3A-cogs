@@ -1,14 +1,13 @@
-from AAA3A_utils import Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import json
 
+import discord
 from mimesis.datasets.int import GENDER_SYMBOLS
 from mimesis.enums import Gender
 from mimesis.locales import Locale
+
+from AAA3A_utils import Menu
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 from .types import LOCALES, FakeIdentity, get_pages
 
@@ -19,10 +18,10 @@ class FakeIdentityView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        gender: typing.Optional[Gender] = None,
-        nationality: typing.Optional[Locale] = None,
-        location: typing.Optional[Locale] = None,
-        seed: typing.Optional[int] = None,
+        gender: Gender | None = None,
+        nationality: Locale | None = None,
+        location: Locale | None = None,
+        seed: int | None = None,
     ) -> None:
         super().__init__(timeout=180)
         self.cog: commands.Cog = cog
@@ -30,10 +29,10 @@ class FakeIdentityView(discord.ui.View):
         self.current_fake_identity: FakeIdentity = None
         self.page: str = "main"
 
-        self.gender: typing.Optional[Gender] = gender
-        self.nationality: typing.Optional[Locale] = nationality
-        self.location: typing.Optional[Locale] = location
-        self.seed: typing.Optional[int] = seed
+        self.gender: Gender | None = gender
+        self.nationality: Locale | None = nationality
+        self.location: Locale | None = location
+        self.seed: int | None = seed
 
         self.gender_select.placeholder = _("Select a gender.")
         self.nationality_select.placeholder = _("Select a nationality.")
@@ -106,7 +105,8 @@ class FakeIdentityView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -151,7 +151,9 @@ class FakeIdentityView(discord.ui.View):
 
     @discord.ui.select(min_values=0, max_values=1, placeholder="Select a gender.")
     async def gender_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         if select.values:
@@ -164,7 +166,9 @@ class FakeIdentityView(discord.ui.View):
 
     @discord.ui.select(min_values=0, max_values=1, placeholder="Select a nationality.")
     async def nationality_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         if select.values:
@@ -179,7 +183,9 @@ class FakeIdentityView(discord.ui.View):
 
     @discord.ui.select(min_values=0, max_values=1, placeholder="Select a location.")
     async def location_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         if select.values:
@@ -192,7 +198,9 @@ class FakeIdentityView(discord.ui.View):
 
     @discord.ui.select(min_values=1, max_values=1, placeholder="Select the page.")
     async def select_page(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         self.page: str = select.values[0]

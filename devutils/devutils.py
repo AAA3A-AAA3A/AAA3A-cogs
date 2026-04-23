@@ -1,9 +1,3 @@
-from AAA3A_utils import Cog, CogsUtils, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import importlib
 import json
@@ -12,8 +6,13 @@ import re
 import sys
 import time
 
+import discord
 from discord.http import Route
 from red_commons.logging import TRACE, VERBOSE, getLogger
+
+from AAA3A_utils import Cog, CogsUtils, Menu
+from redbot.core import commands
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list
 
 # Credits:
@@ -72,7 +71,8 @@ class RawRequestConverter(commands.Converter):
         for _type in _types:
             try:
                 return await discord.ext.commands.converter.CONVERTER_MAPPING[_type]().convert(
-                    ctx, argument
+                    ctx,
+                    argument,
                 )
             except commands.BadArgument:
                 pass
@@ -83,12 +83,13 @@ class RawRequestConverter(commands.Converter):
 class DevUtils(Cog):
     """Various development utilities!"""
 
-    __authors__: typing.List[str] = ["PhenoM4n4n", "AAA3A"]
+    __authors__: list[str] = ["PhenoM4n4n", "AAA3A"]
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):
         if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=message.guild
+            cog=self,
+            guild=message.guild,
         ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
             return
         if message.webhook_id is not None or message.author.bot:
@@ -129,7 +130,12 @@ class DevUtils(Cog):
 
     @devutils.command()
     async def do(
-        self, ctx, times: int, sequential: typing.Optional[bool] = True, *, command: str
+        self,
+        ctx,
+        times: int,
+        sequential: bool | None = True,
+        *,
+        command: str,
     ) -> None:
         """
         Repeats a command a specified number of times.
@@ -167,7 +173,7 @@ class DevUtils(Cog):
     async def execute(
         self,
         ctx: commands.Context,
-        sequential: typing.Optional[bool] = True,
+        sequential: bool | None = True,
         *,
         commands_list: str,
     ) -> None:
@@ -186,13 +192,13 @@ class DevUtils(Cog):
                 )
                 if not new_ctx.valid:
                     raise commands.UserFeedbackCheckFailure(
-                        _("`{command}` isn't a valid command.").format(command=command)
+                        _("`{command}` isn't a valid command.").format(command=command),
                     )
                 if not await discord.utils.async_all(
-                    [check(new_ctx) for check in new_ctx.command.checks]
+                    [check(new_ctx) for check in new_ctx.command.checks],
                 ):
                     raise commands.UserFeedbackCheckFailure(
-                        _("You can't execute yourself `{command}`.").format(command=command)
+                        _("You can't execute yourself `{command}`.").format(command=command),
                     )
         else:
             todo = []
@@ -208,13 +214,13 @@ class DevUtils(Cog):
                 )
                 if not new_ctx.valid:
                     raise commands.UserFeedbackCheckFailure(
-                        _("`{command}` isn't a valid command.").format(command=command)
+                        _("`{command}` isn't a valid command.").format(command=command),
                     )
                 if not await discord.utils.async_all(
-                    [check(new_ctx) for check in new_ctx.command.checks]
+                    [check(new_ctx) for check in new_ctx.command.checks],
                 ):
                     raise commands.UserFeedbackCheckFailure(
-                        _("You can't execute yourself `{command}`.").format(command=command)
+                        _("You can't execute yourself `{command}`.").format(command=command),
                     )
                 todo.append(ctx.bot.invoke(new_ctx))
             await asyncio.gather(*todo)
@@ -257,8 +263,9 @@ class DevUtils(Cog):
         end = time.perf_counter()
         return await ctx.send(
             _("Command `{command}` finished in `{timing}`s.").format(
-                command=new_ctx.command.qualified_name, timing=f"{end - start:.3f}"
-            )
+                command=new_ctx.command.qualified_name,
+                timing=f"{end - start:.3f}",
+            ),
         )
 
     @devutils.command()
@@ -268,18 +275,17 @@ class DevUtils(Cog):
         You may reply to a message to reinvoke it or pass a message ID/link.
         The command will be invoked with the author and the channel of the specified message.
         """
-        if message is None:
-            if not (
-                ctx.message.reference is not None
-                and isinstance((message := ctx.message.reference.resolved), discord.Message)
-            ):
-                raise commands.UserInputError()
+        if message is None and not (
+            ctx.message.reference is not None
+            and isinstance((message := ctx.message.reference.resolved), discord.Message)
+        ):
+            raise commands.UserInputError()
         new_ctx = await CogsUtils.invoke_command(
             bot=ctx.bot,
             author=message.author,
             channel=message.channel,
             command=(
-                f"{ctx.prefix}devutils reinvoke{message.content[len(ctx.prefix)+8:]}"
+                f"{ctx.prefix}devutils reinvoke{message.content[len(ctx.prefix) + 8 :]}"
                 if message.content.startswith(f"{ctx.prefix}reinvoke")
                 else message.content
             ),
@@ -293,7 +299,10 @@ class DevUtils(Cog):
 
     @devutils.command()
     async def loglevel(
-        self, ctx: commands.Context, level: LogLevelConverter, logger_name: str = "red"
+        self,
+        ctx: commands.Context,
+        level: LogLevelConverter,
+        logger_name: str = "red",
     ) -> None:
         """Change the logging level for a logger. If no name is provided, the root logger (`red`) is used.
 
@@ -310,8 +319,9 @@ class DevUtils(Cog):
         logger.setLevel(level)
         await ctx.send(
             _("Logger `{logger_name}` level set to `{level}`.").format(
-                level=logging.getLevelName(logger.level), logger_name=logger_name
-            )
+                level=logging.getLevelName(logger.level),
+                logger_name=logger_name,
+            ),
         )
 
     @devutils.command()
@@ -330,7 +340,9 @@ class DevUtils(Cog):
 
     @devutils.command()
     async def reloadmodule(
-        self, ctx: commands.Context, modules: commands.Greedy[StrConverter]
+        self,
+        ctx: commands.Context,
+        modules: commands.Greedy[StrConverter],
     ) -> None:
         """Force reload a module (to use code changes without restarting your bot).
 
@@ -343,17 +355,15 @@ class DevUtils(Cog):
                     m
                     for m in sys.modules
                     if m.split(".")[: len(module.split("."))] == module.split(".")
-                ]
+                ],
             )
         modules = sorted(_modules, reverse=True)
         if not modules:
-            raise commands.UserFeedbackCheckFailure(
-                _("I couldn't find any module with this name.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("I couldn't find any module with this name."))
         for module in modules:
             importlib.reload(sys.modules[module])
         text = _("Module(s) {modules} reloaded.").format(
-            modules=humanize_list([f"`{module}`" for module in modules])
+            modules=humanize_list([f"`{module}`" for module in modules]),
         )
         if len(text) <= 2000:
             await ctx.send(text)
@@ -365,11 +375,11 @@ class DevUtils(Cog):
         """Display the JSON of a Discord object with a raw request."""
         if isinstance(thing, discord.Guild):
             raw_content = await ctx.bot.http.request(
-                route=Route(method="GET", path="/guilds/{guild_id}", guild_id=thing.id)
+                route=Route(method="GET", path="/guilds/{guild_id}", guild_id=thing.id),
             )
         elif isinstance(thing, (discord.abc.GuildChannel, discord.Thread)):
             raw_content = await ctx.bot.http.request(
-                route=Route(method="GET", path="/channels/{channel_id}", channel_id=thing.id)
+                route=Route(method="GET", path="/channels/{channel_id}", channel_id=thing.id),
             )
         elif isinstance(thing, discord.Member):
             raw_content = await ctx.bot.http.request(
@@ -378,19 +388,21 @@ class DevUtils(Cog):
                     path="/guilds/{guild_id}/members/{user_id}",
                     guild_id=thing.guild.id,
                     user_id=thing.id,
-                )
+                ),
             )
         elif isinstance(thing, discord.User):
             raw_content = await ctx.bot.http.request(
-                route=Route(method="GET", path="/users/{user_id}", user_id=thing.id)
+                route=Route(method="GET", path="/users/{user_id}", user_id=thing.id),
             )
         elif isinstance(thing, discord.Role):
             raw_content = [
                 role
                 for role in await ctx.bot.http.request(
                     route=Route(
-                        method="GET", path="/guilds/{guild_id}/roles", guild_id=thing.guild.id
-                    )
+                        method="GET",
+                        path="/guilds/{guild_id}/roles",
+                        guild_id=thing.guild.id,
+                    ),
                 )
                 if int(role["id"]) == thing.id
             ][0]
@@ -401,7 +413,7 @@ class DevUtils(Cog):
                     path="/guilds/{guild_id}/emojis/{emoji_id}",
                     guild_id=thing.guild.id,
                     emoji_id=thing.id,
-                )
+                ),
             )
         elif isinstance(thing, discord.Message):
             raw_content = await ctx.bot.http.request(
@@ -410,10 +422,10 @@ class DevUtils(Cog):
                     path="/channels/{channel_id}/messages/{message_id}",
                     channel_id=thing.channel.id,
                     message_id=thing.id,
-                )
+                ),
             )
         elif isinstance(thing, discord.Invite):
             raw_content = await ctx.bot.http.request(
-                route=Route(method="GET", path="/invites/{invite_code}", invite_code=thing.code)
+                route=Route(method="GET", path="/invites/{invite_code}", invite_code=thing.code),
             )
         await Menu(json.dumps(raw_content, indent=4), lang="json").start(ctx)

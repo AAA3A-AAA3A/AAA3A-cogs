@@ -1,17 +1,18 @@
-from AAA3A_utils import Cog, CogsUtils, Loop, Settings, Menu  # isort:skip
-from redbot.core import commands, app_commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
+import builtins
 import datetime
 import io
+import typing
 from copy import deepcopy
 from inspect import cleandoc
 
 import dateutil
+import discord
 import pytz
+
+from AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings
+from redbot.core import Config, app_commands, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .converters import (
@@ -99,11 +100,9 @@ class Reminders(DashboardIntegration, Cog):
             reminders={},
         )
 
-        self.cache: typing.Dict[int, typing.Dict[int, Reminder]] = {}
+        self.cache: dict[int, dict[int, Reminder]] = {}
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "maximum_user_reminders": {
                 "converter": commands.Range[int, 1, 125],
                 "description": "Change the reminders limit for each user (except bot owners).",
@@ -177,7 +176,7 @@ class Reminders(DashboardIntegration, Cog):
                 function=self.reminders_loop,
                 minutes=0 if seconds_allowed else 1,
                 seconds=30 if seconds_allowed else 0,
-            )
+            ),
         )
 
     async def cog_unload(self) -> None:
@@ -199,7 +198,7 @@ class Reminders(DashboardIntegration, Cog):
             pass
         await self.config.user_from_id(user_id).clear()
 
-    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
+    async def red_get_data_for_user(self, *, user_id: int) -> dict[str, io.BytesIO]:
         """Get all data about the user."""
         # sourcery skip: merge-dict-assign
         data = {
@@ -224,7 +223,7 @@ class Reminders(DashboardIntegration, Cog):
 
     async def reminders_loop(self, utc_now: datetime.datetime = None) -> bool:
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.UTC)
         executed = False
         cache = {user_id: reminders.copy() for user_id, reminders in self.cache.copy().items()}
         for reminders in cache.values():
@@ -245,35 +244,35 @@ class Reminders(DashboardIntegration, Cog):
         self,
         user_id: int,
         content: Content,
-        jump_url: typing.Optional[str],
-        created_at: typing.Optional[datetime.datetime],
+        jump_url: str | None,
+        created_at: datetime.datetime | None,
         expires_at: datetime.datetime,
-        repeat: typing.Optional[Repeat] = None,
+        repeat: Repeat | None = None,
         **kwargs,
     ) -> Reminder:
         if jump_url is None:
             jump_url = "https://discord.com/channels/0/0/0"
         if created_at is None:
-            created_at = datetime.datetime.now(tz=datetime.timezone.utc)
+            created_at = datetime.datetime.now(tz=datetime.UTC)
         reminder_id = 1
         while reminder_id in self.cache.get(user_id, {}):
             reminder_id += 1
-        reminder_kwargs = dict(
-            cog=self,
-            user_id=user_id,
-            id=reminder_id,
-            jump_url=jump_url,
-            snooze=False,
-            me_too=False,
-            content=content,
-            destination=None,
-            targets=None,
-            created_at=created_at,
-            expires_at=expires_at,
-            last_expires_at=None,
-            next_expires_at=expires_at,
-            repeat=repeat,
-        )
+        reminder_kwargs = {
+            "cog": self,
+            "user_id": user_id,
+            "id": reminder_id,
+            "jump_url": jump_url,
+            "snooze": False,
+            "me_too": False,
+            "content": content,
+            "destination": None,
+            "targets": None,
+            "created_at": created_at,
+            "expires_at": expires_at,
+            "last_expires_at": None,
+            "next_expires_at": expires_at,
+            "repeat": repeat,
+        }
         reminder_kwargs.update(**kwargs)
         reminder = Reminder(**reminder_kwargs)
         await reminder.save()
@@ -282,7 +281,11 @@ class Reminders(DashboardIntegration, Cog):
     @commands.hybrid_command()
     @app_commands.allowed_installs(guilds=True, users=True)
     async def remindme(
-        self, ctx: commands.Context, time: str, *, message_or_text: str = None
+        self,
+        ctx: commands.Context,
+        time: str,
+        *,
+        message_or_text: str = None,
     ) -> None:
         """Create a reminder with optional reminder text or message.
 
@@ -307,17 +310,20 @@ class Reminders(DashboardIntegration, Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "You have reached the limit of {minimum_user_reminders} reminders per user."
-                ).format(minimum_user_reminders=minimum_user_reminders)
+                    "You have reached the limit of {minimum_user_reminders} reminders per user.",
+                ).format(minimum_user_reminders=minimum_user_reminders),
             )
         try:
             if message_or_text is not None:
                 utc_now, expires_at, repeat, message_or_text = await TimeConverter().convert(
-                    ctx, argument=time, content=message_or_text
+                    ctx,
+                    argument=time,
+                    content=message_or_text,
                 )
                 try:
                     message_or_text: discord.Message = await commands.MessageConverter().convert(
-                        ctx, argument=message_or_text
+                        ctx,
+                        argument=message_or_text,
                     )
                 except commands.BadArgument:
                     pass
@@ -327,9 +333,7 @@ class Reminders(DashboardIntegration, Cog):
                         not member_permissions.view_channel
                         or not member_permissions.read_message_history
                     ):
-                        raise commands.UserFeedbackCheckFailure(
-                            _("You can't access this message.")
-                        )
+                        raise commands.UserFeedbackCheckFailure(_("You can't access this message."))
             else:
                 utc_now, expires_at, repeat = await TimeConverter().convert(ctx, argument=time)
         except commands.BadArgument as e:
@@ -337,7 +341,7 @@ class Reminders(DashboardIntegration, Cog):
         if repeat is not None:
             if not config["repeat_allowed"] and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
-                    _("You are not allowed to create repeating reminders.")
+                    _("You are not allowed to create repeating reminders."),
                 )
             for rule in repeat.rules:
                 if rule.type == "sample":
@@ -352,8 +356,8 @@ class Reminders(DashboardIntegration, Cog):
                     ):
                         raise commands.UserFeedbackCheckFailure(
                             _(
-                                "The repeat timedelta must be greater than {minimum_repeat} minutes."
-                            ).format(minimum_repeat=minimum_repeat)
+                                "The repeat timedelta must be greater than {minimum_repeat} minutes.",
+                            ).format(minimum_repeat=minimum_repeat),
                         )
         content = {}
         message_or_text = message_or_text or (
@@ -366,7 +370,7 @@ class Reminders(DashboardIntegration, Cog):
                 "type": "message",
                 "text": (
                     (
-                        f"{message_or_text.clean_content[:MAX_REMINDER_LENGTH - 4]}\n..."
+                        f"{message_or_text.clean_content[: MAX_REMINDER_LENGTH - 4]}\n..."
                         if len(message_or_text.clean_content) > MAX_REMINDER_LENGTH
                         else message_or_text.clean_content
                     )
@@ -426,10 +430,8 @@ class Reminders(DashboardIntegration, Cog):
     async def remind(
         self,
         ctx: commands.Context,
-        destination: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
-        targets: commands.Greedy[typing.Union[discord.Member, discord.Role]],
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
+        targets: commands.Greedy[discord.Member | discord.Role],
         time: str,
         *,
         message_or_text: str = None,
@@ -451,17 +453,20 @@ class Reminders(DashboardIntegration, Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "You have reached the limit of {minimum_user_reminders} reminders per user."
-                ).format(minimum_user_reminders=minimum_user_reminders)
+                    "You have reached the limit of {minimum_user_reminders} reminders per user.",
+                ).format(minimum_user_reminders=minimum_user_reminders),
             )
         try:
             if message_or_text is not None:
                 utc_now, expires_at, repeat, message_or_text = await TimeConverter().convert(
-                    ctx, argument=time, content=message_or_text
+                    ctx,
+                    argument=time,
+                    content=message_or_text,
                 )
                 try:
                     message_or_text: discord.Message = await commands.MessageConverter().convert(
-                        ctx, argument=message_or_text
+                        ctx,
+                        argument=message_or_text,
                     )
                 except commands.BadArgument:
                     pass
@@ -471,9 +476,7 @@ class Reminders(DashboardIntegration, Cog):
                         not member_permissions.view_channel
                         or not member_permissions.read_message_history
                     ):
-                        raise commands.UserFeedbackCheckFailure(
-                            _("You can't access this message.")
-                        )
+                        raise commands.UserFeedbackCheckFailure(_("You can't access this message."))
             else:
                 utc_now, expires_at, repeat = await TimeConverter().convert(ctx, argument=time)
         except commands.BadArgument as e:
@@ -481,7 +484,7 @@ class Reminders(DashboardIntegration, Cog):
         if repeat is not None:
             if not config["repeat_allowed"] and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
-                    _("You are not allowed to create repeating reminders.")
+                    _("You are not allowed to create repeating reminders."),
                 )
             for rule in repeat.rules:
                 if rule.type == "sample":
@@ -496,8 +499,8 @@ class Reminders(DashboardIntegration, Cog):
                     ):
                         raise commands.UserFeedbackCheckFailure(
                             _(
-                                "The repeat timedelta must be greater than {minimum_repeat} minutes."
-                            ).format(minimum_repeat=minimum_repeat)
+                                "The repeat timedelta must be greater than {minimum_repeat} minutes.",
+                            ).format(minimum_repeat=minimum_repeat),
                         )
         if destination is None:
             destination = ctx.channel
@@ -514,20 +517,20 @@ class Reminders(DashboardIntegration, Cog):
             )
             if (
                 not await discord.utils.async_all(
-                    [check(context) for check in context.command.checks]
+                    [check(context) for check in context.command.checks],
                 )
                 or not destination_user_permissions.send_messages
                 or not destination_bot_permissions.send_messages
             ):
                 raise commands.UserFeedbackCheckFailure(
                     _("You can't create a reminder in {destination}.").format(
-                        destination=destination.mention
-                    )
+                        destination=destination.mention,
+                    ),
                 )
         channel_permissions = destination.permissions_for(ctx.me)
         if not channel_permissions.send_messages:
             raise commands.UserFeedbackCheckFailure(_("I can't send messages in this channel."))
-        elif not channel_permissions.embed_links:
+        if not channel_permissions.embed_links:
             raise commands.UserFeedbackCheckFailure(_("I can't send embeds in this channel."))
         if not targets:
             targets = [ctx.author]
@@ -538,14 +541,14 @@ class Reminders(DashboardIntegration, Cog):
             ):
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "Since you don't have the `mention_everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s)."
-                    )
+                        "Since you don't have the `mention_everyone` permission, you can't create a reminder that will mention more than 3 people or mention role(s).",
+                    ),
                 )
             if len(targets) > 10:
                 raise commands.UserFeedbackCheckFailure(
                     _(
-                        "Due to the message character limit, you can only mention a maximum of 10 users or roles."
-                    )
+                        "Due to the message character limit, you can only mention a maximum of 10 users or roles.",
+                    ),
                 )
         message_or_text = message_or_text or (
             ctx.message.reference.cached_message
@@ -557,7 +560,7 @@ class Reminders(DashboardIntegration, Cog):
                 "type": "message",
                 "text": (
                     (
-                        f"{message_or_text.clean_content[:MAX_REMINDER_LENGTH - 4]}\n..."
+                        f"{message_or_text.clean_content[: MAX_REMINDER_LENGTH - 4]}\n..."
                         if len(message_or_text.clean_content) > MAX_REMINDER_LENGTH
                         else message_or_text.clean_content
                     )
@@ -610,7 +613,10 @@ class Reminders(DashboardIntegration, Cog):
             if config["replies"]
             else None,  # discord.MessageReference.from_message(ctx.message, fail_if_not_exists=False)
             allowed_mentions=discord.AllowedMentions(
-                everyone=False, users=False, roles=False, replied_user=False
+                everyone=False,
+                users=False,
+                roles=False,
+                replied_user=False,
             ),
         )
         if view is not None:
@@ -628,9 +634,7 @@ class Reminders(DashboardIntegration, Cog):
     async def fifo(
         self,
         ctx: commands.Context,
-        destination: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         time: str,
         *,
         command: str,
@@ -652,23 +656,25 @@ class Reminders(DashboardIntegration, Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "You have reached the limit of {minimum_user_reminders} reminders per user."
-                ).format(minimum_user_reminders=minimum_user_reminders)
+                    "You have reached the limit of {minimum_user_reminders} reminders per user.",
+                ).format(minimum_user_reminders=minimum_user_reminders),
             )
         if not config["fifo_allowed"] and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(
-                _("You're not allowed to create FIFO/commands reminders.")
+                _("You're not allowed to create FIFO/commands reminders."),
             )
         try:
             utc_now, expires_at, repeat, command = await TimeConverter().convert(
-                ctx, argument=time, content=command
+                ctx,
+                argument=time,
+                content=command,
             )
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if repeat is not None:
             if not config["repeat_allowed"] and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
-                    _("You are not allowed to create repeating reminders.")
+                    _("You are not allowed to create repeating reminders."),
                 )
             for rule in repeat.rules:
                 if rule.type == "sample":
@@ -683,8 +689,8 @@ class Reminders(DashboardIntegration, Cog):
                     ):
                         raise commands.UserFeedbackCheckFailure(
                             _(
-                                "The repeat timedelta must be greater than {minimum_repeat} minutes."
-                            ).format(minimum_repeat=minimum_repeat)
+                                "The repeat timedelta must be greater than {minimum_repeat} minutes.",
+                            ).format(minimum_repeat=minimum_repeat),
                         )
         if destination is None:
             destination = ctx.channel
@@ -700,19 +706,19 @@ class Reminders(DashboardIntegration, Cog):
         )
         if not context.valid:
             raise commands.UserFeedbackCheckFailure(_("This command doesn't exist."))
-        elif (
+        if (
             not await discord.utils.async_all([check(context) for check in context.command.checks])
             or not destination_user_permissions.send_messages
             or not destination_bot_permissions.send_messages
         ):
             raise commands.UserFeedbackCheckFailure(
-                _("You can't execute this command, in this context.")
+                _("You can't execute this command, in this context."),
             )
-        elif context.command.qualified_name in ("shutdown", "restart", "load", "unload", "reload"):
+        if context.command.qualified_name in ("shutdown", "restart", "load", "unload", "reload"):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command."
-                ).format(command=context.command)
+                    "The command `{command.qualified_name}` can't be scheduled, because it's a suspicious command.",
+                ).format(command=context.command),
             )
         content = {"type": "command", "command": command, "command_invoker": ctx.author.id}
         reminder = await self.create_reminder(
@@ -746,9 +752,7 @@ class Reminders(DashboardIntegration, Cog):
     async def say(
         self,
         ctx: commands.Context,
-        destination: typing.Optional[
-            typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
-        ],
+        destination: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         time: str,
         *,
         text: str,
@@ -770,19 +774,21 @@ class Reminders(DashboardIntegration, Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "You have reached the limit of {minimum_user_reminders} reminders per user."
-                ).format(minimum_user_reminders=minimum_user_reminders)
+                    "You have reached the limit of {minimum_user_reminders} reminders per user.",
+                ).format(minimum_user_reminders=minimum_user_reminders),
             )
         try:
             utc_now, expires_at, repeat, text = await TimeConverter().convert(
-                ctx, argument=time, content=text
+                ctx,
+                argument=time,
+                content=text,
             )
         except commands.BadArgument as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         if repeat is not None:
             if not config["repeat_allowed"] and ctx.author.id not in ctx.bot.owner_ids:
                 raise commands.UserFeedbackCheckFailure(
-                    _("You are not allowed to create repeating reminders.")
+                    _("You are not allowed to create repeating reminders."),
                 )
             for rule in repeat.rules:
                 if rule.type == "sample":
@@ -797,8 +803,8 @@ class Reminders(DashboardIntegration, Cog):
                     ):
                         raise commands.UserFeedbackCheckFailure(
                             _(
-                                "The repeat timedelta must be greater than {minimum_repeat} minutes."
-                            ).format(minimum_repeat=minimum_repeat)
+                                "The repeat timedelta must be greater than {minimum_repeat} minutes.",
+                            ).format(minimum_repeat=minimum_repeat),
                         )
         if destination is None:
             destination = ctx.channel
@@ -812,7 +818,7 @@ class Reminders(DashboardIntegration, Cog):
             or not destination_bot_permissions.send_messages
         ):
             raise commands.UserFeedbackCheckFailure(
-                _("You can't or I can't send messages in this channel.")
+                _("You can't or I can't send messages in this channel."),
             )
         content = {
             "type": "say",
@@ -883,7 +889,7 @@ class Reminders(DashboardIntegration, Cog):
 
             **Cron triggers** are supported:
             • Check https://crontab.guru/.
-            """
+            """,
         )
         embed: discord.Embed = discord.Embed(
             title=_("Time Parsing Tips"),
@@ -908,8 +914,8 @@ class Reminders(DashboardIntegration, Cog):
     async def list(
         self,
         ctx: commands.Context,
-        card: typing.Optional[bool] = False,
-        content_type: typing.Optional[typing.Literal["text", "command", "say"]] = None,
+        card: bool | None = False,
+        content_type: typing.Literal["text", "command", "say"] | None = None,
         sort: typing.Literal["expire", "created", "id"] = "expire",
     ) -> None:
         """List your existing reminders.
@@ -928,11 +934,11 @@ class Reminders(DashboardIntegration, Cog):
                 if reminder.content["type"] == content_type
             }
         if sort == "expire":
-            reminders = list(sorted(reminders.values(), key=lambda r: r.next_expires_at))
+            reminders = sorted(reminders.values(), key=lambda r: r.next_expires_at)
         elif sort == "created":
-            reminders = list(sorted(reminders.values(), key=lambda r: r.created_at))
+            reminders = sorted(reminders.values(), key=lambda r: r.created_at)
         elif sort == "id":
-            reminders = list(sorted(reminders.values(), key=lambda r: r.id))
+            reminders = sorted(reminders.values(), key=lambda r: r.id)
         embeds = []
         for li in discord.utils.as_chunks(reminders, max_size=5):
             embed: discord.Embed = discord.Embed(
@@ -943,7 +949,7 @@ class Reminders(DashboardIntegration, Cog):
                     else ""
                 ),
                 description=_(
-                    "You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder."
+                    "You have {len_reminders} reminders{of_this_content_type}. Use `{clean_prefix}reminder edit #ID` to edit a reminder.",
                 ).format(
                     len_reminders=len(reminders),
                     of_this_content_type=(
@@ -956,14 +962,18 @@ class Reminders(DashboardIntegration, Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.display_avatar)
             for reminder in li:
                 embed.add_field(
-                    name=f"Reminder #{reminder.id}", value=reminder.get_info(), inline=card
+                    name=f"Reminder #{reminder.id}",
+                    value=reminder.get_info(),
+                    inline=card,
                 )
             embeds.append(embed)
         await Menu(pages=embeds).start(ctx)
 
     @reminder.command(aliases=["delete", "-"])
     async def remove(
-        self, ctx: commands.Context, reminders: commands.Greedy[ExistingReminderConverter]
+        self,
+        ctx: commands.Context,
+        reminders: commands.Greedy[ExistingReminderConverter],
     ) -> None:
         """Remove existing Reminder(s) from their IDs.
 
@@ -978,14 +988,14 @@ class Reminders(DashboardIntegration, Cog):
         if len(reminders) == 1:
             await ctx.send(
                 _("Your reminder {reminder_id} has been successfully removed.").format(
-                    reminder_id=f"**#{reminders[0].id}**"
-                )
+                    reminder_id=f"**#{reminders[0].id}**",
+                ),
             )
         else:
             await ctx.send(
                 _("Your reminders {reminders_ids} have been successfully removed.").format(
-                    reminders_ids=humanize_list([f"**#{reminder.id}**" for reminder in reminders])
-                )
+                    reminders_ids=humanize_list([f"**#{reminder.id}**" for reminder in reminders]),
+                ),
             )
 
     @commands.bot_has_permissions(embed_links=True)
@@ -997,7 +1007,8 @@ class Reminders(DashboardIntegration, Cog):
         - Use `next` to edit your next triggered reminder.
         """
         embed: discord.Embed = discord.Embed(
-            title=f"Reminder **#{reminder.id}**", color=await ctx.embed_color()
+            title=f"Reminder **#{reminder.id}**",
+            color=await ctx.embed_color(),
         )
         embed.description = reminder.get_info()
         view = ReminderView(cog=self, reminder=reminder, me_too=False)
@@ -1007,7 +1018,11 @@ class Reminders(DashboardIntegration, Cog):
 
     @reminder.command()
     async def text(
-        self, ctx: commands.Context, reminder: ExistingReminderConverter, *, text: str
+        self,
+        ctx: commands.Context,
+        reminder: ExistingReminderConverter,
+        *,
+        text: str,
     ) -> None:
         """Edit the text of an existing Reminder from its ID.
 
@@ -1026,13 +1041,17 @@ class Reminders(DashboardIntegration, Cog):
         await reminder.save()
         await ctx.send(
             _("Your reminder **#{reminder_id}** has been successfully edited.").format(
-                reminder_id=reminder.id
-            )
+                reminder_id=reminder.id,
+            ),
         )
 
     @reminder.command(aliases=["expiresat"])
     async def expires(
-        self, ctx: commands.Context, reminder: ExistingReminderConverter, *, time: str
+        self,
+        ctx: commands.Context,
+        reminder: ExistingReminderConverter,
+        *,
+        time: str,
     ) -> None:
         """Edit the expires time of an existing Reminder from its ID.
 
@@ -1050,13 +1069,17 @@ class Reminders(DashboardIntegration, Cog):
         await reminder.save()
         await ctx.send(
             _("Your reminder **#{reminder_id}** has been successfully edited.").format(
-                reminder_id=reminder.id
-            )
+                reminder_id=reminder.id,
+            ),
         )
 
     @reminder.command()
     async def repeat(
-        self, ctx: commands.Context, reminder: ExistingReminderConverter, *, repeat: str
+        self,
+        ctx: commands.Context,
+        reminder: ExistingReminderConverter,
+        *,
+        repeat: str,
     ) -> None:
         """Edit the repeat of an existing Reminder from its ID.
 
@@ -1078,17 +1101,17 @@ class Reminders(DashboardIntegration, Cog):
             parse_result = DurationParser().parse(text=repeat)
         except ParseException as e:
             raise commands.UserFeedbackCheckFailure(
-                f"• Relative date parsing: Impossible to parse this date. {str(e)[:100]}"
+                f"• Relative date parsing: Impossible to parse this date. {str(e)[:100]}",
             )
-        repeat_dict = parse_result["every"] if "every" in parse_result else None
+        repeat_dict = parse_result.get("every", None)
         if not repeat_dict:
             raise commands.UserFeedbackCheckFailure(
-                "• Relative date parsing: Impossible to parse this date."
+                "• Relative date parsing: Impossible to parse this date.",
             )
         repeat_dict = {"type": "sample", "value": repeat_dict}
         if not await self.config.repeat_allowed() and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to create repeating reminders.")
+                _("You are not allowed to create repeating reminders."),
             )
         if repeat_dict["type"] == "sample":
             _repeat_dict = repeat_dict["value"].copy()
@@ -1103,16 +1126,16 @@ class Reminders(DashboardIntegration, Cog):
                 and ctx.author.id not in ctx.bot.owner_ids
             ):
                 raise commands.UserFeedbackCheckFailure(
-                    _(
-                        "The repeat timedelta must be greater than {minimum_repeat} minutes."
-                    ).format(minimum_repeat=minimum_repeat)
+                    _("The repeat timedelta must be greater than {minimum_repeat} minutes.").format(
+                        minimum_repeat=minimum_repeat,
+                    ),
                 )
         reminder.repeat = Repeat.from_json([repeat_dict])
         await reminder.save()
         await ctx.send(
             _("Your reminder **#{reminder_id}** has been successfully edited.").format(
-                reminder_id=reminder.id
-            )
+                reminder_id=reminder.id,
+            ),
         )
 
     @commands.bot_has_permissions(embed_links=True)
@@ -1127,7 +1150,9 @@ class Reminders(DashboardIntegration, Cog):
             embed.description = _("Do you really want to remove ALL your reminders?")
             embed.color = 0xF00020
             if not await CogsUtils.ConfirmationAsk(
-                ctx, content=f"{ctx.author.mention}", embed=embed
+                ctx,
+                content=f"{ctx.author.mention}",
+                embed=embed,
             ):
                 await CogsUtils.delete_message(ctx.message)
                 return
@@ -1141,7 +1166,11 @@ class Reminders(DashboardIntegration, Cog):
     @commands.bot_has_permissions(embed_links=True)
     @reminder.command(aliases=["timestamp"])
     async def timestamps(
-        self, ctx: commands.Context, repeat_times: typing.Optional[int] = 100, *, time: str = "now"
+        self,
+        ctx: commands.Context,
+        repeat_times: int | None = 100,
+        *,
+        time: str = "now",
     ) -> None:
         """Get a list of Discord timestamps for a given time. You can provide a repeat.
 
@@ -1164,14 +1193,16 @@ class Reminders(DashboardIntegration, Cog):
                 [
                     f"`{discord.utils.format_dt(time, style)}`: {discord.utils.format_dt(time, style)}"
                     for style in ("R", "d", "D", "t", "T", "f", "F")
-                ]
+                ],
             )
             embeds.append(embed)
             if (
                 repeat is None
                 or (
                     time := await repeat.next_trigger(
-                        last_expires_at=time, utc_now=time, timezone=timezone
+                        last_expires_at=time,
+                        utc_now=time,
+                        timezone=timezone,
                     )
                 )
                 is None
@@ -1182,7 +1213,8 @@ class Reminders(DashboardIntegration, Cog):
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message):
         if await self.bot.cog_disabled_in_guild(
-            cog=self, guild=message.guild
+            cog=self,
+            guild=message.guild,
         ) or not await self.bot.allowed_by_whitelist_blacklist(who=message.author):
             return
         if message.webhook_id is not None or message.author.bot:
@@ -1224,8 +1256,10 @@ class Reminders(DashboardIntegration, Cog):
 
     @timezone.autocomplete("timezone")
     async def timezone_timezone_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> typing.List[app_commands.Choice[str]]:
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> builtins.list[app_commands.Choice[str]]:
         return (
             [
                 app_commands.Choice(name=timezone, value=timezone)
@@ -1247,7 +1281,10 @@ class Reminders(DashboardIntegration, Cog):
 
     @configuration.command()
     async def clearuserreminders(
-        self, ctx: commands.Context, user: discord.User, confirmation: bool = False
+        self,
+        ctx: commands.Context,
+        user: discord.User,
+        confirmation: bool = False,
     ) -> None:
         """Clear all existing reminders for a user."""
         if user.id not in self.cache or not self.cache[user.id]:
@@ -1256,11 +1293,13 @@ class Reminders(DashboardIntegration, Cog):
             embed: discord.Embed = discord.Embed()
             embed.title = _("⚠️ - Reminders")
             embed.description = _(
-                "Do you really want to remove ALL {user.display_name}'s reminders?"
+                "Do you really want to remove ALL {user.display_name}'s reminders?",
             ).format(user=user)
             embed.color = 0xF00020
             if not await CogsUtils.ConfirmationAsk(
-                ctx, content=f"{ctx.author.mention}", embed=embed
+                ctx,
+                content=f"{ctx.author.mention}",
+                embed=embed,
             ):
                 await CogsUtils.delete_message(ctx.message)
                 return
@@ -1281,27 +1320,31 @@ class Reminders(DashboardIntegration, Cog):
     async def migratefromremindme(self, ctx: commands.Context) -> None:
         """Migrate Reminders from RemindMe by PhasecoreX."""
         old_config: Config = Config.get_conf(
-            "RemindMe", identifier=1224364860, force_registration=True, cog_name="RemindMe"
+            "RemindMe",
+            identifier=1224364860,
+            force_registration=True,
+            cog_name="RemindMe",
         )
         old_global_data = await old_config.all()
         if "schema_version" not in old_global_data:
             raise commands.UserFeedbackCheckFailure(
-                _("RemindMe by PhasecoreX has no data in this bot.")
+                _("RemindMe by PhasecoreX has no data in this bot."),
             )
-        elif old_global_data["schema_version"] != 2:
+        if old_global_data["schema_version"] != 2:
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "RemindMe by PhasecoreX use an old/new data schema version and isn't compatible with this cog actually."
-                )
+                    "RemindMe by PhasecoreX use an old/new data schema version and isn't compatible with this cog actually.",
+                ),
             )
         new_global_data = await self.config.all()
         new_global_data["total_sent"] += old_global_data.get("total_sent", 0)
         new_global_data["me_too"] = old_global_data.get("me_too", await self.config.me_too())
         new_global_data["maximum_user_reminders"] = old_global_data.get(
-            "max_user_reminders", await self.config.maximum_user_reminders()
+            "max_user_reminders",
+            await self.config.maximum_user_reminders(),
         )
         await self.config.set(new_global_data)
-        utc_now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        utc_now_timestamp = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
         old_config.init_custom("REMINDER", 2)
         old_reminders_data = await old_config.custom("REMINDER").all()
         for user_id in old_reminders_data:
@@ -1324,14 +1367,17 @@ class Reminders(DashboardIntegration, Cog):
                         destination=None,
                         targets=None,
                         created_at=datetime.datetime.fromtimestamp(
-                            reminder_data["created"], tz=datetime.timezone.utc
+                            reminder_data["created"],
+                            tz=datetime.UTC,
                         ),
                         expires_at=datetime.datetime.fromtimestamp(
-                            reminder_data["expires"], tz=datetime.timezone.utc
+                            reminder_data["expires"],
+                            tz=datetime.UTC,
                         ),
                         last_expires_at=None,
                         next_expires_at=datetime.datetime.fromtimestamp(
-                            reminder_data["expires"], tz=datetime.timezone.utc
+                            reminder_data["expires"],
+                            tz=datetime.UTC,
                         ),
                         repeat=(
                             Repeat.from_json(
@@ -1342,8 +1388,8 @@ class Reminders(DashboardIntegration, Cog):
                                         "start_trigger": None,
                                         "first_trigger": None,
                                         "last_trigger": None,
-                                    }
-                                ]
+                                    },
+                                ],
                             )
                             if reminder_data.get("repeat")
                             else None
@@ -1356,9 +1402,12 @@ class Reminders(DashboardIntegration, Cog):
     async def migratefromfifo(self, ctx: commands.Context) -> None:
         """Migrate Reminders from FIFO by Fox."""
         old_config: Config = Config.get_conf(
-            "FIFO", identifier=70737079, force_registration=True, cog_name="FIFO"
+            "FIFO",
+            identifier=70737079,
+            force_registration=True,
+            cog_name="FIFO",
         )
-        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+        utc_now = datetime.datetime.now(tz=datetime.UTC)
         old_guilds_data = await old_config.all_guilds()
         for guild_id in old_guilds_data:
             reminder_id = 1
@@ -1378,7 +1427,7 @@ class Reminders(DashboardIntegration, Cog):
                                     "start_trigger": None,
                                     "first_trigger": None,
                                     "last_trigger": None,
-                                }
+                                },
                             )
                         elif trigger["type"] == "date":
                             triggers.append(
@@ -1386,13 +1435,13 @@ class Reminders(DashboardIntegration, Cog):
                                     "type": "date",
                                     "value": int(
                                         dateutil.parser.isoparse(trigger["time_data"])
-                                        .replace(tzinfo=datetime.timezone.utc)
-                                        .timestamp()
+                                        .replace(tzinfo=datetime.UTC)
+                                        .timestamp(),
                                     ),
                                     "start_trigger": None,
                                     "first_trigger": None,
                                     "last_trigger": None,
-                                }
+                                },
                             )
                         elif trigger["type"] == "cron":
                             triggers.append(
@@ -1402,14 +1451,16 @@ class Reminders(DashboardIntegration, Cog):
                                     "start_trigger": None,
                                     "first_trigger": None,
                                     "last_trigger": None,
-                                }
+                                },
                             )
                             if trigger["tzinfo"] and timezone is None:
                                 timezone = trigger["tzinfo"]
                                 await self.config.user_from_id(user_id).timezone.set(timezone)
                     repeat = Repeat.from_json(triggers)
                     expires_at = await repeat.next_trigger(
-                        last_expires_at=utc_now, utc_now=utc_now, timezone=timezone or "UTC"
+                        last_expires_at=utc_now,
+                        utc_now=utc_now,
+                        timezone=timezone or "UTC",
                     )
                     if expires_at < utc_now:
                         continue
@@ -1438,7 +1489,8 @@ class Reminders(DashboardIntegration, Cog):
 
     @commands.Cog.listener()
     async def on_assistant_cog_add(
-        self, assistant_cog: typing.Optional[commands.Cog] = None
+        self,
+        assistant_cog: commands.Cog | None = None,
     ) -> None:  # Vert's Assistant integration/third party.
         if assistant_cog is None:
             return self.get_existing_user_reminders_for_assistant
@@ -1448,9 +1500,13 @@ class Reminders(DashboardIntegration, Cog):
             "parameters": {"type": "object", "properties": {}, "required": []},
         }
         await assistant_cog.register_function(cog_name=self.qualified_name, schema=schema)
+        return None
 
     async def get_existing_user_reminders_for_assistant(
-        self, user: typing.Union[discord.Member, discord.User], *args, **kwargs
+        self,
+        user: discord.Member | discord.User,
+        *args,
+        **kwargs,
     ):
         if not (reminders := self.cache.get(user.id, {})):
             return "This user haven't any reminders."
@@ -1468,7 +1524,7 @@ class Reminders(DashboardIntegration, Cog):
                 [
                     f"Reminder #{reminder.id}:\n{reminder.get_info().replace('**', '')}"
                     for reminder in reminders
-                ]
+                ],
             ),
             # "Next 5 existing user's Reminders": "\n" + "\n".join([f"• Reminder #{reminder.id}: {reminder.to_json(clean=True)}" for reminder in reminders]),
         }

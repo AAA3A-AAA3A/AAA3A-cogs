@@ -1,8 +1,7 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
 
+from redbot.core import commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 
 _: Translator = Translator("Calculator", __file__)
@@ -150,12 +149,12 @@ class CalculatorView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self._message: discord.Message = None
-        self._expression: typing.Optional[str] = None
-        self._result: typing.Optional[str] = None
+        self._expression: str | None = None
+        self._result: str | None = None
         self._is_normal: bool = True
 
-        self.NORMAL_BUTTONS: typing.List[discord.ui.Button] = []
-        self.SCIENTIST_BUTTONS: typing.List[discord.ui.Button] = []
+        self.NORMAL_BUTTONS: list[discord.ui.Button] = []
+        self.SCIENTIST_BUTTONS: list[discord.ui.Button] = []
 
     async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
@@ -178,7 +177,8 @@ class CalculatorView(discord.ui.View):
         for button in current_buttons:
             self.add_item(button)
         self._message: discord.Message = await self.ctx.send(
-            embed=await self.cog.get_embed(self.ctx, self._expression, self._result), view=self
+            embed=await self.cog.get_embed(self.ctx, self._expression, self._result),
+            view=self,
         )
         self.cog.views[self._message] = self
         return self._message
@@ -186,7 +186,8 @@ class CalculatorView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -221,7 +222,7 @@ class CalculatorView(discord.ui.View):
             if self.ctx.author not in self.cog.history:
                 self.cog.history[self.ctx.author] = []
             self.cog.history[self.ctx.author].append(
-                (self._expression.replace("|", ""), self._result.replace("|", ""))
+                (self._expression.replace("|", ""), self._result.replace("|", "")),
             )
         elif interaction.data["custom_id"] == "exit_button":
             await interaction.response.defer()
@@ -295,10 +296,11 @@ class CalculatorView(discord.ui.View):
             return
         else:
             self._expression = await self.cog.input_formatter(
-                self._expression, interaction.data["custom_id"]
+                self._expression,
+                interaction.data["custom_id"],
             )
         if self._expression is not None:
             self._expression = self._expression.replace(",", ".")
         await interaction.response.edit_message(
-            embed=await self.cog.get_embed(self.ctx, self._expression, self._result)
+            embed=await self.cog.get_embed(self.ctx, self._expression, self._result),
         )

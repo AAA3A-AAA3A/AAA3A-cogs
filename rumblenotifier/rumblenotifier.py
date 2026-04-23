@@ -1,11 +1,12 @@
-from AAA3A_utils import Cog, Settings  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
+import typing
+
+import discord
+
+from AAA3A_utils import Cog, Settings
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 from .views import RumbleNotifierView
 
@@ -42,18 +43,14 @@ class RumbleNotifier(Cog):
             subscribing=False,
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "enabled": {
                 "converter": bool,
                 "description": "Enable or disable the cog.",
             },
             "channels": {
                 "converter": commands.Greedy[
-                    typing.Union[
-                        discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel
-                    ]
+                    typing.Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]
                 ],
                 "description": "The channels/categories where the cog will detect rumbles.",
             },
@@ -111,9 +108,7 @@ class RumbleNotifier(Cog):
         message = await message.channel.fetch_message(message.id)
         if not (
             message.embeds
-            and (
-                message.embeds[0].title is not None and "Rumble Royale" in message.embeds[0].title
-            )
+            and (message.embeds[0].title is not None and "Rumble Royale" in message.embeds[0].title)
             and (
                 message.embeds[0].description is not None
                 and "Click the emoji below to join" in message.embeds[0].description
@@ -128,7 +123,9 @@ class RumbleNotifier(Cog):
         embed: discord.Embed = discord.Embed(
             title=_("⚔️ New Rumble battle! ⚔️"),
             description=_("I've notified the {length} member{s} of the {role} role.").format(
-                length=len(role.members), role=role.mention, s="" if len(role.members) == 1 else "s"
+                length=len(role.members),
+                role=role.mention,
+                s="" if len(role.members) == 1 else "s",
             ),
             color=discord.Color.gold(),
         )

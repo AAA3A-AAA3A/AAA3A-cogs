@@ -1,13 +1,12 @@
-from AAA3A_utils import Cog, Settings  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import re
 
+import discord
+
+from AAA3A_utils import Cog, Settings
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_list
 from redbot.core.utils.menus import start_adding_reactions
 
@@ -48,9 +47,7 @@ class RumbleRoyaleUtils(Cog):
             ping_host_on_end=False,
         )
 
-        _settings: typing.Dict[
-            str, typing.Dict[str, typing.Union[typing.List[str], bool, str]]
-        ] = {
+        _settings: dict[str, dict[str, list[str] | bool | str]] = {
             "am_i_alive": {
                 "converter": bool,
                 "description": "Enable or disable the am I alive feature.",
@@ -76,7 +73,7 @@ class RumbleRoyaleUtils(Cog):
             commands_group=self.setrumbleroyaleutils,
         )
 
-        self.rumbles: typing.Dict[discord.abc.GuildChannel, RumbleRoyale] = {}
+        self.rumbles: dict[discord.abc.GuildChannel, RumbleRoyale] = {}
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -85,7 +82,8 @@ class RumbleRoyaleUtils(Cog):
     @commands.Cog.listener()
     async def on_message_without_command(self, message: discord.Message) -> None:
         if message.guild is None or await self.bot.cog_disabled_in_guild(
-            cog=self, guild=message.guild
+            cog=self,
+            guild=message.guild,
         ):
             return
         if not message.author.bot or message.author.id != RUMBLE_BOT_ID:
@@ -118,11 +116,7 @@ class RumbleRoyaleUtils(Cog):
                     )
                 ) is None:
                     return  # Shouldn't happen.
-                rumble.players = {
-                    member: []
-                    async for member in reaction.users()
-                    if not member.bot
-                }
+                rumble.players = {member: [] async for member in reaction.users() if not member.bot}
                 # if config["am_i_alive"]:
                 #     await message.reply(
                 #         embed=discord.Embed(
@@ -137,7 +131,7 @@ class RumbleRoyaleUtils(Cog):
             elif rumble.is_started:
                 if "Round " in embed.title:
                     round_number = int(
-                        embed.title.replace("*", "").replace("_", "").strip().split(" ")[1]
+                        embed.title.replace("*", "").replace("_", "").strip().split(" ")[1],
                     )
                     if config["am_i_alive"]:
                         view: AmIAliveView = AmIAliveView(self)
@@ -181,7 +175,7 @@ class RumbleRoyaleUtils(Cog):
                                         type="revive",
                                         cause=event,
                                         message=message,
-                                    )
+                                    ),
                                 )
                             else:
                                 rumble.players[killer].append(
@@ -190,7 +184,7 @@ class RumbleRoyaleUtils(Cog):
                                         type="apparition",
                                         cause=event,
                                         message=message,
-                                    )
+                                    ),
                                 )
                             continue
                         if killer is not None:
@@ -201,7 +195,7 @@ class RumbleRoyaleUtils(Cog):
                                     cause=event,
                                     message=message,
                                     other=victim,
-                                )
+                                ),
                             )
                         rumble.players[victim].append(
                             PlayerEvent(
@@ -210,7 +204,7 @@ class RumbleRoyaleUtils(Cog):
                                 cause=event,
                                 message=message,
                                 other=killer,
-                            )
+                            ),
                         )
                         round_victims.append(victim)
                     if config["ping_players_on_death"] and round_victims:
@@ -220,10 +214,8 @@ class RumbleRoyaleUtils(Cog):
                                 if len(round_victims) > 1
                                 else _("{victims} is dead!")
                             ).format(
-                                victims=humanize_list(
-                                    [victim.mention for victim in round_victims]
-                                ),
-                            )
+                                victims=humanize_list([victim.mention for victim in round_victims]),
+                            ),
                         )
 
                 elif "WINNER!" in embed.title:
@@ -231,7 +223,7 @@ class RumbleRoyaleUtils(Cog):
                         await message.channel.send(
                             _("{host.mention} The Rumble Royale has ended!").format(
                                 host=rumble.host,
-                            )
+                            ),
                         )
                     start_adding_reactions(message, ("✅",))
                     del self.rumbles[message.channel]

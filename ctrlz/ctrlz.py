@@ -1,13 +1,13 @@
-from AAA3A_utils import Cog, Loop  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 import json
+import typing
 
+import discord
+
+from AAA3A_utils import Cog, Loop
+from redbot.core import Config, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box
 
 from .converters import AuditLogActionConverter, DateTimeConverter
@@ -61,7 +61,8 @@ def update_overwrite_method(audit_log: discord.AuditLogEntry) -> None:
     return audit_log.target.set_permissions(
         audit_log.extra,
         overwrite=discord.PermissionOverwrite.from_pair(
-            allow=audit_log.before.allow, deny=audit_log.before.deny
+            allow=audit_log.before.allow,
+            deny=audit_log.before.deny,
         ),
         reason=REASON,
     )
@@ -84,7 +85,7 @@ def create_channel_method(audit_log: discord.AuditLogEntry) -> None:
     kwargs = dict(audit_log.before)
     return audit_log.guild._create_channel(
         channel_type=kwargs.pop("type"),
-        overwrites=dict(kwargs.pop("overwrites", tuple())),
+        overwrites=dict(kwargs.pop("overwrites", ())),
         **kwargs,
         reason=REASON,
     )
@@ -94,7 +95,8 @@ def create_overwrite_method(audit_log: discord.AuditLogEntry) -> None:
     return audit_log.target.set_permissions(
         audit_log.extra,
         overwrite=discord.PermissionOverwrite.from_pair(
-            allow=audit_log.before.allow, deny=audit_log.before.deny
+            allow=audit_log.before.allow,
+            deny=audit_log.before.deny,
         ),
         reason=REASON,
     )
@@ -126,28 +128,32 @@ async def create_scheduled_event_method(audit_log: discord.AuditLogEntry) -> Non
             except discord.HTTPException:
                 del kwargs[key]
     return audit_log.guild.create_scheduled_event(
-        image=kwargs.pop("cover_image", None), **kwargs, reason=REASON
+        image=kwargs.pop("cover_image", None),
+        **kwargs,
+        reason=REASON,
     )
 
 
-REVERT_METHODS: typing.Dict[
-    str, typing.Dict[discord.AuditLogAction, typing.Callable[[discord.AuditLogEntry], None]]
+REVERT_METHODS: dict[
+    str,
+    dict[discord.AuditLogAction, typing.Callable[[discord.AuditLogEntry], None]],
 ] = {
     "create": {
         discord.AuditLogAction.channel_create: default_delete_method,
         discord.AuditLogAction.overwrite_create: delete_overwrite_method,
         discord.AuditLogAction.ban: lambda audit_log: audit_log.guild.unban(
-            audit_log.target, reason=REASON
+            audit_log.target,
+            reason=REASON,
         ),
         discord.AuditLogAction.bot_add: lambda audit_log: audit_log.target.kick(reason=REASON),
         discord.AuditLogAction.role_create: default_delete_method,
         discord.AuditLogAction.invite_create: default_delete_method,
         discord.AuditLogAction.webhook_create: default_delete_method,
         discord.AuditLogAction.emoji_create: default_delete_method,
-        discord.AuditLogAction.message_pin: lambda audit_log: audit_log.extra.channel.get_partial_message(
-            audit_log.extra.message_id
-        ).unpin(
-            reason=REASON
+        discord.AuditLogAction.message_pin: lambda audit_log: (
+            audit_log.extra.channel.get_partial_message(audit_log.extra.message_id).unpin(
+                reason=REASON,
+            )
         ),
         discord.AuditLogAction.integration_create: default_delete_method,
         discord.AuditLogAction.stage_instance_create: default_delete_method,
@@ -175,19 +181,20 @@ REVERT_METHODS: typing.Dict[
         discord.AuditLogAction.channel_delete: create_channel_method,
         discord.AuditLogAction.overwrite_delete: delete_overwrite_method,
         discord.AuditLogAction.unban: lambda audit_log: audit_log.guild.ban(
-            audit_log.target, reason=REASON
+            audit_log.target,
+            reason=REASON,
         ),
         discord.AuditLogAction.role_delete: create_role_method,
         discord.AuditLogAction.invite_delete: create_invite_method,
         discord.AuditLogAction.webhook_delete: create_webhook_method,
-        discord.AuditLogAction.message_unpin: lambda audit_log: audit_log.extra.channel.get_partial_message(
-            audit_log.extra.message_id
-        ).pin(
-            reason=REASON
+        discord.AuditLogAction.message_unpin: lambda audit_log: (
+            audit_log.extra.channel.get_partial_message(audit_log.extra.message_id).pin(
+                reason=REASON,
+            )
         ),
         discord.AuditLogAction.scheduled_event_delete: create_scheduled_event_method,
-        discord.AuditLogAction.automod_rule_delete: lambda audit_log: audit_log.guild.create_automod_rule(
-            **dict(audit_log.before), reason=REASON
+        discord.AuditLogAction.automod_rule_delete: lambda audit_log: (
+            audit_log.guild.create_automod_rule(**dict(audit_log.before), reason=REASON)
         ),
     },
 }
@@ -217,18 +224,18 @@ class CtrlZ(Cog):
                 name="Cleanup Old Reverted Audit Logs",
                 function=self.cleanup_old_reverted_audit_logs,
                 hours=1,
-            )
+            ),
         )
 
     async def get_audit_logs(
         self,
         guild: discord.Guild,
-        user: typing.Optional[discord.User] = None,
-        after: typing.Optional[datetime.datetime] = None,
-        before: typing.Optional[datetime.datetime] = None,
+        user: discord.User | None = None,
+        after: datetime.datetime | None = None,
+        before: datetime.datetime | None = None,
         include_already_reverted: bool = True,
-    ) -> typing.List[discord.AuditLogEntry]:
-        _after = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=7)
+    ) -> list[discord.AuditLogEntry]:
+        _after = datetime.datetime.now(tz=datetime.UTC) - datetime.timedelta(days=7)
         after = max(after, _after) if after is not None else _after
         reverted_audit_logs = await self.config.guild(guild).reverted_audit_logs()
         return [
@@ -246,7 +253,7 @@ class CtrlZ(Cog):
             )
         ]
 
-    async def get_audit_logs_actions(self) -> typing.Dict[str, typing.Dict[str, str]]:
+    async def get_audit_logs_actions(self) -> dict[str, dict[str, str]]:
         return {
             "create": {
                 discord.AuditLogAction.channel_create: _("Channel Create"),
@@ -345,13 +352,13 @@ class CtrlZ(Cog):
         def display_diff(element: typing.Any) -> str:
             if isinstance(element, discord.AuditLogDiff):
                 return display_diff(dict(element))
-            elif isinstance(element, typing.Dict):
+            if isinstance(element, dict):
                 return {key: display_diff(value) for key, value in element.items()}
-            elif isinstance(element, typing.List):
+            if isinstance(element, list):
                 return [display_diff(value) for value in element]
-            elif isinstance(element, typing.Tuple):
+            if isinstance(element, tuple):
                 return tuple(display_diff(value) for value in element)
-            elif isinstance(element, (str, int)):
+            if isinstance(element, (str, int)):
                 return element
             return repr(element)
 
@@ -405,16 +412,16 @@ class CtrlZ(Cog):
         except discord.Forbidden:
             raise RuntimeError(
                 _(
-                    "I don't have the necessary permissions or the target of the audit log is higher than me."
-                )
+                    "I don't have the necessary permissions or the target of the audit log is higher than me.",
+                ),
             )
         except Exception as e:
             raise RuntimeError(
-                _("An error occurred while reverting the audit log:\n") + box(str(e), lang="py")
+                _("An error occurred while reverting the audit log:\n") + box(str(e), lang="py"),
             )
         else:
             async with self.config.guild(
-                audit_log.guild
+                audit_log.guild,
             ).reverted_audit_logs() as reverted_audit_logs:
                 reverted_audit_logs.append(audit_log.id)
 
@@ -424,7 +431,7 @@ class CtrlZ(Cog):
                 audit_log_id
                 for audit_log_id in guild_data["reverted_audit_logs"]
                 if (
-                    datetime.datetime.now(tz=datetime.timezone.utc)
+                    datetime.datetime.now(tz=datetime.UTC)
                     - discord.utils.snowflake_time(audit_log_id)
                 )
                 < datetime.timedelta(days=7)
@@ -443,9 +450,9 @@ class CtrlZ(Cog):
     async def view(
         self,
         ctx: commands.Context,
-        include_already_reverted: typing.Optional[bool] = True,
+        include_already_reverted: bool | None = True,
         displayed_actions: commands.Greedy[AuditLogActionConverter] = None,
-        user: typing.Optional[discord.User] = None,
+        user: discord.User | None = None,
         after: DateTimeConverter = None,
         before: DateTimeConverter = None,
     ) -> None:
@@ -460,7 +467,9 @@ class CtrlZ(Cog):
         if not audit_logs:
             raise commands.UserFeedbackCheckFailure(_("No audit logs found."))
         await CtrlZView(self).start(
-            ctx=ctx, audit_logs=audit_logs, displayed_actions=displayed_actions
+            ctx=ctx,
+            audit_logs=audit_logs,
+            displayed_actions=displayed_actions,
         )
 
     @ctrlz.command()
@@ -468,7 +477,7 @@ class CtrlZ(Cog):
         self,
         ctx: commands.Context,
         displayed_actions: commands.Greedy[AuditLogActionConverter] = None,
-        user: typing.Optional[discord.User] = None,
+        user: discord.User | None = None,
         after: DateTimeConverter = None,
         before: DateTimeConverter = None,
     ) -> None:
@@ -486,5 +495,7 @@ class CtrlZ(Cog):
         if not audit_logs:
             raise commands.UserFeedbackCheckFailure(_("No audit logs found."))
         await CtrlZMassView(self).start(
-            ctx=ctx, audit_logs=audit_logs, displayed_actions=displayed_actions
+            ctx=ctx,
+            audit_logs=audit_logs,
+            displayed_actions=displayed_actions,
         )

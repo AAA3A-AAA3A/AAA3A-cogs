@@ -1,15 +1,15 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
+import typing
 from collections import defaultdict
 
-from redbot.core.utils.chat_formatting import box, humanize_list
+import discord
 
-from ..constants import DANGEROUS_PERMISSIONS, Emojis
-from ..views import ToggleModuleButton
+from redbot.core import commands
+from redbot.core.i18n import Translator
+from redbot.core.utils.chat_formatting import box, humanize_list
+from security.constants import DANGEROUS_PERMISSIONS, Emojis
+from security.views import ToggleModuleButton
+
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
@@ -27,7 +27,7 @@ async def revert_onboarding(entry: discord.AuditLogEntry) -> None:
             "GET",
             "/guilds/{guild_id}/onboarding",
             guild_id=entry.guild.id,
-        )
+        ),
     )
     role_ids = [
         role_id
@@ -62,8 +62,8 @@ async def revert_onboarding(entry: discord.AuditLogEntry) -> None:
     )
 
 
-ANTI_NUKE_OPTIONS: typing.List[
-    typing.Dict[
+ANTI_NUKE_OPTIONS: list[
+    dict[
         typing.Literal[
             "name",
             "emoji",
@@ -76,15 +76,12 @@ ANTI_NUKE_OPTIONS: typing.List[
             "member_reason",
             "revert",
         ],
-        typing.Union[
-            str,
-            bool,
-            typing.Callable[[discord.AuditLogEntry], typing.Union[bool, str]],
-            typing.Callable[[], str],
-            typing.Optional[
-                typing.Callable[[discord.AuditLogEntry], typing.Coroutine[None, None, None]]
-            ],
-        ],
+        str
+        | bool
+        | typing.Callable[[discord.AuditLogEntry], bool | str]
+        | typing.Callable[[], str]
+        | typing.Callable[[discord.AuditLogEntry], typing.Coroutine[None, None, None]]
+        | None,
     ]
 ] = [
     {
@@ -93,10 +90,12 @@ ANTI_NUKE_OPTIONS: typing.List[
         "description": "Prevent changes to the server's vanity URL.",
         "value": "protect_vanity_url",
         "default_enabled": True,
-        "check": lambda entry: entry.action == discord.AuditLogAction.guild_update
-        and entry.before.vanity_url_code != entry.after.vanity_url_code,
+        "check": lambda entry: (
+            entry.action == discord.AuditLogAction.guild_update
+            and entry.before.vanity_url_code != entry.after.vanity_url_code
+        ),
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **changed** the vanity URL from `{before.vanity_url_code}` to `{after.vanity_url_code}` {timestamp}."
+            "{member.mention} (`{member}`) **changed** the vanity URL from `{before.vanity_url_code}` to `{after.vanity_url_code}` {timestamp}.",
         ).format(
             member=entry.user,
             before=entry.before,
@@ -117,7 +116,7 @@ ANTI_NUKE_OPTIONS: typing.List[
         "default_enabled": True,
         "check": lambda entry: entry.action == discord.AuditLogAction.member_prune,
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **pruned** {members_removed} members ({delete_member_days} days) {timestamp}."
+            "{member.mention} (`{member}`) **pruned** {members_removed} members ({delete_member_days} days) {timestamp}.",
         ).format(
             member=entry.user,
             members_removed=entry.extra.members_removed,
@@ -146,52 +145,54 @@ ANTI_NUKE_OPTIONS: typing.List[
                 for dangerous_permission in DANGEROUS_PERMISSIONS
             )
         ),
-        "log": lambda entry: _(
-            "{member.mention} (`{member}`) **added** {roles} to {target.mention} (`{target}`) that grant dangerous permissions {timestamp}."
-        ).format(
-            member=entry.user,
-            target=entry.target,
-            roles=humanize_list(
-                [
-                    f"{role.mention} (`{role.name}`)"
-                    for role in entry.after.roles
-                    if any(
-                        getattr(role.permissions, dangerous_permission)
-                        and all(
-                            not getattr(role.permissions, dangerous_permission)
-                            for role in entry.target.roles + entry.before.roles
-                            if role not in entry.after.roles
-                        )
-                        for dangerous_permission in DANGEROUS_PERMISSIONS
-                    )
-                ]
-            ),
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
-        )
-        + "\n"
-        + box(
-            "\n".join(
-                [
-                    f"+ {dangerous_permission.replace('_', ' ').title()}"
-                    for dangerous_permission in DANGEROUS_PERMISSIONS
-                    if any(
-                        getattr(role.permissions, dangerous_permission)
-                        and all(
-                            not getattr(role.permissions, dangerous_permission)
-                            for role in entry.target.roles + entry.before.roles
-                            if role not in entry.after.roles
-                        )
+        "log": lambda entry: (
+            _(
+                "{member.mention} (`{member}`) **added** {roles} to {target.mention} (`{target}`) that grant dangerous permissions {timestamp}.",
+            ).format(
+                member=entry.user,
+                target=entry.target,
+                roles=humanize_list(
+                    [
+                        f"{role.mention} (`{role.name}`)"
                         for role in entry.after.roles
-                    )
-                ]
-            ),
-            lang="diff",
+                        if any(
+                            getattr(role.permissions, dangerous_permission)
+                            and all(
+                                not getattr(role.permissions, dangerous_permission)
+                                for role in entry.target.roles + entry.before.roles
+                                if role not in entry.after.roles
+                            )
+                            for dangerous_permission in DANGEROUS_PERMISSIONS
+                        )
+                    ],
+                ),
+                timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            )
+            + "\n"
+            + box(
+                "\n".join(
+                    [
+                        f"+ {dangerous_permission.replace('_', ' ').title()}"
+                        for dangerous_permission in DANGEROUS_PERMISSIONS
+                        if any(
+                            getattr(role.permissions, dangerous_permission)
+                            and all(
+                                not getattr(role.permissions, dangerous_permission)
+                                for role in entry.target.roles + entry.before.roles
+                                if role not in entry.after.roles
+                            )
+                            for role in entry.after.roles
+                        )
+                    ],
+                ),
+                lang="diff",
+            )
         ),
         "reason": lambda: _(
-            "**Anti Nuke** - Added roles with dangerous permissions to a member without them having those permissions already."
+            "**Anti Nuke** - Added roles with dangerous permissions to a member without them having those permissions already.",
         ),
         "member_reason": lambda: _(
-            "**Anti Nuke** - Was given roles that grant dangerous permissions without having them already."
+            "**Anti Nuke** - Was given roles that grant dangerous permissions without having them already.",
         ),
         "revert": lambda entry: entry.target.remove_roles(
             *[
@@ -230,27 +231,29 @@ ANTI_NUKE_OPTIONS: typing.List[
                 for dangerous_permission in DANGEROUS_PERMISSIONS
             )
         ),
-        "log": lambda entry: _(
-            "{member.mention} (`{member}`) **updated** the permissions of {target.mention} (`{target}`) to include dangerous permissions {timestamp}."
-        ).format(
-            member=entry.user,
-            target=entry.target,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
-        )
-        + "\n"
-        + box(
-            "\n".join(
-                [
-                    f"+ {dangerous_permission.replace('_', ' ').title()}"
-                    for dangerous_permission in DANGEROUS_PERMISSIONS
-                    if getattr(entry.after.permissions, dangerous_permission)
-                    and not getattr(entry.before.permissions, dangerous_permission)
-                ]
-            ),
-            lang="diff",
+        "log": lambda entry: (
+            _(
+                "{member.mention} (`{member}`) **updated** the permissions of {target.mention} (`{target}`) to include dangerous permissions {timestamp}.",
+            ).format(
+                member=entry.user,
+                target=entry.target,
+                timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            )
+            + "\n"
+            + box(
+                "\n".join(
+                    [
+                        f"+ {dangerous_permission.replace('_', ' ').title()}"
+                        for dangerous_permission in DANGEROUS_PERMISSIONS
+                        if getattr(entry.after.permissions, dangerous_permission)
+                        and not getattr(entry.before.permissions, dangerous_permission)
+                    ],
+                ),
+                lang="diff",
+            )
         ),
         "reason": lambda: _(
-            "**Anti Nuke** - Updated @everyone or main roles to have dangerous permissions."
+            "**Anti Nuke** - Updated @everyone or main roles to have dangerous permissions.",
         ),
         "revert": lambda entry: entry.target.edit(
             permissions=entry.before.permissions,
@@ -279,33 +282,36 @@ ANTI_NUKE_OPTIONS: typing.List[
                 for dangerous_permission in DANGEROUS_PERMISSIONS
             )
         ),
-        "log": lambda entry: _(
-            "{member.mention} (`{member}`) **updated** the permissions of {extra.mention} (`{extra}`) in {target.mention} (`{target}`) to include dangerous permissions {timestamp}."
-        ).format(
-            member=entry.user,
-            extra=entry.extra,
-            target=entry.target,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
-        )
-        + "\n"
-        + box(
-            "\n".join(
-                [
-                    f"+ {dangerous_permission.replace('_', ' ').title()}"
-                    for dangerous_permission in DANGEROUS_PERMISSIONS
-                    if getattr(entry.after.allow, dangerous_permission)
-                    and not getattr(entry.before.allow, dangerous_permission)
-                ]
-            ),
-            lang="diff",
+        "log": lambda entry: (
+            _(
+                "{member.mention} (`{member}`) **updated** the permissions of {extra.mention} (`{extra}`) in {target.mention} (`{target}`) to include dangerous permissions {timestamp}.",
+            ).format(
+                member=entry.user,
+                extra=entry.extra,
+                target=entry.target,
+                timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            )
+            + "\n"
+            + box(
+                "\n".join(
+                    [
+                        f"+ {dangerous_permission.replace('_', ' ').title()}"
+                        for dangerous_permission in DANGEROUS_PERMISSIONS
+                        if getattr(entry.after.allow, dangerous_permission)
+                        and not getattr(entry.before.allow, dangerous_permission)
+                    ],
+                ),
+                lang="diff",
+            )
         ),
         "reason": lambda: _(
-            "**Anti Nuke** - Updated @everyone or main roles to have dangerous permissions in a channel."
+            "**Anti Nuke** - Updated @everyone or main roles to have dangerous permissions in a channel.",
         ),
         "revert": lambda entry: entry.target.set_permissions(
             entry.extra,
             overwrite=discord.PermissionOverwrite.from_pair(
-                entry.before.allow, getattr(entry.before, "deny", discord.Permissions.none())
+                entry.before.allow,
+                getattr(entry.before, "deny", discord.Permissions.none()),
             ),
             reason=REVERT_AUDIT_LOG_REASON,
         ),
@@ -329,12 +335,12 @@ ANTI_NUKE_OPTIONS: typing.List[
                 and all(role_id not in option["role_ids"] for option in entry.before.options)
             )
         ),
-        "log": lambda entry: _(
-            "{member.mention} (`{member}`) **added** the role{s} {roles} with dangerous permissions to Discord's onboarding {timestamp}."
-        ).format(
-            member=entry.user,
-            roles=humanize_list(
-                (
+        "log": lambda entry: (
+            _(
+                "{member.mention} (`{member}`) **added** the role{s} {roles} with dangerous permissions to Discord's onboarding {timestamp}.",
+            ).format(
+                member=entry.user,
+                roles=humanize_list(
                     roles := [
                         f"{role.mention} (`{role.name}`)"
                         for option in entry.after.options
@@ -347,33 +353,33 @@ ANTI_NUKE_OPTIONS: typing.List[
                             getattr(role.permissions, dangerous_permission)
                             for dangerous_permission in DANGEROUS_PERMISSIONS
                         )
-                    ]
-                )
-            ),
-            s="" if len(roles) == 1 else "s",
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
-        )
-        + "\n"
-        + box(
-            "\n".join(
-                [
-                    f"+ {dangerous_permission.replace('_', ' ').title()}"
-                    for dangerous_permission in DANGEROUS_PERMISSIONS
-                    if any(
-                        getattr(role.permissions, dangerous_permission)
-                        for option in entry.after.options
-                        for role_id in option["role_ids"]
-                        if (role := entry.guild.get_role(int(role_id))) is not None
-                        and all(
-                            role_id not in option["role_ids"] for option in entry.before.options
+                    ],
+                ),
+                s="" if len(roles) == 1 else "s",
+                timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            )
+            + "\n"
+            + box(
+                "\n".join(
+                    [
+                        f"+ {dangerous_permission.replace('_', ' ').title()}"
+                        for dangerous_permission in DANGEROUS_PERMISSIONS
+                        if any(
+                            getattr(role.permissions, dangerous_permission)
+                            for option in entry.after.options
+                            for role_id in option["role_ids"]
+                            if (role := entry.guild.get_role(int(role_id))) is not None
+                            and all(
+                                role_id not in option["role_ids"] for option in entry.before.options
+                            )
                         )
-                    )
-                ]
-            ),
-            lang="diff",
+                    ],
+                ),
+                lang="diff",
+            )
         ),
         "reason": lambda: _(
-            "**Anti Nuke** - Added roles with dangerous permissions to Discord's onboarding."
+            "**Anti Nuke** - Added roles with dangerous permissions to Discord's onboarding.",
         ),
         "revert": revert_onboarding,
     },
@@ -393,24 +399,26 @@ ANTI_NUKE_OPTIONS: typing.List[
                 for dangerous_permission in DANGEROUS_PERMISSIONS
             )
         ),
-        "log": lambda entry: _(
-            "{member.mention} (`{member}`) **updated** the permissions of {target.mention} (`{target}`) to include dangerous permissions {timestamp}."
-        ).format(
-            member=entry.user,
-            target=entry.target,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
-        )
-        + "\n"
-        + box(
-            "\n".join(
-                [
-                    f"+ {dangerous_permission.replace('_', ' ').title()}"
-                    for dangerous_permission in DANGEROUS_PERMISSIONS
-                    if getattr(entry.after.permissions, dangerous_permission)
-                    and not getattr(entry.before.permissions, dangerous_permission)
-                ]
-            ),
-            lang="diff",
+        "log": lambda entry: (
+            _(
+                "{member.mention} (`{member}`) **updated** the permissions of {target.mention} (`{target}`) to include dangerous permissions {timestamp}.",
+            ).format(
+                member=entry.user,
+                target=entry.target,
+                timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            )
+            + "\n"
+            + box(
+                "\n".join(
+                    [
+                        f"+ {dangerous_permission.replace('_', ' ').title()}"
+                        for dangerous_permission in DANGEROUS_PERMISSIONS
+                        if getattr(entry.after.permissions, dangerous_permission)
+                        and not getattr(entry.before.permissions, dangerous_permission)
+                    ],
+                ),
+                lang="diff",
+            )
         ),
         "reason": lambda: _("**Anti Nuke** - Updated a role to have dangerous permissions."),
         "revert": lambda entry: entry.target.edit(
@@ -421,8 +429,8 @@ ANTI_NUKE_OPTIONS: typing.List[
 ]
 
 
-ANTI_NUKE_FILTERS: typing.List[
-    typing.Dict[
+ANTI_NUKE_FILTERS: list[
+    dict[
         typing.Literal[
             "name",
             "emoji",
@@ -435,14 +443,12 @@ ANTI_NUKE_FILTERS: typing.List[
             "log",
             "reason",
         ],
-        typing.Union[
-            str,
-            bool,
-            int,
-            typing.List[discord.AuditLogAction],
-            typing.Callable[[discord.AuditLogEntry], str],
-            typing.Callable[[], str],
-        ],
+        str
+        | bool
+        | int
+        | list[discord.AuditLogAction]
+        | typing.Callable[[discord.AuditLogEntry], str]
+        | typing.Callable[[], str],
     ]
 ] = [
     {
@@ -455,7 +461,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 15,
         "actions": [discord.AuditLogAction.kick, discord.AuditLogAction.ban],
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **{action}** `{target}` {timestamp}."
+            "{member.mention} (`{member}`) **{action}** `{target}` {timestamp}.",
         ).format(
             member=entry.user,
             action=_("kicked") if entry.action == discord.AuditLogAction.kick else _("banned"),
@@ -476,7 +482,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 15,
         "actions": [discord.AuditLogAction.role_create],
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **created** {target.mention} (`{target.name}`) {timestamp}."
+            "{member.mention} (`{member}`) **created** {target.mention} (`{target.name}`) {timestamp}.",
         ).format(
             member=entry.user,
             target=entry.target,
@@ -494,7 +500,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 10,
         "actions": [discord.AuditLogAction.role_delete],
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **deleted** `{target_name}` {timestamp}."
+            "{member.mention} (`{member}`) **deleted** `{target_name}` {timestamp}.",
         ).format(
             member=entry.user,
             target_name=entry.before.name,
@@ -512,7 +518,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 12,
         "actions": [discord.AuditLogAction.channel_create],
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **created** {target.mention} (`{target.name}`) {timestamp}."
+            "{member.mention} (`{member}`) **created** {target.mention} (`{target.name}`) {timestamp}.",
         ).format(
             member=entry.user,
             target=entry.target,
@@ -530,7 +536,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 8,
         "actions": [discord.AuditLogAction.channel_delete],
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **deleted** `{target_name}` {timestamp}."
+            "{member.mention} (`{member}`) **deleted** `{target_name}` {timestamp}.",
         ).format(
             member=entry.user,
             target_name=entry.before.name,
@@ -548,7 +554,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 10,
         "actions": [discord.AuditLogAction.webhook_create],
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **created** `{target_id}` {timestamp}."
+            "{member.mention} (`{member}`) **created** `{target_id}` {timestamp}.",
         ).format(
             member=entry.user,
             target_id=entry.target.id,
@@ -566,7 +572,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 8,
         "actions": [discord.AuditLogAction.webhook_delete],
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **deleted** `{target_id}` {timestamp}."
+            "{member.mention} (`{member}`) **deleted** `{target_id}` {timestamp}.",
         ).format(
             member=entry.user,
             target_id=entry.target.id,
@@ -584,7 +590,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 15,
         "actions": [discord.AuditLogAction.emoji_create],
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **created** {target} (`{target.name}`) {timestamp}."
+            "{member.mention} (`{member}`) **created** {target} (`{target.name}`) {timestamp}.",
         ).format(
             member=entry.user,
             target=entry.target,
@@ -602,7 +608,7 @@ ANTI_NUKE_FILTERS: typing.List[
         "default_hour_limit": 10,
         "actions": [discord.AuditLogAction.emoji_delete],
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **deleted** `{target_name}` {timestamp}."
+            "{member.mention} (`{member}`) **deleted** `{target_name}` {timestamp}.",
         ).format(
             member=entry.user,
             target_name=entry.before.name,
@@ -635,10 +641,11 @@ class AntiNukeModule(Module):
 
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)
-        self.actions_cache: typing.Dict[
+        self.actions_cache: dict[
             discord.Guild,
-            typing.Dict[
-                discord.Member, typing.Dict[str, typing.List[typing.Tuple[datetime.datetime, str]]]
+            dict[
+                discord.Member,
+                dict[str, list[tuple[datetime.datetime, str]]],
             ],
         ] = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
 
@@ -649,8 +656,10 @@ class AntiNukeModule(Module):
         self.cog.bot.remove_listener(self.on_audit_log_entry_create)
 
     async def get_status(
-        self, guild: discord.Guild, check_enabled: bool = True
-    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
+        self,
+        guild: discord.Guild,
+        check_enabled: bool = True,
+    ) -> tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
             return "❌", _("Disabled"), _("Anti Nuke is currently disabled.")
@@ -677,14 +686,18 @@ class AntiNukeModule(Module):
         return "✅", _("Enabled"), _("Anti Nuke is enabled and configured correctly.")
 
     async def get_settings(
-        self, guild: discord.Guild, view: discord.ui.View
-    ) -> typing.Tuple[str, str, typing.List[typing.Dict], typing.List[discord.ui.Item]]:
+        self,
+        guild: discord.Guild,
+        view: discord.ui.View,
+    ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         status = await self.get_status(guild)
         title = _("Security — {emoji} {name} {status}").format(
-            emoji=self.emoji, name=self.name, status=status[0]
+            emoji=self.emoji,
+            name=self.name,
+            status=status[0],
         )
         description = _(
-            "This module allows you to protect your server from malicious actions by members or bots.\n"
+            "This module allows you to protect your server from malicious actions by members or bots.\n",
         )
         if status[0] == "⚠️":
             description += f"{status[0]} **{status[1]}**: {status[2]}\n"
@@ -695,18 +708,18 @@ class AntiNukeModule(Module):
         for filter in ANTI_NUKE_FILTERS:
             filter_config = config["filters"][filter["value"]]
             fields.append(
-                dict(
-                    name=f"{filter['emoji']} {filter['name']}",
-                    value=_(
-                        "{description}\n**Enabled:** {enabled}\n**Minute Limit:** {minute_limit}\n**Hour Limit:** {hour_limit}"
+                {
+                    "name": f"{filter['emoji']} {filter['name']}",
+                    "value": _(
+                        "{description}\n**Enabled:** {enabled}\n**Minute Limit:** {minute_limit}\n**Hour Limit:** {hour_limit}",
                     ).format(
                         description=filter["description"],
                         enabled=("✅" if filter_config["enabled"] else "❌"),
                         minute_limit=filter_config["minute_limit"],
                         hour_limit=filter_config["hour_limit"],
                     ),
-                    inline=True,
-                )
+                    "inline": True,
+                },
             )
 
         components = [ToggleModuleButton(self, guild, view, config["enabled"])]
@@ -724,7 +737,7 @@ class AntiNukeModule(Module):
             await self.config_value(guild).quarantine.set(config["quarantine"])
             await interaction.followup.send(
                 _("Automatic Quarantine is now {status}.").format(
-                    status="enabled" if config["quarantine"] else "disabled"
+                    status="enabled" if config["quarantine"] else "disabled",
                 ),
                 ephemeral=True,
             )
@@ -744,11 +757,11 @@ class AntiNukeModule(Module):
             await interaction.response.defer()
             config["revert_option_actions"] = not config["revert_option_actions"]
             await self.config_value(guild).revert_option_actions.set(
-                config["revert_option_actions"]
+                config["revert_option_actions"],
             )
             await interaction.followup.send(
                 _("Revert option actions is now {status}.").format(
-                    status="enabled" if config["revert_option_actions"] else "disabled"
+                    status="enabled" if config["revert_option_actions"] else "disabled",
                 ),
                 ephemeral=True,
             )
@@ -787,7 +800,9 @@ class AntiNukeModule(Module):
             placeholder=_("Configure Anti Nuke Filters"),
             options=[
                 discord.SelectOption(
-                    emoji=filter["emoji"], label=filter["name"], value=filter["value"]
+                    emoji=filter["emoji"],
+                    label=filter["name"],
+                    value=filter["value"],
                 )
                 for filter in ANTI_NUKE_FILTERS
             ],
@@ -795,14 +810,12 @@ class AntiNukeModule(Module):
 
         async def configure_filter_select_callback(interaction: discord.Interaction) -> None:
             filter = next(
-                (
-                    filter
-                    for filter in ANTI_NUKE_FILTERS
-                    if filter["value"] == configure_filter_select.values[0]
-                )
+                filter
+                for filter in ANTI_NUKE_FILTERS
+                if filter["value"] == configure_filter_select.values[0]
             )
             await interaction.response.send_modal(
-                ConfigureFilterModal(self, guild, view, filter, config["filters"][filter["value"]])
+                ConfigureFilterModal(self, guild, view, filter, config["filters"][filter["value"]]),
             )
 
         configure_filter_select.callback = configure_filter_select_callback
@@ -824,7 +837,7 @@ class AntiNukeModule(Module):
                 if option[
                     "value"
                 ] == "strict_member_role_addition" and await self.cog.is_trusted_admin_or_higher(
-                    entry.target
+                    entry.target,
                 ):
                     continue
                 option_filter, logs = option, [option["log"](entry)]
@@ -834,18 +847,18 @@ class AntiNukeModule(Module):
                     except discord.Forbidden:
                         logs.append(
                             _(
-                                "I **failed** to revert the action due to missing permissions."
-                            ).format(user=entry.user)
+                                "I **failed** to revert the action due to missing permissions.",
+                            ).format(user=entry.user),
                         )
                     except discord.HTTPException as e:
                         logs.append(
                             _(
-                                "I **failed** to revert the action due to an error: `{error}`."
-                            ).format(user=entry.user, error=str(e).replace("\n", " "))
+                                "I **failed** to revert the action due to an error: `{error}`.",
+                            ).format(user=entry.user, error=str(e).replace("\n", " ")),
                         )
                     else:
                         logs.append(
-                            _("I **successfully** reverted the action.").format(user=entry.user)
+                            _("I **successfully** reverted the action.").format(user=entry.user),
                         )
                 break
         else:
@@ -855,29 +868,34 @@ class AntiNukeModule(Module):
                     if not filter_config["enabled"]:
                         continue
                     if await self.cog.is_whitelisted(
-                        entry.user, f"anti_nuke_filter_{filter['value']}"
+                        entry.user,
+                        f"anti_nuke_filter_{filter['value']}",
                     ):
                         continue
-                    if filter["value"] == "channel_creation" and await self.cog.is_whitelisted(
-                        entry.target.category, "anti_nuke_filter_channel_creation"
-                    ):
-                        continue
-                    elif filter["value"] == "channel_deletion" and await self.cog.is_whitelisted(
-                        discord.Object(id=entry.target.id, type=discord.abc.GuildChannel),
-                        "anti_nuke_filter_channel_deletion",
-                    ):
-                        continue
-                    elif (
-                        filter["value"] == "webhook_creation"
-                        and getattr(entry.target, "channel", None) is not None
+                    if (
+                        filter["value"] == "channel_creation"
                         and await self.cog.is_whitelisted(
-                            entry.target.channel, "anti_nuke_filter_webhook_creation"
+                            entry.target.category,
+                            "anti_nuke_filter_channel_creation",
                         )
-                    ):
-                        continue
-                    elif filter["value"] == "webhook_deletion" and await self.cog.is_whitelisted(
-                        discord.Object(id=entry.target.id, type=discord.Webhook),
-                        "anti_nuke_filter_webhook_deletion",
+                        or filter["value"] == "channel_deletion"
+                        and await self.cog.is_whitelisted(
+                            discord.Object(id=entry.target.id, type=discord.abc.GuildChannel),
+                            "anti_nuke_filter_channel_deletion",
+                        )
+                        or (
+                            filter["value"] == "webhook_creation"
+                            and getattr(entry.target, "channel", None) is not None
+                            and await self.cog.is_whitelisted(
+                                entry.target.channel,
+                                "anti_nuke_filter_webhook_creation",
+                            )
+                        )
+                        or filter["value"] == "webhook_deletion"
+                        and await self.cog.is_whitelisted(
+                            discord.Object(id=entry.target.id, type=discord.Webhook),
+                            "anti_nuke_filter_webhook_deletion",
+                        )
                     ):
                         continue
                     minute_limit, hour_limit = (
@@ -898,14 +916,15 @@ class AntiNukeModule(Module):
                                 action
                                 for action in member_actions[filter["value"]]
                                 if action[0] >= current_time - datetime.timedelta(minutes=1)
-                            ]
+                            ],
                         )
                         >= minute_limit
                         or len(member_actions[filter["value"]]) >= hour_limit
                     ):
-                        option_filter, logs = filter, [
-                            action[1] for action in member_actions[filter["value"]]
-                        ]
+                        option_filter, logs = (
+                            filter,
+                            [action[1] for action in member_actions[filter["value"]]],
+                        )
                         del member_actions[filter["value"]]
                         break
             else:
@@ -963,8 +982,8 @@ class ConfigureFilterModal(discord.ui.Modal):
         self.filter_config = filter_config
         super().__init__(
             title=_("Anti Nuke - {filter}").format(
-                filter=f"{self.filter['emoji']} {self.filter['name']}"
-            )
+                filter=f"{self.filter['emoji']} {self.filter['name']}",
+            ),
         )
         self.enabled: discord.ui.TextInput = discord.ui.TextInput(
             label=_("Enabled:"),
@@ -1004,6 +1023,7 @@ class ConfigureFilterModal(discord.ui.Modal):
         self.filter_config["minute_limit"] = minute_limit
         self.filter_config["hour_limit"] = hour_limit
         await self.module.config_value(self.guild).filters.set_raw(
-            self.filter["value"], value=self.filter_config
+            self.filter["value"],
+            value=self.filter_config,
         )
         await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)

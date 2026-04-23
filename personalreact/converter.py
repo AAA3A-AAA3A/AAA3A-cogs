@@ -1,6 +1,6 @@
-from redbot.core import commands  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
+
+from redbot.core import commands
 
 try:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
@@ -10,8 +10,10 @@ except ImportError:
 
 class Emoji(commands.EmojiConverter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[str, discord.Emoji]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> str | discord.Emoji:
         # argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument

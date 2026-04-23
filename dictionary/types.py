@@ -1,7 +1,7 @@
-import discord  # isort:skip
-import typing  # isort:skip
-
+import typing
 from dataclasses import dataclass
+
+import discord
 
 from redbot.core.utils.chat_formatting import humanize_list
 
@@ -11,16 +11,16 @@ class Word:
     url: str
     source_url: str
     word: str
-    phonetics: typing.List[typing.Dict[str, typing.Optional[str]]]
-    meanings: typing.Dict[
+    phonetics: list[dict[str, str | None]]
+    meanings: dict[
         str,
-        typing.Dict[
+        dict[
             str,
-            typing.List[typing.Dict[str, typing.Optional[typing.Union[str, typing.List[str]]]]],
+            list[dict[str, str | list[str] | None]],
         ],
     ]
 
-    def to_json(self) -> typing.Dict[str, typing.Any]:
+    def to_json(self) -> dict[str, typing.Any]:
         return {
             v: getattr(self, v)
             for v in dir(self)
@@ -29,7 +29,9 @@ class Word:
 
     def to_embed(self, embed_color: discord.Color = discord.Color.green()) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
-            title=f'Dictionary - "{self.word}"', url=self.source_url, color=embed_color
+            title=f'Dictionary - "{self.word}"',
+            url=self.source_url,
+            color=embed_color,
         )
         for meaning in self.meanings:
             if len(embed.fields) >= 10:
@@ -50,7 +52,7 @@ class Word:
                     )
                     + (f"\n> Example: {definition['example']}" if definition["example"] else "")
                     for n, definition in enumerate(self.meanings[meaning], start=1)
-                ]
+                ],
             )
             embed.add_field(
                 name=meaning.capitalize(),

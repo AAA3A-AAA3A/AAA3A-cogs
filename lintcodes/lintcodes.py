@@ -1,13 +1,12 @@
-﻿from AAA3A_utils import Cog, CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import typing  # isort:skip
-
 import io
 import re
 
 import aiohttp
+
+from AAA3A_utils import Cog
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box
 
 from .converters import (
@@ -31,12 +30,12 @@ _: Translator = Translator("LintCodes", __file__)
 class LintCodes(Cog):
     """A cog to lint a code from Discord, with Flake8, PyLint, MyPy, Bandit, Black, Isort, Yapf, AutoFlake8, PyRight and Ruff!"""
 
-    __authors__: typing.List[str] = ["rtk-rnjn", "AAA3A"]
+    __authors__: list[str] = ["rtk-rnjn", "AAA3A"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self._session: typing.Optional[aiohttp.ClientSession] = None
+        self._session: aiohttp.ClientSession | None = None
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -50,7 +49,7 @@ class LintCodes(Cog):
     async def get_code_from_context(
         self,
         ctx: commands.Context,
-        code: typing.Optional[str],
+        code: str | None,
     ) -> str:
         if ctx.message.attachments:
             file = ctx.message.attachments[0]
@@ -106,13 +105,13 @@ class LintCodes(Cog):
             no_code = True
         if no_code:
             raise commands.UserFeedbackCheckFailure(
-                _("Incorrect syntax, please use Markdown's syntax for your code.")
+                _("Incorrect syntax, please use Markdown's syntax for your code."),
             )
         if language_identifier not in ("python", "py"):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "Incorrect language identifier for your code, use `python` for the code syntax."
-                ).format(ctx=ctx)
+                    "Incorrect language identifier for your code, use `python` for the code syntax.",
+                ).format(ctx=ctx),
             )
         before = code[:begin]
         after = code[end + begin + 6 + len(language_identifier) :]

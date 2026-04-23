@@ -1,26 +1,27 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 import re
+import typing
 import urllib
 from collections import defaultdict
 
+import discord
 from fuzzywuzzy import StringMatcher
+
+from redbot.core import commands
 from redbot.core.data_manager import bundled_data_path
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
-from redbot.core.utils.common_filters import INVITE_URL_RE, URL_RE
+from redbot.core.utils.common_filters import URL_RE
 
 try:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
 except ImportError:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 
-from ..constants import POSSIBLE_ACTIONS, Emojis, get_correct_timeout_duration
-from ..views import DurationConverter, ToggleModuleButton
+from security.constants import POSSIBLE_ACTIONS, Emojis, get_correct_timeout_duration
+from security.views import DurationConverter, ToggleModuleButton
+
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
@@ -62,13 +63,12 @@ def similarity_ratio_check(last_content: str, content: str, similarity_ratio: fl
 
 
 def get_emoji_count(content: str) -> int:
-    return sum(content.count(emoji) for emoji in EMOJIS) + len(
-        re.findall(r"<a?:\w+:\d+>", content)
-    )
+    return sum(content.count(emoji) for emoji in EMOJIS) + len(re.findall(r"<a?:\w+:\d+>", content))
 
 
 async def check_invite_links(
-    message: discord.Message, filter_config: typing.Dict[str, typing.Any]
+    message: discord.Message,
+    filter_config: dict[str, typing.Any],
 ) -> int:
     count = 0
     for invite_url in re.findall(
@@ -89,35 +89,27 @@ async def check_invite_links(
     return filter_config["added_heat"] * count
 
 
-NSFW_LINKS: typing.Set[str] = set()
-BAD_WORDS: typing.Set[str] = set()
-AUTO_MOD_FILTERS: typing.Dict[
+NSFW_LINKS: set[str] = set()
+BAD_WORDS: set[str] = set()
+AUTO_MOD_FILTERS: dict[
     str,
-    typing.Dict[
+    dict[
         typing.Literal["name", "emoji", "description", "filters"],
-        typing.Union[
-            str,
-            typing.List[
-                typing.Dict[
-                    typing.Literal[
-                        "name",
-                        "emoji",
-                        "value",
-                        "default_added_heat",
-                        "specific_heats",
-                        "params",
-                        "check",
-                        "reason",
-                    ],
-                    typing.Union[
-                        str,
-                        float,
-                        typing.Dict[str, float],
-                        typing.List[typing.Tuple[str, typing.Any]],
-                        typing.Callable,
-                    ],
-                ]
-            ],
+        str
+        | list[
+            dict[
+                typing.Literal[
+                    "name",
+                    "emoji",
+                    "value",
+                    "default_added_heat",
+                    "specific_heats",
+                    "params",
+                    "check",
+                    "reason",
+                ],
+                str | float | dict[str, float] | list[tuple[str, typing.Any]] | typing.Callable,
+            ]
         ],
     ],
 ] = {
@@ -157,8 +149,9 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "emoji": Emojis.EMOJI.value,
                 "value": "emojis",
                 "default_added_heat": 5.5,
-                "check": lambda message, filter_config: filter_config["added_heat"]
-                * get_emoji_count(message.content),
+                "check": lambda message, filter_config: (
+                    filter_config["added_heat"] * get_emoji_count(message.content)
+                ),
                 "reason": lambda: _("**Auto Mod** - Spam of emojis detected."),
             },
             {
@@ -166,8 +159,9 @@ AUTO_MOD_FILTERS: typing.Dict[
                 "emoji": Emojis.NEW_LINES.value,
                 "value": "new_lines",
                 "default_added_heat": 5.0,
-                "check": lambda message, filter_config: filter_config["added_heat"]
-                * message.content.count("\n"),
+                "check": lambda message, filter_config: (
+                    filter_config["added_heat"] * message.content.count("\n")
+                ),
                 "reason": lambda: _("**Auto Mod** - Spam of new lines detected."),
             },
             {
@@ -181,7 +175,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                         re.findall(
                             r"[\u0300-\u036F\u0483-\u0487\u0488-\u0489\u048A-\u048B\u048C-\u048D\u048E-\u048F\u0490-\u0491\u0492-\u0493\u0494-\u0495\u0496-\u0497\u0498-\u0499\u049A-\u049B\u049C-\u049D\u049E-\u049F\u04A0-\u04A1\u04A2-\u04A3\u04A4-\u04A5\u04A6-\u04A7\u04A8-\u04A9\u04AA-\u04AB\u04AC-\u04AD\u04AE-\u04AF]",
                             message.content,
-                        )
+                        ),
                     )
                 ),
                 "reason": lambda: _("**Auto Mod** - Spam of Zalgo characters detected."),
@@ -298,7 +292,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                             member
                             for member in message.mentions
                             if member != message.author and not member.bot
-                        ]
+                        ],
                     )
                 ),
                 "reason": lambda: _("**Auto Mod** - Spam of member mentions detected."),
@@ -316,7 +310,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                             for role in message.role_mentions
                             if not role.is_default()
                             and len(role.members) < 0.1 * len(message.guild.members)
-                        ]
+                        ],
                     )
                 ),
                 "reason": lambda: _("**Auto Mod** - Spam of role mentions detected."),
@@ -336,12 +330,12 @@ AUTO_MOD_FILTERS: typing.Dict[
                                 for role in message.role_mentions
                                 if not role.is_default()
                                 and len(role.members) >= 0.1 * len(message.guild.members)
-                            ]
+                            ],
                         )
                     )
                 ),
                 "reason": lambda: _(
-                    "**Auto Mod** - Spam of @everyone, @here or main roles mentions detected."
+                    "**Auto Mod** - Spam of @everyone, @here or main roles mentions detected.",
                 ),
             },
         ],
@@ -366,7 +360,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                                     re.IGNORECASE,
                                 ),
                                 message.content,
-                            )
+                            ),
                         )
                         + len(
                             re.findall(
@@ -375,7 +369,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                                     re.IGNORECASE,
                                 ),
                                 message.content,
-                            )
+                            ),
                         )
                     )
                 ),
@@ -393,7 +387,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                             url
                             for url in re.findall(URL_RE, message.content)
                             if any(nsfw_link in f"{url[0]}://{url[1]}" for nsfw_link in NSFW_LINKS)
-                        ]
+                        ],
                     )
                     if not message.channel.is_nsfw()
                     else 0
@@ -411,7 +405,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                         re.findall(
                             rf"\[{URL_RE.pattern}\]\({URL_RE.pattern}\)",
                             message.content,
-                        )
+                        ),
                     )
                 ),
                 "reason": lambda: _("**Auto Mod** - Disguised links detected."),
@@ -430,11 +424,11 @@ AUTO_MOD_FILTERS: typing.Dict[
                             for url in re.findall(URL_RE, message.content)
                             if any(
                                 urllib.parse.urlparse(f"{url[0]}://{url[1]}").netloc.endswith(
-                                    domain
+                                    domain,
                                 )
                                 for domain in filter_config["blacklisted_domains"]
                             )
-                        ]
+                        ],
                     )
                 ),
                 "reason": lambda: _("**Auto Mod** - Blacklisted links detected."),
@@ -457,11 +451,11 @@ AUTO_MOD_FILTERS: typing.Dict[
                         [
                             len(
                                 re.compile(rf"\b{bad_word}\b", re.IGNORECASE).findall(
-                                    message.content
-                                )
+                                    message.content,
+                                ),
                             )
                             for bad_word in BAD_WORDS
-                        ]
+                        ],
                     )
                 ),
                 "reason": lambda: _("**Auto Mod** - Bad words detected."),
@@ -485,7 +479,7 @@ AUTO_MOD_FILTERS: typing.Dict[
                                     for pattern in filter_config["wildcard"]
                                 )
                             )
-                        ]
+                        ],
                     )
                 ),
                 "reason": lambda: _("**Auto Mod** - Blacklisted word detected."),
@@ -495,7 +489,7 @@ AUTO_MOD_FILTERS: typing.Dict[
 }
 
 
-def sum_dicts(*dicts: typing.Dict) -> typing.Dict:
+def sum_dicts(*dicts: dict) -> dict:
     dict0 = dicts[0]
     for d in dicts[1:]:
         dict0.update(d)
@@ -535,7 +529,7 @@ class AutoModModule(Module):
                         if "default_specific_heats" in filter
                         else {}
                     ),
-                    {key: value for key, value in filter.get("params", [])},
+                    dict(filter.get("params", [])),
                 )
                 for filter in data["filters"]
             }
@@ -545,29 +539,31 @@ class AutoModModule(Module):
 
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)
-        self.heats_cache: typing.Dict[
+        self.heats_cache: dict[
             discord.Guild,
-            typing.Dict[
+            dict[
                 discord.Member,
-                typing.List[typing.Tuple[datetime.datetime, str, float, discord.Message]],
+                list[tuple[datetime.datetime, str, float, discord.Message]],
             ],
         ] = defaultdict(lambda: defaultdict(list))
-        self.strikes_cache: typing.Dict[
-            discord.Guild, typing.Dict[discord.Member, int]
-        ] = defaultdict(lambda: defaultdict(lambda: 0))
-        self.previous_messages_cache: typing.Dict[
-            discord.Guild, typing.Dict[discord.Member, discord.Message]
+        self.strikes_cache: dict[discord.Guild, dict[discord.Member, int]] = defaultdict(
+            lambda: defaultdict(lambda: 0),
+        )
+        self.previous_messages_cache: dict[
+            discord.Guild,
+            dict[discord.Member, discord.Message],
         ] = defaultdict(lambda: defaultdict(lambda: None))
-        self.strikes_locks: typing.Dict[
-            discord.Guild, typing.Dict[discord.Member, asyncio.Lock]
+        self.strikes_locks: dict[
+            discord.Guild,
+            dict[discord.Member, asyncio.Lock],
         ] = defaultdict(lambda: defaultdict(asyncio.Lock))
 
     async def load(self) -> None:
         data_path = bundled_data_path(self.cog)
         for file in data_path.glob("bad_words/*.txt"):
-            with open(file, mode="rt", encoding="utf-8") as f:
+            with open(file, encoding="utf-8") as f:
                 BAD_WORDS.update(word.strip().lower() for word in f.readlines() if word.strip())
-        with open(data_path / "nsfw_links.txt", mode="rt", encoding="utf-8") as f:
+        with open(data_path / "nsfw_links.txt", encoding="utf-8") as f:
             NSFW_LINKS.update(line.strip().lower() for line in f if line.strip())
         self.cog.bot.add_listener(self.on_message)
 
@@ -575,8 +571,10 @@ class AutoModModule(Module):
         self.cog.bot.remove_listener(self.on_message)
 
     async def get_status(
-        self, guild: discord.Guild, check_enabled: bool = True
-    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
+        self,
+        guild: discord.Guild,
+        check_enabled: bool = True,
+    ) -> tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
             return "❌", _("Disabled"), _("Auto Mod is currently disabled.")
@@ -615,7 +613,7 @@ class AutoModModule(Module):
                 _("Missing Permissions"),
                 _("I need the {permissions} permission{s} to function properly.").format(
                     permissions=humanize_list(
-                        [f"`{permission}`" for permission in missing_permissions]
+                        [f"`{permission}`" for permission in missing_permissions],
                     ),
                     s="" if len(missing_permissions) == 1 else "s",
                 ),
@@ -623,13 +621,17 @@ class AutoModModule(Module):
         return "✅", _("Enabled"), _("Auto Mod is enabled and configured correctly.")
 
     async def get_settings(
-        self, guild: discord.Guild, view: discord.ui.View
-    ) -> typing.Tuple[str, str, typing.List[typing.Dict], typing.List[discord.ui.Item]]:
+        self,
+        guild: discord.Guild,
+        view: discord.ui.View,
+    ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         title = _("Security — {emoji} {name} {status}").format(
-            emoji=self.emoji, name=self.name, status=(await self.get_status(guild))[0]
+            emoji=self.emoji,
+            name=self.name,
+            status=(await self.get_status(guild))[0],
         )
         description = _(
-            "This module helps to detect and prevent spam, advertising, and other unwanted behavior in your server.\n"
+            "This module helps to detect and prevent spam, advertising, and other unwanted behavior in your server.\n",
         )
         status = await self.get_status(guild)
         if status[0] == "⚠️":
@@ -646,7 +648,7 @@ class AutoModModule(Module):
             "- Severe: `{severe}`\n"
             "- Auto multiplier: `{auto_multiplier}x`\n"
             "- Individual timeout/mute duration: `{specific_duration}`\n"
-            "*When the total heat reaches the maximum, the last trigger message will be deleted and the most triggered filter configuration will be used to punish the member.*"
+            "*When the total heat reaches the maximum, the last trigger message will be deleted and the most triggered filter configuration will be used to punish the member.*",
         ).format(
             max_heat=config["heats"]["max"],
             degradation=config["heats"]["degradation"],
@@ -660,16 +662,16 @@ class AutoModModule(Module):
         for category, data in AUTO_MOD_FILTERS.items():
             category_config = config["filters"][category]
             fields.append(
-                dict(
-                    name=f"{data['emoji']} {data['name']}",
-                    value=data["description"],
-                    inline=True,
-                )
+                {
+                    "name": f"{data['emoji']} {data['name']}",
+                    "value": data["description"],
+                    "inline": True,
+                },
             )
             first_state = list(category_config.values())[0]["enabled"]
             if all(filter["enabled"] == first_state for filter in category_config.values()):
                 fields[-1]["value"] += _("\n**Enabled:** {state}").format(
-                    state="✅" if first_state else "❌"
+                    state="✅" if first_state else "❌",
                 )
             else:
                 fields[-1]["value"] += _("\n**Enabled:** 🔀 (Different States)")
@@ -682,7 +684,7 @@ class AutoModModule(Module):
 
         async def heat_button_callback(interaction: discord.Interaction) -> None:
             await interaction.response.send_modal(
-                ConfigureHeatModal(self, guild, view, config["heats"])
+                ConfigureHeatModal(self, guild, view, config["heats"]),
             )
 
         heat_button.callback = heat_button_callback
@@ -694,7 +696,7 @@ class AutoModModule(Module):
 
         async def strike_durations_button_callback(interaction: discord.Interaction) -> None:
             await interaction.response.send_modal(
-                ConfigureStrikeDurationsModal(self, guild, view, config["strike_durations"])
+                ConfigureStrikeDurationsModal(self, guild, view, config["strike_durations"]),
             )
 
         strike_durations_button.callback = strike_durations_button_callback
@@ -732,8 +734,7 @@ class AutoModModule(Module):
         if heats:
             degradation = await self.config_value(guild).heats.degradation()
             to_remove = (
-                degradation
-                * (datetime.datetime.now(tz=datetime.timezone.utc) - heats[0][0]).total_seconds()
+                degradation * (datetime.datetime.now(tz=datetime.UTC) - heats[0][0]).total_seconds()
             )
             while to_remove > 0 and heats:
                 if heats[0][2] <= to_remove:
@@ -780,12 +781,15 @@ class AutoModModule(Module):
                 else:
                     whitelist_type = None
                 if whitelist_type is not None and await self.cog.is_message_whitelisted(
-                    message, whitelist_type
+                    message,
+                    whitelist_type,
                 ):
                     continue
                 try:
                     added_heat = await discord.utils.maybe_coroutine(
-                        filter["check"], message, filter_config
+                        filter["check"],
+                        message,
+                        filter_config,
                     )
                 except TypeError:
                     added_heat = filter["check"](message, filter_config, previous_message)
@@ -796,7 +800,7 @@ class AutoModModule(Module):
                             filter["value"],
                             added_heat,
                             message,
-                        )
+                        ),
                     )
         lock = self.strikes_locks[message.guild][message.author]
         await lock.acquire()
@@ -837,7 +841,7 @@ class AutoModModule(Module):
             audit_log_reason = f"Security's Auto Mod: {filter['name']}."
             filter_config = config["filters"][category_value][filter["value"]]
             if await self.cog.is_moderator_or_higher(
-                message.author
+                message.author,
             ):  # An administrator can't be timed out, and we don't want to get the staff kicked/banned.
                 try:
                     await self.cog.quarantine_member(
@@ -851,11 +855,13 @@ class AutoModModule(Module):
             elif (action := filter_config["action"]) is None:
                 if self.strikes_cache[message.guild][message.author] < 3:
                     duration = await DurationConverter.convert(
-                        None, config["strike_durations"]["regular"]
+                        None,
+                        config["strike_durations"]["regular"],
                     )
                 else:
                     duration = await DurationConverter.convert(
-                        None, config["strike_durations"]["severe"]
+                        None,
+                        config["strike_durations"]["severe"],
                     )
                 for __ in range(self.strikes_cache[message.guild][message.author] - 2):
                     duration *= config["strike_durations"]["auto_multiplier"]
@@ -874,7 +880,8 @@ class AutoModModule(Module):
             else:
                 if action in ("timeout", "mute"):
                     duration = await DurationConverter.convert(
-                        None, config["strike_durations"]["individual_timeout_mute"]
+                        None,
+                        config["strike_durations"]["individual_timeout_mute"],
                     )
                     if action == "timeout":
                         duration = get_correct_timeout_duration(message.author, duration)
@@ -902,7 +909,7 @@ class AutoModModule(Module):
                         guild=message.guild,
                         author=message.guild.me,
                         user=message.author,
-                        until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
+                        until=datetime.datetime.now(tz=datetime.UTC) + duration,
                         reason=audit_log_reason,
                     )
                 elif action == "kick" and message.guild.me.guild_permissions.kick_members:
@@ -943,12 +950,12 @@ class ConfigureHeatModal(discord.ui.Modal):
         module: AutoModModule,
         guild: discord.Guild,
         view: discord.ui.View,
-        heats_config: typing.Dict[str, typing.Union[int, bool]],
+        heats_config: dict[str, int | bool],
     ) -> None:
         self.module: AutoModModule = module
         self.guild: discord.Guild = guild
         self.view: discord.ui.View = view
-        self.heats_config: typing.Dict[str, typing.Union[int, bool]] = heats_config
+        self.heats_config: dict[str, int | bool] = heats_config
         super().__init__(title=_("Configure Heat Settings"))
         self.max_heat: discord.ui.TextInput = discord.ui.TextInput(
             label=_("Maximum Heat:"),
@@ -1001,14 +1008,12 @@ class ConfigureStrikeDurationsModal(discord.ui.Modal):
         module: AutoModModule,
         guild: discord.Guild,
         view: discord.ui.View,
-        strike_durations_config: typing.Dict[str, typing.Union[str, int]],
+        strike_durations_config: dict[str, str | int],
     ) -> None:
         self.module: AutoModModule = module
         self.guild: discord.Guild = guild
         self.view: discord.ui.View = view
-        self.strike_durations_config: typing.Dict[
-            str, typing.Union[str, int]
-        ] = strike_durations_config
+        self.strike_durations_config: dict[str, str | int] = strike_durations_config
         super().__init__(title=_("Configure Strike Durations"))
         self.regular: discord.ui.TextInput = discord.ui.TextInput(
             label=_("Regular Strike Duration:"),
@@ -1067,7 +1072,7 @@ class ConfigureStrikeDurationsModal(discord.ui.Modal):
         self.strike_durations_config["auto_multiplier"] = auto_multiplier
         self.strike_durations_config["individual_timeout_mute"] = individual_timeout_mute
         await self.module.config_value(self.guild).strike_durations.set(
-            self.strike_durations_config
+            self.strike_durations_config,
         )
         await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)
 
@@ -1118,7 +1123,7 @@ class ConfigureFilterCategoryView(discord.ui.View):
                 f"**{'✅' if (filter_config := config['filters'][self.category][filter['value']])['enabled'] else '❌'} {filter['emoji']} {filter['name']}**"
                 + (
                     _("\n- Added Heat: **{added_heat}%**").format(
-                        added_heat=filter_config["added_heat"]
+                        added_heat=filter_config["added_heat"],
                     )
                     if "added_heat" in filter_config
                     else ""
@@ -1144,7 +1149,7 @@ class ConfigureFilterCategoryView(discord.ui.View):
                                 if isinstance(filter_config[key], bool)
                                 else (
                                     str(filter_config[key])
-                                    if not isinstance(filter_config[key], typing.List)
+                                    if not isinstance(filter_config[key], list)
                                     else _("[{count} item{s}]").format(
                                         count=len(filter_config[key]),
                                         s="" if len(filter_config[key]) == 1 else "s",
@@ -1161,7 +1166,7 @@ class ConfigureFilterCategoryView(discord.ui.View):
                 + _("\n- Individual Action: {action}").format(
                     action=filter_config["action"].title()
                     if filter_config["action"]
-                    else _("None")
+                    else _("None"),
                 )
                 for filter in AUTO_MOD_FILTERS[self.category]["filters"]
             ),
@@ -1187,7 +1192,9 @@ class ConfigureFilterCategoryView(discord.ui.View):
 
     @discord.ui.button(label="Toggle All")
     async def toggle_filter_category(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         config = await self.module.config_value(self.guild)()
         new_state = not list(config["filters"][self.category].values())[0]["enabled"]
@@ -1212,7 +1219,9 @@ class ConfigureFilterCategoryView(discord.ui.View):
 
     @discord.ui.select(placeholder="Select a filter to configure...")
     async def configure_filter_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         filter = next(
             (
@@ -1233,7 +1242,7 @@ class ConfigureFilterCategoryView(discord.ui.View):
                 self.category,
                 filter,
                 filter_config,
-            )
+            ),
         )
 
 
@@ -1294,20 +1303,20 @@ class ConfigureFilterModal(discord.ui.Modal):
                     self,
                     f"param_{key}",
                     discord.ui.TextInput(
-                        label=f"{key.replace('_', ' ').title()}{' (one per line)' if isinstance(default_value, typing.List) else ''}:",
+                        label=f"{key.replace('_', ' ').title()}{' (one per line)' if isinstance(default_value, list) else ''}:",
                         style=discord.TextStyle.short
-                        if not isinstance(default_value, typing.List)
+                        if not isinstance(default_value, list)
                         else discord.TextStyle.paragraph,
                         default=str(filter_config[key])
-                        if not isinstance(default_value, typing.List)
+                        if not isinstance(default_value, list)
                         else "\n".join(str(v) for v in filter_config[key]),
-                        required=not isinstance(default_value, typing.List),
+                        required=not isinstance(default_value, list),
                     ),
                 )
                 self.add_item(getattr(self, f"param_{key}"))
         self.action: discord.ui.TextInput = discord.ui.TextInput(
             label=_("Action ({actions}):").format(
-                actions="/".join([action["value"] for action in POSSIBLE_ACTIONS])
+                actions="/".join([action["value"] for action in POSSIBLE_ACTIONS]),
             ),
             style=discord.TextStyle.short,
             default=str(filter_config["action"]) if filter_config["action"] is not None else None,
@@ -1335,14 +1344,15 @@ class ConfigureFilterModal(discord.ui.Modal):
                 except ValueError as e:
                     await interaction.followup.send(
                         _("Invalid specific heat value for {key}: {error}").format(
-                            key=key, error=str(e)
+                            key=key,
+                            error=str(e),
                         ),
                         ephemeral=True,
                     )
                     return
         for key, default_value in self.filter.get("params", []):
             field = getattr(self, f"param_{key}")
-            if isinstance(default_value, typing.List):
+            if isinstance(default_value, list):
                 if field_value := field.value.strip():
                     try:
                         self.filter_config[key] = [
@@ -1384,7 +1394,9 @@ class ConfigureFilterModal(discord.ui.Modal):
         else:
             self.filter_config["action"] = action_value
         await self.module.config_value(self.guild).filters.set_raw(
-            self.category, self.filter["value"], value=self.filter_config
+            self.category,
+            self.filter["value"],
+            value=self.filter_config,
         )
         try:
             await self.category_view._message.edit(

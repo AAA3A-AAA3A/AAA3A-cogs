@@ -1,7 +1,7 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import discord
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 _: Translator = Translator("RussianRouletteGame", __file__)
 
@@ -13,7 +13,7 @@ class JoinGameView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self.host: discord.Member = None
-        self.players: typing.List[discord.Member] = []
+        self.players: list[discord.Member] = []
         self._message: discord.Message = None
 
         self.cancelled: bool = True
@@ -30,7 +30,7 @@ class JoinGameView(discord.ui.View):
         embed: discord.Embed = discord.Embed(
             title=_("💥 Russian Roulette Game 🔫"),
             description=_(
-                "Click the button below to **join the party!** Please note that the maximum amount of players is **30**."
+                "Click the button below to **join the party!** Please note that the maximum amount of players is **30**.",
             ),
             color=await self.ctx.embed_color(),
             timestamp=ctx.message.created_at,
@@ -41,7 +41,7 @@ class JoinGameView(discord.ui.View):
                 "- When its your turn, you will be asked to shoot.\n"
                 "- If you shoot, you may die or survive. One player die each round.\n"
                 "- Each player has 5 seconds to shoot, they die otherwise."
-                "- The game ends when only one player is left."
+                "- The game ends when only one player is left.",
             ),
         )
         embed.set_author(
@@ -69,17 +69,19 @@ class JoinGameView(discord.ui.View):
     async def join(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user in self.players:
             await interaction.response.send_message(
-                _("You have already joined the game!"), ephemeral=True
+                _("You have already joined the game!"),
+                ephemeral=True,
             )
             return
         if len(self.players) >= 30:
             await interaction.response.send_message(
-                _("The game is full, you can't join!"), ephemeral=True
+                _("The game is full, you can't join!"),
+                ephemeral=True,
             )
             return
         self.players.append(interaction.user)
         self.view_players.label = _("View Players ({len_players})").format(
-            len_players=len(self.players)
+            len_players=len(self.players),
         )
         try:
             await self._message.edit(view=self)
@@ -91,12 +93,13 @@ class JoinGameView(discord.ui.View):
     async def leave(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user not in self.players:
             await interaction.response.send_message(
-                _("You have not joined the game!"), ephemeral=True
+                _("You have not joined the game!"),
+                ephemeral=True,
             )
             return
         self.players.remove(interaction.user)
         self.view_players.label = _("View Players ({len_players})").format(
-            len_players=len(self.players)
+            len_players=len(self.players),
         )
         try:
             await self._message.edit(view=self)
@@ -106,11 +109,14 @@ class JoinGameView(discord.ui.View):
 
     @discord.ui.button(label="View Players (1)", style=discord.ButtonStyle.secondary)
     async def view_players(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if not self.players:
             await interaction.response.send_message(
-                _("No one has joined the game yet!"), ephemeral=True
+                _("No one has joined the game yet!"),
+                ephemeral=True,
             )
             return
         embed = discord.Embed(
@@ -129,7 +135,9 @@ class JoinGameView(discord.ui.View):
 
     @discord.ui.button(label="Start Game!", style=discord.ButtonStyle.primary)
     async def start_button(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if not (
             interaction.user == self.host
@@ -141,7 +149,8 @@ class JoinGameView(discord.ui.View):
             return
         if len(self.players) < 2:
             await interaction.response.send_message(
-                _("You need at least 2 players to start the game!"), ephemeral=True
+                _("You need at least 2 players to start the game!"),
+                ephemeral=True,
             )
             return
         self.cancelled: bool = False
@@ -157,9 +166,7 @@ class JoinGameView(discord.ui.View):
             or interaction.user.guild_permissions.manage_guild
             or interaction.user.id in interaction.client.owner_ids
         ):
-            await interaction.response.send_message(
-                _("You can't cancel the game!"), ephemeral=True
-            )
+            await interaction.response.send_message(_("You can't cancel the game!"), ephemeral=True)
             return
         try:
             await self._message.delete()
@@ -187,7 +194,8 @@ class ShotView(discord.ui.View):
     async def shoot(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user != self.player:
             await interaction.response.send_message(
-                _("You can't shoot for someone else!"), ephemeral=True
+                _("You can't shoot for someone else!"),
+                ephemeral=True,
             )
             return
         await interaction.response.defer()

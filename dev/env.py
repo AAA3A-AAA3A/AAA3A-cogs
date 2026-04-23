@@ -13,14 +13,19 @@ import textwrap
 import time
 import traceback
 import types
+import typing
 from contextvars import ContextVar
 from functools import partial
 from io import BytesIO, StringIO
 
 import aiohttp
+import discord
 import discord.ext
-import redbot
 import rich
+from rich.console import Console
+from rich.table import Table
+
+import redbot
 from AAA3A_utils.cog import Cog
 from AAA3A_utils.cogsutils import CogsUtils
 from AAA3A_utils.context import Context, is_dev
@@ -40,18 +45,11 @@ from AAA3A_utils.views import (
     Select,
     UserSelect,
 )  # NOQA
-from redbot.core import Config, dev_commands
+from redbot.core import Config, commands, dev_commands
 from redbot.core import utils as redutils
+from redbot.core.bot import Red
 from redbot.core.utils import chat_formatting as cf
 from redbot.core.utils.chat_formatting import box
-from rich.console import Console
-from rich.table import Table
-
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 
 ctxconsole = ContextVar[rich.console.Console]("ctxconsole")
 
@@ -61,7 +59,9 @@ class Exit(BaseException):
 
 
 def no_colour_rich_markup(
-    *objects: typing.Any, lang: str = "", no_box: typing.Optional[bool] = False
+    *objects: typing.Any,
+    lang: str = "",
+    no_box: bool | None = False,
 ) -> str:
     """
     Slimmed down version of rich_markup which ensure no colours (/ANSI) can exist
@@ -102,10 +102,10 @@ class DevSpace:
     def __contains__(self, key: str) -> typing.Any:
         return key in self.__dict__
 
-    def __iter__(self) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
+    def __iter__(self) -> typing.Iterator[tuple[str, typing.Any]]:
         yield from self.__dict__.items()
 
-    def __reversed__(self) -> typing.Dict:
+    def __reversed__(self) -> dict:
         return self.__dict__.__reversed__()
 
     def __getattr__(self, attr: str) -> typing.Any:
@@ -144,34 +144,37 @@ class DevSpace:
     def values(self):
         return self.__dict__.values()
 
-    def get(self, key: str, _default: typing.Optional[typing.Any] = None) -> typing.Any:
+    def get(self, key: str, _default: typing.Any | None = None) -> typing.Any:
         return self.__dict__.get(key, _default)
 
-    def pop(self, key: str, _default: typing.Optional[typing.Any] = None) -> typing.Any:
+    def pop(self, key: str, _default: typing.Any | None = None) -> typing.Any:
         return self.__dict__.pop(key, _default)
 
     def popitem(self) -> typing.Any:
         return self.__dict__.popitem()
 
     def _update_with_defaults(
-        self, defaults: typing.Iterable[typing.Tuple[str, typing.Any]]
+        self,
+        defaults: typing.Iterable[tuple[str, typing.Any]],
     ) -> None:
         for key, value in defaults:
             self.__dict__.setdefault(key, value)
 
 
-class DevEnv(typing.Dict[str, typing.Any]):
+class DevEnv(dict[str, typing.Any]):
     is_dev = is_dev
 
     def __init__(self, *args, **kwargs) -> None:
         # self.__dict__ = {}
         super().__init__(*args, **kwargs)
-        self.imported: typing.List[typing.Union[str, typing.Tuple[str, str]]] = []
+        self.imported: list[str | tuple[str, str]] = []
 
     @classmethod
     def get_environment(
-        cls, ctx: commands.Context, use_extended_environment: bool = True
-    ) -> typing.Dict[str, typing.Any]:
+        cls,
+        ctx: commands.Context,
+        use_extended_environment: bool = True,
+    ) -> dict[str, typing.Any]:
         env = cls(  # In Dev cog by Zeph.
             **{
                 "me": ctx.me,
@@ -186,7 +189,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "__package__": None,
                 "__loader__": None,
                 "__spec__": None,
-            }
+            },
         )
         env["interaction"] = ctx.interaction
         if getattr(ctx.channel, "category", None) is not None:
@@ -202,8 +205,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
     def get_formatted_env(
         self,
-        ctx: typing.Optional[commands.Context] = None,
-        show_values: typing.Optional[bool] = True,
+        ctx: commands.Context | None = None,
+        show_values: bool | None = True,
     ) -> str:
         if show_values:
             raw_table = Table(
@@ -213,7 +216,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
             )
         else:
             raw_table = Table(
-                "Key", title="------------------------------ DevEnv ------------------------------"
+                "Key",
+                title="------------------------------ DevEnv ------------------------------",
             )
         for name, value in self.items():
             if name in self.imported:
@@ -346,11 +350,13 @@ class DevEnv(typing.Dict[str, typing.Any]):
 
     @classmethod
     def get_env(
-        cls, bot: Red, ctx: typing.Optional[commands.Context] = None
-    ) -> typing.Dict[str, typing.Any]:
+        cls,
+        bot: Red,
+        ctx: commands.Context | None = None,
+    ) -> dict[str, typing.Any]:
         logger = CogsUtils.get_logger(name="Test")
 
-        def where(name_or_module: typing.Union[str, types.MethodType]) -> str:
+        def where(name_or_module: str | types.MethodType) -> str:
             name = (
                 name_or_module
                 if isinstance(name_or_module, str)
@@ -358,25 +364,29 @@ class DevEnv(typing.Dict[str, typing.Any]):
             ).replace("-", "_")
             spec = importlib.util.find_spec(name)
             if spec is None:
-                raise RuntimeError("Module `{name}` not found.".format(name=name))
+                raise RuntimeError(f"Module `{name}` not found.")
             return spec.origin
 
         async def _rtfs(ctx: commands.Context, object):
             code = inspect.getsource(object)
             await Menu(pages=code, lang="py").start(ctx)
 
-        def reference(ctx: commands.Context) -> typing.Optional[discord.Message]:
+        def reference(ctx: commands.Context) -> discord.Message | None:
             if ctx.message.reference is not None and isinstance(
-                ctx.message.reference.resolved, discord.Message
+                ctx.message.reference.resolved,
+                discord.Message,
             ):
                 return ctx.message.reference.resolved
+            return None
 
         # def _console_custom(ctx: commands.Context):
         #     return {"width": 80, "color_system": None}
 
         def search_attribute(
-            a, b: typing.Optional[str] = "", startswith: typing.Optional[str] = ""
-        ) -> typing.List[str]:
+            a,
+            b: str | None = "",
+            startswith: str | None = "",
+        ) -> list[str]:
             return [
                 x
                 for x in dir(a)
@@ -384,19 +394,26 @@ class DevEnv(typing.Dict[str, typing.Any]):
             ]
 
         async def run_converter(
-            converter: typing.Any, argument: str, label: typing.Optional[str] = "test"
+            converter: typing.Any,
+            argument: str,
+            label: str | None = "test",
         ) -> typing.Any:
             param = discord.ext.commands.parameters.Parameter(
-                name=label, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=converter
+                name=label,
+                kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                annotation=converter,
             )
             return await discord.ext.commands.converter.run_converters(
-                ctx, converter=param.converter, argument=argument, param=param
+                ctx,
+                converter=param.converter,
+                argument=argument,
+                param=param,
             )
 
         async def run_converters(
-            command_or_function: typing.Union[str, commands.Command, typing.Callable],
+            command_or_function: str | commands.Command | typing.Callable,
             arguments: str,
-        ) -> typing.Dict[str, typing.Any]:
+        ) -> dict[str, typing.Any]:
             if isinstance(command_or_function, str):
                 if (command := ctx.bot.get_command(command_or_function)) is None:
                     raise RuntimeError()
@@ -426,8 +443,8 @@ class DevEnv(typing.Dict[str, typing.Any]):
         def get_internal(ctx: commands.Context):
             def _get_internal(
                 name: typing.Literal["events", "listeners", "loggers", "parsers", "converters"],
-                b: typing.Optional[str] = "",
-                startswith: typing.Optional[str] = "",
+                b: str | None = "",
+                startswith: str | None = "",
             ):
                 if name == "events":
                     if b == "":
@@ -447,21 +464,20 @@ class DevEnv(typing.Dict[str, typing.Any]):
                     result = discord.ext.commands.converter.CONVERTER_MAPPING.copy()
                 else:
                     raise ValueError(name)
-                result = {
+                return {
                     name: value
                     for name, value in result.items()
                     if b.lower() in name.lower() and name.lower().startswith(startswith.lower())
                 }
-                return result
 
             return _get_internal
 
         def set_loggers_level(
-            level: typing.Optional[str] = logging.DEBUG,
-            loggers: typing.Optional[typing.List] = None,
-            exclusions: typing.Optional[typing.List] = None,
-            b: typing.Optional[str] = "",
-            startswith: typing.Optional[str] = "",
+            level: str | None = logging.DEBUG,
+            loggers: list | None = None,
+            exclusions: list | None = None,
+            b: str | None = "",
+            startswith: str | None = "",
         ) -> int:
             __loggers = logging.Logger.manager.loggerDict
             if loggers is not None:
@@ -488,21 +504,18 @@ class DevEnv(typing.Dict[str, typing.Any]):
         def params(_object: typing.Any) -> None:
             return {param.name: param for param in inspect.signature(_object).parameters.values()}
 
-        def find_all(predicate, iterable: collections.abc.Iterable) -> typing.List[typing.Any]:
+        def find_all(predicate, iterable: collections.abc.Iterable) -> list[typing.Any]:
             if hasattr(iterable, "__aiter__"):
 
                 async def _a_find_all():
                     return [element async for element in iterable if predicate(element)]
 
                 return _a_find_all()
-            else:
-                return [element for element in iterable if predicate(element)]
+            return [element for element in iterable if predicate(element)]
 
-        def get_all(iterable: collections.abc.Iterable, **attrs) -> typing.List[typing.Any]:
+        def get_all(iterable: collections.abc.Iterable, **attrs) -> list[typing.Any]:
             attrget = discord.utils.attrgetter
-            converted = [
-                (attrget(attr.replace("__", ".")), value) for attr, value in attrs.items()
-            ]
+            converted = [(attrget(attr.replace("__", ".")), value) for attr, value in attrs.items()]
             if hasattr(iterable, "__aiter__"):
 
                 async def _a_get_all():
@@ -513,12 +526,11 @@ class DevEnv(typing.Dict[str, typing.Any]):
                     ]
 
                 return _a_get_all()
-            else:
-                return [
-                    element
-                    for element in iterable
-                    if all(pred(element) == value for pred, value in converted)
-                ]
+            return [
+                element
+                for element in iterable
+                if all(pred(element) == value for pred, value in converted)
+            ]
 
         dev_space: DevSpace = getattr(ctx.bot.get_cog("Dev"), "dev_space", AttributeError())
 
@@ -546,10 +558,14 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "DevEnv": lambda ctx: cls,
                 "DevSpace": lambda ctx: DevSpace,
                 "Cogs": lambda ctx: CogsCommands.Cogs(
-                    bot=ctx.bot, Cog=CogsCommands.Cog, Command=CogsCommands.Command
+                    bot=ctx.bot,
+                    Cog=CogsCommands.Cog,
+                    Command=CogsCommands.Command,
                 ),
                 "Commands": lambda ctx: CogsCommands.Commands(
-                    bot=ctx.bot, Cog=CogsCommands.Cog, Command=CogsCommands.Command
+                    bot=ctx.bot,
+                    Cog=CogsCommands.Cog,
+                    Command=CogsCommands.Command,
                 ),
             }
             # Dpy2 things
@@ -564,7 +580,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                     "RoleSelect": lambda ctx: RoleSelect,
                     "UserSelect": lambda ctx: UserSelect,
                     "Modal": lambda ctx: Modal,
-                }
+                },
             )
         else:
             env = {}
@@ -600,11 +616,11 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "typing": lambda ctx: typing,
                 # Inspect
                 "inspect": lambda ctx: inspect,
-                "source": lambda ctx: lambda _object: rich.print(
-                    textwrap.dedent(inspect.getsource(_object)).strip()
+                "source": lambda ctx: (
+                    lambda _object: rich.print(textwrap.dedent(inspect.getsource(_object)).strip())
                 ),
-                "gs": lambda ctx: lambda _object: rich.print(
-                    textwrap.dedent(inspect.getsource(_object)).strip()
+                "gs": lambda ctx: (
+                    lambda _object: rich.print(textwrap.dedent(inspect.getsource(_object)).strip())
                 ),
                 # "gs": lambda ctx: inspect.getsource,
                 # logging
@@ -612,10 +628,11 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 # Date & Time
                 "datetime": lambda ctx: datetime,
                 "time": lambda ctx: time,
-                "utc_now": lambda ctx: datetime.datetime.now(tz=datetime.timezone.utc),
+                "utc_now": lambda ctx: datetime.datetime.now(tz=datetime.UTC),
                 "local_now": lambda ctx: datetime.datetime.now(),
                 "get_utc_now": lambda ctx: functools.partial(
-                    datetime.datetime.now, tz=datetime.timezone.utc
+                    datetime.datetime.now,
+                    tz=datetime.UTC,
                 ),
                 "get_local_now": lambda ctx: datetime.datetime.now,
                 # Os & Sys
@@ -644,7 +661,7 @@ class DevEnv(typing.Dict[str, typing.Any]):
                 "fetch_message": lambda ctx: ctx.channel.fetch_message,
                 # Fake
                 "token": lambda ctx: "[EXPUNGED]",
-            }
+            },
         )
         if ctx is not None:
             _env = {}
@@ -700,7 +717,7 @@ class CogsCommands:
             }
             return key in source
 
-        def __iter__(self) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
+        def __iter__(self) -> typing.Iterator[tuple[str, typing.Any]]:
             cog = self
             source = {
                 command.name: command
@@ -711,7 +728,10 @@ class CogsCommands:
             _items = source
             items = {
                 key: self.Command._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                    bot=self.bot,
+                    Cog=self.Cog,
+                    Command=self.Command,
+                    command=value,
                 )
                 for key, value in _items.items()
             }
@@ -727,7 +747,10 @@ class CogsCommands:
             }
             _item = source[key]
             return self.Command._setup(
-                bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item
+                bot=self.bot,
+                Cog=self.Cog,
+                Command=self.Command,
+                command=_item,
             )
 
         def items(self):
@@ -741,7 +764,10 @@ class CogsCommands:
             _items = source
             return {
                 key: self.Command._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                    bot=self.bot,
+                    Cog=self.Cog,
+                    Command=self.Command,
+                    command=value,
                 )
                 for key, value in _items.items()
             }
@@ -767,15 +793,18 @@ class CogsCommands:
             _items = source
             items = {
                 key: self.Command._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                    bot=self.bot,
+                    Cog=self.Cog,
+                    Command=self.Command,
+                    command=value,
                 )
                 for key, value in _items.items()
             }
             return items.values()
 
     class Command(commands.Command):
-        def __init__(func, *args, **kwargs):
-            super().__init__(func=func, *args, **kwargs)
+        def __init__(self, *args, **kwargs):
+            super().__init__(func=self, *args, **kwargs)
 
         @classmethod
         def _setup(cls, bot: Red, Cog, Command, command) -> typing.Any:  # typing_extensions.Self
@@ -817,7 +846,7 @@ class CogsCommands:
             }
             return key in source
 
-        def __iter__(self) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
+        def __iter__(self) -> typing.Iterator[tuple[str, typing.Any]]:
             command = self
             source = {
                 c.name: c
@@ -827,7 +856,10 @@ class CogsCommands:
             _items = source
             items = {
                 key: self.Command._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                    bot=self.bot,
+                    Cog=self.Cog,
+                    Command=self.Command,
+                    command=value,
                 )
                 for key, value in _items.items()
             }
@@ -842,7 +874,10 @@ class CogsCommands:
             }
             _item = source[key]
             return self.Command._setup(
-                bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item
+                bot=self.bot,
+                Cog=self.Cog,
+                Command=self.Command,
+                command=_item,
             )
 
         def items(self):
@@ -855,7 +890,10 @@ class CogsCommands:
             _items = source
             return {
                 key: self.Command._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                    bot=self.bot,
+                    Cog=self.Cog,
+                    Command=self.Command,
+                    command=value,
                 )
                 for key, value in _items.items()
             }
@@ -879,7 +917,10 @@ class CogsCommands:
             _items = source
             items = {
                 key: self.Command._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                    bot=self.bot,
+                    Cog=self.Cog,
+                    Command=self.Command,
+                    command=value,
                 )
                 for key, value in _items.items()
             }
@@ -902,7 +943,7 @@ class CogsCommands:
             source = {cog.qualified_name: cog for cog in self.bot.cogs.values()}
             return key in source
 
-        def __iter__(self) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
+        def __iter__(self) -> typing.Iterator[tuple[str, typing.Any]]:
             source = {cog.qualified_name: cog for cog in self.bot.cogs.values()}
             _items = source.items()
             yield from {
@@ -953,12 +994,15 @@ class CogsCommands:
             source = {command.name: command for command in self.bot.all_commands.values()}
             return key in source
 
-        def __iter__(self) -> typing.Iterator[typing.Tuple[str, typing.Any]]:
+        def __iter__(self) -> typing.Iterator[tuple[str, typing.Any]]:
             source = {command.name: command for command in self.bot.all_commands.values()}
             _items = source.items()
             yield from {
                 key: self.Command._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                    bot=self.bot,
+                    Cog=self.Cog,
+                    Command=self.Command,
+                    command=value,
                 )
                 for key, value in _items.items()
             }
@@ -967,7 +1011,10 @@ class CogsCommands:
             source = {command.name: command for command in self.bot.all_commands.values()}
             _item = source[key]
             return self.Command._setup(
-                bot=self.bot, Cog=self.Cog, Command=self.Command, command=_item
+                bot=self.bot,
+                Cog=self.Cog,
+                Command=self.Command,
+                command=_item,
             )
 
         def items(self):
@@ -975,7 +1022,10 @@ class CogsCommands:
             _items = source.items()
             return {
                 key: self.Command._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                    bot=self.bot,
+                    Cog=self.Cog,
+                    Command=self.Command,
+                    command=value,
                 )
                 for key, value in _items.items()
             }
@@ -989,7 +1039,10 @@ class CogsCommands:
             _items = source.items()
             items = {
                 key: self.Command._setup(
-                    bot=self.bot, Cog=self.Cog, Command=self.Command, command=value
+                    bot=self.bot,
+                    Cog=self.Cog,
+                    Command=self.Command,
+                    command=value,
                 )
                 for key, value in _items.items()
             }

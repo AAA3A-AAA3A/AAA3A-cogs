@@ -1,18 +1,16 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 import functools
 import os
 import random
+import typing
 
-from redbot.core import bank
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import bank, commands
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_timedelta
 
-from .famine_apocalypses import FamineApocalypse
 from .constants import (
     ACHIEVEMENTS_COLOR,
     ANOMALIES_COLOR,
@@ -25,6 +23,7 @@ from .constants import (
     VILLAGERS_COLOR,
     VOTING_AND_JUDGEMENT_COLOR,
 )  # NOQA
+from .famine_apocalypses import FamineApocalypse
 from .utils import get_image
 
 _: Translator = Translator("MafiaGame", __file__)
@@ -34,19 +33,19 @@ class JoinGameView(discord.ui.View):
     def __init__(
         self,
         cog: commands.Cog,
-        MODES: typing.List[typing.Any],
+        MODES: list[typing.Any],
         mode: typing.Any,
-        config: typing.Dict[str, typing.Any],
+        config: dict[str, typing.Any],
     ) -> None:
         super().__init__(timeout=None)
         self.ctx: commands.Context = None
         self.cog: commands.Cog = cog
-        self.MODES: typing.List[typing.Any] = MODES
+        self.MODES: list[typing.Any] = MODES
         self.mode: typing.Any = mode
-        self.config: typing.Dict[str, typing.Any] = config
+        self.config: dict[str, typing.Any] = config
 
         self.host: discord.Member = None
-        self.players: typing.List[discord.Member] = []
+        self.players: list[discord.Member] = []
         self._message: discord.Message = None
 
         self.cancelled: bool = True
@@ -91,12 +90,12 @@ class JoinGameView(discord.ui.View):
         if hasattr(ctx, "players"):
             self.players = ctx.players
             self.view_players.label = _("View Players ({len_players})").format(
-                len_players=len(self.players)
+                len_players=len(self.players),
             )
         embed: discord.Embed = discord.Embed(
             title=_("🔪 Mafia Game 🔪"),
             description=_(
-                "Click the button below to **join the party**! Please note that the maximum amount of players is **25**."
+                "Click the button below to **join the party**! Please note that the maximum amount of players is **25**.",
             ),
             color=await self.ctx.embed_color(),
             timestamp=self.ctx.message.created_at,
@@ -153,18 +152,20 @@ class JoinGameView(discord.ui.View):
     async def join(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user in self.players:
             await interaction.response.send_message(
-                _("You have already joined the game!"), ephemeral=True
+                _("You have already joined the game!"),
+                ephemeral=True,
             )
             return
         if len(self.players) >= 25:
             await interaction.response.send_message(
-                _("The game is full, you can't join!"), ephemeral=True
+                _("The game is full, you can't join!"),
+                ephemeral=True,
             )
             return
         if any(interaction.user.get_role(role_id) for role_id in self.config["blacklisted_roles"]):
             await interaction.response.send_message(
                 _(
-                    "You aren't allowed to join a Mafia game in this server because you have a blacklisted role!"
+                    "You aren't allowed to join a Mafia game in this server because you have a blacklisted role!",
                 ),
                 ephemeral=True,
             )
@@ -174,12 +175,15 @@ class JoinGameView(discord.ui.View):
         ) is not None:
             await interaction.response.send_message(
                 _(
-                    "You are **temporarily banned for {duration}** from joining Mafia games in this server!"
+                    "You are **temporarily banned for {duration}** from joining Mafia games in this server!",
                 ).format(
                     duration=humanize_timedelta(
-                        timedelta=datetime.datetime.fromtimestamp(temp_banned_until, tz=datetime.timezone.utc)
-                        - datetime.datetime.now(tz=datetime.timezone.utc)
-                    )
+                        timedelta=datetime.datetime.fromtimestamp(
+                            temp_banned_until,
+                            tz=datetime.UTC,
+                        )
+                        - datetime.datetime.now(tz=datetime.UTC),
+                    ),
                 ),
                 ephemeral=True,
             )
@@ -190,12 +194,13 @@ class JoinGameView(discord.ui.View):
             if game.get_player(interaction.user) is not None
         ):
             await interaction.response.send_message(
-                _("You are already in a game of Mafia in another server!"), ephemeral=True
+                _("You are already in a game of Mafia in another server!"),
+                ephemeral=True,
             )
             return
         self.players.append(interaction.user)
         self.view_players.label = _("View Players ({len_players})").format(
-            len_players=len(self.players)
+            len_players=len(self.players),
         )
         try:
             await self._message.edit(view=self)
@@ -207,12 +212,13 @@ class JoinGameView(discord.ui.View):
     async def leave(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user not in self.players:
             await interaction.response.send_message(
-                _("You have not joined the game!"), ephemeral=True
+                _("You have not joined the game!"),
+                ephemeral=True,
             )
             return
         self.players.remove(interaction.user)
         self.view_players.label = _("View Players ({len_players})").format(
-            len_players=len(self.players)
+            len_players=len(self.players),
         )
         try:
             await self._message.edit(view=self)
@@ -222,11 +228,14 @@ class JoinGameView(discord.ui.View):
 
     @discord.ui.button(label="View Players (1)", style=discord.ButtonStyle.secondary)
     async def view_players(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if not self.players:
             await interaction.response.send_message(
-                _("No one has joined the game yet!"), ephemeral=True
+                _("No one has joined the game yet!"),
+                ephemeral=True,
             )
             return
         embed = discord.Embed(
@@ -245,7 +254,9 @@ class JoinGameView(discord.ui.View):
 
     @discord.ui.button(label="Start Game!", style=discord.ButtonStyle.primary)
     async def start_button(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if not (
             interaction.user == self.host
@@ -257,7 +268,8 @@ class JoinGameView(discord.ui.View):
             return
         if len(self.players) < 5:
             await interaction.response.send_message(
-                _("You need at least 5 players to start the game!"), ephemeral=True
+                _("You need at least 5 players to start the game!"),
+                ephemeral=True,
             )
             return
         self.cancelled: bool = False
@@ -273,9 +285,7 @@ class JoinGameView(discord.ui.View):
             or interaction.user.guild_permissions.manage_guild
             or interaction.user.id in interaction.client.owner_ids
         ):
-            await interaction.response.send_message(
-                _("You can't cancel the game!"), ephemeral=True
-            )
+            await interaction.response.send_message(_("You can't cancel the game!"), ephemeral=True)
             return
         try:
             await self._message.delete()
@@ -285,7 +295,9 @@ class JoinGameView(discord.ui.View):
 
     @discord.ui.select(placeholder="Select a mode...", options=[], row=1)
     async def mode_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         if not (
             interaction.user == self.host
@@ -294,12 +306,14 @@ class JoinGameView(discord.ui.View):
             or interaction.user.id in interaction.client.owner_ids
         ):
             await interaction.response.send_message(
-                _("You can't change the mode of the game!"), ephemeral=True
+                _("You can't change the mode of the game!"),
+                ephemeral=True,
             )
             return
         self.mode = discord.utils.get(self.MODES, name=select.values[0])
         await interaction.response.send_message(
-            _("You have selected the **{mode}** mode!").format(mode=self.mode.name), ephemeral=True
+            _("You have selected the **{mode}** mode!").format(mode=self.mode.name),
+            ephemeral=True,
         )
         for option in select.options:
             option.default = option.value == self.mode.name
@@ -316,7 +330,8 @@ class JoinGameView(discord.ui.View):
             or interaction.user.id in interaction.client.owner_ids
         ):
             await interaction.response.send_message(
-                _("You can't change the settings of the game!"), ephemeral=True
+                _("You can't change the settings of the game!"),
+                ephemeral=True,
             )
             return
         custom_id: str = interaction.data["custom_id"]
@@ -351,12 +366,14 @@ class StartMessageView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if (player := self.game.get_player(interaction.user)) is None:
             await interaction.response.send_message(
-                _("You are not a player in this game!"), ephemeral=True
+                _("You are not a player in this game!"),
+                ephemeral=True,
             )
             return False
         if not all(p for p in self.game.players if p.role is not None):
             await interaction.response.send_message(
-                _("Not all players have been assigned a role yet!"), ephemeral=True
+                _("Not all players have been assigned a role yet!"),
+                ephemeral=True,
             )
             return False
         if player.is_dead:
@@ -366,7 +383,9 @@ class StartMessageView(discord.ui.View):
 
     @discord.ui.button(emoji="🔍", label="Show my Role", style=discord.ButtonStyle.secondary)
     async def show_my_role(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         player = self.game.get_player(interaction.user)
         kwargs = player.role.get_kwargs(player)
@@ -379,13 +398,13 @@ class StartMessageView(discord.ui.View):
                             _("the")
                             if len([p for p in self.game.players if p.is_town_traitor]) == 1
                             else _("a")
-                        )
+                        ),
                     ),
                     description=_(
-                        "You are a Villager, but you are secretly working for the Mafia."
+                        "You are a Villager, but you are secretly working for the Mafia.",
                     ),
                     color=MAFIA_COLOR,
-                )
+                ),
             )
         if player.is_town_vip:
             kwargs["embeds"].append(
@@ -395,11 +414,11 @@ class StartMessageView(discord.ui.View):
                             _("the")
                             if len([p for p in self.game.players if p.is_town_vip]) == 1
                             else _("a")
-                        )
+                        ),
                     ),
                     description=_("Mafia have to kill you before winning the game."),
                     color=VILLAGERS_COLOR,
-                )
+                ),
             )
         if (
             player.role.side == "Mafia" and player.role.name != "Alchemist"
@@ -409,17 +428,19 @@ class StartMessageView(discord.ui.View):
             kwargs["embeds"].append(
                 discord.Embed(
                     title=_(
-                        "🔫 Your target is {player.global_target.member.display_name}! 🔫"
+                        "🔫 Your target is {player.global_target.member.display_name}! 🔫",
                     ).format(player=player),
                     description=_("You must get them lynched by the town."),
                     color=player.role.color(),
-                )
+                ),
             )
         await interaction.response.send_message(**kwargs, ephemeral=True)
 
     @discord.ui.button(label="Immunity Night 1", style=discord.ButtonStyle.secondary)
     async def immunity_night_1(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if not (
             interaction.user == self.game.ctx.author
@@ -428,7 +449,8 @@ class StartMessageView(discord.ui.View):
             or interaction.user.id in interaction.client.owner_ids
         ):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return
         view: ImmunityNight1View = ImmunityNight1View(self.cog, self.game)
@@ -467,9 +489,7 @@ class ImmunityNight1View(discord.ui.View):
                 pass
 
     @discord.ui.select(min_values=0, placeholder="Make a selection...")
-    async def select(
-        self, interaction: discord.Interaction, select: discord.ui.UserSelect
-    ) -> None:
+    async def select(self, interaction: discord.Interaction, select: discord.ui.UserSelect) -> None:
         self.game.immunity_night_1 = [
             self.game.get_player_by_id(int(value)) for value in select.values
         ]
@@ -486,7 +506,7 @@ class SpectateView(discord.ui.View):
     def __init__(self, game) -> None:
         super().__init__(timeout=None)
         self.game = game
-        self.spectaters: typing.List[discord.Member] = []
+        self.spectaters: list[discord.Member] = []
         self._message: discord.Message = None
 
         self.clear_items()
@@ -517,20 +537,25 @@ class SpectateView(discord.ui.View):
     async def spectate(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user in self.spectaters:
             await interaction.response.send_message(
-                _("You are already spectating the game!"), ephemeral=True
+                _("You are already spectating the game!"),
+                ephemeral=True,
             )
             return
         if self.game.get_player(interaction.user) is not None:
             await interaction.response.send_message(
-                _("You are a player in this game!"), ephemeral=True
+                _("You are a player in this game!"),
+                ephemeral=True,
             )
             return
         await self.game.channel.set_permissions(
-            interaction.user, view_channel=True, read_messages=True, send_messages=False
+            interaction.user,
+            view_channel=True,
+            read_messages=True,
+            send_messages=False,
         )
         await interaction.response.send_message(
             _("You are now spectating the game! 👀 Jump to {channel.mention}!").format(
-                channel=self.game.channel
+                channel=self.game.channel,
             ),
             ephemeral=True,
         )
@@ -563,26 +588,31 @@ class PerformActionView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if (player := self.night.game.get_player(interaction.user)) is None:
             await interaction.response.send_message(
-                _("You are not a player in this game!"), ephemeral=True
+                _("You are not a player in this game!"),
+                ephemeral=True,
             )
             return False
         if player.is_dead:
             await interaction.response.send_message(
-                _("You are dead, you can't perform any action!"), ephemeral=True
+                _("You are dead, you can't perform any action!"),
+                ephemeral=True,
             )
             return False
         return True
 
     @discord.ui.button(emoji="🔪", label="Perform Action", style=discord.ButtonStyle.success)
     async def perform_action(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
         player = self.night.game.get_player(interaction.user)
         player.last_interaction = interaction
         if player.role.max_uses is not None and player.uses_amount >= player.role.max_uses:
             await interaction.followup.send(
-                _("You have already used your action the maximum amount of times!"), ephemeral=True
+                _("You have already used your action the maximum amount of times!"),
+                ephemeral=True,
             )
             return
         for p in self.night.game.players:
@@ -600,7 +630,7 @@ class PerformActionView(discord.ui.View):
                 ):
                     await interaction.followup.send(
                         _(
-                            "You can't perform any night action eternally because of the **Eternal Distraction** Famine's apocalypse!"
+                            "You can't perform any night action eternally because of the **Eternal Distraction** Famine's apocalypse!",
                         ),
                         ephemeral=True,
                     )
@@ -609,14 +639,17 @@ class PerformActionView(discord.ui.View):
             await player.role.perform_action(self.night, player, interaction)
         except NotImplementedError:
             await interaction.followup.send(
-                _("You can't perform any night action!"), ephemeral=True
+                _("You can't perform any night action!"),
+                ephemeral=True,
             )
         except RuntimeError as error:
             await interaction.followup.send(str(error), ephemeral=True)
 
     @discord.ui.button(emoji="💀", label="Dying Message", style=discord.ButtonStyle.danger)
     async def dying_message(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         player = self.night.game.get_player(interaction.user)
         await interaction.response.send_modal(DeathMessageModal(player))
@@ -652,7 +685,7 @@ class SelectTargetsView(discord.ui.View):
 
         self.first_target: typing.Any = None
 
-        self.possible_targets: typing.List[typing.Any] = []
+        self.possible_targets: list[typing.Any] = []
         last_day_night_target = (
             self.day_night.game.days_nights[-3].targets.get(self.player)
             if len(self.day_night.game.days_nights) >= 3
@@ -662,8 +695,7 @@ class SelectTargetsView(discord.ui.View):
         for select in [self.select] + ([self.second_select] if self.two_selects else []):
             for target in (
                 self.day_night.game.alive_players
-                if select is not self.select
-                or not self.dead_targets
+                if select is not self.select or not self.dead_targets
                 else self.day_night.game.dead_players
             ):
                 if (
@@ -690,15 +722,14 @@ class SelectTargetsView(discord.ui.View):
                     emoji="🫠" if target == self.player else None,
                     default=(
                         target == day_night_target
-                        if not isinstance(day_night_target, typing.Tuple)
+                        if not isinstance(day_night_target, tuple)
                         else target in day_night_target
                     ),
                 )
         if len(self.select.options) < self.targets_number:
             if self.player.role.name != "Bomber":
                 raise RuntimeError(_("There are no valid target to select!"))
-            else:
-                self.remove_item(self.select)
+            self.remove_item(self.select)
         else:
             self.select.max_values = self.targets_number
             if self.player.role.name == "God Father":
@@ -712,7 +743,7 @@ class SelectTargetsView(discord.ui.View):
                     _("Select a target.")
                     if self.targets_number == 1
                     else _("Select {targets_number} targets.").format(
-                        targets_number=self.targets_number
+                        targets_number=self.targets_number,
                     )
                 )
 
@@ -720,9 +751,7 @@ class SelectTargetsView(discord.ui.View):
 
         if self.player.role.name == "Bomber":
             self.boom.label = _("BOOM!")
-            self.boom.disabled = all(
-                [not p.bomb_planted for p in self.day_night.game.alive_players]
-            )
+            self.boom.disabled = all(not p.bomb_planted for p in self.day_night.game.alive_players)
         else:
             self.remove_item(self.boom)
         if self.player.role.name == "Starspawn":
@@ -758,7 +787,7 @@ class SelectTargetsView(discord.ui.View):
                     self.day_night.targets[self.player] = (target, None)
                     await interaction.response.send_message(
                         _(
-                            "You have selected {target.member.mention}! If you don't select your second target, you will perform your special action."
+                            "You have selected {target.member.mention}! If you don't select your second target, you will perform your special action.",
                         ),
                         ephemeral=True,
                     )
@@ -766,13 +795,13 @@ class SelectTargetsView(discord.ui.View):
                 self.day_night.targets.pop(self.player, None)
                 await interaction.response.send_message(
                     _("You need to select {targets_number} targets!").format(
-                        targets_number=self.targets_number
+                        targets_number=self.targets_number,
                     ),
                     ephemeral=True,
                 )
             else:
                 targets = tuple(
-                    [self.day_night.game.get_player_by_id(int(value)) for value in select.values]
+                    [self.day_night.game.get_player_by_id(int(value)) for value in select.values],
                 )
                 self.day_night.targets[self.player] = targets
                 await interaction.response.send_message(
@@ -788,7 +817,8 @@ class SelectTargetsView(discord.ui.View):
     async def boom(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         self.day_night.targets[self.player] = None
         await interaction.response.send_message(
-            _("You have chosen to make explode all the bombs you already planted!"), ephemeral=True
+            _("You have chosen to make explode all the bombs you already planted!"),
+            ephemeral=True,
         )
         self.player.last_interaction = interaction
 
@@ -796,17 +826,21 @@ class SelectTargetsView(discord.ui.View):
     async def daybreak(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         self.day_night.targets[self.player] = None
         await interaction.response.send_message(
-            _("You have chosen to block all days-actions from happening tomorrow!"), ephemeral=True
+            _("You have chosen to block all days-actions from happening tomorrow!"),
+            ephemeral=True,
         )
         self.player.last_interaction = interaction
 
     @discord.ui.select(min_values=0, max_values=1, placeholder="Select a target.")
     async def second_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         if self.first_target is None:
             await interaction.response.send_message(
-                _("You need to select a target first!"), ephemeral=True
+                _("You need to select a target first!"),
+                ephemeral=True,
             )
             return
         if select.values:
@@ -814,7 +848,7 @@ class SelectTargetsView(discord.ui.View):
             self.day_night.targets[self.player] = (self.first_target, target)
             await interaction.response.send_message(
                 _(
-                    "You have selected {first_target.member.mention} and {target.member.mention}!"
+                    "You have selected {first_target.member.mention} and {target.member.mention}!",
                 ).format(first_target=self.first_target, target=target),
                 ephemeral=True,
             )
@@ -829,7 +863,7 @@ class SelectRolesView(discord.ui.View):
         self,
         day_night,
         player,
-        ROLES: typing.List[typing.Any],
+        ROLES: list[typing.Any],
         self_allowed: bool = True,
         mafia_allowed: bool = True,
         last_target_allowed: bool = True,
@@ -839,7 +873,7 @@ class SelectRolesView(discord.ui.View):
             super().__init__(timeout=180)
         self.day_night = day_night
         self.player = player
-        self.ROLES: typing.List[typing.Any] = ROLES
+        self.ROLES: list[typing.Any] = ROLES
         self.self_allowed: bool = self_allowed
         self.mafia_allowed: bool = mafia_allowed
         self.last_target_allowed: bool = last_target_allowed
@@ -851,7 +885,7 @@ class SelectRolesView(discord.ui.View):
             if len(self.day_night.game.days_nights) >= 3
             else None
         )
-        self.possible_roles: typing.List[typing.Type[typing.Any]] = sorted(
+        self.possible_roles: list[type[typing.Any]] = sorted(
             [
                 role
                 for role in self.ROLES
@@ -879,7 +913,7 @@ class SelectRolesView(discord.ui.View):
                     value=role.name,
                     default=(
                         role == day_night_target
-                        if not isinstance(day_night_target, typing.Tuple)
+                        if not isinstance(day_night_target, tuple)
                         else role in day_night_target
                     ),
                 )
@@ -892,11 +926,14 @@ class SelectRolesView(discord.ui.View):
             pass
 
     async def role_select(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         if isinstance(self, GuessTargetsRolesView) and self.first_target is None:
             await interaction.response.send_message(
-                _("You need to select a target first!"), ephemeral=True
+                _("You need to select a target first!"),
+                ephemeral=True,
             )
             return
         if select.values:
@@ -911,7 +948,8 @@ class SelectRolesView(discord.ui.View):
                             await role.perform_day_action(self.day_night, self.player, interaction)
                     except NotImplementedError:
                         await interaction.response.send_message(
-                            _("You can't perform any action!"), ephemeral=True
+                            _("You can't perform any action!"),
+                            ephemeral=True,
                         )
                     return
                 self.day_night.targets[self.player] = role
@@ -943,7 +981,7 @@ class GuessTargetsRolesView(SelectTargetsView, SelectRolesView):
         self,
         night,
         player,
-        ROLES: typing.List[typing.Any],
+        ROLES: list[typing.Any],
         targets_number: int = 1,
         self_allowed: bool = True,
         mafia_allowed: bool = True,
@@ -974,7 +1012,7 @@ class GuessTargetsRolesView(SelectTargetsView, SelectRolesView):
             condition=condition,
         )
         self._message: discord.Message = None
-        self.targets: typing.List[typing.Tuple[typing.Any, typing.Any]] = [
+        self.targets: list[tuple[typing.Any, typing.Any]] = [
             (None, None) for _ in range(self.pages)
         ]
 
@@ -985,10 +1023,16 @@ class GuessTargetsRolesView(SelectTargetsView, SelectRolesView):
             self.next_page.label = _("Next Page")
 
     @discord.ui.button(
-        emoji="⬅️", label="Previous", style=discord.ButtonStyle.secondary, row=2, disabled=True
+        emoji="⬅️",
+        label="Previous",
+        style=discord.ButtonStyle.secondary,
+        row=2,
+        disabled=True,
     )
     async def previous_page(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         self.page -= 1
         self.previous_page.disabled = self.page == 0
@@ -1021,22 +1065,23 @@ class DeathMessageModal(discord.ui.Modal):
     async def on_submit(self, interaction: discord.Interaction) -> None:
         self.player.dying_message = self.dying_message.value.strip() or None
         await interaction.response.send_message(
-            _("Your death message has been set!"), ephemeral=True
+            _("Your death message has been set!"),
+            ephemeral=True,
         )
 
 
 class VoteView(discord.ui.View):
-    def __init__(self, day, remaining_players: typing.List) -> None:
+    def __init__(self, day, remaining_players: list) -> None:
         super().__init__(timeout=None)
         self.day = day
-        self.remaining_players: typing.List = remaining_players
+        self.remaining_players: list = remaining_players
         for player in self.remaining_players:
             self.select.add_option(
                 label=player.member.display_name,
                 description=player.member.name,
                 value=str(player.member.id),
             )
-        self.votes: typing.Dict = {}
+        self.votes: dict = {}
         self._message: discord.Message = None
 
         self.select.placeholder = _("Select a player to vote against.")
@@ -1057,12 +1102,14 @@ class VoteView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if (player := self.day.game.get_player(interaction.user)) is None:
             await interaction.response.send_message(
-                _("You are not a player in this game!"), ephemeral=True
+                _("You are not a player in this game!"),
+                ephemeral=True,
             )
             return False
         if player.is_dead:
             await interaction.response.send_message(
-                _("You are dead, you can't vote!"), ephemeral=True
+                _("You are dead, you can't vote!"),
+                ephemeral=True,
             )
             return False
         self.day.game.afk_players.pop(player, None)
@@ -1080,7 +1127,8 @@ class VoteView(discord.ui.View):
             return False
         if player in [t for p, t in last_night.targets.items() if p.role.name == "Blackmailer"]:
             await interaction.response.send_message(
-                _("You are **blackmailed**, you can't vote today!"), ephemeral=True
+                _("You are **blackmailed**, you can't vote today!"),
+                ephemeral=True,
             )
             return False
         if (
@@ -1105,11 +1153,9 @@ class VoteView(discord.ui.View):
         voter = self.day.game.get_player(interaction.user)
         if select.values:
             player = next(
-                (
-                    player
-                    for player in self.remaining_players
-                    if int(select.values[0]) == player.member.id
-                )
+                player
+                for player in self.remaining_players
+                if int(select.values[0]) == player.member.id
             )
             self.votes[voter] = player
             await interaction.response.send_message(
@@ -1123,7 +1169,9 @@ class VoteView(discord.ui.View):
 
     @discord.ui.button(emoji="⚖️", label="Perform Action", style=discord.ButtonStyle.success)
     async def perform_action(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         if (
             starspawn := next(
@@ -1137,7 +1185,7 @@ class VoteView(discord.ui.View):
         ) is not None:
             await interaction.response.send_message(
                 _("All day-actions have been blocked for today by {the_or_a}Starspawn!").format(
-                    the_or_a=starspawn.role.the_or_a(self.day.game)
+                    the_or_a=starspawn.role.the_or_a(self.day.game),
                 ),
                 ephemeral=True,
             )
@@ -1147,7 +1195,8 @@ class VoteView(discord.ui.View):
         player.last_interaction = interaction
         if player.role.max_uses is not None and player.uses_amount >= player.role.max_uses:
             await interaction.followup.send(
-                _("You have already used your action the maximum amount of times!"), ephemeral=True
+                _("You have already used your action the maximum amount of times!"),
+                ephemeral=True,
             )
             return
         try:
@@ -1158,7 +1207,8 @@ class VoteView(discord.ui.View):
             await interaction.followup.send(str(error), ephemeral=True)
         except TypeError:
             await interaction.followup.send(
-                _("You can't perform any action at this time!"), ephemeral=True
+                _("You can't perform any action at this time!"),
+                ephemeral=True,
             )
 
 
@@ -1179,17 +1229,20 @@ class SuicideView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if (player := self.player.game.get_player(interaction.user)) is None:
             await interaction.response.send_message(
-                _("You are not a player in this game!"), ephemeral=True
+                _("You are not a player in this game!"),
+                ephemeral=True,
             )
             return False
         if player != self.player:
             await interaction.response.send_message(
-                _("You can't perform this action at this time!"), ephemeral=True
+                _("You can't perform this action at this time!"),
+                ephemeral=True,
             )
             return False
         if player.is_dead:
             await interaction.response.send_message(
-                _("You are dead, you can't perform this action anymore!"), ephemeral=True
+                _("You are dead, you can't perform this action anymore!"),
+                ephemeral=True,
             )
             return False
         return True
@@ -1214,7 +1267,10 @@ class SuicideView(discord.ui.View):
             },
         )()
         if await CogsUtils.ConfirmationAsk(
-            fake_context, embed=embed, ephemeral=True, timeout_message=None
+            fake_context,
+            embed=embed,
+            ephemeral=True,
+            timeout_message=None,
         ):
             await self.player.kill(
                 cause="suicide_during_judgement",
@@ -1229,7 +1285,7 @@ class JudgementView(discord.ui.View):
         self.target = target
         self._message: discord.Message = None
 
-        self.results: typing.Dict[discord.Member, typing.Optional[bool]] = {}
+        self.results: dict[discord.Member, bool | None] = {}
 
         self.guilty.label = _("GUILTY")
         self.innocent.label = _("INNOCENT")
@@ -1250,19 +1306,22 @@ class JudgementView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if (player := self.day.game.get_player(interaction.user)) is None:
             await interaction.response.send_message(
-                _("You are not a player in this game!"), ephemeral=True
+                _("You are not a player in this game!"),
+                ephemeral=True,
             )
             return False
         if player.is_dead:
             await interaction.response.send_message(
-                _("You are dead, you can't vote!"), ephemeral=True
+                _("You are dead, you can't vote!"),
+                ephemeral=True,
             )
             return False
         self.day.game.afk_players.pop(player, None)
         if interaction.data["custom_id"] != "judgement_perform_action":
             if player == self.target:
                 await interaction.response.send_message(
-                    _("You can't vote on your own judgement!"), ephemeral=True
+                    _("You can't vote on your own judgement!"),
+                    ephemeral=True,
                 )
                 return False
             last_night = self.day.game.days_nights[-2]
@@ -1277,11 +1336,10 @@ class JudgementView(discord.ui.View):
                     ephemeral=True,
                 )
                 return False
-            if player in [
-                t for p, t in last_night.targets.items() if p.role.name == "Blackmailer"
-            ]:
+            if player in [t for p, t in last_night.targets.items() if p.role.name == "Blackmailer"]:
                 await interaction.response.send_message(
-                    _("You are **blackmailed**, you can't vote today!"), ephemeral=True
+                    _("You are **blackmailed**, you can't vote today!"),
+                    ephemeral=True,
                 )
                 return False
             if (
@@ -1365,11 +1423,11 @@ class JudgementView(discord.ui.View):
 
 
 class IsekaiView(discord.ui.View):
-    def __init__(self, player, roles: typing.List[typing.Any]) -> None:
+    def __init__(self, player, roles: list[typing.Any]) -> None:
         super().__init__(timeout=180)
         self.player = player
-        self.roles: typing.List[typing.Any] = roles
-        self.selected_role: typing.Optional[typing.Any] = None
+        self.roles: list[typing.Any] = roles
+        self.selected_role: typing.Any | None = None
         self._message: discord.Message = None
 
         self.select.placeholder = _("Select the role you want to reincarnate as.")
@@ -1394,7 +1452,7 @@ class IsekaiView(discord.ui.View):
         self.player.is_dead = False
         await self.player.change_role(
             role,
-            reason=("You have reincarnated as **{role_name}**!").format(role_name=role.display_name(self.player.game)),
+            reason=(f"You have reincarnated as **{role.display_name(self.player.game)}**!"),
         )
 
     @discord.ui.select(placeholder="Select the role you want to reincarnate as.")
@@ -1457,11 +1515,11 @@ class GamblerView(discord.ui.View):
 
 
 class FamineApocalypseSelectView(discord.ui.View):
-    def __init__(self, night, player, apocalypses: typing.List[FamineApocalypse]) -> None:
+    def __init__(self, night, player, apocalypses: list[FamineApocalypse]) -> None:
         super().__init__(timeout=180)
         self.night = night
         self.player = player
-        self.apocalypses: typing.List[FamineApocalypse] = apocalypses
+        self.apocalypses: list[FamineApocalypse] = apocalypses
         self._message: discord.Message = None
 
         _: Translator = Translator("MafiaGame", __file__)
@@ -1535,27 +1593,27 @@ class JudgeView(discord.ui.View):
 class ExplainView(discord.ui.View):
     def __init__(
         self,
-        ROLES: typing.List[typing.Any],
-        MODES: typing.List[typing.Any],
-        ANOMALIES: typing.List[typing.Any],
+        ROLES: list[typing.Any],
+        MODES: list[typing.Any],
+        ANOMALIES: list[typing.Any],
         page: str = "main",
     ) -> None:
         super().__init__(timeout=180)
         self.ctx: commands.Context = None
         self._message: discord.Message = None
 
-        self.ROLES: typing.List[typing.Any] = ROLES
-        self.MODES: typing.List[typing.Any] = MODES
-        self.ANOMALIES: typing.List[typing.Any] = ANOMALIES
+        self.ROLES: list[typing.Any] = ROLES
+        self.MODES: list[typing.Any] = MODES
+        self.ANOMALIES: list[typing.Any] = ANOMALIES
 
         self.page: str = page
         GodFather = discord.utils.get(self.ROLES, name="God Father")
         Mayor = discord.utils.get(self.ROLES, name="Mayor")
-        self.pages: typing.Dict[
+        self.pages: dict[
             str,
-            typing.Dict[
+            dict[
                 typing.Literal["label", "emoji", "embeds", "files", "command"],
-                typing.Union[str, typing.List[typing.Union[discord.Embed, str]]],
+                str | list[discord.Embed | str],
             ],
         ] = {
             "main": {
@@ -1565,7 +1623,7 @@ class ExplainView(discord.ui.View):
                     discord.Embed(
                         title=_("How to play the Mafia game?"),
                         description=_(
-                            "Mafia is a party game where players are secretly assigned roles that determine their objectives."
+                            "Mafia is a party game where players are secretly assigned roles that determine their objectives.",
                         ),
                     ).set_thumbnail(url=GodFather.image_url()),
                 ],
@@ -1582,21 +1640,21 @@ class ExplainView(discord.ui.View):
                     discord.Embed(
                         title=_("🌙 Night Phase"),
                         description=_(
-                            "At night, players with night actions can use their abilities, possibly choose their target(s). The Mafia can kill a player, the Doctor can save a player, the Detective can investigate a player, etc."
+                            "At night, players with night actions can use their abilities, possibly choose their target(s). The Mafia can kill a player, the Doctor can save a player, the Detective can investigate a player, etc.",
                         ),
                         color=NIGHT_COLOR,
                     ),
                     discord.Embed(
                         title=_("🌞 Day Phase"),
                         description=_(
-                            "At the end of the night, the various events of the night and the victims of the Mafia are described. Players then have a time to talk and identify who to vote against."
+                            "At the end of the night, the various events of the night and the victims of the Mafia are described. Players then have a time to talk and identify who to vote against.",
                         ),
                         color=DAY_COLOR,
                     ),
                     discord.Embed(
                         title=_("⚖️ Voting & Judgement Phases"),
                         description=_(
-                            "- Once the speaking time is up, players who are still alive can vote against those they wish to eliminate. A minimum number of votes must be reached, worth around half the remaining players. Some players may have multiple votes for the whole game (like the Mayor), or just one day.\n- If a player is nominated by enough players, they have a time to defend themselves before a new vote, for which the answer can be “Guilty”, “Innocent” or “Abstain”. This time, if more players vote “Guilty”, the player is lynched. Depending on the configuration, his role or death message will be displayed for all to see."
+                            "- Once the speaking time is up, players who are still alive can vote against those they wish to eliminate. A minimum number of votes must be reached, worth around half the remaining players. Some players may have multiple votes for the whole game (like the Mayor), or just one day.\n- If a player is nominated by enough players, they have a time to defend themselves before a new vote, for which the answer can be “Guilty”, “Innocent” or “Abstain”. This time, if more players vote “Guilty”, the player is lynched. Depending on the configuration, his role or death message will be displayed for all to see.",
                         ),
                         color=VOTING_AND_JUDGEMENT_COLOR,
                     ),
@@ -1613,39 +1671,39 @@ class ExplainView(discord.ui.View):
                     discord.Embed(
                         title=_("**Roles ({len_roles}):**").format(len_roles=len(self.ROLES)),
                         description=_(
-                            "There are many different roles in the game. Each role has its own abilities and objectives. They are randomly assigned to players at the beginning of the game."
+                            "There are many different roles in the game. Each role has its own abilities and objectives. They are randomly assigned to players at the beginning of the game.",
                         ),
                     ),
                     discord.Embed(
                         title=_("Mafia Roles ({len_mafia_roles})").format(
                             len_mafia_roles=len(
-                                [role for role in self.ROLES if "Mafia" in role.side]
-                            )  # Including Alchemist.
+                                [role for role in self.ROLES if "Mafia" in role.side],
+                            ),  # Including Alchemist.
                         ),
                         description=_(
-                            "The Mafia is a group of players who know each other and must eliminate the Villagers. The God Father is the leader of the Mafia and choose the victim each night.\n🏆 The Mafia wins when their number is equal to or greater than the half of the alive players."
+                            "The Mafia is a group of players who know each other and must eliminate the Villagers. The God Father is the leader of the Mafia and choose the victim each night.\n🏆 The Mafia wins when their number is equal to or greater than the half of the alive players.",
                         ),
                         color=MAFIA_COLOR,
                     ).set_thumbnail(url=GodFather.image_url()),
                     discord.Embed(
                         title=_("Villagers' Roles ({len_villagers_roles})").format(
                             len_villagers_roles=len(
-                                [role for role in self.ROLES if "Villagers" in role.side]
-                            )  # Including Alchemist.
+                                [role for role in self.ROLES if "Villagers" in role.side],
+                            ),  # Including Alchemist.
                         ),
                         description=_(
-                            "The Villagers are the majority of the players. They don't know each other and must eliminate the Mafia. The Mayor is the leader of the Town and can choose to revelate their role to everyone.\n🏆 The Villagers win when all the Mafia members and the Bomber are dead."
+                            "The Villagers are the majority of the players. They don't know each other and must eliminate the Mafia. The Mayor is the leader of the Town and can choose to revelate their role to everyone.\n🏆 The Villagers win when all the Mafia members and the Bomber are dead.",
                         ),
                         color=VILLAGERS_COLOR,
                     ).set_thumbnail(url=Mayor.image_url()),
                     discord.Embed(
                         title=_("Neutral Roles ({len_neutral_roles})").format(
                             len_neutral_roles=len(
-                                [role for role in self.ROLES if role.side == "Neutral"]
-                            )
+                                [role for role in self.ROLES if role.side == "Neutral"],
+                            ),
                         ),
                         description=_(
-                            "The Neutral roles have their own objectives and can win alone or with another side."
+                            "The Neutral roles have their own objectives and can win alone or with another side.",
                         ),
                         color=NEUTRAL_COLOR,
                     ),
@@ -1656,23 +1714,23 @@ class ExplainView(discord.ui.View):
                                     role
                                     for role in self.ROLES
                                     if role.side == "Horsemen of the Apocalypse"
-                                ]
-                            )
+                                ],
+                            ),
                         ),
                         description=_(
-                            "These roles can't be assigned to players at the beginning of the game. Some Neutral roles can turn into Horseman of the Apocalypse roles during the game when they achieve an objective."
+                            "These roles can't be assigned to players at the beginning of the game. Some Neutral roles can turn into Horseman of the Apocalypse roles during the game when they achieve an objective.",
                         ),
                         color=HORSEMEN_OF_THE_APOCALYPSE_COLOR,
                     ),
                     discord.Embed(
                         description=_(
-                            "ℹ️ See `{prefix}mafia roles` or `{prefix}mafia role <role>` for more information."
+                            "ℹ️ See `{prefix}mafia roles` or `{prefix}mafia role <role>` for more information.",
                         ).format(prefix="[p]"),
                     ),
                     discord.Embed(
                         title=_("Roles Priority"),
                         description=_(
-                            " Each role waits for an action to finish before proceeding to the next role. This is the reason why sometimes you die before you could do your action. The roles are resolved in a specific order. If two players have the same role, the player who joined the game first will have their role resolved first."
+                            " Each role waits for an action to finish before proceeding to the next role. This is the reason why sometimes you die before you could do your action. The roles are resolved in a specific order. If two players have the same role, the player who joined the game first will have their role resolved first.",
                         ),
                     ),
                 ],
@@ -1689,7 +1747,7 @@ class ExplainView(discord.ui.View):
                     discord.Embed(
                         title=_("**Modes:**"),
                         description=_(
-                            "There are several possible modes.\n- {predefined_modes_number} have predefined options and make specific choices depending on the number of players.\n- A `Random` mode works from the number of players and selects roles randomly according to the number of players on Mafia's side, Villagers' side or Neutral's side required.\n- A `Custom` mode depends on your own preferences with `{prefix}setmafia customroles <roles...>`.\nℹ️ See `{prefix}mafia modes` or `{prefix}mafia mode <mode>` for more information."
+                            "There are several possible modes.\n- {predefined_modes_number} have predefined options and make specific choices depending on the number of players.\n- A `Random` mode works from the number of players and selects roles randomly according to the number of players on Mafia's side, Villagers' side or Neutral's side required.\n- A `Custom` mode depends on your own preferences with `{prefix}setmafia customroles <roles...>`.\nℹ️ See `{prefix}mafia modes` or `{prefix}mafia mode <mode>` for more information.",
                         ).format(prefix="[p]", predefined_modes_number=len(self.MODES) - 2),
                         color=MODES_COLOR,
                     ),
@@ -1703,14 +1761,14 @@ class ExplainView(discord.ui.View):
                     discord.Embed(
                         title=_("**Town Traitor:**"),
                         description=_(
-                            "The Town Traitor is a member of the Town who is secretly working with the Mafia. The Town Traitor wins with the Mafia.\n⚠️ Warning: the Mayor could be the Town Traitor!"
+                            "The Town Traitor is a member of the Town who is secretly working with the Mafia. The Town Traitor wins with the Mafia.\n⚠️ Warning: the Mayor could be the Town Traitor!",
                         ),
                         color=MAFIA_COLOR,
                     ).set_thumbnail(url="attachment://town_traitor.png"),
                     discord.Embed(
                         title=_("**Town VIP:**"),
                         description=_(
-                            "The Town VIP is a member of the Town that the Mafia must kill to win. The Villagers win if the Town VIP is alive at the end of the game."
+                            "The Town VIP is a member of the Town that the Mafia must kill to win. The Villagers win if the Town VIP is alive at the end of the game.",
                         ),
                         color=VILLAGERS_COLOR,
                     ).set_thumbnail(url="attachment://town_vip.png"),
@@ -1724,7 +1782,7 @@ class ExplainView(discord.ui.View):
                     discord.Embed(
                         title=_("**Anomalies:**"),
                         description=_(
-                            "Anomalies are special events that can occur during the game. They can be beneficial or harmful. Each turn, they have 40% chance to occur and a random anomaly among the {anomalies_number} existing will be selected.\nℹ️ See `{prefix}mafia anomalies` or `{prefix}mafia anomaly <anomaly>` for more information."
+                            "Anomalies are special events that can occur during the game. They can be beneficial or harmful. Each turn, they have 40% chance to occur and a random anomaly among the {anomalies_number} existing will be selected.\nℹ️ See `{prefix}mafia anomalies` or `{prefix}mafia anomaly <anomaly>` for more information.",
                         ).format(prefix="[p]", anomalies_number=len(self.ANOMALIES)),
                         color=ANOMALIES_COLOR,
                     ),
@@ -1738,7 +1796,7 @@ class ExplainView(discord.ui.View):
                     discord.Embed(
                         title=_("**Achievements:**"),
                         description=_(
-                            "Achievements are special goals that players can achieve during the game. They can be general or specific to a role. They are global for all the servers. If you get an achievement, you will receive a DM when a game ends.\nℹ️ You can check them with `{prefix}mafia achievements`."
+                            "Achievements are special goals that players can achieve during the game. They can be general or specific to a role. They are global for all the servers. If you get an achievement, you will receive a DM when a game ends.\nℹ️ You can check them with `{prefix}mafia achievements`.",
                         ).format(prefix="[p]"),
                         color=ACHIEVEMENTS_COLOR,
                     ),
@@ -1751,10 +1809,11 @@ class ExplainView(discord.ui.View):
 
     def get_kwargs(
         self,
-        page: typing.Optional[str] = None,
+        page: str | None = None,
         files_key: str = "files",
-    ) -> typing.Dict[
-        str, typing.Union[typing.List[discord.Embed], typing.List[discord.File], "ExplainView"]
+    ) -> dict[
+        str,
+        typing.Union[list[discord.Embed], list[discord.File], "ExplainView"],
     ]:
         page = page or self.page
         return {
@@ -1807,7 +1866,8 @@ class ExplainView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in [self.ctx.author.id] + list(self.ctx.bot.owner_ids):
             await interaction.response.send_message(
-                _("You are not allowed to use this interaction."), ephemeral=True
+                _("You are not allowed to use this interaction."),
+                ephemeral=True,
             )
             return False
         return True
@@ -1820,7 +1880,9 @@ class ExplainView(discord.ui.View):
 
     @discord.ui.select(min_values=1, max_values=1, placeholder="Select a page.")
     async def select_page(
-        self, interaction: discord.Interaction, select: discord.ui.Select
+        self,
+        interaction: discord.Interaction,
+        select: discord.ui.Select,
     ) -> None:
         await interaction.response.defer()
         self.page = select.values[0]
@@ -1828,7 +1890,9 @@ class ExplainView(discord.ui.View):
 
     @discord.ui.button(emoji="ℹ️", label="More Information", style=discord.ButtonStyle.secondary)
     async def execute_command(
-        self, interaction: discord.Interaction, button: discord.ui.Button
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
     ) -> None:
         await interaction.response.defer()
         command = self.pages[self.page]["command"]
@@ -1866,7 +1930,7 @@ class PollView(JoinGameView):
         self.threshold: int = threshold
 
         self.host: discord.Member = None
-        self.players: typing.List[discord.Member] = []
+        self.players: list[discord.Member] = []
         self._message: discord.Message = None
 
         for item in self.children:
@@ -1885,7 +1949,7 @@ class PollView(JoinGameView):
         embed: discord.Embed = discord.Embed(
             title=_("Poll to start a Mafia game!"),
             description=_(
-                "Click the button below to join the poll. You have to be **at least {threshold} players** to actually start the game."
+                "Click the button below to join the poll. You have to be **at least {threshold} players** to actually start the game.",
             ).format(threshold=self.threshold),
             color=await self.ctx.embed_color(),
             timestamp=ctx.message.created_at,
@@ -1919,7 +1983,7 @@ class PollView(JoinGameView):
         ):
             await interaction.response.send_message(
                 _(
-                    "You aren't allowed to join a Mafia game in this server because you have a blacklisted role!"
+                    "You aren't allowed to join a Mafia game in this server because you have a blacklisted role!",
                 ),
                 ephemeral=True,
             )
@@ -1929,12 +1993,11 @@ class PollView(JoinGameView):
         ) is not None:
             await interaction.response.send_message(
                 _(
-                    "You are **temporarily banned for {duration}** from joining Mafia games in this server!"
+                    "You are **temporarily banned for {duration}** from joining Mafia games in this server!",
                 ).format(
                     duration=humanize_timedelta(
-                        timedelta=temp_banned_until
-                        - datetime.datetime.now(tz=datetime.timezone.utc)
-                    )
+                        timedelta=temp_banned_until - datetime.datetime.now(tz=datetime.UTC),
+                    ),
                 ),
                 ephemeral=True,
             )
@@ -1945,7 +2008,8 @@ class PollView(JoinGameView):
             if game.get_player(interaction.user) is not None
         ):
             await interaction.response.send_message(
-                _("You are already in a game of Mafia in another server!"), ephemeral=True
+                _("You are already in a game of Mafia in another server!"),
+                ephemeral=True,
             )
             return
         if interaction.user not in self.players:
@@ -1955,7 +2019,7 @@ class PollView(JoinGameView):
             self.players.remove(interaction.user)
             await interaction.response.send_message(_("You have left the poll!"), ephemeral=True)
         self.view_players.label = _("View Players ({len_players})").format(
-            len_players=len(self.players)
+            len_players=len(self.players),
         )
         try:
             await self._message.edit(view=self)

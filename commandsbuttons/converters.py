@@ -1,9 +1,9 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import re
+
+import discord
+
+from redbot.core import commands
+from redbot.core.i18n import Translator
 
 try:
     from emoji import EMOJI_DATA  # emoji>=2.0.0
@@ -15,8 +15,10 @@ _: Translator = Translator("CommandsButtons", __file__)
 
 class Emoji(commands.EmojiConverter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[str, discord.Emoji]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> str | discord.Emoji:
         # argument = argument.strip("\N{VARIATION SELECTOR-16}")
         if argument in EMOJI_DATA:
             return argument
@@ -54,16 +56,18 @@ class Emoji(commands.EmojiConverter):
 
 class EmojiCommandConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Tuple[discord.Role, typing.Union[discord.PartialEmoji, str]]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> tuple[discord.Role, discord.PartialEmoji | str]:
         arg_split = re.split(r"[;,|\-]", argument)
         try:
             emoji, command = arg_split
         except ValueError:
             raise commands.BadArgument(
                 _(
-                    "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`."
-                )
+                    "Emoji Role must be an emoji followed by a role separated by either `;`, `,`, `|`, or `-`.",
+                ),
             )
         emoji = await Emoji().convert(ctx, emoji.strip())
         return emoji, command

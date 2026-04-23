@@ -1,13 +1,12 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
-import asyncio
+import typing
 from dataclasses import dataclass
 
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
 from redbot.core.commands.converter import parse_timedelta
+from redbot.core.i18n import Translator
 from redbot.core.utils.predicates import MessagePredicate
 
 _: Translator = Translator("SimpleSanction", __file__)
@@ -21,16 +20,16 @@ class Action:
     label: str
     emoji: str
 
-    cog_required: typing.Optional[str]
+    cog_required: str | None
     command: str
-    warn_system_command: typing.Optional[str]
+    warn_system_command: str | None
 
-    duration_ask_message: typing.Optional[str]
-    reason_ask_message: typing.Optional[str]
-    confirmation_ask_message: typing.Optional[str]
-    finish_message: typing.Optional[str]
+    duration_ask_message: str | None
+    reason_ask_message: str | None
+    confirmation_ask_message: str | None
+    finish_message: str | None
 
-    def to_json(self) -> typing.Dict[str, typing.Any]:
+    def to_json(self) -> dict[str, typing.Any]:
         return {
             v: getattr(self, v)
             for v in dir(self)
@@ -40,15 +39,15 @@ class Action:
     async def process(
         self,
         ctx: commands.Context,
-        interaction: typing.Optional[discord.Interaction],
+        interaction: discord.Interaction | None,
         member: discord.Member,
-        duration: typing.Optional[str] = None,
-        reason: typing.Optional[str] = "The reason was not given.",
-        finish_message_enabled: typing.Optional[bool] = True,
-        reason_required: typing.Optional[bool] = True,
-        confirmation: typing.Optional[bool] = False,
-        show_author: typing.Optional[bool] = True,
-        fake_action: typing.Optional[bool] = False,
+        duration: str | None = None,
+        reason: str | None = "The reason was not given.",
+        finish_message_enabled: bool | None = True,
+        reason_required: bool | None = True,
+        confirmation: bool | None = False,
+        show_author: bool | None = True,
+        fake_action: bool | None = False,
     ) -> bool:
         if (
             (await self.cog.config.guild(ctx.guild).use_warn_system())
@@ -63,12 +62,12 @@ class Action:
                     await interaction.response.defer()
                 await ctx.send(
                     _(
-                        "The cog `{cog_required}` is not loaded. Please load it, with the command `{prefix}load {cog_required_lowered}`."
+                        "The cog `{cog_required}` is not loaded. Please load it, with the command `{prefix}load {cog_required_lowered}`.",
                     ).format(
                         prefix=ctx.prefix,
                         cog_required=self.cog_required,
                         cog_required_lowered=self.cog_required.lower(),
-                    )
+                    ),
                 )
                 return False
 
@@ -90,13 +89,14 @@ class Action:
                 )
             if extra_params_inputs:
                 modal = discord.ui.Modal(
-                    title=f"{self.emoji} {self.label}", custom_id="SimpleSanction"
+                    title=f"{self.emoji} {self.label}",
+                    custom_id="SimpleSanction",
                 )
                 modal.on_submit = lambda modal_interaction: modal_interaction.response.defer()
                 [modal.add_item(text_input) for text_input in extra_params_inputs.values()]
                 await interaction.response.send_modal(modal)
                 if await modal.wait():
-                    return  # timeout
+                    return None  # timeout
                 if duration is None and self.duration_ask_message is not None:
                     duration = extra_params_inputs["duration"].value
                 if reason is None and self.reason_ask_message is not None:
@@ -111,7 +111,7 @@ class Action:
                         duration=str(parse_timedelta(duration)) if duration is not None else None,
                         reason=reason,
                         channel=ctx.channel,
-                    )
+                    ),
                 )
                 try:
                     pred = MessagePredicate.same_context(ctx)
@@ -119,11 +119,11 @@ class Action:
                     await CogsUtils.delete_message(duration_message)
                     await CogsUtils.delete_message(msg)
                     if msg.content.lower() == "cancel":
-                        return
+                        return None
                     duration = msg.content
-                except asyncio.TimeoutError:
+                except TimeoutError:
                     await ctx.send(_("Timed out, please try again."))
-                    return
+                    return None
             if reason is None:
                 if self.reason_ask_message is not None and reason_required:
                     reason_message = await ctx.send(
@@ -134,7 +134,7 @@ class Action:
                             ),
                             reason=reason,
                             channel=ctx.channel,
-                        )
+                        ),
                     )
                     try:
                         pred = MessagePredicate.same_context(ctx)
@@ -142,11 +142,11 @@ class Action:
                         await CogsUtils.delete_message(reason_message)
                         await CogsUtils.delete_message(msg)
                         if msg.content.lower() == "cancel":
-                            return
+                            return None
                         reason = _("The reason was not given.") if reason == "not" else msg.content
-                    except asyncio.TimeoutError:
+                    except TimeoutError:
                         await ctx.send(_("Timed out, please try again."))
-                        return
+                        return None
                 else:
                     reason = _("The reason was not given.")
 
@@ -165,13 +165,13 @@ class Action:
             and not ctx.assume_yes
         ):
             await CogsUtils.delete_message(ctx.message)
-            return
+            return None
 
         if finish_message_enabled and self.finish_message is not None:
             embed: discord.Embed = discord.Embed()
             embed.title = f"Sanction Member - {self.emoji} {self.label}"
             embed.description = _(
-                "This cog allows you to easily sanction a server member.\nMember mention: {member.mention} - Member ID: {member.id}"
+                "This cog allows you to easily sanction a server member.\nMember mention: {member.mention} - Member ID: {member.id}",
             ).format(member=member)
             embed.set_thumbnail(url=await self.cog.config.guild(ctx.guild).thumbnail())
             embed.color = await ctx.embed_color()
@@ -186,7 +186,7 @@ class Action:
                     icon_url=ctx.author.display_avatar,
                 )
             embed.add_field(
-                name="\u200B",
+                name="\u200b",
                 value=(
                     _(self.finish_message).format(
                         member=member,
@@ -194,9 +194,7 @@ class Action:
                         reason=reason,
                         channel=ctx.channel,
                     )
-                    + _(
-                        "\n*The command may have failed. If so, an error will be displayed below.*"
-                    )
+                    + _("\n*The command may have failed. If so, an error will be displayed below.*")
                 ),
                 inline=False,
             )
@@ -236,11 +234,11 @@ class Action:
             )
             if not context.valid:
                 raise commands.UserFeedbackCheckFailure(_("This command doesn't exist."))
-            elif not await discord.utils.async_all(
-                [check(context) for check in context.command.checks]
+            if not await discord.utils.async_all(
+                [check(context) for check in context.command.checks],
             ):
                 raise commands.UserFeedbackCheckFailure(
-                    _("You can't execute this command, in this context.")
+                    _("You can't execute this command, in this context."),
                 )
 
         if finish_message is not None:
@@ -248,3 +246,4 @@ class Action:
                 await finish_message.add_reaction("✅")
             except discord.HTTPException:
                 pass
+        return None

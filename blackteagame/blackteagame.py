@@ -1,14 +1,13 @@
-﻿from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import random
 
+import discord
+
+from AAA3A_utils import Cog
+from redbot.core import commands
+from redbot.core.bot import Red
 from redbot.core.data_manager import bundled_data_path
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.menus import start_adding_reactions
 
 from .view import JoinGameView, Lang
@@ -19,7 +18,7 @@ from .view import JoinGameView, Lang
 _: Translator = Translator("BlackTeaGame", __file__)
 
 
-DIACRITIC_SYMBOLS: typing.Dict[str, str] = {
+DIACRITIC_SYMBOLS: dict[str, str] = {
     "a": "àáâãäå",
     "c": "ç",
     "e": "èéêë",
@@ -37,14 +36,14 @@ class BlackTeaGame(Cog):
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.dictionaries: typing.Dict[str, typing.List[str]] = {}
+        self.dictionaries: dict[str, list[str]] = {}
         self.data_path = None
 
     async def cog_load(self) -> None:
         await super().cog_load()
         self.data_path = bundled_data_path(self)
 
-    def _load_dictionary(self, lang: str) -> typing.List[str]:
+    def _load_dictionary(self, lang: str) -> list[str]:
         """Load a dictionary on demand and cache it."""
         if lang not in self.dictionaries:
             with (self.data_path / f"{lang}.txt").open(mode="rt", encoding="utf-8") as file:
@@ -56,7 +55,7 @@ class BlackTeaGame(Cog):
         self.dictionaries.pop(lang, None)
 
     @property
-    def games(self) -> typing.Dict[discord.Message, JoinGameView]:
+    def games(self) -> dict[discord.Message, JoinGameView]:
         return self.views
 
     @commands.guild_only()
@@ -76,10 +75,10 @@ class BlackTeaGame(Cog):
         await join_view.wait()
         if join_view.cancelled:
             return
-        players = {player: base_hp for player in join_view.players}
+        players = dict.fromkeys(join_view.players, base_hp)
         dictionary = self._load_dictionary(lang.value)
 
-        used_words: typing.List[str] = []
+        used_words: list[str] = []
         player = None
         while len(players) > 1:
             player = random.choice([p for p in players if p != player])
@@ -90,8 +89,9 @@ class BlackTeaGame(Cog):
             letters = random_word[i : i + 3].upper()
             message = await ctx.send(
                 _("☕ {player.mention}, type a word containing: **{letters}**").format(
-                    player=player, letters=letters
-                )
+                    player=player,
+                    letters=letters,
+                ),
             )
 
             async def task() -> None:
@@ -106,8 +106,8 @@ class BlackTeaGame(Cog):
                 def check(m: discord.Message) -> bool:
                     word = m.content.lower().translate(
                         str.maketrans(
-                            {v: key for key, value in DIACRITIC_SYMBOLS.items() for v in value}
-                        )
+                            {v: key for key, value in DIACRITIC_SYMBOLS.items() for v in value},
+                        ),
                     )
                     if (
                         m.author == player
@@ -126,11 +126,11 @@ class BlackTeaGame(Cog):
                     check=check,
                 )
                 start_adding_reactions(m, ("✅",))
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 start_adding_reactions(message, ("💥",))
                 players[player] -= 1
                 await ctx.send(
-                    _("💥 Time's up: -1 HP (Left: **{left}** HP)").format(left=players[player])
+                    _("💥 Time's up: -1 HP (Left: **{left}** HP)").format(left=players[player]),
                 )
                 if players[player] == 0:
                     del players[player]
@@ -141,7 +141,7 @@ class BlackTeaGame(Cog):
         winner = list(players)[0]
         embed: discord.Embed = discord.Embed(
             title=_("Congratulations **{winner.display_name}**! You won the game!").format(
-                winner=winner
+                winner=winner,
             ),
             color=await ctx.embed_color(),
             timestamp=ctx.message.created_at,

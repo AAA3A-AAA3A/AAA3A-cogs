@@ -1,16 +1,15 @@
-from AAA3A_utils import Cog, Menu  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import io
 import json
 import random
 
 import aiohttp
+import discord
+
+from AAA3A_utils import Cog, Menu
+from redbot.core import commands
+from redbot.core.bot import Red
 from redbot.core.data_manager import bundled_data_path
+from redbot.core.i18n import Translator, cog_i18n
 
 # Credits:
 # General repo credits.
@@ -20,15 +19,15 @@ _: Translator = Translator("EmojiMixup", __file__)
 
 class UnicodeEmojiConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[str, discord.Emoji]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> str | discord.Emoji:
         cog = ctx.bot.get_cog("EmojiMixup")
         if argument == "random":
             return random.choice(cog.emojis)
         if argument not in cog.emojis:
-            raise commands.BadArgument(
-                _("That's not a valid Unicode emoji or it isn't supported!")
-            )
+            raise commands.BadArgument(_("That's not a valid Unicode emoji or it isn't supported!"))
         return argument
 
 
@@ -38,9 +37,9 @@ class EmojiMixup(Cog):
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot)
-        self._session: typing.Optional[aiohttp.ClientSession] = None
-        self.emojis: typing.List[str] = []
-        self.mixup_emojis: typing.Dict[typing.Tuple[str, str], str] = {}
+        self._session: aiohttp.ClientSession | None = None
+        self.emojis: list[str] = []
+        self.mixup_emojis: dict[tuple[str, str], str] = {}
 
     async def cog_load(self) -> None:
         await super().cog_load()
@@ -55,7 +54,7 @@ class EmojiMixup(Cog):
             await self._session.close()
         await super().cog_unload()
 
-    def get_emoji_codepoints(self, emoji: str) -> typing.List[str]:
+    def get_emoji_codepoints(self, emoji: str) -> list[str]:
         return [hex(ord(char))[2:].lower() for char in emoji]
 
     def get_emoji_url(self, emoji: str) -> str:
@@ -100,7 +99,7 @@ class EmojiMixup(Cog):
             title=f"{emoji1} + {emoji2} =",
             color=await ctx.embed_color(),
         )
-        embed.set_image(url=f"attachment://emoji.png")
+        embed.set_image(url="attachment://emoji.png")
         embed.set_footer(text=_("Provided by Emoji Kitchen from Google."))
         file: discord.File = await self.get_image(self.get_mixup_emoji_url(emoji1, emoji2))
         await Menu(pages=[{"embed": embed, "file": file}]).start(ctx)

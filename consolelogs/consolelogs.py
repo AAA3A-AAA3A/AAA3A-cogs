@@ -1,12 +1,12 @@
-﻿from AAA3A_utils import Cog, CogsUtils, Menu, Loop  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
+import typing
 
+import discord
+
+from AAA3A_utils import Cog, CogsUtils, Loop, Menu
 from redbot import __version__ as red_version
-from redbot.core import data_manager
+from redbot.core import Config, commands, data_manager
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import box, humanize_list, pagify
 
 try:
@@ -41,7 +41,7 @@ _: Translator = Translator("ConsoleLogs", __file__)
 
 LATEST_LOG_RE = re.compile(r"latest(?:-part(?P<part>\d+))?\.log")
 CONSOLE_LOG_RE = re.compile(
-    r"^\[(?P<time_str>.*?)\] \[(?P<level>.*?)\] (?P<logger_name>.*?): (?P<message>.*)"
+    r"^\[(?P<time_str>.*?)\] \[(?P<level>.*?)\] (?P<logger_name>.*?): (?P<message>.*)",
 )
 
 IGNORED_ERRORS = (
@@ -74,7 +74,7 @@ class ConsoleLog:
     level: typing.Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NODE"]
     logger_name: str
     message: str
-    exc_info: typing.Optional[str] = None
+    exc_info: str | None = None
     display_without_informations: bool = False
 
     @property
@@ -104,7 +104,7 @@ class ConsoleLog:
 class ConsoleLogs(DashboardIntegration, Cog):
     """A cog to display the console logs, with buttons and filter options, and to send commands errors in configured channels!"""
 
-    __authors__: typing.List[str] = ["AAA3A", "Tobotimus"]
+    __authors__: list[str] = ["AAA3A", "Tobotimus"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -136,10 +136,8 @@ class ConsoleLogs(DashboardIntegration, Cog):
         await self.bot.wait_until_red_ready()
         self.RED_INTRO: str = INTRO
         guilds = len(self.bot.guilds)
-        users = len(set(list(self.bot.get_all_members())))
-        prefixes = getattr(self.bot._cli_flags, "prefix", None) or (
-            await self.bot._config.prefix()
-        )
+        users = len(set(self.bot.get_all_members()))
+        prefixes = getattr(self.bot._cli_flags, "prefix", None) or (await self.bot._config.prefix())
         lang = await self.bot._config.locale()
         dpy_version = discord.__version__
         table_general_info = Table(show_edge=False, show_header=False, box=rich_box.MINIMAL)
@@ -173,7 +171,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
         )
 
         self._last_console_log_sent_timestamp: int = int(
-            datetime.datetime.now(tz=datetime.timezone.utc).timestamp()
+            datetime.datetime.now(tz=datetime.UTC).timestamp(),
         )
         self.loops.append(
             Loop(
@@ -181,11 +179,11 @@ class ConsoleLogs(DashboardIntegration, Cog):
                 name="Check Console Logs",
                 function=self.check_console_logs,
                 minutes=1,
-            )
+            ),
         )
 
     @property
-    def console_logs(self) -> typing.List[ConsoleLog]:
+    def console_logs(self) -> list[ConsoleLog]:
         # Thanks to Tobotimus for this part!
         console_logs_files = sorted(
             [
@@ -231,7 +229,9 @@ class ConsoleLogs(DashboardIntegration, Cog):
 
         # Add Red INTRO.
         if red_ready_console_log := discord.utils.get(
-            console_logs, logger_name="red", message="Connected to Discord. Getting ready..."
+            console_logs,
+            logger_name="red",
+            message="Connected to Discord. Getting ready...",
         ):
             console_logs.insert(
                 console_logs.index(red_ready_console_log) + 1,
@@ -257,12 +257,11 @@ class ConsoleLogs(DashboardIntegration, Cog):
     async def send_console_logs(
         self,
         ctx: commands.Context,
-        level: typing.Optional[
-            typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node"]
-        ] = None,
-        ids: typing.Optional[typing.List[int]] = None,
-        logger_name: typing.Optional[str] = None,
-        view: typing.Optional[int] = -1,
+        level: typing.Literal["critical", "error", "warning", "info", "debug", "trace", "node"]
+        | None = None,
+        ids: list[int] | None = None,
+        logger_name: str | None = None,
+        view: int | None = -1,
         lines_break: int = 2,
     ) -> None:
         console_logs = self.console_logs
@@ -307,9 +306,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
             *[
                 f"{stat[1]} {stat[0]}"
                 for stat in sorted(
-                    Counter(
-                        [console_log.level for console_log in console_logs_to_display]
-                    ).items(),
+                    Counter([console_log.level for console_log in console_logs_to_display]).items(),
                     key=lambda x: levels.index(x[0]) if x[0] in levels else 10,
                 )
             ],
@@ -326,7 +323,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
         if view is not None:
             try:
                 view = console_logs_to_display_str.index(
-                    console_logs_to_display_str[view]
+                    console_logs_to_display_str[view],
                 )  # Handle negative index.
             except IndexError:
                 view = len(console_logs_to_display_str)
@@ -340,7 +337,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
                 pagify(
                     ("\n" * lines_break).join(console_logs_to_display_str),
                     shorten_by=12 + len(prefix),
-                )
+                ),
             )
             page_index = [
                 i
@@ -367,27 +364,26 @@ class ConsoleLogs(DashboardIntegration, Cog):
     async def consolelogs(
         self,
         ctx: commands.Context,
-        lines_break: typing.Optional[commands.Range[int, 1, 5]] = 2,
-        level: typing.Optional[
-            typing.Literal[
-                "critical",
-                "error",
-                "warning",
-                "info",
-                "debug",
-                "trace",
-                "node",
-                "criticals",
-                "errors",
-                "warnings",
-                "infos",
-                "debugs",
-                "traces",
-                "nodes",
-            ]
-        ] = None,
+        lines_break: commands.Range[int, 1, 5] | None = 2,
+        level: typing.Literal[
+            "critical",
+            "error",
+            "warning",
+            "info",
+            "debug",
+            "trace",
+            "node",
+            "criticals",
+            "errors",
+            "warnings",
+            "infos",
+            "debugs",
+            "traces",
+            "nodes",
+        ]
+        | None = None,
         ids: commands.Greedy[IdConverter] = None,
-        logger_name: typing.Optional[str] = None,
+        logger_name: str | None = None,
     ) -> None:
         """View a console log, for a provided level/logger name."""
         if ids is not None and len(ids) == 1:
@@ -404,32 +400,32 @@ class ConsoleLogs(DashboardIntegration, Cog):
             ids=ids,
             logger_name=logger_name,
         )
+        return None
 
     @consolelogs.command()
     async def scroll(
         self,
         ctx: commands.Context,
-        lines_break: typing.Optional[commands.Range[int, 1, 5]] = 2,
-        level: typing.Optional[
-            typing.Literal[
-                "critical",
-                "error",
-                "warning",
-                "info",
-                "debug",
-                "trace",
-                "node",
-                "criticals",
-                "errors",
-                "warnings",
-                "infos",
-                "debugs",
-                "traces",
-                "nodes",
-            ]
-        ] = None,
+        lines_break: commands.Range[int, 1, 5] | None = 2,
+        level: typing.Literal[
+            "critical",
+            "error",
+            "warning",
+            "info",
+            "debug",
+            "trace",
+            "node",
+            "criticals",
+            "errors",
+            "warnings",
+            "infos",
+            "debugs",
+            "traces",
+            "nodes",
+        ]
+        | None = None,
         ids: commands.Greedy[IdConverter] = None,
-        logger_name: typing.Optional[str] = None,
+        logger_name: str | None = None,
     ) -> None:
         """Scroll the console logs, for all levels/loggers or provided level/logger name."""
         await self.send_console_logs(
@@ -445,27 +441,26 @@ class ConsoleLogs(DashboardIntegration, Cog):
     async def view(
         self,
         ctx: commands.Context,
-        index: typing.Optional[int] = -1,
-        level: typing.Optional[
-            typing.Literal[
-                "critical",
-                "error",
-                "warning",
-                "info",
-                "debug",
-                "trace",
-                "node",
-                "criticals",
-                "errors",
-                "warnings",
-                "infos",
-                "debugs",
-                "traces",
-                "nodes",
-            ]
-        ] = None,
+        index: int | None = -1,
+        level: typing.Literal[
+            "critical",
+            "error",
+            "warning",
+            "info",
+            "debug",
+            "trace",
+            "node",
+            "criticals",
+            "errors",
+            "warnings",
+            "infos",
+            "debugs",
+            "traces",
+            "nodes",
+        ]
+        | None = None,
         ids: commands.Greedy[IdConverter] = None,
-        logger_name: typing.Optional[str] = None,
+        logger_name: str | None = None,
     ) -> None:
         """View the console logs one by one, for all levels/loggers or provided level/logger name."""
         await self.send_console_logs(
@@ -501,13 +496,13 @@ class ConsoleLogs(DashboardIntegration, Cog):
     async def addchannel(
         self,
         ctx: commands.Context,
-        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
-        global_errors: typing.Optional[bool] = True,
-        prefixed_commands_errors: typing.Optional[bool] = True,
-        slash_commands_errors: typing.Optional[bool] = True,
-        dpy_ignored_exceptions: typing.Optional[bool] = False,
-        full_console: typing.Optional[bool] = False,
-        guild_invite: typing.Optional[bool] = True,
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+        global_errors: bool | None = True,
+        prefixed_commands_errors: bool | None = True,
+        slash_commands_errors: bool | None = True,
+        dpy_ignored_exceptions: bool | None = False,
+        full_console: bool | None = False,
+        guild_invite: bool | None = True,
         *,
         ignored_cogs: commands.Greedy[commands.CogConverter] = None,
     ) -> None:
@@ -529,10 +524,10 @@ class ConsoleLogs(DashboardIntegration, Cog):
                 channel_permissions.view_channel,
                 channel_permissions.send_messages,
                 channel_permissions.embed_links,
-            ]
+            ],
         ):
             raise commands.UserFeedbackCheckFailure(
-                _("I don't have the permissions to send embeds in this channel.")
+                _("I don't have the permissions to send embeds in this channel."),
             )
         await self.config.channel(channel).set(
             {
@@ -544,11 +539,9 @@ class ConsoleLogs(DashboardIntegration, Cog):
                 "full_console": full_console,
                 "guild_invite": guild_invite,
                 "ignored_cogs": (
-                    [cog.qualified_name for cog in ignored_cogs]
-                    if ignored_cogs is not None
-                    else []
+                    [cog.qualified_name for cog in ignored_cogs] if ignored_cogs is not None else []
                 ),
-            }
+            },
         )
         await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))
 
@@ -556,12 +549,12 @@ class ConsoleLogs(DashboardIntegration, Cog):
     async def removechannel(
         self,
         ctx: commands.Context,
-        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Thread],
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
     ) -> None:
         """Disable errors logging in a channel."""
         if not await self.config.channel(channel).enabled():
             raise commands.UserFeedbackCheckFailure(
-                _("Errors logging isn't enabled in this channel.")
+                _("Errors logging isn't enabled in this channel."),
             )
         await self.config.channel(channel).clear()
         await ctx.send(_("Errors logging disabled in {channel.mention}.").format(channel=channel))
@@ -574,7 +567,10 @@ class ConsoleLogs(DashboardIntegration, Cog):
 
     @commands.Cog.listener()
     async def on_command_error(
-        self, ctx: commands.Context, error: commands.CommandError, unhandled_by_cog: bool = False
+        self,
+        ctx: commands.Context,
+        error: commands.CommandError,
+        unhandled_by_cog: bool = False,
     ) -> None:
         if await self.bot.cog_disabled_in_guild(cog=self, guild=ctx.guild):
             return
@@ -627,7 +623,8 @@ class ConsoleLogs(DashboardIntegration, Cog):
             description=f">>> {com_str}",
         )
         embed.add_field(
-            name="Invoker:", value=f"{ctx.author.mention}\n{ctx.author} ({ctx.author.id})"
+            name="Invoker:",
+            value=f"{ctx.author.mention}\n{ctx.author} ({ctx.author.id})",
         )
         embed.add_field(name="Message:", value=f"[Jump to message.]({ctx.message.jump_url})")
         embed.add_field(
@@ -658,7 +655,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
                 else:
                     channels_and_perms = zip(
                         ctx.guild.text_channels,
-                        map(lambda x: x.permissions_for(ctx.guild.me), ctx.guild.text_channels),
+                        (x.permissions_for(ctx.guild.me) for x in ctx.guild.text_channels),
                     )
                     channel = next(
                         (
@@ -674,7 +671,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
                         except discord.HTTPException:
                             pass
         traceback_error = "".join(
-            traceback.format_exception(type(error), error, error.__traceback__)
+            traceback.format_exception(type(error), error, error.__traceback__),
         )
         _traceback_error = traceback_error.split("\n")
         _traceback_error[0] = _traceback_error[0] + (
@@ -698,13 +695,15 @@ class ConsoleLogs(DashboardIntegration, Cog):
                     style=discord.ButtonStyle.url,
                     label="Jump to Message",
                     url=ctx.message.jump_url,
-                )
+                ),
             )
             if settings["guild_invite"] and guild_invite is not None:
                 view.add_item(
                     discord.ui.Button(
-                        style=discord.ButtonStyle.url, label="Guild Invite", url=guild_invite.url
-                    )
+                        style=discord.ButtonStyle.url,
+                        label="Guild Invite",
+                        url=guild_invite.url,
+                    ),
                 )
             await channel.send(embed=embed, view=view)
             for page in pages:
@@ -722,10 +721,8 @@ class ConsoleLogs(DashboardIntegration, Cog):
         if not destinations:
             return
         console_logs = self.console_logs
-        console_logs_to_send: typing.List[
-            typing.Tuple[typing.Optional[discord.Embed], typing.List[str]]
-        ] = []
-        pages_to_send: typing.List[str] = []
+        console_logs_to_send: list[tuple[discord.Embed | None, list[str]]] = []
+        pages_to_send: list[str] = []
         for console_log in console_logs:
             if self._last_console_log_sent_timestamp >= console_log.time_timestamp:
                 continue
@@ -746,10 +743,10 @@ class ConsoleLogs(DashboardIntegration, Cog):
                                     pagify(
                                         "\n\n".join(pages_to_send),
                                         shorten_by=10,
-                                    )
+                                    ),
                                 )
                             ],
-                        )
+                        ),
                     )
                     pages_to_send = []
 
@@ -764,7 +761,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
                         pagify(
                             console_log.__str__(with_ansi=False, with_extra_break_line=True),
                             shorten_by=10,
-                        )
+                        ),
                     )
                 ]
                 console_logs_to_send.append((embed, pages))
@@ -779,18 +776,21 @@ class ConsoleLogs(DashboardIntegration, Cog):
                             pagify(
                                 "\n\n".join(pages_to_send),
                                 shorten_by=10,
-                            )
+                            ),
                         )
                     ],
-                )
+                ),
             )
             pages_to_send = []
 
         for channel, settings in destinations.items():
             for embed, pages in console_logs_to_send:
-                if embed is not None and not settings["dpy_ignored_exceptions"]:
-                    continue
-                elif embed is None and not settings["full_console"]:
+                if (
+                    embed is not None
+                    and not settings["dpy_ignored_exceptions"]
+                    or embed is None
+                    and not settings["full_console"]
+                ):
                     continue
                 if embed is not None:
                     await channel.send(embed=embed)

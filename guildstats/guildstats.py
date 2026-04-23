@@ -1,24 +1,26 @@
-from AAA3A_utils import Cog, Loop, CogsUtils, Menu  # isort:skip
-from redbot.core import commands, Config  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 import functools
 import io
+import typing
 from collections import Counter
 from copy import deepcopy
-from pathlib import Path
 
+import discord
 import plotly.graph_objects as go
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageDraw, ImageFont
+
+from AAA3A_utils import Cog, CogsUtils, Loop, Menu
+from redbot.core import Config, commands
+from redbot.core.bot import Red
 from redbot.core.data_manager import bundled_data_path
+from redbot.core.i18n import Translator, cog_i18n
 
 from .view import GuildStatsView
+
+if typing.TYPE_CHECKING:
+    from pathlib import Path
 
 # Credits:
 # General repo credits.
@@ -28,15 +30,17 @@ _: Translator = Translator("GuildStats", __file__)
 
 class ObjectConverter(commands.Converter):
     async def convert(
-        self, ctx: commands.Context, argument: str
-    ) -> typing.Union[
-        discord.Member,
-        discord.Role,
-        typing.Literal["messages", "voice", "activities"],
-        discord.CategoryChannel,
-        discord.TextChannel,
-        discord.VoiceChannel,
-    ]:
+        self,
+        ctx: commands.Context,
+        argument: str,
+    ) -> (
+        discord.Member
+        | discord.Role
+        | typing.Literal["messages", "voice", "activities"]
+        | discord.CategoryChannel
+        | discord.TextChannel
+        | discord.VoiceChannel
+    ):
         if ctx.command.name == "graphic" and argument.lower() in {
             "messages",
             "voice",
@@ -50,22 +54,19 @@ class ObjectConverter(commands.Converter):
                 return await commands.RoleConverter().convert(ctx, argument=argument)
             except commands.BadArgument:
                 try:
-                    return await commands.CategoryChannelConverter().convert(
-                        ctx, argument=argument
-                    )
+                    return await commands.CategoryChannelConverter().convert(ctx, argument=argument)
                 except commands.BadArgument:
                     try:
-                        return await commands.TextChannelConverter().convert(
-                            ctx, argument=argument
-                        )
+                        return await commands.TextChannelConverter().convert(ctx, argument=argument)
                     except commands.BadArgument:
                         try:
                             return await commands.VoiceChannelConverter().convert(
-                                ctx, argument=argument
+                                ctx,
+                                argument=argument,
                             )
                         except commands.BadArgument:
                             raise commands.BadArgument(
-                                _("No member/category/text channel/voice channel found.")
+                                _("No member/category/text channel/voice channel found."),
                             )
 
 
@@ -110,26 +111,26 @@ class GuildStats(Cog):
             total_activities_times={},
         )
 
-        self.cache: typing.Dict[
-            typing.Dict[
+        self.cache: dict[
+            dict[
                 discord.Guild,
                 discord.abc.GuildChannel,
-                typing.Dict[datetime.datetime, discord.Member],
+                dict[datetime.datetime, discord.Member],
             ]
         ] = {}
 
         self.font_path: Path = bundled_data_path(self) / "arial.ttf"
         self.bold_font_path: Path = bundled_data_path(self) / "arial_bold.ttf"
-        self.font: typing.Dict[int, ImageFont.ImageFont] = {
+        self.font: dict[int, ImageFont.ImageFont] = {
             size: ImageFont.truetype(str(self.font_path), size=size)
             for size in {28, 30, 36, 40, 54}
         }
-        self.bold_font: typing.Dict[int, ImageFont.ImageFont] = {
+        self.bold_font: dict[int, ImageFont.ImageFont] = {
             size: ImageFont.truetype(str(self.bold_font_path), size=size)
             for size in {30, 36, 40, 50, 60}
         }
         self.font_to_remove_unprintable_characters: TTFont = TTFont(self.font_path)
-        self.icons: typing.Dict[str, Path] = {
+        self.icons: dict[str, Path] = {
             name: (bundled_data_path(self) / f"{name}.png")
             for name in (
                 "trophy",
@@ -149,7 +150,7 @@ class GuildStats(Cog):
         await super().cog_load()
         if await self.config.first_loading_time() is None:
             await self.config.first_loading_time.set(
-                int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+                int(datetime.datetime.now(tz=datetime.UTC).timestamp()),
             )
         asyncio.create_task(self.load_data())
         self.loops.append(
@@ -158,7 +159,7 @@ class GuildStats(Cog):
                 name="Save GuildStats Data",
                 function=self.save_to_config,
                 minutes=1,
-            )
+            ),
         )
 
     async def cog_unload(self) -> None:
@@ -168,7 +169,7 @@ class GuildStats(Cog):
         await super().cog_unload()
 
     @commands.Cog.listener(name="on_guild_join")
-    async def load_data(self, guild: typing.Optional[discord.Guild] = None) -> None:
+    async def load_data(self, guild: discord.Guild | None = None) -> None:
         if guild is not None:
             guilds = [guild]
         else:
@@ -179,8 +180,8 @@ class GuildStats(Cog):
                 for member in channel.members:
 
                     class FakeVoiceState:
-                        def __init__(self, channel: typing.Optional[discord.VoiceChannel]):
-                            self.channel: typing.Optional[discord.VoiceChannel] = channel
+                        def __init__(self, channel: discord.VoiceChannel | None):
+                            self.channel: discord.VoiceChannel | None = channel
 
                     await self.on_voice_state_update(
                         member=member,
@@ -200,8 +201,8 @@ class GuildStats(Cog):
                         continue
 
                     class FakeVoiceState:
-                        def __init__(self, channel: typing.Optional[discord.VoiceChannel]):
-                            self.channel: typing.Optional[discord.VoiceChannel] = channel
+                        def __init__(self, channel: discord.VoiceChannel | None):
+                            self.channel: discord.VoiceChannel | None = channel
 
                     await self.on_voice_state_update(
                         member=member,
@@ -263,7 +264,7 @@ class GuildStats(Cog):
             global_data["ignored_users"].remove(user_id)
         await self.config.set(global_data)
 
-    async def red_get_data_for_user(self, *, user_id: int) -> typing.Dict[str, io.BytesIO]:
+    async def red_get_data_for_user(self, *, user_id: int) -> dict[str, io.BytesIO]:
         """Get all data about the user."""
         await self.save_to_config()  # To clean up the cache too.
         data = {
@@ -285,25 +286,25 @@ class GuildStats(Cog):
                     data[Config.CHANNEL][channel]["total_messages_members"] = {
                         str(user_id): channels_data[channel]["total_messages_members"][
                             str(user_id)
-                        ]
+                        ],
                     }
                 if str(user_id) in channels_data[channel]["messages"]:
                     if channel not in data[Config.CHANNEL]:
                         data[Config.CHANNEL][channel] = {}
                     data[Config.CHANNEL][channel]["messages"] = {
-                        str(user_id): channels_data[channel]["messages"][str(user_id)]
+                        str(user_id): channels_data[channel]["messages"][str(user_id)],
                     }
                 if str(user_id) in channels_data[channel]["total_voice_members"]:
                     if channel not in data[Config.CHANNEL]:
                         data[Config.CHANNEL][channel] = {}
                     data[Config.CHANNEL][channel]["total_voice_members"] = {
-                        str(user_id): channels_data[channel]["total_voice_members"][str(user_id)]
+                        str(user_id): channels_data[channel]["total_voice_members"][str(user_id)],
                     }
                 if str(user_id) in channels_data[channel]["voice"]:
                     if channel not in data[Config.CHANNEL]:
                         data[Config.CHANNEL][channel] = {}
                     data[Config.CHANNEL][channel]["voice"] = {
-                        str(user_id): channels_data[channel]["voice"][str(user_id)]
+                        str(user_id): channels_data[channel]["voice"][str(user_id)],
                     }
 
         # Members.
@@ -403,7 +404,7 @@ class GuildStats(Cog):
                         if str(member.id) not in channels_data[str(channel.id)]["messages"]:
                             channels_data[str(channel.id)]["messages"][str(member.id)] = []
                         channels_data[str(channel.id)]["messages"][str(member.id)].extend(
-                            [int(time.timestamp()) for time in times]
+                            [int(time.timestamp()) for time in times],
                         )
                     # Voice.
                     channels_data[str(channel.id)]["total_voice"] += data["total_voice"]
@@ -419,9 +420,9 @@ class GuildStats(Cog):
                             channels_data[str(channel.id)]["total_voice_members"][
                                 str(member.id)
                             ] = 0
-                        channels_data[str(channel.id)]["total_voice_members"][
-                            str(member.id)
-                        ] += count_voice
+                        channels_data[str(channel.id)]["total_voice_members"][str(member.id)] += (
+                            count_voice
+                        )
         member_group = self.config._get_base_group(self.config.MEMBER)
         async with member_group.all() as members_data:
             for guild in cache:
@@ -456,7 +457,7 @@ class GuildStats(Cog):
 
     async def cleanup(self, utc_now: datetime.datetime = None) -> None:
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.UTC)
         channel_group = self.config._get_base_group(self.config.CHANNEL)
         async with channel_group.all() as channels_data:
             for channel in channels_data:
@@ -469,9 +470,9 @@ class GuildStats(Cog):
                         ),
                         0,
                     )
-                    channels_data[channel]["messages"][member] = channels_data[channel][
-                        "messages"
-                    ][member][new_index:]
+                    channels_data[channel]["messages"][member] = channels_data[channel]["messages"][
+                        member
+                    ][new_index:]
                 for member in channels_data[channel]["voice"]:
                     new_index = next(
                         (
@@ -539,18 +540,18 @@ class GuildStats(Cog):
         self.cache[message.guild]["channels"][message.channel]["total_messages_members"][
             message.author
         ] += 1
-        if (
-            message.author
-            not in self.cache[message.guild]["channels"][message.channel]["messages"]
-        ):
+        if message.author not in self.cache[message.guild]["channels"][message.channel]["messages"]:
             self.cache[message.guild]["channels"][message.channel]["messages"][message.author] = []
         self.cache[message.guild]["channels"][message.channel]["messages"][message.author].append(
-            datetime.datetime.now(tz=datetime.timezone.utc)
+            datetime.datetime.now(tz=datetime.UTC),
         )
 
     @commands.Cog.listener()
     async def on_voice_state_update(
-        self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState
+        self,
+        member: discord.Member,
+        before: discord.VoiceState,
+        after: discord.VoiceState,
     ) -> None:
         if not isinstance(member, discord.Member):
             return
@@ -588,9 +589,9 @@ class GuildStats(Cog):
                     "voice": {},
                     "voice_cache": {},
                 }
-            self.cache[after.channel.guild]["channels"][after.channel]["voice_cache"][
-                member
-            ] = datetime.datetime.now(tz=datetime.timezone.utc)
+            self.cache[after.channel.guild]["channels"][after.channel]["voice_cache"][member] = (
+                datetime.datetime.now(tz=datetime.UTC)
+            )
         if before.channel is not None:
             if isinstance(after.channel, discord.StageChannel):
                 return
@@ -603,13 +604,13 @@ class GuildStats(Cog):
             ignored_users = await self.config.ignored_users()
             if member.id in ignored_users:
                 return
-            end_time = datetime.datetime.now(tz=datetime.timezone.utc)
+            end_time = datetime.datetime.now(tz=datetime.UTC)
             real_total_time = int((end_time - start_time).total_seconds())
             if round(real_total_time / 3600, 2) == 0:
                 return
-            self.cache[before.channel.guild]["channels"][before.channel][
-                "total_voice"
-            ] += real_total_time  # (min(members.values()) - start_time).total_seconds() if (members := {_member: _start_time for _member, _start_time in self.cache[before.channel.guild]["channels"][before.channel]["voice"].items() if _member != member}) and (min(members.values()) - start_time).total_seconds() >= 0 else real_total_time
+            self.cache[before.channel.guild]["channels"][before.channel]["total_voice"] += (
+                real_total_time  # (min(members.values()) - start_time).total_seconds() if (members := {_member: _start_time for _member, _start_time in self.cache[before.channel.guild]["channels"][before.channel]["voice"].items() if _member != member}) and (min(members.values()) - start_time).total_seconds() >= 0 else real_total_time
+            )
             if not member.bot:
                 self.cache[before.channel.guild]["channels"][before.channel][
                     "total_humans_voice"
@@ -624,21 +625,23 @@ class GuildStats(Cog):
                     "total_voice_members"
                 ]
             ):
-                self.cache[before.channel.guild]["channels"][before.channel][
-                    "total_voice_members"
-                ][member] = 0
+                self.cache[before.channel.guild]["channels"][before.channel]["total_voice_members"][
+                    member
+                ] = 0
             self.cache[before.channel.guild]["channels"][before.channel]["total_voice_members"][
                 member
             ] += real_total_time
             if member not in self.cache[before.channel.guild]["channels"][before.channel]["voice"]:
                 self.cache[before.channel.guild]["channels"][before.channel]["voice"][member] = []
             self.cache[before.channel.guild]["channels"][before.channel]["voice"][member].append(
-                [int(start_time.timestamp()), int(end_time.timestamp())]
+                [int(start_time.timestamp()), int(end_time.timestamp())],
             )
 
     @commands.Cog.listener()
     async def on_presence_update(
-        self, before: typing.Optional[discord.Member], after: typing.Optional[discord.Member]
+        self,
+        before: discord.Member | None,
+        after: discord.Member | None,
     ) -> None:
         if not await self.config.toggle_activities_stats():
             return
@@ -670,9 +673,9 @@ class GuildStats(Cog):
                         "total_activities_times": {},
                         "activities_cache": {},
                     }
-                self.cache[after.guild]["members"][after]["activities_cache"][
-                    activity.name
-                ] = datetime.datetime.now(tz=datetime.timezone.utc)
+                self.cache[after.guild]["members"][after]["activities_cache"][activity.name] = (
+                    datetime.datetime.now(tz=datetime.UTC)
+                )
         if before is not None:
             ignored_users = await self.config.ignored_users()
             if before.id in ignored_users:
@@ -691,7 +694,7 @@ class GuildStats(Cog):
                     ].pop(activity.name)
                 except KeyError:
                     return
-                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
+                end_time = datetime.datetime.now(tz=datetime.UTC)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if real_total_time < 10 * 60:
                     return
@@ -713,52 +716,49 @@ class GuildStats(Cog):
 
     def _get_data(
         self,
-        _object: typing.Union[
-            discord.Member,
-            typing.Tuple[discord.Member, typing.Literal["activities"]],
-            discord.Role,
+        _object: discord.Member
+        | tuple[discord.Member, typing.Literal["activities"]]
+        | discord.Role
+        | discord.Guild
+        | tuple[
             discord.Guild,
-            typing.Tuple[
-                discord.Guild,
-                typing.Union[
-                    typing.Literal["messages", "voice", "activities"],
-                    typing.Tuple[
-                        typing.Literal["top", "weekly", "monthly"],
-                        typing.Literal["messages", "voice"],
-                        typing.Literal["members", "channels"],
-                    ],
-                    typing.Tuple[typing.Literal["activity"], str],
-                ],
-            ],
-            discord.CategoryChannel,
-            discord.TextChannel,
-            discord.VoiceChannel,
-        ],
+            typing.Literal["messages", "voice", "activities"]
+            | tuple[
+                typing.Literal["top", "weekly", "monthly"],
+                typing.Literal["messages", "voice"],
+                typing.Literal["members", "channels"],
+            ]
+            | tuple[typing.Literal["activity"], str],
+        ]
+        | discord.CategoryChannel
+        | discord.TextChannel
+        | discord.VoiceChannel,
         members_type: typing.Literal["humans", "bots", "both"],
         utc_now: datetime.datetime,
-        all_channels_data: typing.Dict[int, dict],
-        all_members_data: typing.Dict[int, dict],
-        ignored_categories: typing.List[int],
-        ignored_channels: typing.List[int],
-        ignored_activities: typing.List[str],
-    ) -> typing.Dict[str, typing.Any]:
-        if isinstance(_object, typing.Tuple):
+        all_channels_data: dict[int, dict],
+        all_members_data: dict[int, dict],
+        ignored_categories: list[int],
+        ignored_channels: list[int],
+        ignored_activities: list[str],
+    ) -> dict[str, typing.Any]:
+        if isinstance(_object, tuple):
             _object, _type = _object
         else:
             _type = None
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = datetime.datetime.now(tz=datetime.UTC)
         # Get cache data.
         all_channels_data = {
             channel_id: data
             for channel_id, data in all_channels_data.items()
             if (_object if isinstance(_object, discord.Guild) else _object.guild).get_channel(
-                channel_id
+                channel_id,
             )
             is not None
         }
         for channel, data in self.cache.get(
-            _object if isinstance(_object, discord.Guild) else _object.guild, {"channels": {}}
+            _object if isinstance(_object, discord.Guild) else _object.guild,
+            {"channels": {}},
         )["channels"].items():
             if channel.id not in all_channels_data:
                 all_channels_data[channel.id] = {
@@ -780,14 +780,14 @@ class GuildStats(Cog):
             for member, count_messages in data["total_messages_members"].items():
                 if str(member.id) not in all_channels_data[channel.id]["total_messages_members"]:
                     all_channels_data[channel.id]["total_messages_members"][str(member.id)] = 0
-                all_channels_data[channel.id]["total_messages_members"][
-                    str(member.id)
-                ] += count_messages
+                all_channels_data[channel.id]["total_messages_members"][str(member.id)] += (
+                    count_messages
+                )
             for member, times in data["messages"].items():
                 if str(member.id) not in all_channels_data[channel.id]["messages"]:
                     all_channels_data[channel.id]["messages"][str(member.id)] = []
                 all_channels_data[channel.id]["messages"][str(member.id)].extend(
-                    [time.timestamp() for time in times]
+                    [time.timestamp() for time in times],
                 )
             # Voice.
             all_channels_data[channel.id]["total_voice"] += data["total_voice"]
@@ -802,57 +802,58 @@ class GuildStats(Cog):
                 # already_seen.append(member)
                 if member not in channel.members:
                     continue
-                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
+                end_time = datetime.datetime.now(tz=datetime.UTC)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if round(real_total_time / 3600, 2) == 0:
                     continue
-                all_channels_data[channel.id][
-                    "total_voice"
-                ] += real_total_time  # (min(members.values()) - start_time).total_seconds() if (members := {_member: _start_time for _member, _start_time in self.cache[channel.guild]["channels"][channel]["voice"].items() if _member not in already_seen}) and (min(members.values()) - start_time).total_seconds() >= 0 else real_total_time
+                all_channels_data[channel.id]["total_voice"] += (
+                    real_total_time  # (min(members.values()) - start_time).total_seconds() if (members := {_member: _start_time for _member, _start_time in self.cache[channel.guild]["channels"][channel]["voice"].items() if _member not in already_seen}) and (min(members.values()) - start_time).total_seconds() >= 0 else real_total_time
+                )
                 if not member.bot:
-                    all_channels_data[channel.id][
-                        "total_humans_voice"
-                    ] += real_total_time  # (min(members.values()) - start_time).total_seconds() if (members := {_member: _start_time for _member, _start_time in self.cache[channel.guild]["channels"][channel]["voice"].items() if _member not in already_seen and not member.bot}) and (min(members.values()) - start_time).total_seconds() >= 0 else real_total_time
+                    all_channels_data[channel.id]["total_humans_voice"] += (
+                        real_total_time  # (min(members.values()) - start_time).total_seconds() if (members := {_member: _start_time for _member, _start_time in self.cache[channel.guild]["channels"][channel]["voice"].items() if _member not in already_seen and not member.bot}) and (min(members.values()) - start_time).total_seconds() >= 0 else real_total_time
+                    )
                 else:
-                    all_channels_data[channel.id][
-                        "total_bots_voice"
-                    ] += real_total_time  # (min(members.values()) - start_time).total_seconds() if (members := {_member: _start_time for _member, _start_time in self.cache[channel.guild]["channels"][channel]["voice"].items() if _member not in already_seen and member.bot}) and (min(members.values()) - start_time).total_seconds() >= 0 else real_total_time
+                    all_channels_data[channel.id]["total_bots_voice"] += (
+                        real_total_time  # (min(members.values()) - start_time).total_seconds() if (members := {_member: _start_time for _member, _start_time in self.cache[channel.guild]["channels"][channel]["voice"].items() if _member not in already_seen and member.bot}) and (min(members.values()) - start_time).total_seconds() >= 0 else real_total_time
+                    )
                 if str(member.id) not in all_channels_data[channel.id]["total_voice_members"]:
                     all_channels_data[channel.id]["total_voice_members"][str(member.id)] = 0
-                all_channels_data[channel.id]["total_voice_members"][
-                    str(member.id)
-                ] += real_total_time
+                all_channels_data[channel.id]["total_voice_members"][str(member.id)] += (
+                    real_total_time
+                )
                 if str(member.id) not in all_channels_data[channel.id]["voice"]:
                     all_channels_data[channel.id]["voice"][str(member.id)] = []
                 all_channels_data[channel.id]["voice"][str(member.id)].append(
-                    [int(start_time.timestamp()), int(end_time.timestamp())]
+                    [int(start_time.timestamp()), int(end_time.timestamp())],
                 )
         all_members_data = {
             member_id: data
             for member_id, data in all_members_data.items()
             if (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(
-                member_id
+                member_id,
             )
             is not None
         }
         for member, data in self.cache.get(
-            _object if isinstance(_object, discord.Guild) else _object.guild, {"members": {}}
+            _object if isinstance(_object, discord.Guild) else _object.guild,
+            {"members": {}},
         )["members"].items():
             if member.id not in all_members_data:
                 all_members_data[member.id] = {"total_activities": 0, "total_activities_times": {}}
             for activity_name, start_time in data["activities_cache"].items():
                 if discord.utils.get(member.activities, name=activity_name) is None:
                     continue
-                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
+                end_time = datetime.datetime.now(tz=datetime.UTC)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if real_total_time < 10 * 60:
                     continue
                 all_members_data[member.id]["total_activities"] += real_total_time
                 if activity_name not in all_members_data[member.id]["total_activities_times"]:
                     all_members_data[member.id]["total_activities_times"][activity_name] = 0
-                all_members_data[member.id]["total_activities_times"][
-                    activity_name
-                ] += real_total_time
+                all_members_data[member.id]["total_activities_times"][activity_name] += (
+                    real_total_time
+                )
         if not isinstance(_object, discord.CategoryChannel):
             for category_id in ignored_categories:
                 if (
@@ -870,20 +871,19 @@ class GuildStats(Cog):
 
         # Handle `members_type`.
         def is_valid(member_id: int):
-            if members_type == "both":
-                return True
-            elif (
-                member := (
-                    _object if isinstance(_object, discord.Guild) else _object.guild
-                ).get_member(member_id)
-            ) is None:
-                return True
-            elif members_type == "humans" and not member.bot:
-                return True
-            elif members_type == "bots" and member.bot:
-                return True
-            else:
-                return False
+            return bool(
+                members_type == "both"
+                or (
+                    member := (
+                        _object if isinstance(_object, discord.Guild) else _object.guild
+                    ).get_member(member_id)
+                )
+                is None
+                or members_type == "humans"
+                and not member.bot
+                or members_type == "bots"
+                and member.bot,
+            )
 
         members_type_key = "" if members_type == "both" else f"{members_type}_"
 
@@ -899,9 +899,9 @@ class GuildStats(Cog):
                         for __ in range(count_messages)
                         if (member := _object.guild.get_member(int(member_id))) is not None
                         and member.bot == _object.bot
-                    ]
+                    ],
                 )
-                members_messages_sorted: typing.List[int] = sorted(
+                members_messages_sorted: list[int] = sorted(
                     members_messages_counter,
                     key=lambda x: (members_messages_counter[x], 1 if int(x) == _object.id else 0),
                     reverse=True,
@@ -916,9 +916,9 @@ class GuildStats(Cog):
                         for __ in range(count_voice)
                         if (member := _object.guild.get_member(int(member_id))) is not None
                         and member.bot == _object.bot
-                    ]
+                    ],
                 )
-                members_voice_sorted: typing.List[int] = sorted(
+                members_voice_sorted: list[int] = sorted(
                     members_voice_counter,
                     key=lambda x: (members_voice_counter[x], 1 if int(x) == _object.id else 0),
                     reverse=True,
@@ -926,33 +926,37 @@ class GuildStats(Cog):
                 top_messages_channels = Counter(
                     {
                         channel_id: all_channels_data[channel_id]["total_messages_members"].get(
-                            str(_object.id), 0
+                            str(_object.id),
+                            0,
                         )
                         for channel_id in all_channels_data
-                    }
+                    },
                 )
                 top_voice_channels = Counter(
                     {
                         channel_id: all_channels_data[channel_id]["total_voice_members"].get(
-                            str(_object.id), 0
+                            str(_object.id),
+                            0,
                         )
                         for channel_id in all_channels_data
-                    }
+                    },
                 )
                 top_activities = Counter(
                     {
                         activity_name: total_time
                         for activity_name, total_time in all_members_data.get(
-                            _object.id, {"total_activities_times": {}}
+                            _object.id,
+                            {"total_activities_times": {}},
                         )["total_activities_times"].items()
                         if activity_name not in ignored_activities
-                    }
+                    },
                 )
                 return {
                     "server_lookback": {  # type: messages/hours
                         "text": sum(
                             all_channels_data[channel_id]["total_messages_members"].get(
-                                str(_object.id), 0
+                                str(_object.id),
+                                0,
                             )
                             for channel_id in all_channels_data
                         ),
@@ -962,7 +966,8 @@ class GuildStats(Cog):
                                 roundest_value := round(
                                     sum(
                                         all_channels_data[channel_id]["total_voice_members"].get(
-                                            str(_object.id), 0
+                                            str(_object.id),
+                                            0,
                                         )
                                         for channel_id in all_channels_data
                                     )
@@ -980,10 +985,11 @@ class GuildStats(Cog):
                                 time
                                 for channel_id in all_channels_data
                                 for time in all_channels_data[channel_id]["messages"].get(
-                                    str(_object.id), []
+                                    str(_object.id),
+                                    [],
                                 )
                                 if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
-                            ]
+                            ],
                         )
                         for delta in (1, 7, 30)
                     },
@@ -999,13 +1005,14 @@ class GuildStats(Cog):
                                                 (
                                                     utc_now - datetime.timedelta(days=delta)
                                                 ).timestamp()
-                                                - times[0]
+                                                - times[0],
                                             ),
                                             0,
                                         )
                                         for channel_id in all_channels_data
                                         for times in all_channels_data[channel_id]["voice"].get(
-                                            str(_object.id), []
+                                            str(_object.id),
+                                            [],
                                         )
                                         if times[1]
                                         >= (utc_now - datetime.timedelta(days=delta)).timestamp()
@@ -1081,7 +1088,8 @@ class GuildStats(Cog):
                                     roundest_value
                                     if (
                                         roundest_value := round(
-                                            top_activities.most_common(1)[0][1] / 3600, ndigits=2
+                                            top_activities.most_common(1)[0][1] / 3600,
+                                            ndigits=2,
                                         )
                                     )
                                     != int(roundest_value)
@@ -1099,12 +1107,13 @@ class GuildStats(Cog):
                                     time
                                     for channel_id in all_channels_data
                                     for time in all_channels_data[channel_id]["messages"].get(
-                                        str(_object.id), []
+                                        str(_object.id),
+                                        [],
                                     )
                                     if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
                                     >= time
                                     >= (utc_now - datetime.timedelta(days=-day)).timestamp()
-                                ]
+                                ],
                             )
                             for day in range(-30, 0)
                         },
@@ -1120,7 +1129,7 @@ class GuildStats(Cog):
                                                     (
                                                         utc_now - datetime.timedelta(days=-day)
                                                     ).timestamp()
-                                                    - times[0]
+                                                    - times[0],
                                                 ),
                                                 0,
                                             )
@@ -1129,14 +1138,15 @@ class GuildStats(Cog):
                                                     (
                                                         utc_now - datetime.timedelta(days=-day - 1)
                                                     ).timestamp()
-                                                    - (utc_now.timestamp() - times[1])
+                                                    - (utc_now.timestamp() - times[1]),
                                                 ),
                                                 0,
                                             )
                                             for channel_id in all_channels_data
-                                            for times in all_channels_data[channel_id][
-                                                "voice"
-                                            ].get(str(_object.id), [])
+                                            for times in all_channels_data[channel_id]["voice"].get(
+                                                str(_object.id),
+                                                [],
+                                            )
                                             if (
                                                 (
                                                     utc_now - datetime.timedelta(days=-day - 1)
@@ -1167,7 +1177,7 @@ class GuildStats(Cog):
                         },
                     },
                 }
-            elif _type == "activities":
+            if _type == "activities":
                 activities_counter: Counter = Counter(
                     [
                         activity_name
@@ -1176,7 +1186,7 @@ class GuildStats(Cog):
                         .items()
                         for __ in range(count_time)
                         if activity_name not in ignored_activities
-                    ]
+                    ],
                 )
                 return {
                     "top_activities": {  # activity_name: hours
@@ -1213,9 +1223,9 @@ class GuildStats(Cog):
                     for role in getattr(member, "roles", [])
                     if (member := _object.guild.get_member(int(member_id))) is not None
                     and is_valid(int(member_id))
-                ]
+                ],
             )  # and (role != _object.guild.default_role or role == _object)
-            roles_messages_sorted: typing.List[int] = sorted(
+            roles_messages_sorted: list[int] = sorted(
                 roles_messages_counter,
                 key=lambda x: (roles_messages_counter[x], 1 if int(x) == _object.id else 0),
                 reverse=True,
@@ -1231,9 +1241,9 @@ class GuildStats(Cog):
                     for role in getattr(member, "roles", [])
                     if _object.guild.get_member(int(member_id)) is not None
                     and is_valid(int(member_id))
-                ]
+                ],
             )  # and (role != _object.guild.default_role or role == _object)
-            roles_voice_sorted: typing.List[int] = sorted(
+            roles_voice_sorted: list[int] = sorted(
                 roles_voice_counter,
                 key=lambda x: (roles_voice_counter[x], 1 if int(x) == _object.id else 0),
                 reverse=True,
@@ -1242,13 +1252,14 @@ class GuildStats(Cog):
                 {
                     channel_id: sum(
                         all_channels_data[channel_id]["total_messages_members"].get(
-                            str(member.id), 0
+                            str(member.id),
+                            0,
                         )
                         for member in _object.members
                         if is_valid(member.id)
                     )
                     for channel_id in all_channels_data
-                }
+                },
             )
             top_voice_channels = Counter(
                 {
@@ -1258,7 +1269,7 @@ class GuildStats(Cog):
                         if is_valid(member.id)
                     )
                     for channel_id in all_channels_data
-                }
+                },
             )
             top_activities = Counter(
                 [
@@ -1269,13 +1280,14 @@ class GuildStats(Cog):
                     ].items()
                     for __ in range(count_time)
                     if is_valid(member_id)
-                ]
+                ],
             )
             return {
                 "server_lookback": {  # type: messages/hours
                     "text": sum(
                         all_channels_data[channel_id]["total_messages_members"].get(
-                            str(member.id), 0
+                            str(member.id),
+                            0,
                         )
                         for channel_id in all_channels_data
                         for member in _object.members
@@ -1287,7 +1299,8 @@ class GuildStats(Cog):
                             roundest_value := round(
                                 sum(
                                     all_channels_data[channel_id]["total_voice_members"].get(
-                                        str(member.id), 0
+                                        str(member.id),
+                                        0,
                                     )
                                     for channel_id in all_channels_data
                                     for member in _object.members
@@ -1308,11 +1321,12 @@ class GuildStats(Cog):
                             for channel_id in all_channels_data
                             for member in _object.members
                             for time in all_channels_data[channel_id]["messages"].get(
-                                str(member.id), []
+                                str(member.id),
+                                [],
                             )
                             if is_valid(member.id)
                             and time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
-                        ]
+                        ],
                     )
                     for delta in (1, 7, 30)
                 },
@@ -1326,14 +1340,15 @@ class GuildStats(Cog):
                                     - max(
                                         int(
                                             (utc_now - datetime.timedelta(days=delta)).timestamp()
-                                            - times[0]
+                                            - times[0],
                                         ),
                                         0,
                                     )
                                     for channel_id in all_channels_data
                                     for member in _object.members
                                     for times in all_channels_data[channel_id]["voice"].get(
-                                        str(member.id), []
+                                        str(member.id),
+                                        [],
                                     )
                                     if is_valid(member.id)
                                     and times[1]
@@ -1386,7 +1401,8 @@ class GuildStats(Cog):
                                 roundest_value
                                 if (
                                     roundest_value := round(
-                                        top_voice_channels.most_common(1)[0][1] / 3600, ndigits=2
+                                        top_voice_channels.most_common(1)[0][1] / 3600,
+                                        ndigits=2,
                                     )
                                 )
                                 != int(roundest_value)
@@ -1407,7 +1423,8 @@ class GuildStats(Cog):
                                 roundest_value
                                 if (
                                     roundest_value := round(
-                                        top_activities.most_common(1)[0][1] / 3600, ndigits=2
+                                        top_activities.most_common(1)[0][1] / 3600,
+                                        ndigits=2,
                                     )
                                 )
                                 != int(roundest_value)
@@ -1426,13 +1443,14 @@ class GuildStats(Cog):
                                 for channel_id in all_channels_data
                                 for member in _object.members
                                 for time in all_channels_data[channel_id]["messages"].get(
-                                    str(member.id), []
+                                    str(member.id),
+                                    [],
                                 )
                                 if is_valid(member.id)
                                 and (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
                                 >= time
                                 >= (utc_now - datetime.timedelta(days=-day)).timestamp()
-                            ]
+                            ],
                         )
                         for day in range(-30, 0)
                     },
@@ -1448,7 +1466,7 @@ class GuildStats(Cog):
                                                 (
                                                     utc_now - datetime.timedelta(days=-day)
                                                 ).timestamp()
-                                                - times[0]
+                                                - times[0],
                                             ),
                                             0,
                                         )
@@ -1457,14 +1475,15 @@ class GuildStats(Cog):
                                                 (
                                                     utc_now - datetime.timedelta(days=-day - 1)
                                                 ).timestamp()
-                                                - (utc_now.timestamp() - times[1])
+                                                - (utc_now.timestamp() - times[1]),
                                             ),
                                             0,
                                         )
                                         for channel_id in all_channels_data
                                         for member in _object.members
                                         for times in all_channels_data[channel_id]["voice"].get(
-                                            str(member.id), []
+                                            str(member.id),
+                                            [],
                                         )
                                         if is_valid(member.id)
                                         and (
@@ -1472,15 +1491,11 @@ class GuildStats(Cog):
                                                 utc_now - datetime.timedelta(days=-day - 1)
                                             ).timestamp()
                                             >= times[0]
-                                            >= (
-                                                utc_now - datetime.timedelta(days=-day)
-                                            ).timestamp()
+                                            >= (utc_now - datetime.timedelta(days=-day)).timestamp()
                                         )
                                         or ((utc_now - datetime.timedelta(days=-day)).timestamp())
                                         <= times[1]
-                                        <= (
-                                            utc_now - datetime.timedelta(days=-day - 1)
-                                        ).timestamp()
+                                        <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
                                     )
                                     / 3600,
                                     ndigits=2,
@@ -1504,7 +1519,7 @@ class GuildStats(Cog):
                     ].items()
                     for __ in range(count_messages)
                     if _object.get_member(int(member_id)) is not None and is_valid(int(member_id))
-                ]
+                ],
             )
             members_voice_counter: Counter = Counter(
                 [
@@ -1515,19 +1530,19 @@ class GuildStats(Cog):
                     ].items()
                     for __ in range(count_voice)
                     if _object.get_member(int(member_id)) is not None and is_valid(int(member_id))
-                ]
+                ],
             )
             top_messages_channels = Counter(
                 {
                     channel_id: all_channels_data[channel_id][f"total_{members_type_key}messages"]
                     for channel_id in all_channels_data
-                }
+                },
             )
             top_voice_channels = Counter(
                 {
                     channel_id: all_channels_data[channel_id][f"total_{members_type_key}voice"]
                     for channel_id in all_channels_data
-                }
+                },
             )
             if _type is None:
                 return {
@@ -1563,7 +1578,7 @@ class GuildStats(Cog):
                                 for time in all_channels_data[channel_id]["messages"][member_id]
                                 if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
-                            ]
+                            ],
                         )
                         for delta in (1, 7, 30)
                     },
@@ -1579,7 +1594,7 @@ class GuildStats(Cog):
                                                 (
                                                     utc_now - datetime.timedelta(days=delta)
                                                 ).timestamp()
-                                                - times[0]
+                                                - times[0],
                                             ),
                                             0,
                                         )
@@ -1688,14 +1703,12 @@ class GuildStats(Cog):
                                     time
                                     for channel_id in all_channels_data
                                     for member_id in all_channels_data[channel_id]["messages"]
-                                    for time in all_channels_data[channel_id]["messages"][
-                                        member_id
-                                    ]
+                                    for time in all_channels_data[channel_id]["messages"][member_id]
                                     if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
                                     >= time
                                     >= (utc_now - datetime.timedelta(days=-day)).timestamp()
                                     and is_valid(int(member_id))
-                                ]
+                                ],
                             )
                             for day in range(-30, 0)
                         },
@@ -1711,7 +1724,7 @@ class GuildStats(Cog):
                                                     (
                                                         utc_now - datetime.timedelta(days=-day)
                                                     ).timestamp()
-                                                    - times[0]
+                                                    - times[0],
                                                 ),
                                                 0,
                                             )
@@ -1720,7 +1733,7 @@ class GuildStats(Cog):
                                                     (
                                                         utc_now - datetime.timedelta(days=-day - 1)
                                                     ).timestamp()
-                                                    - (utc_now.timestamp() - times[1])
+                                                    - (utc_now.timestamp() - times[1]),
                                                 ),
                                                 0,
                                             )
@@ -1760,7 +1773,7 @@ class GuildStats(Cog):
                         },
                     },
                 }
-            elif _type == "messages":
+            if _type == "messages":
                 return {
                     "server_lookback": sum(
                         all_channels_data[channel_id][f"total_{members_type_key}messages"]
@@ -1775,7 +1788,7 @@ class GuildStats(Cog):
                                 for time in all_channels_data[channel_id]["messages"][member_id]
                                 if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
-                            ]
+                            ],
                         )
                         for delta in (1, 7, 30)
                     },
@@ -1790,7 +1803,7 @@ class GuildStats(Cog):
                                 for time in times
                                 if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
-                            }
+                            },
                         )
                         for delta in (1, 7, 30)
                     },
@@ -1811,20 +1824,18 @@ class GuildStats(Cog):
                                     time
                                     for channel_id in all_channels_data
                                     for member_id in all_channels_data[channel_id]["messages"]
-                                    for time in all_channels_data[channel_id]["messages"][
-                                        member_id
-                                    ]
+                                    for time in all_channels_data[channel_id]["messages"][member_id]
                                     if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
                                     >= time
                                     >= (utc_now - datetime.timedelta(days=-day)).timestamp()
                                     and is_valid(int(member_id))
-                                ]
+                                ],
                             )
                             for day in range(-30, 0)
                         },
                         "contributors": {  # day: contributors
                             day: len(
-                                set(
+                                {
                                     member_id
                                     for channel_id in all_channels_data
                                     for member_id, times in all_channels_data[channel_id][
@@ -1835,13 +1846,13 @@ class GuildStats(Cog):
                                     >= time
                                     >= (utc_now - datetime.timedelta(days=-day)).timestamp()
                                     and is_valid(int(member_id))
-                                )
+                                },
                             )
                             for day in range(-30, 0)
                         },
                     },
                 }
-            elif _type == "voice":
+            if _type == "voice":
                 return {
                     "server_lookback": (
                         roundest_value
@@ -1870,7 +1881,7 @@ class GuildStats(Cog):
                                                 (
                                                     utc_now - datetime.timedelta(days=delta)
                                                 ).timestamp()
-                                                - times[0]
+                                                - times[0],
                                             ),
                                             0,
                                         )
@@ -1902,7 +1913,7 @@ class GuildStats(Cog):
                                 if times[1]
                                 >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
-                            }
+                            },
                         )
                         for delta in (1, 7, 30)
                     },
@@ -1937,7 +1948,7 @@ class GuildStats(Cog):
                                                     (
                                                         utc_now - datetime.timedelta(days=-day)
                                                     ).timestamp()
-                                                    - times[0]
+                                                    - times[0],
                                                 ),
                                                 0,
                                             )
@@ -1946,7 +1957,7 @@ class GuildStats(Cog):
                                                     (
                                                         utc_now - datetime.timedelta(days=-day - 1)
                                                     ).timestamp()
-                                                    - (utc_now.timestamp() - times[1])
+                                                    - (utc_now.timestamp() - times[1]),
                                                 ),
                                                 0,
                                             )
@@ -1986,7 +1997,7 @@ class GuildStats(Cog):
                         },
                         "contributors": {  # day: contributors
                             day: len(
-                                set(
+                                {
                                     member_id
                                     for channel_id in all_channels_data
                                     for member_id in all_channels_data[channel_id]["voice"]
@@ -2000,13 +2011,13 @@ class GuildStats(Cog):
                                     <= times[1]
                                     <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
                                     and is_valid(int(member_id))
-                                )
+                                },
                             )
                             for day in range(-30, 0)
                         },
                     },
                 }
-            elif _type == "activities":
+            if _type == "activities":
                 activities_counter: Counter = Counter(
                     [
                         activity_name
@@ -2016,7 +2027,7 @@ class GuildStats(Cog):
                         ].items()
                         for __ in range(count_time)
                         if activity_name not in ignored_activities and is_valid(int(member_id))
-                    ]
+                    ],
                 )
                 return {
                     "top_activities": {  # activity_name: hours
@@ -2040,7 +2051,7 @@ class GuildStats(Cog):
                         },
                     },
                 }
-            elif isinstance(_type, typing.Tuple):
+            if isinstance(_type, tuple):
                 if _type[0] in ("top", "weekly", "monthly"):
                     if _type[0] == "top":
                         if _type[1] == "messages":
@@ -2068,7 +2079,7 @@ class GuildStats(Cog):
                                         and is_valid(int(member_id))
                                         and time
                                         >= (utc_now - datetime.timedelta(days=7)).timestamp()
-                                    ]
+                                    ],
                                 )
                                 counter_to_use = members_messages_counter
                             else:
@@ -2087,7 +2098,7 @@ class GuildStats(Cog):
                                             >= (utc_now - datetime.timedelta(days=7)).timestamp()
                                         )
                                         for channel_id in all_channels_data
-                                    }
+                                    },
                                 )
                                 counter_to_use = top_messages_channels
                         else:
@@ -2107,15 +2118,15 @@ class GuildStats(Cog):
                                                     (
                                                         utc_now - datetime.timedelta(days=7)
                                                     ).timestamp()
-                                                    - times[0]
+                                                    - times[0],
                                                 ),
                                                 0,
-                                            )
+                                            ),
                                         )
                                         if is_valid(int(member_id))
                                         and times[1]
                                         >= (utc_now - datetime.timedelta(days=7)).timestamp()
-                                    ]
+                                    ],
                                 )
                                 counter_to_use = members_voice_counter
                             else:
@@ -2135,7 +2146,7 @@ class GuildStats(Cog):
                                             )
                                         )
                                         for channel_id in all_channels_data
-                                    }
+                                    },
                                 )
                                 counter_to_use = top_voice_channels
                     elif _type[0] == "monthly":
@@ -2153,7 +2164,7 @@ class GuildStats(Cog):
                                         and is_valid(int(member_id))
                                         and time
                                         >= (utc_now - datetime.timedelta(days=30)).timestamp()
-                                    ]
+                                    ],
                                 )
                                 counter_to_use = members_messages_counter
                             else:
@@ -2172,7 +2183,7 @@ class GuildStats(Cog):
                                             >= (utc_now - datetime.timedelta(days=30)).timestamp()
                                         )
                                         for channel_id in all_channels_data
-                                    }
+                                    },
                                 )
                                 counter_to_use = top_messages_channels
                         else:
@@ -2192,15 +2203,15 @@ class GuildStats(Cog):
                                                     (
                                                         utc_now - datetime.timedelta(days=30)
                                                     ).timestamp()
-                                                    - times[0]
+                                                    - times[0],
                                                 ),
                                                 0,
-                                            )
+                                            ),
                                         )
                                         if is_valid(int(member_id))
                                         and times[1]
                                         >= (utc_now - datetime.timedelta(days=30)).timestamp()
-                                    ]
+                                    ],
                                 )
                                 counter_to_use = members_voice_counter
                             else:
@@ -2213,7 +2224,7 @@ class GuildStats(Cog):
                                                     (
                                                         utc_now - datetime.timedelta(days=30)
                                                     ).timestamp()
-                                                    - times[0]
+                                                    - times[0],
                                                 ),
                                                 0,
                                             )
@@ -2226,7 +2237,7 @@ class GuildStats(Cog):
                                             >= (utc_now - datetime.timedelta(days=30)).timestamp()
                                         )
                                         for channel_id in all_channels_data
-                                    }
+                                    },
                                 )
                                 counter_to_use = top_voice_channels
                     return {
@@ -2238,7 +2249,8 @@ class GuildStats(Cog):
                                     roundest_value
                                     if (
                                         roundest_value := round(
-                                            count_messages_or_voice / 3600, ndigits=2
+                                            count_messages_or_voice / 3600,
+                                            ndigits=2,
                                         )
                                     )
                                     != 0
@@ -2260,7 +2272,8 @@ class GuildStats(Cog):
                                         roundest_value
                                         if (
                                             roundest_value := round(
-                                                count_messages_or_voice / 3600, ndigits=2
+                                                count_messages_or_voice / 3600,
+                                                ndigits=2,
                                             )
                                         )
                                         != 0
@@ -2275,19 +2288,20 @@ class GuildStats(Cog):
                             },
                         },
                     }
-                elif _type[0] == "activity":
+                if _type[0] == "activity":
                     activity_members_counter: Counter = Counter(
                         [
                             member_id
                             for member_id in all_members_data
                             for __ in range(
                                 all_members_data[member_id]["total_activities_times"].get(
-                                    _type[1], 0
-                                )
+                                    _type[1],
+                                    0,
+                                ),
                             )
                             if _object.get_member(int(member_id)) is not None
                             and is_valid(int(member_id))
-                        ]
+                        ],
                     )
                     return {
                         "top_members": {  # activity_name: hours
@@ -2330,7 +2344,7 @@ class GuildStats(Cog):
                     for __ in range(count_messages)
                     if _object.guild.get_member(int(member_id)) is not None
                     and is_valid(int(member_id))
-                ]
+                ],
             )
             members_voice_counter: Counter = Counter(
                 [
@@ -2346,7 +2360,7 @@ class GuildStats(Cog):
                     for __ in range(count_voice)
                     if _object.guild.get_member(int(member_id)) is not None
                     and is_valid(int(member_id))
-                ]
+                ],
             )
             top_messages_channels = Counter(
                 {
@@ -2356,7 +2370,7 @@ class GuildStats(Cog):
                         for channel in _object.channels
                         if channel.id in all_channels_data
                     ]
-                }
+                },
             )
             top_voice_channels = Counter(
                 {
@@ -2366,7 +2380,7 @@ class GuildStats(Cog):
                         for channel in _object.channels
                         if channel.id in all_channels_data
                     ]
-                }
+                },
             )
             return {
                 "server_lookback": {  # type: messages/hours
@@ -2411,7 +2425,7 @@ class GuildStats(Cog):
                             for time in all_channels_data[channel_id]["messages"][member_id]
                             if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                             and is_valid(int(member_id))
-                        ]
+                        ],
                     )
                     for delta in (1, 7, 30)
                 },
@@ -2425,7 +2439,7 @@ class GuildStats(Cog):
                                     - max(
                                         int(
                                             (utc_now - datetime.timedelta(days=delta)).timestamp()
-                                            - times[0]
+                                            - times[0],
                                         ),
                                         0,
                                     )
@@ -2515,7 +2529,8 @@ class GuildStats(Cog):
                                 roundest_value
                                 if (
                                     roundest_value := round(
-                                        top_voice_channels.most_common(1)[0][1] / 3600, ndigits=2
+                                        top_voice_channels.most_common(1)[0][1] / 3600,
+                                        ndigits=2,
                                     )
                                 )
                                 != 0
@@ -2542,7 +2557,7 @@ class GuildStats(Cog):
                                 >= time
                                 >= (utc_now - datetime.timedelta(days=-day)).timestamp()
                                 and is_valid(int(member_id))
-                            ]
+                            ],
                         )
                         for day in range(-30, 0)
                     },
@@ -2558,7 +2573,7 @@ class GuildStats(Cog):
                                                 (
                                                     utc_now - datetime.timedelta(days=-day)
                                                 ).timestamp()
-                                                - times[0]
+                                                - times[0],
                                             ),
                                             0,
                                         )
@@ -2567,7 +2582,7 @@ class GuildStats(Cog):
                                                 (
                                                     utc_now - datetime.timedelta(days=-day - 1)
                                                 ).timestamp()
-                                                - (utc_now.timestamp() - times[1])
+                                                - (utc_now.timestamp() - times[1]),
                                             ),
                                             0,
                                         )
@@ -2585,15 +2600,11 @@ class GuildStats(Cog):
                                                 utc_now - datetime.timedelta(days=-day - 1)
                                             ).timestamp()
                                             >= times[0]
-                                            >= (
-                                                utc_now - datetime.timedelta(days=-day)
-                                            ).timestamp()
+                                            >= (utc_now - datetime.timedelta(days=-day)).timestamp()
                                         )
                                         or ((utc_now - datetime.timedelta(days=-day)).timestamp())
                                         <= times[1]
-                                        <= (
-                                            utc_now - datetime.timedelta(days=-day - 1)
-                                        ).timestamp()
+                                        <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
                                         and is_valid(int(member_id))
                                     )
                                     / 3600,
@@ -2620,15 +2631,15 @@ class GuildStats(Cog):
                     and is_valid(int(member_id))
                 ]
                 if _object.id in all_channels_data
-                else []
+                else [],
             )
             top_messages_channels = Counter(
                 {
                     channel_id: all_channels_data[channel_id][f"total_{members_type_key}messages"]
                     for channel_id in all_channels_data
-                }
+                },
             )
-            top_messages_channels_sorted: typing.List[int] = sorted(
+            top_messages_channels_sorted: list[int] = sorted(
                 top_messages_channels,
                 key=lambda x: (top_messages_channels[x], 1 if int(x) == _object.id else 0),
                 reverse=True,
@@ -2648,7 +2659,7 @@ class GuildStats(Cog):
                                 for time in all_channels_data[_object.id]["messages"][member_id]
                                 if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
-                            ]
+                            ],
                         )
                         if _object.id in all_channels_data
                         else 0
@@ -2666,7 +2677,7 @@ class GuildStats(Cog):
                                 for time in times
                                 if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
-                            }
+                            },
                         )
                         if _object.id in all_channels_data
                         else 0
@@ -2690,14 +2701,12 @@ class GuildStats(Cog):
                                 [
                                     time
                                     for member_id in all_channels_data[_object.id]["messages"]
-                                    for time in all_channels_data[_object.id]["messages"][
-                                        member_id
-                                    ]
+                                    for time in all_channels_data[_object.id]["messages"][member_id]
                                     if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
                                     >= time
                                     >= (utc_now - datetime.timedelta(days=-day)).timestamp()
                                     and is_valid(int(member_id))
-                                ]
+                                ],
                             )
                             if _object.id in all_channels_data
                             else 0
@@ -2707,7 +2716,7 @@ class GuildStats(Cog):
                     "contributors": {  # day: contributors
                         day: (
                             len(
-                                set(
+                                {
                                     member_id
                                     for member_id, times in all_channels_data[_object.id][
                                         "messages"
@@ -2717,7 +2726,7 @@ class GuildStats(Cog):
                                     >= time
                                     >= (utc_now - datetime.timedelta(days=-day)).timestamp()
                                     and is_valid(int(member_id))
-                                )
+                                },
                             )
                             if _object.id in all_channels_data
                             else 0
@@ -2739,15 +2748,15 @@ class GuildStats(Cog):
                     and is_valid(int(member_id))
                 ]
                 if _object.id in all_channels_data
-                else []
+                else [],
             )
             top_voice_channels = Counter(
                 {
                     channel_id: all_channels_data[channel_id][f"total_{members_type_key}voice"]
                     for channel_id in all_channels_data
-                }
+                },
             )
-            top_voice_channels_sorted: typing.List[int] = sorted(
+            top_voice_channels_sorted: list[int] = sorted(
                 top_voice_channels,
                 key=lambda x: (top_voice_channels[x], 1 if int(x) == _object.id else 0),
                 reverse=True,
@@ -2782,7 +2791,7 @@ class GuildStats(Cog):
                                                 (
                                                     utc_now - datetime.timedelta(days=delta)
                                                 ).timestamp()
-                                                - times[0]
+                                                - times[0],
                                             ),
                                             0,
                                         )
@@ -2816,7 +2825,7 @@ class GuildStats(Cog):
                                 if times[1]
                                 >= (utc_now - datetime.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
-                            }
+                            },
                         )
                         if _object.id in all_channels_data
                         else 0
@@ -2851,7 +2860,7 @@ class GuildStats(Cog):
                                                     (
                                                         utc_now - datetime.timedelta(days=-day)
                                                     ).timestamp()
-                                                    - times[0]
+                                                    - times[0],
                                                 ),
                                                 0,
                                             )
@@ -2860,7 +2869,7 @@ class GuildStats(Cog):
                                                     (
                                                         utc_now - datetime.timedelta(days=-day - 1)
                                                     ).timestamp()
-                                                    - (utc_now.timestamp() - times[1])
+                                                    - (utc_now.timestamp() - times[1]),
                                                 ),
                                                 0,
                                             )
@@ -2903,7 +2912,7 @@ class GuildStats(Cog):
                     "contributors": {  # day: contributors
                         day: (
                             len(
-                                set(
+                                {
                                     member_id
                                     for member_id in all_channels_data[_object.id]["voice"]
                                     for times in all_channels_data[_object.id]["voice"][member_id]
@@ -2916,7 +2925,7 @@ class GuildStats(Cog):
                                     <= times[1]
                                     <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
                                     and is_valid(int(member_id))
-                                )
+                                },
                             )
                             if _object.id in all_channels_data
                             else 0
@@ -2925,34 +2934,31 @@ class GuildStats(Cog):
                     },
                 },
             }
+        return None
 
     async def get_data(
         self,
-        _object: typing.Union[
-            discord.Member,
-            typing.Tuple[discord.Member, typing.Literal["activities"]],
-            discord.Role,
+        _object: discord.Member
+        | tuple[discord.Member, typing.Literal["activities"]]
+        | discord.Role
+        | discord.Guild
+        | tuple[
             discord.Guild,
-            typing.Tuple[
-                discord.Guild,
-                typing.Union[
-                    typing.Literal["messages", "voice", "activities"],
-                    typing.Tuple[
-                        typing.Literal["top", "weekly", "monthly"],
-                        typing.Literal["messages", "voice"],
-                        typing.Literal["members", "channels"],
-                    ],
-                    typing.Tuple[typing.Literal["activity"], str],
-                ],
-            ],
-            discord.CategoryChannel,
-            discord.TextChannel,
-            discord.VoiceChannel,
-        ],
+            typing.Literal["messages", "voice", "activities"]
+            | tuple[
+                typing.Literal["top", "weekly", "monthly"],
+                typing.Literal["messages", "voice"],
+                typing.Literal["members", "channels"],
+            ]
+            | tuple[typing.Literal["activity"], str],
+        ]
+        | discord.CategoryChannel
+        | discord.TextChannel
+        | discord.VoiceChannel,
         members_type: typing.Literal["humans", "bots", "both"] = "humans",
         utc_now: datetime.datetime = None,
-    ) -> typing.Dict[str, typing.Any]:
-        if isinstance(_object, typing.Tuple):
+    ) -> dict[str, typing.Any]:
+        if isinstance(_object, tuple):
             _object, _type = _object
         else:
             _type = None
@@ -2963,27 +2969,27 @@ class GuildStats(Cog):
             utc_now=utc_now,
             all_channels_data=await self.config.all_channels(),
             all_members_data=await self.config.all_members(
-                guild=(_object if isinstance(_object, discord.Guild) else _object.guild)
+                guild=(_object if isinstance(_object, discord.Guild) else _object.guild),
             ),
             ignored_categories=await self.config.guild(
-                _object if isinstance(_object, discord.Guild) else _object.guild
+                _object if isinstance(_object, discord.Guild) else _object.guild,
             ).ignored_categories(),
             ignored_channels=await self.config.guild(
-                _object if isinstance(_object, discord.Guild) else _object.guild
+                _object if isinstance(_object, discord.Guild) else _object.guild,
             ).ignored_channels(),
             ignored_activities=await self.config.guild(
-                _object if isinstance(_object, discord.Guild) else _object.guild
+                _object if isinstance(_object, discord.Guild) else _object.guild,
             ).ignored_activities(),
         )
 
     def align_text_center(
         self,
         draw: ImageDraw.Draw,
-        xy: typing.Tuple[int, int, int, int],
+        xy: tuple[int, int, int, int],
         text: str,
-        fill: typing.Optional[typing.Tuple[int, int, int, typing.Optional[int]]],
+        fill: tuple[int, int, int, int | None] | None,
         font: ImageFont.ImageFont,
-    ) -> typing.Tuple[int, int]:
+    ) -> tuple[int, int]:
         x1, y1, x2, y2 = xy
         text_size = font.getbbox(text)
         x = int((x2 - x1 - text_size[2]) / 2)
@@ -3051,7 +3057,7 @@ class GuildStats(Cog):
                     for char in text
                     if ord(char) in self.font_to_remove_unprintable_characters.getBestCmap()
                     and char.isascii()
-                ]
+                ],
             )
             .strip()
             .strip("-|_")
@@ -3081,8 +3087,7 @@ class GuildStats(Cog):
                     sum(
                         (
                             1
-                            if ord(char)
-                            in self.font_to_remove_unprintable_characters.getBestCmap()
+                            if ord(char) in self.font_to_remove_unprintable_characters.getBestCmap()
                             else 0
                         )
                         for char in member.global_name
@@ -3097,33 +3102,29 @@ class GuildStats(Cog):
 
     def _generate_prefix_image(
         self,
-        _object: typing.Union[
-            discord.Member,
-            typing.Tuple[discord.Member, typing.Literal["activities"]],
-            discord.Role,
+        _object: discord.Member
+        | tuple[discord.Member, typing.Literal["activities"]]
+        | discord.Role
+        | discord.Guild
+        | tuple[
             discord.Guild,
-            typing.Tuple[
-                discord.Guild,
-                typing.Union[
-                    typing.Literal["messages", "voice", "activities"],
-                    typing.Tuple[
-                        typing.Literal["top", "weekly", "monthly"],
-                        typing.Literal["messages", "voice"],
-                        typing.Literal["members", "channels"],
-                    ],
-                    typing.Tuple[typing.Literal["activity"], str],
-                ],
-            ],
-            discord.CategoryChannel,
-            discord.TextChannel,
-            discord.VoiceChannel,
-        ],
-        size: typing.Tuple[int, int],
+            typing.Literal["messages", "voice", "activities"]
+            | tuple[
+                typing.Literal["top", "weekly", "monthly"],
+                typing.Literal["messages", "voice"],
+                typing.Literal["members", "channels"],
+            ]
+            | tuple[typing.Literal["activity"], str],
+        ]
+        | discord.CategoryChannel
+        | discord.TextChannel
+        | discord.VoiceChannel,
+        size: tuple[int, int],
         to_file: bool,
-        _object_display: typing.Optional[bytes],
-        guild_icon: typing.Optional[bytes],
-    ) -> typing.Union[Image.Image, discord.File]:
-        if isinstance(_object, typing.Tuple):
+        _object_display: bytes | None,
+        guild_icon: bytes | None,
+    ) -> Image.Image | discord.File:
+        if isinstance(_object, tuple):
             _object, _type = _object
         else:
             _type = None
@@ -3150,7 +3151,9 @@ class GuildStats(Cog):
             # d.ellipse((0, 0, image.width, image.height), fill=255)
             try:
                 img.paste(
-                    image, (30, 30, 170, 170), mask=ImageChops.multiply(mask, image.split()[3])
+                    image,
+                    (30, 30, 170, 170),
+                    mask=ImageChops.multiply(mask, image.split()[3]),
                 )
             except IndexError:
                 img.paste(image, (30, 30, 170, 170), mask=mask)
@@ -3194,8 +3197,7 @@ class GuildStats(Cog):
                     sum(
                         (
                             1
-                            if ord(char)
-                            in self.font_to_remove_unprintable_characters.getBestCmap()
+                            if ord(char) in self.font_to_remove_unprintable_characters.getBestCmap()
                             else 0
                         )
                         for char in _object.global_name
@@ -3213,7 +3215,10 @@ class GuildStats(Cog):
                 )
             else:
                 draw.text(
-                    (190, 30), text=_object.name, fill=(255, 255, 255), font=self.bold_font[50]
+                    (190, 30),
+                    text=_object.name,
+                    fill=(255, 255, 255),
+                    font=self.bold_font[50],
                 )
         elif isinstance(_object, discord.Role):
             if _object.display_icon is not None:
@@ -3228,7 +3233,9 @@ class GuildStats(Cog):
                 )
                 try:
                     img.paste(
-                        image, (30, 30, 170, 170), mask=ImageChops.multiply(mask, image.split()[3])
+                        image,
+                        (30, 30, 170, 170),
+                        mask=ImageChops.multiply(mask, image.split()[3]),
                     )
                 except IndexError:
                     img.paste(image, (30, 30, 170, 170), mask=mask)
@@ -3245,7 +3252,10 @@ class GuildStats(Cog):
         elif isinstance(_object, discord.Guild):
             if _type is None:
                 draw.text(
-                    (190, 30), text=_("Guild Stats"), fill=(255, 255, 255), font=self.bold_font[50]
+                    (190, 30),
+                    text=_("Guild Stats"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[50],
                 )
                 image = Image.open(
                     self.icons[
@@ -3257,7 +3267,7 @@ class GuildStats(Cog):
                             ).features
                             else "globe"
                         )
-                    ]
+                    ],
                 )
             elif _type == "messages":
                 draw.text(
@@ -3269,7 +3279,10 @@ class GuildStats(Cog):
                 image = Image.open(self.icons["#"])
             elif _type == "voice":
                 draw.text(
-                    (190, 30), text=_("Voice Stats"), fill=(255, 255, 255), font=self.bold_font[50]
+                    (190, 30),
+                    text=_("Voice Stats"),
+                    fill=(255, 255, 255),
+                    font=self.bold_font[50],
                 )
                 image = Image.open(self.icons["sound"])
             elif _type == "activities":
@@ -3280,7 +3293,7 @@ class GuildStats(Cog):
                     font=self.bold_font[50],
                 )
                 image = Image.open(self.icons["game"])
-            elif isinstance(_type, typing.Tuple):
+            elif isinstance(_type, tuple):
                 if _type[0] == "top":
                     draw.text(
                         (190, 30),
@@ -3309,7 +3322,7 @@ class GuildStats(Cog):
                     draw.text(
                         (190, 30),
                         text=_("Activity - {activity_name}").format(
-                            activity_name=self.remove_unprintable_characters(_type[1])
+                            activity_name=self.remove_unprintable_characters(_type[1]),
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[50],
@@ -3361,7 +3374,9 @@ class GuildStats(Cog):
             )
             try:
                 img.paste(
-                    image, (190, 105, 245, 160), mask=ImageChops.multiply(mask, image.split()[3])
+                    image,
+                    (190, 105, 245, 160),
+                    mask=ImageChops.multiply(mask, image.split()[3]),
                 )
             except IndexError:
                 img.paste(image, (190, 105, 245, 160), mask=mask)
@@ -3382,14 +3397,14 @@ class GuildStats(Cog):
                         ).features
                         else "globe"
                     )
-                ]
+                ],
             )
             image = image.resize((55, 55))
             img.paste(image, (190, 105, 245, 160), mask=image.split()[3])
             draw.text(
                 (255, 105),
                 text=self.remove_unprintable_characters(
-                    (_object if isinstance(_object, discord.Guild) else _object.guild).name
+                    (_object if isinstance(_object, discord.Guild) else _object.guild).name,
                 ),
                 fill=(163, 163, 163),
                 font=self.font[54],
@@ -3456,30 +3471,26 @@ class GuildStats(Cog):
 
     async def generate_prefix_image(
         self,
-        _object: typing.Union[
-            discord.Member,
-            discord.Role,
+        _object: discord.Member
+        | discord.Role
+        | discord.Guild
+        | tuple[
             discord.Guild,
-            typing.Tuple[
-                discord.Guild,
-                typing.Union[
-                    typing.Literal["messages", "voice", "activities"],
-                    typing.Tuple[
-                        typing.Literal["top", "weekly", "monthly"],
-                        typing.Literal["messages", "voice"],
-                        typing.Literal["members", "channels"],
-                    ],
-                    typing.Tuple[typing.Literal["activity"], str],
-                ],
-            ],
-            discord.CategoryChannel,
-            discord.TextChannel,
-            discord.VoiceChannel,
-        ],
-        size: typing.Tuple[int, int] = (1942, 1026),
+            typing.Literal["messages", "voice", "activities"]
+            | tuple[
+                typing.Literal["top", "weekly", "monthly"],
+                typing.Literal["messages", "voice"],
+                typing.Literal["members", "channels"],
+            ]
+            | tuple[typing.Literal["activity"], str],
+        ]
+        | discord.CategoryChannel
+        | discord.TextChannel
+        | discord.VoiceChannel,
+        size: tuple[int, int] = (1942, 1026),
         to_file: bool = True,
-    ) -> typing.Union[Image.Image, discord.File]:
-        if isinstance(_object, typing.Tuple):
+    ) -> Image.Image | discord.File:
+        if isinstance(_object, tuple):
             _object, _type = _object
         else:
             _type = None
@@ -3511,36 +3522,32 @@ class GuildStats(Cog):
 
     def _generate_graphic(
         self,
-        _object: typing.Union[
-            discord.Member,
-            typing.Tuple[discord.Member, typing.Literal["activities"]],
-            discord.Role,
+        _object: discord.Member
+        | tuple[discord.Member, typing.Literal["activities"]]
+        | discord.Role
+        | discord.Guild
+        | tuple[
             discord.Guild,
-            typing.Tuple[
-                discord.Guild,
-                typing.Union[
-                    typing.Literal["messages", "voice", "activities"],
-                    typing.Tuple[
-                        typing.Literal["top", "weekly", "monthly"],
-                        typing.Literal["messages", "voice"],
-                        typing.Literal["members", "channels"],
-                    ],
-                    typing.Tuple[typing.Literal["activity"], str],
-                ],
-            ],
-            discord.CategoryChannel,
-            discord.TextChannel,
-            discord.VoiceChannel,
-        ],
+            typing.Literal["messages", "voice", "activities"]
+            | tuple[
+                typing.Literal["top", "weekly", "monthly"],
+                typing.Literal["messages", "voice"],
+                typing.Literal["members", "channels"],
+            ]
+            | tuple[typing.Literal["activity"], str],
+        ]
+        | discord.CategoryChannel
+        | discord.TextChannel
+        | discord.VoiceChannel,
         members_type: typing.Literal["humans", "bots", "both"],
-        size: typing.Optional[typing.Tuple[int, int]],
+        size: tuple[int, int] | None,
         data: dict,
         to_file: bool,
         img: Image.Image,
         default_state: bool,
         first_loading_time: datetime.datetime,
-    ) -> typing.Union[Image.Image, discord.File]:
-        if isinstance(_object, typing.Tuple):
+    ) -> Image.Image | discord.File:
+        if isinstance(_object, tuple):
             _object = _object[0]
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
         align_text_center = functools.partial(self.align_text_center, draw)
@@ -3576,7 +3583,7 @@ class GuildStats(Cog):
                     - 110
                     - 10
                     - self.bold_font[30].getbbox(
-                        f"{self.number_to_text_with_suffix(data['contributors'][30])} Contributors"
+                        f"{self.number_to_text_with_suffix(data['contributors'][30])} Contributors",
                     )[2]
                 )
                 align_text_center(
@@ -3596,7 +3603,7 @@ class GuildStats(Cog):
                     - 60
                     - 10
                     - self.bold_font[30].getbbox(
-                        f"{self.number_to_text_with_suffix(data['contributors'][30])} Contributors"
+                        f"{self.number_to_text_with_suffix(data['contributors'][30])} Contributors",
                     )[2]
                 )
                 align_text_center(
@@ -3613,7 +3620,7 @@ class GuildStats(Cog):
                     name=_("Contributors"),
                     showlegend=False,
                     marker={"color": "rgb(105,105,105)"},
-                )
+                ),
             )
         if data["graphic"].get("voice") is not None:
             if size is None:
@@ -3627,7 +3634,7 @@ class GuildStats(Cog):
                     - 110
                     - 10
                     - self.bold_font[30].getbbox(
-                        f"{self.number_to_text_with_suffix(data['voice_activity'][30])} Voice Hours"
+                        f"{self.number_to_text_with_suffix(data['voice_activity'][30])} Voice Hours",
                     )[2]
                 )
                 align_text_center(
@@ -3638,14 +3645,16 @@ class GuildStats(Cog):
                 )
             else:
                 draw.ellipse(
-                    (img.width - 60, 20, img.width - 20, 60), fill=(255, 0, 0), outline=(0, 0, 0)
+                    (img.width - 60, 20, img.width - 20, 60),
+                    fill=(255, 0, 0),
+                    outline=(0, 0, 0),
                 )
                 x1 = (
                     img.width
                     - 60
                     - 10
                     - self.bold_font[30].getbbox(
-                        f"{self.number_to_text_with_suffix(data['voice_activity'][30])} Voice Hours"
+                        f"{self.number_to_text_with_suffix(data['voice_activity'][30])} Voice Hours",
                     )[2]
                 )
                 align_text_center(
@@ -3680,7 +3689,7 @@ class GuildStats(Cog):
                     fill="tozeroy",
                     fillcolor="rgba(255,0,0,0.2)",
                     # yaxis="y2"
-                )
+                ),
             )
         if data["graphic"].get("messages") is not None:
             if size is None:
@@ -3736,7 +3745,7 @@ class GuildStats(Cog):
                     line={"width": 14},
                     fill="tozeroy",
                     fillcolor="rgba(0,255,0,0.2)",
-                )
+                ),
             )
         for key in (
             "activities",
@@ -3757,11 +3766,11 @@ class GuildStats(Cog):
                                     self.get_member_display(_object.get_member(label))
                                     if key.split("_")[-1] == "members"
                                     else self.remove_unprintable_characters(
-                                        _object.get_channel(label).name
+                                        _object.get_channel(label).name,
                                     )
                                 )
                             )[:20]
-                            for label in data["graphic"][key].keys()
+                            for label in data["graphic"][key]
                         ],
                         values=list(data["graphic"][key].values()),
                         hole=0.3,
@@ -3771,7 +3780,7 @@ class GuildStats(Cog):
                         textinfo="percent+label",
                         marker={"line": {"color": "rgb(0,0,0)", "width": 2}},
                         direction="clockwise",
-                    )
+                    ),
                 )
         # fig.update_traces(mode="lines")
         fig.update_xaxes(type="category", tickvals=x)
@@ -3794,12 +3803,10 @@ class GuildStats(Cog):
                 image = Image.open(self.icons["history"])
                 image = image.resize((50, 50))
                 img.paste(image, (30, 972, 80, 1022), mask=image.split()[3])
-                utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+                utc_now = datetime.datetime.now(tz=datetime.UTC)
                 tracking_data_start_time = max(
                     first_loading_time,
-                    (
-                        _object if isinstance(_object, discord.Guild) else _object.guild
-                    ).me.joined_at,
+                    (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at,
                 )
                 tracking_data_start_time = tracking_data_start_time.replace(
                     second=utc_now.second,
@@ -3826,15 +3833,16 @@ class GuildStats(Cog):
                     (90, 972, 90, 1022),
                     text=_("Tracking data in this server for {interval_string}.").format(
                         interval_string=CogsUtils.get_interval_string(
-                            tracking_data_start_time, utc_now=utc_now
-                        )
+                            tracking_data_start_time,
+                            utc_now=utc_now,
+                        ),
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[30],
                 )
             if members_type != "both":
                 members_type_text = _("Only {members_type} are taken into account.").format(
-                    members_type=members_type
+                    members_type=members_type,
                 )
                 image = Image.open(self.icons["person"])
                 image = image.resize((50, 50))
@@ -3869,33 +3877,29 @@ class GuildStats(Cog):
 
     async def generate_graphic(
         self,
-        _object: typing.Union[
-            discord.Member,
-            typing.Tuple[discord.Member, typing.Literal["activities"]],
-            discord.Role,
+        _object: discord.Member
+        | tuple[discord.Member, typing.Literal["activities"]]
+        | discord.Role
+        | discord.Guild
+        | tuple[
             discord.Guild,
-            typing.Tuple[
-                discord.Guild,
-                typing.Union[
-                    typing.Literal["messages", "voice", "activities"],
-                    typing.Tuple[
-                        typing.Literal["top", "weekly", "monthly"],
-                        typing.Literal["messages", "voice"],
-                        typing.Literal["members", "channels"],
-                    ],
-                    typing.Tuple[typing.Literal["activity"], str],
-                ],
-            ],
-            discord.CategoryChannel,
-            discord.TextChannel,
-            discord.VoiceChannel,
-        ],
+            typing.Literal["messages", "voice", "activities"]
+            | tuple[
+                typing.Literal["top", "weekly", "monthly"],
+                typing.Literal["messages", "voice"],
+                typing.Literal["members", "channels"],
+            ]
+            | tuple[typing.Literal["activity"], str],
+        ]
+        | discord.CategoryChannel
+        | discord.TextChannel
+        | discord.VoiceChannel,
         members_type: typing.Literal["humans", "bots", "both"] = "humans",
-        size: typing.Optional[typing.Tuple[int, int]] = None,
-        data: typing.Optional[dict] = None,
+        size: tuple[int, int] | None = None,
+        data: dict | None = None,
         to_file: bool = True,
-    ) -> typing.Union[Image.Image, discord.File]:
-        if isinstance(_object, typing.Tuple):
+    ) -> Image.Image | discord.File:
+        if isinstance(_object, tuple):
             _object, _type = _object
         else:
             _type = None
@@ -3906,7 +3910,8 @@ class GuildStats(Cog):
         )
         if data is None:
             data = await self.get_data(
-                _object if _type is None else (_object, _type), members_type=members_type
+                _object if _type is None else (_object, _type),
+                members_type=members_type,
             )
         return await asyncio.to_thread(
             self._generate_graphic,
@@ -3918,42 +3923,39 @@ class GuildStats(Cog):
             img=img,
             default_state=await self.config.default_state(),
             first_loading_time=datetime.datetime.fromtimestamp(
-                await self.config.first_loading_time(), tz=datetime.timezone.utc
+                await self.config.first_loading_time(),
+                tz=datetime.UTC,
             ),
         )
 
     def _generate_image(
         self,
-        _object: typing.Union[
-            discord.Member,
-            discord.Role,
+        _object: discord.Member
+        | discord.Role
+        | discord.Guild
+        | tuple[
             discord.Guild,
-            typing.Tuple[
-                discord.Guild,
-                typing.Union[
-                    typing.Literal["messages", "voice", "activities"],
-                    typing.Tuple[
-                        typing.Literal["top", "weekly", "monthly"],
-                        typing.Literal["messages", "voice"],
-                        typing.Literal["members", "channels"],
-                    ],
-                    typing.Tuple[typing.Literal["activity"], str],
-                ],
-            ],
-            discord.CategoryChannel,
-            discord.TextChannel,
-            discord.VoiceChannel,
-        ],
+            typing.Literal["messages", "voice", "activities"]
+            | tuple[
+                typing.Literal["top", "weekly", "monthly"],
+                typing.Literal["messages", "voice"],
+                typing.Literal["members", "channels"],
+            ]
+            | tuple[typing.Literal["activity"], str],
+        ]
+        | discord.CategoryChannel
+        | discord.TextChannel
+        | discord.VoiceChannel,
         members_type: typing.Literal["humans", "bots", "both"],
         show_graphic: bool,
-        graphic: typing.Optional[Image.Image],
+        graphic: Image.Image | None,
         data: dict,
         to_file: bool,
         img: Image.Image,
         default_state: bool,
         first_loading_time: datetime.datetime,
-    ) -> typing.Union[Image.Image, discord.File]:
-        if isinstance(_object, typing.Tuple):
+    ) -> Image.Image | discord.File:
+        if isinstance(_object, tuple):
             _object, _type = _object
         else:
             _type = None
@@ -4140,7 +4142,10 @@ class GuildStats(Cog):
                 draw.rounded_rectangle((50, 712, 616, 829), radius=15, fill=(32, 34, 37))
                 draw.rounded_rectangle((50, 712, 325, 829), radius=15, fill=(24, 26, 27))
                 align_text_center(
-                    (50, 712, 325, 829), text="Text", fill=(255, 255, 255), font=self.bold_font[36]
+                    (50, 712, 325, 829),
+                    text="Text",
+                    fill=(255, 255, 255),
+                    font=self.bold_font[36],
                 )
                 align_text_center(
                     (325, 712, 616, 829),
@@ -4195,8 +4200,8 @@ class GuildStats(Cog):
                         (768, 712, 1218, 788),
                         text=self.remove_unprintable_characters(
                             _object.guild.get_channel(
-                                data["top_channels_and_activity"]["text"]["channel"]
-                            ).name
+                                data["top_channels_and_activity"]["text"]["channel"],
+                            ).name,
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -4220,8 +4225,8 @@ class GuildStats(Cog):
                         (768, 804, 1218, 880),
                         text=self.remove_unprintable_characters(
                             _object.guild.get_channel(
-                                data["top_channels_and_activity"]["voice"]["channel"]
-                            ).name
+                                data["top_channels_and_activity"]["voice"]["channel"],
+                            ).name,
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -4257,7 +4262,9 @@ class GuildStats(Cog):
                 if show_graphic:
                     # Graphic. box = 940 / empty = 0 | + 411 (381 + 30) / 1 case / box = 264 / empty = 0
                     draw.rounded_rectangle(
-                        (30, 1026, 1910, 1407 + 200), radius=15, fill=(47, 49, 54)
+                        (30, 1026, 1910, 1407 + 200),
+                        radius=15,
+                        fill=(47, 49, 54),
                     )
                     align_text_center(
                         (50, 1036, 50, 1106),
@@ -4269,7 +4276,9 @@ class GuildStats(Cog):
                     image = image.resize((70, 70))
                     img.paste(image, (1830, 1036, 1900, 1106), mask=image.split()[3])
                     draw.rounded_rectangle(
-                        (50, 1123, 1890, 1387 + 200), radius=15, fill=(32, 34, 37)
+                        (50, 1123, 1890, 1387 + 200),
+                        radius=15,
+                        fill=(32, 34, 37),
                     )
                     image: Image.Image = graphic
                     image = image.resize((1840, 464))
@@ -4291,10 +4300,14 @@ class GuildStats(Cog):
                 current_y = 301
                 for i in range(10):
                     draw.rounded_rectangle(
-                        (50, current_y, 935, current_y + 58), radius=15, fill=(32, 34, 37)
+                        (50, current_y, 935, current_y + 58),
+                        radius=15,
+                        fill=(32, 34, 37),
                     )
                     draw.rounded_rectangle(
-                        (50, current_y, 580, current_y + 58), radius=15, fill=(24, 26, 27)
+                        (50, current_y, 580, current_y + 58),
+                        radius=15,
+                        fill=(24, 26, 27),
                     )
                     if len(top_activities) >= i + 1:
                         # align_text_center((50, current_y, 100, current_y + 50), text=str(i), fill=(255, 255, 255), font=self.bold_font[36])
@@ -4502,7 +4515,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (150, 712, 600, 829),
                         text=self.get_member_display(
-                            _object.get_member(data["top_members"]["text"]["member"])
+                            _object.get_member(data["top_members"]["text"]["member"]),
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -4525,7 +4538,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (150, 859, 600, 976),
                         text=self.get_member_display(
-                            _object.get_member(data["top_members"]["voice"]["member"])
+                            _object.get_member(data["top_members"]["voice"]["member"]),
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -4581,7 +4594,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (1105, 859, 1555, 976),
                         text=self.remove_unprintable_characters(
-                            _object.get_channel(data["top_channels"]["voice"]["channel"]).name
+                            _object.get_channel(data["top_channels"]["voice"]["channel"]).name,
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -4745,7 +4758,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (50, 712, 600, 788),
                         text=self.get_member_display(
-                            _object.get_member(data["top_messages_members"][0][0])
+                            _object.get_member(data["top_messages_members"][0][0]),
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -4762,7 +4775,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (50, 804, 600, 880),
                         text=self.get_member_display(
-                            _object.get_member(data["top_messages_members"][1][0])
+                            _object.get_member(data["top_messages_members"][1][0]),
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -4779,7 +4792,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (50, 896, 600, 972),
                         text=self.get_member_display(
-                            _object.get_member(data["top_messages_members"][2][0])
+                            _object.get_member(data["top_messages_members"][2][0]),
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -4809,7 +4822,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (1005, 712, 1555, 788),
                         text=self.remove_unprintable_characters(
-                            _object.get_channel(data["top_messages_channels"][0][0]).name
+                            _object.get_channel(data["top_messages_channels"][0][0]).name,
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -4826,7 +4839,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (1005, 804, 1555, 880),
                         text=self.remove_unprintable_characters(
-                            _object.get_channel(data["top_messages_channels"][1][0]).name
+                            _object.get_channel(data["top_messages_channels"][1][0]).name,
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -4843,7 +4856,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (1005, 896, 1555, 972),
                         text=self.remove_unprintable_characters(
-                            _object.get_channel(data["top_messages_channels"][2][0]).name
+                            _object.get_channel(data["top_messages_channels"][2][0]).name,
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -5007,7 +5020,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (50, 712, 600, 788),
                         text=self.get_member_display(
-                            _object.get_member(data["top_voice_members"][0][0])
+                            _object.get_member(data["top_voice_members"][0][0]),
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -5024,7 +5037,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (50, 804, 600, 880),
                         text=self.get_member_display(
-                            _object.get_member(data["top_voice_members"][1][0])
+                            _object.get_member(data["top_voice_members"][1][0]),
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -5041,7 +5054,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (50, 896, 600, 972),
                         text=self.get_member_display(
-                            _object.get_member(data["top_voice_members"][2][0])
+                            _object.get_member(data["top_voice_members"][2][0]),
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -5071,7 +5084,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (1005, 712, 1555, 788),
                         text=self.remove_unprintable_characters(
-                            _object.get_channel(data["top_voice_channels"][0][0]).name
+                            _object.get_channel(data["top_voice_channels"][0][0]).name,
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -5088,7 +5101,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (1005, 804, 1555, 880),
                         text=self.remove_unprintable_characters(
-                            _object.get_channel(data["top_voice_channels"][1][0]).name
+                            _object.get_channel(data["top_voice_channels"][1][0]).name,
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -5105,7 +5118,7 @@ class GuildStats(Cog):
                     align_text_center(
                         (1005, 896, 1555, 972),
                         text=self.remove_unprintable_characters(
-                            _object.get_channel(data["top_voice_channels"][2][0]).name
+                            _object.get_channel(data["top_voice_channels"][2][0]).name,
                         ),
                         fill=(255, 255, 255),
                         font=self.bold_font[36],
@@ -5133,10 +5146,14 @@ class GuildStats(Cog):
                 current_y = 301
                 for i in range(10):
                     draw.rounded_rectangle(
-                        (50, current_y, 935, current_y + 58), radius=15, fill=(32, 34, 37)
+                        (50, current_y, 935, current_y + 58),
+                        radius=15,
+                        fill=(32, 34, 37),
                     )
                     draw.rounded_rectangle(
-                        (50, current_y, 580, current_y + 58), radius=15, fill=(24, 26, 27)
+                        (50, current_y, 580, current_y + 58),
+                        radius=15,
+                        fill=(24, 26, 27),
                     )
                     if len(top_activities) >= i + 1:
                         # align_text_center((50, current_y, 100, current_y + 50), text=str(i), fill=(255, 255, 255), font=self.bold_font[36])
@@ -5171,7 +5188,7 @@ class GuildStats(Cog):
                 image = image.resize((885, 675))
                 img.paste(image, (1005, 301, 1890, 976))
 
-            elif isinstance(_type, typing.Tuple):
+            elif isinstance(_type, tuple):
                 if _type[0] in ("top", "weekly", "monthly"):
                     # Top Messages/Voice Members/Channels. box = 925 / empty = 30 | 30 cases / box = 76 / empty = 16
                     draw.rounded_rectangle((30, 204, 955, 996), radius=15, fill=(47, 49, 54))
@@ -5189,10 +5206,14 @@ class GuildStats(Cog):
                     current_y = 301
                     for i in range(10):
                         draw.rounded_rectangle(
-                            (50, current_y, 935, current_y + 58), radius=15, fill=(32, 34, 37)
+                            (50, current_y, 935, current_y + 58),
+                            radius=15,
+                            fill=(32, 34, 37),
                         )
                         draw.rounded_rectangle(
-                            (50, current_y, 580, current_y + 58), radius=15, fill=(24, 26, 27)
+                            (50, current_y, 580, current_y + 58),
+                            radius=15,
+                            fill=(24, 26, 27),
                         )
                         if len(top) >= i + 1:
                             align_text_center(
@@ -5201,7 +5222,7 @@ class GuildStats(Cog):
                                     self.get_member_display(_object.get_member(top[i]))
                                     if _type[2] == "members"
                                     else self.remove_unprintable_characters(
-                                        _object.get_channel(top[i]).name
+                                        _object.get_channel(top[i]).name,
                                     )
                                 ),
                                 fill=(255, 255, 255),
@@ -5246,10 +5267,14 @@ class GuildStats(Cog):
                     current_y = 301
                     for i in range(10):
                         draw.rounded_rectangle(
-                            (50, current_y, 935, current_y + 58), radius=15, fill=(32, 34, 37)
+                            (50, current_y, 935, current_y + 58),
+                            radius=15,
+                            fill=(32, 34, 37),
                         )
                         draw.rounded_rectangle(
-                            (50, current_y, 580, current_y + 58), radius=15, fill=(24, 26, 27)
+                            (50, current_y, 580, current_y + 58),
+                            radius=15,
+                            fill=(24, 26, 27),
                         )
                         if len(top) >= i + 1:
                             align_text_center(
@@ -5314,7 +5339,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((50, 301, 616, 418), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((50, 301, 325, 418), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (50, 301, 325, 418), text=_("Text"), fill=(255, 255, 255), font=self.bold_font[36]
+                (50, 301, 325, 418),
+                text=_("Text"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (325, 301, 616, 418),
@@ -5325,7 +5353,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((50, 448, 616, 565), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((50, 448, 325, 565), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (50, 448, 325, 565), text=_("Voice"), fill=(255, 255, 255), font=self.bold_font[36]
+                (50, 448, 325, 565),
+                text=_("Voice"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (325, 448, 616, 565),
@@ -5348,7 +5379,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((688, 301, 1254, 377), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((688, 301, 910, 377), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (688, 301, 910, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (688, 301, 910, 377),
+                text=_("1d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (910, 301, 1254, 377),
@@ -5359,7 +5393,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((688, 395, 1254, 471), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((688, 395, 910, 471), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (688, 395, 910, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (688, 395, 910, 471),
+                text=_("7d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (910, 395, 1254, 471),
@@ -5370,7 +5407,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((688, 489, 1254, 565), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((688, 489, 910, 565), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (688, 489, 910, 565), text=_("30d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (688, 489, 910, 565),
+                text=_("30d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (910, 489, 1254, 565),
@@ -5393,7 +5433,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((1326, 301, 1892, 377), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((1326, 301, 1548, 377), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (1326, 301, 1548, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (1326, 301, 1548, 377),
+                text=_("1d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (1548, 301, 1892, 377),
@@ -5404,7 +5447,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((1326, 395, 1892, 471), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((1326, 395, 1548, 471), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (1326, 395, 1548, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (1326, 395, 1548, 471),
+                text=_("7d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (1548, 395, 1892, 471),
@@ -5450,7 +5496,7 @@ class GuildStats(Cog):
                 align_text_center(
                     (150, 712, 600, 829),
                     text=self.get_member_display(
-                        _object.guild.get_member(data["top_members"]["text"]["member"])
+                        _object.guild.get_member(data["top_members"]["text"]["member"]),
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[36],
@@ -5473,7 +5519,7 @@ class GuildStats(Cog):
                 align_text_center(
                     (150, 859, 600, 976),
                     text=self.get_member_display(
-                        _object.guild.get_member(data["top_members"]["voice"]["member"])
+                        _object.guild.get_member(data["top_members"]["voice"]["member"]),
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[36],
@@ -5508,7 +5554,7 @@ class GuildStats(Cog):
                 align_text_center(
                     (1105, 712, 1555, 829),
                     text=self.remove_unprintable_characters(
-                        _object.guild.get_channel(data["top_channels"]["text"]["channel"]).name
+                        _object.guild.get_channel(data["top_channels"]["text"]["channel"]).name,
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[36],
@@ -5531,7 +5577,7 @@ class GuildStats(Cog):
                 align_text_center(
                     (1105, 859, 1555, 976),
                     text=self.remove_unprintable_characters(
-                        _object.guild.get_channel(data["top_channels"]["voice"]["channel"]).name
+                        _object.guild.get_channel(data["top_channels"]["voice"]["channel"]).name,
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[36],
@@ -5583,7 +5629,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((688, 301, 1254, 377), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((688, 301, 910, 377), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (688, 301, 910, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (688, 301, 910, 377),
+                text=_("1d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (910, 301, 1254, 377),
@@ -5594,7 +5643,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((688, 395, 1254, 471), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((688, 395, 910, 471), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (688, 395, 910, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (688, 395, 910, 471),
+                text=_("7d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (910, 395, 1254, 471),
@@ -5605,7 +5657,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((688, 489, 1254, 565), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((688, 489, 910, 565), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (688, 489, 910, 565), text=_("30d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (688, 489, 910, 565),
+                text=_("30d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (910, 489, 1254, 565),
@@ -5628,7 +5683,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((1326, 301, 1892, 377), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((1326, 301, 1548, 377), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (1326, 301, 1548, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (1326, 301, 1548, 377),
+                text=_("1d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (1548, 301, 1892, 377),
@@ -5639,7 +5697,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((1326, 395, 1892, 471), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((1326, 395, 1548, 471), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (1326, 395, 1548, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (1326, 395, 1548, 471),
+                text=_("7d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (1548, 395, 1892, 471),
@@ -5699,7 +5760,7 @@ class GuildStats(Cog):
                 align_text_center(
                     (688, 712, 1218, 788),
                     text=self.get_member_display(
-                        _object.guild.get_member(data["top_messages_members"][0][0])
+                        _object.guild.get_member(data["top_messages_members"][0][0]),
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[36],
@@ -5716,7 +5777,7 @@ class GuildStats(Cog):
                 align_text_center(
                     (688, 804, 1218, 880),
                     text=self.get_member_display(
-                        _object.guild.get_member(data["top_messages_members"][1][0])
+                        _object.guild.get_member(data["top_messages_members"][1][0]),
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[36],
@@ -5733,7 +5794,7 @@ class GuildStats(Cog):
                 align_text_center(
                     (688, 896, 1218, 972),
                     text=self.get_member_display(
-                        _object.guild.get_member(data["top_messages_members"][2][0])
+                        _object.guild.get_member(data["top_messages_members"][2][0]),
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[36],
@@ -5802,7 +5863,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((688, 301, 1254, 377), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((688, 301, 910, 377), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (688, 301, 910, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (688, 301, 910, 377),
+                text=_("1d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (910, 301, 1254, 377),
@@ -5813,7 +5877,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((688, 395, 1254, 471), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((688, 395, 910, 471), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (688, 395, 910, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (688, 395, 910, 471),
+                text=_("7d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (910, 395, 1254, 471),
@@ -5824,7 +5891,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((688, 489, 1254, 565), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((688, 489, 910, 565), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (688, 489, 910, 565), text=_("30d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (688, 489, 910, 565),
+                text=_("30d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (910, 489, 1254, 565),
@@ -5847,7 +5917,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((1326, 301, 1892, 377), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((1326, 301, 1548, 377), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (1326, 301, 1548, 377), text=_("1d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (1326, 301, 1548, 377),
+                text=_("1d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (1548, 301, 1892, 377),
@@ -5858,7 +5931,10 @@ class GuildStats(Cog):
             draw.rounded_rectangle((1326, 395, 1892, 471), radius=15, fill=(32, 34, 37))
             draw.rounded_rectangle((1326, 395, 1548, 471), radius=15, fill=(24, 26, 27))
             align_text_center(
-                (1326, 395, 1548, 471), text=_("7d"), fill=(255, 255, 255), font=self.bold_font[36]
+                (1326, 395, 1548, 471),
+                text=_("7d"),
+                fill=(255, 255, 255),
+                font=self.bold_font[36],
             )
             align_text_center(
                 (1548, 395, 1892, 471),
@@ -5918,7 +5994,7 @@ class GuildStats(Cog):
                 align_text_center(
                     (688, 712, 1218, 788),
                     text=self.get_member_display(
-                        _object.guild.get_member(data["top_voice_members"][0][0])
+                        _object.guild.get_member(data["top_voice_members"][0][0]),
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[36],
@@ -5935,7 +6011,7 @@ class GuildStats(Cog):
                 align_text_center(
                     (688, 804, 1218, 880),
                     text=self.get_member_display(
-                        _object.guild.get_member(data["top_voice_members"][1][0])
+                        _object.guild.get_member(data["top_voice_members"][1][0]),
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[36],
@@ -5952,7 +6028,7 @@ class GuildStats(Cog):
                 align_text_center(
                     (688, 896, 1218, 972),
                     text=self.get_member_display(
-                        _object.guild.get_member(data["top_voice_members"][2][0])
+                        _object.guild.get_member(data["top_voice_members"][2][0]),
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[36],
@@ -5981,7 +6057,7 @@ class GuildStats(Cog):
                 image = image.resize((1840, 464))
                 img.paste(image, (50, 1123, 1890, 1387 + 200))
 
-        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+        utc_now = datetime.datetime.now(tz=datetime.UTC)
         tracking_data_start_time = max(
             first_loading_time,
             (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at,
@@ -5995,8 +6071,7 @@ class GuildStats(Cog):
             ),
             hour=(
                 utc_now.hour
-                if (utc_now - tracking_data_start_time)
-                > datetime.timedelta(seconds=3600 * 24 * 30)
+                if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 30)
                 else tracking_data_start_time.hour
             ),
             day=(
@@ -6015,15 +6090,16 @@ class GuildStats(Cog):
                     (90, 1427 + 200, 90, 1477 + 200),
                     text=_("Tracking data in this server for {interval_string}.").format(
                         interval_string=CogsUtils.get_interval_string(
-                            tracking_data_start_time, utc_now=utc_now
-                        )
+                            tracking_data_start_time,
+                            utc_now=utc_now,
+                        ),
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[30],
                 )
             if members_type != "both":
                 members_type_text = _("Only {members_type} are taken into account.").format(
-                    members_type=members_type
+                    members_type=members_type,
                 )
                 image = Image.open(self.icons["person"])
                 image = image.resize((50, 50))
@@ -6057,15 +6133,16 @@ class GuildStats(Cog):
                     (90, 1016, 90, 1066),
                     text=_("Tracking data in this server for {interval_string}.").format(
                         interval_string=CogsUtils.get_interval_string(
-                            tracking_data_start_time, utc_now=utc_now
-                        )
+                            tracking_data_start_time,
+                            utc_now=utc_now,
+                        ),
                     ),
                     fill=(255, 255, 255),
                     font=self.bold_font[30],
                 )
             if members_type != "both":
                 members_type_text = _("Only {members_type} are taken into account.").format(
-                    members_type=members_type
+                    members_type=members_type,
                 )
                 image = Image.open(self.icons["person"])
                 image = image.resize((50, 50))
@@ -6100,33 +6177,29 @@ class GuildStats(Cog):
 
     async def generate_image(
         self,
-        _object: typing.Union[
-            discord.Member,
-            typing.Tuple[discord.Member, typing.Literal["activities"]],
-            discord.Role,
+        _object: discord.Member
+        | tuple[discord.Member, typing.Literal["activities"]]
+        | discord.Role
+        | discord.Guild
+        | tuple[
             discord.Guild,
-            typing.Tuple[
-                discord.Guild,
-                typing.Union[
-                    typing.Literal["messages", "voice", "activities"],
-                    typing.Tuple[
-                        typing.Literal["top", "weekly", "monthly"],
-                        typing.Literal["messages", "voice"],
-                        typing.Literal["members", "channels"],
-                    ],
-                    typing.Tuple[typing.Literal["activity"], str],
-                ],
-            ],
-            discord.CategoryChannel,
-            discord.TextChannel,
-            discord.VoiceChannel,
-        ],
+            typing.Literal["messages", "voice", "activities"]
+            | tuple[
+                typing.Literal["top", "weekly", "monthly"],
+                typing.Literal["messages", "voice"],
+                typing.Literal["members", "channels"],
+            ]
+            | tuple[typing.Literal["activity"], str],
+        ]
+        | discord.CategoryChannel
+        | discord.TextChannel
+        | discord.VoiceChannel,
         members_type: typing.Literal["humans", "bots", "both"] = "humans",
         show_graphic: bool = False,
-        data: typing.Optional[dict] = None,
+        data: dict | None = None,
         to_file: bool = True,
-    ) -> typing.Union[Image.Image, discord.File]:
-        if isinstance(_object, typing.Tuple):
+    ) -> Image.Image | discord.File:
+        if isinstance(_object, tuple):
             _object, _type = _object
         else:
             _type = None
@@ -6137,18 +6210,24 @@ class GuildStats(Cog):
         )  # (1940, 1481) / 1942 + 636
         if data is None:
             data = await self.get_data(
-                _object if _type is None else (_object, _type), members_type=members_type
+                _object if _type is None else (_object, _type),
+                members_type=members_type,
             )
         if show_graphic:
             graphic = await self.generate_graphic(
-                _object, size=(1840, 464), data=data, to_file=False
+                _object,
+                size=(1840, 464),
+                data=data,
+                to_file=False,
             )
         elif _type == "activities" or (
-            isinstance(_type, typing.Tuple)
-            and _type[0] in ("top", "weekly", "monthly", "activity")
+            isinstance(_type, tuple) and _type[0] in ("top", "weekly", "monthly", "activity")
         ):
             graphic = await self.generate_graphic(
-                _object, size=(885, 675), data=data, to_file=False
+                _object,
+                size=(885, 675),
+                data=data,
+                to_file=False,
             )
         else:
             graphic = None
@@ -6163,7 +6242,8 @@ class GuildStats(Cog):
             graphic=graphic,
             default_state=await self.config.default_state(),
             first_loading_time=datetime.datetime.fromtimestamp(
-                await self.config.first_loading_time(), tz=datetime.timezone.utc
+                await self.config.first_loading_time(),
+                tz=datetime.UTC,
             ),
         )
 
@@ -6173,8 +6253,8 @@ class GuildStats(Cog):
     async def guildstats(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
-        show_graphic: typing.Optional[bool] = False,
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
+        show_graphic: bool | None = False,
         *,
         _object: ObjectConverter,
     ) -> None:
@@ -6188,15 +6268,15 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         ignored_users = await self.config.ignored_users()
         if isinstance(_object, discord.Member) and _object.id in ignored_users:
             raise commands.UserFeedbackCheckFailure(
-                _(
-                    "This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
-                ).format(prefix=ctx.prefix)
+                _("This user is in the ignored users list (`{prefix}guildstats ignoreme`).").format(
+                    prefix=ctx.prefix,
+                ),
             )
         await GuildStatsView(
             cog=self,
@@ -6214,7 +6294,7 @@ class GuildStats(Cog):
     async def member(
         self,
         ctx: commands.Context,
-        show_graphic: typing.Optional[bool] = False,
+        show_graphic: bool | None = False,
         *,
         member: discord.Member = commands.Author,
     ) -> None:
@@ -6226,15 +6306,15 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         ignored_users = await self.config.ignored_users()
         if member.id in ignored_users:
             raise commands.UserFeedbackCheckFailure(
-                _(
-                    "This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
-                ).format(prefix=ctx.prefix)
+                _("This user is in the ignored users list (`{prefix}guildstats ignoreme`).").format(
+                    prefix=ctx.prefix,
+                ),
             )
         await GuildStatsView(
             cog=self,
@@ -6248,7 +6328,7 @@ class GuildStats(Cog):
     async def role(
         self,
         ctx: commands.Context,
-        show_graphic: typing.Optional[bool] = False,
+        show_graphic: bool | None = False,
         *,
         role: discord.Role = None,
     ) -> None:
@@ -6262,8 +6342,8 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         await GuildStatsView(
             cog=self,
@@ -6277,8 +6357,8 @@ class GuildStats(Cog):
     async def guild(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
-        show_graphic: typing.Optional[bool] = False,
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
+        show_graphic: bool | None = False,
     ) -> None:
         """Display stats for this guild."""
         if not (
@@ -6288,8 +6368,8 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         await GuildStatsView(
             cog=self,
@@ -6303,8 +6383,8 @@ class GuildStats(Cog):
     async def messages(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
-        show_graphic: typing.Optional[bool] = False,
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
+        show_graphic: bool | None = False,
     ) -> None:
         """Display stats for the messages in this guild."""
         if not (
@@ -6314,8 +6394,8 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         await GuildStatsView(
             cog=self,
@@ -6329,8 +6409,8 @@ class GuildStats(Cog):
     async def voice(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
-        show_graphic: typing.Optional[bool] = False,
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
+        show_graphic: bool | None = False,
     ) -> None:
         """Display stats for the voice in this guild."""
         if not (
@@ -6340,8 +6420,8 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         await GuildStatsView(
             cog=self,
@@ -6355,13 +6435,11 @@ class GuildStats(Cog):
     async def activities(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
     ) -> None:
         """Display stats for activities in this guild."""
         if not await self.config.toggle_activities_stats():
-            raise commands.UserFeedbackCheckFailure(
-                _("Activities stats are disabled on this bot.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("Activities stats are disabled on this bot."))
         if not (
             enabled_state
             if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None
@@ -6369,8 +6447,8 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         await GuildStatsView(
             cog=self,
@@ -6384,8 +6462,8 @@ class GuildStats(Cog):
     async def category(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
-        show_graphic: typing.Optional[bool] = False,
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
+        show_graphic: bool | None = False,
         *,
         category: discord.CategoryChannel = None,
     ) -> None:
@@ -6402,8 +6480,8 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         await GuildStatsView(
             cog=self,
@@ -6417,10 +6495,10 @@ class GuildStats(Cog):
     async def channel(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
-        show_graphic: typing.Optional[bool] = False,
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
+        show_graphic: bool | None = False,
         *,
-        channel: typing.Union[discord.TextChannel, discord.VoiceChannel] = commands.CurrentChannel,
+        channel: discord.TextChannel | discord.VoiceChannel = commands.CurrentChannel,
     ) -> None:
         """Display stats for a specified channel."""
         if not (
@@ -6430,8 +6508,8 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         if isinstance(channel, discord.Thread):
             raise commands.UserFeedbackCheckFailure(_("Threads aren't supported by this cog."))
@@ -6447,9 +6525,9 @@ class GuildStats(Cog):
     async def top(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
-        _type_1: typing.Optional[typing.Literal["messages", "voice"]] = "messages",
-        _type_2: typing.Optional[typing.Literal["members", "channels"]] = "members",
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
+        _type_1: typing.Literal["messages", "voice"] | None = "messages",
+        _type_2: typing.Literal["members", "channels"] | None = "members",
     ) -> None:
         """Display top stats leaderboard for voice/messages members/channels."""
         if members_type is None:
@@ -6461,8 +6539,8 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         await GuildStatsView(
             cog=self,
@@ -6476,9 +6554,9 @@ class GuildStats(Cog):
     async def weekly(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
-        _type_1: typing.Optional[typing.Literal["messages", "voice"]] = "messages",
-        _type_2: typing.Optional[typing.Literal["members", "channels"]] = "members",
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
+        _type_1: typing.Literal["messages", "voice"] | None = "messages",
+        _type_2: typing.Literal["members", "channels"] | None = "members",
     ) -> None:
         """Display weekly stats leaderboard for voice/messages members/channels."""
         if members_type is None:
@@ -6490,8 +6568,8 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         await GuildStatsView(
             cog=self,
@@ -6505,9 +6583,9 @@ class GuildStats(Cog):
     async def monthly(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
-        _type_1: typing.Optional[typing.Literal["messages", "voice"]] = "messages",
-        _type_2: typing.Optional[typing.Literal["members", "channels"]] = "members",
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
+        _type_1: typing.Literal["messages", "voice"] | None = "messages",
+        _type_2: typing.Literal["members", "channels"] | None = "members",
     ) -> None:
         """Display monthly stats leaderboard for voice/messages members/channels."""
         if not (
@@ -6517,8 +6595,8 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         await GuildStatsView(
             cog=self,
@@ -6532,15 +6610,13 @@ class GuildStats(Cog):
     async def activity(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
         *,
         activity_name: str,
     ) -> None:
         """Display stats for a specific activity in this guild."""
         if not await self.config.toggle_activities_stats():
-            raise commands.UserFeedbackCheckFailure(
-                _("Activities stats are disabled on this bot.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("Activities stats are disabled on this bot."))
         if not (
             enabled_state
             if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None
@@ -6548,8 +6624,8 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         await GuildStatsView(
             cog=self,
@@ -6568,9 +6644,7 @@ class GuildStats(Cog):
     ) -> None:
         """Display stats for the activities of a specified member."""
         if not await self.config.toggle_activities_stats():
-            raise commands.UserFeedbackCheckFailure(
-                _("Activities stats are disabled on this bot.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("Activities stats are disabled on this bot."))
         if not (
             enabled_state
             if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None
@@ -6578,15 +6652,15 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         ignored_users = await self.config.ignored_users()
         if member.id in ignored_users:
             raise commands.UserFeedbackCheckFailure(
-                _(
-                    "This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
-                ).format(prefix=ctx.prefix)
+                _("This user is in the ignored users list (`{prefix}guildstats ignoreme`).").format(
+                    prefix=ctx.prefix,
+                ),
             )
         await GuildStatsView(
             cog=self,
@@ -6600,7 +6674,7 @@ class GuildStats(Cog):
     async def graphic(
         self,
         ctx: commands.Context,
-        members_type: typing.Optional[typing.Literal["humans", "bots", "both"]] = "humans",
+        members_type: typing.Literal["humans", "bots", "both"] | None = "humans",
         *,
         _object: ObjectConverter = None,
     ) -> None:
@@ -6608,9 +6682,7 @@ class GuildStats(Cog):
         if _object is None:
             _object = ctx.guild
         if _object == "activities" and not await self.config.toggle_activities_stats():
-            raise commands.UserFeedbackCheckFailure(
-                _("Activities stats are disabled on this bot.")
-            )
+            raise commands.UserFeedbackCheckFailure(_("Activities stats are disabled on this bot."))
         if not (
             enabled_state
             if (enabled_state := await self.config.guild(ctx.guild).enabled()) is not None
@@ -6618,15 +6690,15 @@ class GuildStats(Cog):
         ):
             raise commands.UserFeedbackCheckFailure(
                 _(
-                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`."
-                ).format(prefix=ctx.prefix)
+                    "This cog is disabled in this guild. Administrators can enable it with the command `{prefix}guildstats enable`.",
+                ).format(prefix=ctx.prefix),
             )
         ignored_users = await self.config.ignored_users()
         if isinstance(_object, discord.Member) and _object.id in ignored_users:
             raise commands.UserFeedbackCheckFailure(
-                _(
-                    "This user is in the ignored users list (`{prefix}guildstats ignoreme`)."
-                ).format(prefix=ctx.prefix)
+                _("This user is in the ignored users list (`{prefix}guildstats ignoreme`).").format(
+                    prefix=ctx.prefix,
+                ),
             )
         await GuildStatsView(
             cog=self,
@@ -6644,15 +6716,15 @@ class GuildStats(Cog):
     async def ignoreme(self, ctx: commands.Context) -> None:
         """Asking GuildStats to ignore your actions."""
         user = ctx.author
-        ignored_users: typing.List[int] = await self.config.ignored_users()
+        ignored_users: list[int] = await self.config.ignored_users()
         if user.id not in ignored_users:
             ignored_users.append(user.id)
             await self.red_delete_data_for_user(requester="user", user_id=user.id)
             await self.config.ignored_users.set(ignored_users)
             await ctx.send(
                 _(
-                    "You will no longer be seen by this cog and the data I held on you have been deleted."
-                )
+                    "You will no longer be seen by this cog and the data I held on you have been deleted.",
+                ),
             )
         else:
             ignored_users.remove(user.id)
@@ -6663,14 +6735,14 @@ class GuildStats(Cog):
     @guildstats.command()
     async def ignoreuser(self, ctx: commands.Context, *, user: discord.User):
         """Ignore or unignore a specific user."""
-        ignored_users: typing.List[int] = await self.config.ignored_users()
+        ignored_users: list[int] = await self.config.ignored_users()
         if user.id not in ignored_users:
             ignored_users.append(user.id)
             await self.red_delete_data_for_user(requester="user", user_id=user.id)
             await self.config.ignored_users.set(ignored_users)
             await ctx.send(
                 _(
-                    "{user.mention} ({user.id}) will no longer be seen by this cog, and their data has been deleted."
+                    "{user.mention} ({user.id}) will no longer be seen by this cog, and their data has been deleted.",
                 ).format(user=user),
                 allowed_mentions=discord.AllowedMentions(users=False),
             )
@@ -6686,15 +6758,15 @@ class GuildStats(Cog):
     @guildstats.command()
     async def ignorecategory(self, ctx: commands.Context, *, category: discord.CategoryChannel):
         """Ignore or unignore a specific category."""
-        ignored_categories: typing.List[int] = await self.config.guild(
-            ctx.guild
+        ignored_categories: list[int] = await self.config.guild(
+            ctx.guild,
         ).ignored_categories()
         if category.id not in ignored_categories:
             ignored_categories.append(category.id)
             await self.config.guild(ctx.guild).ignored_categories.set(ignored_categories)
             await ctx.send(
                 _(
-                    "`{category.name}` ({category.id}) will now be ignored in stats (except for the specific category one)."
+                    "`{category.name}` ({category.id}) will now be ignored in stats (except for the specific category one).",
                 ).format(category=category),
             )
         else:
@@ -6702,7 +6774,7 @@ class GuildStats(Cog):
             await self.config.guild(ctx.guild).ignored_categories.set(ignored_categories)
             await ctx.send(
                 _("`{category.name}` ({category.id}) will no longer be ignored in stats.").format(
-                    category=category
+                    category=category,
                 ),
             )
 
@@ -6712,16 +6784,16 @@ class GuildStats(Cog):
         self,
         ctx: commands.Context,
         *,
-        channel: typing.Union[discord.TextChannel, discord.VoiceChannel],
+        channel: discord.TextChannel | discord.VoiceChannel,
     ):
         """Ignore or unignore a specific channel."""
-        ignored_channels: typing.List[int] = await self.config.guild(ctx.guild).ignored_channels()
+        ignored_channels: list[int] = await self.config.guild(ctx.guild).ignored_channels()
         if channel.id not in ignored_channels:
             ignored_channels.append(channel.id)
             await self.config.guild(ctx.guild).ignored_channels.set(ignored_channels)
             await ctx.send(
                 _(
-                    "{channel.mention} ({channel.id}) will now be ignored in stats (except for the specific channel one)."
+                    "{channel.mention} ({channel.id}) will now be ignored in stats (except for the specific channel one).",
                 ).format(channel=channel),
             )
         else:
@@ -6729,7 +6801,7 @@ class GuildStats(Cog):
             await self.config.guild(ctx.guild).ignored_channels.set(ignored_channels)
             await ctx.send(
                 _("{channel.mention} ({channel.id}) will no longer be ignored in stats.").format(
-                    channel=channel
+                    channel=channel,
                 ),
             )
 
@@ -6737,15 +6809,15 @@ class GuildStats(Cog):
     @guildstats.command()
     async def ignoreactivity(self, ctx: commands.Context, *, activity_name: str):
         """Ignore or unignore a specific activity."""
-        ignored_activities: typing.List[str] = await self.config.guild(
-            ctx.guild
+        ignored_activities: list[str] = await self.config.guild(
+            ctx.guild,
         ).ignored_activities()
         if activity_name not in ignored_activities:
             ignored_activities.append(activity_name)
             await self.config.guild(ctx.guild).ignored_activities.set(ignored_activities)
             await ctx.send(
                 _(
-                    "The activity `{activity_name}` will now be ignored in stats (except for the specific activity one)."
+                    "The activity `{activity_name}` will now be ignored in stats (except for the specific activity one).",
                 ).format(activity_name=activity_name),
             )
         else:
@@ -6753,7 +6825,7 @@ class GuildStats(Cog):
             await self.config.guild(ctx.guild).ignored_activities.set(ignored_activities)
             await ctx.send(
                 _("The activity `{activity_name}` will no longer be ignored in stats.").format(
-                    activity_name=activity_name
+                    activity_name=activity_name,
                 ),
             )
 
@@ -6776,7 +6848,7 @@ class GuildStats(Cog):
         current_state = await self.config.guild(ctx.guild).enabled()
         if current_state is not None and current_state:
             raise commands.UserFeedbackCheckFailure(
-                _("GuildStats already enabled in this guild/server.")
+                _("GuildStats already enabled in this guild/server."),
             )
         await self.config.guild(ctx.guild).enabled.set(True)
         await ctx.send(_("GuildStats enabled in this guild/server."))
@@ -6788,7 +6860,7 @@ class GuildStats(Cog):
         current_state = await self.config.guild(ctx.guild).enabled()
         if current_state is not None and not current_state:
             raise commands.UserFeedbackCheckFailure(
-                _("GuildStats already disabled in this guild/server.")
+                _("GuildStats already disabled in this guild/server."),
             )
         await self.config.guild(ctx.guild).enabled.set(False)
         await ctx.send(_("GuildStats disabled in this guild/server."))
@@ -6865,5 +6937,5 @@ class GuildStats(Cog):
                             channels_data[str(channel.id)]["total_voice_members"] = {}
                             channels_data[str(channel.id)]["voice"] = {}
             await ctx.send(
-                _("All GuildStats {_type} data purged for this guild.").format(_type=_type)
+                _("All GuildStats {_type} data purged for this guild.").format(_type=_type),
             )

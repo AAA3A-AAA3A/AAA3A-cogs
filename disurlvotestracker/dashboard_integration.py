@@ -1,12 +1,13 @@
-from redbot.core import commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
+import typing
 from collections import Counter
 from pathlib import Path
+
+import discord
+
+from redbot.core import commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator
 
 
 def dashboard_page(*args, **kwargs):
@@ -32,15 +33,16 @@ class DashboardIntegration:
         dashboard_cog.rpc.third_parties_handler.add_third_party(self)
 
     @dashboard_page(
-        name="leaderboard", description="Display the Disurl lifetime votes leaderboard."
+        name="leaderboard",
+        description="Display the Disurl lifetime votes leaderboard.",
     )
     async def lifetime_leaderboard_page(
         self,
         user: discord.User,
         guild: discord.Guild,
-        query: typing.Optional[str] = None,
+        query: str | None = None,
         **kwargs,
-    ) -> typing.Dict[str, typing.Any]:
+    ) -> dict[str, typing.Any]:
         if not await self.config.guild(guild).enabled():
             return {
                 "status": 1,
@@ -53,7 +55,7 @@ class DashboardIntegration:
                 member: len(member_data["votes"])
                 for member_id, member_data in members_data.items()
                 if member_data["votes"] and (member := guild.get_member(member_id)) is not None
-            }
+            },
         )
         if not counter:
             return {
@@ -80,22 +82,24 @@ class DashboardIntegration:
                     default_per_page=100,
                 ),
                 "total": _("Total: {total} vote{s}").format(
-                    total=counter.total(), s="" if counter.total() == 1 else "s"
+                    total=counter.total(),
+                    s="" if counter.total() == 1 else "s",
                 ),
                 "query": query,
             },
         }
 
     @dashboard_page(
-        name="montly-leaderboard", description="Display the Disurl monthly votes leaderboard."
+        name="montly-leaderboard",
+        description="Display the Disurl monthly votes leaderboard.",
     )
     async def montly_leaderboard_page(
         self,
         user: discord.User,
         guild: discord.Guild,
-        query: typing.Optional[str] = None,
+        query: str | None = None,
         **kwargs,
-    ) -> typing.Dict[str, typing.Any]:
+    ) -> dict[str, typing.Any]:
         if not await self.config.guild(guild).enabled():
             return {
                 "status": 1,
@@ -109,14 +113,14 @@ class DashboardIntegration:
                     [
                         vote
                         for vote in member_data["votes"]
-                        if datetime.datetime.now(tz=datetime.timezone.utc)
-                        - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc)
+                        if datetime.datetime.now(tz=datetime.UTC)
+                        - datetime.datetime.fromtimestamp(vote, tz=datetime.UTC)
                         < datetime.timedelta(days=30)
-                    ]
+                    ],
                 )
                 for member_id, member_data in members_data.items()
                 if member_data["votes"] and (member := guild.get_member(member_id)) is not None
-            }
+            },
         )
         if not counter:
             return {
@@ -143,7 +147,8 @@ class DashboardIntegration:
                     default_per_page=100,
                 ),
                 "total": _("Total: {total} vote{s}").format(
-                    total=counter.total(), s="" if counter.total() == 1 else "s"
+                    total=counter.total(),
+                    s="" if counter.total() == 1 else "s",
                 ),
                 "query": query,
             },

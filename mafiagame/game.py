@@ -1,18 +1,17 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import asyncio
 import datetime
 import io
 import random
+import typing
 from dataclasses import dataclass, field
 
 import chat_exporter
-from redbot.core import bank
+import discord
+
+from AAA3A_utils import CogsUtils
+from redbot.core import bank, commands
 from redbot.core.errors import BalanceTooHigh
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 
 from .anomalies import (
@@ -38,8 +37,8 @@ from .modes import Classic, Mode
 from .roles import (
     ACHIEVEMENTS,
     MAFIA_HIERARCHY,
-    ROLES,
     ROLE_PRIORITY,
+    ROLES,
     TARGET_TYPE_HINT,
     Alchemist,
     Blackmailer,
@@ -78,25 +77,23 @@ _: Translator = Translator("MafiaGame", __file__)
 class DayNight:
     game: "Game"
     number: int
-    targets: typing.Dict[Player, TARGET_TYPE_HINT] = field(default_factory=dict)
+    targets: dict[Player, TARGET_TYPE_HINT] = field(default_factory=dict)
 
     async def start(self) -> None:
         embed: discord.Embed = discord.Embed(
             title=_(
-                _("🌙 Night {number} 🌙") if isinstance(self, Night) else _("🌞 Day {number} 🌞")
+                _("🌙 Night {number} 🌙") if isinstance(self, Night) else _("🌞 Day {number} 🌞"),
             ).format(number=self.number),
             color=NIGHT_COLOR if isinstance(self, Night) else DAY_COLOR,
         )
         embed.add_field(
-            name=_("Currently alive ({len_alive}):").format(
-                len_alive=len(self.game.alive_players)
-            ),
+            name=_("Currently alive ({len_alive}):").format(len_alive=len(self.game.alive_players)),
             value="\n".join(
                 [
                     f"😃 {player.member.mention}"
-                    + (f" (Mayor)" if player.role is Mayor and player.revealed else "")
+                    + (" (Mayor)" if player.role is Mayor and player.revealed else "")
                     for player in self.game.alive_players
-                ]
+                ],
             ),
         )
         embed.add_field(
@@ -114,11 +111,13 @@ class DayNight:
                                         (
                                             day_night
                                             for day_night in self.game.days_nights
-                                            if day_night.__class__.__name__ == "Night" and day_night.number == player.death_day_night_number
+                                            if day_night.__class__.__name__ == "Night"
+                                            and day_night.number == player.death_day_night_number
                                         ),
                                         None,
                                     )
-                                ) is None
+                                )
+                                is None
                                 or not any(
                                     p
                                     for p, t in death_night.targets.items()
@@ -129,13 +128,11 @@ class DayNight:
                         else ""
                     )
                     for player in self.game.dead_players
-                ]
+                ],
             )
             or _("No one is dead yet..."),
         )
-        embed.set_image(
-            url=f"attachment://{'night.png' if isinstance(self, Night) else 'day.png'}"
-        )
+        embed.set_image(url=f"attachment://{'night.png' if isinstance(self, Night) else 'day.png'}")
         await self.game.send(
             embed=embed,
             file=get_image("night" if isinstance(self, Night) else "day"),
@@ -144,18 +141,19 @@ class DayNight:
 
 @dataclass
 class Night(DayNight):
-    immune_players: typing.List[Player] = field(default_factory=list)
+    immune_players: list[Player] = field(default_factory=list)
     plague_doctor_warning: bool = False
-    alchemists_potions: typing.Dict[
-        Player, typing.Literal["lethal", "invisibility", "truth", "mundane"]
+    alchemists_potions: dict[
+        Player,
+        typing.Literal["lethal", "invisibility", "truth", "mundane"],
     ] = field(default_factory=dict)
-    gamblers_dices: typing.Dict[Player, typing.Literal["white", "yellow", "red"]] = field(
-        default_factory=dict
+    gamblers_dices: dict[Player, typing.Literal["white", "yellow", "red"]] = field(
+        default_factory=dict,
     )
-    gamblers_results: typing.Dict[Player, typing.Tuple[bool, typing.Optional[Player]]] = field(
-        default_factory=dict
+    gamblers_results: dict[Player, tuple[bool, Player | None]] = field(
+        default_factory=dict,
     )
-    bakers_effects: typing.Dict[
+    bakers_effects: dict[
         Player,
         typing.Literal["extra_vote", "healed_from_mafia_attacks", "distracted", "vote_lost"],
     ] = field(default_factory=dict)
@@ -166,7 +164,7 @@ class Night(DayNight):
         embed: discord.Embed = discord.Embed(
             title=_("Night falls... 🌙"),
             description=_(
-                "Alright everyone, close your eyes and let the night begin. It's 🔪 story time 🔪!"
+                "Alright everyone, close your eyes and let the night begin. It's 🔪 story time 🔪!",
             ),
             color=NIGHT_COLOR,
         )
@@ -183,16 +181,15 @@ class Night(DayNight):
         await view.on_timeout()
         view.stop()
 
-        self.targets = {
-            player: target
-            for player, target in sorted(
+        self.targets = dict(
+            sorted(
                 self.targets.items(),
                 key=lambda item: (
                     ROLE_PRIORITY.index(item[0].role),
                     self.game.players.index(item[0]),
                 ),
-            )
-        }
+            ),
+        )
         for player in self.game.alive_players:
             if player in self.targets:
                 self.game.afk_players.pop(player, None)
@@ -236,7 +233,7 @@ class Night(DayNight):
             if target is not None:
                 try:
                     for i, tg in enumerate(
-                        [target] if not isinstance(target, typing.Tuple) else target
+                        [target] if not isinstance(target, tuple) else target,
                     ):
                         if not isinstance(tg, Player):
                             continue
@@ -252,7 +249,7 @@ class Night(DayNight):
                                 tg = await p.role.check_pt(self, p, player, tg)
                             except NotImplementedError:
                                 pass
-                            if not isinstance(target, typing.Tuple):
+                            if not isinstance(target, tuple):
                                 self.targets[player] = tg
                             else:
                                 t = list(self.targets[player])
@@ -264,7 +261,7 @@ class Night(DayNight):
                                     await self.game.send(
                                         embed=discord.Embed(
                                             title=_(
-                                                "The Mafia visited {tg.member.display_name} tonight, but they were already dead!"
+                                                "The Mafia visited {tg.member.display_name} tonight, but they were already dead!",
                                             ).format(tg=tg),
                                             color=MAFIA_COLOR,
                                         ),
@@ -274,7 +271,7 @@ class Night(DayNight):
                             await player.send(
                                 embed=discord.Embed(
                                     title=_("{tg.member.display_name} hasn't been found!").format(
-                                        tg=tg
+                                        tg=tg,
                                     ),
                                     description=_("You were unable to perform your action."),
                                 ),
@@ -305,12 +302,12 @@ class Night(DayNight):
                         await self.game.cog.config.member(player.member).temp_banned_until.set(
                             int(
                                 (
-                                    datetime.datetime.now(tz=datetime.timezone.utc)
+                                    datetime.datetime.now(tz=datetime.UTC)
                                     + datetime.timedelta(hours=afk_temp_ban_duration)
                                 )
                                 .replace(second=0, microsecond=0)
-                                .timestamp()
-                            )
+                                .timestamp(),
+                            ),
                         )
         for player in self.game.alive_players:
             if player not in self.targets:
@@ -328,23 +325,21 @@ class Day(DayNight):
             embed=discord.Embed(
                 title=_("Day dawns... 🌞"),
                 description=_(
-                    "Good morning everyone! It's time to discuss who you think is a Mafia."
+                    "Good morning everyone! It's time to discuss who you think is a Mafia.",
                 ),
                 color=DAY_COLOR,
             ),
         )
         await asyncio.sleep(2)
         for mayor_player in [
-            player
-            for player in self.game.alive_players
-            if player.role is Mayor and player.revealed
+            player for player in self.game.alive_players if player.role is Mayor and player.revealed
         ]:
             embed: discord.Embed = discord.Embed(
                 title=_(
-                    "{mayor_player.member.display_name} has revealed themselves as **Mayor**!"
+                    "{mayor_player.member.display_name} has revealed themselves as **Mayor**!",
                 ).format(mayor_player=mayor_player),
                 description=_(
-                    "The {mayor_player.member.mention}'s vote will now count as two."
+                    "The {mayor_player.member.mention}'s vote will now count as two.",
                 ).format(mayor_player=mayor_player),
                 color=mayor_player.role.color(),
             )
@@ -361,10 +356,10 @@ class Day(DayNight):
         )
         embed: discord.Embed = discord.Embed(
             title=_("Now, I will give you {talk_timeout} seconds to talk! 🔊").format(
-                talk_timeout=talk_timeout
+                talk_timeout=talk_timeout,
             ),
             description=_(
-                "Want to accuse someone? Want to defend yourself, or confess? Now is the time!"
+                "Want to accuse someone? Want to defend yourself, or confess? Now is the time!",
             ),
             color=DAY_COLOR,
         )
@@ -379,16 +374,16 @@ class Day(DayNight):
                 overwrites.setdefault(
                     player.member,
                     discord.PermissionOverwrite(
-                        view_channel=True, read_messages=True, attach_files=False
+                        view_channel=True,
+                        read_messages=True,
+                        attach_files=False,
                     ),
                 )
                 send_messages = (
                     self.game.current_anomaly is not CatsTongue
                     or player not in self.game.current_anomaly_players
                 ) and player not in [
-                    t
-                    for p, t in self.game.days_nights[-2].targets.items()
-                    if p.role is Blackmailer
+                    t for p, t in self.game.days_nights[-2].targets.items() if p.role is Blackmailer
                 ]
                 overwrites[player.member].send_messages = send_messages
                 overwrites[player.member].add_reactions = (
@@ -413,7 +408,7 @@ class Day(DayNight):
                 ):
                     break
                 await self.game.send(**self.game.current_anomaly.get_kwargs(self.game))
-            remaining_players: typing.List[Player] = self.game.alive_players
+            remaining_players: list[Player] = self.game.alive_players
             if not any(
                 player
                 for player in self.game.players
@@ -435,18 +430,18 @@ class Day(DayNight):
             )
             embed: discord.Embed = discord.Embed(
                 title=_(
-                    "🗳️ Voting time! 🗳️\nMinimum votes required: {minimum_votes_required}"
+                    "🗳️ Voting time! 🗳️\nMinimum votes required: {minimum_votes_required}",
                 ).format(minimum_votes_required=minimum_votes_required),
                 description="\n".join(
-                    [f"🔴 {player.member.mention}" for player in self.game.alive_players]
+                    [f"🔴 {player.member.mention}" for player in self.game.alive_players],
                 ),
                 color=VOTING_AND_JUDGEMENT_COLOR,
             )
             embed.set_image(url="attachment://voting.png")
             embed.set_footer(
                 text=_("You have {voting_timeout} seconds to vote.").format(
-                    voting_timeout=voting_timeout
-                )
+                    voting_timeout=voting_timeout,
+                ),
             )
             view: VoteView = VoteView(self, remaining_players=remaining_players)
             view._message = await self.game.send(
@@ -460,7 +455,8 @@ class Day(DayNight):
             if politicians := {
                 player: target
                 for player, target in sorted(
-                    self.targets.items(), key=lambda x: self.game.players.index(x[0])
+                    self.targets.items(),
+                    key=lambda x: self.game.players.index(x[0]),
                 )
                 if player.role is Politician
             }:
@@ -470,7 +466,8 @@ class Day(DayNight):
             if judges := {
                 player: target
                 for player, target in sorted(
-                    self.targets.items(), key=lambda x: self.game.players.index(x[0])
+                    self.targets.items(),
+                    key=lambda x: self.game.players.index(x[0]),
                 )
                 if player.role is Judge
             }:
@@ -505,11 +502,12 @@ class Day(DayNight):
                         and voter == last_night.gamblers_results[p][1]
                     ):
                         extra_votes += 1
-                if not for_displaying:
-                    if manipulator is not None and (
-                        voter.role.side == "Mafia" or voter.is_town_traitor
-                    ):
-                        extra_votes += 1
+                if (
+                    not for_displaying
+                    and manipulator is not None
+                    and (voter.role.side == "Mafia" or voter.is_town_traitor)
+                ):
+                    extra_votes += 1
                 if (
                     targeter := next(
                         (
@@ -539,16 +537,27 @@ class Day(DayNight):
                                     ":\n"
                                     + "\n".join(
                                         [
-                                            f"- {voter.member.mention}" + (f" **{'+' if extra_votes > 0 else ''}{extra_votes}**" if (extra_votes := get_extra_votes(voter, for_displaying=True)) != 0 else "")
+                                            f"- {voter.member.mention}"
+                                            + (
+                                                f" **{'+' if extra_votes > 0 else ''}{extra_votes}**"
+                                                if (
+                                                    extra_votes := get_extra_votes(
+                                                        voter,
+                                                        for_displaying=True,
+                                                    )
+                                                )
+                                                != 0
+                                                else ""
+                                            )
                                             for voter in votes[player]
-                                        ]
+                                        ],
                                     )
                                     if not self.game.config["anonymous_voting"]
                                     and manipulator is None
                                     else ""
                                 )
                                 for player in result
-                            ]
+                            ],
                         ),
                         color=VOTING_AND_JUDGEMENT_COLOR,
                     ),
@@ -569,10 +578,10 @@ class Day(DayNight):
                 ):
                     embed: discord.Embed = discord.Embed(
                         title=_(
-                            "{target.member.display_name} has been called to the stand!"
+                            "{target.member.display_name} has been called to the stand!",
                         ).format(target=target),
                         description=_(
-                            "You have {defend_timeout} seconds to defend yourself, before the town casts your judgement."
+                            "You have {defend_timeout} seconds to defend yourself, before the town casts your judgement.",
                         ).format(defend_timeout=self.game.config["defend_timeout"]),
                         color=VOTING_AND_JUDGEMENT_COLOR,
                     )
@@ -594,7 +603,7 @@ class Day(DayNight):
                         continue
                     embed: discord.Embed = discord.Embed(
                         title=_(
-                            "It's judgement time! The town has now {judgement_timeout} seconds to vote."
+                            "It's judgement time! The town has now {judgement_timeout} seconds to vote.",
                         ).format(judgement_timeout=self.game.config["judgement_timeout"]),
                         color=VOTING_AND_JUDGEMENT_COLOR,
                     )
@@ -629,7 +638,7 @@ class Day(DayNight):
                                     [
                                         f"🔴 {voter.member.mention}{f' **+{extra_votes}**' if (extra_votes := get_extra_votes(voter, for_displaying=True)) else ''}"
                                         for voter in guilty_voters
-                                    ]
+                                    ],
                                 )
                                 if not self.game.config["anonymous_judgement"]
                                 and manipulator is None
@@ -638,7 +647,7 @@ class Day(DayNight):
                         )
                         embed.add_field(
                             name=_("😇 INNOCENT ({len_innocent})").format(
-                                len_innocent=len(innocent_voters)
+                                len_innocent=len(innocent_voters),
                             )
                             + (":" if innocent_voters else ""),
                             value=(
@@ -646,7 +655,7 @@ class Day(DayNight):
                                     [
                                         f"🔵 {voter.member.mention}{f' **+{extra_votes}**' if (extra_votes := get_extra_votes(voter, for_displaying=True)) else ''}"
                                         for voter in innocent_voters
-                                    ]
+                                    ],
                                 )
                                 if not self.game.config["anonymous_judgement"]
                                 and manipulator is None
@@ -659,9 +668,7 @@ class Day(DayNight):
                 if (
                     not self.game.config["defend_judgement"]
                     or len(remaining_players) == 2
-                    or (
-                        len(guilty_voters) + sum(get_extra_votes(voter) for voter in guilty_voters)
-                    )
+                    or (len(guilty_voters) + sum(get_extra_votes(voter) for voter in guilty_voters))
                     > (
                         len(innocent_voters)
                         + sum(get_extra_votes(voter) for voter in innocent_voters)
@@ -672,7 +679,8 @@ class Day(DayNight):
                             (
                                 player
                                 for player in sorted(
-                                    self.targets.keys(), key=self.game.players.index
+                                    self.targets.keys(),
+                                    key=self.game.players.index,
                                 )
                                 if player.role is Lawyer
                             ),
@@ -680,14 +688,15 @@ class Day(DayNight):
                         )
                     ) is None:
                         await target.kill(
-                            cause="voting", reason=_("They have been voted out by the town.")
+                            cause="voting",
+                            reason=_("They have been voted out by the town."),
                         )
                     else:
                         lawyer.uses_amount += 1
                         lawyer.game_targets.append(target)
                         embed: discord.Embed = discord.Embed(
                             title=_(
-                                "The Lawyer has obtained an acquittal for {target.member.display_name}!"
+                                "The Lawyer has obtained an acquittal for {target.member.display_name}!",
                             ).format(target=target),
                             color=lawyer.role.color(),
                         )
@@ -703,13 +712,13 @@ class Day(DayNight):
                                 ),
                                 discord.Embed(
                                     title=_(
-                                        "{lawyer.member.display_name} is the **Lawyer**!"
+                                        "{lawyer.member.display_name} is the **Lawyer**!",
                                     ).format(lawyer=lawyer),
                                     color=lawyer.role.color(),
                                 ).set_image(url=lawyer.role.image_url()),
                                 discord.Embed(
                                     title=_(
-                                        "{target.member.display_name} is the **{role_name}**!"
+                                        "{target.member.display_name} is the **{role_name}**!",
                                     ).format(
                                         target=target,
                                         role_name=target.role.display_name(self.game),
@@ -739,7 +748,9 @@ class Day(DayNight):
                 overwrites.setdefault(
                     player.member,
                     discord.PermissionOverwrite(
-                        view_channel=True, read_messages=True, attach_files=False
+                        view_channel=True,
+                        read_messages=True,
+                        attach_files=False,
                     ),
                 )
                 overwrites[player.member].send_messages = False
@@ -760,53 +771,53 @@ class Game:
     def __init__(
         self,
         cog: commands.Cog,
-        mode: typing.Type[Mode] = Classic,
-        config: typing.Dict[str, typing.Any] = None,
+        mode: type[Mode] = Classic,
+        config: dict[str, typing.Any] = None,
     ) -> None:
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None
-        self.mode: typing.Type[Mode] = mode
-        self.config: typing.Dict[str, typing.Any] = config
-        self.task: typing.Optional[asyncio.Task] = None
+        self.mode: type[Mode] = mode
+        self.config: dict[str, typing.Any] = config
+        self.task: asyncio.Task | None = None
 
-        self.channel: typing.Union[discord.TextChannel] = None
-        self.players: typing.List[Player] = []
-        self.days_nights: typing.List[DayNight] = []
+        self.channel: discord.TextChannel = None
+        self.players: list[Player] = []
+        self.days_nights: list[DayNight] = []
         self.current_number: int = 0
 
-        self.immunity_night_1: typing.List[Player] = []
-        self.afk_players: typing.Dict[Player, int] = {}
+        self.immunity_night_1: list[Player] = []
+        self.afk_players: dict[Player, int] = {}
         self._start_message_view: StartMessageView = None
-        self._spectate_view: typing.Optional[SpectateView] = None
+        self._spectate_view: SpectateView | None = None
 
-        self.current_anomaly: typing.Optional[typing.Type[Anomaly]] = None
-        self.current_anomaly_players: typing.Dict[Player, typing.Any] = {}
+        self.current_anomaly: type[Anomaly] | None = None
+        self.current_anomaly_players: dict[Player, typing.Any] = {}
 
     @property
-    def send(self) -> typing.Type[discord.abc.Messageable.send]:
+    def send(self) -> type[discord.abc.Messageable.send]:
         return self.channel.send
 
     @property
-    def alive_players(self) -> typing.List[Player]:
+    def alive_players(self) -> list[Player]:
         return [player for player in self.players if not player.is_dead]
 
     @property
-    def dead_players(self) -> typing.List[Player]:
+    def dead_players(self) -> list[Player]:
         return [player for player in self.players if player.is_dead]
 
-    def get_player(self, member: discord.Member) -> typing.Optional[Player]:
+    def get_player(self, member: discord.Member) -> Player | None:
         return next((player for player in self.players if player.member == member), None)
 
-    def get_player_by_id(self, member_id: int) -> typing.Optional[Player]:
+    def get_player_by_id(self, member_id: int) -> Player | None:
         return next((player for player in self.players if player.member.id == member_id), None)
 
-    def start_task(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
+    def start_task(self, ctx: commands.Context, players: list[discord.Member]) -> None:
         self.task: asyncio.Task = asyncio.create_task(self.start(ctx, players))
 
-    async def start(self, ctx: commands.Context, players: typing.List[discord.Member]) -> None:
+    async def start(self, ctx: commands.Context, players: list[discord.Member]) -> None:
         self.ctx: commands.Context = ctx
         self.cog.games[self.ctx.guild] = self
-        self.players: typing.List[Player] = [
+        self.players: list[Player] = [
             Player(
                 game=self,
                 member=player,
@@ -815,7 +826,7 @@ class Game:
             )
             for player in players
         ]
-        self.config: typing.Dict[str, typing.Any] = (
+        self.config: dict[str, typing.Any] = (
             self.config or await self.cog.config.guild(ctx.guild).all()
         )
         if self.config["red_economy"]:
@@ -868,7 +879,7 @@ class Game:
                 add_reactions=False,
                 attach_files=False,
             )
-        self.channel: typing.Union[discord.TextChannel] = await self.ctx.guild.create_text_channel(
+        self.channel: discord.TextChannel = await self.ctx.guild.create_text_channel(
             name="mafia",
             topic=_("A game of Mafia is currently in progress..."),
             overwrites=overwrites,
@@ -900,7 +911,7 @@ class Game:
                 "💢 Admins, please don't use your godly powers to talk when others can't.\n"
                 "🔇 Please don't talk about the game outside of this channel, unless instructed to do so.\n"
                 "💯 Please don't leave the game unless you have a valid reason to do so.\n"
-                "🚫 Screenshots are not permitted and would only ruin the game."
+                "🚫 Screenshots are not permitted and would only ruin the game.",
             ),
         )
         embed.set_footer(text=self.ctx.guild.name, icon_url=self.ctx.guild.icon)
@@ -940,7 +951,7 @@ class Game:
                                     role.display_name(theme=theme),
                                 ),
                             )
-                        ]
+                        ],
                     ),
                     color=discord.Color.purple(),
                 ),
@@ -956,7 +967,7 @@ class Game:
             player.role = role
         if self.config["town_traitor"]:
             random.choice(
-                [player for player in self.players if player.role.side == "Villagers"]
+                [player for player in self.players if player.role.side == "Villagers"],
             ).is_town_traitor = True
         if self.config["town_vip"]:
             random.choice(
@@ -964,7 +975,7 @@ class Game:
                     player
                     for player in self.players
                     if player.role.side == "Villagers" and not player.is_town_traitor
-                ]
+                ],
             ).is_town_vip = True
 
         failed_to_send = []
@@ -979,10 +990,10 @@ class Game:
                             _("the")
                             if len([p for p in self.players if p.is_town_traitor]) == 1
                             else _("a")
-                        )
+                        ),
                     ),
                     description=_(
-                        "You are a Villager, but you are secretly working for the Mafia."
+                        "You are a Villager, but you are secretly working for the Mafia.",
                     ),
                     color=MAFIA_COLOR,
                 )
@@ -996,7 +1007,7 @@ class Game:
                             _("the")
                             if len([p for p in self.players if p.is_town_vip]) == 1
                             else _("a")
-                        )
+                        ),
                     ),
                     description=_("Mafia have to kill you before winning the game."),
                     color=VILLAGERS_COLOR,
@@ -1049,7 +1060,7 @@ class Game:
                             and anomaly.name not in self.config["disabled_anomalies"]
                             and anomaly is not self.current_anomaly
                         )
-                    ]
+                    ],
                 )
             else:
                 self.current_anomaly = None
@@ -1111,32 +1122,32 @@ class Game:
                         if main_winners[0].role.side == "Villagers"
                         else main_winners[0].role.display_name(self)
                     )
-                )
+                ),
             ),
             color=main_winners[0].role.color(),
         )
         if main_winners:
             embed.add_field(
                 name=_("🏆 Main Winners ({len_main_winners}):").format(
-                    len_main_winners=len(main_winners)
+                    len_main_winners=len(main_winners),
                 ),
                 value="\n".join(
                     [
                         f"{'👼' if not player.is_dead else '☠️'} {player.member.mention} ({player.role.display_name(self)}{_(' - Town Traitor') if player.is_town_traitor else ''}{_(' - Town VIP') if player.is_town_vip else ''})"
                         for player in main_winners
-                    ]
+                    ],
                 ),
             )
         if secondary_winners:
             embed.add_field(
                 name=_("🏅 Secondary Winners ({len_secondary_winners}):").format(
-                    len_secondary_winners=len(secondary_winners)
+                    len_secondary_winners=len(secondary_winners),
                 ),
                 value="\n".join(
                     [
                         f"{'👼' if not player.is_dead else '☠️'} {player.member.mention} ({player.role.display_name(self)}{_(' - Town Traitor') if player.is_town_traitor else ''}{_(' - Town VIP') if player.is_town_vip else ''})"
                         for player in secondary_winners
-                    ]
+                    ],
                 ),
             )
         if losers:
@@ -1146,32 +1157,32 @@ class Game:
                     [
                         f"{'👼' if not player.is_dead else '☠️'} {player.member.mention} ({player.role.display_name(self)}{_(' - Town Traitor') if player.is_town_traitor else ''}{_(' - Town VIP') if player.is_town_vip else ''})"
                         for player in losers
-                    ]
+                    ],
                 ),
             )
         embed.set_footer(
-            text=_("Thanks for playing! Enjoyed the game? Please consider supporting the Dev!")
+            text=_("Thanks for playing! Enjoyed the game? Please consider supporting the Dev!"),
         )
         embeds.append(embed)
         if main_winners[0].role.side == "Villagers" and any(
-            (town_vip_players := [player for player in self.alive_players if player.is_town_vip])
+            town_vip_players := [player for player in self.alive_players if player.is_town_vip],
         ):
             embeds.append(
                 discord.Embed(
                     title=(
                         _(
-                            "{town_vip_player.member.display_name} was the **Town VIP** and was still alive!"
+                            "{town_vip_player.member.display_name} was the **Town VIP** and was still alive!",
                         ).format(town_vip_player=town_vip_players[0])
                         if len(town_vip_players) == 1
                         else _(
-                            "{town_vip_players} were the **Town VIPs** and were still alive!"
+                            "{town_vip_players} were the **Town VIPs** and were still alive!",
                         ).format(
                             town_vip_players=humanize_list(
-                                [player.member.display_name for player in town_vip_players]
-                            )
+                                [player.member.display_name for player in town_vip_players],
+                            ),
                         )
-                    )
-                )
+                    ),
+                ),
             )
         view: discord.ui.View = discord.ui.View()
         view.add_item(
@@ -1199,7 +1210,7 @@ class Game:
                     reward_for_winning = self.config["reward_for_winning"]
                 else:
                     reward_for_winning = (self.config["cost_to_play"] * len(self.players)) // len(
-                        main_winners
+                        main_winners,
                     )
                 try:
                     await bank.deposit_credits(player.member, reward_for_winning)
@@ -1216,7 +1227,7 @@ class Game:
                 if new_achievements:
                     achievements_embed: discord.Embed = discord.Embed(
                         title=_("🏆 New Achievement{s} Unlocked! 🏆").format(
-                            s="" if sum(len(v) for v in new_achievements.values()) == 1 else _("s")
+                            s="" if sum(len(v) for v in new_achievements.values()) == 1 else _("s"),
                         ),
                         color=ACHIEVEMENTS_COLOR,
                     )
@@ -1240,7 +1251,7 @@ class Game:
                         await player.member.send(
                             embed=discord.Embed(
                                 title=_(
-                                    "💰 You have received **{credits}** {currency_name}! 💰"
+                                    "💰 You have received **{credits}** {currency_name}! 💰",
                                 ).format(
                                     credits=reward_for_winning,
                                     currency_name=await bank.get_currency_name(self.ctx.guild),
@@ -1273,7 +1284,7 @@ class Game:
                 [
                     f"🔫 {p.member.mention} ({p.role.display_name(self)}{_(' - Town Traitor') if p.is_town_traitor else ''})"
                     for p in mafia_players
-                ]
+                ],
             ),
             color=MAFIA_COLOR,
         )
@@ -1281,7 +1292,7 @@ class Game:
             embed.set_footer(text=_("You can DM the bot to communicate with your team!"))
         return embed
 
-    def get_readable_spoil(self) -> typing.Dict[str, str]:
+    def get_readable_spoil(self) -> dict[str, str]:
         return {
             player.member.display_name: player.role.display_name(self) for player in self.players
         }
@@ -1302,26 +1313,25 @@ class Game:
                 @classmethod
                 async def export(
                     cls,
-                    channel: typing.Union[
-                        discord.TextChannel, discord.VoiceChannel, discord.Thread
-                    ],
-                    messages: typing.List[discord.Message],
+                    channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+                    messages: list[discord.Message],
                     tz_info="UTC",
-                    guild: typing.Optional[discord.Guild] = None,
-                    bot: typing.Optional[discord.Client] = None,
-                    military_time: typing.Optional[bool] = False,
-                    fancy_times: typing.Optional[bool] = True,
-                    support_dev: typing.Optional[bool] = True,
-                    attachment_handler: typing.Optional[typing.Any] = None,
+                    guild: discord.Guild | None = None,
+                    bot: discord.Client | None = None,
+                    military_time: bool | None = False,
+                    fancy_times: bool | None = True,
+                    support_dev: bool | None = True,
+                    attachment_handler: typing.Any | None = None,
                 ):
                     if guild:
                         channel.guild = guild
 
                     class AttachmentHandler(
-                        chat_exporter.construct.attachment_handler.AttachmentHandler
+                        chat_exporter.construct.attachment_handler.AttachmentHandler,
                     ):
                         async def process_asset(
-                            self, attachment: discord.Attachment
+                            self,
+                            attachment: discord.Attachment,
                         ) -> discord.Attachment:
                             attachment.url = None
                             attachment.proxy_url = None
@@ -1361,9 +1371,7 @@ class Game:
             await self.ctx.send(
                 **win_kwargs,
                 file=(
-                    discord.File(
-                        io.BytesIO(transcript.encode("utf-8")), filename="transcript.html"
-                    )
+                    discord.File(io.BytesIO(transcript.encode("utf-8")), filename="transcript.html")
                     if transcript
                     else None
                 ),
@@ -1377,7 +1385,7 @@ class Game:
                 if not await CogsUtils.ConfirmationAsk(
                     self.ctx,
                     _(
-                        "{host.mention} Do you want to delete the channel of the previous Mafia game?"
+                        "{host.mention} Do you want to delete the channel of the previous Mafia game?",
                     ).format(host=self.ctx.author),
                     timeout=600,
                     timeout_message=None,

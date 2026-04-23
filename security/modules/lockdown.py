@@ -1,31 +1,31 @@
-from AAA3A_utils import CogsUtils  # isort:skip
-from redbot.core import commands  # isort:skip
-from redbot.core.i18n import Translator  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import functools
+import typing
 from collections import defaultdict
 
-from redbot.core.utils.chat_formatting import humanize_list
+import discord
 
-from ..constants import Emojis, get_non_animated_asset
+from AAA3A_utils import CogsUtils
+from redbot.core import commands
+from redbot.core.i18n import Translator
+from redbot.core.utils.chat_formatting import humanize_list
+from security.constants import Emojis, get_non_animated_asset
+
 from .module import Module
 
 _: Translator = Translator("Security", __file__)
 
 
-LOCKDOWN_MODES: typing.List[
-    typing.Dict[
+LOCKDOWN_MODES: list[
+    dict[
         typing.Literal["name", "emoji", "description", "value"],
-        typing.Union[str, typing.Tuple[str, typing.Any], typing.Callable],
+        str | tuple[str, typing.Any] | typing.Callable,
     ]
 ] = [
     {
         "name": "Server Channels",
         "emoji": "#️⃣",
         "description": _(
-            "Prevent members from sending messages in all channels or specific channels."
+            "Prevent members from sending messages in all channels or specific channels.",
         ),
         "value": "server_channels",
     },
@@ -75,9 +75,10 @@ class LockdownModule(Module):
 
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)
-        self.action_cache: typing.Dict[discord.Member, typing.List[str]] = defaultdict(list)
-        self.warning_cache: typing.Dict[
-            typing.Union[discord.abc.GuildChannel, discord.Member], bool
+        self.action_cache: dict[discord.Member, list[str]] = defaultdict(list)
+        self.warning_cache: dict[
+            discord.abc.GuildChannel | discord.Member,
+            bool,
         ] = defaultdict(lambda: False)
 
     async def load(self) -> None:
@@ -91,8 +92,10 @@ class LockdownModule(Module):
         self.cog.bot.remove_listener(self.on_member_join)
 
     async def get_status(
-        self, guild: discord.Guild, check_enabled: bool = True
-    ) -> typing.Tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
+        self,
+        guild: discord.Guild,
+        check_enabled: bool = True,
+    ) -> tuple[typing.Literal["✅", "⚠️", "❎"], str, str]:
         config = await self.config_value(guild)()
         if all(not enabled for enabled in config["modes"].values()):
             return "❎", _("No Enabled Modes"), _("There are no lockdown modes enabled.")
@@ -117,7 +120,7 @@ class LockdownModule(Module):
                 _("Missing Permissions"),
                 _("I need the {permissions} permission{s} to function properly.").format(
                     permissions=humanize_list(
-                        [f"`{permission}`" for permission in missing_permissions]
+                        [f"`{permission}`" for permission in missing_permissions],
                     ),
                     s="" if len(missing_permissions) == 1 else "s",
                 ),
@@ -125,13 +128,17 @@ class LockdownModule(Module):
         return "✅", _("Enabled"), _("Lockdown is enabled and configured correctly.")
 
     async def get_settings(
-        self, guild: discord.Guild, view: discord.ui.View
-    ) -> typing.Tuple[str, str, typing.List[typing.Dict], typing.List[discord.ui.Item]]:
+        self,
+        guild: discord.Guild,
+        view: discord.ui.View,
+    ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         title = _("Security — {emoji} {name} {status}").format(
-            emoji=self.emoji, name=self.name, status=(await self.get_status(guild))[0]
+            emoji=self.emoji,
+            name=self.name,
+            status=(await self.get_status(guild))[0],
         )
         description = _(
-            "This module allows you to manage lockdown modes to protect your server during raids or emergencies. Members who try to bypass these modes several times after a warning will be quarantined, if the bot has the permission to do so."
+            "This module allows you to manage lockdown modes to protect your server during raids or emergencies. Members who try to bypass these modes several times after a warning will be quarantined, if the bot has the permission to do so.",
         )
         status = await self.get_status(guild)
         if status[0] == "⚠️":
@@ -140,14 +147,14 @@ class LockdownModule(Module):
         fields = []
         for mode in LOCKDOWN_MODES:
             fields.append(
-                dict(
-                    name=f"{mode['emoji']} {mode['name']}",
-                    value=_("{description}\n**Enabled:** {enabled}").format(
+                {
+                    "name": f"{mode['emoji']} {mode['name']}",
+                    "value": _("{description}\n**Enabled:** {enabled}").format(
                         description=mode["description"],
                         enabled="✅" if config["modes"][mode["value"]] else "❌",
                     ),
-                    inline=True,
-                )
+                    "inline": True,
+                },
             )
 
         components = []
@@ -189,7 +196,7 @@ class LockdownModule(Module):
                 if not await CogsUtils.ConfirmationAsk(
                     fake_context,
                     _("⚠️ Are you sure you want to enable **{mode}** mode?").format(
-                        mode=mode["name"]
+                        mode=mode["name"],
                     ),
                     timeout_message=None,
                     ephemeral=True,
@@ -197,7 +204,8 @@ class LockdownModule(Module):
                     return
             config["modes"][mode["value"]] = not config["modes"][mode["value"]]
             await self.config_value(guild).modes.set_raw(
-                mode["value"], value=config["modes"][mode["value"]]
+                mode["value"],
+                value=config["modes"][mode["value"]],
             )
             self.action_cache.clear()
             self.warning_cache.clear()
@@ -222,24 +230,24 @@ class LockdownModule(Module):
                                     member=member,
                                     issued_by=interaction.user,
                                     reason=_(
-                                        "**Lockdown** - Quarantined for having dangerous permissions during lockdown."
+                                        "**Lockdown** - Quarantined for having dangerous permissions during lockdown.",
                                     ),
                                     logs=[
                                         _(
-                                            "{member.mention} ({member}) has dangerous permissions during lockdown."
-                                        ).format(member=member)
+                                            "{member.mention} ({member}) has dangerous permissions during lockdown.",
+                                        ).format(member=member),
                                     ],
                                 )
                             except RuntimeError:
                                 pass
                             else:
                                 config["members_with_dangerous_permissions_quarantined"].append(
-                                    member.id
+                                    member.id,
                                 )
                     await self.config_value(
-                        guild
+                        guild,
                     ).members_with_dangerous_permissions_quarantined.set(
-                        config["members_with_dangerous_permissions_quarantined"]
+                        config["members_with_dangerous_permissions_quarantined"],
                     )
                 else:
                     for member_id in config["members_with_dangerous_permissions_quarantined"]:
@@ -249,14 +257,14 @@ class LockdownModule(Module):
                                 member=member,
                                 issued_by=interaction.user,
                                 reason=_(
-                                    "**Lockdown** - Unquarantined after disabling dangerous permissions lockdown mode."
+                                    "**Lockdown** - Unquarantined after disabling dangerous permissions lockdown mode.",
                                 ),
                             )
                     config["members_with_dangerous_permissions_quarantined"] = []
                     await self.config_value(
-                        guild
+                        guild,
                     ).members_with_dangerous_permissions_quarantined.set(
-                        config["members_with_dangerous_permissions_quarantined"]
+                        config["members_with_dangerous_permissions_quarantined"],
                     )
             await interaction.followup.send(
                 _("✅ **{mode}** mode has been **{status}**.").format(
@@ -318,22 +326,23 @@ class LockdownModule(Module):
                     title=_("{emoji} Lockdown Warning").format(emoji=Emojis.LOCKDOWN.value),
                     description=(
                         _(
-                            "A lockdown is currently active in this server. You are not allowed to send messages in any channel. **Please do not attempt to bypass this restriction.**"
+                            "A lockdown is currently active in this server. You are not allowed to send messages in any channel. **Please do not attempt to bypass this restriction.**",
                         )
                         if not config["specific_channels"]
                         else _(
-                            "A lockdown is currently active in specific channels of this server. You are not allowed to send messages in this channel. **Please do not attempt to bypass this restriction.**"
+                            "A lockdown is currently active in specific channels of this server. You are not allowed to send messages in this channel. **Please do not attempt to bypass this restriction.**",
                         )
                     ),
                     color=discord.Color.red(),
                 ).set_footer(
-                    text=message.guild.name, icon_url=get_non_animated_asset(message.guild.icon)
+                    text=message.guild.name,
+                    icon_url=get_non_animated_asset(message.guild.icon),
                 ),
             )
         self.action_cache[message.author].append(
             _(
-                "{author.mention} ({author}) sent a message in {channel.mention} during lockdown."
-            ).format(author=message.author, channel=message.channel)
+                "{author.mention} ({author}) sent a message in {channel.mention} during lockdown.",
+            ).format(author=message.author, channel=message.channel),
         )
         if (
             len(self.action_cache[message.author]) >= 3
@@ -354,16 +363,22 @@ class LockdownModule(Module):
         parts = []
         if added:
             roles_str = humanize_list([f"{r.mention} (`{r}`)" for r in added])
-            parts.append(_("add the role{s} {roles}").format(
-                roles=roles_str, s="" if len(added) == 1 else "s"
-            ))
+            parts.append(
+                _("add the role{s} {roles}").format(
+                    roles=roles_str,
+                    s="" if len(added) == 1 else "s",
+                ),
+            )
         if removed:
             roles_str = humanize_list([f"{r.mention} (`{r}`)" for r in removed])
-            parts.append(_("remove the role{s} {roles}").format(
-                roles=roles_str, s="" if len(removed) == 1 else "s"
-            ))
+            parts.append(
+                _("remove the role{s} {roles}").format(
+                    roles=roles_str,
+                    s="" if len(removed) == 1 else "s",
+                ),
+            )
         return _(
-            "Member {member.mention} [{member}] tried to {action} to/from the member {quarantined_member.mention} [{quarantined_member}] during lockdown."
+            "Member {member.mention} [{member}] tried to {action} to/from the member {quarantined_member.mention} [{quarantined_member}] during lockdown.",
         ).format(
             member=entry.user,
             quarantined_member=entry.target,
@@ -371,7 +386,10 @@ class LockdownModule(Module):
         )
 
     async def _send_lockdown_warning(
-        self, user: discord.Member, guild: discord.Guild, description: str
+        self,
+        user: discord.Member,
+        guild: discord.Guild,
+        description: str,
     ) -> None:
         if self.warning_cache[user]:
             return
@@ -385,7 +403,7 @@ class LockdownModule(Module):
                 ).set_footer(
                     text=guild.name,
                     icon_url=get_non_animated_asset(guild.icon),
-                )
+                ),
             )
         except discord.HTTPException:
             pass
@@ -412,25 +430,29 @@ class LockdownModule(Module):
             await self._send_lockdown_warning(
                 entry.user,
                 entry.guild,
-                _("A lockdown is currently active in this server. You are not allowed to change roles of members. **Please do not attempt to bypass this restriction.**"),
+                _(
+                    "A lockdown is currently active in this server. You are not allowed to change roles of members. **Please do not attempt to bypass this restriction.**",
+                ),
             )
             self.action_cache[entry.user].append(self._build_role_change_log(entry))
         elif entry.action == discord.AuditLogAction.invite_create and modes["server_invites"]:
             try:
                 await entry.target.delete(
-                    reason=_("Security Lockdown: Invite created during lockdown.")
+                    reason=_("Security Lockdown: Invite created during lockdown."),
                 )
             except discord.HTTPException:
                 pass
             await self._send_lockdown_warning(
                 entry.user,
                 entry.guild,
-                _("A lockdown is currently active in this server. You are not allowed to create invites. **Please do not attempt to bypass this restriction.**"),
+                _(
+                    "A lockdown is currently active in this server. You are not allowed to create invites. **Please do not attempt to bypass this restriction.**",
+                ),
             )
             self.action_cache[entry.user].append(
                 _("{user.mention} ({user}) created an invite during lockdown.").format(
-                    user=entry.user
-                )
+                    user=entry.user,
+                ),
             )
         if (
             len(self.action_cache[entry.user]) >= 3
@@ -457,8 +479,8 @@ class LockdownModule(Module):
                 reason=_("**Lockdown** - Kicked for joining during lockdown."),
                 logs=[
                     _("{member.mention} ({member}) joined the server during lockdown.").format(
-                        member=member
-                    )
+                        member=member,
+                    ),
                 ],
             )
         elif modes["ban_new_members"] and member.guild.me.guild_permissions.ban_members:
@@ -469,7 +491,7 @@ class LockdownModule(Module):
                 reason=_("**Lockdown** - Banned for joining during lockdown."),
                 logs=[
                     _("{member.mention} ({member}) joined the server during lockdown.").format(
-                        member=member
-                    )
+                        member=member,
+                    ),
                 ],
             )

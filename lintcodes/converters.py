@@ -1,30 +1,33 @@
-from redbot.core import commands  # isort:skip
-import typing  # isort:skip
-
 import re
+import typing
+
+from redbot.core import commands
 
 
 class Flake8FlagsConverter(
-    commands.FlagConverter, case_insensitive=True, delimiter=" ", prefix="--"
+    commands.FlagConverter,
+    case_insensitive=True,
+    delimiter=" ",
+    prefix="--",
 ):
     code: str
 
-    count: typing.Optional[bool] = None
-    verbose: typing.Optional[bool] = None
-    statistics: typing.Optional[bool] = None
-    doctests: typing.Optional[bool] = None
+    count: bool | None = None
+    verbose: bool | None = None
+    statistics: bool | None = None
+    doctests: bool | None = None
 
-    color: typing.Optional[typing.Literal["auto", "always", "never"]] = None
+    color: typing.Literal["auto", "always", "never"] | None = None
 
-    ignore: typing.Optional[str] = None
-    select: typing.Optional[str] = None
+    ignore: str | None = None
+    select: str | None = None
 
-    max_line_length: typing.Optional[int] = None
-    max_doc_length: typing.Optional[int] = None
-    max_complexity: typing.Optional[int] = None
+    max_line_length: int | None = None
+    max_doc_length: int | None = None
+    max_complexity: int | None = None
 
     def to_str(self) -> str:
-        def validate_flake8_code(code: str) -> typing.List[str]:
+        def validate_flake8_code(code: str) -> list[str]:
             return re.compile(r"([A-Z]\d{2,4})").findall(code)
 
         cmd_str = ""
@@ -61,19 +64,26 @@ class Flake8FlagsConverter(
 
 
 class PyLintFlagsConverter(
-    commands.FlagConverter, case_insensitive=True, delimiter=" ", prefix="--"
+    commands.FlagConverter,
+    case_insensitive=True,
+    delimiter=" ",
+    prefix="--",
 ):
     code: str
 
     confidence: typing.Literal[
-        "high", "control_flow", "inference_failure", "undefined", "inference"
+        "high",
+        "control_flow",
+        "inference_failure",
+        "undefined",
+        "inference",
     ] = "HIGH CONTROL_FLOW INFERENCE_FAILURE UNDEFINED INFERENCE"
 
-    disable: typing.Optional[str] = None
-    enable: typing.Optional[str] = None
+    disable: str | None = None
+    enable: str | None = None
 
     def validate_flag(self) -> str:
-        def validate_pylint_code(code: str) -> typing.List[str]:
+        def validate_pylint_code(code: str) -> list[str]:
             return re.compile(r"([A-Z]\d{4})").findall(code)
 
         cmd_str = ""
@@ -81,111 +91,107 @@ class PyLintFlagsConverter(
         if self.confidence:
             cmd_str += f" --confidence={self.confidence.upper()}"
 
-        if self.disable:
-            if codes := validate_pylint_code(self.disable):
-                cmd_str += f" --disable={','.join(codes)}"
-        if self.enable:
-            if codes := validate_pylint_code(self.enable):
-                cmd_str += f" --enable={','.join(codes)}"
+        if self.disable and (codes := validate_pylint_code(self.disable)):
+            cmd_str += f" --disable={','.join(codes)}"
+        if self.enable and (codes := validate_pylint_code(self.enable)):
+            cmd_str += f" --enable={','.join(codes)}"
 
         return cmd_str
 
 
-class MyPyFlagsConverter(
-    commands.FlagConverter, case_insensitive=True, delimiter=" ", prefix="--"
-):
+class MyPyFlagsConverter(commands.FlagConverter, case_insensitive=True, delimiter=" ", prefix="--"):
     code: str
 
     # Import Discovery.
-    no_namespace_packages: typing.Optional[bool] = None
-    ignore_missing_imports: typing.Optional[bool] = None
+    no_namespace_packages: bool | None = None
+    ignore_missing_imports: bool | None = None
     follow_imports: typing.Literal["skip", "silent", "error", "normal"] = "normal"
-    no_site_packages: typing.Optional[bool] = None
-    no_silence_site_packages: typing.Optional[bool] = None
+    no_site_packages: bool | None = None
+    no_silence_site_packages: bool | None = None
 
     # Disallow dynamic typing.
-    disallow_any_unimported: typing.Optional[bool] = None
-    disallow_any_expr: typing.Optional[bool] = None
-    disallow_any_decorated: typing.Optional[bool] = None
-    disallow_any_explicit: typing.Optional[bool] = None
+    disallow_any_unimported: bool | None = None
+    disallow_any_expr: bool | None = None
+    disallow_any_decorated: bool | None = None
+    disallow_any_explicit: bool | None = None
 
-    disallow_any_generics: typing.Optional[bool] = None
-    allow_any_generics: typing.Optional[bool] = None
+    disallow_any_generics: bool | None = None
+    allow_any_generics: bool | None = None
 
-    disallow_subclassing_any: typing.Optional[bool] = None
-    allow_subclassing_any: typing.Optional[bool] = None
+    disallow_subclassing_any: bool | None = None
+    allow_subclassing_any: bool | None = None
 
     # Untyped definitions and calls.
-    disallow_untyped_calls: typing.Optional[bool] = None
-    allow_untyped_calls: typing.Optional[bool] = None
+    disallow_untyped_calls: bool | None = None
+    allow_untyped_calls: bool | None = None
 
-    disallow_untyped_defs: typing.Optional[bool] = None
-    allow_untyped_defs: typing.Optional[bool] = None
+    disallow_untyped_defs: bool | None = None
+    allow_untyped_defs: bool | None = None
 
-    disallow_incomplete_defs: typing.Optional[bool] = None
-    allow_incomplete_defs: typing.Optional[bool] = None
+    disallow_incomplete_defs: bool | None = None
+    allow_incomplete_defs: bool | None = None
 
-    check_untyped_defs: typing.Optional[bool] = None
-    no_check_untyped_defs: typing.Optional[bool] = None
+    check_untyped_defs: bool | None = None
+    no_check_untyped_defs: bool | None = None
 
-    disallow_untyped_decorators: typing.Optional[bool] = None
-    allow_untyped_decorators: typing.Optional[bool] = None
+    disallow_untyped_decorators: bool | None = None
+    allow_untyped_decorators: bool | None = None
 
     # None and Optional handling.
-    implicit_optional: typing.Optional[bool] = None
-    no_implicit_optional: typing.Optional[bool] = None
+    implicit_optional: bool | None = None
+    no_implicit_optional: bool | None = None
 
-    no_strict_optional: typing.Optional[bool] = None
-    strict_optional: typing.Optional[bool] = None
+    no_strict_optional: bool | None = None
+    strict_optional: bool | None = None
 
     # Configuring warnings.
-    warn_redunant_casts: typing.Optional[bool] = None
-    no_warn_redunant_casts: typing.Optional[bool] = None
+    warn_redunant_casts: bool | None = None
+    no_warn_redunant_casts: bool | None = None
 
-    warn_unused_ignores: typing.Optional[bool] = None
-    no_warn_unused_ignores: typing.Optional[bool] = None
+    warn_unused_ignores: bool | None = None
+    no_warn_unused_ignores: bool | None = None
 
-    warn_no_return: typing.Optional[bool] = None
-    no_warn_no_return: typing.Optional[bool] = None
+    warn_no_return: bool | None = None
+    no_warn_no_return: bool | None = None
 
-    warn_return_any: typing.Optional[bool] = None
-    no_warn_return_any: typing.Optional[bool] = None
+    warn_return_any: bool | None = None
+    no_warn_return_any: bool | None = None
 
-    warn_unreachable: typing.Optional[bool] = None
-    no_warn_unreachable: typing.Optional[bool] = None
+    warn_unreachable: bool | None = None
+    no_warn_unreachable: bool | None = None
 
     # Miscellaneous strictness flags.
-    allow_untyped_globals: typing.Optional[bool] = None
-    disallow_untyped_globals: typing.Optional[bool] = None
+    allow_untyped_globals: bool | None = None
+    disallow_untyped_globals: bool | None = None
 
-    allow_redifinition: typing.Optional[bool] = None
-    disallow_redifinition: typing.Optional[bool] = None
+    allow_redifinition: bool | None = None
+    disallow_redifinition: bool | None = None
 
-    implicit_reexport: typing.Optional[bool] = None
-    no_implicit_reexport: typing.Optional[bool] = None
+    implicit_reexport: bool | None = None
+    no_implicit_reexport: bool | None = None
 
-    strict_equality: typing.Optional[bool] = None
-    no_strict_equality: typing.Optional[bool] = None
+    strict_equality: bool | None = None
+    no_strict_equality: bool | None = None
 
-    strict_concatenate: typing.Optional[bool] = None
-    no_strict_concatenate: typing.Optional[bool] = None
+    strict_concatenate: bool | None = None
+    no_strict_concatenate: bool | None = None
 
-    strict: typing.Optional[bool] = None
+    strict: bool | None = None
 
     # Configuring error messages.
-    show_error_context: typing.Optional[bool] = None
-    hide_error_context: typing.Optional[bool] = None
+    show_error_context: bool | None = None
+    hide_error_context: bool | None = None
 
-    show_column_numbers: typing.Optional[bool] = None
-    hide_column_numbers: typing.Optional[bool] = None
+    show_column_numbers: bool | None = None
+    hide_column_numbers: bool | None = None
 
-    show_error_end: typing.Optional[bool] = None
-    hide_error_end: typing.Optional[bool] = None
+    show_error_end: bool | None = None
+    hide_error_end: bool | None = None
 
-    show_error_codes: typing.Optional[bool] = None
-    hide_error_codes: typing.Optional[bool] = None
+    show_error_codes: bool | None = None
+    hide_error_codes: bool | None = None
 
-    pretty: typing.Optional[bool] = None
+    pretty: bool | None = None
 
     def to_str(self) -> str:
         cmd_str = ""
@@ -337,20 +343,23 @@ class MyPyFlagsConverter(
 
 
 class BanditFlagsConverter(
-    commands.FlagConverter, case_insensitive=True, delimiter=" ", prefix="--"
+    commands.FlagConverter,
+    case_insensitive=True,
+    delimiter=" ",
+    prefix="--",
 ):
     code: str
 
-    read: typing.Optional[bool] = None
-    verbose: typing.Optional[bool] = None
+    read: bool | None = None
+    verbose: bool | None = None
 
-    skip: typing.Optional[str] = None
+    skip: str | None = None
 
-    level: typing.Optional[typing.Literal["low", "medium", "high"]] = None
-    confidence: typing.Optional[typing.Literal["low", "medium", "high"]] = None
+    level: typing.Literal["low", "medium", "high"] | None = None
+    confidence: typing.Literal["low", "medium", "high"] | None = None
 
     def to_str(self) -> str:
-        def validate_bandit_code(code: str) -> typing.List[str]:
+        def validate_bandit_code(code: str) -> list[str]:
             return re.compile(r"([A-Z]\d{2,3})").findall(code)
 
         cmd_str = ""
@@ -384,7 +393,10 @@ class BanditFlagsConverter(
 
 
 class PyRightFlagsConverter(
-    commands.FlagConverter, case_insensitive=True, delimiter=" ", prefix="--"
+    commands.FlagConverter,
+    case_insensitive=True,
+    delimiter=" ",
+    prefix="--",
 ):
     code: str
 
@@ -392,20 +404,18 @@ class PyRightFlagsConverter(
         return ""
 
 
-class RuffFlagsConverter(
-    commands.FlagConverter, case_insensitive=True, delimiter=" ", prefix="--"
-):
+class RuffFlagsConverter(commands.FlagConverter, case_insensitive=True, delimiter=" ", prefix="--"):
     code: str
 
-    ignore: typing.Optional[str] = None
-    select: typing.Optional[str] = None
+    ignore: str | None = None
+    select: str | None = None
 
-    line_length: typing.Optional[int] = None
-    max_doc_length: typing.Optional[int] = None
-    max_complexity: typing.Optional[int] = None
+    line_length: int | None = None
+    max_doc_length: int | None = None
+    max_complexity: int | None = None
 
     def to_str(self) -> str:
-        def validate_Ruff_code(code: str) -> typing.List[str]:
+        def validate_Ruff_code(code: str) -> list[str]:
             return re.compile(r"([A-Z]\d{2,4})").findall(code)
 
         cmd_str = " "

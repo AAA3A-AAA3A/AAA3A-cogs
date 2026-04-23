@@ -1,18 +1,17 @@
-from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands, app_commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
 import datetime
 import hashlib
 import random
 import secrets
 
+import discord
 import mimesis
 from mimesis.enums import Gender, TitleType
 from mimesis.locales import Locale
+
+from AAA3A_utils import Cog
+from redbot.core import app_commands, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 from .types import (
     LOCALES,
@@ -67,14 +66,14 @@ class FakeIdentities(Cog):
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
-        self.fake_identities: typing.List[FakeIdentity] = []
+        self.fake_identities: list[FakeIdentity] = []
 
     def generate_fake_identity(
         self,
-        gender: typing.Optional[Gender] = None,
-        nationality: typing.Optional[Locale] = None,
-        location: typing.Optional[Locale] = None,
-        seed: typing.Optional[int] = None,
+        gender: Gender | None = None,
+        nationality: Locale | None = None,
+        location: Locale | None = None,
+        seed: int | None = None,
     ) -> FakeIdentity:
         seed = seed or secrets.randbelow(2**32)
         random.seed(seed)
@@ -84,10 +83,7 @@ class FakeIdentities(Cog):
             seed=seed,
         )
         if location is None:
-            if random.random() <= 0.8:
-                location = nationality
-            else:
-                location = random.choice(list(LOCALES))
+            location = nationality if random.random() <= 0.8 else random.choice(list(LOCALES))
         person_location: mimesis.Person = mimesis.Person(
             locale=location,
             seed=seed,
@@ -247,11 +243,9 @@ class FakeIdentities(Cog):
                 SecondaryIdentity(
                     name=Name(
                         title=person_location.title(
-                            (
-                                other_gender := (
-                                    Gender.FEMALE if gender is Gender.MALE else Gender.MALE
-                                )
-                            )
+                            other_gender := (
+                                Gender.FEMALE if gender is Gender.MALE else Gender.MALE
+                            ),
                         ),
                         first=person_location.first_name(other_gender),
                         last=(partner_last_name := person_location.name(other_gender)),
@@ -291,8 +285,10 @@ class FakeIdentities(Cog):
         return fake_identity
 
     async def gender_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> typing.List[app_commands.Choice[str]]:
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> list[app_commands.Choice[str]]:
         return [
             app_commands.Choice(name=gender.value, value=gender.value)
             for gender in Gender
@@ -300,8 +296,10 @@ class FakeIdentities(Cog):
         ][:25]
 
     async def locale_autocomplete(
-        self, interaction: discord.Interaction, current: str
-    ) -> typing.List[app_commands.Choice[str]]:
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> list[app_commands.Choice[str]]:
         return [
             app_commands.Choice(name=locale.value, value=locale.value)
             for locale in LOCALES
@@ -311,15 +309,17 @@ class FakeIdentities(Cog):
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(aliases=["fakeid"])
     @app_commands.autocomplete(
-        gender=gender_autocomplete, nationality=locale_autocomplete, location=locale_autocomplete
+        gender=gender_autocomplete,
+        nationality=locale_autocomplete,
+        location=locale_autocomplete,
     )
     async def fakeidentity(
         self,
         ctx: commands.Context,
-        gender: typing.Optional[GenderConverter] = None,
-        nationality: typing.Optional[LocaleConverter] = None,
-        location: typing.Optional[LocaleConverter] = None,
-        seed: typing.Optional[int] = None,
+        gender: GenderConverter | None = None,
+        nationality: LocaleConverter | None = None,
+        location: LocaleConverter | None = None,
+        seed: int | None = None,
     ) -> None:
         """Generate a fake identity."""
         view: FakeIdentityView = FakeIdentityView(

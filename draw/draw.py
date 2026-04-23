@@ -1,17 +1,16 @@
-from AAA3A_utils import Cog  # isort:skip
-from redbot.core import commands, app_commands  # isort:skip
-from redbot.core.bot import Red  # isort:skip
-from redbot.core.i18n import Translator, cog_i18n  # isort:skip
-import discord  # isort:skip
-import typing  # isort:skip
-
-
 import asyncio
 import io
+import typing
 from urllib.parse import quote_plus
 
 import aiohttp
+import discord
 from PIL import Image, ImageFilter, UnidentifiedImageError
+
+from AAA3A_utils import Cog
+from redbot.core import app_commands, commands
+from redbot.core.bot import Red
+from redbot.core.i18n import Translator, cog_i18n
 
 from .board import Board
 from .color import Color
@@ -39,14 +38,14 @@ _: Translator = Translator("Draw", __file__)
 class Draw(Cog):
     """A cog to make pixel arts on Discord!"""
 
-    __authors__: typing.List[str] = ["WitherredAway", "AAA3A"]
+    __authors__: list[str] = ["WitherredAway", "AAA3A"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
-        self._session: typing.Optional[aiohttp.ClientSession] = None
-        self.cache: typing.Dict[
-            typing.Union[str, int, typing.Tuple[int, int, int, int]]
+        self._session: aiohttp.ClientSession | None = None
+        self.cache: dict[
+            str | int | tuple[int, int, int, int]
         ] = {}  # Unicode emojis, colors RGB and Discord custom emojis ids.
 
     async def cog_load(self) -> None:
@@ -64,17 +63,15 @@ class Draw(Cog):
         await super().cog_unload()
 
     @property
-    def drawings(self) -> typing.Dict[discord.Message, DrawView]:
+    def drawings(self) -> dict[discord.Message, DrawView]:
         return self.views
 
     async def get_pixel(
         self,
-        pixel: typing.Union[
-            str, discord.Emoji, int, Color, typing.Tuple[int, int, int, typing.Optional[int]]
-        ],
-        to_file: typing.Optional[bool] = False,
-    ) -> typing.Union[Image.Image, discord.File]:
-        if isinstance(pixel, typing.Tuple) and len(pixel) in {3, 4}:
+        pixel: str | discord.Emoji | int | Color | tuple[int, int, int, int | None],
+        to_file: bool | None = False,
+    ) -> Image.Image | discord.File:
+        if isinstance(pixel, tuple) and len(pixel) in {3, 4}:
             pixel = Color(pixel)
         try:
             pixel = int(pixel)
@@ -148,14 +145,21 @@ class Draw(Cog):
     async def draw(
         self,
         ctx: commands.Context,
-        from_message: typing.Optional[commands.MessageConverter] = None,
-        height: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9,
-        width: typing.Optional[commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH]] = 9,
+        from_message: commands.MessageConverter | None = None,
+        height: commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH] | None = 9,
+        width: commands.Range[int, MIN_HEIGHT_OR_WIDTH, MAX_HEIGHT_OR_WIDTH] | None = 9,
         background: typing.Literal[
-            "🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent"
-        ] = MAIN_COLORS[
-            -1
-        ],  # typing.Literal[*MAIN_COLORS]
+            "🟥",
+            "🟧",
+            "🟨",
+            "🟩",
+            "🟦",
+            "🟪",
+            "🟫",
+            "⬛",
+            "⬜",
+            "transparent",
+        ] = MAIN_COLORS[-1],  # typing.Literal[*MAIN_COLORS]
     ) -> None:
         """Make a pixel art on Discord."""
         if from_message is None:

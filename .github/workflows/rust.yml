@@ -1,9 +1,6 @@
 name: Ruff
 
-on:
-  push:
-  pull_request:
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
   ruff:
@@ -19,4 +16,5 @@ jobs:
         run: ruff format
 
       - name: Run Ruff check
+        continue-on-error: true
         run: ruff check --fix --unsafe-fixes

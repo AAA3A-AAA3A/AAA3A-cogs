@@ -5,6 +5,7 @@ import re
 import typing
 from dataclasses import dataclass
 from io import BytesIO
+from typing import TypeAlias
 
 import aiohttp
 import dateutil
@@ -24,11 +25,6 @@ from redbot.core.utils.chat_formatting import humanize_list
 from .views import ReminderView, RepeatView, SnoozeView
 
 _: Translator = Translator("Reminders", __file__)
-
-try:
-    from typing import TypeAlias
-except ImportError:
-    pass
 
 Content: TypeAlias = dict[
     str,

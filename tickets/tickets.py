@@ -541,7 +541,7 @@ class Tickets(DashboardIntegration, Cog):
             return
         await ticket.close(message.interaction_metadata.user)
 
-    def is_support(ignore_owner: bool = False):
+    def is_support(ignore_owner: bool = False):  # noqa: N805
         async def predicate(ctx: commands.Context | discord.Interaction) -> bool:
             bot = ctx.client if isinstance(ctx, discord.Interaction) else ctx.bot
             author = ctx.user if isinstance(ctx, discord.Interaction) else ctx.author

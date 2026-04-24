@@ -22,11 +22,11 @@ class EditReminderModal(discord.ui.Modal):
     def __init__(
         self,
         parent: discord.ui.View,
-        timezone: pytz.timezone | None = pytz.timezone("UTC"),
+        timezone: pytz.BaseTzInfo | None = pytz.timezone("UTC"),
     ) -> None:
         self._parent: discord.ui.View = parent
         self.reminder = self._parent.reminder
-        self.timezone: pytz.timezone = timezone
+        self.timezone: pytz.BaseTzInfo = timezone
 
         super().__init__(title=f"Edit Reminder #{self.reminder.id}")
 

@@ -5,6 +5,7 @@ import re
 import typing
 from dataclasses import dataclass
 from io import BytesIO
+from typing import TypeAlias
 
 import aiohttp
 import dateutil
@@ -25,15 +26,11 @@ from .views import ReminderView, RepeatView, SnoozeView
 
 _: Translator = Translator("Reminders", __file__)
 
-try:
-    from typing import TypeAlias
-except ImportError:
-    pass
-type Content = dict[
+Content: TypeAlias = dict[
     str,
     str | dict[str, str | dict[str, str]],
 ]
-type Data = dict[
+Data: TypeAlias = dict[
     str,
     str | int | bool | Content | dict[str, int | str],
 ]

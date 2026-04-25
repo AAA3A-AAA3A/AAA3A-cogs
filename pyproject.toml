@@ -1,4 +1,5 @@
 [tool.ruff]
+no-cache = true
 line-length = 100
 indent-width = 4
 target-version = "py310"

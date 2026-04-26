@@ -28,7 +28,7 @@ from .constants import (
     WhitelistTypeConverter,
     clean_backticks,
     get_non_animated_asset,
-)  # NOQA
+)
 from .modules import MODULES, Module
 from .modules.dank_pool_protection import Payout, format_amount, get_or_fetch_member_or_user
 from .views import OBJECT_TYPING, ActionsView, DurationConverter, SettingsView, WhitelistView

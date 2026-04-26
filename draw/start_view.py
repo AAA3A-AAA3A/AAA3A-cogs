@@ -12,7 +12,7 @@ from .constants import (
     MAIN_COLORS,
     base_colors_options,
     base_height_or_width_select_options,
-)  # NOQA
+)
 from .view import DrawView
 
 _: Translator = Translator("Draw", __file__)

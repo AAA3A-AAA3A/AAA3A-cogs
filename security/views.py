@@ -18,7 +18,7 @@ from .constants import (
     Levels,
     get_correct_timeout_duration,
     get_non_animated_asset,
-)  # NOQA
+)
 
 _: Translator = Translator("Security", __file__)
 

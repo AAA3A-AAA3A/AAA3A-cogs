@@ -32,7 +32,7 @@ from pyparsing import (
     nums,
     oneOf,
     tokenMap,
-)  # NOQA
+)
 from recurrent.event_parser import RecurringEvent
 
 from redbot.core import commands

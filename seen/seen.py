@@ -908,7 +908,8 @@ class Seen(Cog):
                 )
             )
         elif isinstance(
-            _object, (discord.Role, discord.TextChannel, discord.CategoryChannel, discord.Guild),
+            _object,
+            (discord.Role, discord.TextChannel, discord.CategoryChannel, discord.Guild),
         ):
             member = (_object if isinstance(_object, discord.Guild) else _object.guild).get_member(
                 action["member"],

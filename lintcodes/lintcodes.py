@@ -16,7 +16,7 @@ from .converters import (
     PyLintFlagsConverter,
     PyRightFlagsConverter,
     RuffFlagsConverter,
-)  # NOQA
+)
 from .linter import Linter
 
 # Credits:

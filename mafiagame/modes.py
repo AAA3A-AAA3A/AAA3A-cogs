@@ -34,7 +34,7 @@ from .roles import (
     Vigilante,
     Villager,
     Watcher,
-)  # NOQA
+)
 
 
 def _(untranslated: str) -> str:  # `redgettext` will find these strings.

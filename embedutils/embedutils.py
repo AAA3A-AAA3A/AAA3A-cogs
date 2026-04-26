@@ -21,7 +21,7 @@ from .converters import (
     PastebinListConverter,
     StrConverter,
     StringToEmbed,
-)  # NOQA
+)
 from .dashboard_integration import DashboardIntegration
 
 # Credits:

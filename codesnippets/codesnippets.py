@@ -466,7 +466,9 @@ class CodeSnippets(DashboardIntegration, Cog):
             menu = Menu(pages=code.replace("```", "\u02cb\u02cb\u02cb"), prefix=ret, lang=language)
             menu.extra_items.append(
                 discord.ui.Button(
-                    style=discord.ButtonStyle.url, label=f"View on {source}", url=url,
+                    style=discord.ButtonStyle.url,
+                    label=f"View on {source}",
+                    url=url,
                 ),
             )
             await menu.start(ctx, wait=False)

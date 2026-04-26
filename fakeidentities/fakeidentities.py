@@ -35,7 +35,7 @@ from .types import (
     Street,
     Studies,
     Transport,
-)  # NOQA
+)
 from .view import FakeIdentityView
 
 # Credits:

@@ -21,7 +21,7 @@ from .constants import (
     MAX_HEIGHT_OR_WIDTH,
     MIN_HEIGHT_OR_WIDTH,
     base_colors_options,
-)  # NOQA
+)
 from .start_view import StartDrawView
 from .view import DrawView
 

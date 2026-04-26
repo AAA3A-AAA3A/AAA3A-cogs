@@ -16,7 +16,7 @@ from wtforms import (
     SelectFieldBase,
     SelectMultipleField,
     SubmitField,
-)  # NOQA
+)
 from wtforms.csrf.core import CSRF
 from wtforms.fields.core import UnboundField
 from wtforms.meta import DefaultMeta

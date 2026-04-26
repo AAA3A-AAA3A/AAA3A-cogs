@@ -44,7 +44,7 @@ from AAA3A_utils.views import (
     RoleSelect,
     Select,
     UserSelect,
-)  # NOQA
+)
 from redbot.core import Config, commands, dev_commands
 from redbot.core import utils as redutils
 from redbot.core.bot import Red

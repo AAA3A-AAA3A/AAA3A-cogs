@@ -19,7 +19,7 @@ from .constants import (
     MAIN_COLORS_DICT,
     NUMBERS,
     base_colors_options,
-)  # NOQA
+)
 from .tools import (
     BrushTool,
     DarkenTool,
@@ -30,7 +30,7 @@ from .tools import (
     LightenTool,
     ReplaceTool,
     Tool,
-)  # NOQA
+)
 
 if typing.TYPE_CHECKING:
     from redbot.core.bot import Red

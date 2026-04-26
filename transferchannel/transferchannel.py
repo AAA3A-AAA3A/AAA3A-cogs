@@ -354,7 +354,9 @@ class TransferChannel(Cog):
             _(
                 "There are {count_messages} transfered messages from {source.mention} to {destination.mention}.",
             ).format(
-                count_messages=count_messages, source=message.channel, destination=destination,
+                count_messages=count_messages,
+                source=message.channel,
+                destination=destination,
             ),
         )
 

@@ -22,7 +22,7 @@ from .types import (
     WandboxEngine,
     WandboxRequest,
     WandboxResponse,
-)  # NOQA
+)
 
 # Credits:
 # General repo credits.

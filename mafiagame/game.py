@@ -22,7 +22,7 @@ from .anomalies import (
     DejaVu,
     FoggyMist,
     LightningRound,
-)  # NOQA
+)
 from .constants import (
     ACHIEVEMENTS_COLOR,
     DAY_COLOR,
@@ -31,7 +31,7 @@ from .constants import (
     NIGHT_COLOR,
     VILLAGERS_COLOR,
     VOTING_AND_JUDGEMENT_COLOR,
-)  # NOQA
+)
 from .famine_apocalypses import VoteCollapse
 from .modes import Classic, Mode
 from .roles import (
@@ -59,7 +59,7 @@ from .roles import (
     Silencer,
     VillagerAlchemist,
     Watcher,
-)  # NOQA
+)
 from .utils import get_image
 from .views import (
     JudgementView,
@@ -68,7 +68,7 @@ from .views import (
     StartMessageView,
     SuicideView,
     VoteView,
-)  # NOQA
+)
 
 _: Translator = Translator("MafiaGame", __file__)
 

@@ -11,7 +11,7 @@ from redbot.core.i18n import (
     get_locale_from_guild,
     set_contextual_locale,
     set_contextual_regional_format,
-)  # NOQA
+)
 
 from .form import INITIAL_INIT_FIELD, Field, get_form_class
 from .pagination import Pagination

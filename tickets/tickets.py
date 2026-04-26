@@ -16,7 +16,7 @@ from .converters import (
     ModalConverter,
     MyMessageConverter,
     ProfileConverter,
-)  # NOQA
+)
 from .dashboard_integration import DashboardIntegration
 from .types import Ticket, get_non_animated_asset
 from .views import (

@@ -21,7 +21,7 @@ from .constants import (
     ROW_ICONS,
     ROW_ICONS_DICT,
     u200b,
-)  # NOQA
+)
 
 
 @dataclass
@@ -42,7 +42,16 @@ class Board:
         height: int | None = 9,
         width: int | None = 9,
         background: typing.Literal[
-            "🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent",
+            "🟥",
+            "🟧",
+            "🟨",
+            "🟩",
+            "🟦",
+            "🟪",
+            "🟫",
+            "⬛",
+            "⬜",
+            "transparent",
         ]
         | None = MAIN_COLORS[-1],  # Literal[*MAIN_COLORS]
     ) -> None:
@@ -255,7 +264,16 @@ class Board:
         height: int | None = None,
         width: int | None = None,
         background: typing.Literal[
-            "🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "transparent",
+            "🟥",
+            "🟧",
+            "🟨",
+            "🟩",
+            "🟦",
+            "🟪",
+            "🟫",
+            "⬛",
+            "⬜",
+            "transparent",
         ]
         | None = None,  # typing.Literal[*MAIN_COLORS]
     ) -> None:

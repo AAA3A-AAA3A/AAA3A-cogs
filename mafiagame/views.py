@@ -22,7 +22,7 @@ from .constants import (
     NIGHT_COLOR,
     VILLAGERS_COLOR,
     VOTING_AND_JUDGEMENT_COLOR,
-)  # NOQA
+)
 from .famine_apocalypses import FamineApocalypse
 from .utils import get_image
 

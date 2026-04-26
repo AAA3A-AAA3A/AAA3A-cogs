@@ -21,7 +21,7 @@ from .converters import (
     ParseException,
     TimeConverter,
     TimezoneConverter,
-)  # NOQA
+)
 from .dashboard_integration import DashboardIntegration
 from .types import Content, Reminder, Repeat, RepeatRule
 from .views import ReminderView

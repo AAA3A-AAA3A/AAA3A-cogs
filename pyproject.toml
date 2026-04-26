@@ -2,6 +2,7 @@
 line-length = 100
 indent-width = 4
 target-version = "py310"
+no-cache = true
 exclude = [
     ".bzr",
     ".direnv",

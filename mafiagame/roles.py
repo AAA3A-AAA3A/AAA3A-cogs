@@ -6,7 +6,6 @@ import typing
 from dataclasses import dataclass, field
 
 import discord
-
 from AAA3A_utils import CogsUtils
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
@@ -16,7 +15,7 @@ from .constants import (
     MAFIA_COLOR,
     NEUTRAL_COLOR,
     VILLAGERS_COLOR,
-)  # NOQA
+)
 from .famine_apocalypses import FAMINE_APOCALYPSES, FamineApocalypse
 from .utils import get_death_reason, get_image
 from .views import (
@@ -27,7 +26,7 @@ from .views import (
     JudgeView,
     SelectRolesView,
     SelectTargetsView,
-)  # NOQA
+)
 
 TARGET_TYPE_HINT = typing.Optional[
     typing.Union[
@@ -2083,7 +2082,7 @@ class Goose(Role):
         "Goose is the embodiment of chaos. The Goose's sole purpose in life is to torture the living. There are no emotions in the Goose, only the desire to Goose.",
     )
     ability: str = _(
-        "Each night, the Goose can select a player and change their target(s) at random.",
+        "Each night, the Goose can select a player and change their target at random.",
     )
     visit_type: str = "Active"
     objective: str = _("Fulfill your destiny and bring chaos to the village.")
@@ -2142,7 +2141,7 @@ class Goose(Role):
 
     @classmethod
     async def check_pt(cls, night, player: Player, p: Player, t: Player) -> Player:
-        if t == player:
+        if p == night.targets.get(player) and isinstance(t, Player):
             return random.choice([p for p in night.game.alive_players if p != player and p != t])
         return t
 
@@ -3449,7 +3448,7 @@ class Starspawn(Role):
         "The Starspawn is a powerful being that can manipulate the stars to their will.",
     )
     ability: str = _(
-        "Each night, the Starspawn can visit a player and make them invisible. They cannot choose the same player on consecutive nights. Once a game, they can use their daybreak ability and block all day-actions from happening.",
+        "Each night, the Starspawn can visit a player and make them invisible. They can't choose the same player on consecutive nights. Once a game, they can use their daybreak ability and block all day-actions from happening.",
     )
     visit_type: str = "Active"
     objective: str = _("Witness the village lose.")
@@ -3703,7 +3702,7 @@ class BodyGuard(Role):
         "The Body Guard is a protector of the innocent and a defender of the weak.",
     )
     ability: str = _(
-        "Each night, the Body Guard can select a player to protect. If that player is attacked, the Body Guard will block the attack and kill the attacker instead, dying alongside with them. If the BodyGuard protects themselves, they will not die, but will not kill the attacker either. They cannot protect the same player twice a row.",
+        "Each night, the Body Guard can select a player to protect. If that player is attacked, the Body Guard will block the attack and kill the attacker instead, dying alongside with them. If the BodyGuard protects themselves, they will not die, but will not kill the attacker either. They can't protect the same player twice a row.",
     )
     visit_type: str = "Active"
     objective: str = _("Help the village protect their allies.")

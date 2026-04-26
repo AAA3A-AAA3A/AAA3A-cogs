@@ -1334,6 +1334,102 @@ class Tickets(DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(_("No ticket found."))
         await ticket.delete_channel(ctx.author)
 
+    @commands.admin_or_permissions(manage_guild=True)
+    @ticket.command()
+    async def recover(
+        self,
+        ctx: commands.Context,
+        *,
+        channel: discord.TextChannel | discord.Thread = commands.CurrentChannel,
+    ) -> None:
+        """Recover a ticket from a channel."""
+        if (
+            discord.utils.get(
+                self.tickets.get(ctx.guild.id, {}).values(),
+                channel=ctx.channel,
+            )
+            is not None
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _("This channel is already linked to a ticket."),
+            )
+        if (
+            first_message := await anext(
+                (message async for message in channel.history(limit=1, oldest_first=True)),
+                None,
+            )
+        ) is None:
+            raise commands.UserFeedbackCheckFailure(_("No messages found in this channel."))
+        if first_message.author != ctx.guild.me:
+            raise commands.UserFeedbackCheckFailure(
+                _("The first message in this channel must be sent by me."),
+            )
+        if not first_message.embeds:
+            raise commands.UserFeedbackCheckFailure(
+                _("The first message in this channel must contain an embed."),
+            )
+        embed = first_message.embeds[0]
+        try:
+            owner_id = int(embed.author.name.split(" (")[-1].split(")")[0])
+        except (IndexError, ValueError):
+            raise commands.UserFeedbackCheckFailure(
+                _(
+                    "The embed of the first message in this channel must have the author set to the ticket owner.",
+                ),
+            )
+        profiles = await self.config.guild(ctx.guild).profiles()
+        if (profile := embed.title.split("[")[1].split("]")[0]) not in profiles:
+            raise commands.UserFeedbackCheckFailure(
+                _("The profile of this ticket doesn't exist anymore."),
+            )
+        reason_field = discord.utils.get(embed.fields, name=_("Reason:"))
+        ticket: Ticket = Ticket(
+            bot=self.bot,
+            cog=self,
+            guild_id=ctx.guild.id,
+            id=int(embed.title.split("#")[1].split(" ")[0]),
+            owner_id=owner_id,
+            channel_id=channel.id,
+            message_id=first_message.id,
+            profile=profile,
+            reason=(reason_field.value[4:] if reason_field is not None else None),
+            category_label=(
+                first_message.embeds[1].title if len(first_message.embeds) == 3 else None
+            ),
+            owner_answers=(
+                {field.name: field.value[4:] for field in first_message.embeds[1].fields}
+                if len(first_message.embeds) == 3
+                else {}
+            ),
+            opened_at_timestamp=int(embed.timestamp.timestamp()),
+            is_claimed=embed.color == discord.Color.blue(),
+            is_closed=embed.color == discord.Color.red(),
+        )
+        try:
+            view: TicketView = self.views[first_message]
+        except KeyError:
+            view: TicketView = TicketView(cog=self, ticket=ticket)
+        await view._update()
+        try:
+            await first_message.edit(
+                embeds=await ticket.get_embeds(),
+                view=view,
+            )
+            self.views[first_message] = view
+        except discord.HTTPException:
+            pass
+        try:
+            await channel.edit(
+                name=await ticket.channel_name(
+                    forum_channel=isinstance(ticket.channel, discord.Thread),
+                ),
+                overwrites=await ticket.get_channel_overwrites(),
+                reason=_("Reverting channel name and overwrites for ticket recovery."),
+            )
+        except discord.HTTPException:
+            pass
+        await ticket.save()
+
     @commands.guild_only()
     @commands.admin_or_permissions(manage_guild=True)
     @commands.hybrid_group()

@@ -2613,7 +2613,7 @@ class Gambler(Role):
         "An addict to the evil abyss of gambling, the Gambler is willing to bet anything to feel the rush of gambling. Armed with sets of magical dice, the Gambler is well aware of the risks and rewards the dice could reap.",
     )
     ability: str = _(
-        "Each night, the Gambler has up to 3 dice options to throw one of them.\n- **White Dice**, *70% chance* of success. If successful, you gain a 50% chance of surviving a Mafia's attack. Otherwise, a random villager is distracted.\n- **Yellow Dice**, *50% chance* of success. If successful, a random villager is given an extra vote for the day. Otherwise, you lose one vote for the day.\n- **Red Dice**, *20% chance* of success. If successful, a random dead villager is revived. Otherwise, you die. This option only appears when at least one Villagers' side role is dead.",
+        "Each night, the Gambler has up to 3 dice options to throw one of them.\n- **White Dice**, *70% chance* of success. If successful, you gain a 50% chance of surviving a Mafia's attack. Otherwise, a random villager is distracted.\n- **Yellow Dice**, *50% chance* of success. If successful, a random villager is given an extra vote for the day. Otherwise, you lose one vote for the day.\n- **Red Dice**, *35% chance* of success. If successful, a random dead villager is revived. Otherwise, you die. This option only appears when at least one Villagers' side role is dead.",
     )
     objective: str = _("Make good gambling decisions that won't doom the town.")
     achievements = {
@@ -2700,7 +2700,7 @@ class Gambler(Role):
                 else:
                     night.gamblers_results[player] = (False, None)
             elif dice == "red":
-                if random.random() < 0.20:
+                if random.random() < 0.35:
                     revived = random.choice(
                         [p for p in night.game.dead_players if p.role.side == "Villagers"],
                     )
@@ -3963,6 +3963,7 @@ class Cupid(Role):
     ability: str = _(
         "On the first night, the Cupid can choose two players to become lovers. If they don't, two players will be selected randomly. If one lover dies, the other will commit suicide and the Cupid will become a Killer and gain the ability to kill each night. If the Cupid dies, the lovers become Killers.",
     )
+    visit_type: str = "Passive"
     objective: str = _("Ensure the lovers survive until the end of the game.")
     objective_secondary: bool = True
     achievements = {

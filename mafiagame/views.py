@@ -1176,9 +1176,9 @@ class VoteView(discord.ui.View):
         if (
             starspawn := next(
                 (
-                    t is None
+                    p
                     for p, t in self.day.game.days_nights[-2].targets.items()
-                    if p.role.name == "Starspawn"
+                    if p.role.name == "Starspawn" and t is None
                 ),
                 None,
             )

@@ -1,3 +1,4 @@
+import functools
 import typing
 
 import discord
@@ -33,13 +34,13 @@ class TimeDeltaConverter(commands.Converter):
 
 @app_commands.context_menu(name="Sanction Member")
 async def sanction_member_context_menu(interaction: discord.Interaction, member: discord.Member):
-    await interaction.response.defer()
+    await interaction.response.defer(ephemeral=True, thinking=True)
     context = await CogsUtils.invoke_command(
         bot=interaction.client,
         author=interaction.user,
         channel=interaction.channel,
         command=f"sanction 00 {member.id}",
-        # interaction=interaction,
+        invoke=False,
     )
     if not await discord.utils.async_all([check(context) for check in context.command.checks]):
         await interaction.followup.send(
@@ -47,6 +48,8 @@ async def sanction_member_context_menu(interaction: discord.Interaction, member:
             ephemeral=True,
         )
         return
+    context.send = functools.partial(interaction.followup.send, ephemeral=True)
+    await interaction.client.invoke(context)
 
 
 @cog_i18n(_)

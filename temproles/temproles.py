@@ -511,7 +511,7 @@ class TempRoles(Cog):
                     ],
                 )
         elif role is not None:
-            embed.set_author(text=f"{role.name} ({role.id})", icon_url=role.icon)
+            embed.set_author(name=f"{role.name} ({role.id})", icon_url=role.icon)
             members_data = await self.config.all_members(guild=ctx.guild)
             temp_roles_members = {}
             for member_id, data in members_data.items():

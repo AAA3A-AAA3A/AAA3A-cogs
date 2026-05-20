@@ -1487,16 +1487,17 @@ class LoggingModule(Module):
         ):
             return
         responsible = message.author if message is not None else None
-        async for entry in guild.audit_logs(
-            limit=3,
-            action=discord.AuditLogAction.message_delete,
-            oldest_first=False,
-        ):
-            if entry.extra.channel.id == message_channel.id and (
-                message is None or entry.target.id == message.author.id
+        if guild.me.guild_permissions.view_audit_log:
+            async for entry in guild.audit_logs(
+                limit=3,
+                action=discord.AuditLogAction.message_delete,
+                oldest_first=False,
             ):
-                responsible = entry.user
-                break
+                if entry.extra.channel.id == message_channel.id and (
+                    message is None or entry.target.id == message.author.id
+                ):
+                    responsible = entry.user
+                    break
         embed: discord.Embed = await self.get_embed(
             guild,
             event,
@@ -1533,14 +1534,15 @@ class LoggingModule(Module):
         if not (channel := await self.check_config(guild, event, None, message_channel)):
             return
         responsible = None
-        async for entry in guild.audit_logs(
-            limit=3,
-            action=discord.AuditLogAction.message_bulk_delete,
-            oldest_first=False,
-        ):
-            if entry.target.id == payload.channel_id:
-                responsible = entry.user
-                break
+        if guild.me.guild_permissions.view_audit_log:
+            async for entry in guild.audit_logs(
+                limit=3,
+                action=discord.AuditLogAction.message_bulk_delete,
+                oldest_first=False,
+            ):
+                if entry.target.id == payload.channel_id:
+                    responsible = entry.user
+                    break
         embed: discord.Embed = await self.get_embed(guild, event, responsible, message_channel)
         embed.description += _("\n{emoji} **Count:** {count}").format(
             emoji="🔢",

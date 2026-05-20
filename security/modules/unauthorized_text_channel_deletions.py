@@ -258,21 +258,25 @@ class UnauthorizedTextChannelDeletionsModule(Module):
                 guild=entry.guild,
                 bot=self.cog.bot,
             )
-            file = discord.File(
-                BytesIO(transcript.encode(encoding="utf-8")),
-                filename=f"transcript-{channel.id}.html",
-            )
+            transcript_bytes: bytes = transcript.encode(encoding="utf-8")
+            transcript_filename: str = f"transcript-{channel.id}.html"
+
+            def make_file() -> discord.File:
+                return discord.File(BytesIO(transcript_bytes), filename=transcript_filename)
         else:
             embed.add_field(
                 name="\u200b",
                 value=_("No recent messages found in this channel before deletion."),
             )
-            file = None
+            transcript_bytes = None
+
+            def make_file() -> None:
+                return None
 
         await self.cog.send_in_modlog_channel(
             entry.guild,
             embed=embed,
-            file=file,
+            file=make_file(),
         )
         if config["dm_extra_owners_and_higher"]:
             extra_owners_and_higher = [entry.guild.owner] + [
@@ -283,7 +287,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
             ]
             for owner in extra_owners_and_higher:
                 try:
-                    await owner.send(embed=embed, file=file)
+                    await owner.send(embed=embed, file=make_file())
                 except discord.HTTPException:
                     continue
 

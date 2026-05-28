@@ -176,7 +176,7 @@ class WandboxResponse:
             title=_("RunCode Response (with Wandbox API)"),
             url=self.url,
         )
-        embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         run_time = format_timespan(self.run_time)
         embed.set_footer(text=f"Ran in {run_time}.")
         embed.set_author(
@@ -340,7 +340,7 @@ class TioResponse:
             title=_("RunCode Response (with Tio API)"),
             url=self.request.language.link,
         )
-        embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         run_time = format_timespan(self.run_time)
         embed.set_footer(text=f"Ran in {run_time}.")
         embed.set_author(name=f"{self.request.language.name.capitalize()} language")

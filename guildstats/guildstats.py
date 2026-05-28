@@ -150,7 +150,7 @@ class GuildStats(Cog):
         await super().cog_load()
         if await self.config.first_loading_time() is None:
             await self.config.first_loading_time.set(
-                int(datetime.datetime.now(tz=datetime.UTC).timestamp()),
+                int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp()),
             )
         asyncio.create_task(self.load_data())
         self.loops.append(
@@ -457,7 +457,7 @@ class GuildStats(Cog):
 
     async def cleanup(self, utc_now: datetime.datetime = None) -> None:
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.UTC)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         channel_group = self.config._get_base_group(self.config.CHANNEL)
         async with channel_group.all() as channels_data:
             for channel in channels_data:
@@ -543,7 +543,7 @@ class GuildStats(Cog):
         if message.author not in self.cache[message.guild]["channels"][message.channel]["messages"]:
             self.cache[message.guild]["channels"][message.channel]["messages"][message.author] = []
         self.cache[message.guild]["channels"][message.channel]["messages"][message.author].append(
-            datetime.datetime.now(tz=datetime.UTC),
+            datetime.datetime.now(tz=datetime.timezone.utc),
         )
 
     @commands.Cog.listener()
@@ -590,7 +590,7 @@ class GuildStats(Cog):
                     "voice_cache": {},
                 }
             self.cache[after.channel.guild]["channels"][after.channel]["voice_cache"][member] = (
-                datetime.datetime.now(tz=datetime.UTC)
+                datetime.datetime.now(tz=datetime.timezone.utc)
             )
         if before.channel is not None:
             if isinstance(after.channel, discord.StageChannel):
@@ -604,7 +604,7 @@ class GuildStats(Cog):
             ignored_users = await self.config.ignored_users()
             if member.id in ignored_users:
                 return
-            end_time = datetime.datetime.now(tz=datetime.UTC)
+            end_time = datetime.datetime.now(tz=datetime.timezone.utc)
             real_total_time = int((end_time - start_time).total_seconds())
             if round(real_total_time / 3600, 2) == 0:
                 return
@@ -674,7 +674,7 @@ class GuildStats(Cog):
                         "activities_cache": {},
                     }
                 self.cache[after.guild]["members"][after]["activities_cache"][activity.name] = (
-                    datetime.datetime.now(tz=datetime.UTC)
+                    datetime.datetime.now(tz=datetime.timezone.utc)
                 )
         if before is not None:
             ignored_users = await self.config.ignored_users()
@@ -694,7 +694,7 @@ class GuildStats(Cog):
                     ].pop(activity.name)
                 except KeyError:
                     return
-                end_time = datetime.datetime.now(tz=datetime.UTC)
+                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if real_total_time < 10 * 60:
                     return
@@ -746,7 +746,7 @@ class GuildStats(Cog):
         else:
             _type = None
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.UTC)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         # Get cache data.
         all_channels_data = {
             channel_id: data
@@ -802,7 +802,7 @@ class GuildStats(Cog):
                 # already_seen.append(member)
                 if member not in channel.members:
                     continue
-                end_time = datetime.datetime.now(tz=datetime.UTC)
+                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if round(real_total_time / 3600, 2) == 0:
                     continue
@@ -844,7 +844,7 @@ class GuildStats(Cog):
             for activity_name, start_time in data["activities_cache"].items():
                 if discord.utils.get(member.activities, name=activity_name) is None:
                     continue
-                end_time = datetime.datetime.now(tz=datetime.UTC)
+                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if real_total_time < 10 * 60:
                     continue
@@ -3803,7 +3803,7 @@ class GuildStats(Cog):
                 image = Image.open(self.icons["history"])
                 image = image.resize((50, 50))
                 img.paste(image, (30, 972, 80, 1022), mask=image.split()[3])
-                utc_now = datetime.datetime.now(tz=datetime.UTC)
+                utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
                 tracking_data_start_time = max(
                     first_loading_time,
                     (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at,
@@ -3924,7 +3924,7 @@ class GuildStats(Cog):
             default_state=await self.config.default_state(),
             first_loading_time=datetime.datetime.fromtimestamp(
                 await self.config.first_loading_time(),
-                tz=datetime.UTC,
+                tz=datetime.timezone.utc,
             ),
         )
 
@@ -6057,7 +6057,7 @@ class GuildStats(Cog):
                 image = image.resize((1840, 464))
                 img.paste(image, (50, 1123, 1890, 1387 + 200))
 
-        utc_now = datetime.datetime.now(tz=datetime.UTC)
+        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         tracking_data_start_time = max(
             first_loading_time,
             (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at,
@@ -6243,7 +6243,7 @@ class GuildStats(Cog):
             default_state=await self.config.default_state(),
             first_loading_time=datetime.datetime.fromtimestamp(
                 await self.config.first_loading_time(),
-                tz=datetime.UTC,
+                tz=datetime.timezone.utc,
             ),
         )
 

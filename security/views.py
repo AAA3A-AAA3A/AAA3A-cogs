@@ -221,7 +221,7 @@ class WhitelistView(discord.ui.View):
         embed = self._message.embeds[0]
         if self.saved:
             if self.duration is not None:
-                expires_at = datetime.datetime.now(tz=datetime.UTC) + self.duration
+                expires_at = datetime.datetime.now(tz=datetime.timezone.utc) + self.duration
                 embed.description += _("\n⏲️ **Expiration:** {F_timestamp} ({R_timestamp})").format(
                     F_timestamp=discord.utils.format_dt(expires_at, style="F"),
                     R_timestamp=discord.utils.format_dt(expires_at, style="R"),
@@ -1098,7 +1098,7 @@ class ActionsView(discord.ui.View):
                 guild=self.member.guild,
                 author=interaction.user,
                 user=self.member,
-                until=datetime.datetime.now(tz=datetime.UTC) + duration,
+                until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
                 reason=reason,
             )
         elif action == "unmute":

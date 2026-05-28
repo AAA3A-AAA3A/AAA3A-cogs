@@ -434,7 +434,9 @@ class AdventCalendar(Cog):
         if reward["type"] == "temp_role":
             duration = datetime.timedelta(seconds=reward["duration"])
             try:
-                end_time: datetime.datetime = datetime.datetime.now(tz=datetime.UTC) + duration
+                end_time: datetime.datetime = (
+                    datetime.datetime.now(tz=datetime.timezone.utc) + duration
+                )
             except OverflowError:
                 return None, None
             end_time = end_time.replace(second=0 if end_time.second < 30 else 30)
@@ -495,7 +497,7 @@ class AdventCalendar(Cog):
                 ).format(member=member)
                 + (f" for **day {day}**!" if day is not None else " as **final reward**!"),
                 color=discord.Color.green(),
-                timestamp=datetime.datetime.now(tz=datetime.UTC),
+                timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
             )
             embed.set_thumbnail(url=member.display_avatar)
             embed.add_field(name=_("Member:"), value=f"{member.mention} ({member.id})")
@@ -722,7 +724,7 @@ class AdventCalendar(Cog):
                 if len(opened_days) == today.day
                 else (discord.Color.orange() if opened_days else discord.Color.red())
             ),
-            timestamp=datetime.datetime.now(tz=datetime.UTC),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.set_author(
             name=member.display_name,
@@ -764,7 +766,7 @@ class AdventCalendar(Cog):
                 if members_all_boxes_opened
                 else (discord.Color.orange() if total_boxes_opened else discord.Color.red())
             ),
-            timestamp=datetime.datetime.now(tz=datetime.UTC),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.add_field(
             name=_("Total Boxes Opened:"),

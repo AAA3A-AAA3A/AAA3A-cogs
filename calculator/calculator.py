@@ -257,7 +257,7 @@ class Calculator(Cog):
             embed.set_thumbnail(
                 url="https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png",
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             if ctx.guild:
                 embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
             else:

@@ -495,7 +495,7 @@ class Tickets(DashboardIntegration, Cog):
                 if (
                     ticket.is_closed
                     and config["auto_delete_on_close"] is not None
-                    and datetime.datetime.now(tz=datetime.UTC) - ticket.closed_at
+                    and datetime.datetime.now(tz=datetime.timezone.utc) - ticket.closed_at
                     > datetime.timedelta(hours=config["auto_delete_on_close"])
                 ):
                     await ticket.delete_channel(None)  # That's a setting, so no deleter.

@@ -441,7 +441,7 @@ def get_correct_timeout_duration(
     duration: datetime.timedelta,
 ) -> datetime.timedelta:
     if member.is_timed_out():
-        duration += member.timed_out_until - datetime.datetime.now(datetime.UTC)
+        duration += member.timed_out_until - datetime.datetime.now(datetime.timezone.utc)
     return min(duration, datetime.timedelta(days=28))
 
 

@@ -70,7 +70,8 @@ JOIN_GATE_OPTIONS: list[
         "param": ("minimum_days", int, 7),
         "value": "account_age",
         "check": lambda member, minimum_days: (
-            (datetime.datetime.now(tz=datetime.UTC) - member.created_at).days < minimum_days
+            (datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at).days
+            < minimum_days
         ),
     },
     {
@@ -346,7 +347,9 @@ class JoinGateModule(Module):
                 _("\n- Account Age: {account_age}\n- Minimum Age: {minimum_days} days").format(
                     account_age=CogsUtils.get_interval_string(
                         datetime.timedelta(
-                            days=(datetime.datetime.now(tz=datetime.UTC) - member.created_at).days,
+                            days=(
+                                datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at
+                            ).days,
                         ),
                     ),
                     minimum_days=option_config["minimum_days"],
@@ -376,7 +379,7 @@ class JoinGateModule(Module):
                     guild=member.guild,
                     author=member.guild.me,
                     user=member,
-                    until=datetime.datetime.now(tz=datetime.UTC) + duration,
+                    until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
                     reason=audit_log_reason,
                 )
             elif action == "kick" and member.guild.me.guild_permissions.kick_members:

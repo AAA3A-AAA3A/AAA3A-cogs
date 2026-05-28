@@ -180,9 +180,9 @@ class JoinGameView(discord.ui.View):
                     duration=humanize_timedelta(
                         timedelta=datetime.datetime.fromtimestamp(
                             temp_banned_until,
-                            tz=datetime.UTC,
+                            tz=datetime.timezone.utc,
                         )
-                        - datetime.datetime.now(tz=datetime.UTC),
+                        - datetime.datetime.now(tz=datetime.timezone.utc),
                     ),
                 ),
                 ephemeral=True,
@@ -1996,7 +1996,8 @@ class PollView(JoinGameView):
                     "You are **temporarily banned for {duration}** from joining Mafia games in this server!",
                 ).format(
                     duration=humanize_timedelta(
-                        timedelta=temp_banned_until - datetime.datetime.now(tz=datetime.UTC),
+                        timedelta=temp_banned_until
+                        - datetime.datetime.now(tz=datetime.timezone.utc),
                     ),
                 ),
                 ephemeral=True,

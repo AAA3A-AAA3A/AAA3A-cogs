@@ -264,7 +264,7 @@ class ReasonModal(discord.ui.Modal):
                 emoji=self.module.emoji,
             ),
             color=Colors.REPORTS.value,
-            timestamp=datetime.datetime.now(tz=datetime.UTC),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.description = _("👤 **Member:** {member.mention} (`{member}`) {member_emoji}").format(
             member=member,

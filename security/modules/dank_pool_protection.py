@@ -176,7 +176,7 @@ class Payout:
 
     @property
     def issued_at(self) -> datetime.datetime:
-        return datetime.datetime.fromtimestamp(self.issued_at_timestamp, tz=datetime.UTC)
+        return datetime.datetime.fromtimestamp(self.issued_at_timestamp, tz=datetime.timezone.utc)
 
     @property
     def display_amount(self) -> str:
@@ -624,7 +624,7 @@ class DankPoolProtectionModule(Module):
             (
                 datetime.datetime.fromtimestamp(
                     last_payout["issued_at_timestamp"],
-                    tz=datetime.UTC,
+                    tz=datetime.timezone.utc,
                 ),
                 _(
                     "{member.mention} (`{member}`) executed `{slash_name}` ({jump_url}) {timestamp}.",

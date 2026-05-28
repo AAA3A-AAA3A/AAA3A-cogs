@@ -116,7 +116,7 @@ class TempRoles(Cog):
 
     async def temp_roles_loop(self, utc_now: datetime.datetime = None) -> bool:
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.UTC)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         executed = False
         member_group = self.config._get_base_group(self.config.MEMBER)
         async with member_group.all() as members_data:
@@ -133,7 +133,7 @@ class TempRoles(Cog):
                     ].items():
                         if datetime.datetime.fromtimestamp(
                             expires_times,
-                            tz=datetime.UTC,
+                            tz=datetime.timezone.utc,
                         ) <= utc_now.replace(microsecond=0):
                             executed = True
                             if (temp_role := guild.get_role(int(temp_role_id))) is not None:
@@ -188,7 +188,7 @@ class TempRoles(Cog):
         }
         for role, duration in joining_temp_roles.items():
             try:
-                end_time = datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(
+                end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(
                     seconds=duration,
                 )
             except OverflowError:
@@ -207,7 +207,7 @@ class TempRoles(Cog):
                 )
             else:
                 member_temp_roles = await self.config.member(member).temp_roles()
-                end_time = datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(
+                end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(
                     seconds=duration,
                 )
                 member_temp_roles[str(role.id)] = int(end_time.replace(microsecond=0).timestamp())
@@ -246,13 +246,13 @@ class TempRoles(Cog):
                     auto_temp_roles = await self.config.guild(after.guild).auto_temp_roles()
                     duration = datetime.timedelta(seconds=auto_temp_roles[str(role.id)])
                     try:
-                        end_time = datetime.datetime.now(tz=datetime.UTC) + duration
+                        end_time = datetime.datetime.now(tz=datetime.timezone.utc) + duration
                     except OverflowError:
                         continue
                     end_time = end_time.replace(second=0 if end_time.second < 30 else 30)
                     duration_string = CogsUtils.get_interval_string(duration)
                     member_temp_roles = await self.config.member(after).temp_roles()
-                    end_time = datetime.datetime.now(tz=datetime.UTC) + duration
+                    end_time = datetime.datetime.now(tz=datetime.timezone.utc) + duration
                     member_temp_roles[str(role.id)] = int(
                         end_time.replace(microsecond=0).timestamp(),
                     )
@@ -326,7 +326,7 @@ class TempRoles(Cog):
                 _("You can't assign this role to this member, due to the Discord role hierarchy."),
             )
         try:
-            end_time: datetime.datetime = datetime.datetime.now(tz=datetime.UTC) + duration
+            end_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc) + duration
         except OverflowError:
             raise commands.UserFeedbackCheckFailure(
                 _("The time set is way too high, consider setting something reasonable."),
@@ -389,7 +389,7 @@ class TempRoles(Cog):
         if str(role.id) not in member_temp_roles:
             raise commands.UserFeedbackCheckFailure(_("This role isn't a TempRole of this member."))
         try:
-            end_time: datetime.datetime = datetime.datetime.now(tz=datetime.UTC) + duration
+            end_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc) + duration
         except OverflowError:
             raise commands.UserFeedbackCheckFailure(
                 _("The time set is way too high, consider setting something reasonable."),

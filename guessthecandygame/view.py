@@ -54,7 +54,7 @@ class GuessTheCandyGameView(discord.ui.View):
             file=discord.File(self.cog.shadows[self.candy], filename="shadow.png"),
         )
         self.cog.views[self._message] = self
-        self.start_time: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+        self.start_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
 
     async def on_timeout(self) -> None:
         for child in self.children:
@@ -88,7 +88,7 @@ class GuessTheCandyGameView(discord.ui.View):
                     "**Congratulations!** You've correctly guessed it's **{candy}**, in **{time} seconds**!",
                 ).format(
                     candy=self.candy,
-                    time=f"{(datetime.datetime.now(tz=datetime.UTC) - self.start_time).total_seconds():.2f}",
+                    time=f"{(datetime.datetime.now(tz=datetime.timezone.utc) - self.start_time).total_seconds():.2f}",
                 ),
                 color=await self.ctx.embed_color(),
             )

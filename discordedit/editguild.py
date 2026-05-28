@@ -825,7 +825,7 @@ class EditGuild(Cog):
                 title=f"Guild {guild.name} ({guild.id})",
                 color=embed_color,
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             embed.description = "\n".join(
                 [
                     f"• `{parameter}`: {repr(getattr(guild, parameters[parameter].get('attribute_name', parameter)))}"

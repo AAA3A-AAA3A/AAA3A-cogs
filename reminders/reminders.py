@@ -223,7 +223,7 @@ class Reminders(DashboardIntegration, Cog):
 
     async def reminders_loop(self, utc_now: datetime.datetime = None) -> bool:
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.UTC)
+            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         executed = False
         cache = {user_id: reminders.copy() for user_id, reminders in self.cache.copy().items()}
         for reminders in cache.values():
@@ -253,7 +253,7 @@ class Reminders(DashboardIntegration, Cog):
         if jump_url is None:
             jump_url = "https://discord.com/channels/0/0/0"
         if created_at is None:
-            created_at = datetime.datetime.now(tz=datetime.UTC)
+            created_at = datetime.datetime.now(tz=datetime.timezone.utc)
         reminder_id = 1
         while reminder_id in self.cache.get(user_id, {}):
             reminder_id += 1
@@ -1344,7 +1344,7 @@ class Reminders(DashboardIntegration, Cog):
             await self.config.maximum_user_reminders(),
         )
         await self.config.set(new_global_data)
-        utc_now_timestamp = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
+        utc_now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
         old_config.init_custom("REMINDER", 2)
         old_reminders_data = await old_config.custom("REMINDER").all()
         for user_id in old_reminders_data:
@@ -1368,16 +1368,16 @@ class Reminders(DashboardIntegration, Cog):
                         targets=None,
                         created_at=datetime.datetime.fromtimestamp(
                             reminder_data["created"],
-                            tz=datetime.UTC,
+                            tz=datetime.timezone.utc,
                         ),
                         expires_at=datetime.datetime.fromtimestamp(
                             reminder_data["expires"],
-                            tz=datetime.UTC,
+                            tz=datetime.timezone.utc,
                         ),
                         last_expires_at=None,
                         next_expires_at=datetime.datetime.fromtimestamp(
                             reminder_data["expires"],
-                            tz=datetime.UTC,
+                            tz=datetime.timezone.utc,
                         ),
                         repeat=(
                             Repeat.from_json(
@@ -1407,7 +1407,7 @@ class Reminders(DashboardIntegration, Cog):
             force_registration=True,
             cog_name="FIFO",
         )
-        utc_now = datetime.datetime.now(tz=datetime.UTC)
+        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
         old_guilds_data = await old_config.all_guilds()
         for guild_id in old_guilds_data:
             reminder_id = 1
@@ -1435,7 +1435,7 @@ class Reminders(DashboardIntegration, Cog):
                                     "type": "date",
                                     "value": int(
                                         dateutil.parser.isoparse(trigger["time_data"])
-                                        .replace(tzinfo=datetime.UTC)
+                                        .replace(tzinfo=datetime.timezone.utc)
                                         .timestamp(),
                                     ),
                                     "start_trigger": None,

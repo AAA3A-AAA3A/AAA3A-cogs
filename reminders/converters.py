@@ -132,7 +132,7 @@ class TimeConverter(commands.Converter):
         | tuple[datetime.datetime, datetime.datetime, typing.Any | None]
     ):
         cog = ctx.bot.get_cog("Reminders")
-        utc_now = datetime.datetime.now(tz=datetime.UTC).replace(second=0, microsecond=0)
+        utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(second=0, microsecond=0)
         timezone = await cog.config.user(ctx.author).timezone()
         if timezone is None:
             if (timezone_cog := ctx.bot.get_cog("Timezone")) is not None:
@@ -153,7 +153,7 @@ class TimeConverter(commands.Converter):
                 dt: datetime.datetime = dateutil.parser.isoparse(arg)
                 if dt.tzinfo is None:
                     dt = dt.replace(tzinfo=tz)
-                return dt.astimezone(tz=datetime.UTC)
+                return dt.astimezone(tz=datetime.timezone.utc)
             except ValueError as e:
                 raise ValueError(f"• Iso parsing: {' '.join(e.args)}.")
 
@@ -179,7 +179,7 @@ class TimeConverter(commands.Converter):
                     f"• Cron trigger parsing: {' '.join([f'{arg}.' for arg in e.args])}.",
                 )
             expires_at = cron_trigger.get_next_fire_time(previous_fire_time=None, now=local_now)
-            expires_at = expires_at.astimezone(tz=datetime.UTC)
+            expires_at = expires_at.astimezone(tz=datetime.timezone.utc)
             try:
                 return (
                     expires_at,
@@ -203,7 +203,7 @@ class TimeConverter(commands.Converter):
         def parse_timestamp(arg: str) -> datetime.datetime:
             try:
                 timestamp = float(arg)
-                expires_at = datetime.datetime.fromtimestamp(timestamp, tz=datetime.UTC)
+                expires_at = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
             except (ValueError, OverflowError) as e:
                 raise ValueError(
                     f"• Timestamp parsing: {' '.join([f'{e_arg}.' for e_arg in e.args])}.",
@@ -276,7 +276,7 @@ class TimeConverter(commands.Converter):
                 except OverflowError as e:
                     raise ValueError(f"• Relative date parsing: {e}.")
             reminder_text = parse_result["text"] or None if "text" in parse_result else None
-            expires_at = expires_at.astimezone(tz=datetime.UTC)
+            expires_at = expires_at.astimezone(tz=datetime.timezone.utc)
             if repeat_dict is not None:
                 try:
                     repeat = cog.Repeat.from_json(
@@ -317,7 +317,7 @@ class TimeConverter(commands.Converter):
             expires_at = rrule.after(local_now.replace(tzinfo=None), inc=True)
             if expires_at is None:
                 raise ValueError("• Recurrent parsing: Impossible to parse this RRULE.")
-            expires_at = expires_at.astimezone(tz=datetime.UTC)
+            expires_at = expires_at.astimezone(tz=datetime.timezone.utc)
             # if expires_at <= utc_now.replace(minute=utc_now.minute + 1):
             #     expires_at += dateutil.relativedelta.relativedelta(minutes=2)
             try:
@@ -459,7 +459,7 @@ class TimeConverter(commands.Converter):
             #     parsed_date = parsed_date.replace(tzinfo=tz)
             #     parsed_date = parsed_date.replace(hour=9)
             # parsed_date = parsed_date.replace(tzinfo=tz)
-            parsed_date = parsed_date.astimezone(tz=datetime.UTC)
+            parsed_date = parsed_date.astimezone(tz=datetime.timezone.utc)
             return (
                 parsed_date,
                 (reminder_text or "").strip() if return_text else text,

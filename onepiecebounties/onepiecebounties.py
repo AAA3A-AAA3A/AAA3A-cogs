@@ -191,13 +191,13 @@ class OnePieceBounties(WelcomePlugin, Cog):
                     if (accurate_joined_at := await self.config.member(member).accurate_joined_at())
                     is None
                     else datetime.datetime.fromisoformat(accurate_joined_at).replace(
-                        tzinfo=datetime.UTC,
+                        tzinfo=datetime.timezone.utc,
                     )
                 )
             )
             is not None
         ):
-            months = (datetime.datetime.now(tz=datetime.UTC) - joined_at).days / 30
+            months = (datetime.datetime.now(tz=datetime.timezone.utc) - joined_at).days / 30
             for i in range(1, int(months) + 2):
                 random_obj.seed(f"{member.id}-month-{i}")
                 year = i // 12
@@ -327,7 +327,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 bounty_tier=bounty_tier,
             ),
             color=await self.bot.get_embed_color(member),
-            timestamp=datetime.datetime.now(tz=datetime.UTC),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.set_footer(
             text=member.guild.name,

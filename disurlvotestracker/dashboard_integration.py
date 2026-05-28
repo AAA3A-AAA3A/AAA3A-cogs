@@ -113,8 +113,8 @@ class DashboardIntegration:
                     [
                         vote
                         for vote in member_data["votes"]
-                        if datetime.datetime.now(tz=datetime.UTC)
-                        - datetime.datetime.fromtimestamp(vote, tz=datetime.UTC)
+                        if datetime.datetime.now(tz=datetime.timezone.utc)
+                        - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc)
                         < datetime.timedelta(days=30)
                     ],
                 )

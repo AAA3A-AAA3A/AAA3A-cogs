@@ -274,7 +274,7 @@ class PresenceChart(Cog):
                         changed_at = data[0]
                         if changed_at < int(
                             (
-                                datetime.datetime.now(tz=datetime.UTC)
+                                datetime.datetime.now(tz=datetime.timezone.utc)
                                 - datetime.timedelta(days=100)
                             ).timestamp(),
                         ):
@@ -303,7 +303,7 @@ class PresenceChart(Cog):
             status,
         ):  # Discord dispatches this event for every guild the user is in.
             return
-        time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
+        time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
         self.presence_data_cache[after._user.id] = (time, (old_status, status))
 
     @commands.guild_only()
@@ -346,7 +346,7 @@ class PresenceChart(Cog):
                 member.raw_status if member.raw_status in self.presence_map else "online"
             ] = 100
         else:
-            now_time = datetime.datetime.now(tz=datetime.UTC)
+            now_time = datetime.datetime.now(tz=datetime.timezone.utc)
             if days_number is not None:
                 time_delta = now_time - datetime.timedelta(days=days_number)
                 time_delta_timestamp = int(time_delta.timestamp())

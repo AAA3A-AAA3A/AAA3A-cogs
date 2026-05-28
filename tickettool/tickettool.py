@@ -540,7 +540,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         embed.description = f"{description}"
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
-        embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         embed.set_author(
             name=author,
             url=author.display_avatar,
@@ -617,7 +617,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         )
         embed.description = f"{action}"
         embed.color = actual_color
-        embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         embed.set_author(
             name=author,
             url=author.display_avatar,

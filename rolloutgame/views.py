@@ -223,7 +223,7 @@ class RolloutGameView(discord.ui.View):
         self._number = choice([i for i in range(1, 25 + 1) if i not in self.disabled_numbers])
         embed.add_field(
             name="Time Left:",
-            value=f"<t:{int((datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(seconds=30)).timestamp())}:R>",
+            value=f"<t:{int((datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=30)).timestamp())}:R>",
         )
         self._message: discord.Message = await ctx.send(
             content=humanize_list([player.mention for player in self.players]),

@@ -194,7 +194,7 @@ class SentinelRelayModule(Module):
                             "The main bot ({mention}) is offline, triggering the relay.",
                         ).format(mention=main_bot.mention),
                         color=discord.Color.red(),
-                        timestamp=datetime.datetime.now(tz=datetime.UTC),
+                        timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                     )
                     embed.set_author(name=main_bot.display_name, icon_url=main_bot.display_avatar)
                     embed.add_field(
@@ -221,7 +221,7 @@ class SentinelRelayModule(Module):
                             "The main bot ({mention}) is back online, untriggering the relay.",
                         ).format(mention=main_bot.mention),
                         color=discord.Color.green(),
-                        timestamp=datetime.datetime.now(tz=datetime.UTC),
+                        timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                     )
                     embed.set_author(name=main_bot.display_name, icon_url=main_bot.display_avatar)
                     embed.add_field(

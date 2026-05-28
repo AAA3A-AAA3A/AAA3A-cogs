@@ -302,7 +302,7 @@ class Night(DayNight):
                         await self.game.cog.config.member(player.member).temp_banned_until.set(
                             int(
                                 (
-                                    datetime.datetime.now(tz=datetime.UTC)
+                                    datetime.datetime.now(tz=datetime.timezone.utc)
                                     + datetime.timedelta(hours=afk_temp_ban_duration)
                                 )
                                 .replace(second=0, microsecond=0)

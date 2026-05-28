@@ -237,7 +237,7 @@ class Security(Cog):
         if member.guild_permissions.manage_messages or await self.bot.is_mod(member):
             return Levels.MODERATOR
         if datetime.datetime.now(
-            tz=datetime.UTC,
+            tz=datetime.timezone.utc,
         ) - member.joined_at >= datetime.timedelta(days=7):
             return Levels.MEMBER
         return Levels.NEW
@@ -391,7 +391,7 @@ class Security(Cog):
                         prefix=(await self.bot.get_valid_prefixes(guild))[-1],
                     ),
                     color=discord.Color.red(),
-                    timestamp=datetime.datetime.now(tz=datetime.UTC),
+                    timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                 )
                 embed.set_author(
                     name=guild.owner.name,
@@ -673,7 +673,7 @@ class Security(Cog):
                 ),
             }[action],
             color=getattr(Colors, action.upper().removeprefix("UN")).value,
-            timestamp=datetime.datetime.now(tz=datetime.UTC),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.set_thumbnail(url=member.display_avatar)
         embed.set_footer(text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon))
@@ -802,7 +802,7 @@ class Security(Cog):
         await modlog.create_case(
             bot=self.bot,
             guild=member.guild,
-            created_at=datetime.datetime.now(tz=datetime.UTC),
+            created_at=datetime.datetime.now(tz=datetime.timezone.utc),
             action_type=action
             if action not in ("mute", "unmute")
             else f"s{action}",  # server mute/unmute
@@ -1121,7 +1121,7 @@ class Security(Cog):
                 "**The Security system can't function properly without me! If you're not responsible for this, you must check what is happening in your server IMMEDIATELY!**",
             ),
             color=discord.Color.red(),
-            timestamp=datetime.datetime.now(tz=datetime.UTC),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.set_thumbnail(url=get_non_animated_asset(guild.icon))
         embed.set_footer(
@@ -1352,7 +1352,7 @@ class Security(Cog):
         embed: discord.Embed = discord.Embed(
             title=_("Last Payouts ({number})").format(number=len(payouts)),
             color=Colors.DANK_POOL_PROTECTION.value,
-            timestamp=datetime.datetime.now(tz=datetime.UTC),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
 
         async def format_member_user(

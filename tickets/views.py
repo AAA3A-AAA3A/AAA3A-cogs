@@ -298,7 +298,7 @@ class MembersView(discord.ui.View):
                 s="s" if len(self.ticket.members_ids) != 1 else "",
             ),
             color=await self.cog.bot.get_embed_color(self.ticket.channel),
-            timestamp=datetime.datetime.now(tz=datetime.UTC),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.description = "\n".join(
             _("**{i}.** {member.mention} ({member.id})").format(i=i, member=member)

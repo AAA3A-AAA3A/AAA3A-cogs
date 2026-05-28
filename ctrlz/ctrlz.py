@@ -235,7 +235,7 @@ class CtrlZ(Cog):
         before: datetime.datetime | None = None,
         include_already_reverted: bool = True,
     ) -> list[discord.AuditLogEntry]:
-        _after = datetime.datetime.now(tz=datetime.UTC) - datetime.timedelta(days=7)
+        _after = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=7)
         after = max(after, _after) if after is not None else _after
         reverted_audit_logs = await self.config.guild(guild).reverted_audit_logs()
         return [
@@ -431,7 +431,7 @@ class CtrlZ(Cog):
                 audit_log_id
                 for audit_log_id in guild_data["reverted_audit_logs"]
                 if (
-                    datetime.datetime.now(tz=datetime.UTC)
+                    datetime.datetime.now(tz=datetime.timezone.utc)
                     - discord.utils.snowflake_time(audit_log_id)
                 )
                 < datetime.timedelta(days=7)

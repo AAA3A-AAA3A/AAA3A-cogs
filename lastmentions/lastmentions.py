@@ -136,7 +136,7 @@ class LastMentions(Cog):
                 retention_days = await self.config.guild_from_id(int(guild_id)).retention_days()
                 retention_timestamp = int(
                     (
-                        datetime.datetime.now(datetime.UTC)
+                        datetime.datetime.now(datetime.timezone.utc)
                         - datetime.timedelta(days=retention_days)
                     ).timestamp(),
                 )
@@ -298,7 +298,7 @@ class LastMentions(Cog):
             and (
                 created_at := datetime.datetime.fromtimestamp(
                     last_mention["timestamp"],
-                    tz=datetime.UTC,
+                    tz=datetime.timezone.utc,
                 )
             )
         )
@@ -492,10 +492,14 @@ class LastMentions(Cog):
         y = []
         for i in x:
             start = int(
-                (datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=-i + 1)).timestamp(),
+                (
+                    datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=-i + 1)
+                ).timestamp(),
             )
             end = int(
-                (datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=-i)).timestamp(),
+                (
+                    datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=-i)
+                ).timestamp(),
             )
             y.append(
                 len(

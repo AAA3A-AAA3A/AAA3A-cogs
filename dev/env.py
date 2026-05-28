@@ -628,11 +628,11 @@ class DevEnv(dict[str, typing.Any]):
                 # Date & Time
                 "datetime": lambda ctx: datetime,
                 "time": lambda ctx: time,
-                "utc_now": lambda ctx: datetime.datetime.now(tz=datetime.UTC),
+                "utc_now": lambda ctx: datetime.datetime.now(tz=datetime.timezone.utc),
                 "local_now": lambda ctx: datetime.datetime.now(),
                 "get_utc_now": lambda ctx: functools.partial(
                     datetime.datetime.now,
-                    tz=datetime.UTC,
+                    tz=datetime.timezone.utc,
                 ),
                 "get_local_now": lambda ctx: datetime.datetime.now,
                 # Os & Sys

@@ -64,7 +64,7 @@ class BotSaysGame(Cog):
                 players=humanize_list([player.mention for player in players]),
                 bot=ctx.guild.me,
                 request=request,
-                timestamp=f"<t:{int((datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(seconds=time)).timestamp())}:R>",
+                timestamp=f"<t:{int((datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=time)).timestamp())}:R>",
             )
             message = await ctx.send(embed=embed, view=view)
             if view is not None:

@@ -72,7 +72,9 @@ class Ticket:
 
     opened_at_timestamp: int = field(
         default_factory=lambda: int(
-            datetime.datetime.now(tz=datetime.UTC).replace(second=0, microsecond=0).timestamp(),
+            datetime.datetime.now(tz=datetime.timezone.utc)
+            .replace(second=0, microsecond=0)
+            .timestamp(),
         ),
     )
     is_claimed: bool = False
@@ -165,7 +167,7 @@ class Ticket:
 
     @property
     def opened_at(self) -> datetime.datetime:
-        return datetime.datetime.fromtimestamp(self.opened_at_timestamp, tz=datetime.UTC)
+        return datetime.datetime.fromtimestamp(self.opened_at_timestamp, tz=datetime.timezone.utc)
 
     @opened_at.setter
     def opened_at(self, opened_at: datetime.datetime) -> None:
@@ -188,7 +190,7 @@ class Ticket:
     def claimed_at(self) -> datetime.datetime | None:
         if self.claimed_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.claimed_at_timestamp, tz=datetime.UTC)
+        return datetime.datetime.fromtimestamp(self.claimed_at_timestamp, tz=datetime.timezone.utc)
 
     @claimed_at.setter
     def claimed_at(self, claimed_at: datetime.datetime | None) -> None:
@@ -211,7 +213,7 @@ class Ticket:
     def closed_at(self) -> datetime.datetime | None:
         if self.closed_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.closed_at_timestamp, tz=datetime.UTC)
+        return datetime.datetime.fromtimestamp(self.closed_at_timestamp, tz=datetime.timezone.utc)
 
     @closed_at.setter
     def closed_at(self, closed_at: datetime.datetime | None) -> None:
@@ -247,7 +249,7 @@ class Ticket:
     def locked_at(self) -> datetime.datetime | None:
         if self.locked_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.locked_at_timestamp, tz=datetime.UTC)
+        return datetime.datetime.fromtimestamp(self.locked_at_timestamp, tz=datetime.timezone.utc)
 
     @locked_at.setter
     def locked_at(self, locked_at: datetime.datetime | None) -> None:
@@ -270,7 +272,7 @@ class Ticket:
     def unlocked_at(self) -> datetime.datetime | None:
         if self.unlocked_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.unlocked_at_timestamp, tz=datetime.UTC)
+        return datetime.datetime.fromtimestamp(self.unlocked_at_timestamp, tz=datetime.timezone.utc)
 
     @unlocked_at.setter
     def unlocked_at(self, unlocked_at: datetime.datetime | None) -> None:
@@ -295,7 +297,7 @@ class Ticket:
             return None
         return datetime.datetime.fromtimestamp(
             self.appeal_approved_at_timestamp,
-            tz=datetime.UTC,
+            tz=datetime.timezone.utc,
         )
 
     @appeal_approved_at.setter
@@ -321,7 +323,7 @@ class Ticket:
     def deleted_at(self) -> datetime.datetime | None:
         if self.deleted_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.deleted_at_timestamp, tz=datetime.UTC)
+        return datetime.datetime.fromtimestamp(self.deleted_at_timestamp, tz=datetime.timezone.utc)
 
     @deleted_at.setter
     def deleted_at(self, deleted_at: datetime.datetime | None) -> None:
@@ -848,7 +850,7 @@ class Ticket:
         # self.reopened_by = None
         # self.reopened_at = None
         self.closed_by = closer
-        self.closed_at = datetime.datetime.now(tz=datetime.UTC)
+        self.closed_at = datetime.datetime.now(tz=datetime.timezone.utc)
         await self.save()
 
         await self.log_action(
@@ -943,7 +945,7 @@ class Ticket:
         # self.closed_by = None
         # self.closed_at = None
         self.reopened_by = reopener
-        self.reopened_at = datetime.datetime.now(tz=datetime.UTC)
+        self.reopened_at = datetime.datetime.now(tz=datetime.timezone.utc)
         await self.save()
 
         if reopener is None:
@@ -1004,7 +1006,7 @@ class Ticket:
             raise RuntimeError(_("This ticket is already claimed."))
         self.is_claimed = True
         self.claimed_by = claimer
-        self.claimed_at = datetime.datetime.now(tz=datetime.UTC)
+        self.claimed_at = datetime.datetime.now(tz=datetime.timezone.utc)
         await self.save()
 
         audit_reason = _(
@@ -1068,7 +1070,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.UTC),
+                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
                 action_type="ticket_unclaimed",
                 user=self.owner or self.owner_id,
                 moderator=self.guild.me,
@@ -1096,7 +1098,7 @@ class Ticket:
                 raise RuntimeError(_("You aren't allowed to lock this ticket!"))
         self.is_locked = True
         self.locked_by = locker
-        self.locked_at = datetime.datetime.now(tz=datetime.UTC)
+        self.locked_at = datetime.datetime.now(tz=datetime.timezone.utc)
         await self.save()
 
         if locker is None:
@@ -1167,7 +1169,7 @@ class Ticket:
         # self.locked_by = None
         # self.locked_at = None
         self.unlocked_by = unlocker
-        self.unlocked_at = datetime.datetime.now(tz=datetime.UTC)
+        self.unlocked_at = datetime.datetime.now(tz=datetime.timezone.utc)
         await self.save()
 
         if unlocker is not None:
@@ -1230,7 +1232,7 @@ class Ticket:
             )
         self.appeal_approved = True
         self.appeal_approved_by = approver
-        self.appeal_approved_at = datetime.datetime.now(tz=datetime.UTC)
+        self.appeal_approved_at = datetime.datetime.now(tz=datetime.timezone.utc)
         await self.save()
 
         if approver is None:
@@ -1294,7 +1296,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.UTC),
+                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
                 action_type="ticket_appeal_approved",
                 user=self.owner or self.owner_id,
                 moderator=self.guild.me,
@@ -1366,7 +1368,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.UTC),
+                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
                 action_type="ticket_member_added",
                 user=member,
                 moderator=author,
@@ -1426,7 +1428,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.UTC),
+                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
                 action_type="ticket_member_removed",
                 user=member,
                 moderator=author,
@@ -1446,7 +1448,7 @@ class Ticket:
                 + (_(" by {author.mention}").format(author=author) if author is not None else ""),
             ),
             color=await self.bot.get_embed_color(self.channel),
-            timestamp=datetime.datetime.now(tz=datetime.UTC),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         if target is not None:
             embed.add_field(
@@ -1519,7 +1521,7 @@ class Ticket:
 
     async def delete_channel(self, deleter: discord.Member | None = None) -> None:
         self.deleted_by = deleter
-        self.deleted_at = datetime.datetime.now(tz=datetime.UTC)
+        self.deleted_at = datetime.datetime.now(tz=datetime.timezone.utc)
         await self.save()
         if deleter is None:
             audit_reason = _("Ticket deleted (profile `{self.profile}`).").format(self=self)
@@ -1543,7 +1545,7 @@ class Ticket:
                             self=self,
                         ),
                         color=discord.Color.red(),
-                        timestamp=datetime.datetime.now(tz=datetime.UTC),
+                        timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                     ),
                     await self.get_embed(for_logging=True),
                 ],
@@ -1560,7 +1562,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.UTC),
+                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
                 action_type="ticket_deleted",
                 user=self.owner or self.owner_id,
                 moderator=deleter,

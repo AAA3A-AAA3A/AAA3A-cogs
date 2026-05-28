@@ -501,7 +501,7 @@ class EditThread(Cog):
                 title=f"Thread #{thread.name} ({thread.id})",
                 color=embed_color,
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             embed.description = "\n".join(
                 [
                     f"• `{parameter}`: {repr(getattr(thread, parameters[parameter].get('attribute_name', parameter)))}"

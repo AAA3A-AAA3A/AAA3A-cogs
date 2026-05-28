@@ -320,7 +320,7 @@ class Seen(Cog):
         reaction: str | None = None,
     ) -> None:
         if time is None:
-            time = datetime.datetime.now(tz=datetime.UTC)
+            time = datetime.datetime.now(tz=datetime.timezone.utc)
         if not isinstance(channel, discord.TextChannel):
             return
         custom_id = CogsUtils.generate_key(
@@ -625,7 +625,7 @@ class Seen(Cog):
         if not await self.config.listeners.message():
             return
         self.upsert_cache(
-            time=datetime.datetime.now(tz=datetime.UTC),
+            time=datetime.datetime.now(tz=datetime.timezone.utc),
             _type="message",
             member=message.author,
             guild=message.guild,
@@ -667,7 +667,7 @@ class Seen(Cog):
         if not await self.config.listeners.message_edit():
             return
         self.upsert_cache(
-            time=datetime.datetime.now(tz=datetime.UTC),
+            time=datetime.datetime.now(tz=datetime.timezone.utc),
             _type="message_edit",
             member=after.author,
             guild=after.guild,
@@ -705,7 +705,7 @@ class Seen(Cog):
         if not await self.config.listeners.reaction_add():
             return
         self.upsert_cache(
-            time=datetime.datetime.now(tz=datetime.UTC),
+            time=datetime.datetime.now(tz=datetime.timezone.utc),
             _type="reaction_add",
             member=user,
             guild=user.guild,
@@ -735,7 +735,7 @@ class Seen(Cog):
         if not await self.config.listeners.reaction_remove():
             return
         self.upsert_cache(
-            time=datetime.datetime.now(tz=datetime.UTC),
+            time=datetime.datetime.now(tz=datetime.timezone.utc),
             _type="reaction_remove",
             member=user,
             guild=user.guild,
@@ -867,7 +867,7 @@ class Seen(Cog):
             _type = data["_type"]
             del data["_type"]
         time = data["seen"]
-        now = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
+        now = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
         time_elapsed = int(now - time)
         m, s = divmod(time_elapsed, 60)
         h, m = divmod(m, 60)

@@ -57,7 +57,7 @@ class SnipedMessage:
         )
 
         self.created_at: datetime.datetime = message.created_at
-        self.deleted_at: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+        self.deleted_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
 
         if message.reference is not None and isinstance(
             (reference := message.reference.resolved),
@@ -571,7 +571,7 @@ class Snipe(DashboardIntegration, Cog):
             title=_("Deleted Messages"),
             color=await ctx.embed_color(),
         )
-        embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         embed.set_footer(text=f"#{channel.name}", icon_url=channel.guild.icon)
         embeds = []
         for page in pagify(content, delims=("\n\n",)):
@@ -887,7 +887,7 @@ class Snipe(DashboardIntegration, Cog):
             title=_("Edited Messages"),
             color=await ctx.embed_color(),
         )
-        embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
         embed.set_footer(text=f"#{channel.name}", icon_url=channel.guild.icon)
         embeds = []
         for page in pagify(content, delims=("\n\n",)):

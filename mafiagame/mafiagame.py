@@ -381,10 +381,10 @@ class MafiaGame(Cog):
                             "temp_banned_until",
                         )
                     ) is not None and datetime.datetime.now(
-                        tz=datetime.UTC,
+                        tz=datetime.timezone.utc,
                     ) > datetime.datetime.fromtimestamp(
                         temp_banned_until,
-                        tz=datetime.UTC,
+                        tz=datetime.timezone.utc,
                     ):
                         del members_data[guild_id][member_id]["temp_banned_until"]
 
@@ -707,7 +707,7 @@ class MafiaGame(Cog):
             raise commands.UserFeedbackCheckFailure(_("A bot can't play a Mafia game."))
         await self.config.member(member).temp_banned_until.set(
             int(
-                (datetime.datetime.now(tz=datetime.UTC) + duration)
+                (datetime.datetime.now(tz=datetime.timezone.utc) + duration)
                 .replace(second=0, microsecond=0)
                 .timestamp(),
             ),
@@ -780,9 +780,9 @@ class MafiaGame(Cog):
                     duration=humanize_timedelta(
                         timedelta=datetime.datetime.fromtimestamp(
                             temp_banned_until,
-                            tz=datetime.UTC,
+                            tz=datetime.timezone.utc,
                         )
-                        - datetime.datetime.now(tz=datetime.UTC),
+                        - datetime.datetime.now(tz=datetime.timezone.utc),
                     ),
                 ),
             )

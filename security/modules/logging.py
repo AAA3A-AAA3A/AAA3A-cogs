@@ -974,7 +974,9 @@ class LoggingModule(Module):
             title=f"{event['name']} {event['emoji']}",
             color=discord.Color(event["color"]),
             timestamp=(
-                entry.created_at if entry is not None else datetime.datetime.now(datetime.UTC)
+                entry.created_at
+                if entry is not None
+                else datetime.datetime.now(datetime.timezone.utc)
             ),
         )
 

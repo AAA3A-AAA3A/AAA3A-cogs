@@ -734,7 +734,8 @@ class AutoModModule(Module):
         if heats:
             degradation = await self.config_value(guild).heats.degradation()
             to_remove = (
-                degradation * (datetime.datetime.now(tz=datetime.UTC) - heats[0][0]).total_seconds()
+                degradation
+                * (datetime.datetime.now(tz=datetime.timezone.utc) - heats[0][0]).total_seconds()
             )
             while to_remove > 0 and heats:
                 if heats[0][2] <= to_remove:
@@ -909,7 +910,7 @@ class AutoModModule(Module):
                         guild=message.guild,
                         author=message.guild.me,
                         user=message.author,
-                        until=datetime.datetime.now(tz=datetime.UTC) + duration,
+                        until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
                         reason=audit_log_reason,
                     )
                 elif action == "kick" and message.guild.me.guild_permissions.kick_members:

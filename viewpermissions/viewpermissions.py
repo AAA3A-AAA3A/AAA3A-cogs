@@ -199,7 +199,7 @@ class ViewPermissions(Cog):
                 color=embed_color,
             )
             embed.set_author(name=guild.name, icon_url=guild.icon)
-            embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             description = ""
             if roles:
                 description += _("\n**Role(s):** {roles}").format(
@@ -249,7 +249,7 @@ class ViewPermissions(Cog):
         else:
             embed: discord.Embed = discord.Embed(title=_("View Permissions"), color=embed_color)
             embed.set_author(name=guild.name, icon_url=guild.icon)
-            embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             description = ""
             if roles:
                 description += _("\n**Role(s):** {roles}").format(

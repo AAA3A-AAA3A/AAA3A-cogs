@@ -58,7 +58,7 @@ class FastClickGameView(discord.ui.View):
             "⏳ The game will start {timestamp}, first one to click the 🟩 button wins.\n> **{rounds} round{s}** to play.",
         ).format(
             timestamp=discord.utils.format_dt(
-                datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(seconds=5),
+                datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=5),
                 "R",
             ),
             rounds=self.rounds,
@@ -102,7 +102,7 @@ class FastClickGameView(discord.ui.View):
                 winner=winner,
                 click_time=self.times[-1],
                 timestamp=discord.utils.format_dt(
-                    datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(seconds=3),
+                    datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=3),
                     "R",
                 ),
             )

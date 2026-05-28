@@ -171,7 +171,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
         )
 
         self._last_console_log_sent_timestamp: int = int(
-            datetime.datetime.now(tz=datetime.UTC).timestamp(),
+            datetime.datetime.now(tz=datetime.timezone.utc).timestamp(),
         )
         self.loops.append(
             Loop(

@@ -684,7 +684,7 @@ class EditTextChannel(Cog):
                 title=f"Text Channel #{channel.name} ({channel.id})",
                 color=embed_color,
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.UTC)
+            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
             embed.description = "\n".join(
                 [
                     f"• `{parameter}`: {repr(getattr(channel, parameters[parameter].get('attribute_name', parameter)))}"

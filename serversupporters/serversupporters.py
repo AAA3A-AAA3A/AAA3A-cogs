@@ -160,7 +160,7 @@ class ServerSupporters(Cog):
                 else _("Server {_type} Supporter Removed...")
             ).format(_type=_("Tag") if _type == "tag" else _("Status")),
             color=discord.Color.green() if enabled else discord.Color.red(),
-            timestamp=datetime.datetime.now(tz=datetime.UTC),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.set_author(
             name=member.display_name,

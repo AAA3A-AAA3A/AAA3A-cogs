@@ -92,19 +92,23 @@ ANTI_NUKE_OPTIONS: list[
         "default_enabled": True,
         "check": lambda entry: (
             entry.action == discord.AuditLogAction.guild_update
-            and entry.before.vanity_url_code != entry.after.vanity_url_code
+            and (
+                hasattr(entry.before, "vanity_url_code") or hasattr(entry.after, "vanity_url_code")
+            )
+            and getattr(entry.before, "vanity_url_code", None)
+            != getattr(entry.after, "vanity_url_code", None)
         ),
         "log": lambda entry: _(
-            "{member.mention} (`{member}`) **changed** the vanity URL from `{before.vanity_url_code}` to `{after.vanity_url_code}` {timestamp}.",
+            "{member.mention} (`{member}`) **changed** the vanity URL from `{before_vanity_url_code}` to `{after_vanity_url_code}` {timestamp}.",
         ).format(
             member=entry.user,
-            before=entry.before,
-            after=entry.after,
+            before_vanity_url_code=getattr(entry.before, "vanity_url_code", None),
+            after_vanity_url_code=getattr(entry.after, "vanity_url_code", None),
             timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
         ),
         "reason": lambda: _("**Anti Nuke** - Attempted to change the vanity URL."),
         "revert": lambda entry: entry.guild.edit(
-            vanity_url_code=entry.before.vanity_url_code,
+            vanity_url_code=getattr(entry.before, "vanity_url_code", None),
             reason=REVERT_AUDIT_LOG_REASON,
         ),
     },

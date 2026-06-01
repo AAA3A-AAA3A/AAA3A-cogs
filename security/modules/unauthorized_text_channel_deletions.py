@@ -259,19 +259,14 @@ class UnauthorizedTextChannelDeletionsModule(Module):
                 bot=self.cog.bot,
             )
             transcript_bytes: bytes = transcript.encode(encoding="utf-8")
-            transcript_filename: str = f"transcript-{channel.id}.html"
-
-            def make_file() -> discord.File:
-                return discord.File(BytesIO(transcript_bytes), filename=transcript_filename)
+            make_file = lambda: discord.File(BytesIO(transcript_bytes), filename=f"transcript-{channel.id}.html")
         else:
             embed.add_field(
                 name="\u200b",
                 value=_("No recent messages found in this channel before deletion."),
             )
             transcript_bytes = None
-
-            def make_file() -> None:
-                return None
+            make_file = lambda: None
 
         await self.cog.send_in_modlog_channel(
             entry.guild,

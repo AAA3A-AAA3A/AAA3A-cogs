@@ -92,9 +92,6 @@ ANTI_NUKE_OPTIONS: list[
         "default_enabled": True,
         "check": lambda entry: (
             entry.action == discord.AuditLogAction.guild_update
-            and (
-                hasattr(entry.before, "vanity_url_code") or hasattr(entry.after, "vanity_url_code")
-            )
             and getattr(entry.before, "vanity_url_code", None)
             != getattr(entry.after, "vanity_url_code", None)
         ),

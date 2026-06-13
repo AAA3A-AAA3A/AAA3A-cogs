@@ -1135,7 +1135,7 @@ class Security(Cog):
         for member_id, data in (await self.config.all_members(guild)).items():
             if data.get("level") is None:
                 continue
-            if (user := get_or_fetch_member_or_user(guild, member_id)) is None:
+            if (user := await get_or_fetch_member_or_user(self.bot, guild, member_id)) is None:
                 continue
             try:
                 await user.send(embed=embed)

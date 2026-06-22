@@ -1,3 +1,4 @@
+import re
 import typing
 
 import discord
@@ -452,10 +453,8 @@ class ReactionsView(discord.ui.View):
             self.remove.options = []
             for r in reactions:
                 reaction = r if isinstance(r, str) else self.ctx.bot.get_emoji(r)
-                # Strip the variation selector (U+FE0F) from plain unicode emoji strings;
-                # Discord's API rejects it in the PartialEmoji.name field (error 50035).
                 emoji_val = (
-                    reaction.rstrip("\N{VARIATION SELECTOR-16}")
+                    re.sub(r"[\ufe0e\ufe0f]", "", reaction)
                     if isinstance(reaction, str)
                     else reaction
                 )

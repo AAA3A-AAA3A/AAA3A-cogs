@@ -452,10 +452,19 @@ class ReactionsView(discord.ui.View):
             self.remove.options = []
             for r in reactions:
                 reaction = r if isinstance(r, str) else self.ctx.bot.get_emoji(r)
+                # Strip the variation selector (U+FE0F) from plain unicode emoji strings;
+                # Discord's API rejects it in the PartialEmoji.name field (error 50035).
+                emoji_val = (
+                    reaction.rstrip("\N{VARIATION SELECTOR-16}")
+                    if isinstance(reaction, str)
+                    else reaction
+                )
                 self.remove.options.append(
                     discord.SelectOption(
-                        emoji=reaction if reaction is not None else None,
-                        label=getattr(reaction, "name", "\u200b") if reaction is not None else r,
+                        emoji=emoji_val if reaction is not None else None,
+                        label=getattr(reaction, "name", "\u200b")
+                        if reaction is not None
+                        else str(r),
                         value=str(r),
                     ),
                 )

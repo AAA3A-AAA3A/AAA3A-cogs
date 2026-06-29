@@ -577,7 +577,7 @@ class DankPoolProtectionModule(Module):
             or not message.components
             or not isinstance(message.components[0], discord.components.Container)
             or not isinstance(message.components[0].children[0], discord.components.TextDisplay)
-            or message.components[0].children[0].content != "Pending Confirmation"
+            or message.components[0].children[0].content != "### Pending Confirmation"
         ):
             return
         config = await self.config_value(message.guild)()

@@ -513,8 +513,8 @@ class Tickets(DashboardIntegration, Cog):
             or message.content
             or message.embeds
             or not message.components
-            or not isinstance(message.components[0], discord.ui.Container)
-            or not isinstance(message.components[0].children[0], discord.ui.TextDisplay)
+            or not isinstance(message.components[0], discord.components.Container)
+            or not isinstance(message.components[0].children[0], discord.components.TextDisplay)
         ):
             return
         description = message.components[0].children[0].content

@@ -500,8 +500,11 @@ class Tickets(DashboardIntegration, Cog):
                 ):
                     await ticket.delete_channel(None)  # That's a setting, so no deleter.
 
-    @commands.Cog.listener("on_message_without_command")
-    async def close_after_dank_payout(self, message: discord.Message) -> None:
+    @commands.Cog.listener("on_message_edit")
+    async def close_after_dank_payout(
+        self, before: discord.Message, after: discord.Message
+    ) -> None:
+        message = after
         if not message.author.bot or message.author.id != DANK_MEMER_BOT_ID:
             return
         if message.interaction_metadata is None:

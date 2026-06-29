@@ -283,11 +283,11 @@ class DankPoolProtectionModule(Module):
         super().__init__(cog)
 
     async def load(self) -> None:
-        self.cog.bot.add_listener(self.on_payout_message, "on_message")
+        self.cog.bot.add_listener(self.on_payout_message, "on_message_edit")
         self.cog.bot.add_listener(self.on_confirmation_message, "on_message")
 
     async def unload(self) -> None:
-        self.cog.bot.remove_listener(self.on_payout_message, "on_message")
+        self.cog.bot.remove_listener(self.on_payout_message, "on_message_edit")
         self.cog.bot.remove_listener(self.on_confirmation_message, "on_message")
 
     async def get_status(
@@ -516,7 +516,8 @@ class DankPoolProtectionModule(Module):
 
         return title, description, fields, components
 
-    async def on_payout_message(self, message: discord.Message) -> None:
+    async def on_payout_message(self, before: discord.Message, after: discord.Message) -> None:
+        message = after
         if message.guild is None:
             return
         if not message.author.bot or message.author.id != DANK_MEMER_BOT_ID:

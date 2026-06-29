@@ -71,6 +71,7 @@ class BotSaysGame(Cog):
                 view._message = message
             if reactions:
                 await start_adding_reactions(message, reactions)
+                await asyncio.sleep(3)
             for __ in range(time):
                 await asyncio.sleep(1)
                 if len(test.success) + len(test.fail) == len(players):

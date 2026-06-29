@@ -505,11 +505,22 @@ class Tickets(DashboardIntegration, Cog):
         self, before: discord.Message, after: discord.Message
     ) -> None:
         message = after
-        if not message.author.bot or message.author.id != DANK_MEMER_BOT_ID:
+        if (
+            message.guild is None
+            or not message.author.bot
+            or message.author.id != DANK_MEMER_BOT_ID
+            or message.interaction_metadata is None
+            or message.content
+            or message.embeds
+            or not message.components
+            or not isinstance(message.components[0], discord.ui.Container)
+            or not isinstance(message.components[0].children[0], discord.ui.TextDisplay)
+        ):
             return
-        if message.interaction_metadata is None:
-            return
-        if message.content or message.embeds:
+        description = message.components[0].children[0].content
+        if not description.startswith("Successfully paid ") or not description.endswith(
+            " from the server's pool!",
+        ):
             return
         if (
             ticket := discord.utils.get(
@@ -524,22 +535,6 @@ class Tickets(DashboardIntegration, Cog):
             ticket.profile,
             "close_after_dank_payout",
             default=False,
-        ):
-            return
-        try:
-            raw_message = await self.bot.http.get_message(message.channel.id, message.id)
-        except discord.HTTPException:
-            return
-        if (
-            not raw_message["components"]
-            or raw_message["components"][0]["type"] != 17
-            or not raw_message["components"][0]["components"]
-            or "content" not in raw_message["components"][0]["components"][0]
-        ):
-            return
-        description = raw_message["components"][0]["components"][0]["content"]
-        if not description.startswith("Successfully paid ") or not description.endswith(
-            " from the server's pool!",
         ):
             return
         await ticket.close(message.interaction_metadata.user)

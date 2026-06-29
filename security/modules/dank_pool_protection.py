@@ -57,15 +57,13 @@ DANK_POOL_PROTECTION_OPTIONS: list[
         "emoji": "🙅",
         "description": "Prevent members from paying themselves.",
         "value": "self_payment",
-        "check": lambda message, raw_message, config: (
+        "check": lambda message, config: (
             message._interaction.name == "serverevents payout"
-            and "Pending Confirmation" in raw_message["components"][0]["components"][0]["content"]
-            and len(raw_message["components"][0]["components"]) >= 3
-            and "content" in raw_message["components"][0]["components"][2]
+            and "Pending Confirmation" in message.components[0].children[0].content
+            and len(message.components[0].children) >= 3
+            and isinstance(message.components[0].children[2], discord.components.TextDisplay)
             and int(
-                raw_message["components"][0]["components"][2]["content"]
-                .split("<@")[1]
-                .split(">")[0],
+                message.components[0].children[2].content.split("<@")[1].split(">")[0],
             )
             == message.interaction_metadata.user.id
         ),
@@ -76,16 +74,14 @@ DANK_POOL_PROTECTION_OPTIONS: list[
         "emoji": "💸",
         "description": "Prevent members from making payments over a certain amount.",
         "value": "high_amount_payment",
-        "check": lambda message, raw_message, config: (
+        "check": lambda message, config: (
             message._interaction.name == "serverevents payout"
-            and "Pending Confirmation" in raw_message["components"][0]["components"][0]["content"]
-            and len(raw_message["components"][0]["components"]) >= 3
-            and "content" in raw_message["components"][0]["components"][2]
-            and "**\u23e3 " in raw_message["components"][0]["components"][2]["content"]
+            and "Pending Confirmation" in message.components[0].children[0].content
+            and len(message.components[0].children) >= 3
+            and isinstance(message.components[0].children[2], discord.components.TextDisplay)
+            and "**\u23e3 " in message.components[0].children[2].content
             and convert_amount(
-                raw_message["components"][0]["components"][2]["content"]
-                .split("**\u23e3 ")[1]
-                .split("**")[0],
+                message.components[0].children[2].content.split("**\u23e3 ")[1].split("**")[0],
             )
             > config["high_amount_limit"]
         ),
@@ -114,10 +110,10 @@ DANK_POOL_PROTECTION_OPTIONS: list[
         "emoji": "🚫",
         "description": "Detect members who try to execute payout command without permission.",
         "value": "unauthorized_payout",
-        "check": lambda message, raw_message, config: (
+        "check": lambda message, config: (
             message._interaction.name == "serverevents payout"
             and "Only event managers can payout from the server's pool!"
-            in raw_message["components"][0]["components"][0]["content"]
+            in message.components[0].children[0].content
         ),
         "reason": lambda: _(
             "**Dank Pool Protection** - Attempted to execute payout command without permission.",
@@ -128,10 +124,9 @@ DANK_POOL_PROTECTION_OPTIONS: list[
         "emoji": "🏦",
         "description": "Detect members who try to execute event command without permission.",
         "value": "unauthorized_event",
-        "check": lambda message, raw_message, config: (
+        "check": lambda message, config: (
             message._interaction.name.startswith("serverevents run")
-            and "Only event managers can run events!"
-            in raw_message["components"][0]["components"][0]["content"]
+            and "Only event managers can run events!" in message.components[0].children[0].content
         ),
         "reason": lambda: _(
             "**Dank Pool Protection** - Attempted to execute event command without permission.",
@@ -518,29 +513,22 @@ class DankPoolProtectionModule(Module):
 
     async def on_payout_message(self, before: discord.Message, after: discord.Message) -> None:
         message = after
-        if message.guild is None:
-            return
-        if not message.author.bot or message.author.id != DANK_MEMER_BOT_ID:
-            return
-        if message.interaction_metadata is None:
-            return
-        if message.content or message.embeds:
+        if (
+            message.guild is None
+            or not message.author.bot
+            or message.author.id != DANK_MEMER_BOT_ID
+            or message.interaction_metadata is None
+            or message.content
+            or message.embeds
+            or not message.components
+            or not isinstance(message.components[0], discord.components.Container)
+            or not isinstance(message.components[0].children[0], discord.components.TextDisplay)
+        ):
             return
         config = await self.config_value(message.guild)()
         if not config["enabled"]:
             return
-        try:
-            raw_message = await self.cog.bot.http.get_message(message.channel.id, message.id)
-        except discord.HTTPException:
-            return
-        if (
-            not raw_message["components"]
-            or raw_message["components"][0]["type"] != 17
-            or not raw_message["components"][0]["components"]
-            or "content" not in raw_message["components"][0]["components"][0]
-        ):
-            return
-        description = raw_message["components"][0]["components"][0]["content"]
+        description = message.components[0].children[0].content
         if not description.startswith("Successfully paid ") or not description.endswith(
             " from the server's pool!",
         ):
@@ -558,8 +546,8 @@ class DankPoolProtectionModule(Module):
             quantity=quantity,
             item=item,
             recipient_id=(
-                int(raw_message["referenced_message"]["mentions"][0]["id"])
-                if raw_message.get("referenced_message", {}).get("mentions", [])
+                int(message.referenced_message.mentions[0].id)
+                if message.referenced_message and message.referenced_message.mentions
                 else None
             ),
             issued_by_id=member_id,
@@ -581,27 +569,21 @@ class DankPoolProtectionModule(Module):
             await payout_logs_channel.send(embed=await payout.get_embed(self.cog, message.guild))
 
     async def on_confirmation_message(self, message: discord.Message) -> None:
-        if message.guild is None:
-            return
-        if not message.author.bot or message.author.id != DANK_MEMER_BOT_ID:
-            return
-        if message.interaction_metadata is None or message._interaction is None:
-            return
-        if message.content or message.embeds:
+        if (
+            message.guild is None
+            or not message.author.bot
+            or message.author.id != DANK_MEMER_BOT_ID
+            or message.interaction_metadata is None
+            or message._interaction is None
+            or message.content
+            or message.embeds
+            or not message.components
+            or not isinstance(message.components[0], discord.components.Container)
+            or not isinstance(message.components[0].children[0], discord.components.TextDisplay)
+        ):
             return
         config = await self.config_value(message.guild)()
         if not config["enabled"]:
-            return
-        try:
-            raw_message = await self.cog.bot.http.get_message(message.channel.id, message.id)
-        except discord.HTTPException:
-            return
-        if (
-            not raw_message["components"]
-            or raw_message["components"][0]["type"] != 17
-            or not raw_message["components"][0]["components"]
-            or "content" not in raw_message["components"][0]["components"][0]
-        ):
             return
         member_id = message.interaction_metadata.user.id
         if (member := message.guild.get_member(member_id)) is None:
@@ -661,7 +643,7 @@ class DankPoolProtectionModule(Module):
                 ):
                     logs = [log for (__, log) in last_payouts]
                     break
-            elif option["check"](message, raw_message, config):
+            elif option["check"](message, config):
                 logs = [log]
                 break
         else:

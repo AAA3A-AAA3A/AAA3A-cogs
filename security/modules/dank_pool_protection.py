@@ -276,6 +276,7 @@ class DankPoolProtectionModule(Module):
 
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)
+        self.recipient_cache: dict[int, int] = {}
 
     async def load(self) -> None:
         self.cog.bot.add_listener(self.on_payout_message, "on_message_edit")
@@ -545,11 +546,7 @@ class DankPoolProtectionModule(Module):
             message,
             quantity=quantity,
             item=item,
-            recipient_id=(
-                int(message.referenced_message.mentions[0].id)
-                if message.referenced_message and message.referenced_message.mentions
-                else None
-            ),
+            recipient_id=self.recipient_cache.pop(message.id, None),
             issued_by_id=member_id,
         )
         member_payouts.append(payout.to_dict())
@@ -580,11 +577,15 @@ class DankPoolProtectionModule(Module):
             or not message.components
             or not isinstance(message.components[0], discord.components.Container)
             or not isinstance(message.components[0].children[0], discord.components.TextDisplay)
+            or message.components[0].children[0].content != "Pending Confirmation"
         ):
             return
         config = await self.config_value(message.guild)()
         if not config["enabled"]:
             return
+        self.recipient_cache[message.id] = int(
+            message.components[0].children[2].content.split("<@")[1].split(">")[0]
+        )
         member_id = message.interaction_metadata.user.id
         if (member := message.guild.get_member(member_id)) is None:
             try:

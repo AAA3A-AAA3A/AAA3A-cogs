@@ -62,6 +62,7 @@ DANK_POOL_PROTECTION_OPTIONS: list[
             and "Pending Confirmation" in message.components[0].children[0].content
             and len(message.components[0].children) >= 3
             and isinstance(message.components[0].children[2], discord.components.TextDisplay)
+            and "<@" in message.components[0].children[2].content
             and int(
                 message.components[0].children[2].content.split("<@")[1].split(">")[0],
             )

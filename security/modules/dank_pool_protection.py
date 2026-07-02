@@ -579,6 +579,10 @@ class DankPoolProtectionModule(Module):
             or not isinstance(message.components[0], discord.components.Container)
             or not isinstance(message.components[0].children[0], discord.components.TextDisplay)
             or message.components[0].children[0].content != "### Pending Confirmation"
+            or message._interaction.name != "serverevents payout"
+            or len(message.components[0].children) < 3
+            or not isinstance(message.components[0].children[2], discord.components.TextDisplay)
+            or "<@" not in message.components[0].children[2].content
         ):
             return
         config = await self.config_value(message.guild)()

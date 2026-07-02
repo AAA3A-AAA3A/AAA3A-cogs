@@ -124,7 +124,7 @@ class DashboardRPC_CogManagement:
         user_id: int,
     ) -> dict[str, int | dict[str, bool]]:
         if user_id not in self.bot.owner_ids:
-            return {"status": 1}
+            return {"status": 1, "cogs": {}}
         all_cogs = await self.bot._cog_mgr.available_modules()
         loaded_cogs = self.bot.extensions.keys()
         return {
@@ -659,8 +659,10 @@ class DashboardRPC_CogManagement:
         int | dict[str, list[dict[typing.Literal["type", "name"], str]]],
     ]:
         if user_id not in self.bot.owner_ids:
-            return {"status": 1}
+            return {"status": 1, "application_commands": {}}
         command = self.bot.get_command("slash list")
+        if command is None:
+            return {"status": 1, "application_commands": {}}
         callback = command.callback
         content = ""
 

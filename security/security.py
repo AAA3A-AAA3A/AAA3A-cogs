@@ -1639,7 +1639,7 @@ class Security(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("This server does not have a recovery key set."),
             )
-        if recovery_key_or_code == recovery_key or onetimepass.valid_totp(
+        if recovery_key_or_code != recovery_key and not onetimepass.valid_totp(
             recovery_key_or_code,
             secret=recovery_key,
         ):

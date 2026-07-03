@@ -706,8 +706,14 @@ class DankPoolProtectionModule(Module):
         config = await self.config_value(message.guild)()
         if not config["enabled"] or not config["prevent_pool_check"]:
             return
+        member_id = message.interaction_metadata.user.id
+        if (member := message.guild.get_member(member_id)) is None:
+            try:
+                member = await message.guild.fetch_member(member_id)
+            except discord.HTTPException:
+                return
         if await self.cog.is_whitelisted(
-            message.interaction_metadata.user,
+            member,
             "dank_pool_protection",
         ) or await self.cog.is_whitelisted(message.channel, "dank_pool_protection"):
             return
@@ -717,13 +723,13 @@ class DankPoolProtectionModule(Module):
             pass
         await self.cog.send_modlog(
             action="notify",
-            member=message.interaction_metadata.user,
+            member=member,
             reason=_("**Dank Pool Protection** - Attempted to check the server's pool."),
             logs=[
                 _(
                     "{member.mention} (`{member}`) executed `{slash_name}` ({jump_url}) {timestamp}.",
                 ).format(
-                    member=message.interaction_metadata.user,
+                    member=member,
                     slash_name=message._interaction.name,
                     jump_url=message.jump_url,
                     timestamp=discord.utils.format_dt(message.created_at, style="R"),

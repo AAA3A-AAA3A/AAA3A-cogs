@@ -119,6 +119,9 @@ class Security(Cog):
             identifier=205192943327321000143939875896557571750,
             force_registration=True,
         )
+        self.config.register_global(
+            hidden_modules=[],
+        )
         self.config.register_guild(
             quarantine_role=None,
             # ModLog.

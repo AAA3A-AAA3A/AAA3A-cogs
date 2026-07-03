@@ -317,6 +317,29 @@ class MessageAnalysisModule(Module):
             level_button.callback = level_button_callback
             components.append(level_button)
 
+        if view.ctx.author.id in self.cog.bot.owner_ids:
+            hidden_modules = await self.cog.config.hidden_modules()
+            hide_module_button: discord.ui.Button = discord.ui.Button(
+                label=_("Hide Module")
+                if self.key_name() not in hidden_modules
+                else _("Unhide Module"),
+                style=discord.ButtonStyle.secondary,
+            )
+
+            async def hide_module_button_callback(interaction: discord.Interaction) -> None:
+                if self.key_name() not in hidden_modules:
+                    hidden_modules.append(self.key_name())
+                else:
+                    hidden_modules.remove(self.key_name())
+                await self.cog.config.hidden_modules.set(hidden_modules)
+                await interaction.response.edit_message(
+                    embed=await view.get_embed(),
+                    view=view,
+                )
+
+            hide_module_button.callback = hide_module_button_callback
+            components.append(hide_module_button)
+
         return title, description, fields, components
 
     async def predict(self, content: str) -> dict[str, float]:

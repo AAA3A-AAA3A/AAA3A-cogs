@@ -389,7 +389,16 @@ class SettingsView(discord.ui.View):
                 value="authority_members",
             ),
         )
+        hidden_modules = await self.cog.config.hidden_modules()
         for module in self.cog.modules.values():
+            if (
+                ctx.author.id not in ctx.bot.owner_ids
+                and module.key_name() in hidden_modules
+                and not await module.config_value(ctx.guild).enabled()
+            ):
+                if page == module.key_name():
+                    page = "overview"
+                continue
             self.select.options.append(
                 discord.SelectOption(
                     emoji=module.emoji,
@@ -533,7 +542,14 @@ class SettingsView(discord.ui.View):
                 self.modlog_ping_role_select.default_values = [modlog_ping_role]
             if is_extra_owner_or_higher:
                 self.add_item(self.modlog_ping_role_select)
+            hidden_modules = await self.cog.config.hidden_modules()
             for module in self.cog.modules.values():
+                if (
+                    self.ctx.author.id not in self.ctx.bot.owner_ids
+                    and module.key_name() in hidden_modules
+                    and not await module.config_value(self.ctx.guild).enabled()
+                ):
+                    continue
                 status = await module.get_status(self.ctx.guild)
                 embed.add_field(
                     name=f"{module.emoji} {module.name}",

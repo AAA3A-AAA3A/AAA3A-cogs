@@ -830,7 +830,7 @@ class Security(Cog):
             user=member,
             moderator=issued_by,
         )
-        if issued_by is None and not member.bot:
+        if issued_by is None and not member.bot and action != "notify":
             embed.title = {
                 "quarantine": _("{member.display_name}, you have been quarantined! {emoji}").format(
                     emoji=Emojis.QUARANTINE.value,
@@ -869,11 +869,11 @@ class Security(Cog):
                     emoji=Emojis.BAN.value,
                     member=member,
                 ),
-                "notify": _("{member.display_name}, you have been detected! {emoji}").format(
-                    emoji=Emojis.NOTIFY.value,
-                    member=member,
-                ),
-            }
+                # "notify": _("{member.display_name}, you have been detected! {emoji}").format(
+                #     emoji=Emojis.NOTIFY.value,
+                #     member=member,
+                # ),
+            }[action]
             embed.description = embed.description.split("\n", maxsplit=1)[1]
             try:
                 await member.send(

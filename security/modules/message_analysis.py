@@ -98,7 +98,7 @@ class MessageAnalysisModule(Module):
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)
         self.detoxify: MultilingualDetoxify | None = None
-        self.detoxify_error: str | None = None
+        self.detoxify_error: bool = False
         self.locks: dict[discord.Guild, dict[discord.Member, asyncio.Lock]] = defaultdict(
             lambda: defaultdict(asyncio.Lock),
         )
@@ -152,7 +152,7 @@ class MessageAnalysisModule(Module):
                     hf_path,
                 )
         except Exception as e:  # noqa: BLE001
-            self.detoxify_error = str(e)
+            self.detoxify_error = True
             self.cog.logger.error(f"Failed to load MultilingualDetoxify: {e}", exc_info=e)
 
     async def unload(self) -> None:
@@ -171,8 +171,14 @@ class MessageAnalysisModule(Module):
         hf_path = data_path / "xlm-roberta-base"
         if not ckpt_path.exists() or not hf_path.exists():
             return "⚠️", _("Not Downloaded"), _("The model files are not downloaded yet.")
-        if self.detoxify_error is not None:
-            return "⚠️", _("Error"), self.detoxify_error
+        if self.detoxify_error:
+            return (
+                "⚠️",
+                _("Error"),
+                _(
+                    "Failed to load the MultilingualDetoxify model (check the logs for more information)."
+                ),
+            )
         missing_permissions = []
         if not guild.me.guild_permissions.manage_messages:
             missing_permissions.append("manage_messages")
@@ -210,7 +216,7 @@ class MessageAnalysisModule(Module):
 
         config = await self.config_value(guild)()
         for key in LEVELS:
-            description += f"⛰️ **{key.replace('_', ' ').title()}:** `{config['levels'][key]:.2f}`\n"
+            description += f"\n⛰️ **{key.replace('_', ' ').title()}:** `{config['levels'][key]:.2f}`"
 
         fields = [
             {

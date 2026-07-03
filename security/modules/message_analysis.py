@@ -202,7 +202,7 @@ class MessageAnalysisModule(Module):
             status=(await self.get_status(guild))[0],
         )
         description = _(
-            "This module analyzes messages for potential issues using a local model. It can detect severe toxicity, obscene content, threats, insults and identity attacks. Several languages are supported: english, french, spanish, italian, portuguese, turkish and russian.\n",
+            "This module analyzes messages for potential issues using a **local model**. It can detect severe toxicity, obscene content, threats, insults and identity attacks. Several languages are supported: english, french, spanish, italian, portuguese, turkish and russian.\n",
         )
         status = await self.get_status(guild)
         if status[0] == "⚠️":

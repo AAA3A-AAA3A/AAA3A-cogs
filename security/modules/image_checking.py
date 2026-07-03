@@ -404,7 +404,7 @@ class ImageCheckingModule(Module):
                 message.author = await message.guild.fetch_member(message.author.id)
             except discord.HTTPException:
                 return
-        if await self.cog.is_whitelisted(message.author, "image_checking"):
+        if await self.cog.is_message_whitelisted(message, "image_checking"):
             return
         lock = self.locks[message.guild][message.author]
         await lock.acquire()

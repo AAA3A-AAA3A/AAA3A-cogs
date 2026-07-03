@@ -359,9 +359,7 @@ class MessageAnalysisModule(Module):
                 message.author = await message.guild.fetch_member(message.author.id)
             except discord.HTTPException:
                 return
-        if await self.cog.is_whitelisted(
-            message.author, "message_analysis"
-        ) or await self.cog.is_whitelisted(message.channel, "message_analysis"):
+        if await self.cog.is_message_whitelisted(message, "message_analysis"):
             return
         if not message.content:
             return

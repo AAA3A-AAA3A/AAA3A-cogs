@@ -270,10 +270,12 @@ class DankPoolProtectionModule(Module):
     async def load(self) -> None:
         self.cog.bot.add_listener(self.on_payout_message, "on_message_edit")
         self.cog.bot.add_listener(self.on_confirmation_message, "on_message")
+        self.cog.bot.add_listener(self.on_pool_message, "on_message")
 
     async def unload(self) -> None:
         self.cog.bot.remove_listener(self.on_payout_message, "on_message_edit")
         self.cog.bot.remove_listener(self.on_confirmation_message, "on_message")
+        self.cog.bot.remove_listener(self.on_pool_message, "on_message")
 
     async def get_status(
         self,

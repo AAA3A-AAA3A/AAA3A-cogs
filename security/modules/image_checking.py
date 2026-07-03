@@ -200,7 +200,7 @@ class ImageCheckingModule(Module):
                 )
             except asyncio.TimeoutError:
                 await interaction.followup.send(
-                    _("You took too long to send the images."),
+                    _("You took too long to send the hashes/images."),
                     ephemeral=True,
                 )
                 return
@@ -221,7 +221,7 @@ class ImageCheckingModule(Module):
                     new_hashes.append(hash_value)
             if not new_hashes:
                 await interaction.followup.send(
-                    _("No new hashes were added. All images were already present."),
+                    _("No new hashes were added. All hashes were already present."),
                     ephemeral=True,
                 )
                 return

@@ -839,7 +839,7 @@ class AutoModModule(Module):
                 except discord.HTTPException:
                     pass
             reason = filter["reason"]()
-            audit_log_reason = f"Security's Auto Mod: {filter['name']}."
+            audit_log_reason = f"Security's Auto Mod: {filter['name'] if ' (' not in filter['name'] else filter['name'].split(' (')[0]}."
             filter_config = config["filters"][category_value][filter["value"]]
             if await self.cog.is_moderator_or_higher(
                 message.author,

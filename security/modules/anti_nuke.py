@@ -705,7 +705,7 @@ class AntiNukeModule(Module):
 
         config = await self.config_value(guild)()
         description += _(
-            "\n**Quarantine Automatically:** {quarantine}\n**Revert Option Actions:** {revert_option_actions}\n\n"
+            "\n**Quarantine Automatically:** {quarantine}\n**Revert Option Actions:** {revert_option_actions}\n"
         ).format(
             quarantine=("✅" if config["quarantine"] else "❌"),
             revert_option_actions=("✅" if config["revert_option_actions"] else "❌"),

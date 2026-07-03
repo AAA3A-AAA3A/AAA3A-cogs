@@ -210,7 +210,7 @@ class MessageAnalysisModule(Module):
 
         config = await self.config_value(guild)()
         for key in LEVELS:
-            description += f"- {key.replace('_', ' ').title()}: `{config['levels'][key]:.2f}`\n"
+            description += f"⛰️ **{key.replace('_', ' ').title()}:** `{config['levels'][key]:.2f}`\n"
 
         fields = [
             {
@@ -381,7 +381,15 @@ class MessageAnalysisModule(Module):
         except discord.HTTPException:
             pass
         reason = _("**Message Analysis** - Message detected as potentially harmful.")
-        reason += f"\n{box(json.dumps(result, indent=4), lang='py')}"
+        reason += box(
+            "\n{\n"
+            + "\n".join(
+                f"  {key}: {value:.3f},{'  # ⚠️' if value >= config['levels'][key] else ''}"
+                for key, value in result.items()
+            )
+            + "\n}",
+            lang="py",
+        )
         if config["timeout"]:
             audit_log_reason = (
                 "Security's Message Analysis: message detected as potentially harmful."

@@ -368,7 +368,7 @@ class TempRoles(Cog):
                 role=role,
                 member=member,
                 duration_string=duration_string,
-                timestamp=f"<t:{int(end_time.timestamp())}:F>",
+                timestamp=discord.utils.format_dt(end_time, style="F"),
             ),
             allowed_mentions=discord.AllowedMentions(roles=False, users=False),
         )

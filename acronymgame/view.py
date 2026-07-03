@@ -136,10 +136,10 @@ class AcronymGameView(discord.ui.View):
             color=await self.ctx.embed_color(),
         )
         embed.add_field(name=_("Random Acronym:"), value=self.acronym)
-        end_time = int((datetime.datetime.now() + datetime.timedelta(seconds=120)).timestamp())
+        end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=120)
         embed.add_field(
             name=_("End time for joining:"),
-            value=f"<t:{end_time}:T> (<t:{end_time}:R>)",
+            value=f"{discord.utils.format_dt(end_time, style='T')} ({discord.utils.format_dt(end_time, style='R')})",
         )
         embed.set_author(
             name=_("Hosted by {host.display_name}").format(host=self.ctx.author),
@@ -167,8 +167,11 @@ class AcronymGameView(discord.ui.View):
             "Use the dropdown below to vote for the best answer for the random acronym. All guild members can vote.\n",
         ) + box(str(table), lang="py")
         embed.add_field(name="Random Acronym", value=self.acronym)
-        end_time = int((datetime.datetime.now() + datetime.timedelta(seconds=60)).timestamp())
-        embed.add_field(name="End time for voting", value=f"<t:{end_time}:T> (<t:{end_time}:R>)")
+        end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=60)
+        embed.add_field(
+            name=_("End time for voting:"),
+            value=f"{discord.utils.format_dt(end_time, style='T')} ({discord.utils.format_dt(end_time, style='R')})",
+        )
         self.join_button.disabled = True
         self.add_item(AnswerSelect(self, players=self.players))
         self._message: discord.Message = await self._message.edit(embed=embed, view=self)

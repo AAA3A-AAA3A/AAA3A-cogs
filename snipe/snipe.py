@@ -100,11 +100,11 @@ class SnipedMessage:
             )
         if self.type == "deleted":
             embed.title = _("Deleted Message (Sent on {created_timestamp})").format(
-                created_timestamp=f"<t:{int(self.created_at.timestamp())}:F>",
+                created_timestamp=discord.utils.format_dt(self.created_at, style="F"),
             )
         else:
             embed.title = _("Edited Message (Sent on {created_timestamp})").format(
-                created_timestamp=f"<t:{int(self.created_at.timestamp())}:F>",
+                created_timestamp=discord.utils.format_dt(self.created_at, style="F"),
             )
         embed.set_author(
             name=f"{self.author.display_name} ({self.author.id})",
@@ -115,7 +115,7 @@ class SnipedMessage:
         embed.add_field(name=_("Channel:"), value=self.channel.mention, inline=True)
         embed.add_field(
             name=_("Deleted at:") if self.type == "deleted" else _("Edited at:"),
-            value=f"<t:{int(self.deleted_at.timestamp())}:F>",
+            value=discord.utils.format_dt(self.deleted_at, style="F"),
             inline=True,
         )
 
@@ -547,7 +547,7 @@ class Snipe(DashboardIntegration, Cog):
             )
         content = "\n\n".join(
             [
-                f"**{i}.** Deleted <t:{int(deleted_message.deleted_at.timestamp())}:R> - {deleted_message.author.mention} ({deleted_message.author.id}): {deleted_message.content}"
+                f"**{i}.** Deleted {discord.utils.format_dt(deleted_message.deleted_at, style='R')} - {deleted_message.author.mention} ({deleted_message.author.id}): {deleted_message.content}"
                 for i, deleted_message in enumerate(
                     sorted(
                         [
@@ -863,7 +863,7 @@ class Snipe(DashboardIntegration, Cog):
             )
         content = "\n\n".join(
             [
-                f"**{i}.** Edited <t:{int(edited_message.deleted_at.timestamp())}:R> - {edited_message.author.mention} ({edited_message.author.id}): {edited_message.content}"
+                f"**{i}.** Edited {discord.utils.format_dt(edited_message.deleted_at, style='R')} - {edited_message.author.mention} ({edited_message.author.id}): {edited_message.content}"
                 for i, edited_message in enumerate(
                     sorted(
                         [

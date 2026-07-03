@@ -506,7 +506,7 @@ class TimeConverter(commands.Converter):
                     microsecond=0,
                 ):  # Negative intervals are not allowed.
                     info = [  # info.append(
-                        f"• Global check: The given date must be in the future. Interpreted date: <t:{int(expires_at.timestamp())}:F>.",
+                        f"• Global check: The given date must be in the future. Interpreted date: {discord.utils.format_dt(expires_at, style='F')}.",
                     ]
                     expires_at = None
                 else:

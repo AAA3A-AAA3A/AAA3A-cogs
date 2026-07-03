@@ -417,8 +417,7 @@ class Ticket:
         embed.description = (
             (
                 _(
-                    "Claimed by: {claimed_by.mention}"
-                    "\nClaimed at: <t:{claimed_at}:F> (<t:{claimed_at}:R>)",
+                    "Claimed by: {claimed_by.mention}\nClaimed at: {claimed_at}",
                 ).format(
                     claimed_by=(
                         self.claimed_by
@@ -433,15 +432,14 @@ class Ticket:
                             },
                         )
                     ),
-                    claimed_at=int(self.claimed_at.timestamp()),
+                    claimed_at=f"{discord.utils.format_dt(self.claimed_at, style='F')} ({discord.utils.format_dt(self.claimed_at, style='R')})",
                 )
                 if self.is_claimed
                 else _("Not claimed.")
             )
             + (
                 _(
-                    "\nClosed by: {closed_by.mention}"
-                    "\nClosed at: <t:{closed_at}:F> (<t:{closed_at}:R>)",
+                    "\nClosed by: {closed_by.mention}\nClosed at: {closed_at}",
                 ).format(
                     closed_by=(
                         self.closed_by
@@ -456,7 +454,7 @@ class Ticket:
                             },
                         )
                     ),
-                    closed_at=int(self.closed_at.timestamp()),
+                    closed_at=f"{discord.utils.format_dt(self.closed_at, style='F')} ({discord.utils.format_dt(self.closed_at, style='R')})",
                 )
                 if self.is_closed
                 else ""
@@ -464,7 +462,7 @@ class Ticket:
             + (
                 _(
                     "\nAppeal approved by: {appeal_approved_by.mention}"
-                    "\nAppeal approved at: <t:{appeal_approved_at}:F> (<t:{appeal_approved_at}:R>)",
+                    "\nAppeal approved at: {appeal_approved_at}",
                 ).format(
                     appeal_approved_by=(
                         self.appeal_approved_by
@@ -479,15 +477,14 @@ class Ticket:
                             },
                         )
                     ),
-                    appeal_approved_at=int(self.appeal_approved_at.timestamp()),
+                    appeal_approved_at=f"{discord.utils.format_dt(self.appeal_approved_at, style='F')} ({discord.utils.format_dt(self.appeal_approved_at, style='R')})",
                 )
                 if self.appeal_approved
                 else ""
             )
             + (
                 _(
-                    "\nDeleted by: {deleted_by.mention}"
-                    "\nDeleted at: <t:{deleted_at}:F> (<t:{deleted_at}:R>)",
+                    "\nDeleted by: {deleted_by.mention}\nDeleted at: {deleted_at}",
                 ).format(
                     deleted_by=(
                         self.deleted_by
@@ -502,7 +499,7 @@ class Ticket:
                             },
                         )
                     ),
-                    deleted_at=int(self.deleted_at.timestamp()),
+                    deleted_at=f"{discord.utils.format_dt(self.deleted_at, style='F')} ({discord.utils.format_dt(self.deleted_at, style='R')})",
                 )
                 if self.deleted_at is not None
                 else ""

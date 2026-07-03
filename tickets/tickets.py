@@ -502,7 +502,7 @@ class Tickets(DashboardIntegration, Cog):
 
     @commands.Cog.listener("on_message_edit")
     async def close_after_dank_payout(
-        self, before: discord.Message, after: discord.Message
+        self, before: discord.Message, after: discord.Message,
     ) -> None:
         message = after
         if (

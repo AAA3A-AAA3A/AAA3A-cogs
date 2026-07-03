@@ -601,13 +601,14 @@ class AdventCalendar(Cog):
                 await self.config.member(ctx.author).opened_days.set(opened_days)
             else:
                 content = _(
-                    "You've already opened your box for the day, **come back <t:{timestamp}:R>!** 😉 Here's your current Advent Calendar!",
+                    "You've already opened your box for the day, **come back {timestamp}!** 😉 Here's your current Advent Calendar!",
                 ).format(
-                    timestamp=int(
+                    timestamp=discord.utils.format_dt(
                         datetime.datetime.combine(
                             today + datetime.timedelta(days=1),
                             datetime.time(0, 0, 0),
-                        ).timestamp(),
+                        ),
+                        style="R",
                     ),
                 )
         elif today_day == 25:

@@ -35,8 +35,11 @@ class SplitOrStealGameView(discord.ui.View):
         embed.description = _(
             "Join the game by clicking on the button below. 2 players will be selected randomly.",
         )
-        end_time = int((datetime.datetime.now() + datetime.timedelta(seconds=60)).timestamp())
-        embed.add_field(name="End time for joining", value=f"<t:{end_time}:T> (<t:{end_time}:R>)")
+        end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=60)
+        embed.add_field(
+            name=_("End time for joining:"),
+            value=f"{discord.utils.format_dt(end_time, style='T')} ({discord.utils.format_dt(end_time, style='R')})",
+        )
         self.clear_items()
         self.add_item(self.join_button)
         self._mode = "join"
@@ -65,8 +68,11 @@ class SplitOrStealGameView(discord.ui.View):
             "• If you both choose `steal`, both of you loose.\n"
             "• if one of you chooses `split` and one of you chooses `steal`, the one who choose `steal` will win.",
         ).format(player_A=player_A, player_B=player_B)
-        end_time = int((datetime.datetime.now() + datetime.timedelta(seconds=60)).timestamp())
-        embed.add_field(name="End time for play", value=f"<t:{end_time}:T> (<t:{end_time}:R>)")
+        end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=60)
+        embed.add_field(
+            name=_("End time for play:"),
+            value=f"{discord.utils.format_dt(end_time, style='T')} ({discord.utils.format_dt(end_time, style='R')})",
+        )
         self.clear_items()
         self.add_item(self.join_button)
         self.join_button.disabled = True

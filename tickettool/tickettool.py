@@ -670,7 +670,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         return None
 
     def decorator(
-        ticket_check: bool | None = False,
+        self: bool | None = False,
         status: str | None = None,
         ticket_owner: bool | None = False,
         admin_roles: bool | None = False,
@@ -684,7 +684,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         locked: bool | None = None,
     ) -> None:  # noqa: N805
         async def pred(ctx: commands.Context) -> bool:
-            if not ticket_check:
+            if not self:
                 return True
 
             cog = ctx.bot.get_cog("TicketTool")

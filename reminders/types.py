@@ -218,7 +218,7 @@ class RepeatRule:
                 value = value.replace(f"COUNT={count_match[1]}", f"COUNT={int(count_match[1]) - 1}")
             return f"[{self.type.upper()}] {r.format(value).title()}."
         if self.type == "date":
-            return f"[{self.type.upper()}] <t:{int(self.value.timestamp())}:F> (<t:{int(self.value.timestamp())}:R>)."
+            return f"[{self.type.upper()}] {discord.utils.format_dt(self.value, style='F')} ({discord.utils.format_dt(self.value, style='R')})."
         return None
 
 
@@ -472,7 +472,7 @@ class Reminder:
                 else ""
             ),
             interval_string=interval_string,
-            timestamp=f"<t:{int(self.expires_at.timestamp())}:F>",
+            timestamp=discord.utils.format_dt(self.expires_at, style="F"),
             and_every=and_every,
             reminder_id=self.id,
         )
@@ -489,12 +489,12 @@ class Reminder:
             "• **Destination**: {destination}\n"
             "• **Jump URL**: {jump_url}\n",
         ).format(
-            expires_at_timestamp=f"<t:{int(self.next_expires_at.timestamp())}:F>",
+            expires_at_timestamp=discord.utils.format_dt(self.next_expires_at, style="F"),
             expires_in_timestamp=CogsUtils.get_interval_string(
                 self.next_expires_at,
                 use_timestamp=True,
             ),
-            created_at_timestamp=f"<t:{int(self.created_at.timestamp())}:F>",
+            created_at_timestamp=discord.utils.format_dt(self.created_at, style="F"),
             created_in_timestamp=CogsUtils.get_interval_string(self.created_at, use_timestamp=True),
             repeat=(
                 _("No existing repeat rule(s).")
@@ -615,7 +615,7 @@ class Reminder:
                 if self.jump_url is not None
                 else ""
             )
-            + f"Created the <t:{int(self.created_at.timestamp())}:F>.",
+            + f"Created the {discord.utils.format_dt(self.created_at, style='F')}.",
             inline=False,
         )
         interval_string = CogsUtils.get_interval_string(

@@ -101,7 +101,7 @@ ANTI_NUKE_OPTIONS: list[
             member=entry.user,
             before_vanity_url_code=getattr(entry.before, "vanity_url_code", None),
             after_vanity_url_code=getattr(entry.after, "vanity_url_code", None),
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(entry.created_at, style="R"),
         ),
         "reason": lambda: _("**Anti Nuke** - Attempted to change the vanity URL."),
         "revert": lambda entry: entry.guild.edit(
@@ -122,7 +122,7 @@ ANTI_NUKE_OPTIONS: list[
             member=entry.user,
             members_removed=entry.extra.members_removed,
             delete_member_days=entry.extra.delete_member_days,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(entry.created_at, style="R"),
         ),
         "reason": lambda: _("**Anti Nuke** - Pruned members without proper authorization."),
         "revert": None,
@@ -167,7 +167,7 @@ ANTI_NUKE_OPTIONS: list[
                         )
                     ],
                 ),
-                timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+                timestamp=discord.utils.format_dt(entry.created_at, style="R"),
             )
             + "\n"
             + box(
@@ -238,7 +238,7 @@ ANTI_NUKE_OPTIONS: list[
             ).format(
                 member=entry.user,
                 target=entry.target,
-                timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+                timestamp=discord.utils.format_dt(entry.created_at, style="R"),
             )
             + "\n"
             + box(
@@ -290,7 +290,7 @@ ANTI_NUKE_OPTIONS: list[
                 member=entry.user,
                 extra=entry.extra,
                 target=entry.target,
-                timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+                timestamp=discord.utils.format_dt(entry.created_at, style="R"),
             )
             + "\n"
             + box(
@@ -357,7 +357,7 @@ ANTI_NUKE_OPTIONS: list[
                     ],
                 ),
                 s="" if len(roles) == 1 else "s",
-                timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+                timestamp=discord.utils.format_dt(entry.created_at, style="R"),
             )
             + "\n"
             + box(
@@ -406,7 +406,7 @@ ANTI_NUKE_OPTIONS: list[
             ).format(
                 member=entry.user,
                 target=entry.target,
-                timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+                timestamp=discord.utils.format_dt(entry.created_at, style="R"),
             )
             + "\n"
             + box(
@@ -469,7 +469,7 @@ ANTI_NUKE_FILTERS: list[
             target=entry.target
             if not isinstance(entry.target, discord.Object)
             else entry.target.id,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(entry.created_at, style="R"),
         ),
         "reason": lambda: _("**Anti Nuke** - Kicked/Banned too many members in a short time."),
     },
@@ -487,7 +487,7 @@ ANTI_NUKE_FILTERS: list[
         ).format(
             member=entry.user,
             target=entry.target,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(entry.created_at, style="R"),
         ),
         "reason": lambda: _("**Anti Nuke** - Created too many roles in a short time."),
     },
@@ -505,7 +505,7 @@ ANTI_NUKE_FILTERS: list[
         ).format(
             member=entry.user,
             target_name=entry.before.name,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(entry.created_at, style="R"),
         ),
         "reason": lambda: _("**Anti Nuke** - Deleted too many roles in a short time."),
     },
@@ -523,7 +523,7 @@ ANTI_NUKE_FILTERS: list[
         ).format(
             member=entry.user,
             target=entry.target,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(entry.created_at, style="R"),
         ),
         "reason": lambda: _("**Anti Nuke** - Created too many channels in a short time."),
     },
@@ -541,7 +541,7 @@ ANTI_NUKE_FILTERS: list[
         ).format(
             member=entry.user,
             target_name=entry.before.name,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(entry.created_at, style="R"),
         ),
         "reason": lambda: _("**Anti Nuke** - Deleted too many channels in a short time."),
     },
@@ -559,7 +559,7 @@ ANTI_NUKE_FILTERS: list[
         ).format(
             member=entry.user,
             target_id=entry.target.id,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(entry.created_at, style="R"),
         ),
         "reason": lambda: _("**Anti Nuke** - Created too many webhooks in a short time."),
     },
@@ -577,7 +577,7 @@ ANTI_NUKE_FILTERS: list[
         ).format(
             member=entry.user,
             target_id=entry.target.id,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(entry.created_at, style="R"),
         ),
         "reason": lambda: _("**Anti Nuke** - Deleted too many webhooks in a short time."),
     },
@@ -595,7 +595,7 @@ ANTI_NUKE_FILTERS: list[
         ).format(
             member=entry.user,
             target=entry.target,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(entry.created_at, style="R"),
         ),
         "reason": lambda: _("**Anti Nuke** - Created too many emojis in a short time."),
     },
@@ -613,7 +613,7 @@ ANTI_NUKE_FILTERS: list[
         ).format(
             member=entry.user,
             target_name=entry.before.name,
-            timestamp=f"<t:{int(entry.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(entry.created_at, style="R"),
         ),
         "reason": lambda: _("**Anti Nuke** - Deleted too many emojis in a short time."),
     },
@@ -702,7 +702,14 @@ class AntiNukeModule(Module):
         )
         if status[0] == "⚠️":
             description += f"{status[0]} **{status[1]}**: {status[2]}\n"
+
         config = await self.config_value(guild)()
+        description += _(
+            "\n**Quarantine Automatically:** {quarantine}\n**Revert Option Actions:** {revert_option_actions}\n\n"
+        ).format(
+            quarantine=("✅" if config["quarantine"] else "❌"),
+            revert_option_actions=("✅" if config["revert_option_actions"] else "❌"),
+        )
         for option in ANTI_NUKE_OPTIONS:
             description += f"\n{'✅' if config['options'][option['value']] else '❌'} {option['emoji']} {option['name']}"
         fields = []
@@ -725,33 +732,27 @@ class AntiNukeModule(Module):
 
         components = [ToggleModuleButton(self, guild, view, config["enabled"])]
         quarantine_button: discord.ui.Button = discord.ui.Button(
+            emoji=Emojis.QUARANTINE.value,
             label=_("Quarantine Automatically"),
             style=discord.ButtonStyle.success
             if config["quarantine"]
             else discord.ButtonStyle.danger,
-            emoji=Emojis.QUARANTINE.value,
         )
 
         async def quarantine_callback(interaction: discord.Interaction) -> None:
             await interaction.response.defer()
             config["quarantine"] = not config["quarantine"]
             await self.config_value(guild).quarantine.set(config["quarantine"])
-            await interaction.followup.send(
-                _("Automatic Quarantine is now {status}.").format(
-                    status="enabled" if config["quarantine"] else "disabled",
-                ),
-                ephemeral=True,
-            )
             await view._message.edit(embed=await view.get_embed(), view=view)
 
         quarantine_button.callback = quarantine_callback
         components.append(quarantine_button)
         revert_option_actions_button: discord.ui.Button = discord.ui.Button(
+            emoji="🔄",
             label=_("Revert Option Actions"),
             style=discord.ButtonStyle.success
             if config["revert_option_actions"]
             else discord.ButtonStyle.danger,
-            emoji="🔄",
         )
 
         async def revert_option_actions_callback(interaction: discord.Interaction) -> None:
@@ -759,12 +760,6 @@ class AntiNukeModule(Module):
             config["revert_option_actions"] = not config["revert_option_actions"]
             await self.config_value(guild).revert_option_actions.set(
                 config["revert_option_actions"],
-            )
-            await interaction.followup.send(
-                _("Revert option actions is now {status}.").format(
-                    status="enabled" if config["revert_option_actions"] else "disabled",
-                ),
-                ephemeral=True,
             )
             await view._message.edit(embed=await view.get_embed(), view=view)
 

@@ -853,7 +853,7 @@ class AutoModModule(Module):
                     )
                 except RuntimeError:
                     pass
-            elif (action := filter_config["action"]) is None:
+            elif (action_value := filter_config["action"]) is None:
                 if self.strikes_cache[message.guild][message.author] < 3:
                     duration = await DurationConverter.convert(
                         None,
@@ -879,29 +879,31 @@ class AutoModModule(Module):
                     current_ctx=message,
                 )
             else:
-                if action in ("timeout", "mute"):
+                if action_value in ("timeout", "mute"):
                     duration = await DurationConverter.convert(
                         None,
                         config["strike_durations"]["individual_timeout_mute"],
                     )
-                    if action == "timeout":
+                    if action_value == "timeout":
                         duration = get_correct_timeout_duration(message.author, duration)
                 else:
                     duration = None
-                if action in ("kick", "ban"):
+                if action_value in ("kick", "ban"):
                     await self.cog.send_modlog(
-                        action=action,
+                        action=action_value,
                         member=message.author,
                         reason=reason,
-                        duration=duration,
                         trigger_messages=trigger_messages,
                         context_message=message,
                         current_ctx=message,
                     )
-                if action == "timeout" and message.guild.me.guild_permissions.moderate_members:
+                if (
+                    action_value == "timeout"
+                    and message.guild.me.guild_permissions.moderate_members
+                ):
                     await message.author.timeout(duration, reason=audit_log_reason)
                 elif (
-                    action == "mute"
+                    action_value == "mute"
                     and message.guild.me.guild_permissions.manage_roles
                     and (Mutes := self.cog.bot.get_cog("Mutes")) is not None
                     and hasattr(Mutes, "mute_user")
@@ -913,12 +915,12 @@ class AutoModModule(Module):
                         until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
                         reason=audit_log_reason,
                     )
-                elif action == "kick" and message.guild.me.guild_permissions.kick_members:
+                elif action_value == "kick" and message.guild.me.guild_permissions.kick_members:
                     await message.author.kick(reason=audit_log_reason)
-                elif action == "ban" and message.guild.me.guild_permissions.ban_members:
+                elif action_value == "ban" and message.guild.me.guild_permissions.ban_members:
                     await message.author.ban(reason=audit_log_reason)
                 elif (
-                    action == "quarantine"
+                    action_value == "quarantine"
                     and message.author.guild.me.guild_permissions.manage_roles
                 ):
                     try:
@@ -931,9 +933,9 @@ class AutoModModule(Module):
                         )
                     except RuntimeError:
                         pass
-                if action not in ("quarantine", "kick", "ban"):
+                if action_value not in ("quarantine", "kick", "ban"):
                     await self.cog.send_modlog(
-                        action=action,
+                        action=action_value,
                         member=message.author,
                         reason=reason,
                         duration=duration,
@@ -1381,13 +1383,26 @@ class ConfigureFilterModal(discord.ui.Modal):
         action_value = self.action.value.strip().lower()
         if action_value in ("", "none"):
             self.filter_config["action"] = None
-        elif (action := self.action.value.lower()) not in [
-            action["value"] for action in POSSIBLE_ACTIONS
-        ]:
+        elif (
+            action := next(
+                (action for action in POSSIBLE_ACTIONS if action["value"] == action_value),
+                None,
+            )
+        ) is None:
             await interaction.followup.send(
                 _("Invalid action: `{action}`. Possible actions are: {actions}").format(
-                    action=action,
+                    action=action_value,
                     actions="/".join([action["value"] for action in POSSIBLE_ACTIONS]),
+                ),
+                ephemeral=True,
+            )
+            return
+        elif not getattr(interaction.client.guild_permissions, action["permission"]):
+            await interaction.followup.send(
+                _(
+                    "I don't have the required permission `{permission}` to perform this action.",
+                ).format(
+                    permission=action["permission"],
                 ),
                 ephemeral=True,
             )

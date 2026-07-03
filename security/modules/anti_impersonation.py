@@ -61,10 +61,11 @@ class AntiImpersonationModule(Module):
             description += f"{status[0]} **{status[1]}**: {status[2]}\n"
         config = await self.config_value(guild)()
         description += _(
-            "\n**Similarity Ratio:** {ratio}\nA similarity ratio of {ratio} means that names that are {percent}% similar will be flagged as potential impersonation attempts. You can adjust this ratio.",
+            "\n**Similarity Ratio:** {ratio}\nA similarity ratio of {ratio} means that names that are {percent}% similar will be flagged as potential impersonation attempts. You can adjust this ratio.\n**Quarantine Members:** {quarantine}",
         ).format(
             ratio=config["similarity_ratio"],
             percent=config["similarity_ratio"] * 100,
+            quarantine="✅" if config["quarantine"] else "❌",
         )
 
         components = [ToggleModuleButton(self, guild, view, config["enabled"])]
@@ -80,12 +81,6 @@ class AntiImpersonationModule(Module):
             await interaction.response.defer()
             config["quarantine"] = not config["quarantine"]
             await self.config_value(guild).quarantine.set(config["quarantine"])
-            await interaction.followup.send(
-                _("Automatic Quarantine is now {status}.").format(
-                    status="enabled" if config["quarantine"] else "disabled",
-                ),
-                ephemeral=True,
-            )
             await view._message.edit(embed=await view.get_embed(), view=view)
 
         quarantine_button.callback = quarantine_callback

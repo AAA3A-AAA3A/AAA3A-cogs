@@ -455,13 +455,27 @@ class ConfigureOptionModal(discord.ui.Modal):
     async def on_submit(self, interaction: discord.Interaction) -> None:
         await interaction.response.defer()
         enabled = self.enabled.value.lower() in ("true", "yes", "1")
-        if (action := self.action.value.lower()) not in [
-            action["value"] for action in POSSIBLE_ACTIONS
-        ]:
+        action_value = self.action.value.lower()
+        if (
+            action := next(
+                (action for action in POSSIBLE_ACTIONS if action["value"] == action_value),
+                None,
+            )
+        ) is None:
             await interaction.followup.send(
                 _("Invalid action: `{action}`. Possible actions are: {actions}").format(
-                    action=action,
+                    action=action_value,
                     actions="/".join([action["value"] for action in POSSIBLE_ACTIONS]),
+                ),
+                ephemeral=True,
+            )
+            return
+        if not getattr(interaction.client.guild_permissions, action["permission"]):
+            await interaction.followup.send(
+                _(
+                    "I don't have the required permission `{permission}` to perform this action.",
+                ).format(
+                    permission=action["permission"],
                 ),
                 ephemeral=True,
             )
@@ -478,7 +492,7 @@ class ConfigureOptionModal(discord.ui.Modal):
         else:
             param_value = None
         self.option_config["enabled"] = enabled
-        self.option_config["action"] = action
+        self.option_config["action"] = action_value
         if param_value is not None:
             self.option_config[self.option["param"][0]] = param_value
         await self.module.config_value(self.guild).options.set_raw(

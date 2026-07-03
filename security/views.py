@@ -4,11 +4,13 @@ import functools
 import typing
 
 import discord
+from dictdiffer import diff
 
-from AAA3A_utils import CogsUtils
+from AAA3A_utils import CogsUtils, Menu
 from redbot.core import commands
+from redbot.core.bot import Red
 from redbot.core.i18n import Translator
-from redbot.core.utils.chat_formatting import humanize_list
+from redbot.core.utils.chat_formatting import box, humanize_list
 
 from .constants import (
     POSSIBLE_ACTIONS,
@@ -32,6 +34,19 @@ OBJECT_TYPING = typing.Union[
     discord.ForumChannel,
     discord.Webhook,
 ]
+
+
+async def get_or_fetch_member_or_user(
+    bot: Red,
+    guild: discord.Guild,
+    user_id: int,
+) -> discord.Member | discord.User | None:
+    if (member := guild.get_member(user_id)) is not None:
+        return member
+    try:
+        return await bot.get_or_fetch_user(user_id)
+    except discord.HTTPException:
+        return None
 
 
 DurationConverter: commands.converter.TimedeltaConverter = commands.converter.TimedeltaConverter(
@@ -344,6 +359,7 @@ class SettingsView(discord.ui.View):
 
         self.page: str = "overview"
         self._message: discord.Message = None
+        self.last_state: dict = {}
 
         self.reset_recovery_key.label = _("Reset Recovery Key")
         self.create_quarantine_role.label = _("Create Quarantine Role")
@@ -353,6 +369,7 @@ class SettingsView(discord.ui.View):
         self.modlog_ping_role_select.placeholder = _("Select Modlog Ping Role")
         self.extra_owners_select.placeholder = _("Manage Extra Owners")
         self.trusted_admins_select.placeholder = _("Manage Trusted Admins")
+        self.show_logs.label = _("Show Logs")
 
     async def start(self, ctx: commands.Context, page: str = "overview") -> discord.Message:
         self.ctx: commands.Context = ctx
@@ -381,6 +398,7 @@ class SettingsView(discord.ui.View):
                     value=module.key_name(),
                 ),
             )
+        self.last_state = await self.cog.config.guild(self.ctx.guild).all()
         self._message: discord.Message = await self.ctx.send(
             embed=await self.get_embed(),
             view=self,
@@ -410,6 +428,21 @@ class SettingsView(discord.ui.View):
             pass
 
     async def get_embed(self) -> discord.Embed:
+        new_state = await self.cog.config.guild(self.ctx.guild).all()
+        if differences := list(
+            diff(self.last_state, new_state, ignore=["recovery_key", "current_owner_id", "logs"]),
+        ):
+            logs = await self.cog.config.guild(self.ctx.guild).logs()
+            logs.append(
+                {
+                    "timestamp": int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp()),
+                    "issued_by_id": self.ctx.author.id,
+                    "differences": differences,
+                },
+            )
+            await self.cog.config.guild(self.ctx.guild).logs.set(logs)
+        self.last_state = new_state
+
         embed: discord.Embed = discord.Embed(
             timestamp=self.ctx.message.created_at,
         )
@@ -556,6 +589,7 @@ class SettingsView(discord.ui.View):
                 self.add_item(self.extra_owners_select)
             if await self.cog.is_extra_owner_or_higher(self.ctx.author):
                 self.add_item(self.trusted_admins_select)
+            self.add_item(self.show_logs)
         else:
             module = self.cog.modules[self.page]
             status = await module.get_status(self.ctx.guild)
@@ -623,7 +657,11 @@ class SettingsView(discord.ui.View):
                 ephemeral=True,
             )
 
-    @discord.ui.button(label="Create Quarantine Role", style=discord.ButtonStyle.primary)
+    @discord.ui.button(
+        emoji=Emojis.QUARANTINE.value,
+        label="Create Quarantine Role",
+        style=discord.ButtonStyle.primary,
+    )
     async def create_quarantine_role(
         self,
         interaction: discord.Interaction,
@@ -644,7 +682,11 @@ class SettingsView(discord.ui.View):
         )
         await self._message.edit(embed=await self.get_embed(), view=self)
 
-    @discord.ui.button(label="Create Modlog Channel", style=discord.ButtonStyle.primary)
+    @discord.ui.button(
+        emoji=Emojis.CHANNEL.value,
+        label="Create Modlog Channel",
+        style=discord.ButtonStyle.primary,
+    )
     async def create_modlog_channel(
         self,
         interaction: discord.Interaction,
@@ -868,6 +910,93 @@ class SettingsView(discord.ui.View):
                 ephemeral=True,
             )
         await self._message.edit(embed=await self.get_embed(), view=self)
+
+    @discord.ui.button(
+        emoji=Emojis.LOGS.value,
+        label="Show Logs",
+        style=discord.ButtonStyle.secondary,
+    )
+    async def show_logs(
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
+    ) -> None:
+        await interaction.response.defer(thinking=True, ephemeral=True)
+        if not (logs := await self.cog.config.guild(self.ctx.guild).logs()):
+            await interaction.followup.send(_("ℹ️ No logs available."), ephemeral=True)
+            return
+        embed: discord.Embed = discord.Embed(
+            title=_("Security Logs"),
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+        )
+        embed.set_footer(
+            text=_("{guild.name} | Developed by AAA3A").format(guild=self.ctx.guild),
+            icon_url=get_non_animated_asset(self.ctx.guild.icon),
+        )
+        embeds = []
+        for page in discord.utils.as_chunks(logs, 5):
+            e = embed.copy()
+            e.description = "\n\n".join(
+                [
+                    _(
+                        "🕒 {timestamp} — Issued by {issued_by}\n{differences}",
+                    ).format(
+                        timestamp=discord.utils.format_dt(
+                            datetime.datetime.fromtimestamp(
+                                log["timestamp"],
+                                tz=datetime.timezone.utc,
+                            ),
+                            style="F",
+                        ),
+                        issued_by=(
+                            (
+                                f"{issued_by.mention} (`{issued_by}`) {await self.cog.get_member_emoji(issued_by)} - `{issued_by.id}`"
+                                if isinstance(issued_by, discord.Member)
+                                else f"{issued_by.mention} (`{issued_by}`) - `{issued_by.id}`"
+                            )
+                            if (
+                                issued_by := await get_or_fetch_member_or_user(
+                                    interaction.client,
+                                    self.ctx.guild,
+                                    log["issued_by_id"],
+                                )
+                            )
+                            is not None
+                            else f"`{log['issued_by_id']}`"
+                        ),
+                        differences=box(
+                            "\n".join(
+                                [
+                                    f"{'+' if d[0] == 'add' else ('-' if d[0] == 'remove' else '~')} `.{d[1] if d[1] else ' '}`: "
+                                    + (
+                                        f"`{repr(d[2][0])}` -> `{repr(d[2][1])}`"
+                                        if d[0] == "change"
+                                        else f"`{repr(d[2])}`"
+                                    )
+                                    for d in log["differences"]
+                                ],
+                            ),
+                            lang="diff",
+                        ),
+                    )
+                    for log in page
+                ],
+            )
+            embeds.append(e)
+        fake_context = type(
+            "FakeContext",
+            (),
+            {
+                "interaction": interaction,
+                "bot": interaction.client,
+                "guild": interaction.guild,
+                "channel": interaction.channel,
+                "author": interaction.user,
+                "message": interaction.message,
+                "send": functools.partial(interaction.followup.send, wait=True),
+            },
+        )()
+        await Menu(pages=embeds, page_start=-1, ephemeral=True).start(fake_context)
 
 
 class ToggleModuleButton(discord.ui.Button):

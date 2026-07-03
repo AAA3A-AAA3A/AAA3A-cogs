@@ -62,6 +62,8 @@ class Emojis(Enum):
 
     JOIN_GATE = "🚪"
     AUTO_MOD = "♨️"
+    IMAGE_CHECKING = "🖼️"
+    MESSAGE_ANALYSIS = "🤖"
     REPORTS = "📑"
     LOGGING = "📜"
     ANTI_NUKE = "💥"
@@ -162,6 +164,28 @@ WHITELIST_TYPES: list[
         "categories": True,
         "webhooks": True,
         "staff_allowed": False,
+    },
+    {
+        "name": "Image Checking Whitelist",
+        "emoji": Emojis.IMAGE_CHECKING.value,
+        "description": "Bypass image checking.",
+        "value": "image_checking",
+        "members_roles": True,
+        "channels": True,
+        "categories": True,
+        "webhooks": True,
+        "staff_allowed": True,
+    },
+    {
+        "name": "Message Analysis Whitelist",
+        "emoji": Emojis.MESSAGE_ANALYSIS.value,
+        "description": "Bypass message analysis.",
+        "value": "message_analysis",
+        "members_roles": True,
+        "channels": True,
+        "categories": True,
+        "webhooks": True,
+        "staff_allowed": True,
     },
     {
         "name": "Logging - Edited/Deleted Message Log Whitelist",

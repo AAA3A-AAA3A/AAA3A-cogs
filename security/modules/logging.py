@@ -622,12 +622,6 @@ class LoggingModule(Module):
             await interaction.response.defer()
             config["use_webhooks"] = not config["use_webhooks"]
             await self.config_value(guild).use_webhooks.set(config["use_webhooks"])
-            await interaction.followup.send(
-                _("Logging using webhooks is now {status}.").format(
-                    status=_("enabled") if config["use_webhooks"] else _("disabled"),
-                ),
-                ephemeral=True,
-            )
             await view._message.edit(embed=await view.get_embed(), view=view)
 
         use_webhooks_button.callback = use_webhooks_callback
@@ -1275,7 +1269,7 @@ class LoggingModule(Module):
                                     removed_permissions.append(permission.replace("_", " ").title())
             if added_permissions or removed_permissions:
                 embed.add_field(
-                    name=_("Permissions Changes:"),
+                    name=_("Permission Changes:"),
                     value=box(
                         (
                             "\n".join(f"+ {perm}" for perm in added_permissions)

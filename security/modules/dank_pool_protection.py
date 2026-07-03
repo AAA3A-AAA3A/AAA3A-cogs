@@ -9,7 +9,7 @@ from redbot.core.bot import Red
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 from security.constants import Colors, Emojis, get_non_animated_asset
-from security.views import ToggleModuleButton
+from security.views import ToggleModuleButton, get_or_fetch_member_or_user
 
 from .module import Module
 
@@ -27,19 +27,6 @@ def convert_amount(argument: str) -> int:
             raise ValueError(
                 _("Invalid amount format. Use a number or a shorthand like `1k`, `2m`, etc."),
             )
-
-
-async def get_or_fetch_member_or_user(
-    bot: Red,
-    guild: discord.Guild,
-    user_id: int,
-) -> discord.Member | discord.User | None:
-    if (member := guild.get_member(user_id)) is not None:
-        return member
-    try:
-        return await bot.get_or_fetch_user(user_id)
-    except discord.HTTPException:
-        return None
 
 
 DANK_MEMER_BOT_ID: int = 270904126974590976
@@ -62,6 +49,7 @@ DANK_POOL_PROTECTION_OPTIONS: list[
             and "Pending Confirmation" in message.components[0].children[0].content
             and len(message.components[0].children) >= 3
             and isinstance(message.components[0].children[2], discord.components.TextDisplay)
+            and "<@" in message.components[0].children[2].content
             and int(
                 message.components[0].children[2].content.split("<@")[1].split(">")[0],
             )
@@ -271,6 +259,7 @@ class DankPoolProtectionModule(Module):
             "hour_limit": 20,
         },
         "payout_cooldown": 10,
+        "prevent_pool_check": True,
     }
     configurable_by_trusted_admins = False
 
@@ -290,10 +279,14 @@ class DankPoolProtectionModule(Module):
         self,
         guild: discord.Guild,
         check_enabled: bool = True,
-    ) -> tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
+    ) -> tuple[typing.Literal["✅", "⚠️", "❎", "❌"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
-            return "❌", _("Disabled"), _("Dank Pool Protection is currently disabled.")
+            return (
+                "❌" if guild.get_member(DANK_MEMER_BOT_ID) is not None else "❎",
+                _("Disabled"),
+                _("Dank Pool Protection is currently disabled."),
+            )
         if (
             (payout_logs_channel_id := config["payout_logs_channel"]) is not None
             and (payout_logs_channel := guild.get_channel(payout_logs_channel_id)) is not None
@@ -341,10 +334,14 @@ class DankPoolProtectionModule(Module):
             and (payout_logs_channel := guild.get_channel(payout_logs_channel_id)) is not None
             else None
         )
-        description += _("\n\n**Logs Channel**: {payout_logs_channel}").format(
+        description += _(
+            "\n\n**Logs Channel**: {payout_logs_channel}\n**Quarantine Members**: {quarantine}\n**Prevent Pool Check (by deleting the message)**: {prevent_pool_check}"
+        ).format(
             payout_logs_channel=f"{payout_logs_channel.mention} (`{payout_logs_channel}`)"
             if payout_logs_channel is not None
             else _("Not set"),
+            quarantine="✅" if config["quarantine"] else "❌",
+            prevent_pool_check="✅" if config["prevent_pool_check"] else "❌",
         )
         fields = []
         for option in DANK_POOL_PROTECTION_OPTIONS:
@@ -461,16 +458,28 @@ class DankPoolProtectionModule(Module):
             await interaction.response.defer()
             config["quarantine"] = not config["quarantine"]
             await self.config_value(guild).quarantine.set(config["quarantine"])
-            await interaction.followup.send(
-                _("Automatic Quarantine is now {status}.").format(
-                    status="enabled" if config["quarantine"] else "disabled",
-                ),
-                ephemeral=True,
-            )
             await view._message.edit(embed=await view.get_embed(), view=view)
 
         quarantine_button.callback = quarantine_callback
         components.append(quarantine_button)
+
+        prevent_pool_check_button: discord.ui.Button = discord.ui.Button(
+            emoji=Emojis.WORD_LISTS.value,
+            label=_("Prevent Pool Check (by deleting the message)"),
+            style=discord.ButtonStyle.success
+            if config["prevent_pool_check"]
+            else discord.ButtonStyle.danger,
+            row=3,
+        )
+
+        async def prevent_pool_check_callback(interaction: discord.Interaction) -> None:
+            await interaction.response.defer()
+            config["prevent_pool_check"] = not config["prevent_pool_check"]
+            await self.config_value(guild).prevent_pool_check.set(config["prevent_pool_check"])
+            await view._message.edit(embed=await view.get_embed(), view=view)
+
+        prevent_pool_check_button.callback = prevent_pool_check_callback
+        components.append(prevent_pool_check_button)
 
         options_select: discord.ui.Select = discord.ui.Select(
             placeholder=_("Select Dank Pool Protection Options"),
@@ -574,17 +583,23 @@ class DankPoolProtectionModule(Module):
             or message._interaction is None
             or message.content
             or message.embeds
-            or not message.components
+            or len(message.components) < 3
             or not isinstance(message.components[0], discord.components.Container)
             or not isinstance(message.components[0].children[0], discord.components.TextDisplay)
             or message.components[0].children[0].content != "### Pending Confirmation"
+            or not isinstance(
+                message.components[0].children[1],
+                discord.components.SeparatorComponent,
+            )
+            or not isinstance(message.components[0].children[2], discord.components.TextDisplay)
+            or "<@" not in message.components[0].children[2].content
         ):
             return
         config = await self.config_value(message.guild)()
         if not config["enabled"]:
             return
         self.recipient_cache[message.id] = int(
-            message.components[0].children[2].content.split("<@")[1].split(">")[0]
+            message.components[0].children[2].content.split("<@")[1].split(">")[0],
         )
         member_id = message.interaction_metadata.user.id
         if (member := message.guild.get_member(member_id)) is None:
@@ -603,7 +618,7 @@ class DankPoolProtectionModule(Module):
             member=member,
             slash_name=message._interaction.name,
             jump_url=message.jump_url,
-            timestamp=f"<t:{int(message.created_at.timestamp())}:R>",
+            timestamp=discord.utils.format_dt(message.created_at, style="R"),
         )
         last_payouts = [
             (
@@ -617,7 +632,7 @@ class DankPoolProtectionModule(Module):
                     member=member,
                     slash_name=await (payout := Payout(**last_payout)).get_slash_name(self.cog.bot),
                     jump_url=payout.get_jump_url(message.guild),
-                    timestamp=f"<t:{int(message.created_at.timestamp())}:R>",
+                    timestamp=discord.utils.format_dt(payout.issued_at, style="R"),
                 ),
             )
             for last_payout in await self.cog.config.member(member).payouts()
@@ -670,6 +685,49 @@ class DankPoolProtectionModule(Module):
                 reason=reason,
                 logs=logs,
             )
+
+    async def on_pool_message(self, message: discord.Message) -> None:
+        if (
+            message.guild is None
+            or not message.author.bot
+            or message.author.id != DANK_MEMER_BOT_ID
+            or message.interaction_metadata is None
+            or message._interaction is None
+            or message.content
+            or message.embeds
+            or len(message.components) < 1
+            or not isinstance(message.components[0], discord.components.Container)
+            or not isinstance(message.components[0].children[0], discord.components.TextDisplay)
+            or message.components[0].children[0].content != "### Server Pool"
+        ):
+            return
+        config = await self.config_value(message.guild)()
+        if not config["enabled"] or not config["prevent_pool_check"]:
+            return
+        if await self.cog.is_whitelisted(
+            message.interaction_metadata.user,
+            "dank_pool_protection",
+        ) or await self.cog.is_whitelisted(message.channel, "dank_pool_protection"):
+            return
+        try:
+            await message.delete()
+        except discord.HTTPException:
+            pass
+        await self.cog.send_modlog(
+            action="notify",
+            member=message.interaction_metadata.user,
+            reason=_("**Dank Pool Protection** - Attempted to check the server's pool."),
+            logs=[
+                _(
+                    "{member.mention} (`{member}`) executed `{slash_name}` ({jump_url}) {timestamp}.",
+                ).format(
+                    member=message.interaction_metadata.user,
+                    slash_name=message._interaction.name,
+                    jump_url=message.jump_url,
+                    timestamp=discord.utils.format_dt(message.created_at, style="R"),
+                ),
+            ],
+        )
 
 
 def format_amount(amount: int) -> str:

@@ -30,8 +30,15 @@ from .constants import (
     get_non_animated_asset,
 )
 from .modules import MODULES, Module
-from .modules.dank_pool_protection import Payout, format_amount, get_or_fetch_member_or_user
-from .views import OBJECT_TYPING, ActionsView, DurationConverter, SettingsView, WhitelistView
+from .modules.dank_pool_protection import Payout, format_amount
+from .views import (
+    OBJECT_TYPING,
+    ActionsView,
+    DurationConverter,
+    SettingsView,
+    WhitelistView,
+    get_or_fetch_member_or_user,
+)
 
 # Credits:
 # General repo credits.
@@ -119,8 +126,10 @@ class Security(Cog):
             modlog_ping_role=None,
             # Modules.
             modules={module.key_name(): module.default_config for module in MODULES},
+            # Management.
             recovery_key=None,
             current_owner_id=None,
+            logs=[],
         )
         self.config.register_member(
             level=None,
@@ -443,6 +452,7 @@ class Security(Cog):
         reason: str | None = None,
         logs: list[str] = None,
         trigger_messages: list[discord.Message] = [],
+        image_file: discord.File | None = None,
         current_ctx: commands.Context | None = None,
         context_message: discord.Message | None = None,
     ) -> None:
@@ -524,6 +534,7 @@ class Security(Cog):
                 reason=reason,
                 logs=logs,
                 trigger_messages=trigger_messages,
+                image_file=image_file,
                 context_message=context_message or (current_ctx.message if current_ctx else None),
                 current_ctx=current_ctx,
                 member_emoji=member_emoji,
@@ -536,6 +547,7 @@ class Security(Cog):
         reason: str | None = None,
         logs: list[str] = None,
         trigger_messages: list[discord.Message] = [],
+        image_file: discord.File | None = None,
         context_message: discord.Message | None = None,
         current_ctx: commands.Context | None = None,
     ) -> None:
@@ -605,6 +617,7 @@ class Security(Cog):
             reason=reason,
             logs=logs,
             trigger_messages=trigger_messages,
+            image_file=image_file,
             context_message=context_message or (current_ctx.message if current_ctx else None),
             current_ctx=current_ctx,
         )
@@ -744,6 +757,7 @@ class Security(Cog):
         logs: list[str] = None,
         duration: datetime.timedelta | None = None,
         trigger_messages: list[discord.Message] = [],
+        image_file: discord.File | None = None,
         context_message: discord.Message | None = None,
         current_ctx: commands.Context | discord.Message | None = None,
         member_emoji: str | None = None,  # Because quarantining changes the status.
@@ -760,14 +774,17 @@ class Security(Cog):
         modlog_channel: discord.TextChannel = await self.create_modlog_channel(guild=member.guild)
         if current_ctx is not None and current_ctx.channel != modlog_channel:
             await current_ctx.channel.send(embed=embed)
+        files = [image_file] if image_file is not None else []
         if trigger_messages:
             raw_trigger_messages = [
                 f"[{message.created_at.strftime('%Y-%m-%d %H:%M:%S')} (UTC)] #{message.channel.name}: {clean_backticks(message.content)}"
                 for message in trigger_messages
             ]
-            file = text_to_file(
-                "\n".join(raw_trigger_messages),
-                filename="auto_mod_trigger_messages.txt",
+            files.append(
+                text_to_file(
+                    "\n".join(raw_trigger_messages),
+                    filename="auto_mod_trigger_messages.txt",
+                ),
             )
             embed.description += _("\n{emoji} **Trigger Message{s}:**\n").format(
                 emoji=Emojis.MESSAGE.value,
@@ -778,8 +795,6 @@ class Security(Cog):
                 if len(embed.description) + 8 + sum(map(len, to_include)) + len(message) <= 4000:
                     to_include.insert(0, message)
             embed.description += box("\n".join(to_include))
-        else:
-            file = None
         unaction = action in ("unquarantine", "untimeout", "unmute")
         include_actions = not unaction and action not in ("kick", "ban")
         view: ActionsView = ActionsView(self, member, context_message=context_message)
@@ -787,11 +802,14 @@ class Security(Cog):
             include_actions=include_actions,
             action=action,
         )
+        modlog_embed = embed.copy()
+        if image_file is not None:
+            modlog_embed.set_image(url=f"attachment://{image_file.filename}")
         view._message = await self.send_in_modlog_channel(
             member.guild,
             ping_role=not unaction,
-            embed=embed,
-            file=file,
+            embed=modlog_embed,
+            files=files,
             view=view,
         )
         self.views[view._message] = view
@@ -1540,6 +1558,8 @@ class Security(Cog):
             "authority_members",
             "join_gate",
             "auto_mod",
+            "image_checking",
+            "message_analysis",
             "reports",
             "logging",
             "anti_nuke",

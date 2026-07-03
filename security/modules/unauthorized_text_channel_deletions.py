@@ -77,11 +77,6 @@ class UnauthorizedTextChannelDeletionsModule(Module):
 
         fields = [
             {
-                "name": _("Enabled:"),
-                "value": "✅" if config["enabled"] else "❌",
-                "inline": True,
-            },
-            {
                 "name": _("Cache Last Messages:"),
                 "value": "✅" if config["cache_messages"] else "❌",
                 "inline": True,
@@ -96,11 +91,11 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         components = [ToggleModuleButton(self, guild, view, config["enabled"])]
 
         cache_button: discord.ui.Button = discord.ui.Button(
+            emoji="💾",
             label=_("Cache Last Messages"),
             style=discord.ButtonStyle.success
             if config["cache_messages"]
             else discord.ButtonStyle.danger,
-            emoji="💾",
         )
 
         async def cache_callback(interaction: discord.Interaction):
@@ -113,11 +108,11 @@ class UnauthorizedTextChannelDeletionsModule(Module):
         components.append(cache_button)
 
         dm_button: discord.ui.Button = discord.ui.Button(
+            emoji="📬",
             label=_("DM Extra Owners and higher"),
             style=discord.ButtonStyle.success
             if config["dm_extra_owners_and_higher"]
             else discord.ButtonStyle.danger,
-            emoji="📬",
         )
 
         async def dm_callback(interaction: discord.Interaction):
@@ -259,14 +254,18 @@ class UnauthorizedTextChannelDeletionsModule(Module):
                 bot=self.cog.bot,
             )
             transcript_bytes: bytes = transcript.encode(encoding="utf-8")
-            make_file = lambda: discord.File(BytesIO(transcript_bytes), filename=f"transcript-{channel.id}.html")
+            def make_file():
+                return discord.File(
+                            BytesIO(transcript_bytes), filename=f"transcript-{channel.id}.html",
+                        )
         else:
             embed.add_field(
                 name="\u200b",
                 value=_("No recent messages found in this channel before deletion."),
             )
             transcript_bytes = None
-            make_file = lambda: None
+            def make_file():
+                return None
 
         await self.cog.send_in_modlog_channel(
             entry.guild,

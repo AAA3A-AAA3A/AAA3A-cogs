@@ -23,7 +23,7 @@ LOCKDOWN_MODES: list[
 ] = [
     {
         "name": "Server Channels",
-        "emoji": "#️⃣",
+        "emoji": Emojis.CHANNEL.value,
         "description": _(
             "Prevent members from sending messages in all channels or specific channels.",
         ),
@@ -31,13 +31,13 @@ LOCKDOWN_MODES: list[
     },
     {
         "name": "Server Roles",
-        "emoji": "👥",
+        "emoji": Emojis.ROLE.value,
         "description": _("Prevent members from adding or removing roles to/from members."),
         "value": "server_roles",
     },
     {
         "name": "Server Invites",
-        "emoji": "🔗",
+        "emoji": Emojis.LINK.value,
         "description": _("Prevent members from creating new invites."),
         "value": "server_invites",
     },

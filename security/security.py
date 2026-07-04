@@ -112,6 +112,8 @@ class AnyOrMemberOrUserConverter(commands.Converter):
 class Security(Cog):
     """Protect your servers from unwanted members, spam, but also from nuke attacks and more! This includes a quarantine/modlog system, and many modules like Auto Mod, Reports, Logging, Anti Nuke, Protected Roles, and more!"""
 
+    __authors__: list[str] = ["AAA3A", "evanroby"]
+
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
 
@@ -314,11 +316,7 @@ class Security(Cog):
         self,
         guild: discord.Guild,
     ) -> tuple[int, list[tuple[Module, tuple[str, str, str]]]]:
-        """Compute the security health score of a guild.
-
-        Only accounts for enabled and misconfigured modules. Modules returning
-        a "❎" status (disabled by design or nothing to protect) aren't counted.
-        """
+        """Compute the security health score of a guild."""
         weights = {"✅": 1.0, "⚠️": 0.5, "❌": 0.0}
         counted: list[tuple[Module, tuple[str, str, str]]] = []
         total = 0.0
@@ -379,7 +377,7 @@ class Security(Cog):
         draw.text((text_x + 1, text_y + 1), text, font=score_font, fill=(0, 0, 0, 120))
         draw.text((text_x, text_y), text, font=score_font, fill=(255, 255, 255, 255))
 
-        label = "Security Health Score"
+        label = _("Security Health Score")
         bbox = draw.textbbox((0, 0), label, font=label_font)
         label_x = (width - (bbox[2] - bbox[0])) / 2 - bbox[0]
         label_y = bar_height + (label_height - (bbox[3] - bbox[1])) / 2 - bbox[1]

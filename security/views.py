@@ -234,7 +234,7 @@ class WhitelistView(discord.ui.View):
         return True
 
     async def on_timeout(self) -> None:
-        embed = self._message.embeds[0]
+        embed: discord.Embed = self._message.embeds[0]
         if self.saved:
             if self.duration is not None:
                 expires_at = datetime.datetime.now(tz=datetime.timezone.utc) + self.duration
@@ -420,7 +420,7 @@ class SettingsView(discord.ui.View):
 
     async def edit_message(self) -> None:
         """Refresh the settings message, keeping the health score image in sync."""
-        embed = await self.get_embed()
+        embed: discord.Embed = await self.get_embed()
         try:
             await self._message.edit(
                 embed=embed,
@@ -653,7 +653,7 @@ class SettingsView(discord.ui.View):
     @discord.ui.select(min_values=1, max_values=1)
     async def select(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         self.page = select.values[0]
-        embed = await self.get_embed()
+        embed: discord.Embed = await self.get_embed()
         await interaction.response.edit_message(
             embed=embed,
             view=self,

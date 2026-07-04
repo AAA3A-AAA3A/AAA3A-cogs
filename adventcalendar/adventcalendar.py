@@ -417,6 +417,7 @@ class AdventCalendar(Cog):
         if reward["type"] is None:
             return None, None
         if reward["type"] == "role":
+            role = member.guild.get_role(reward["role_id"])
             try:
                 await member.add_roles(
                     role,
@@ -432,6 +433,7 @@ class AdventCalendar(Cog):
                 ),
             }
         if reward["type"] == "temp_role":
+            role = member.guild.get_role(reward["role_id"])
             duration = datetime.timedelta(seconds=reward["duration"])
             try:
                 end_time: datetime.datetime = (

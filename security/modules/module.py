@@ -3,6 +3,7 @@ import typing
 import discord
 
 from redbot.core import commands
+from security.views import SettingsView
 
 
 class Module:
@@ -38,6 +39,6 @@ class Module:
     async def get_settings(
         self,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         raise NotImplementedError()

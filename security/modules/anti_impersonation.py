@@ -6,7 +6,7 @@ from fuzzywuzzy import StringMatcher
 from redbot.core import commands
 from redbot.core.i18n import Translator
 from security.constants import DANGEROUS_PERMISSIONS, Emojis
-from security.views import ToggleModuleButton
+from security.views import SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -47,7 +47,7 @@ class AntiImpersonationModule(Module):
             )
         return "✅", "Enabled", "Anti Impersonation is enabled and configured correctly."
 
-    async def get_settings(self, guild: discord.Guild, view: discord.ui.View):
+    async def get_settings(self, guild: discord.Guild, view: SettingsView):
         status = await self.get_status(guild)
         title = _("Security — {emoji} {name} {status}").format(
             emoji=self.emoji,
@@ -81,7 +81,7 @@ class AntiImpersonationModule(Module):
             await interaction.response.defer()
             config["quarantine"] = not config["quarantine"]
             await self.config_value(guild).quarantine.set(config["quarantine"])
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         quarantine_button.callback = quarantine_callback
         components.append(quarantine_button)
@@ -189,12 +189,12 @@ class ConfigureSimilarityRatioModal(discord.ui.Modal):
         self,
         module: AntiImpersonationModule,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
         config: dict,
     ) -> None:
         self.module: AntiImpersonationModule = module
         self.guild: discord.Guild = guild
-        self.view: discord.ui.View = view
+        self.view: SettingsView = view
         self.config: dict = config
         super().__init__(title=_("Anti Impersonation"))
 
@@ -220,4 +220,4 @@ class ConfigureSimilarityRatioModal(discord.ui.Modal):
             return
         self.config["similarity_ratio"] = similarity_ratio
         await self.module.config_value(self.guild).similarity_ratio.set(similarity_ratio)
-        await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)
+        await self.view.edit_message()

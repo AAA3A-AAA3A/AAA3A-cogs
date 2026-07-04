@@ -20,7 +20,7 @@ except ImportError:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 
 from security.constants import POSSIBLE_ACTIONS, Emojis, get_correct_timeout_duration
-from security.views import DurationConverter, ToggleModuleButton
+from security.views import DurationConverter, SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -623,7 +623,7 @@ class AutoModModule(Module):
     async def get_settings(
         self,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         title = _("Security — {emoji} {name} {status}").format(
             emoji=self.emoji,
@@ -952,12 +952,12 @@ class ConfigureHeatModal(discord.ui.Modal):
         self,
         module: AutoModModule,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
         heats_config: dict[str, int | bool],
     ) -> None:
         self.module: AutoModModule = module
         self.guild: discord.Guild = guild
-        self.view: discord.ui.View = view
+        self.view: SettingsView = view
         self.heats_config: dict[str, int | bool] = heats_config
         super().__init__(title=_("Configure Heat Settings"))
         self.max_heat: discord.ui.TextInput = discord.ui.TextInput(
@@ -1002,7 +1002,7 @@ class ConfigureHeatModal(discord.ui.Modal):
         self.heats_config["degradation"] = degradation
         self.heats_config["reset_after_punishment"] = reset_after_punishment
         await self.module.config_value(self.guild).heats.set(self.heats_config)
-        await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)
+        await self.view.edit_message()
 
 
 class ConfigureStrikeDurationsModal(discord.ui.Modal):
@@ -1010,12 +1010,12 @@ class ConfigureStrikeDurationsModal(discord.ui.Modal):
         self,
         module: AutoModModule,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
         strike_durations_config: dict[str, str | int],
     ) -> None:
         self.module: AutoModModule = module
         self.guild: discord.Guild = guild
-        self.view: discord.ui.View = view
+        self.view: SettingsView = view
         self.strike_durations_config: dict[str, str | int] = strike_durations_config
         super().__init__(title=_("Configure Strike Durations"))
         self.regular: discord.ui.TextInput = discord.ui.TextInput(
@@ -1077,7 +1077,7 @@ class ConfigureStrikeDurationsModal(discord.ui.Modal):
         await self.module.config_value(self.guild).strike_durations.set(
             self.strike_durations_config,
         )
-        await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)
+        await self.view.edit_message()
 
 
 class ConfigureFilterCategoryView(discord.ui.View):
@@ -1085,14 +1085,14 @@ class ConfigureFilterCategoryView(discord.ui.View):
         self,
         module: AutoModModule,
         guild: discord.Guild,
-        parent_view: discord.ui.View,
+        parent_view: SettingsView,
         category: str,
     ) -> None:
         super().__init__(timeout=None)
         self.module: AutoModModule = module
         self.guild: discord.Guild = guild
         self.category: str = category
-        self.parent_view: discord.ui.View = parent_view
+        self.parent_view: SettingsView = parent_view
         self._message: discord.Message = None
 
         self.configure_filter_select.placeholder = _("Select a filter to configure...")
@@ -1215,10 +1215,7 @@ class ConfigureFilterCategoryView(discord.ui.View):
             embed=await self.get_embed(),
             view=self,
         )
-        await self.parent_view._message.edit(
-            embed=await self.parent_view.get_embed(),
-            view=self.parent_view,
-        )
+        await self.parent_view.edit_message()
 
     @discord.ui.select(placeholder="Select a filter to configure...")
     async def configure_filter_select(
@@ -1254,7 +1251,7 @@ class ConfigureFilterModal(discord.ui.Modal):
         self,
         module: AutoModModule,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
         category_view: discord.ui.View,
         category: str,
         filter: dict,
@@ -1262,7 +1259,7 @@ class ConfigureFilterModal(discord.ui.Modal):
     ) -> None:
         self.module: AutoModModule = module
         self.guild: discord.Guild = guild
-        self.view: discord.ui.View = view
+        self.view: SettingsView = view
         self.category_view: discord.ui.View = category_view
         self.category: str = category
         self.filter = filter
@@ -1397,7 +1394,7 @@ class ConfigureFilterModal(discord.ui.Modal):
                 ephemeral=True,
             )
             return
-        elif not getattr(interaction.client.guild_permissions, action["permission"]):
+        elif not getattr(self.guild.me.guild_permissions, action["permission"]):
             await interaction.followup.send(
                 _(
                     "I don't have the required permission `{permission}` to perform this action.",
@@ -1421,4 +1418,4 @@ class ConfigureFilterModal(discord.ui.Modal):
             )
         except discord.HTTPException:
             pass
-        await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)
+        await self.view.edit_message()

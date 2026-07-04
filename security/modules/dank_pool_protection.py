@@ -9,7 +9,7 @@ from redbot.core.bot import Red
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 from security.constants import Colors, Emojis, get_non_animated_asset
-from security.views import ToggleModuleButton, get_or_fetch_member_or_user
+from security.views import SettingsView, ToggleModuleButton, get_or_fetch_member_or_user
 
 from .module import Module
 
@@ -319,7 +319,7 @@ class DankPoolProtectionModule(Module):
                 )
         return "✅", _("Enabled"), _("Dank Pool Protection is enabled and configured correctly.")
 
-    async def get_settings(self, guild: discord.Guild, view: discord.ui.View):
+    async def get_settings(self, guild: discord.Guild, view: SettingsView):
         status = await self.get_status(guild)
         title = _("Security — {emoji} {name} {status}").format(
             emoji=self.emoji,
@@ -337,7 +337,7 @@ class DankPoolProtectionModule(Module):
             else None
         )
         description += _(
-            "\n\n**Logs Channel**: {payout_logs_channel}\n**Quarantine Members**: {quarantine}\n**Prevent Pool Check (by deleting the message)**: {prevent_pool_check}"
+            "\n\n**Logs Channel**: {payout_logs_channel}\n**Quarantine Members**: {quarantine}\n**Prevent Pool Check (by deleting the message)**: {prevent_pool_check}",
         ).format(
             payout_logs_channel=f"{payout_logs_channel.mention} (`{payout_logs_channel}`)"
             if payout_logs_channel is not None
@@ -406,7 +406,7 @@ class DankPoolProtectionModule(Module):
                     _("✅ The logs channel has been unset."),
                     ephemeral=True,
                 )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         payout_logs_channel_select.callback = payout_logs_channel_select_callback
         components.append(payout_logs_channel_select)
@@ -442,7 +442,7 @@ class DankPoolProtectionModule(Module):
                 ),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         create_a_payout_logs_channel_button.callback = create_payout_logs_channel_callback
         components.append(create_a_payout_logs_channel_button)
@@ -460,7 +460,7 @@ class DankPoolProtectionModule(Module):
             await interaction.response.defer()
             config["quarantine"] = not config["quarantine"]
             await self.config_value(guild).quarantine.set(config["quarantine"])
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         quarantine_button.callback = quarantine_callback
         components.append(quarantine_button)
@@ -478,7 +478,7 @@ class DankPoolProtectionModule(Module):
             await interaction.response.defer()
             config["prevent_pool_check"] = not config["prevent_pool_check"]
             await self.config_value(guild).prevent_pool_check.set(config["prevent_pool_check"])
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         prevent_pool_check_button.callback = prevent_pool_check_callback
         components.append(prevent_pool_check_button)
@@ -504,7 +504,7 @@ class DankPoolProtectionModule(Module):
             for option in DANK_POOL_PROTECTION_OPTIONS:
                 config["options"][option["value"]] = option["value"] in options_select.values
             await self.config_value(guild).options.set(config["options"])
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         options_select.callback = options_select_callback
         components.append(options_select)
@@ -755,12 +755,12 @@ class ConfigureValuesModal(discord.ui.Modal):
         self,
         module: DankPoolProtectionModule,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
         config: dict,
     ) -> None:
         self.module: DankPoolProtectionModule = module
         self.guild: discord.Guild = guild
-        self.view: discord.ui.View = view
+        self.view: SettingsView = view
         self.config: dict = config
         super().__init__(title=_("Dank Pool Protection - Configure Values"))
 
@@ -825,4 +825,4 @@ class ConfigureValuesModal(discord.ui.Modal):
                 "hour_limit": hour_limit,
             },
         )
-        await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)
+        await self.view.edit_message()

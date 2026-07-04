@@ -11,7 +11,7 @@ import discord
 import numpy as np
 import onetimepass
 import qrcode
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 from AAA3A_utils import Cog, CogsUtils, Loop, Menu
 from redbot.core import Config, commands, modlog
@@ -27,6 +27,7 @@ from .constants import (
     MemberEmojis,
     WhitelistTypeConverter,
     clean_backticks,
+    get_health_grade,
     get_non_animated_asset,
 )
 from .modules import MODULES, Module
@@ -110,6 +111,8 @@ class AnyOrMemberOrUserConverter(commands.Converter):
 @cog_i18n(_)
 class Security(Cog):
     """Protect your servers from unwanted members, spam, but also from nuke attacks and more! This includes a quarantine/modlog system, and many modules like Auto Mod, Reports, Logging, Anti Nuke, Protected Roles, and more!"""
+
+    __authors__: list[str] = ["AAA3A", "evanroby"]
 
     def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
@@ -308,6 +311,84 @@ class Security(Cog):
     async def get_member_emoji(self, member: discord.Member) -> str:
         level = await self.get_member_level(member)
         return MemberEmojis[level.name].value
+
+    async def get_health_score(
+        self,
+        guild: discord.Guild,
+    ) -> tuple[int, list[tuple[Module, tuple[str, str, str]]]]:
+        """Compute the security health score of a guild."""
+        weights = {"✅": 1.0, "⚠️": 0.5, "❌": 0.0}
+        counted: list[tuple[Module, tuple[str, str, str]]] = []
+        total = 0.0
+        for module in self.modules.values():
+            status = await module.get_status(guild)
+            if status[0] not in weights:
+                continue
+            counted.append((module, status))
+            total += weights[status[0]]
+        score = round(total / len(counted) * 100) if counted else 100
+        return score, counted
+
+    def get_health_score_file(self, score: int, grade: str) -> discord.File:
+        """Generate a red-to-green gauge image for the given health score."""
+        color_stops = [
+            (237, 66, 69),  # red
+            (250, 166, 26),  # orange
+            (87, 242, 135),  # green
+        ]
+        segments = len(color_stops) - 1
+        seg = min(int(score / 100 * segments), segments - 1)
+        ratio = (score / 100 * segments) - seg
+        start, end = color_stops[seg], color_stops[seg + 1]
+        color = tuple(int(start[i] + (end[i] - start[i]) * ratio) for i in range(3))
+
+        width, bar_height, label_height = 500, 90, 40
+        height = bar_height + label_height
+        padding = 6
+        image: Image.Image = Image.new("RGBA", (width, height), color=0)
+        draw = ImageDraw.Draw(image)
+        draw.rounded_rectangle(
+            (0, 0, width - 1, bar_height - 1),
+            radius=bar_height // 2,
+            fill=(47, 49, 54, 255),
+        )
+        bar_width = int((width - padding * 2) * (score / 100))
+        if bar_width > 0:
+            draw.rounded_rectangle(
+                (
+                    padding,
+                    padding,
+                    padding + max(bar_width, bar_height - padding * 2),
+                    bar_height - padding,
+                ),
+                radius=(bar_height - padding * 2) // 2,
+                fill=(*color, 255),
+            )
+        try:
+            score_font = ImageFont.load_default(size=42)
+            label_font = ImageFont.load_default(size=26)
+        except TypeError:
+            score_font = label_font = ImageFont.load_default()
+
+        text = f"{score}% - Grade {grade}"
+        bbox = draw.textbbox((0, 0), text, font=score_font)
+        text_x = (width - (bbox[2] - bbox[0])) / 2 - bbox[0]
+        text_y = (bar_height - (bbox[3] - bbox[1])) / 2 - bbox[1]
+        draw.text((text_x + 1, text_y + 1), text, font=score_font, fill=(0, 0, 0, 120))
+        draw.text((text_x, text_y), text, font=score_font, fill=(255, 255, 255, 255))
+
+        label = _("Security Health Score")
+        bbox = draw.textbbox((0, 0), label, font=label_font)
+        label_x = (width - (bbox[2] - bbox[0])) / 2 - bbox[0]
+        label_y = bar_height + (label_height - (bbox[3] - bbox[1])) / 2 - bbox[1]
+        draw.text(
+            (label_x, label_y), label, font=label_font, fill=(241, 196, 15, 255)
+        )  # Discord gold
+
+        buffer = BytesIO()
+        image.save(buffer, format="PNG")
+        buffer.seek(0)
+        return discord.File(buffer, filename="health_score.png")
 
     async def is_whitelisted(
         self,

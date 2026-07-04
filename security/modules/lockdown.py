@@ -9,6 +9,7 @@ from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 from security.constants import Emojis, get_non_animated_asset
+from security.views import SettingsView
 
 from .module import Module
 
@@ -130,7 +131,7 @@ class LockdownModule(Module):
     async def get_settings(
         self,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         title = _("Security — {emoji} {name} {status}").format(
             emoji=self.emoji,
@@ -273,7 +274,7 @@ class LockdownModule(Module):
                 ),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         modes_select.callback = modes_select_callback
         components.append(modes_select)
@@ -299,7 +300,7 @@ class LockdownModule(Module):
                 _("✅ Specific channels have been updated."),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         specific_channels_select.callback = specific_channels_callback
         components.append(specific_channels_select)

@@ -8,7 +8,7 @@ import discord
 from redbot.core import commands
 from redbot.core.i18n import Translator
 from security.constants import Colors, Emojis, Levels, get_non_animated_asset
-from security.views import ToggleModuleButton
+from security.views import SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -60,7 +60,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
     async def get_settings(
         self,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         config = await self.config_value(guild)()
         title = _("Security — {emoji} {name} {status}").format(
@@ -102,7 +102,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
             await interaction.response.defer()
             config["cache_messages"] = not config["cache_messages"]
             await self.config_value(guild).cache_messages.set(config["cache_messages"])
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         cache_button.callback = cache_callback
         components.append(cache_button)
@@ -121,7 +121,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
             await self.config_value(guild).dm_extra_owners_and_higher.set(
                 config["dm_extra_owners_and_higher"],
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         dm_button.callback = dm_callback
         components.append(dm_button)
@@ -147,7 +147,7 @@ class UnauthorizedTextChannelDeletionsModule(Module):
                 _("✅ Specific channels have been updated."),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         specific_channels_select.callback = specific_channels_callback
         components.append(specific_channels_select)
@@ -254,16 +254,19 @@ class UnauthorizedTextChannelDeletionsModule(Module):
                 bot=self.cog.bot,
             )
             transcript_bytes: bytes = transcript.encode(encoding="utf-8")
+
             def make_file():
                 return discord.File(
-                            BytesIO(transcript_bytes), filename=f"transcript-{channel.id}.html",
-                        )
+                    BytesIO(transcript_bytes),
+                    filename=f"transcript-{channel.id}.html",
+                )
         else:
             embed.add_field(
                 name="\u200b",
                 value=_("No recent messages found in this channel before deletion."),
             )
             transcript_bytes = None
+
             def make_file():
                 return None
 

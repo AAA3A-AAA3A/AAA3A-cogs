@@ -6,7 +6,7 @@ from AAA3A_utils import Menu
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list, pagify
 from security.constants import Emojis, get_non_animated_asset
-from security.views import ToggleModuleButton
+from security.views import SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -56,7 +56,7 @@ class ProtectedRolesModule(Module):
     async def get_settings(
         self,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         config = await self.config_value(guild)()
         protected_roles = config["protected_roles"]
@@ -111,7 +111,7 @@ class ProtectedRolesModule(Module):
                 _("Whitelisted members updated from roles."),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         update_whitelisted_members_from_roles.callback = (
             update_whitelisted_members_from_roles_callback
@@ -149,7 +149,7 @@ class ProtectedRolesModule(Module):
                 _("Protected role {role.mention} (`{role.name}`) added.").format(role=role),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         add_select.callback = add_select_callback
         components.append(add_select)
@@ -298,14 +298,14 @@ class WhitelistMembersSelect(discord.ui.UserSelect):
         module: "ProtectedRolesModule",
         guild: discord.Guild,
         role: discord.Role,
-        view: discord.ui.View,
+        view: SettingsView,
         menu: Menu,
     ) -> None:
         super().__init__(placeholder=_("Select members to add/remove from whitelist..."))
         self.module: ProtectedRolesModule = module
         self.guild: discord.Guild = guild
         self.role: discord.Role = role
-        self.initial_view: discord.ui.View = view
+        self.initial_view: SettingsView = view
         self.menu: Menu = menu
 
     async def callback(self, interaction: discord.Interaction) -> None:
@@ -328,10 +328,7 @@ class WhitelistMembersSelect(discord.ui.UserSelect):
         self.menu._source.entries = self.menu.pages
         self.menu._current_page = self.menu._source.get_max_pages() - 1
         await self.menu.change_page(interaction)
-        await self.initial_view._message.edit(
-            embed=await self.initial_view.get_embed(),
-            view=self.initial_view,
-        )
+        await self.initial_view.edit_message()
         await interaction.followup.send(
             "\n".join(
                 (
@@ -372,7 +369,7 @@ class RemoveButton(discord.ui.Button):
         module: ProtectedRolesModule,
         guild: discord.Guild,
         role: discord.Role,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> None:
         super().__init__(
             label=_("Remove from Protected Roles"),
@@ -381,7 +378,7 @@ class RemoveButton(discord.ui.Button):
         self.module: ProtectedRolesModule = module
         self.guild: discord.Guild = guild
         self.role: discord.Role = role
-        self.initial_view: discord.ui.View = view
+        self.initial_view: SettingsView = view
 
     async def callback(self, interaction: discord.Interaction) -> None:
         await self.module.config_value(self.guild).protected_roles.clear_raw(str(self.role.id))
@@ -390,7 +387,4 @@ class RemoveButton(discord.ui.Button):
             _("Protected role {role.mention} (`{role.name}`) removed.").format(role=self.role),
             ephemeral=True,
         )
-        await self.initial_view._message.edit(
-            embed=await self.initial_view.get_embed(),
-            view=self.initial_view,
-        )
+        await self.initial_view.edit_message()

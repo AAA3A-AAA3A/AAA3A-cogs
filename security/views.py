@@ -419,13 +419,8 @@ class SettingsView(discord.ui.View):
         return self._message
 
     async def edit_message(self) -> None:
-<<<<<<< HEAD
-        """Refresh the settings message."""
-        embed: discord.Embed = await self.get_embed()
-=======
         """Refresh the settings message, keeping the health score image in sync."""
         embed = await self.get_embed()
->>>>>>> a72ba02f (fix: redundant field — replace by drawn text)
         try:
             await self._message.edit(
                 embed=embed,
@@ -658,7 +653,7 @@ class SettingsView(discord.ui.View):
     @discord.ui.select(min_values=1, max_values=1)
     async def select(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         self.page = select.values[0]
-        embed: discord.Embed = await self.get_embed()
+        embed = await self.get_embed()
         await interaction.response.edit_message(
             embed=embed,
             view=self,

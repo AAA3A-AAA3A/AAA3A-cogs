@@ -1,5 +1,4 @@
 import asyncio
-import json
 import typing
 from collections import defaultdict
 from pathlib import Path
@@ -14,7 +13,7 @@ from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list
 from security.constants import Emojis, get_correct_timeout_duration
-from security.views import DurationConverter, ToggleModuleButton
+from security.views import DurationConverter, SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -176,7 +175,7 @@ class MessageAnalysisModule(Module):
                 "⚠️",
                 _("Error"),
                 _(
-                    "Failed to load the MultilingualDetoxify model (check the logs for more information)."
+                    "Failed to load the MultilingualDetoxify model (check the logs for more information).",
                 ),
             )
         missing_permissions = []
@@ -200,7 +199,7 @@ class MessageAnalysisModule(Module):
     async def get_settings(
         self,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         title = _("Security — {emoji} {name} {status}").format(
             emoji=self.emoji,
@@ -436,12 +435,12 @@ class ConfigureDurationModal(discord.ui.Modal):
         self,
         module: MessageAnalysisModule,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
         duration: str,
     ) -> None:
         self.module: MessageAnalysisModule = module
         self.guild: discord.Guild = guild
-        self.view: discord.ui.View = view
+        self.view: SettingsView = view
         self.duration: str = duration
         super().__init__(title=_("Configure Duration"))
         self.duration_input: discord.ui.TextInput = discord.ui.TextInput(
@@ -465,7 +464,7 @@ class ConfigureDurationModal(discord.ui.Modal):
             return
         self.duration = duration
         await self.module.config_value(self.guild).duration.set(duration)
-        await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)
+        await self.view.edit_message()
 
 
 class ConfigureLevelModal(discord.ui.Modal):
@@ -473,13 +472,13 @@ class ConfigureLevelModal(discord.ui.Modal):
         self,
         module: MessageAnalysisModule,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
         level: str,
         value: float,
     ) -> None:
         self.module: MessageAnalysisModule = module
         self.guild: discord.Guild = guild
-        self.view: discord.ui.View = view
+        self.view: SettingsView = view
         self.level: str = level
         self.value: float = value
         super().__init__(title=_("Configure Level"))
@@ -505,4 +504,4 @@ class ConfigureLevelModal(discord.ui.Modal):
             return
         self.value = value
         await self.module.config_value(self.guild).levels.set({**self.levels, self.level: value})
-        await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)
+        await self.view.edit_message()

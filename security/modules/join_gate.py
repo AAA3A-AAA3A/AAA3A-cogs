@@ -9,7 +9,7 @@ from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 from security.constants import POSSIBLE_ACTIONS, Emojis, get_correct_timeout_duration
-from security.views import DurationConverter, ToggleModuleButton
+from security.views import DurationConverter, SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -175,7 +175,7 @@ class JoinGateModule(Module):
     async def get_settings(
         self,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         title = _("Security — {emoji} {name} {status}").format(
             emoji=self.emoji,
@@ -410,13 +410,13 @@ class ConfigureOptionModal(discord.ui.Modal):
         self,
         module: JoinGateModule,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
         option,
         option_config,
     ) -> None:
         self.module: JoinGateModule = module
         self.guild: discord.Guild = guild
-        self.view: discord.ui.View = view
+        self.view: SettingsView = view
         self.option = option
         self.option_config = option_config
         super().__init__(
@@ -470,7 +470,7 @@ class ConfigureOptionModal(discord.ui.Modal):
                 ephemeral=True,
             )
             return
-        if not getattr(interaction.client.guild_permissions, action["permission"]):
+        if not getattr(self.guild.me.guild_permissions, action["permission"]):
             await interaction.followup.send(
                 _(
                     "I don't have the required permission `{permission}` to perform this action.",
@@ -499,4 +499,4 @@ class ConfigureOptionModal(discord.ui.Modal):
             self.option["value"],
             value=self.option_config,
         )
-        await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)
+        await self.view.edit_message()

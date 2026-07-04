@@ -7,7 +7,7 @@ from redbot.core import app_commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 from security.constants import Colors, Emojis, get_non_animated_asset
-from security.views import ActionsView, ToggleModuleButton
+from security.views import ActionsView, SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -63,7 +63,7 @@ class ReportsModule(Module):
     async def get_settings(
         self,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         config = await self.config_value(guild)()
         title = _("Security — {emoji} {name} {status}").format(
@@ -129,7 +129,7 @@ class ReportsModule(Module):
             await interaction.response.defer()
             config["anonymous"] = not config["anonymous"]
             await self.config_value(guild).anonymous.set(config["anonymous"])
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         anonymous_button.callback = anonymous_callback
         components.append(anonymous_button)
@@ -146,7 +146,7 @@ class ReportsModule(Module):
             await interaction.response.defer()
             config["allow_staff_actions"] = not config["allow_staff_actions"]
             await self.config_value(guild).allow_staff_actions.set(config["allow_staff_actions"])
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         staff_actions_button.callback = staff_actions_callback
         components.append(staff_actions_button)
@@ -167,7 +167,7 @@ class ReportsModule(Module):
                 _("✅ Report channel updated."),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         channel_select.callback = channel_callback
         components.append(channel_select)
@@ -187,7 +187,7 @@ class ReportsModule(Module):
                 _("✅ Ping role updated."),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         role_select.callback = role_callback
         components.append(role_select)

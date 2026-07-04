@@ -19,6 +19,7 @@ from .constants import (
     Emojis,
     Levels,
     get_correct_timeout_duration,
+    get_health_grade,
     get_non_animated_asset,
 )
 
@@ -360,6 +361,7 @@ class SettingsView(discord.ui.View):
         self.page: str = "overview"
         self._message: discord.Message = None
         self.last_state: dict = {}
+        self.health_score_file: discord.File | None = None
 
         self.reset_recovery_key.label = _("Reset Recovery Key")
         self.create_quarantine_role.label = _("Create Quarantine Role")
@@ -411,9 +413,22 @@ class SettingsView(discord.ui.View):
         self._message: discord.Message = await self.ctx.send(
             embed=await self.get_embed(),
             view=self,
+            file=self.health_score_file,
         )
         self.cog.views[self._message] = self
         return self._message
+
+    async def edit_message(self) -> None:
+        """Refresh the settings message."""
+        embed = await self.get_embed()
+        try:
+            await self._message.edit(
+                embed=embed,
+                view=self,
+                attachments=[self.health_score_file] if self.health_score_file else [],
+            )
+        except discord.HTTPException:
+            pass
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user != self.ctx.author:
@@ -451,6 +466,7 @@ class SettingsView(discord.ui.View):
             )
             await self.cog.config.guild(self.ctx.guild).logs.set(logs)
         self.last_state = new_state
+        self.health_score_file = None
 
         embed: discord.Embed = discord.Embed(
             timestamp=self.ctx.message.created_at,
@@ -556,6 +572,10 @@ class SettingsView(discord.ui.View):
                     value=f"{status[0]}{' ' + status[1] if status[0] != '✅' else ''}",
                     inline=True,
                 )
+            score = (await self.cog.get_health_score(self.ctx.guild))[0]
+            embed.add_field(name=_("🩺 Security Health Score:"), value="\u200b", inline=False)
+            self.health_score_file = self.cog.get_health_score_file(score, get_health_grade(score))
+            embed.set_image(url=f"attachment://{self.health_score_file.filename}")
         elif self.page == "authority_members":
             embed.title = _("Security — Authority Members")
             embed.description = _(
@@ -634,7 +654,12 @@ class SettingsView(discord.ui.View):
     @discord.ui.select(min_values=1, max_values=1)
     async def select(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         self.page = select.values[0]
-        await interaction.response.edit_message(embed=await self.get_embed(), view=self)
+        embed = await self.get_embed()
+        await interaction.response.edit_message(
+            embed=embed,
+            view=self,
+            attachments=[self.health_score_file] if self.health_score_file else [],
+        )
 
     @discord.ui.button(emoji="🔑", label="Reset Recovery Key", style=discord.ButtonStyle.primary)
     async def reset_recovery_key(
@@ -696,7 +721,7 @@ class SettingsView(discord.ui.View):
             _("✅ Quarantine role has been created successfully."),
             ephemeral=True,
         )
-        await self._message.edit(embed=await self.get_embed(), view=self)
+        await self.edit_message()
 
     @discord.ui.button(
         emoji=Emojis.CHANNEL.value,
@@ -721,7 +746,7 @@ class SettingsView(discord.ui.View):
             _("✅ Modlog channel has been created successfully."),
             ephemeral=True,
         )
-        await self._message.edit(embed=await self.get_embed(), view=self)
+        await self.edit_message()
 
     @discord.ui.select(
         cls=discord.ui.RoleSelect,
@@ -758,7 +783,7 @@ class SettingsView(discord.ui.View):
                 _("✅ Quarantine role will be created when needed."),
                 ephemeral=True,
             )
-        await self._message.edit(embed=await self.get_embed(), view=self)
+        await self.edit_message()
 
     @discord.ui.select(
         cls=discord.ui.ChannelSelect,
@@ -797,7 +822,7 @@ class SettingsView(discord.ui.View):
                 _("⚠️ Modlog channel will be created when needed."),
                 ephemeral=True,
             )
-        await self._message.edit(embed=await self.get_embed(), view=self)
+        await self.edit_message()
 
     @discord.ui.select(
         cls=discord.ui.RoleSelect,
@@ -817,7 +842,7 @@ class SettingsView(discord.ui.View):
         else:
             await self.cog.config.guild(self.ctx.guild).modlog_ping_role.clear()
             await interaction.followup.send(_("⚠️ Modlog ping role removed."))
-        await self._message.edit(embed=await self.get_embed(), view=self)
+        await self.edit_message()
 
     @discord.ui.select(
         cls=discord.ui.UserSelect,
@@ -871,7 +896,7 @@ class SettingsView(discord.ui.View):
                 _("✅ Member {member.mention} **is now an Extra Owner**.").format(member=member),
                 ephemeral=True,
             )
-        await self._message.edit(embed=await self.get_embed(), view=self)
+        await self.edit_message()
 
     @discord.ui.select(
         cls=discord.ui.UserSelect,
@@ -925,7 +950,7 @@ class SettingsView(discord.ui.View):
                 _("✅ Member {member.mention} **is now a Trusted Admin**.").format(member=member),
                 ephemeral=True,
             )
-        await self._message.edit(embed=await self.get_embed(), view=self)
+        await self.edit_message()
 
     @discord.ui.button(
         emoji=Emojis.LOGS.value,
@@ -1016,14 +1041,14 @@ class SettingsView(discord.ui.View):
 
 
 class ToggleModuleButton(discord.ui.Button):
-    def __init__(self, module, guild: discord.Guild, view: discord.ui.View, enabled: bool) -> None:
+    def __init__(self, module, guild: discord.Guild, view: SettingsView, enabled: bool) -> None:
         super().__init__(
             label=_("Disable") if enabled else _("Enable"),
             style=discord.ButtonStyle.danger if enabled else discord.ButtonStyle.success,
         )
         self.module = module
         self.guild: discord.Guild = guild
-        self.initial_view: discord.ui.View = view
+        self.initial_view: SettingsView = view
         self.enabled: bool = enabled
 
     async def callback(self, interaction: discord.Interaction) -> None:
@@ -1037,10 +1062,7 @@ class ToggleModuleButton(discord.ui.Button):
             ),
             ephemeral=True,
         )
-        await self.initial_view._message.edit(
-            embed=await self.initial_view.get_embed(),
-            view=self.initial_view,
-        )
+        await self.initial_view.edit_message()
 
 
 class ActionsView(discord.ui.View):

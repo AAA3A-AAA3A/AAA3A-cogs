@@ -486,3 +486,15 @@ def get_non_animated_asset(
 
 def clean_backticks(text: str) -> str:
     return text.replace("`", "\u02cb")
+
+
+def get_health_grade(score: int) -> str:
+    if score >= 90:
+        return "A"
+    if score >= 75:
+        return "B"
+    if score >= 50:
+        return "C"
+    if score >= 25:
+        return "D"
+    return "F"

@@ -8,7 +8,7 @@ from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list
 from security.constants import DANGEROUS_PERMISSIONS, Emojis
-from security.views import ToggleModuleButton
+from security.views import SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -689,7 +689,7 @@ class AntiNukeModule(Module):
     async def get_settings(
         self,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         status = await self.get_status(guild)
         title = _("Security — {emoji} {name} {status}").format(
@@ -705,7 +705,7 @@ class AntiNukeModule(Module):
 
         config = await self.config_value(guild)()
         description += _(
-            "\n**Quarantine Automatically:** {quarantine}\n**Revert Option Actions:** {revert_option_actions}\n"
+            "\n**Quarantine Automatically:** {quarantine}\n**Revert Option Actions:** {revert_option_actions}\n",
         ).format(
             quarantine=("✅" if config["quarantine"] else "❌"),
             revert_option_actions=("✅" if config["revert_option_actions"] else "❌"),
@@ -743,7 +743,7 @@ class AntiNukeModule(Module):
             await interaction.response.defer()
             config["quarantine"] = not config["quarantine"]
             await self.config_value(guild).quarantine.set(config["quarantine"])
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         quarantine_button.callback = quarantine_callback
         components.append(quarantine_button)
@@ -761,7 +761,7 @@ class AntiNukeModule(Module):
             await self.config_value(guild).revert_option_actions.set(
                 config["revert_option_actions"],
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         revert_option_actions_button.callback = revert_option_actions_callback
         components.append(revert_option_actions_button)
@@ -787,7 +787,7 @@ class AntiNukeModule(Module):
             for option in ANTI_NUKE_OPTIONS:
                 config["options"][option["value"]] = option["value"] in options_select.values
             await self.config_value(guild).options.set(config["options"])
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         options_select.callback = options_select_callback
         components.append(options_select)
@@ -967,13 +967,13 @@ class ConfigureFilterModal(discord.ui.Modal):
         self,
         module: AntiNukeModule,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
         filter,
         filter_config,
     ) -> None:
         self.module: AntiNukeModule = module
         self.guild: discord.Guild = guild
-        self.view: discord.ui.View = view
+        self.view: SettingsView = view
         self.filter = filter
         self.filter_config = filter_config
         super().__init__(
@@ -1022,4 +1022,4 @@ class ConfigureFilterModal(discord.ui.Modal):
             self.filter["value"],
             value=self.filter_config,
         )
-        await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)
+        await self.view.edit_message()

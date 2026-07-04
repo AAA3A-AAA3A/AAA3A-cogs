@@ -13,7 +13,7 @@ from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 from security.constants import POSSIBLE_ACTIONS, Emojis, get_correct_timeout_duration
-from security.views import DurationConverter, ToggleModuleButton
+from security.views import DurationConverter, SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -133,7 +133,7 @@ class ImageCheckingModule(Module):
     async def get_settings(
         self,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         title = _("Security — {emoji} {name} {status}").format(
             emoji=self.emoji,
@@ -234,7 +234,7 @@ class ImageCheckingModule(Module):
                 ),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         add_hash_button.callback = add_hash_button_callback
         components.append(add_hash_button)
@@ -332,7 +332,7 @@ class ImageCheckingModule(Module):
                 ),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         remove_hashes_button.callback = remove_hashes_button_callback
         components.append(remove_hashes_button)
@@ -361,7 +361,7 @@ class ImageCheckingModule(Module):
             await interaction.response.defer(ephemeral=True)
             config["action"] = action_select.values[0]
             await self.config_value(guild).set(config)
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         action_select.callback = action_select_callback
         components.append(action_select)
@@ -529,12 +529,12 @@ class ConfigureDurationModal(discord.ui.Modal):
         self,
         module: ImageCheckingModule,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
         duration: str,
     ) -> None:
         self.module: ImageCheckingModule = module
         self.guild: discord.Guild = guild
-        self.view: discord.ui.View = view
+        self.view: SettingsView = view
         self.duration: str = duration
         super().__init__(title=_("Configure Duration"))
         self.duration_input: discord.ui.TextInput = discord.ui.TextInput(
@@ -558,4 +558,4 @@ class ConfigureDurationModal(discord.ui.Modal):
             return
         self.duration = duration
         await self.module.config_value(self.guild).duration.set(duration)
-        await self.view._message.edit(embed=await self.view.get_embed(), view=self.view)
+        await self.view.edit_message()

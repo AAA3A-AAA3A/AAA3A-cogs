@@ -10,7 +10,7 @@ from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
 from security.constants import Emojis, clean_backticks, get_non_animated_asset
-from security.views import ToggleModuleButton
+from security.views import SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -543,7 +543,7 @@ class LoggingModule(Module):
     async def get_settings(
         self,
         guild: discord.Guild,
-        view: discord.ui.View,
+        view: SettingsView,
     ) -> tuple[str, str, list[dict], list[discord.ui.Item]]:
         config = await self.config_value(guild)()
         title = _("Security — {emoji} {name} {status}").format(
@@ -622,7 +622,7 @@ class LoggingModule(Module):
             await interaction.response.defer()
             config["use_webhooks"] = not config["use_webhooks"]
             await self.config_value(guild).use_webhooks.set(config["use_webhooks"])
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         use_webhooks_button.callback = use_webhooks_callback
         components.append(use_webhooks_button)
@@ -693,7 +693,7 @@ class LoggingModule(Module):
                 ),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         create_a_logging_category_button.callback = create_logging_category_callback
         components.append(create_a_logging_category_button)
@@ -755,7 +755,7 @@ class LoggingModule(Module):
                 ),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         create_a_logging_channel_button.callback = create_logging_channel_callback
         components.append(create_a_logging_channel_button)
@@ -790,7 +790,7 @@ class LoggingModule(Module):
                 ),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         toggle_all_button.callback = toggle_all_callback
         components.append(toggle_all_button)
@@ -825,7 +825,7 @@ class LoggingModule(Module):
                 ),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         ignore_bots_button.callback = ignore_bots_callback
         components.append(ignore_bots_button)
@@ -846,7 +846,7 @@ class LoggingModule(Module):
                 _("✅ All events will now be logged in {channel.mention}.").format(channel=channel),
                 ephemeral=True,
             )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         channel_all_select.callback = channel_all_callback
         components.append(channel_all_select)
@@ -1642,14 +1642,14 @@ class ConfigureEventCategoryView(discord.ui.View):
         self,
         module: LoggingModule,
         guild: discord.Guild,
-        parent_view: discord.ui.View,
+        parent_view: SettingsView,
         category: str,
     ) -> None:
         super().__init__(timeout=None)
         self.module: LoggingModule = module
         self.guild: discord.Guild = guild
         self.category: str = category
-        self.parent_view: discord.ui.View = parent_view
+        self.parent_view: SettingsView = parent_view
         self._message: discord.Message = None
 
         self.select_logging_channel.placeholder = _("Select a channel to log events...")
@@ -1758,10 +1758,7 @@ class ConfigureEventCategoryView(discord.ui.View):
             embed=await self.get_embed(),
             view=self,
         )
-        await self.parent_view._message.edit(
-            embed=await self.parent_view.get_embed(),
-            view=self.parent_view,
-        )
+        await self.parent_view.edit_message()
 
     @discord.ui.button(label="Ignore Bots")
     async def ignore_bots(
@@ -1788,10 +1785,7 @@ class ConfigureEventCategoryView(discord.ui.View):
             embed=await self.get_embed(),
             view=self,
         )
-        await self.parent_view._message.edit(
-            embed=await self.parent_view.get_embed(),
-            view=self.parent_view,
-        )
+        await self.parent_view.edit_message()
 
     @discord.ui.select(
         cls=discord.ui.ChannelSelect,
@@ -1822,10 +1816,7 @@ class ConfigureEventCategoryView(discord.ui.View):
             embed=await self.get_embed(),
             view=self,
         )
-        await self.parent_view._message.edit(
-            embed=await self.parent_view.get_embed(),
-            view=self.parent_view,
-        )
+        await self.parent_view.edit_message()
 
     @discord.ui.select(placeholder="Select an event to configure...")
     async def configure_event_select(
@@ -1852,7 +1843,7 @@ class ConfigureEventView(discord.ui.View):
         self,
         module: LoggingModule,
         guild: discord.Guild,
-        parent_view: discord.ui.View,
+        parent_view: SettingsView,
         category_view: ConfigureEventCategoryView,
         category: str,
         event: dict[str, typing.Any],
@@ -1862,7 +1853,7 @@ class ConfigureEventView(discord.ui.View):
         self.guild: discord.Guild = guild
         self.category: str = category
         self.event: dict[str, typing.Any] = event
-        self.parent_view: discord.ui.View = parent_view
+        self.parent_view: SettingsView = parent_view
         self.category_view: ConfigureEventCategoryView = category_view
         self._message: discord.Message = None
 
@@ -1958,10 +1949,7 @@ class ConfigureEventView(discord.ui.View):
             )
         except discord.HTTPException:
             pass
-        await self.parent_view._message.edit(
-            embed=await self.parent_view.get_embed(),
-            view=self.parent_view,
-        )
+        await self.parent_view.edit_message()
 
     @discord.ui.button(label="Ignore Bots")
     async def ignore_bots(
@@ -1997,10 +1985,7 @@ class ConfigureEventView(discord.ui.View):
             )
         except discord.HTTPException:
             pass
-        await self.parent_view._message.edit(
-            embed=await self.parent_view.get_embed(),
-            view=self.parent_view,
-        )
+        await self.parent_view.edit_message()
 
     @discord.ui.select(
         cls=discord.ui.ChannelSelect,
@@ -2041,7 +2026,4 @@ class ConfigureEventView(discord.ui.View):
             )
         except discord.HTTPException:
             pass
-        await self.parent_view._message.edit(
-            embed=await self.parent_view.get_embed(),
-            view=self.parent_view,
-        )
+        await self.parent_view.edit_message()

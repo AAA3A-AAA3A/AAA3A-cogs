@@ -8,7 +8,7 @@ from AAA3A_utils import Loop
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 from security.constants import Emojis
-from security.views import ToggleModuleButton
+from security.views import SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -58,7 +58,7 @@ class SentinelRelayModule(Module):
             )
         return "✅", _("Enabled"), _("Sentinel Relay is enabled and configured correctly.")
 
-    async def get_settings(self, guild: discord.Guild, view: discord.ui.View):
+    async def get_settings(self, guild: discord.Guild, view: SettingsView):
         status = await self.get_status(guild)
         title = _("Security — {emoji} {name} {status}").format(
             emoji=self.emoji,
@@ -128,7 +128,7 @@ class SentinelRelayModule(Module):
                     _("The main bot has been unset."),
                     ephemeral=True,
                 )
-            await view._message.edit(embed=await view.get_embed(), view=view)
+            await view.edit_message()
 
         main_bot_select.callback = main_bot_select_callback
         components.append(main_bot_select)

@@ -419,8 +419,13 @@ class SettingsView(discord.ui.View):
         return self._message
 
     async def edit_message(self) -> None:
+<<<<<<< HEAD
         """Refresh the settings message."""
         embed: discord.Embed = await self.get_embed()
+=======
+        """Refresh the settings message, keeping the health score image in sync."""
+        embed = await self.get_embed()
+>>>>>>> a72ba02f (fix: redundant field — replace by drawn text)
         try:
             await self._message.edit(
                 embed=embed,
@@ -573,7 +578,6 @@ class SettingsView(discord.ui.View):
                     inline=True,
                 )
             score = (await self.cog.get_health_score(self.ctx.guild))[0]
-            embed.add_field(name=_("🩺 Security Health Score:"), value="\u200b", inline=False)
             self.health_score_file = self.cog.get_health_score_file(score, get_health_grade(score))
             embed.set_image(url=f"attachment://{self.health_score_file.filename}")
         elif self.page == "authority_members":

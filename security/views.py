@@ -420,7 +420,7 @@ class SettingsView(discord.ui.View):
 
     async def edit_message(self) -> None:
         """Refresh the settings message."""
-        embed = await self.get_embed()
+        embed: discord.Embed = await self.get_embed()
         try:
             await self._message.edit(
                 embed=embed,
@@ -654,7 +654,7 @@ class SettingsView(discord.ui.View):
     @discord.ui.select(min_values=1, max_values=1)
     async def select(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
         self.page = select.values[0]
-        embed = await self.get_embed()
+        embed: discord.Embed = await self.get_embed()
         await interaction.response.edit_message(
             embed=embed,
             view=self,

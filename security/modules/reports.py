@@ -1,14 +1,16 @@
 import datetime
 import typing
+from collections import defaultdict
 
 import discord
 
-from redbot.core import app_commands
+from AAA3A_utils import CogsUtils
+from redbot.core import app_commands, commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 from security.constants import Colors, Emojis
 from security.utils import get_non_animated_asset
-from security.views import ActionsView, SettingsView, ToggleModuleButton
+from security.views import ActionsView, DurationConverter, SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -39,7 +41,12 @@ class ReportsModule(Module):
         "allow_staff_actions": True,
         "channel": None,
         "ping_role": None,
+        "cooldown": "5m",
     }
+
+    def __init__(self, cog: commands.Cog) -> None:
+        super().__init__(cog)
+        self.last_report_at: dict[int, dict[int, datetime.datetime]] = defaultdict(dict)
 
     async def load(self) -> None:
         self.cog.bot.tree.add_command(report_member)
@@ -112,6 +119,13 @@ class ReportsModule(Module):
                 "value": f"{ping_role.mention} (`{ping_role}`)"
                 if ping_role is not None
                 else _("Not set"),
+                "inline": True,
+            },
+            {
+                "name": _("Report Cooldown:"),
+                "value": CogsUtils.get_interval_string(
+                    await DurationConverter.convert(None, config["cooldown"]),
+                ),
                 "inline": True,
             },
         ]
@@ -193,6 +207,55 @@ class ReportsModule(Module):
         role_select.callback = role_callback
         components.append(role_select)
 
+        cooldown_button: discord.ui.Button = discord.ui.Button(
+            label=_("Set Report Cooldown"),
+            style=discord.ButtonStyle.secondary,
+            emoji="⏳",
+        )
+
+        async def cooldown_callback(interaction: discord.Interaction) -> None:
+            modal: discord.ui.Modal = discord.ui.Modal(
+                title=_("Report Cooldown"),
+                timeout=120,
+            )
+            cooldown_input: discord.ui.TextInput = discord.ui.TextInput(
+                label=_("Cooldown:"),
+                placeholder=_("Enter the cooldown (e.g. 5m)..."),
+                default=config["cooldown"],
+                required=True,
+            )
+            modal.add_item(cooldown_input)
+            cooldown, argument = None, None
+
+            async def on_submit(modal_interaction: discord.Interaction) -> None:
+                await modal_interaction.response.defer()
+                nonlocal cooldown, argument
+                try:
+                    cooldown = await DurationConverter.convert(None, cooldown_input.value)
+                    argument = cooldown_input.value
+                except commands.BadArgument as e:
+                    await modal_interaction.followup.send(
+                        _("Invalid cooldown: {error}").format(error=str(e)),
+                        ephemeral=True,
+                    )
+
+            modal.on_submit = on_submit
+            await interaction.response.send_modal(modal)
+            if await modal.wait() or cooldown is None:
+                return
+            config["cooldown"] = argument
+            await self.config_value(guild).cooldown.set(config["cooldown"])
+            await interaction.followup.send(
+                _("Report cooldown set to {cooldown} per member.").format(
+                    cooldown=CogsUtils.get_interval_string(cooldown),
+                ),
+                ephemeral=True,
+            )
+            await view.edit_message()
+
+        cooldown_button.callback = cooldown_callback
+        components.append(cooldown_button)
+
         return title, description, fields, components
 
     async def report(
@@ -229,6 +292,19 @@ class ReportsModule(Module):
                 ephemeral=True,
             )
             return
+        if (
+            last_report_at := self.last_report_at[interaction.guild.id].get(interaction.user.id)
+        ) is not None:
+            cooldown = await DurationConverter.convert(None, config["cooldown"])
+            retry_at = last_report_at + cooldown
+            if retry_at > datetime.datetime.now(tz=datetime.timezone.utc):
+                await interaction.response.send_message(
+                    _("⏳ You're reporting too often. You can report again {relative}.").format(
+                        relative=discord.utils.format_dt(retry_at, style="R"),
+                    ),
+                    ephemeral=True,
+                )
+                return
         await interaction.response.send_modal(ReasonModal(self, interaction.guild, target))
 
 
@@ -331,6 +407,9 @@ class ReasonModal(discord.ui.Modal):
         )
         self.module.cog.views[view._message] = view
         await self.module.cog.record_weekly_stat(self.guild, "report")
+        self.module.last_report_at[self.guild.id][interaction.user.id] = datetime.datetime.now(
+            tz=datetime.timezone.utc,
+        )
         await interaction.followup.send(
             _("Your report has been submitted successfully. Thank you!"),
             ephemeral=True,

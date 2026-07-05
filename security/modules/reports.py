@@ -4,7 +4,6 @@ from collections import defaultdict
 
 import discord
 
-from AAA3A_utils import CogsUtils
 from redbot.core import app_commands, commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
@@ -123,9 +122,7 @@ class ReportsModule(Module):
             },
             {
                 "name": _("Report Cooldown:"),
-                "value": CogsUtils.get_interval_string(
-                    await DurationConverter.convert(None, config["cooldown"]),
-                ),
+                "value": f"`{config['cooldown']}`",
                 "inline": True,
             },
         ]
@@ -208,52 +205,16 @@ class ReportsModule(Module):
         components.append(role_select)
 
         cooldown_button: discord.ui.Button = discord.ui.Button(
-            label=_("Set Report Cooldown"),
+            label=_("Report Cooldown"),
             style=discord.ButtonStyle.secondary,
-            emoji="⏳",
         )
 
-        async def cooldown_callback(interaction: discord.Interaction) -> None:
-            modal: discord.ui.Modal = discord.ui.Modal(
-                title=_("Report Cooldown"),
-                timeout=120,
+        async def cooldown_button_callback(interaction: discord.Interaction) -> None:
+            await interaction.response.send_modal(
+                ConfigureReportCooldownModal(self, guild, view, config["cooldown"]),
             )
-            cooldown_input: discord.ui.TextInput = discord.ui.TextInput(
-                label=_("Cooldown:"),
-                placeholder=_("Enter the cooldown (e.g. 5m)..."),
-                default=config["cooldown"],
-                required=True,
-            )
-            modal.add_item(cooldown_input)
-            cooldown, argument = None, None
 
-            async def on_submit(modal_interaction: discord.Interaction) -> None:
-                await modal_interaction.response.defer()
-                nonlocal cooldown, argument
-                try:
-                    cooldown = await DurationConverter.convert(None, cooldown_input.value)
-                    argument = cooldown_input.value
-                except commands.BadArgument as e:
-                    await modal_interaction.followup.send(
-                        _("Invalid cooldown: {error}").format(error=str(e)),
-                        ephemeral=True,
-                    )
-
-            modal.on_submit = on_submit
-            await interaction.response.send_modal(modal)
-            if await modal.wait() or cooldown is None:
-                return
-            config["cooldown"] = argument
-            await self.config_value(guild).cooldown.set(config["cooldown"])
-            await interaction.followup.send(
-                _("Report cooldown set to {cooldown} per member.").format(
-                    cooldown=CogsUtils.get_interval_string(cooldown),
-                ),
-                ephemeral=True,
-            )
-            await view.edit_message()
-
-        cooldown_button.callback = cooldown_callback
+        cooldown_button.callback = cooldown_button_callback
         components.append(cooldown_button)
 
         return title, description, fields, components
@@ -306,6 +267,43 @@ class ReportsModule(Module):
                 )
                 return
         await interaction.response.send_modal(ReasonModal(self, interaction.guild, target))
+
+
+class ConfigureReportCooldownModal(discord.ui.Modal):
+    def __init__(
+        self,
+        module: ReportsModule,
+        guild: discord.Guild,
+        view: SettingsView,
+        cooldown: str,
+    ) -> None:
+        self.module: ReportsModule = module
+        self.guild: discord.Guild = guild
+        self.view: SettingsView = view
+        self.cooldown: str = cooldown
+        super().__init__(title=_("Report Cooldown"))
+        self.cooldown_input: discord.ui.TextInput = discord.ui.TextInput(
+            label=_("Cooldown:"),
+            style=discord.TextStyle.short,
+            default=str(cooldown),
+            required=True,
+        )
+        self.add_item(self.cooldown_input)
+
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        await interaction.response.defer()
+        try:
+            cooldown = self.cooldown_input.value
+            await DurationConverter.convert(None, cooldown)
+        except ValueError as e:
+            await interaction.followup.send(
+                _("Invalid value: {error}").format(error=str(e)),
+                ephemeral=True,
+            )
+            return
+        self.cooldown = cooldown
+        await self.module.config_value(self.guild).cooldown.set(cooldown)
+        await self.view.edit_message()
 
 
 class ReasonModal(discord.ui.Modal):

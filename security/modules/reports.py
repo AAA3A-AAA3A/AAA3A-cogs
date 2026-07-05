@@ -1,14 +1,15 @@
 import datetime
 import typing
+from collections import defaultdict
 
 import discord
 
-from redbot.core import app_commands
+from redbot.core import app_commands, commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
 from security.constants import Colors, Emojis
 from security.utils import get_non_animated_asset
-from security.views import ActionsView, SettingsView, ToggleModuleButton
+from security.views import ActionsView, DurationConverter, SettingsView, ToggleModuleButton
 
 from .module import Module
 
@@ -39,7 +40,12 @@ class ReportsModule(Module):
         "allow_staff_actions": True,
         "channel": None,
         "ping_role": None,
+        "cooldown": "5m",
     }
+
+    def __init__(self, cog: commands.Cog) -> None:
+        super().__init__(cog)
+        self.last_report_at: dict[int, dict[int, datetime.datetime]] = defaultdict(dict)
 
     async def load(self) -> None:
         self.cog.bot.tree.add_command(report_member)
@@ -112,6 +118,11 @@ class ReportsModule(Module):
                 "value": f"{ping_role.mention} (`{ping_role}`)"
                 if ping_role is not None
                 else _("Not set"),
+                "inline": True,
+            },
+            {
+                "name": _("Report Cooldown:"),
+                "value": f"`{config['cooldown']}`",
                 "inline": True,
             },
         ]
@@ -193,6 +204,19 @@ class ReportsModule(Module):
         role_select.callback = role_callback
         components.append(role_select)
 
+        cooldown_button: discord.ui.Button = discord.ui.Button(
+            label=_("Report Cooldown"),
+            style=discord.ButtonStyle.secondary,
+        )
+
+        async def cooldown_button_callback(interaction: discord.Interaction) -> None:
+            await interaction.response.send_modal(
+                ConfigureReportCooldownModal(self, guild, view, config["cooldown"]),
+            )
+
+        cooldown_button.callback = cooldown_button_callback
+        components.append(cooldown_button)
+
         return title, description, fields, components
 
     async def report(
@@ -229,7 +253,57 @@ class ReportsModule(Module):
                 ephemeral=True,
             )
             return
+        if (
+            last_report_at := self.last_report_at[interaction.guild.id].get(interaction.user.id)
+        ) is not None:
+            cooldown = await DurationConverter.convert(None, config["cooldown"])
+            retry_at = last_report_at + cooldown
+            if retry_at > datetime.datetime.now(tz=datetime.timezone.utc):
+                await interaction.response.send_message(
+                    _("⏳ You're reporting too often. You can report again {relative}.").format(
+                        relative=discord.utils.format_dt(retry_at, style="R"),
+                    ),
+                    ephemeral=True,
+                )
+                return
         await interaction.response.send_modal(ReasonModal(self, interaction.guild, target))
+
+
+class ConfigureReportCooldownModal(discord.ui.Modal):
+    def __init__(
+        self,
+        module: ReportsModule,
+        guild: discord.Guild,
+        view: SettingsView,
+        cooldown: str,
+    ) -> None:
+        self.module: ReportsModule = module
+        self.guild: discord.Guild = guild
+        self.view: SettingsView = view
+        self.cooldown: str = cooldown
+        super().__init__(title=_("Report Cooldown"))
+        self.cooldown_input: discord.ui.TextInput = discord.ui.TextInput(
+            label=_("Cooldown:"),
+            style=discord.TextStyle.short,
+            default=str(cooldown),
+            required=True,
+        )
+        self.add_item(self.cooldown_input)
+
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        await interaction.response.defer()
+        try:
+            cooldown = self.cooldown_input.value
+            await DurationConverter.convert(None, cooldown)
+        except ValueError as e:
+            await interaction.followup.send(
+                _("Invalid value: {error}").format(error=str(e)),
+                ephemeral=True,
+            )
+            return
+        self.cooldown = cooldown
+        await self.module.config_value(self.guild).cooldown.set(cooldown)
+        await self.view.edit_message()
 
 
 class ReasonModal(discord.ui.Modal):
@@ -331,6 +405,9 @@ class ReasonModal(discord.ui.Modal):
         )
         self.module.cog.views[view._message] = view
         await self.module.cog.record_weekly_stat(self.guild, "report")
+        self.module.last_report_at[self.guild.id][interaction.user.id] = datetime.datetime.now(
+            tz=datetime.timezone.utc,
+        )
         await interaction.followup.send(
             _("Your report has been submitted successfully. Thank you!"),
             ephemeral=True,

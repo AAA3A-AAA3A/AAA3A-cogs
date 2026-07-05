@@ -5,7 +5,8 @@ import discord
 from AAA3A_utils import Menu
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list, pagify
-from security.constants import Emojis, get_non_animated_asset
+from security.constants import Emojis
+from security.utils import get_non_animated_asset
 from security.views import SettingsView, ToggleModuleButton
 
 from .module import Module

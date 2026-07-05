@@ -1,10 +1,7 @@
-import datetime
 import typing
 from enum import Enum
 
 import discord
-
-from redbot.core import commands
 
 
 class Levels(Enum):
@@ -30,6 +27,8 @@ class Colors(Enum):
     BAN: discord.Color = discord.Color.red()
     NOTIFY: discord.Color = discord.Color.gold()
     WHITELIST: discord.Color = discord.Color.light_embed()
+    WEEKLY_DIGEST: discord.Color = discord.Color.teal()
+
     REPORTS: discord.Color = discord.Color.blue()
     DANK_POOL_PROTECTION: discord.Color = discord.Color.dark_gold()
     UNAUTHORIZED_TEXT_CHANNEL_DELETIONS: discord.Color = discord.Color.dark_red()
@@ -59,6 +58,7 @@ class Emojis(Enum):
     REASON = "📝"
     LOGS = "📂"
     WHITELIST = "📋"
+    WEEKLY_DIGEST = "📊"
 
     JOIN_GATE = "🚪"
     AUTO_MOD = "♨️"
@@ -399,20 +399,6 @@ WHITELIST_TYPES: list[
 ]
 
 
-class WhitelistTypeConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> str:
-        cog = ctx.bot.get_cog("Security")
-        for whitelist_type in WHITELIST_TYPES:
-            value = whitelist_type["value"]
-            if argument == value:
-                return value
-            if (
-                module_key := next(m for m in cog.modules if value.startswith(m))
-            ) is not None and argument == value.removeprefix(f"{module_key}_"):
-                return value
-        raise commands.BadArgument(f"Unknown whitelist type: {argument}")
-
-
 POSSIBLE_ACTIONS: list[dict[typing.Literal["name", "emoji", "value", "permission"], str]] = [
     {
         "name": "Timeout",
@@ -458,43 +444,3 @@ DANGEROUS_PERMISSIONS: list[str] = [
     "manage_threads",
     "moderate_members",
 ]
-
-
-def get_correct_timeout_duration(
-    member: discord.Member,
-    duration: datetime.timedelta,
-) -> datetime.timedelta:
-    if member.is_timed_out():
-        duration += member.timed_out_until - datetime.datetime.now(datetime.timezone.utc)
-    return min(duration, datetime.timedelta(days=28))
-
-
-def get_non_animated_asset(
-    asset: discord.Asset | None = None,
-) -> discord.Asset | None:
-    if asset is None:
-        return None
-    if not asset.is_animated():
-        return asset
-    return discord.Asset(
-        asset._state,
-        url=asset.url.replace("/a_", "/").replace(".gif", ".png"),
-        key=asset.key.removeprefix("a_"),
-        animated=False,
-    )
-
-
-def clean_backticks(text: str) -> str:
-    return text.replace("`", "\u02cb")
-
-
-def get_health_grade(score: int) -> str:
-    if score >= 90:
-        return "A"
-    if score >= 75:
-        return "B"
-    if score >= 50:
-        return "C"
-    if score >= 25:
-        return "D"
-    return "F"

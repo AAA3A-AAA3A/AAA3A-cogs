@@ -7,7 +7,8 @@ import discord
 
 from redbot.core import commands
 from redbot.core.i18n import Translator
-from security.constants import Colors, Emojis, Levels, get_non_animated_asset
+from security.constants import Colors, Emojis, Levels
+from security.utils import get_non_animated_asset
 from security.views import SettingsView, ToggleModuleButton
 
 from .module import Module

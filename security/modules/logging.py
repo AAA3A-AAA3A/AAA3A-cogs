@@ -9,7 +9,8 @@ from AAA3A_utils import CogsUtils, Loop
 from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
-from security.constants import Emojis, clean_backticks, get_non_animated_asset
+from security.constants import Emojis
+from security.utils import clean_backticks, get_non_animated_asset
 from security.views import SettingsView, ToggleModuleButton
 
 from .module import Module

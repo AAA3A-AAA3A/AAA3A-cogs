@@ -6,7 +6,8 @@ import discord
 from redbot.core import app_commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
-from security.constants import Colors, Emojis, get_non_animated_asset
+from security.constants import Colors, Emojis
+from security.utils import get_non_animated_asset
 from security.views import ActionsView, SettingsView, ToggleModuleButton
 
 from .module import Module
@@ -329,6 +330,7 @@ class ReasonModal(discord.ui.Modal):
             allowed_mentions=discord.AllowedMentions(roles=True),
         )
         self.module.cog.views[view._message] = view
+        await self.module.cog.record_weekly_stat(self.guild, "report")
         await interaction.followup.send(
             _("Your report has been submitted successfully. Thank you!"),
             ephemeral=True,

@@ -25,13 +25,15 @@ from .constants import (
     Emojis,
     Levels,
     MemberEmojis,
-    WhitelistTypeConverter,
-    clean_backticks,
-    get_health_grade,
-    get_non_animated_asset,
 )
 from .modules import MODULES, Module
 from .modules.dank_pool_protection import Payout, format_amount
+from .utils import (
+    WhitelistTypeConverter,
+    clean_backticks,
+    get_next_monday_timestamp,
+    get_non_animated_asset,
+)
 from .views import (
     OBJECT_TYPING,
     ActionsView,
@@ -135,6 +137,9 @@ class Security(Cog):
             # Management.
             recovery_key=None,
             current_owner_id=None,
+            weekly_stats={},
+            weekly_digest_enabled=False,
+            weekly_digest_next_timestamp=None,
             logs=[],
         )
         self.config.register_member(
@@ -223,6 +228,14 @@ class Security(Cog):
                 name="Cleanup Task",
                 function=self.cleanup_task,
                 minutes=1,
+            ),
+        )
+        self.loops.append(
+            Loop(
+                cog=self,
+                name="Weekly Digest",
+                function=self.check_weekly_digest,
+                days=1,
             ),
         )
 
@@ -382,7 +395,10 @@ class Security(Cog):
         label_x = (width - (bbox[2] - bbox[0])) / 2 - bbox[0]
         label_y = bar_height + (label_height - (bbox[3] - bbox[1])) / 2 - bbox[1]
         draw.text(
-            (label_x, label_y), label, font=label_font, fill=(241, 196, 15, 255)
+            (label_x, label_y),
+            label,
+            font=label_font,
+            fill=(241, 196, 15, 255),
         )  # Discord gold
 
         buffer = BytesIO()
@@ -706,6 +722,67 @@ class Security(Cog):
             current_ctx=current_ctx,
         )
 
+    async def record_weekly_stat(self, guild: discord.Guild, category: str) -> None:
+        async with self.config.guild(guild).weekly_stats() as weekly_stats:
+            weekly_stats[category] = weekly_stats.get(category, 0) + 1
+
+    async def send_weekly_digest(self, guild: discord.Guild) -> None:
+        weekly_stats: dict[str, int] = await self.config.guild(guild).weekly_stats()
+        stat_labels: dict[str, str] = {
+            "quarantine": _("Quarantines"),
+            "unquarantine": _("Unquarantines"),
+            "timeout": _("Timeouts"),
+            "untimeout": _("Untimeouts"),
+            "mute": _("Mutes"),
+            "unmute": _("Unmutes"),
+            "kick": _("Kicks"),
+            "ban": _("Bans"),
+            "notify": _("Detections"),
+            "report": _("Reports"),
+        }
+        embed: discord.Embed = discord.Embed(
+            title=_("Weekly Security Digest {emoji}").format(emoji=Emojis.WEEKLY_DIGEST.value),
+            color=Colors.WEEKLY_DIGEST.value,
+            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+        )
+        if weekly_stats:
+            embed.description = "\n".join(
+                f"- **{stat_labels.get(category, category.replace('_', ' ').title())}:** {count}"
+                for category, count in sorted(
+                    weekly_stats.items(),
+                    key=lambda item: item[1],
+                    reverse=True,
+                )
+            )
+        else:
+            embed.description = _("No moderation activity was recorded this week.")
+        embed.set_footer(text=guild.name, icon_url=get_non_animated_asset(guild.icon))
+        try:
+            await self.send_in_modlog_channel(guild, embed=embed)
+        except discord.HTTPException:
+            pass
+        await self.config.guild(guild).weekly_stats.clear()
+
+    async def check_weekly_digest(self) -> None:
+        now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        for guild_id in await self.config.all_guilds():
+            if (guild := self.bot.get_guild(guild_id)) is None:
+                continue
+            config = await self.config.guild(guild).all()
+            if not config["weekly_digest_enabled"]:
+                continue
+            if (next_timestamp := config["weekly_digest_next_timestamp"]) is None:
+                await self.config.guild(guild).weekly_digest_next_timestamp.set(
+                    get_next_monday_timestamp(),
+                )
+                continue
+            if now_timestamp < next_timestamp:
+                continue
+            await self.send_weekly_digest(guild)
+            await self.config.guild(guild).weekly_digest_next_timestamp.set(
+                get_next_monday_timestamp(),
+            )
+
     async def get_modlog_embed(
         self,
         action: typing.Literal[
@@ -911,6 +988,7 @@ class Security(Cog):
             user=member,
             moderator=issued_by,
         )
+        await self.record_weekly_stat(member.guild, action)
         if issued_by is None and not member.bot and action != "notify":
             embed.title = {
                 "quarantine": _("{member.display_name}, you have been quarantined! {emoji}").format(

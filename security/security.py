@@ -761,7 +761,7 @@ class Security(Cog):
             await self.send_in_modlog_channel(guild, embed=embed)
         except discord.HTTPException:
             pass
-        await self.config.guild(guild).weekly_stats.set({})
+        await self.config.guild(guild).weekly_stats.clear()
 
     async def check_weekly_digest(self) -> None:
         now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
@@ -771,8 +771,7 @@ class Security(Cog):
             config = await self.config.guild(guild).all()
             if not config["weekly_digest_enabled"]:
                 continue
-            next_timestamp = config["weekly_digest_next_timestamp"]
-            if next_timestamp is None:
+            if (next_timestamp := config["weekly_digest_next_timestamp"]) is None:
                 await self.config.guild(guild).weekly_digest_next_timestamp.set(
                     get_next_monday_timestamp(),
                 )

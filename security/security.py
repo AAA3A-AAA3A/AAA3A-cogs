@@ -137,10 +137,10 @@ class Security(Cog):
             # Management.
             recovery_key=None,
             current_owner_id=None,
-            logs=[],
             weekly_stats={},
             weekly_digest_enabled=False,
             weekly_digest_next_timestamp=None,
+            logs=[],
         )
         self.config.register_member(
             level=None,

@@ -374,6 +374,7 @@ class SettingsView(discord.ui.View):
         self.modlog_ping_role_select.placeholder = _("Select Modlog Ping Role")
         self.extra_owners_select.placeholder = _("Manage Extra Owners")
         self.trusted_admins_select.placeholder = _("Manage Trusted Admins")
+        self.toggle_allow_bot_owners.label = _("Allow Bot Owners")
         self.show_logs.label = _("Show Logs")
 
     async def start(self, ctx: commands.Context, page: str = "overview") -> discord.Message:
@@ -648,16 +649,32 @@ class SettingsView(discord.ui.View):
                 ),
                 inline=False,
             )
+            allow_bot_owners = weekly_digest_config["allow_bot_owners"]
+            embed.add_field(
+                name=_("Allow Bot Owners:"),
+                value=_(
+                    "{status} Bot owners are treated as **Extra Owners** and are **100% immune** to Security.",
+                ).format(status="✅" if allow_bot_owners else "❌"),
+                inline=False,
+            )
             self.toggle_weekly_digest.label = (
                 _("Weekly Digest") if weekly_digest_enabled else _("Weekly Digest")
             )
             self.toggle_weekly_digest.style = (
                 discord.ButtonStyle.danger if weekly_digest_enabled else discord.ButtonStyle.success
             )
-            if await self.cog.is_owner_or_higher(self.ctx.author):
+            self.toggle_allow_bot_owners.style = (
+                discord.ButtonStyle.danger if allow_bot_owners else discord.ButtonStyle.success
+            )
+            is_owner_or_higher = await self.cog.is_owner_or_higher(self.ctx.author)
+            is_extra_owner_or_higher = await self.cog.is_extra_owner_or_higher(self.ctx.author)
+            if is_owner_or_higher:
                 self.add_item(self.extra_owners_select)
-            if await self.cog.is_extra_owner_or_higher(self.ctx.author):
+            if is_extra_owner_or_higher:
                 self.add_item(self.trusted_admins_select)
+            if is_owner_or_higher:
+                self.add_item(self.toggle_allow_bot_owners)
+            if is_extra_owner_or_higher:
                 self.add_item(self.toggle_weekly_digest)
             self.add_item(self.show_logs)
         else:
@@ -1093,6 +1110,27 @@ class SettingsView(discord.ui.View):
             )
         await interaction.followup.send(
             _("✅ Weekly Digest has been **{status}**.").format(
+                status=_("enabled") if enabled else _("disabled"),
+            ),
+            ephemeral=True,
+        )
+        await self.edit_message()
+
+    @discord.ui.button(
+        emoji="👑",
+        label="Allow Bot Owners",
+        style=discord.ButtonStyle.success,
+    )
+    async def toggle_allow_bot_owners(
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
+    ) -> None:
+        await interaction.response.defer(thinking=True, ephemeral=True)
+        enabled = not await self.cog.config.guild(self.ctx.guild).allow_bot_owners()
+        await self.cog.config.guild(self.ctx.guild).allow_bot_owners.set(enabled)
+        await interaction.followup.send(
+            _("✅ Bot owners being treated as Extra Owners has been **{status}**.").format(
                 status=_("enabled") if enabled else _("disabled"),
             ),
             ephemeral=True,

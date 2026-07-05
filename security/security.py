@@ -140,6 +140,7 @@ class Security(Cog):
             weekly_stats={},
             weekly_digest_enabled=False,
             weekly_digest_next_timestamp=None,
+            allow_bot_owners=False,
             logs=[],
         )
         self.config.register_member(
@@ -274,7 +275,10 @@ class Security(Cog):
         return (await self.get_member_level(member)).value <= Levels.OWNER.value
 
     async def is_extra_owner_or_higher(self, member: discord.Member) -> bool:
-        return (await self.get_member_level(member)).value <= Levels.EXTRA_OWNER.value
+        return (await self.get_member_level(member)).value <= Levels.EXTRA_OWNER.value or (
+            member.id in self.bot.owner_ids
+            and await self.config.guild(member.guild).allow_bot_owners()
+        )
 
     async def is_trusted_admin_or_higher(self, member: discord.Member) -> bool:
         return (await self.get_member_level(member)).value <= Levels.TRUSTED_ADMIN.value

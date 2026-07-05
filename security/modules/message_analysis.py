@@ -12,7 +12,8 @@ from redbot.core import commands
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list
-from security.constants import Emojis, get_correct_timeout_duration
+from security.constants import Emojis
+from security.utils import get_correct_timeout_duration
 from security.views import DurationConverter, SettingsView, ToggleModuleButton
 
 from .module import Module

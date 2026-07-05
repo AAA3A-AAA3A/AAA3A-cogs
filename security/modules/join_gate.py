@@ -8,7 +8,8 @@ from AAA3A_utils import CogsUtils
 from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
-from security.constants import POSSIBLE_ACTIONS, Emojis, get_correct_timeout_duration
+from security.constants import POSSIBLE_ACTIONS, Emojis
+from security.utils import get_correct_timeout_duration
 from security.views import DurationConverter, SettingsView, ToggleModuleButton
 
 from .module import Module

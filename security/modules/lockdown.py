@@ -8,7 +8,8 @@ from AAA3A_utils import CogsUtils
 from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
-from security.constants import Emojis, get_non_animated_asset
+from security.constants import Emojis
+from security.utils import get_non_animated_asset
 from security.views import SettingsView
 
 from .module import Module

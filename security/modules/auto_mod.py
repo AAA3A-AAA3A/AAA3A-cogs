@@ -19,7 +19,8 @@ try:
 except ImportError:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 
-from security.constants import POSSIBLE_ACTIONS, Emojis, get_correct_timeout_duration
+from security.constants import POSSIBLE_ACTIONS, Emojis
+from security.utils import get_correct_timeout_duration
 from security.views import DurationConverter, SettingsView, ToggleModuleButton
 
 from .module import Module

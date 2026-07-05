@@ -18,8 +18,11 @@ from .constants import (
     Colors,
     Emojis,
     Levels,
+)
+from .utils import (
     get_correct_timeout_duration,
     get_health_grade,
+    get_next_monday_timestamp,
     get_non_animated_asset,
 )
 
@@ -620,10 +623,43 @@ class SettingsView(discord.ui.View):
                 + _("⚙️ *They can change **most settings** of Security.*"),
                 inline=False,
             )
+            weekly_digest_config = await self.cog.config.guild(self.ctx.guild).all()
+            weekly_digest_enabled = weekly_digest_config["weekly_digest_enabled"]
+            next_timestamp = (
+                weekly_digest_config["weekly_digest_next_timestamp"] or get_next_monday_timestamp()
+            )
+            embed.add_field(
+                name=_("Weekly Digest:"),
+                value=_(
+                    "{status} A weekly summary of the moderation activity (auto mod actions, quarantines, reports, etc.) is posted in the modlog channel.",
+                ).format(status="✅" if weekly_digest_enabled else "❌")
+                + (
+                    _("\n🕒 **Next Digest:** {next_digest}").format(
+                        next_digest=discord.utils.format_dt(
+                            datetime.datetime.fromtimestamp(
+                                next_timestamp,
+                                tz=datetime.timezone.utc,
+                            ),
+                            style="F",
+                        ),
+                    )
+                    if weekly_digest_enabled
+                    else ""
+                ),
+                inline=False,
+            )
+            self.toggle_weekly_digest.label = (
+                _("Weekly Digest") if weekly_digest_enabled else _("Weekly Digest")
+            )
+            self.toggle_weekly_digest.style = (
+                discord.ButtonStyle.danger if weekly_digest_enabled else discord.ButtonStyle.success
+            )
             if await self.cog.is_owner_or_higher(self.ctx.author):
                 self.add_item(self.extra_owners_select)
             if await self.cog.is_extra_owner_or_higher(self.ctx.author):
                 self.add_item(self.trusted_admins_select)
+            if await self.cog.is_extra_owner_or_higher(self.ctx.author):
+                self.add_item(self.toggle_weekly_digest)
             self.add_item(self.show_logs)
         else:
             module = self.cog.modules[self.page]
@@ -1037,6 +1073,32 @@ class SettingsView(discord.ui.View):
             },
         )()
         await Menu(pages=embeds, page_start=-1, ephemeral=True).start(fake_context)
+
+    @discord.ui.button(
+        emoji=Emojis.WEEKLY_DIGEST.value,
+        label="Weekly Digest",
+        style=discord.ButtonStyle.success,
+    )
+    async def toggle_weekly_digest(
+        self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button,
+    ) -> None:
+        await interaction.response.defer(thinking=True, ephemeral=True)
+        enabled = not await self.cog.config.guild(self.ctx.guild).weekly_digest_enabled()
+        await self.cog.config.guild(self.ctx.guild).weekly_digest_enabled.set(enabled)
+        next_timestamp = await self.cog.config.guild(self.ctx.guild).weekly_digest_next_timestamp()
+        if enabled and next_timestamp is None:
+            await self.cog.config.guild(self.ctx.guild).weekly_digest_next_timestamp.set(
+                get_next_monday_timestamp(),
+            )
+        await interaction.followup.send(
+            _("✅ Weekly Digest has been **{status}**.").format(
+                status=_("enabled") if enabled else _("disabled"),
+            ),
+            ephemeral=True,
+        )
+        await self.edit_message()
 
 
 class ToggleModuleButton(discord.ui.Button):

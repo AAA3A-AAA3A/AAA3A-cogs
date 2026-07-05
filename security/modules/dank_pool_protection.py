@@ -8,7 +8,8 @@ from redbot.core import commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
-from security.constants import Colors, Emojis, get_non_animated_asset
+from security.constants import Colors, Emojis
+from security.utils import get_non_animated_asset
 from security.views import SettingsView, ToggleModuleButton, get_or_fetch_member_or_user
 
 from .module import Module

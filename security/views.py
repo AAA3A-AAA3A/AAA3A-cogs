@@ -658,7 +658,6 @@ class SettingsView(discord.ui.View):
                 self.add_item(self.extra_owners_select)
             if await self.cog.is_extra_owner_or_higher(self.ctx.author):
                 self.add_item(self.trusted_admins_select)
-            if await self.cog.is_extra_owner_or_higher(self.ctx.author):
                 self.add_item(self.toggle_weekly_digest)
             self.add_item(self.show_logs)
         else:

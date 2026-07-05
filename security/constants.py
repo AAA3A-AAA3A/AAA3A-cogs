@@ -27,8 +27,8 @@ class Colors(Enum):
     BAN: discord.Color = discord.Color.red()
     NOTIFY: discord.Color = discord.Color.gold()
     WHITELIST: discord.Color = discord.Color.light_embed()
-
     WEEKLY_DIGEST: discord.Color = discord.Color.teal()
+
     REPORTS: discord.Color = discord.Color.blue()
     DANK_POOL_PROTECTION: discord.Color = discord.Color.dark_gold()
     UNAUTHORIZED_TEXT_CHANNEL_DELETIONS: discord.Color = discord.Color.dark_red()

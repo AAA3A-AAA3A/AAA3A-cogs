@@ -301,14 +301,13 @@ class VerificationModule(Module):
                 bg_fonts.append(ImageFont.truetype(fn, 50))
                 main_fonts.append(ImageFont.truetype(fn, 120))
             except OSError:
-                # Skip fonts not installed on the system
+                # Skip fonts not installed on the system.
                 continue
         if not bg_fonts:
             bg_fonts = [ImageFont.load_default()]
             main_fonts = [ImageFont.load_default()]
 
         # 4. Faded background letters (Noise).
-        # Changed: Made slightly darker and thicker so they don't look completely different from the target text.
         for _ in range(150):
             bg_char = random.choice(characters)
             x = random.randint(-20, width)
@@ -360,22 +359,17 @@ class VerificationModule(Module):
 
         # 7. Thick wavy line.
         main_line_points = [(x, calculate_y_on_line(x)) for x in range(width)]
-        # Changed: Made the guideline slightly lighter so it doesn't contrast too heavily with the new text color
         draw.line(main_line_points, fill=(100, 100, 100), width=8, joint="curve")
 
         # 8. Main text.
-        # Changed: Segment-based placement with random horizontal jitter.
         segment_width = width // text_length
 
         for i, char in enumerate(solution):
-            # Calculate base position, then add up to +/- 25% horizontal variation
             base_x = (segment_width * i) + (segment_width // 2)
             jitter = int(segment_width * random.uniform(-0.25, 0.25))
             x_center = base_x + jitter + 13
-
             y_center = calculate_y_on_line(x_center)
 
-            # Changed: Made target letters slightly lighter and thinner to blend with noise
             char_color = (random.randint(40, 130), random.randint(40, 130), random.randint(40, 130))
             current_main_font = random.choice(main_fonts)
             main_stroke = random.randint(0, 2)

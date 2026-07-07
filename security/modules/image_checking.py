@@ -108,16 +108,9 @@ class ImageCheckingModule(Module):
         missing_permissions = []
         if not guild.me.guild_permissions.manage_messages:
             missing_permissions.append("manage_messages")
-        action_permissions = {
-            "timeout": "moderate_members",
-            "kick": "kick_members",
-            "ban": "ban_members",
-        }
-        if config["action"] in action_permissions and not getattr(
-            guild.me.guild_permissions,
-            action_permissions[config["action"]],
-        ):
-            missing_permissions.append(action_permissions[config["action"]])
+        action = next(a for a in POSSIBLE_ACTIONS if a["value"] == config["action"])
+        if not getattr(guild.me.guild_permissions, action["permission"]):
+            missing_permissions.append(action["permission"])
         if missing_permissions:
             return (
                 "⚠️",

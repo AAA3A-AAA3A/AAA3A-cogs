@@ -590,17 +590,22 @@ class AutoModModule(Module):
             and not guild.me.guild_permissions.manage_guild
         ):
             missing_permissions.append("manage_guild")
-        for action, permission in {
-            "timeout": "moderate_members",
-            "kick": "kick_members",
-            "ban": "ban_members",
-        }.items():
-            if any(
-                filter["enabled"] and filter["action"] == action
-                for filters in config["filters"].values()
-                for filter in filters.values()
-            ) and not getattr(guild.me.guild_permissions, permission):
-                missing_permissions.append(permission)
+        for category, data in AUTO_MOD_FILTERS.items():
+            for filter in data["filters"]:
+                if (
+                    config["filters"][category][filter["value"]]["enabled"]
+                    and config["filters"][category][filter["value"]]["action"] is not None
+                ):
+                    action = next(
+                        a
+                        for a in POSSIBLE_ACTIONS
+                        if a["value"] == config["filters"][category][filter["value"]]["action"]
+                    )
+                    if (
+                        not getattr(guild.me.guild_permissions, action["permission"])
+                        and action["permission"] not in missing_permissions
+                    ):
+                        missing_permissions.append(action["permission"])
         if missing_permissions:
             return (
                 "⚠️",

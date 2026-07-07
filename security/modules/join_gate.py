@@ -145,16 +145,14 @@ class JoinGateModule(Module):
         if all(not option["enabled"] for option in config["options"].values()):
             return "❎", _("No Enabled Options"), _("There are no Join Gate option enabled.")
         missing_permissions = []
-        for action, permission in {
-            "timeout": "moderate_members",
-            "kick": "kick_members",
-            "ban": "ban_members",
-        }.items():
-            if any(
-                option["enabled"] and option["action"] == action
-                for option in config["options"].values()
-            ) and not getattr(guild.me.guild_permissions, permission):
-                missing_permissions.append(permission)
+        for option in JOIN_GATE_OPTIONS:
+            if (option_config := config["options"][option["value"]]) and option_config["enabled"]:
+                action = next(a for a in POSSIBLE_ACTIONS if a["value"] == option_config["action"])
+                if (
+                    not getattr(guild.me.guild_permissions, action["permission"])
+                    and action["permission"] not in missing_permissions
+                ):
+                    missing_permissions.append(action["permission"])
         if (
             config["options"]["bot_additions"]["enabled"]
             and not guild.me.guild_permissions.view_audit_log

@@ -455,11 +455,12 @@ class VerificationModule(Module):
             embed.set_image(url=f"attachment://{file.filename}")
             message = await channel.send(member.mention, embed=embed, file=file)
 
+            kick_timeout = await DurationConverter.convert(None, config["kick_timeout"])
             try:
                 response: discord.Message = await self.cog.bot.wait_for(
                     "message_without_command",
                     check=lambda m: m.author == member and m.channel == channel,
-                    timeout=60.0,
+                    timeout=kick_timeout,
                 )
             except asyncio.TimeoutError:
                 await self.cog.send_modlog(

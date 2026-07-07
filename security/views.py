@@ -1256,11 +1256,11 @@ class ActionsView(discord.ui.View):
                     style=discord.ButtonStyle.secondary,
                     disabled=(
                         not getattr(self.member.guild.me.guild_permissions, action["permission"])
-                        and (
-                            action["value"] != "timeout"
-                            or not self.member.guild_permissions.administrator
+                        or (
+                            action["value"] == "timeout"
+                            and self.member.guild_permissions.administrator
                         )
-                        and (action["value"] != "mute" or mute_check)
+                        or (action["value"] == "mute" and not mute_check)
                     ),
                 )
                 button.callback = functools.partial(self.action_callback, action=action)

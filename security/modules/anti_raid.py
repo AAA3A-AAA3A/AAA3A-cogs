@@ -120,16 +120,9 @@ class AntiRaidModule(Module):
         if not config["enabled"] and check_enabled:
             return "❌", _("Disabled"), _("Anti Raid is currently disabled.")
         missing_permissions = []
-        action_permissions = {
-            "timeout": "moderate_members",
-            "kick": "kick_members",
-            "ban": "ban_members",
-        }
-        if config["action"] in action_permissions and not getattr(
-            guild.me.guild_permissions,
-            action_permissions[config["action"]],
-        ):
-            missing_permissions.append(action_permissions[config["action"]])
+        action = next(a for a in POSSIBLE_ACTIONS if a["value"] == config["action"])
+        if not getattr(guild.me.guild_permissions, action["permission"]):
+            missing_permissions.append(action["permission"])
         if missing_permissions:
             return (
                 "⚠️",

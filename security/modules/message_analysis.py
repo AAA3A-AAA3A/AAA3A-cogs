@@ -1,4 +1,5 @@
 import asyncio
+import functools
 import typing
 from collections import defaultdict
 from pathlib import Path
@@ -316,12 +317,12 @@ class MessageAnalysisModule(Module):
                 row=2 + (i // 5),
             )
 
-            async def level_button_callback(interaction: discord.Interaction) -> None:
+            async def level_button_callback(level: str, interaction: discord.Interaction) -> None:
                 await interaction.response.send_modal(
                     ConfigureLevelModal(self, guild, view, level, config["levels"][level]),
                 )
 
-            level_button.callback = level_button_callback
+            level_button.callback = functools.partial(level_button_callback, level)
             components.append(level_button)
 
         if view.ctx.author.id in self.cog.bot.owner_ids:

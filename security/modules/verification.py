@@ -460,7 +460,7 @@ class VerificationModule(Module):
                 response: discord.Message = await self.cog.bot.wait_for(
                     "message_without_command",
                     check=lambda m: m.author == member and m.channel == channel,
-                    timeout=kick_timeout,
+                    timeout=kick_timeout.total_seconds(),
                 )
             except asyncio.TimeoutError:
                 await self.cog.send_modlog(

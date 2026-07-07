@@ -55,7 +55,7 @@ FLAGS: dict[
     "avatar_similarity": {
         "emoji": "🖼️",
         "name": _("Avatar Similarity"),
-        "check": lambda left, right: any(
+        "check": lambda left, right: (
             left.avatar_hash is not None
             and right.avatar_hash is not None
             and (right.avatar_hash - left.avatar_hash) < 8
@@ -76,7 +76,7 @@ FLAGS: dict[
     "account_age_similarity": {
         "emoji": "📅",
         "name": _("Account Age Similarity"),
-        "check": lambda left, right: any(
+        "check": lambda left, right: (
             abs((right.member.created_at - left.member.created_at).total_seconds())
             < 60 * 60 * 24 * 7
         ),  # less than 7 days difference

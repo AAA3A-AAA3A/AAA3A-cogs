@@ -1,11 +1,14 @@
 import typing
+from io import BytesIO
 
 import discord
-from fuzzywuzzy import StringMatcher
+import imagehash
+from PIL import Image
 
 from redbot.core import commands
 from redbot.core.i18n import Translator
 from security.constants import DANGEROUS_PERMISSIONS, Emojis
+from security.utils import similarity_ratio_check
 from security.views import SettingsView, ToggleModuleButton
 
 from .module import Module
@@ -55,7 +58,7 @@ class AntiImpersonationModule(Module):
             status=status[0],
         )
         description = _(
-            "Protect your server from impersonation attacks by checking new members and member updates to ensure their display name, their name and their global name aren't similar to members with dangerous permissions.\n",
+            "Protect your server from impersonation attacks by checking new members and member updates to ensure their display name, their name and their global name, along with their avatar and guild avatar, aren't similar to members with dangerous permissions.\n",
         )
         if status[0] == "⚠️":
             description += f"{status[0]} **{status[1]}**: {status[2]}\n"
@@ -119,22 +122,47 @@ class AntiImpersonationModule(Module):
                 for permission in DANGEROUS_PERMISSIONS
             ):
                 continue
-            if self.is_similar(member.display_name, other_member.display_name, similarity_ratio):
+            if similarity_ratio_check(
+                member.display_name,
+                other_member.display_name,
+                similarity_ratio,
+            ):
                 log = _(
-                    "{member.mention} (`{member.name}`) has a similar display name to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.display_name}` vs `{other_member.display_name}`.",
+                    "{member.mention} (`{member.name}`) has a similar display name and a similar avatar to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.display_name}` vs `{other_member.display_name}`.",
                 ).format(member=member, other_member=other_member)
-            elif self.is_similar(member.name, other_member.name, similarity_ratio):
+            elif similarity_ratio_check(
+                member.name,
+                other_member.name,
+                similarity_ratio,
+            ):
                 log = _(
-                    "{member.mention} (`{member.name}`) has a similar name to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.name}` vs `{other_member.name}`.",
+                    "{member.mention} (`{member.name}`) has a similar name and a similar avatar to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.name}` vs `{other_member.name}`.",
                 ).format(member=member, other_member=other_member)
             elif (
                 member.global_name is not None
                 and other_member.global_name is not None
-                and self.is_similar(member.global_name, other_member.global_name, similarity_ratio)
+                and similarity_ratio_check(
+                    member.global_name,
+                    other_member.global_name,
+                    similarity_ratio,
+                )
             ):
                 log = _(
-                    "{member.mention} (`{member.name}`) has a similar global name to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.global_name}` vs `{other_member.global_name}`.",
+                    "{member.mention} (`{member.name}`) has a similar global name and a similar avatar to {other_member.mention} (`{other_member.name}`) which possesses dangerous permissions: `{member.global_name}` vs `{other_member.global_name}`.",
                 ).format(member=member, other_member=other_member)
+            else:
+                continue
+            avatars = [
+                (member.avatar, other_member.avatar),
+                (member.guild_avatar, other_member.guild_avatar),
+            ]
+            for avatar1, avatar2 in avatars:
+                if avatar1 is None or avatar2 is None:
+                    continue
+                avatar1_hash = imagehash.phash(Image.open(BytesIO(await avatar1.read())))
+                avatar2_hash = imagehash.phash(Image.open(BytesIO(await avatar2.read())))
+                if avatar1_hash - avatar2_hash < 8:
+                    break
             else:
                 continue
             if only_check:
@@ -157,9 +185,6 @@ class AntiImpersonationModule(Module):
                     logs=[log],
                 )
         return False
-
-    def is_similar(self, name1: str, name2: str, ratio: float) -> bool:
-        return StringMatcher.ratio(name1, name2) >= ratio
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member) -> None:

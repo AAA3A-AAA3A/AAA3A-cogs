@@ -659,7 +659,7 @@ class LoggingModule(Module):
             ):
                 return
             category_channel = await guild.create_category(
-                name=_("📁・Logs"),
+                name=_("{emoji}・Logs").format(emoji=Emojis.LOGS.value),
                 overwrites={
                     guild.default_role: discord.PermissionOverwrite(
                         view_channel=False,
@@ -730,7 +730,7 @@ class LoggingModule(Module):
             ):
                 return
             channel = await guild.create_text_channel(
-                name=_("📁・logs"),
+                name=_("{emoji}・logs").format(emoji=Emojis.LOGS.value),
                 topic=_("This channel is used for logging various events."),
                 overwrites={
                     guild.default_role: discord.PermissionOverwrite(
@@ -745,7 +745,6 @@ class LoggingModule(Module):
                 },
                 reason=_("Created by Security's Logging Module."),
             )
-            config["enabled"] = True
             for events in config["events"].values():
                 for event in events.values():
                     event["channel"] = channel.id

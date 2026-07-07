@@ -6,7 +6,6 @@ import urllib
 from collections import defaultdict
 
 import discord
-from fuzzywuzzy import StringMatcher
 
 from redbot.core import commands
 from redbot.core.data_manager import bundled_data_path
@@ -20,7 +19,7 @@ except ImportError:
     from emoji import UNICODE_EMOJI_ENGLISH as EMOJI_DATA  # emoji<2.0.0
 
 from security.constants import POSSIBLE_ACTIONS, Emojis
-from security.utils import get_correct_timeout_duration
+from security.utils import get_correct_timeout_duration, similarity_ratio_check
 from security.views import DurationConverter, SettingsView, ToggleModuleButton
 
 from .module import Module
@@ -55,12 +54,6 @@ EMOJIS = set(EMOJI_DATA) | {
     "🇾",
     "🇿",
 }
-
-
-def similarity_ratio_check(last_content: str, content: str, similarity_ratio: float) -> bool:
-    if not last_content or not content:
-        return False
-    return StringMatcher.ratio(last_content, content) >= similarity_ratio
 
 
 def get_emoji_count(content: str) -> int:
@@ -804,139 +797,74 @@ class AutoModModule(Module):
                             message,
                         ),
                     )
-        lock = self.strikes_locks[message.guild][message.author]
-        await lock.acquire()
-        if self.strikes_cache[message.guild][message.author] > number:
-            try:
-                await message.delete()
-            except discord.HTTPException:
-                pass
-            lock.release()
-            return
-        await self.update_heats_cache(message.guild, message.author)
-        total_heat = sum(heat[2] for heat in heats)
-        if total_heat >= config["heats"]["max"]:
-            trigger_messages = sorted(
-                {heat[3] for heat in heats},
-                key=lambda m: m.created_at,
-            )
-            filter_value = sorted(
-                {heat[1]: sum(h[2] for h in heats if h[1] == heat[1]) for heat in heats}.items(),
-                key=lambda item: item[1],
-            )[-1]
-            if config["heats"]["reset_after_punishment"]:
-                heats.clear()
-            category_value, filter = next(
-                (
-                    (category, f)
-                    for category, data in AUTO_MOD_FILTERS.items()
-                    for f in data["filters"]
-                    if f["value"] == filter_value[0]
-                ),
-            )
-            if config["filters"][category_value][filter["value"]].get("added_heat", 0) >= 50:
+        async with self.strikes_locks[message.guild][message.author]:
+            if self.strikes_cache[message.guild][message.author] > number:
                 try:
                     await message.delete()
                 except discord.HTTPException:
                     pass
-            reason = filter["reason"]()
-            audit_log_reason = f"Security's Auto Mod: {filter['name'] if ' (' not in filter['name'] else filter['name'].split(' (')[0]}."
-            filter_config = config["filters"][category_value][filter["value"]]
-            if await self.cog.is_moderator_or_higher(
-                message.author,
-            ):  # An administrator can't be timed out, and we don't want to get the staff kicked/banned.
-                try:
-                    await self.cog.quarantine_member(
-                        member=message.author,
-                        reason=reason,
-                        trigger_messages=trigger_messages,
-                        context_message=message,
-                    )
-                except RuntimeError:
-                    pass
-            elif (action_value := filter_config["action"]) is None:
-                if self.strikes_cache[message.guild][message.author] < 3:
-                    duration = await DurationConverter.convert(
-                        None,
-                        config["strike_durations"]["regular"],
-                    )
-                else:
-                    duration = await DurationConverter.convert(
-                        None,
-                        config["strike_durations"]["severe"],
-                    )
-                for __ in range(self.strikes_cache[message.guild][message.author] - 2):
-                    duration *= config["strike_durations"]["auto_multiplier"]
-                duration = get_correct_timeout_duration(message.author, duration)
-                if message.guild.me.guild_permissions.moderate_members:
-                    await message.author.timeout(duration, reason=audit_log_reason)
-                await self.cog.send_modlog(
-                    action="timeout",
-                    member=message.author,
-                    reason=reason,
-                    duration=duration,
-                    trigger_messages=trigger_messages,
-                    context_message=message,
-                    current_ctx=message,
+                return
+            await self.update_heats_cache(message.guild, message.author)
+            total_heat = sum(heat[2] for heat in heats)
+            if total_heat >= config["heats"]["max"]:
+                trigger_messages = sorted(
+                    {heat[3] for heat in heats},
+                    key=lambda m: m.created_at,
                 )
-            else:
-                if action_value in ("timeout", "mute"):
-                    duration = await DurationConverter.convert(
-                        None,
-                        config["strike_durations"]["individual_timeout_mute"],
-                    )
-                    if action_value == "timeout":
-                        duration = get_correct_timeout_duration(message.author, duration)
-                else:
-                    duration = None
-                if action_value in ("kick", "ban"):
-                    await self.cog.send_modlog(
-                        action=action_value,
-                        member=message.author,
-                        reason=reason,
-                        trigger_messages=trigger_messages,
-                        context_message=message,
-                        current_ctx=message,
-                    )
-                if (
-                    action_value == "timeout"
-                    and message.guild.me.guild_permissions.moderate_members
-                ):
-                    await message.author.timeout(duration, reason=audit_log_reason)
-                elif (
-                    action_value == "mute"
-                    and message.guild.me.guild_permissions.manage_roles
-                    and (Mutes := self.cog.bot.get_cog("Mutes")) is not None
-                    and hasattr(Mutes, "mute_user")
-                ):
-                    await Mutes.mute_user(
-                        guild=message.guild,
-                        author=message.guild.me,
-                        user=message.author,
-                        until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
-                        reason=audit_log_reason,
-                    )
-                elif action_value == "kick" and message.guild.me.guild_permissions.kick_members:
-                    await message.author.kick(reason=audit_log_reason)
-                elif action_value == "ban" and message.guild.me.guild_permissions.ban_members:
-                    await message.author.ban(reason=audit_log_reason)
-                elif (
-                    action_value == "quarantine"
-                    and message.author.guild.me.guild_permissions.manage_roles
-                ):
+                filter_value = sorted(
+                    {
+                        heat[1]: sum(h[2] for h in heats if h[1] == heat[1]) for heat in heats
+                    }.items(),
+                    key=lambda item: item[1],
+                )[-1]
+                if config["heats"]["reset_after_punishment"]:
+                    heats.clear()
+                category_value, filter = next(
+                    (
+                        (category, f)
+                        for category, data in AUTO_MOD_FILTERS.items()
+                        for f in data["filters"]
+                        if f["value"] == filter_value[0]
+                    ),
+                )
+                if config["filters"][category_value][filter["value"]].get("added_heat", 0) >= 50:
+                    try:
+                        await message.delete()
+                    except discord.HTTPException:
+                        pass
+                reason = filter["reason"]()
+                audit_log_reason = f"Security's Auto Mod: {filter['name'] if ' (' not in filter['name'] else filter['name'].split(' (')[0]}."
+                filter_config = config["filters"][category_value][filter["value"]]
+                if await self.cog.is_moderator_or_higher(
+                    message.author,
+                ):  # An administrator can't be timed out, and we don't want to get the staff kicked/banned.
                     try:
                         await self.cog.quarantine_member(
                             member=message.author,
                             reason=reason,
                             trigger_messages=trigger_messages,
                             context_message=message,
-                            current_ctx=message,
                         )
                     except RuntimeError:
                         pass
-                if action_value not in ("quarantine", "kick", "ban"):
+                elif (action_value := filter_config["action"]) is None:
+                    if self.strikes_cache[message.guild][message.author] < 3:
+                        duration = await DurationConverter.convert(
+                            None,
+                            config["strike_durations"]["regular"],
+                        )
+                    else:
+                        duration = await DurationConverter.convert(
+                            None,
+                            config["strike_durations"]["severe"],
+                        )
+                    for __ in range(self.strikes_cache[message.guild][message.author] - 2):
+                        duration *= config["strike_durations"]["auto_multiplier"]
+                    duration = get_correct_timeout_duration(message.author, duration)
+                    if message.guild.me.guild_permissions.moderate_members:
+                        await message.author.timeout(duration, reason=audit_log_reason)
                     await self.cog.send_modlog(
-                        action=action_value,
+                        action="timeout",
                         member=message.author,
                         reason=reason,
                         duration=duration,
@@ -944,8 +872,72 @@ class AutoModModule(Module):
                         context_message=message,
                         current_ctx=message,
                     )
-            self.strikes_cache[message.guild][message.author] += 1
-        lock.release()
+                else:
+                    if action_value in ("timeout", "mute"):
+                        duration = await DurationConverter.convert(
+                            None,
+                            config["strike_durations"]["individual_timeout_mute"],
+                        )
+                        if action_value == "timeout":
+                            duration = get_correct_timeout_duration(message.author, duration)
+                    else:
+                        duration = None
+                    if action_value in ("kick", "ban"):
+                        await self.cog.send_modlog(
+                            action=action_value,
+                            member=message.author,
+                            reason=reason,
+                            trigger_messages=trigger_messages,
+                            context_message=message,
+                            current_ctx=message,
+                        )
+                    if (
+                        action_value == "timeout"
+                        and message.guild.me.guild_permissions.moderate_members
+                    ):
+                        await message.author.timeout(duration, reason=audit_log_reason)
+                    elif (
+                        action_value == "mute"
+                        and message.guild.me.guild_permissions.manage_roles
+                        and (Mutes := self.cog.bot.get_cog("Mutes")) is not None
+                        and hasattr(Mutes, "mute_user")
+                    ):
+                        await Mutes.mute_user(
+                            guild=message.guild,
+                            author=message.guild.me,
+                            user=message.author,
+                            until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
+                            reason=audit_log_reason,
+                        )
+                    elif action_value == "kick" and message.guild.me.guild_permissions.kick_members:
+                        await message.author.kick(reason=audit_log_reason)
+                    elif action_value == "ban" and message.guild.me.guild_permissions.ban_members:
+                        await message.author.ban(reason=audit_log_reason)
+                    elif (
+                        action_value == "quarantine"
+                        and message.author.guild.me.guild_permissions.manage_roles
+                    ):
+                        try:
+                            await self.cog.quarantine_member(
+                                member=message.author,
+                                reason=reason,
+                                trigger_messages=trigger_messages,
+                                context_message=message,
+                                current_ctx=message,
+                            )
+                        except RuntimeError:
+                            pass
+                    if action_value not in ("quarantine", "kick", "ban"):
+                        await self.cog.send_modlog(
+                            action=action_value,
+                            member=message.author,
+                            reason=reason,
+                            duration=duration,
+                            trigger_messages=trigger_messages,
+                            context_message=message,
+                            current_ctx=message,
+                        )
+                self.strikes_cache[message.guild][message.author] += 1
 
 
 class ConfigureHeatModal(discord.ui.Modal):

@@ -1,6 +1,7 @@
 import datetime
 
 import discord
+from fuzzywuzzy import StringMatcher
 
 from redbot.core import commands
 
@@ -71,3 +72,9 @@ def get_next_monday_timestamp(from_time: datetime.datetime | None = None) -> int
         microsecond=0,
     )
     return int(next_monday.timestamp())
+
+
+def similarity_ratio_check(left: str, right: str, similarity_ratio: float) -> bool:
+    if not left or not right:
+        return False
+    return StringMatcher.ratio(left.lower(), right.lower()) >= similarity_ratio

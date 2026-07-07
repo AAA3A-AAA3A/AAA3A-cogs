@@ -927,6 +927,14 @@ class Security(Cog):
         current_ctx: commands.Context | discord.Message | None = None,
         member_emoji: str | None = None,  # Because quarantining changes the status.
     ) -> None:
+        if logs is None and trigger_messages:
+            logs = [
+                _("{member.mention} (`{member}`) sent {count} trigger message{s}.").format(
+                    member=member,
+                    count=len(trigger_messages),
+                    s="" if len(trigger_messages) == 1 else "s",
+                ),
+            ]
         embed: discord.Embed = await self.get_modlog_embed(
             member=member,
             action=action,
@@ -1723,6 +1731,8 @@ class Security(Cog):
             "overview",
             "authority_members",
             "join_gate",
+            "verification",
+            "anti_raid",
             "auto_mod",
             "image_checking",
             "message_analysis",

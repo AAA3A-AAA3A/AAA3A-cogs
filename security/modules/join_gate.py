@@ -298,6 +298,9 @@ class JoinGateModule(Module):
         config = await self.config_value(member.guild)()
         if not config["enabled"]:
             return
+        if await self.cog.is_trusted_admin_or_higher(member):
+            return
+
         triggered = []
         for option in JOIN_GATE_OPTIONS:
             option_config = config["options"][option["value"]]
@@ -325,85 +328,87 @@ class JoinGateModule(Module):
                 if await self.cog.is_trusted_admin_or_higher(responsible):
                     continue
             triggered.append((option, option_config))
-        if triggered:
-            option, option_config = sorted(
-                triggered,
-                key=lambda opt: next(
-                    (
-                        i
-                        for i, possible_action in enumerate(POSSIBLE_ACTIONS)
-                        if possible_action["value"] == opt[1]["action"]
+        if not triggered:
+            return
+
+        option, option_config = sorted(
+            triggered,
+            key=lambda opt: next(
+                (
+                    i
+                    for i, possible_action in enumerate(POSSIBLE_ACTIONS)
+                    if possible_action["value"] == opt[1]["action"]
+                ),
+            ),
+            reverse=True,
+        )[0]
+        action = option_config["action"]
+        if action in ("timeout", "mute"):
+            duration = await DurationConverter.convert(None, config["timeout_mute_duration"])
+            if action == "timeout":
+                duration = get_correct_timeout_duration(member, duration)
+        else:
+            duration = None
+        reason = _("**Join Gate** - Triggered by {option}.").format(option=option["name"]) + (
+            _("\n- Account Age: {account_age}\n- Minimum Age: {minimum_days} days").format(
+                account_age=CogsUtils.get_interval_string(
+                    datetime.timedelta(
+                        days=(
+                            datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at
+                        ).days,
                     ),
                 ),
-                reverse=True,
-            )[0]
-            action = option_config["action"]
-            if action in ("timeout", "mute"):
-                duration = await DurationConverter.convert(None, config["timeout_mute_duration"])
-                if action == "timeout":
-                    duration = get_correct_timeout_duration(member, duration)
-            else:
-                duration = None
-            reason = _("**Join Gate** - Triggered by {option}.").format(option=option["name"]) + (
-                _("\n- Account Age: {account_age}\n- Minimum Age: {minimum_days} days").format(
-                    account_age=CogsUtils.get_interval_string(
-                        datetime.timedelta(
-                            days=(
-                                datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at
-                            ).days,
-                        ),
-                    ),
-                    minimum_days=option_config["minimum_days"],
-                )
-                if option["value"] == "account_age"
-                else ""
+                minimum_days=option_config["minimum_days"],
             )
-            logs = [_("{member.mention} (`{member}`) joined the server.").format(member=member)]
-            if action in ("kick", "ban"):
-                await self.cog.send_modlog(
-                    action=action,
+            if option["value"] == "account_age"
+            else ""
+        )
+        logs = [_("{member.mention} (`{member}`) joined the server.").format(member=member)]
+        if action in ("kick", "ban"):
+            await self.cog.send_modlog(
+                action=action,
+                member=member,
+                reason=reason,
+                logs=logs,
+                duration=duration,
+            )
+        audit_log_reason = f"Security's Join Gate: {option['name']}."
+        if action == "timeout" and member.guild.me.guild_permissions.moderate_members:
+            await member.timeout(duration, reason=audit_log_reason)
+        elif (
+            action == "mute"
+            and member.guild.me.guild_permissions.manage_roles
+            and (Mutes := self.cog.bot.get_cog("Mutes")) is not None
+            and hasattr(Mutes, "mute_user")
+        ):
+            await Mutes.mute_user(
+                guild=member.guild,
+                author=member.guild.me,
+                user=member,
+                until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
+                reason=audit_log_reason,
+            )
+        elif action == "kick" and member.guild.me.guild_permissions.kick_members:
+            await member.kick(reason=audit_log_reason)
+        elif action == "ban" and member.guild.me.guild_permissions.ban_members:
+            await member.ban(reason=audit_log_reason)
+        elif action == "quarantine" and member.guild.me.guild_permissions.manage_roles:
+            try:
+                await self.cog.quarantine_member(
                     member=member,
                     reason=reason,
                     logs=logs,
-                    duration=duration,
                 )
-            audit_log_reason = f"Security's Join Gate: {option['name']}."
-            if action == "timeout" and member.guild.me.guild_permissions.moderate_members:
-                await member.timeout(duration, reason=audit_log_reason)
-            elif (
-                action == "mute"
-                and member.guild.me.guild_permissions.manage_roles
-                and (Mutes := self.cog.bot.get_cog("Mutes")) is not None
-                and hasattr(Mutes, "mute_user")
-            ):
-                await Mutes.mute_user(
-                    guild=member.guild,
-                    author=member.guild.me,
-                    user=member,
-                    until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
-                    reason=audit_log_reason,
-                )
-            elif action == "kick" and member.guild.me.guild_permissions.kick_members:
-                await member.kick(reason=audit_log_reason)
-            elif action == "ban" and member.guild.me.guild_permissions.ban_members:
-                await member.ban(reason=audit_log_reason)
-            elif action == "quarantine" and member.guild.me.guild_permissions.manage_roles:
-                try:
-                    await self.cog.quarantine_member(
-                        member=member,
-                        reason=reason,
-                        logs=logs,
-                    )
-                except RuntimeError:
-                    pass
-            if action not in ("quarantine", "kick", "ban"):
-                await self.cog.send_modlog(
-                    action=action,
-                    member=member,
-                    reason=reason,
-                    logs=logs,
-                    duration=duration,
-                )
+            except RuntimeError:
+                pass
+        if action not in ("quarantine", "kick", "ban"):
+            await self.cog.send_modlog(
+                action=action,
+                member=member,
+                reason=reason,
+                logs=logs,
+                duration=duration,
+            )
 
 
 class ConfigureOptionModal(discord.ui.Modal):

@@ -29,6 +29,8 @@ class Colors(Enum):
     WHITELIST: discord.Color = discord.Color.light_embed()
     WEEKLY_DIGEST: discord.Color = discord.Color.teal()
 
+    VERIFICATION: discord.Color = discord.Color.blurple()
+    ANTI_RAID: discord.Color = discord.Color.dark_gray()
     REPORTS: discord.Color = discord.Color.blue()
     DANK_POOL_PROTECTION: discord.Color = discord.Color.dark_gold()
     UNAUTHORIZED_TEXT_CHANNEL_DELETIONS: discord.Color = discord.Color.dark_red()
@@ -61,6 +63,8 @@ class Emojis(Enum):
     WEEKLY_DIGEST = "📊"
 
     JOIN_GATE = "🚪"
+    VERIFICATION = "🔠"
+    ANTI_RAID = "⚔️"
     AUTO_MOD = "♨️"
     IMAGE_CHECKING = "🖼️"
     MESSAGE_ANALYSIS = "🤖"

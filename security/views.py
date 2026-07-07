@@ -2,6 +2,7 @@ import asyncio
 import datetime
 import functools
 import typing
+from io import BytesIO
 
 import discord
 from dictdiffer import diff
@@ -364,7 +365,7 @@ class SettingsView(discord.ui.View):
         self.page: str = "overview"
         self._message: discord.Message = None
         self.last_state: dict = {}
-        self.health_score_file: discord.File | None = None
+        self.img_file: discord.File | None = None
 
         self.reset_recovery_key.label = _("Reset Recovery Key")
         self.create_quarantine_role.label = _("Create Quarantine Role")
@@ -417,7 +418,7 @@ class SettingsView(discord.ui.View):
         self._message: discord.Message = await self.ctx.send(
             embed=await self.get_embed(),
             view=self,
-            file=self.health_score_file,
+            file=self.img_file,
         )
         self.cog.views[self._message] = self
         return self._message
@@ -429,7 +430,7 @@ class SettingsView(discord.ui.View):
             await self._message.edit(
                 embed=embed,
                 view=self,
-                attachments=[self.health_score_file] if self.health_score_file else [],
+                attachments=[self.img_file] if self.img_file else [],
             )
         except discord.HTTPException:
             pass
@@ -470,7 +471,7 @@ class SettingsView(discord.ui.View):
             )
             await self.cog.config.guild(self.ctx.guild).logs.set(logs)
         self.last_state = new_state
-        self.health_score_file = None
+        self.img_file = None
 
         embed: discord.Embed = discord.Embed(
             timestamp=self.ctx.message.created_at,
@@ -577,8 +578,8 @@ class SettingsView(discord.ui.View):
                     inline=True,
                 )
             score = (await self.cog.get_health_score(self.ctx.guild))[0]
-            self.health_score_file = self.cog.get_health_score_file(score, get_health_grade(score))
-            embed.set_image(url=f"attachment://{self.health_score_file.filename}")
+            self.img_file = self.cog.get_health_score_file(score, get_health_grade(score))
+            embed.set_image(url=f"attachment://{self.img_file.filename}")
         elif self.page == "authority_members":
             embed.title = _("Security — Authority Members")
             embed.description = _(
@@ -700,6 +701,13 @@ class SettingsView(discord.ui.View):
                 ):
                     continue
                 self.add_item(component)
+            if module.key_name() == "verification":
+                __, captcha_img = await asyncio.to_thread(module.generate_captcha)
+                buffer = BytesIO()
+                captcha_img.save(buffer, format="PNG")
+                buffer.seek(0)
+                self.img_file = discord.File(buffer, filename="captcha.png")
+                embed.set_image(url=f"attachment://{self.img_file.filename}")
         return embed
 
     @discord.ui.select(min_values=1, max_values=1)
@@ -709,7 +717,7 @@ class SettingsView(discord.ui.View):
         await interaction.response.edit_message(
             embed=embed,
             view=self,
-            attachments=[self.health_score_file] if self.health_score_file else [],
+            attachments=[self.img_file] if self.img_file else [],
         )
 
     @discord.ui.button(emoji="🔑", label="Reset Recovery Key", style=discord.ButtonStyle.primary)

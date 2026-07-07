@@ -394,19 +394,11 @@ class DankPoolProtectionModule(Module):
                 payout_logs_channel_select.values[0] if payout_logs_channel_select.values else None
             )
             if selected:
+                config["payout_logs_channel"] = selected.id
                 await self.config_value(guild).payout_logs_channel.set(selected.id)
-                await interaction.response.send_message(
-                    _("✅ {selected} set as the payout logs channel.").format(
-                        selected=selected.mention,
-                    ),
-                    ephemeral=True,
-                )
             else:
+                config["payout_logs_channel"] = None
                 await self.config_value(guild).payout_logs_channel.clear()
-                await interaction.response.send_message(
-                    _("✅ The logs channel has been unset."),
-                    ephemeral=True,
-                )
             await view.edit_message()
 
         payout_logs_channel_select.callback = payout_logs_channel_select_callback
@@ -436,6 +428,7 @@ class DankPoolProtectionModule(Module):
                 },
                 reason=_("Created by Security's Dank Pool Protection Module."),
             )
+            config["payout_logs_channel"] = channel.id
             await self.config_value(guild).payout_logs_channel.set(channel.id)
             await interaction.followup.send(
                 _("✅ A new payout logs channel has been created: {channel.mention}.").format(

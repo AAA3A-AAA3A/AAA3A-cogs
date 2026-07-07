@@ -129,12 +129,50 @@ class ReportsModule(Module):
 
         components = [ToggleModuleButton(self, guild, view, config["enabled"])]
 
+        create_a_report_channel_button: discord.ui.Button = discord.ui.Button(
+            emoji=Emojis.CHANNEL.value,
+            label=_("Create a Report Channel"),
+            style=discord.ButtonStyle.secondary,
+            disabled=not guild.me.guild_permissions.manage_channels,
+        )
+
+        async def create_a_report_channel_callback(interaction: discord.Interaction):
+            await interaction.response.defer(ephemeral=True, thinking=True)
+            channel = await guild.create_text_channel(
+                name=_("{emoji}・reports").format(emoji=Emojis.REPORTS.value),
+                topic=_("This channel is used for reports."),
+                overwrites={
+                    guild.default_role: discord.PermissionOverwrite(
+                        view_channel=False,
+                        send_messages=False,
+                    ),
+                    guild.me: discord.PermissionOverwrite(
+                        view_channel=True,
+                        send_messages=True,
+                        embed_links=True,
+                    ),
+                },
+                reason=_("Created by Security's Reports Module."),
+            )
+            config["channel"] = channel.id
+            await self.config_value(guild).channel.set(channel.id)
+            await interaction.followup.send(
+                _("✅ A new report channel has been created: {channel.mention}.").format(
+                    channel=channel,
+                ),
+                ephemeral=True,
+            )
+            await view.edit_message()
+
+        create_a_report_channel_button.callback = create_a_report_channel_callback
+        components.append(create_a_report_channel_button)
+
         anonymous_button: discord.ui.Button = discord.ui.Button(
+            emoji="🕵️",
             label=_("Anonymous Reporting"),
             style=discord.ButtonStyle.success
             if config["anonymous"]
             else discord.ButtonStyle.danger,
-            emoji="🕵️",
         )
 
         async def anonymous_callback(interaction: discord.Interaction):
@@ -147,11 +185,11 @@ class ReportsModule(Module):
         components.append(anonymous_button)
 
         staff_actions_button: discord.ui.Button = discord.ui.Button(
+            emoji=Emojis.ISSUED_BY.value,
             label=_("Staff Actions"),
             style=discord.ButtonStyle.success
             if config["allow_staff_actions"]
             else discord.ButtonStyle.danger,
-            emoji=Emojis.ISSUED_BY.value,
         )
 
         async def staff_actions_callback(interaction: discord.Interaction):
@@ -163,7 +201,7 @@ class ReportsModule(Module):
         staff_actions_button.callback = staff_actions_callback
         components.append(staff_actions_button)
 
-        channel_select = discord.ui.ChannelSelect(
+        channel_select: discord.ui.ChannelSelect = discord.ui.ChannelSelect(
             channel_types=[discord.ChannelType.text],
             placeholder=_("Select report channel"),
             min_values=0,
@@ -173,18 +211,18 @@ class ReportsModule(Module):
 
         async def channel_callback(interaction: discord.Interaction):
             selected = channel_select.values[0] if channel_select.values else None
-            config["channel"] = selected.id if selected is not None else None
-            await self.config_value(guild).channel.set(config["channel"])
-            await interaction.response.send_message(
-                _("✅ Report channel updated."),
-                ephemeral=True,
-            )
+            if selected is not None:
+                config["channel"] = selected.id
+                await self.config_value(guild).channel.set(selected.id)
+            else:
+                config["channel"] = None
+                await self.config_value(guild).channel.clear()
             await view.edit_message()
 
         channel_select.callback = channel_callback
         components.append(channel_select)
 
-        role_select = discord.ui.RoleSelect(
+        role_select: discord.ui.RoleSelect = discord.ui.RoleSelect(
             placeholder=_("Select ping role"),
             min_values=0,
             max_values=1,
@@ -193,12 +231,12 @@ class ReportsModule(Module):
 
         async def role_callback(interaction: discord.Interaction):
             selected = role_select.values[0] if role_select.values else None
-            config["ping_role"] = selected.id if selected else None
-            await self.config_value(guild).ping_role.set(config["ping_role"])
-            await interaction.response.send_message(
-                _("✅ Ping role updated."),
-                ephemeral=True,
-            )
+            if selected is not None:
+                config["ping_role"] = selected.id
+                await self.config_value(guild).ping_role.set(selected.id)
+            else:
+                config["ping_role"] = None
+                await self.config_value(guild).ping_role.clear()
             await view.edit_message()
 
         role_select.callback = role_callback

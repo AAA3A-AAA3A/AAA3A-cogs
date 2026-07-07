@@ -27,8 +27,6 @@ class ImageCheckingModule(Module):
     description = "Detect and respond to matching images using perceptual hashes."
     default_config = {
         "enabled": False,
-        "action": "mute",
-        "duration": "24h",
         "hashes": [
             "d0f0872f2f60f0c7",
             "c13a37c9c0b736c9",
@@ -80,6 +78,8 @@ class ImageCheckingModule(Module):
             "be49134d227d3e54",
             "98fc3f63661ec013",
         ],
+        "action": "mute",
+        "duration": "24h",
     }
 
     def __init__(self, cog: commands.Cog) -> None:
@@ -359,7 +359,7 @@ class ImageCheckingModule(Module):
                     ephemeral=True,
                 )
                 return
-            await interaction.response.defer(ephemeral=True)
+            await interaction.response.defer()
             config["action"] = action_select.values[0]
             await self.config_value(guild).set(config)
             await view.edit_message()
@@ -407,101 +407,72 @@ class ImageCheckingModule(Module):
                 return
         if await self.cog.is_message_whitelisted(message, "image_checking"):
             return
-        lock = self.locks[message.guild][message.author]
-        await lock.acquire()
-        if self.strikes_cache[message.guild][message.author] > number:
+
+        async with self.locks[message.guild][message.author]:
+            if self.strikes_cache[message.guild][message.author] > number:
+                try:
+                    await message.delete()
+                except discord.HTTPException:
+                    pass
+                return
+            for attachment in message.attachments:
+                if (
+                    hash_value := await self.hash_image(attachment)
+                ) is not None and await self.check_image(config["hashes"], hash_value):
+                    break
+            else:
+                for embed in message.embeds:
+                    if embed.type == "image" and embed.thumbnail and embed.thumbnail.url:
+                        data = {
+                            "id": 0,
+                            "url": embed.thumbnail.url,
+                            "proxy_url": embed.thumbnail.proxy_url,
+                            "filename": embed.thumbnail.url.split("?")[0].split("/")[-1],
+                            "content_type": embed._thumbnail.get("content_type", ""),
+                            "height": embed.thumbnail.height,
+                            "width": embed.thumbnail.width,
+                            "flags": embed.thumbnail.flags,
+                            "size": 1024,
+                        }
+                        attachment = discord.Attachment(
+                            data=data,
+                            state=message._state,
+                        )
+                        if (
+                            hash_value := await self.hash_image(attachment)
+                        ) is not None and await self.check_image(config["hashes"], hash_value):
+                            break
+                else:
+                    return
+
             try:
                 await message.delete()
             except discord.HTTPException:
                 pass
-            lock.release()
-            return
-        for attachment in message.attachments:
-            if (
-                hash_value := await self.hash_image(attachment)
-            ) is not None and await self.check_image(config["hashes"], hash_value):
-                break
-        else:
-            for embed in message.embeds:
-                if embed.type == "image" and embed.thumbnail and embed.thumbnail.url:
-                    data = {
-                        "id": 0,
-                        "url": embed.thumbnail.url,
-                        "proxy_url": embed.thumbnail.proxy_url,
-                        "filename": embed.thumbnail.url.split("?")[0].split("/")[-1],
-                        "content_type": embed._thumbnail.get("content_type", ""),
-                        "height": embed.thumbnail.height,
-                        "width": embed.thumbnail.width,
-                        "flags": embed.thumbnail.flags,
-                        "size": 1024,
-                    }
-                    attachment = discord.Attachment(
-                        data=data,
-                        state=message._state,
-                    )
-                    if (
-                        hash_value := await self.hash_image(attachment)
-                    ) is not None and await self.check_image(config["hashes"], hash_value):
-                        break
+            self.strikes_cache[message.guild][message.author] += 1
+
+            action_value = config["action"]
+            reason = _(
+                "**Image Checking** - Matching image detected (hash `{hash_value}`)."
+            ).format(
+                hash_value=hash_value,
+            )
+            audit_log_reason = (
+                f"Security's Image Checking: matching image detected (hash `{hash_value}`)."
+            )
+            file = await attachment.to_file()
+            if action_value in ("timeout", "mute"):
+                duration = await DurationConverter.convert(
+                    None,
+                    config["duration"],
+                )
+                if action_value == "timeout":
+                    duration = get_correct_timeout_duration(message.author, duration)
             else:
-                lock.release()
-                return
-        try:
-            await message.delete()
-        except discord.HTTPException:
-            pass
-        self.strikes_cache[message.guild][message.author] += 1
-        action_value = config["action"]
-        reason = _("**Image Checking** - Matching image detected (hash `{hash_value}`).").format(
-            hash_value=hash_value,
-        )
-        audit_log_reason = (
-            f"Security's Image Checking: matching image detected (hash `{hash_value}`)."
-        )
-        file = await attachment.to_file()
-        if action_value in ("timeout", "mute"):
-            duration = await DurationConverter.convert(
-                None,
-                config["duration"],
-            )
-            if action_value == "timeout":
-                duration = get_correct_timeout_duration(message.author, duration)
-        else:
-            duration = None
-        if action_value in ("kick", "ban"):
-            await self.cog.send_modlog(
-                action=action_value,
-                member=message.author,
-                reason=reason,
-                trigger_messages=[message],
-                image_file=file,
-                context_message=message,
-                current_ctx=message,
-            )
-        if action_value == "timeout" and message.guild.me.guild_permissions.moderate_members:
-            await message.author.timeout(duration, reason=audit_log_reason)
-        elif (
-            action_value == "mute"
-            and message.guild.me.guild_permissions.manage_roles
-            and (Mutes := self.cog.bot.get_cog("Mutes")) is not None
-            and hasattr(Mutes, "mute_user")
-        ):
-            await Mutes.mute_user(
-                guild=message.guild,
-                author=message.guild.me,
-                user=message.author,
-                until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
-                reason=audit_log_reason,
-            )
-        elif action_value == "kick" and message.guild.me.guild_permissions.kick_members:
-            await message.author.kick(reason=audit_log_reason)
-        elif action_value == "ban" and message.guild.me.guild_permissions.ban_members:
-            await message.author.ban(reason=audit_log_reason)
-        elif (
-            action_value == "quarantine" and message.author.guild.me.guild_permissions.manage_roles
-        ):
-            try:
-                await self.cog.quarantine_member(
+                duration = None
+            if action_value in ("kick", "ban"):
+                await self.cog.send_modlog(
+                    action=action_value,
                     member=message.author,
                     reason=reason,
                     trigger_messages=[message],
@@ -509,20 +480,51 @@ class ImageCheckingModule(Module):
                     context_message=message,
                     current_ctx=message,
                 )
-            except RuntimeError:
-                pass
-        if action_value not in ("quarantine", "kick", "ban"):
-            await self.cog.send_modlog(
-                action=action_value,
-                member=message.author,
-                reason=reason,
-                duration=duration,
-                trigger_messages=[message],
-                image_file=file,
-                context_message=message,
-                current_ctx=message,
-            )
-        lock.release()
+            if action_value == "timeout" and message.guild.me.guild_permissions.moderate_members:
+                await message.author.timeout(duration, reason=audit_log_reason)
+            elif (
+                action_value == "mute"
+                and message.guild.me.guild_permissions.manage_roles
+                and (Mutes := self.cog.bot.get_cog("Mutes")) is not None
+                and hasattr(Mutes, "mute_user")
+            ):
+                await Mutes.mute_user(
+                    guild=message.guild,
+                    author=message.guild.me,
+                    user=message.author,
+                    until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
+                    reason=audit_log_reason,
+                )
+            elif action_value == "kick" and message.guild.me.guild_permissions.kick_members:
+                await message.author.kick(reason=audit_log_reason)
+            elif action_value == "ban" and message.guild.me.guild_permissions.ban_members:
+                await message.author.ban(reason=audit_log_reason)
+            elif (
+                action_value == "quarantine"
+                and message.author.guild.me.guild_permissions.manage_roles
+            ):
+                try:
+                    await self.cog.quarantine_member(
+                        member=message.author,
+                        reason=reason,
+                        trigger_messages=[message],
+                        image_file=file,
+                        context_message=message,
+                        current_ctx=message,
+                    )
+                except RuntimeError:
+                    pass
+            if action_value not in ("quarantine", "kick", "ban"):
+                await self.cog.send_modlog(
+                    action=action_value,
+                    member=message.author,
+                    reason=reason,
+                    duration=duration,
+                    trigger_messages=[message],
+                    image_file=file,
+                    context_message=message,
+                    current_ctx=message,
+                )
 
 
 class ConfigureDurationModal(discord.ui.Modal):
@@ -541,7 +543,7 @@ class ConfigureDurationModal(discord.ui.Modal):
         self.duration_input: discord.ui.TextInput = discord.ui.TextInput(
             label=_("Duration:"),
             style=discord.TextStyle.short,
-            default=str(duration),
+            default=duration,
             required=True,
         )
         self.add_item(self.duration_input)

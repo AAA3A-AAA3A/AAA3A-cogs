@@ -22,7 +22,7 @@ _: Translator = Translator("Security", __file__)
 
 
 LEVELS: dict[str, float] = {
-    # "toxic": 0.75,
+    # "toxicity": 0.75,
     "severe_toxicity": 0.15,
     # "obscene": 0.75,
     "identity_attack": 0.25,
@@ -388,7 +388,7 @@ class MessageAnalysisModule(Module):
             reason += box(
                 "\n{\n"
                 + "\n".join(
-                    f"  {key}: {value:.3f},{'  # ⚠️' if value >= config['levels'][key] else ''}"
+                    f"  {key}: {value:.3f},{'  # ⚠️' if key in LEVELS and value >= config['levels'][key] else ''}"
                     for key, value in result.items()
                 )
                 + "\n}",

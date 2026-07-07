@@ -408,7 +408,12 @@ class VerificationModule(Module):
         ) is None:
             return
         bot_permissions = channel.permissions_for(member.guild.me)
-        if not bot_permissions.view_channel or not bot_permissions.send_messages:
+        if (
+            not bot_permissions.view_channel
+            or not bot_permissions.send_messages
+            or not bot_permissions.embed_links
+            or not bot_permissions.attach_files
+        ):
             return
         if await self.cog.is_trusted_admin_or_higher(member):
             return

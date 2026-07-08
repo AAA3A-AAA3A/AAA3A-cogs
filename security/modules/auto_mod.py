@@ -84,7 +84,8 @@ async def check_invite_links(
 
 
 NSFW_LINKS: set[str] = set()
-BAD_WORDS: set[str] = set()
+BAD_WORDS_BY_LANG: dict[str, set[str]] = {}
+AVAILABLE_LANGUAGES: list[str] = []
 AUTO_MOD_FILTERS: dict[
     str,
     dict[
@@ -439,17 +440,17 @@ AUTO_MOD_FILTERS: dict[
                 "emoji": Emojis.WORD_LISTS.value,
                 "value": "premade_bad_word_lists",
                 "default_added_heat": 100.0,
+                "params": [("languages", [])],
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
                     * sum(
-                        [
-                            len(
-                                re.compile(rf"\b{bad_word}\b", re.IGNORECASE).findall(
-                                    message.content,
-                                ),
-                            )
-                            for bad_word in BAD_WORDS
-                        ],
+                        len(
+                            re.compile(rf"\b{re.escape(bad_word)}\b", re.IGNORECASE).findall(
+                                message.content,
+                            ),
+                        )
+                        for lang in (filter_config.get("languages") or AVAILABLE_LANGUAGES)
+                        for bad_word in BAD_WORDS_BY_LANG.get(lang, set())
                     )
                 ),
                 "reason": lambda: _("**Auto Mod** - Bad words detected."),
@@ -554,9 +555,12 @@ class AutoModModule(Module):
 
     async def load(self) -> None:
         data_path = bundled_data_path(self.cog)
-        for file in data_path.glob("bad_words/*.txt"):
+        for file in sorted((data_path / "bad_words").glob("*.txt")):
+            lang = file.stem
             with open(file, encoding="utf-8") as f:
-                BAD_WORDS.update(word.strip().lower() for word in f.readlines() if word.strip())
+                words = {word.strip().lower() for word in f.readlines() if word.strip()}
+            BAD_WORDS_BY_LANG[lang] = words
+            AVAILABLE_LANGUAGES.append(lang)
         with open(data_path / "nsfw_links.txt", encoding="utf-8") as f:
             NSFW_LINKS.update(line.strip().lower() for line in f if line.strip())
         self.cog.bot.add_listener(self.on_message)
@@ -1144,16 +1148,29 @@ class ConfigureFilterCategoryView(discord.ui.View):
                     (
                         "\n"
                         + "\n".join(
-                            f"- {key.replace('_', ' ').title()}: "
-                            + (
-                                ("✅" if filter_config[key] else "❌")
-                                if isinstance(filter_config[key], bool)
-                                else (
-                                    str(filter_config[key])
-                                    if not isinstance(filter_config[key], list)
-                                    else _("[{count} item{s}]").format(
-                                        count=len(filter_config[key]),
-                                        s="" if len(filter_config[key]) == 1 else "s",
+                            (
+                                _("- Languages: {langs} ({count}/{total})").format(
+                                    langs=", ".join(
+                                        lang.upper()
+                                        for lang in (
+                                            filter_config["languages"] or AVAILABLE_LANGUAGES
+                                        )
+                                    ),
+                                    count=len(filter_config["languages"] or AVAILABLE_LANGUAGES),
+                                    total=len(AVAILABLE_LANGUAGES),
+                                )
+                                if key == "languages"
+                                else f"- {key.replace('_', ' ').title()}: "
+                                + (
+                                    ("✅" if filter_config[key] else "❌")
+                                    if isinstance(filter_config[key], bool)
+                                    else (
+                                        str(filter_config[key])
+                                        if not isinstance(filter_config[key], list)
+                                        else _("[{count} item{s}]").format(
+                                            count=len(filter_config[key]),
+                                            s="" if len(filter_config[key]) == 1 else "s",
+                                        )
                                     )
                                 )
                             )
@@ -1231,6 +1248,16 @@ class ConfigureFilterCategoryView(discord.ui.View):
         filter_config = (await self.module.config_value(self.guild)())["filters"][self.category][
             filter["value"]
         ]
+        if filter["value"] == "premade_bad_word_lists":
+            await interaction.response.defer(ephemeral=True)
+            await BadWordLanguageView(
+                self.module,
+                self.guild,
+                self.parent_view,
+                self,
+                filter_config,
+            ).start(interaction)
+            return
         await interaction.response.send_modal(
             ConfigureFilterModal(
                 self.module,
@@ -1242,6 +1269,150 @@ class ConfigureFilterCategoryView(discord.ui.View):
                 filter_config,
             ),
         )
+
+
+class BadWordLanguageView(discord.ui.View):
+    """View for selecting bad word languages and configuring the premade_bad_word_lists filter."""
+
+    def __init__(
+        self,
+        module: AutoModModule,
+        guild: discord.Guild,
+        parent_view: SettingsView,
+        category_view: ConfigureFilterCategoryView,
+        filter_config: dict,
+    ) -> None:
+        super().__init__(timeout=300)
+        self.module: AutoModModule = module
+        self.guild: discord.Guild = guild
+        self.parent_view: SettingsView = parent_view
+        self.category_view: ConfigureFilterCategoryView = category_view
+        self.filter_config: dict = filter_config
+        self._message: discord.Message = None
+
+        if not AVAILABLE_LANGUAGES:
+            return
+
+        current_langs = filter_config.get("languages") or AVAILABLE_LANGUAGES
+        for chunk in [
+            AVAILABLE_LANGUAGES[i : i + 25] for i in range(0, len(AVAILABLE_LANGUAGES), 25)
+        ]:
+            chunk_select: discord.ui.Select = discord.ui.Select(
+                placeholder=_("Select languages ({first}–{last})...").format(
+                    first=chunk[0].upper(),
+                    last=chunk[-1].upper(),
+                ),
+                min_values=0,
+                max_values=len(chunk),
+                options=[
+                    discord.SelectOption(
+                        label=lang.upper(),
+                        value=lang,
+                        description=_("{count} words").format(
+                            count=len(BAD_WORDS_BY_LANG.get(lang, set())),
+                        ),
+                        default=lang in current_langs,
+                    )
+                    for lang in chunk
+                ],
+            )
+
+            async def lang_callback(interaction: discord.Interaction, sel=chunk_select) -> None:
+                await interaction.response.defer()
+                chunk_langs = {option.value for option in sel.options}
+                kept = [
+                    lang
+                    for lang in (self.filter_config.get("languages") or AVAILABLE_LANGUAGES)
+                    if lang not in chunk_langs
+                ]
+                selected = kept + list(sel.values)
+                if set(selected) == set(AVAILABLE_LANGUAGES):
+                    selected = []
+                self.filter_config["languages"] = selected
+                await self.module.config_value(self.guild).filters.set_raw(
+                    "word_blacklist",
+                    "premade_bad_word_lists",
+                    value=self.filter_config,
+                )
+                active = selected or AVAILABLE_LANGUAGES
+                await interaction.followup.send(
+                    _("✅ Bad word languages updated: {active}/{total} active.").format(
+                        active=len(active),
+                        total=len(AVAILABLE_LANGUAGES),
+                    ),
+                    ephemeral=True,
+                )
+                try:
+                    await self.category_view._message.edit(
+                        embed=await self.category_view.get_embed(),
+                        view=self.category_view,
+                    )
+                except discord.HTTPException:
+                    pass
+                await self.parent_view.edit_message()
+
+            chunk_select.callback = lang_callback
+            self.add_item(chunk_select)
+
+        settings_button: discord.ui.Button = discord.ui.Button(
+            label=_("Heat & Action"),
+            style=discord.ButtonStyle.secondary,
+        )
+
+        async def settings_button_callback(interaction: discord.Interaction) -> None:
+            matched = next(
+                f
+                for f in AUTO_MOD_FILTERS["word_blacklist"]["filters"]
+                if f["value"] == "premade_bad_word_lists"
+            )
+            await interaction.response.send_modal(
+                ConfigureFilterModal(
+                    self.module,
+                    self.guild,
+                    self.parent_view,
+                    self.category_view,
+                    "word_blacklist",
+                    matched,
+                    self.filter_config,
+                ),
+            )
+
+        settings_button.callback = settings_button_callback
+        self.add_item(settings_button)
+
+    async def start(self, interaction: discord.Interaction) -> None:
+        active = self.filter_config.get("languages") or AVAILABLE_LANGUAGES
+        disabled = [lang for lang in AVAILABLE_LANGUAGES if lang not in active]
+        embed = discord.Embed(
+            title=_("{emoji} Premade Bad Word Lists").format(emoji=Emojis.WORD_LISTS.value),
+            description=_(
+                "Select which language bad word lists to enable.\n\n"
+                "**Currently active:** {active}\n"
+                "**Disabled languages:** {disabled}\n"
+                "**Enabled:** {enabled} | **Added Heat:** {added_heat}% | **Action:** {action}"
+            ).format(
+                active=", ".join(lang.upper() for lang in active) if active else _("None"),
+                disabled=", ".join(lang.upper() for lang in disabled)
+                if disabled
+                else _("None (all active)"),
+                enabled="✅" if self.filter_config.get("enabled") else "❌",
+                added_heat=self.filter_config.get("added_heat", 100.0),
+                action=self.filter_config.get("action") or _("None"),
+            ),
+        )
+        self._message: discord.Message = await interaction.followup.send(
+            embed=embed,
+            view=self,
+            ephemeral=True,
+            wait=True,
+        )
+        self.module.cog.views[self._message] = self
+
+    async def on_timeout(self) -> None:
+        try:
+            await self._message.delete()
+        except discord.HTTPException:
+            pass
 
 
 class ConfigureFilterModal(discord.ui.Modal):

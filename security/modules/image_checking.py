@@ -546,7 +546,7 @@ class ConfigureDurationModal(discord.ui.Modal):
         try:
             duration = self.duration_input.value
             await DurationConverter.convert(None, duration)
-        except ValueError as e:
+        except (ValueError, commands.BadArgument) as e:
             await interaction.followup.send(
                 _("Invalid value: {error}").format(error=str(e)),
                 ephemeral=True,

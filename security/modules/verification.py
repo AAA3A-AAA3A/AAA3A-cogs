@@ -640,7 +640,7 @@ class ConfigureKickTimeoutModal(discord.ui.Modal):
         try:
             kick_timeout = self.kick_timeout_input.value
             await DurationConverter.convert(None, kick_timeout)
-        except ValueError as e:
+        except commands.BadArgument as e:
             await interaction.followup.send(
                 _("Invalid value: {error}").format(error=str(e)),
                 ephemeral=True,

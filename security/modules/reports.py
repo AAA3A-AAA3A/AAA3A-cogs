@@ -333,7 +333,7 @@ class ConfigureReportCooldownModal(discord.ui.Modal):
         try:
             cooldown = self.cooldown_input.value
             await DurationConverter.convert(None, cooldown)
-        except ValueError as e:
+        except commands.BadArgument as e:
             await interaction.followup.send(
                 _("Invalid value: {error}").format(error=str(e)),
                 ephemeral=True,

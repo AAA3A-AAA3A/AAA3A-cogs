@@ -850,7 +850,11 @@ class Security(Cog):
                     member=member,
                 ),
             }[action],
-            color=getattr(Colors, action.upper().removeprefix("UN")).value,
+            color=(
+                Colors.UNQUARANTINE.value
+                if action == "unquarantine"
+                else getattr(Colors, action.upper().removeprefix("UN")).value
+            ),
             timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
         )
         embed.set_thumbnail(url=member.display_avatar)

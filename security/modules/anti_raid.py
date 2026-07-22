@@ -491,7 +491,7 @@ class ConfigureSettingsModal(discord.ui.Modal):
             trigger_duration = self.trigger_duration_input.value
             await DurationConverter.convert(None, join_window)
             await DurationConverter.convert(None, trigger_duration)
-        except ValueError as e:
+        except (ValueError, commands.BadArgument) as e:
             await interaction.followup.send(
                 _("Invalid value: {error}").format(error=str(e)),
                 ephemeral=True,
@@ -530,7 +530,7 @@ class ConfigureDurationModal(discord.ui.Modal):
         try:
             duration = self.duration_input.value
             await DurationConverter.convert(None, duration)
-        except ValueError as e:
+        except commands.BadArgument as e:
             await interaction.followup.send(
                 _("Invalid value: {error}").format(error=str(e)),
                 ephemeral=True,

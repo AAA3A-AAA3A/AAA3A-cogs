@@ -2,7 +2,6 @@ import os
 import typing
 
 import discord
-
 from AAA3A_utils import CogsUtils
 from redbot.core import commands
 from redbot.core.bot import Red
@@ -45,10 +44,13 @@ class DashboardIntegration:
         description="Create rich Embeds and send them to a guild!",
         methods=("GET", "POST"),
     )
-    async def dashboard_guild(self, user: discord.User, guild: discord.Guild, **kwargs) -> None:
-        is_owner = user.id in self.bot.owner_ids
-        member = guild.get_member(user.id)
-        if not is_owner and not await self.bot.is_mod(member):
+    async def dashboard_guild(self, member: discord.Member, guild: discord.Guild, **kwargs) -> None:
+        is_owner = member.id in self.bot.owner_ids
+        if (
+            not is_owner
+            and not await self.bot.is_mod(member)
+            and not member.guild_permissions.manage_guild
+        ):
             return {
                 "status": 0,
                 "error_code": 403,
@@ -152,7 +154,7 @@ class DashboardIntegration:
                 else:
                     try:
                         await channel.send(**send_form.data.data)
-                    except Exception as e:
+                    except (ValueError, TypeError, discord.HTTPException) as e:
                         notifications.append(
                             {
                                 "message": f"{channel.name} ({channel.id}): {str(e)}",
@@ -161,7 +163,7 @@ class DashboardIntegration:
                         )
             s = "s" if len(send_form.channels.data) > 1 else ""
             self.logger.trace(
-                f"{len(send_form.channels.data)} message{s} sent in {humanize_list([f'`#{channel.name}` ({channel.id})' for channel in send_form.channels.data])} in `{guild.name}` ({guild.id}), from the Dashboard by `{user.display_name}` ({user.id}).",
+                f"{len(send_form.channels.data)} message{s} sent in {humanize_list([f'`#{channel.name}` ({channel.id})' for channel in send_form.channels.data])} in `{guild.name}` ({guild.id}), from the Dashboard by `{member.display_name}` ({member.id}).",
             )
             if not notifications:
                 notifications.append(

@@ -4,14 +4,13 @@ import types
 import typing
 
 import discord
-from werkzeug.datastructures import ImmutableMultiDict
-
 from redbot.core import commands
 from redbot.core.i18n import (
     get_locale_from_guild,
     set_contextual_locale,
     set_contextual_regional_format,
 )
+from werkzeug.datastructures import ImmutableMultiDict
 
 from .form import INITIAL_INIT_FIELD, Field, get_form_class
 from .pagination import Pagination
@@ -309,7 +308,7 @@ class DashboardRPC_ThirdParties:
                     return {
                         "status": 1,
                         "message": "Forbidden access.",
-                        "error_code": 403,
+                        "error_code": 404,
                         "error_message": "Looks like that this member is not found in this guild...",
                     }
                 kwargs["member_id"] = context_ids["member_id"]

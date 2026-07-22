@@ -6,13 +6,12 @@ from pathlib import Path
 
 import aiohttp
 import discord
-import torch
-import transformers
-
+from redbot.cogs.downloader.downloader import Repo
 from redbot.core import commands
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list
+
 from security.constants import Emojis
 from security.utils import get_correct_timeout_duration
 from security.views import DurationConverter, SettingsView, ToggleModuleButton
@@ -41,50 +40,6 @@ CHANGE_NAMES = {
 }
 
 
-class MultilingualDetoxify:
-    def __init__(self, ckpt_path: Path, hf_path: Path, device: str = "cpu") -> None:
-        self.device = torch.device(device)
-        ckpt = torch.load(
-            ckpt_path,
-            map_location=self.device,
-            weights_only=False,
-        )
-        arch = ckpt["config"]["arch"]["args"]
-        model_class = getattr(transformers, arch["model_name"])
-        tokenizer_class = getattr(transformers, arch["tokenizer_name"])
-        config = model_class.config_class.from_pretrained(
-            hf_path,
-            num_labels=arch["num_classes"],
-            local_files_only=True,
-        )
-        self.model = model_class(config)
-        self.model.load_state_dict(
-            ckpt["state_dict"],
-            strict=False,
-        )
-        self.model.to(self.device)
-        self.model.eval()
-        self.tokenizer = tokenizer_class.from_pretrained(
-            hf_path,
-            local_files_only=True,
-        )
-        class_names = ckpt["config"]["dataset"]["args"]["classes"]
-        self.class_names = [CHANGE_NAMES.get(name, name) for name in class_names]
-
-    @torch.inference_mode()
-    def predict(self, text: str) -> dict[str, float]:
-        inputs = self.tokenizer(
-            text,
-            return_tensors="pt",
-            truncation=True,
-            padding=True,
-        )
-        inputs = {k: v.to(self.device) for k, v in inputs.items()}
-        logits = self.model(**inputs).logits
-        scores = torch.sigmoid(logits)[0].cpu().tolist()
-        return dict(zip(self.class_names, scores))
-
-
 class MessageAnalysisModule(Module):
     name = "Message Analysis"
     emoji = Emojis.MESSAGE_ANALYSIS.value
@@ -99,7 +54,7 @@ class MessageAnalysisModule(Module):
 
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)
-        self.detoxify: MultilingualDetoxify | None = None
+        self.detoxify = None
         self.detoxify_error: bool = False
         self.locks: dict[discord.Guild, dict[discord.Member, asyncio.Lock]] = defaultdict(
             lambda: defaultdict(asyncio.Lock),
@@ -114,11 +69,40 @@ class MessageAnalysisModule(Module):
 
     async def _load_detoxify(self, download: bool = False) -> None:
         if self.detoxify is not None:
-            return
+            if not download:
+                return
         data_path = cog_data_path(self.cog)
         ckpt_path = data_path / "multilingual.ckpt"
         hf_path = data_path / "xlm-roberta-base"
         try:
+            try:
+                import torch
+                import transformers
+            except ModuleNotFoundError:
+                if not download:
+                    return
+                if (Downloader := self.cog.bot.get_cog("Downloader")) is None:
+                    self.cog.logger.error(
+                        "Downloader cog is not loaded. Cannot install required packages for MultilingualDetoxify.",
+                    )
+                    return
+                self.cog.logger.info("Installing required packages for MultilingualDetoxify...")
+                repo = Repo("", "", "", "", Path.cwd())
+                success = await repo.install_raw_requirements(
+                    ["torch", "transformers"],
+                    Downloader.LIB_PATH,
+                )
+                if not success:
+                    self.cog.logger.error(
+                        "Failed to install required packages for MultilingualDetoxify.",
+                    )
+                    return
+                self.cog.logger.info(
+                    "Required packages for MultilingualDetoxify installed successfully.",
+                )
+                import torch
+                import transformers
+
             if download:
                 self.cog.logger.info("Downloading MultilingualDetoxify model...")
                 if ckpt_path.exists():
@@ -139,7 +123,6 @@ class MessageAnalysisModule(Module):
                     transformers.AutoConfig.from_pretrained("xlm-roberta-base").save_pretrained,
                     hf_path,
                 )
-
                 await asyncio.to_thread(
                     transformers.XLMRobertaTokenizer.from_pretrained(
                         "xlm-roberta-base",
@@ -147,12 +130,58 @@ class MessageAnalysisModule(Module):
                     hf_path,
                 )
                 self.cog.logger.info("MultilingualDetoxify model downloaded successfully.")
+
             if ckpt_path.exists() and hf_path.exists():
+
+                class MultilingualDetoxify:
+                    def __init__(self, ckpt_path: Path, hf_path: Path, device: str = "cpu") -> None:
+                        self.device = torch.device(device)
+                        ckpt = torch.load(
+                            ckpt_path,
+                            map_location=self.device,
+                            weights_only=False,
+                        )
+                        arch = ckpt["config"]["arch"]["args"]
+                        model_class = getattr(transformers, arch["model_name"])
+                        tokenizer_class = getattr(transformers, arch["tokenizer_name"])
+                        config = model_class.config_class.from_pretrained(
+                            hf_path,
+                            num_labels=arch["num_classes"],
+                            local_files_only=True,
+                        )
+                        self.model = model_class(config)
+                        self.model.load_state_dict(
+                            ckpt["state_dict"],
+                            strict=False,
+                        )
+                        self.model.to(self.device)
+                        self.model.eval()
+                        self.tokenizer = tokenizer_class.from_pretrained(
+                            hf_path,
+                            local_files_only=True,
+                        )
+                        class_names = ckpt["config"]["dataset"]["args"]["classes"]
+                        self.class_names = [CHANGE_NAMES.get(name, name) for name in class_names]
+
+                    @torch.inference_mode()
+                    def predict(self, text: str) -> dict[str, float]:
+                        inputs = self.tokenizer(
+                            text,
+                            return_tensors="pt",
+                            truncation=True,
+                            padding=True,
+                        )
+                        inputs = {k: v.to(self.device) for k, v in inputs.items()}
+                        logits = self.model(**inputs).logits
+                        scores = torch.sigmoid(logits)[0].cpu().tolist()
+                        return dict(zip(self.class_names, scores))
+
                 self.detoxify = await asyncio.to_thread(
                     MultilingualDetoxify,
                     ckpt_path,
                     hf_path,
                 )
+                self.detoxify_error = False
         except Exception as e:  # noqa: BLE001
             self.detoxify_error = True
             self.cog.logger.error(f"Failed to load MultilingualDetoxify: {e}", exc_info=e)
@@ -455,7 +484,7 @@ class ConfigureDurationModal(discord.ui.Modal):
         try:
             duration = self.duration_input.value
             await DurationConverter.convert(None, duration)
-        except ValueError as e:
+        except commands.BadArgument as e:
             await interaction.followup.send(
                 _("Invalid value: {error}").format(error=str(e)),
                 ephemeral=True,

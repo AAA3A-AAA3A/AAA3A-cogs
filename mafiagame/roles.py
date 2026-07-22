@@ -6,7 +6,6 @@ import typing
 from dataclasses import dataclass, field
 
 import discord
-
 from AAA3A_utils import CogsUtils
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
@@ -29,6 +28,9 @@ from .views import (
     SelectTargetsView,
 )
 
+if typing.TYPE_CHECKING:
+    from .game import Game
+
 TARGET_TYPE_HINT = typing.Optional[
     typing.Union[
         "Player",
@@ -46,7 +48,7 @@ def _(untranslated: str) -> str:  # `redgettext` will find these strings.
 
 @dataclass
 class Player:
-    game: typing.Any
+    game: "Game"
     member: discord.Member
     role: type["Role"]
     previous_role: type["Role"] | None = None

@@ -7,6 +7,7 @@ import discord
 from AAA3A_utils import Cog, CogsUtils, Loop, Menu, Settings
 from AAA3A_utils.context import is_dev
 from redbot.core import Config, app_commands, commands
+from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils.chat_formatting import humanize_timedelta
 
@@ -87,7 +88,7 @@ DurationConverter: commands.converter.TimedeltaConverter = commands.converter.Ti
 class MafiaGame(Cog):
     """Play the Mafia game, with many roles (Mafia/Villagers/Neutral), modes (including Random and Custom), anomalies...!"""
 
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: Red) -> None:
         super().__init__(bot=bot)
         self.config: Config = Config.get_conf(
             self,

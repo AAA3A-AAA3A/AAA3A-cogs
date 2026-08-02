@@ -289,14 +289,14 @@ class DevOutput(dev_commands.DevOutput):
         return output
 
     async def run_debug(self) -> None:
-        async def add_triangle_reaction_after_1_seconds():
+        async def add_triangle_reaction_after_2_seconds():
             await asyncio.sleep(2)
             try:
                 await self.ctx.message.add_reaction("▶")
             except discord.HTTPException:
                 pass
 
-        task = asyncio.create_task(add_triangle_reaction_after_1_seconds())
+        task = asyncio.create_task(add_triangle_reaction_after_2_seconds())
 
         self.env.update({"dev_output": self})
         self.env.update(**self._locals)
@@ -327,14 +327,14 @@ class DevOutput(dev_commands.DevOutput):
         task.cancel()
 
     async def run_eval(self) -> None:
-        async def add_triangle_reaction_after_1_seconds():
+        async def add_triangle_reaction_after_2_seconds():
             await asyncio.sleep(2)
             try:
                 await self.ctx.message.add_reaction("▶")
             except discord.HTTPException:
                 pass
 
-        task = asyncio.create_task(add_triangle_reaction_after_1_seconds())
+        task = asyncio.create_task(add_triangle_reaction_after_2_seconds())
 
         self.env.update({"dev_output": self})
         try:
@@ -387,14 +387,14 @@ class DevOutput(dev_commands.DevOutput):
         task.cancel()
 
     async def run_repl(self) -> None:
-        async def add_triangle_reaction_after_1_seconds():
+        async def add_triangle_reaction_after_2_seconds():
             await asyncio.sleep(2)
             try:
                 await self.ctx.message.add_reaction("▶")
             except discord.HTTPException:
                 pass
 
-        task = asyncio.create_task(add_triangle_reaction_after_1_seconds())
+        task = asyncio.create_task(add_triangle_reaction_after_2_seconds())
 
         self.env.update({"dev_output": self})
         self.env.update(**self._locals)

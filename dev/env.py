@@ -21,11 +21,8 @@ from io import BytesIO, StringIO
 import aiohttp
 import discord
 import discord.ext
-import rich
-from rich.console import Console
-from rich.table import Table
-
 import redbot
+import rich
 from AAA3A_utils.cog import Cog
 from AAA3A_utils.cogsutils import CogsUtils
 from AAA3A_utils.context import Context, is_dev
@@ -50,6 +47,8 @@ from redbot.core import utils as redutils
 from redbot.core.bot import Red
 from redbot.core.utils import chat_formatting as cf
 from redbot.core.utils.chat_formatting import box
+from rich.console import Console
+from rich.table import Table
 
 ctxconsole = ContextVar[rich.console.Console]("ctxconsole")
 
@@ -105,7 +104,7 @@ class DevSpace:
     def __iter__(self) -> typing.Iterator[tuple[str, typing.Any]]:
         yield from self.__dict__.items()
 
-    def __reversed__(self) -> dict:
+    def __reversed__(self) -> typing.Iterator[str]:
         return self.__dict__.__reversed__()
 
     def __getattr__(self, attr: str) -> typing.Any:
@@ -174,7 +173,7 @@ class DevEnv(dict[str, typing.Any]):
         cls,
         ctx: commands.Context,
         use_extended_environment: bool = True,
-    ) -> dict[str, typing.Any]:
+    ) -> "DevEnv":
         env = cls(  # In Dev cog by Zeph.
             **{
                 "me": ctx.me,
@@ -193,7 +192,7 @@ class DevEnv(dict[str, typing.Any]):
         )
         env["interaction"] = ctx.interaction
         if getattr(ctx.channel, "category", None) is not None:
-            env["category"] = ctx.channel.category
+            env["category"] = ctx.channel.category  # type: ignore
         Dev = ctx.bot.get_cog("Dev")
         if use_extended_environment:
             env.update(cls.get_env(ctx.bot, ctx))  # My nice env!
@@ -367,9 +366,9 @@ class DevEnv(dict[str, typing.Any]):
                 raise RuntimeError(f"Module `{name}` not found.")
             return spec.origin
 
-        async def _rtfs(ctx: commands.Context, object):
-            code = inspect.getsource(object)
-            await Menu(pages=code, lang="py").start(ctx)
+        async def _rtfs(ctx: commands.Context, object_: typing.Any) -> None:
+            code = textwrap.dedent(inspect.getsource(object_)).strip()
+            await Menu(pages=code, lang="py").start(ctx, wait=False)
 
         def reference(ctx: commands.Context) -> discord.Message | None:
             if ctx.message.reference is not None and isinstance(
@@ -384,8 +383,8 @@ class DevEnv(dict[str, typing.Any]):
 
         def search_attribute(
             a,
-            b: str | None = "",
-            startswith: str | None = "",
+            b: str = "",
+            startswith: str = "",
         ) -> list[str]:
             return [
                 x
@@ -443,8 +442,8 @@ class DevEnv(dict[str, typing.Any]):
         def get_internal(ctx: commands.Context):
             def _get_internal(
                 name: typing.Literal["events", "listeners", "loggers", "parsers", "converters"],
-                b: str | None = "",
-                startswith: str | None = "",
+                b: str = "",
+                startswith: str = "",
             ):
                 if name == "events":
                     if b == "":
@@ -473,11 +472,11 @@ class DevEnv(dict[str, typing.Any]):
             return _get_internal
 
         def set_loggers_level(
-            level: str | None = logging.DEBUG,
+            level: int = logging.DEBUG,
             loggers: list | None = None,
             exclusions: list | None = None,
-            b: str | None = "",
-            startswith: str | None = "",
+            b: str = "",
+            startswith: str = "",
         ) -> int:
             __loggers = logging.Logger.manager.loggerDict
             if loggers is not None:

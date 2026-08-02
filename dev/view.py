@@ -4,7 +4,6 @@ import textwrap
 import typing
 
 import discord
-
 from AAA3A_utils import CogsUtils
 from redbot.core import commands
 from redbot.core.dev_commands import START_CODE_BLOCK_RE
@@ -71,6 +70,9 @@ class ExecuteView(discord.ui.View):
         self._message: discord.Message = None
         self._ready: asyncio.Event = asyncio.Event()
 
+        self.execute_debug.label = _("Execute Debug")
+        self.execute_eval.label = _("Execute Eval")
+
     async def start(self, ctx: commands.Context) -> discord.Message:
         self.ctx: commands.Context = ctx
         self._message: discord.Message = await self.ctx.send(view=self)
@@ -100,7 +102,7 @@ class ExecuteView(discord.ui.View):
             pass
         self._ready.set()
 
-    @discord.ui.button(label=_("Execute Debug"), custom_id="execute_debug")
+    @discord.ui.button(label="Execute Debug", custom_id="execute_debug")
     async def execute_debug(
         self,
         interaction: discord.Interaction,
@@ -110,7 +112,7 @@ class ExecuteView(discord.ui.View):
             ExecuteModal(cog=self.cog, ctx=self.ctx, choice="debug"),
         )
 
-    @discord.ui.button(label=_("Execute Eval"), custom_id="execute_eval")
+    @discord.ui.button(label="Execute Eval", custom_id="execute_eval")
     async def execute_eval(
         self,
         interaction: discord.Interaction,

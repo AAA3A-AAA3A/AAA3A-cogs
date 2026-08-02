@@ -13,9 +13,8 @@ import typing
 import aiohttp
 import discord
 import rich
-from pygments.styles import get_style_by_name
-
 from AAA3A_utils import Cog, CogsUtils, Menu, Settings
+from pygments.styles import get_style_by_name
 from redbot.core import Config, app_commands, commands, dev_commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
@@ -197,7 +196,7 @@ class DevOutput(dev_commands.DevOutput):
                         (
                             f"{self.env['prefix_dev_output']}\n\n"
                             if "prefix_dev_output" in self.env
-                            else None
+                            else ""
                         )
                         + self.__str__(output_mode=output_mode),
                     )
@@ -701,7 +700,8 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
             rich_tracebacks=await self.config.rich_tracebacks(),
             _locals=_locals,
         )
-        self._last_result = output.result
+        if output.result is not None:
+            self._last_result = output.result
         self.dev_outputs[ctx.message] = output
         if (
             type == "eval"
@@ -1129,9 +1129,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
     @commands.is_owner()
     @commands.hybrid_group(name="setdev")
     async def configuration(self, ctx: commands.Context) -> None:
-        """
-        Commands to configure Dev.
-        """
+        """Commands to configure Dev."""
         pass
 
     @configuration.command(aliases=["getenv", "getformattedenvironment", "getformattedenv"])
@@ -1146,7 +1144,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
 
     @configuration.command(aliases=["rlocals"])
     async def resetlocals(self, ctx: commands.Context) -> None:
-        """Reset its own locals in evals."""
+        """Reset your own locals in evals."""
         try:
             del self._last_locals[ctx.author]
         except ValueError:

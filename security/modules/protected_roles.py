@@ -19,7 +19,7 @@ class ProtectedRolesModule(Module):
     emoji = Emojis.PROTECTED_ROLES.value
     description = "Manage protected roles in the server."
     default_config = {
-        "enabled": True,
+        "enabled": False,
         "protected_roles": {},
     }
     configurable_by_trusted_admins = False

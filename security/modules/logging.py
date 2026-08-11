@@ -690,7 +690,7 @@ class LoggingModule(Module):
             await self.config_value(guild).set(config)
             await interaction.followup.send(
                 _("✅ A new logging category has been created: {category_channel.name}.").format(
-                    category=category,
+                    category_channel=category_channel,
                 ),
                 ephemeral=True,
             )

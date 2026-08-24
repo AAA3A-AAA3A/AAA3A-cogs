@@ -4,7 +4,6 @@ import typing
 from collections import defaultdict
 
 import discord
-
 from AAA3A_utils import Cog, CogsUtils, Menu
 from redbot.core import Config, commands
 from redbot.core.bot import Red
@@ -411,7 +410,7 @@ class Teams(Cog):
         self,
         ctx: commands.Context,
         team: TeamConverter,
-        ignore_belonging_check: bool = False,
+        ignore_belonging_check: bool | None = False,
         *,
         member: discord.Member,
     ) -> None:

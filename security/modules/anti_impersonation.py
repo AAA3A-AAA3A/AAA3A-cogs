@@ -4,9 +4,9 @@ from io import BytesIO
 import discord
 import imagehash
 from PIL import Image
-
 from redbot.core import commands
 from redbot.core.i18n import Translator
+
 from security.constants import DANGEROUS_PERMISSIONS, Emojis
 from security.utils import similarity_ratio_check
 from security.views import SettingsView, ToggleModuleButton
@@ -41,14 +41,14 @@ class AntiImpersonationModule(Module):
     ) -> tuple[typing.Literal["✅", "⚠️", "❌"], str, str]:
         config = await self.config_value(guild)()
         if not config["enabled"] and check_enabled:
-            return "❌", "Disabled", "Anti Impersonation is currently disabled."
+            return "❌", _("Disabled"), _("Anti Impersonation is currently disabled.")
         if config["quarantine"] and not guild.me.guild_permissions.manage_roles:
             return (
                 "⚠️",
                 _("Missing Permission"),
                 _("I need the `Manage Roles` permission to quarantine members."),
             )
-        return "✅", "Enabled", "Anti Impersonation is enabled and configured correctly."
+        return "✅", _("Enabled"), _("Anti Impersonation is enabled and configured correctly.")
 
     async def get_settings(self, guild: discord.Guild, view: SettingsView):
         status = await self.get_status(guild)

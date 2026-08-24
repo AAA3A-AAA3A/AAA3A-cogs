@@ -1,8 +1,8 @@
 import typing
 
 import discord
-
 from redbot.core import commands
+
 from security.views import SettingsView
 
 
@@ -20,7 +20,7 @@ class Module:
     def key_name(cls) -> str:
         return cls.name.lower().replace(" ", "_")
 
-    def config_value(self, guild: discord.Guild) -> typing.Any:
+    def config_value(self, guild: discord.Guild) -> typing.Callable[[], typing.Awaitable[dict]]:
         return getattr(self.cog.config.guild(guild).modules, self.key_name())
 
     async def load(self) -> None:

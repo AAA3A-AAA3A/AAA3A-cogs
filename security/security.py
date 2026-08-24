@@ -11,9 +11,8 @@ import discord
 import numpy as np
 import onetimepass
 import qrcode
-from PIL import Image, ImageDraw, ImageFont
-
 from AAA3A_utils import Cog, CogsUtils, Loop, Menu
+from PIL import Image, ImageDraw, ImageFont
 from redbot.core import Config, commands, modlog
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
@@ -254,6 +253,11 @@ class Security(Cog):
             return Levels.ME
         if member == member.guild.owner:
             return Levels.OWNER
+        if (
+            member.id in self.bot.owner_ids
+            and await self.config.guild(member.guild).allow_bot_owners()
+        ):
+            return Levels.EXTRA_OWNER
         level = await self.config.member(member).level()
         if level == "EXTRA_OWNER":
             return Levels.EXTRA_OWNER
@@ -275,10 +279,7 @@ class Security(Cog):
         return (await self.get_member_level(member)).value <= Levels.OWNER.value
 
     async def is_extra_owner_or_higher(self, member: discord.Member) -> bool:
-        return (await self.get_member_level(member)).value <= Levels.EXTRA_OWNER.value or (
-            member.id in self.bot.owner_ids
-            and await self.config.guild(member.guild).allow_bot_owners()
-        )
+        return (await self.get_member_level(member)).value <= Levels.EXTRA_OWNER.value
 
     async def is_trusted_admin_or_higher(self, member: discord.Member) -> bool:
         return (await self.get_member_level(member)).value <= Levels.TRUSTED_ADMIN.value
@@ -507,7 +508,7 @@ class Security(Cog):
                     timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                 )
                 embed.set_author(
-                    name=guild.owner.name,
+                    name=guild.owner.display_name,
                     icon_url=get_non_animated_asset(guild.owner.display_avatar),
                 )
                 embed.set_thumbnail(url=get_non_animated_asset(guild.icon))

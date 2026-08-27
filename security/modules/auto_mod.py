@@ -6,7 +6,6 @@ import urllib
 from collections import defaultdict
 
 import discord
-
 from redbot.core import commands
 from redbot.core.data_manager import bundled_data_path
 from redbot.core.i18n import Translator
@@ -157,6 +156,17 @@ AUTO_MOD_FILTERS: dict[
                     filter_config["added_heat"] * message.content.count("\n")
                 ),
                 "reason": lambda: _("**Auto Mod** - Spam of new lines detected."),
+            },
+            {
+                "name": "Blank Lines (each)",
+                "emoji": Emojis.NEW_LINES.value,
+                "value": "blank_lines",
+                "default_added_heat": 10.0,
+                "check": lambda message, filter_config: (
+                    filter_config["added_heat"]
+                    * len(re.findall(r"(?m)^[^\S\r\n]*$", message.content))
+                ),
+                "reason": lambda: _("**Auto Mod** - Spam of blank lines detected."),
             },
             {
                 "name": "Zalgo Characters (each)",

@@ -737,8 +737,8 @@ class Teams(Cog):
             raise commands.UserFeedbackCheckFailure(_("No teams found in this server."))
         leaderboard = []
         for team in self.teams[ctx.guild.id].values():
-            if team.points:
-                leaderboard.append((team, sum(point.amount for point in team.points)))
+            if (calculated := sum(point.amount for point in team.points)) > 0:
+                leaderboard.append((team, calculated))
         if not leaderboard:
             raise commands.UserFeedbackCheckFailure(_("No points found for any team."))
         leaderboard.sort(key=lambda x: x[1], reverse=True)

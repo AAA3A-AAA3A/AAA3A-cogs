@@ -3,11 +3,11 @@ import typing
 from dataclasses import asdict, dataclass
 
 import discord
-
 from redbot.core import commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
+
 from security.constants import Colors, Emojis
 from security.utils import get_non_animated_asset
 from security.views import SettingsView, ToggleModuleButton, get_or_fetch_member_or_user
@@ -579,7 +579,7 @@ class DankPoolProtectionModule(Module):
             or message._interaction is None
             or message.content
             or message.embeds
-            or len(message.components) < 3
+            or not message.components
             or not isinstance(message.components[0], discord.components.Container)
             or not isinstance(message.components[0].children[0], discord.components.TextDisplay)
             or message.components[0].children[0].content != "### Pending Confirmation"

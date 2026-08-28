@@ -852,6 +852,13 @@ class Teams(Cog):
             raise commands.UserFeedbackCheckFailure(_("No members found in this role."))
         if not teams:
             raise commands.UserFeedbackCheckFailure(_("No teams found in this server."))
+        members = [
+            member for member in members if not any(member in team.members for team in teams)
+        ]
+        if not members:
+            raise commands.UserFeedbackCheckFailure(
+                _("No members found in this role that are not already in a team."),
+            )
         random.shuffle(members)
         div, mod = divmod(count, len(teams))
         for team, member_count in {

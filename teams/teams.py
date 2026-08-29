@@ -637,8 +637,11 @@ class Teams(Cog):
         except RuntimeError as e:
             raise commands.UserFeedbackCheckFailure(str(e))
         await ctx.send(
-            _("✅ **{amount} points** added successfully to **{team.display_name}** team!").format(
+            _(
+                "✅ **{amount} point{s}** added successfully to **{team.display_name}** team!",
+            ).format(
                 amount=amount,
+                s="" if amount == 1 else "s",
                 team=team,
             ),
         )
@@ -673,8 +676,8 @@ class Teams(Cog):
             raise commands.UserFeedbackCheckFailure(str(e))
         await ctx.send(
             _(
-                "✅ **{amount} points** removed successfully from **{team.display_name}** team!",
-            ).format(amount=amount, team=team),
+                "✅ **{amount} point{s}** removed successfully from **{team.display_name}** team!",
+            ).format(amount=amount, s="" if amount == 1 else "s", team=team),
         )
 
     @commands.admin_or_permissions(manage_guild=True)
@@ -710,8 +713,9 @@ class Teams(Cog):
         embed: discord.Embed = await team.get_embed(sample=True)
         embed.title += _(" — Point History")
         description = "\n".join(
-            _("- **{point.amount}** points{member}{managed_by} - {timestamp}").format(
+            _("- **{point.amount}** point{s}{member}{managed_by} - {timestamp}").format(
                 point=point,
+                s="" if point.amount == 1 else "s",
                 member=_(" for {member.mention}").format(member=member)
                 if (member := point.get_member(ctx.guild)) is not None
                 else "",

@@ -8,10 +8,10 @@ from io import BytesIO
 
 import discord
 from PIL import Image, ImageDraw, ImageFont
-
 from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
+
 from security.constants import DANGEROUS_PERMISSIONS, Colors, Emojis
 from security.modules.module import Module
 from security.views import DurationConverter, SettingsView, ToggleModuleButton
@@ -29,6 +29,7 @@ class VerificationModule(Module):
         "max_attempts": 3,
         "kick_timeout": "180s",
         "roles_to_add": [],
+        "roles_to_remove": [],
     }
 
     def __init__(self, cog: commands.Cog) -> None:
@@ -69,7 +70,7 @@ class VerificationModule(Module):
                         "⚠️",
                         _("Role not assignable"),
                         _(
-                            "The role {role} is higher than my highest role and cannot be assigned.",
+                            "The role {role} is higher than my highest role and can't be assigned.",
                         ).format(role=role.mention),
                     )
                 if any(
@@ -80,6 +81,23 @@ class VerificationModule(Module):
                         _("Role not assignable"),
                         _(
                             "The role {role} is not assignable because it has dangerous permissions. Please remove those permissions or choose a different role.",
+                        ).format(role=role.mention),
+                    )
+        if config["roles_to_remove"]:
+            if (
+                not guild.me.guild_permissions.manage_roles
+                and "manage_roles" not in missing_permissions
+            ):
+                missing_permissions.append("manage_roles")
+            for role_id in config["roles_to_remove"]:
+                if (role := guild.get_role(role_id)) is None:
+                    continue
+                if not role.is_assignable():
+                    return (
+                        "⚠️",
+                        _("Role not assignable"),
+                        _(
+                            "The role {role} is higher than my highest role and can't be removed.",
                         ).format(role=role.mention),
                     )
         if not guild.me.guild_permissions.kick_members:
@@ -109,7 +127,7 @@ class VerificationModule(Module):
         )
         description = _(
             "This module verifies new members using captcha before they can access the server. "
-            "Members will be required to solve a captcha and can be automatically assigned roles upon successful verification."
+            "Members will be required to solve a captcha and can be automatically assigned roles upon successful verification.",
         )
         status = await self.get_status(guild)
         if status[0] == "⚠️":
@@ -142,6 +160,18 @@ class VerificationModule(Module):
                     [
                         f"- {role.mention} (`{role}`)"
                         for role_id in config["roles_to_add"]
+                        if (role := guild.get_role(role_id)) is not None
+                    ],
+                )
+                or _("None"),
+                "inline": False,
+            },
+            {
+                "name": _("Roles to Remove:"),
+                "value": "\n".join(
+                    [
+                        f"- {role.mention} (`{role}`)"
+                        for role_id in config["roles_to_remove"]
                         if (role := guild.get_role(role_id)) is not None
                     ],
                 )
@@ -260,6 +290,27 @@ class VerificationModule(Module):
 
         roles_to_add_select.callback = roles_to_add_callback
         components.append(roles_to_add_select)
+
+        roles_to_remove_select: discord.ui.RoleSelect = discord.ui.RoleSelect(
+            placeholder=_("Select roles to remove"),
+            min_values=0,
+            max_values=25,
+            default_values=[
+                role
+                for role_id in config["roles_to_remove"]
+                if (role := guild.get_role(role_id)) is not None and role.is_assignable()
+            ],
+        )
+
+        async def roles_to_remove_callback(interaction: discord.Interaction):
+            await interaction.response.defer()
+            selected_roles = roles_to_remove_select.values
+            config["roles_to_remove"] = [role.id for role in selected_roles]
+            await self.config_value(guild).roles_to_remove.set(config["roles_to_remove"])
+            await view.edit_message()
+
+        roles_to_remove_select.callback = roles_to_remove_callback
+        components.append(roles_to_remove_select)
 
         return title, description, fields, components
 
@@ -508,7 +559,7 @@ class VerificationModule(Module):
                     action="kick",
                     member=member,
                     reason=_(
-                        "**Verification** - Failed to verify after {max_attempts} attempts."
+                        "**Verification** - Failed to verify after {max_attempts} attempts.",
                     ).format(
                         max_attempts=config["max_attempts"],
                     ),
@@ -524,7 +575,7 @@ class VerificationModule(Module):
                 try:
                     await member.send(
                         _(
-                            "You failed to verify after {max_attempts} attempts and have been kicked from **{guild}**."
+                            "You failed to verify after {max_attempts} attempts and have been kicked from **{guild}**.",
                         ).format(
                             max_attempts=config["max_attempts"],
                             guild=member.guild.name,
@@ -555,6 +606,19 @@ class VerificationModule(Module):
             try:
                 await member.add_roles(
                     *roles_to_add,
+                    reason="Security's Verification: Verified successfully.",
+                )
+            except discord.HTTPException:
+                pass
+        roles_to_remove = [
+            role
+            for role_id in config["roles_to_remove"]
+            if (role := member.guild.get_role(role_id)) is not None and role.is_assignable()
+        ]
+        if roles_to_remove:
+            try:
+                await member.remove_roles(
+                    *roles_to_remove,
                     reason="Security's Verification: Verified successfully.",
                 )
             except discord.HTTPException:

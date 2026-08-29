@@ -309,37 +309,40 @@ AUTO_MOD_FILTERS: dict[
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
                     * len(
-                        [
-                            role
-                            for role in message.role_mentions
-                            if not role.is_default()
-                            and len(role.members) < 0.1 * len(message.guild.members)
-                        ],
+                        [role for role in message.role_mentions if not role.is_default()],
                     )
                 ),
                 "reason": lambda: _("**Auto Mod** - Spam of role mentions detected."),
             },
             {
-                "name": "@everyone, @here and main roles Mentions (each)",
+                "name": "Main Role Mentions (each)",
+                "emoji": Emojis.EVERYONE_HERE.value,
+                "value": "main_role_mentions",
+                "default_added_heat": 50.0,
+                "check": lambda message, filter_config: (
+                    filter_config["added_heat"]
+                    * len(
+                        [
+                            role
+                            for role in message.role_mentions
+                            if not role.is_default()
+                            and len(role.members) >= 0.3 * len(message.guild.members)
+                        ],
+                    )
+                ),
+                "reason": lambda: _("**Auto Mod** - Spam of main role mentions detected."),
+            },
+            {
+                "name": "@everyone and @here (each)",
                 "emoji": Emojis.EVERYONE_HERE.value,
                 "value": "everyone_here_mentions",
                 "default_added_heat": 100.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
-                    * (
-                        int(message.mention_everyone)
-                        + len(
-                            [
-                                role
-                                for role in message.role_mentions
-                                if not role.is_default()
-                                and len(role.members) >= 0.1 * len(message.guild.members)
-                            ],
-                        )
-                    )
+                    * (int(message.mention_everyone) + int(message.mention_here))
                 ),
                 "reason": lambda: _(
-                    "**Auto Mod** - Spam of @everyone, @here or main roles mentions detected.",
+                    "**Auto Mod** - Spam of @everyone or @here mentions detected.",
                 ),
             },
         ],

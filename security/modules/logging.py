@@ -4,11 +4,11 @@ import typing
 from collections import defaultdict
 
 import discord
-
 from AAA3A_utils import CogsUtils, Loop
 from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
+
 from security.constants import Emojis
 from security.utils import clean_backticks, get_non_animated_asset
 from security.views import SettingsView, ToggleModuleButton
@@ -766,17 +766,12 @@ class LoggingModule(Module):
             row=2,
         )
         first_state = list(list(config["events"].values())[0].values())[0]["enabled"]
-        if all(
-            event["enabled"] == first_state
-            for events in config["events"].values()
-            for event in events.values()
-        ):
-            if first_state:
-                toggle_all_button.label = _("Disable All Events")
-                toggle_all_button.style = discord.ButtonStyle.danger
-            else:
-                toggle_all_button.label = _("Enable All Events")
-                toggle_all_button.style = discord.ButtonStyle.success
+        if first_state:
+            toggle_all_button.label = _("Disable All Events")
+            toggle_all_button.style = discord.ButtonStyle.danger
+        else:
+            toggle_all_button.label = _("Enable All Events")
+            toggle_all_button.style = discord.ButtonStyle.success
 
         async def toggle_all_callback(interaction: discord.Interaction) -> None:
             new_state = not list(list(config["events"].values())[0].values())[0]["enabled"]
@@ -801,17 +796,12 @@ class LoggingModule(Module):
             row=2,
         )
         first_ignore_bots = list(list(config["events"].values())[0].values())[0]["ignore_bots"]
-        if all(
-            event["ignore_bots"] == first_ignore_bots
-            for events in config["events"].values()
-            for event in events.values()
-        ):
-            if first_ignore_bots:
-                ignore_bots_button.label = _("Ignore Bots")
-                ignore_bots_button.style = discord.ButtonStyle.success
-            else:
-                ignore_bots_button.label = _("Ignore Bots")
-                ignore_bots_button.style = discord.ButtonStyle.danger
+        if first_ignore_bots:
+            ignore_bots_button.label = _("Ignore Bots")
+            ignore_bots_button.style = discord.ButtonStyle.success
+        else:
+            ignore_bots_button.label = _("Ignore Bots")
+            ignore_bots_button.style = discord.ButtonStyle.danger
 
         async def ignore_bots_callback(interaction: discord.Interaction) -> None:
             new_state = not list(list(config["events"].values())[0].values())[0]["ignore_bots"]
@@ -833,19 +823,31 @@ class LoggingModule(Module):
         channel_all_select: discord.ui.ChannelSelect = discord.ui.ChannelSelect(
             channel_types=[discord.ChannelType.text],
             placeholder=_("Select a channel for all events..."),
+            min_values=0,
+            max_values=1,
             row=3,
         )
 
         async def channel_all_callback(interaction: discord.Interaction) -> None:
-            channel = channel_all_select.values[0]
+            channel = channel_all_select.values[0] if channel_all_select.values else None
             for events in config["events"].values():
                 for event in events.values():
-                    event["channel"] = channel.id
+                    event["channel"] = channel.id if channel is not None else None
             await self.config_value(guild).events.set(config["events"])
-            await interaction.response.send_message(
-                _("✅ All events will now be logged in {channel.mention}.").format(channel=channel),
-                ephemeral=True,
-            )
+            if channel is None:
+                await interaction.response.send_message(
+                    _("✅ All events will now be logged in {channel.mention}.").format(
+                        channel=channel,
+                    ),
+                    ephemeral=True,
+                )
+            else:
+                await interaction.response.send_message(
+                    _("✅ All events will now be logged in {channel.mention}.").format(
+                        channel=channel,
+                    ),
+                    ephemeral=True,
+                )
             await view.edit_message()
 
         channel_all_select.callback = channel_all_callback
@@ -1698,16 +1700,10 @@ class ConfigureEventCategoryView(discord.ui.View):
             ),
         )
         first_state = list(category_config.values())[0]["enabled"]
-        if all(event["enabled"] == first_state for event in category_config.values()):
-            self.toggle_event_category.label = (
-                _("Enable All") if not first_state else _("Disable All")
-            )
-            self.toggle_event_category.style = (
-                discord.ButtonStyle.success if not first_state else discord.ButtonStyle.danger
-            )
-        else:
-            self.toggle_event_category.label = _("Toggle All")
-            self.toggle_event_category.style = discord.ButtonStyle.secondary
+        self.toggle_event_category.label = _("Enable All") if not first_state else _("Disable All")
+        self.toggle_event_category.style = (
+            discord.ButtonStyle.success if not first_state else discord.ButtonStyle.danger
+        )
         first_channel_id = next(
             (event["channel"] for event in category_config.values()),
         )
@@ -1719,12 +1715,9 @@ class ConfigureEventCategoryView(discord.ui.View):
         else:
             self.select_logging_channel.default_values = []
         first_ignore_bots = list(category_config.values())[0]["ignore_bots"]
-        if all(event["ignore_bots"] == first_ignore_bots for event in category_config.values()):
-            self.ignore_bots.style = (
-                discord.ButtonStyle.success if first_ignore_bots else discord.ButtonStyle.danger
-            )
-        else:
-            self.ignore_bots.style = discord.ButtonStyle.secondary
+        self.ignore_bots.style = (
+            discord.ButtonStyle.success if first_ignore_bots else discord.ButtonStyle.danger
+        )
         return embed
 
     async def on_timeout(self) -> None:
@@ -1791,6 +1784,8 @@ class ConfigureEventCategoryView(discord.ui.View):
         cls=discord.ui.ChannelSelect,
         channel_types=[discord.ChannelType.text],
         placeholder="Select a channel to log events...",
+        min_values=0,
+        max_values=1,
     )
     async def select_logging_channel(
         self,
@@ -1798,20 +1793,28 @@ class ConfigureEventCategoryView(discord.ui.View):
         select: discord.ui.Select,
     ) -> None:
         category_config = await self.module.config_value(self.guild).events.get_raw(self.category)
-        channel = select.values[0]
+        channel = select.values[0] if select.values else None
         for event in category_config.values():
-            event["channel"] = channel.id
+            event["channel"] = channel.id if channel is not None else None
         await self.module.config_value(self.guild).events.set_raw(
             self.category,
             value=category_config,
         )
-        await interaction.response.send_message(
-            _("✅ All {category_name} events will now be logged in {channel.mention}.").format(
-                category_name=LOGGING_EVENTS[self.category]["name"],
-                channel=channel,
-            ),
-            ephemeral=True,
-        )
+        if channel is not None:
+            await interaction.response.send_message(
+                _("✅ All {category_name} events will now be logged in {channel.mention}.").format(
+                    category_name=LOGGING_EVENTS[self.category]["name"],
+                    channel=channel,
+                ),
+                ephemeral=True,
+            )
+        else:
+            await interaction.response.send_message(
+                _("✅ All {category_name} events will no longer be logged in any channel.").format(
+                    category_name=LOGGING_EVENTS[self.category]["name"],
+                ),
+                ephemeral=True,
+            )
         await self._message.edit(
             embed=await self.get_embed(),
             view=self,
@@ -1991,6 +1994,8 @@ class ConfigureEventView(discord.ui.View):
         cls=discord.ui.ChannelSelect,
         channel_types=[discord.ChannelType.text],
         placeholder="Select a channel to log this event...",
+        min_values=0,
+        max_values=1,
     )
     async def channel_select(
         self,
@@ -2001,20 +2006,28 @@ class ConfigureEventView(discord.ui.View):
             self.category,
             self.event["value"],
         )
-        channel = select.values[0]
-        event_config["channel"] = channel.id
+        channel = select.values[0] if select.values else None
+        event_config["channel"] = channel.id if channel is not None else None
         await self.module.config_value(self.guild).events.set_raw(
             self.category,
             self.event["value"],
             value=event_config,
         )
-        await interaction.response.send_message(
-            _("✅ {event_name} events will now be logged in {channel.mention}.").format(
-                event_name=self.event["name"],
-                channel=channel,
-            ),
-            ephemeral=True,
-        )
+        if channel is not None:
+            await interaction.response.send_message(
+                _("✅ {event_name} events will now be logged in {channel.mention}.").format(
+                    event_name=self.event["name"],
+                    channel=channel,
+                ),
+                ephemeral=True,
+            )
+        else:
+            await interaction.response.send_message(
+                _("✅ {event_name} events will no longer be logged in any channel.").format(
+                    event_name=self.event["name"],
+                ),
+                ephemeral=True,
+            )
         await self._message.edit(
             embed=await self.get_embed(),
             view=self,

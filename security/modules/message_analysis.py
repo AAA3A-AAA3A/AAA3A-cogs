@@ -182,7 +182,7 @@ class MessageAnalysisModule(Module):
                     hf_path,
                 )
                 self.detoxify_error = False
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             self.detoxify_error = True
             self.cog.logger.error(f"Failed to load MultilingualDetoxify: {e}", exc_info=e)
 

@@ -105,7 +105,7 @@ class BaseView(discord.ui.View):
         if interaction.user not in self.test.players:
             await interaction.response.send_message(
                 _(
-                    "You are not a player in this game or you are already eliminated during a previous round!",
+                    "You are not a player in this game, or you were already eliminated in a previous round!",
                 ),
                 ephemeral=True,
             )

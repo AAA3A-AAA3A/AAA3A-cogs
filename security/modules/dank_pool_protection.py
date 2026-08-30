@@ -612,7 +612,7 @@ class DankPoolProtectionModule(Module):
             "{member.mention} (`{member}`) executed `{slash_name}` ({jump_url}) {timestamp}.",
         ).format(
             member=member,
-            slash_name=message._interaction.name,
+            slash_name=f"/{message._interaction.name}",
             jump_url=message.jump_url,
             timestamp=discord.utils.format_dt(message.created_at, style="R"),
         )
@@ -724,7 +724,7 @@ class DankPoolProtectionModule(Module):
                     "{member.mention} (`{member}`) executed `{slash_name}` ({jump_url}) {timestamp}.",
                 ).format(
                     member=member,
-                    slash_name=message._interaction.name,
+                    slash_name=f"/{message._interaction.name}",
                     jump_url=message.jump_url,
                     timestamp=discord.utils.format_dt(message.created_at, style="R"),
                 ),

@@ -1,7 +1,7 @@
 import asyncio
 import random
 import typing
-from collections import defaultdict
+from collections import Counter
 
 import discord
 from AAA3A_utils import Cog, CogsUtils, Menu
@@ -795,7 +795,7 @@ class Teams(Cog):
                     points.extend(team.points)
         if not points:
             raise commands.UserFeedbackCheckFailure(_("No contributors found."))
-        counter = defaultdict(int)
+        counter = Counter()
         for point in points:
             if (member := point.get_member(ctx.guild)) is not None:
                 counter[member] += point.amount
@@ -806,7 +806,10 @@ class Teams(Cog):
                 points=points,
                 s="" if points == 1 else "s",
             )
-            for i, (member, points) in enumerate(counter.items(), start=1)
+            for i, (member, points) in enumerate(
+                counter.most_common(),
+                start=1,
+            )
         )
         embeds = []
         for page in pagify(description):

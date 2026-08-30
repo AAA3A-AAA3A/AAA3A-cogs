@@ -338,8 +338,7 @@ AUTO_MOD_FILTERS: dict[
                 "value": "everyone_here_mentions",
                 "default_added_heat": 100.0,
                 "check": lambda message, filter_config: (
-                    filter_config["added_heat"]
-                    * (int(message.mention_everyone) + int(message.mention_here))
+                    filter_config["added_heat"] * int(message.mention_everyone)
                 ),
                 "reason": lambda: _(
                     "**Auto Mod** - Spam of @everyone or @here mentions detected.",

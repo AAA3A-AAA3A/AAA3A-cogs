@@ -20,6 +20,10 @@ class TicketView(discord.ui.View):
         self._message: discord.Message = None
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        try:
+            await self.ticket.resolve_channel()
+        except discord.HTTPException:
+            pass
         interaction.data["ticket"] = self.ticket
         if not await self.cog.is_support.__func__().predicate(interaction):
             await interaction.response.send_message(
@@ -40,9 +44,7 @@ class TicketView(discord.ui.View):
         return True
 
     async def _update(self, edit_message: bool = False) -> None:
-        config = await self.cog.config.guild(self.ticket.guild).profiles.get_raw(
-            self.ticket.profile,
-        )
+        config = await self.ticket.get_config()
         self.members.custom_id = f"Tickets_#{self.ticket.id}_members"
         if not self.ticket.is_locked:
             try:
@@ -95,7 +97,7 @@ class TicketView(discord.ui.View):
             else:
                 e = (
                     str(e)
-                    if (e := self.cog.bot.get_emoji(int(config["emojis"]["claim"]))) is not None
+                    if (e := self.cog.bot.get_emoji(int(config["emojis"]["unclaim"]))) is not None
                     else None
                 )
             self.claim.emoji = e
@@ -202,7 +204,7 @@ class TicketView(discord.ui.View):
                     ephemeral=True,
                 )
             else:
-                await self.ticket.unclaim()
+                await self.ticket.unclaim(interaction.user)
                 await interaction.followup.send(
                     _("👤 You have unclaimed this ticket!"),
                     ephemeral=True,
@@ -215,9 +217,7 @@ class TicketView(discord.ui.View):
 
     @discord.ui.button(label="Close", style=discord.ButtonStyle.danger)
     async def close(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        config = await self.cog.config.guild(self.ticket.guild).profiles.get_raw(
-            self.ticket.profile,
-        )
+        config = await self.ticket.get_config()
         if not self.ticket.is_closed and not config["owner_can_close"]:
             fake_context = type(
                 "FakeContext",
@@ -231,7 +231,11 @@ class TicketView(discord.ui.View):
                 },
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
-                raise RuntimeError("⛔ You aren't allowed to close this ticket!")
+                await interaction.response.send_message(
+                    _("⛔ You aren't allowed to close this ticket!"),
+                    ephemeral=True,
+                )
+                return
         elif self.ticket.is_closed and not config["owner_can_reopen"]:
             fake_context = type(
                 "FakeContext",
@@ -245,7 +249,11 @@ class TicketView(discord.ui.View):
                 },
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
-                raise RuntimeError("⛔ You aren't allowed to reopen this ticket!")
+                await interaction.response.send_message(
+                    _("⛔ You aren't allowed to reopen this ticket!"),
+                    ephemeral=True,
+                )
+                return
         modal: ReasonModal = ReasonModal(self.cog, self.ticket)
         if config["close_reopen_reason_modal"]:
             await interaction.response.send_modal(modal)
@@ -401,9 +409,7 @@ class ReasonModal(discord.ui.Modal):
         reason = self.reason.value.strip() or None
         try:
             if not self.ticket.is_closed:
-                config = await self.cog.config.guild(self.ticket.guild).profiles.get_raw(
-                    self.ticket.profile,
-                )
+                config = await self.ticket.get_config()
                 if (
                     interaction.user != self.ticket.owner
                     and self.ticket.owner is not None
@@ -412,22 +418,24 @@ class ReasonModal(discord.ui.Modal):
                     view: OwnerCloseConfirmation = OwnerCloseConfirmation(self.cog)
                     await view.start(self.ticket, interaction, reason=reason)
                     return
+                await interaction.response.defer(ephemeral=True, thinking=True)
                 await self.ticket.close(interaction.user, reason=reason)
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     _("❌ This ticket has been closed!"),
                     ephemeral=True,
                 )
             else:
+                await interaction.response.defer(ephemeral=True, thinking=True)
                 await self.ticket.reopen(interaction.user, reason=reason)
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     _("👐 This ticket has been reopened!"),
                     ephemeral=True,
                 )
         except RuntimeError as e:
-            await interaction.response.send_message(
-                f"⛔ {e}",
-                ephemeral=True,
-            )
+            if interaction.response.is_done():
+                await interaction.followup.send(f"⛔ {e}", ephemeral=True)
+            else:
+                await interaction.response.send_message(f"⛔ {e}", ephemeral=True)
 
 
 class OwnerCloseConfirmation(discord.ui.View):
@@ -462,7 +470,7 @@ class OwnerCloseConfirmation(discord.ui.View):
         embed.set_footer(
             text=_("Note that if there is no response from you the ticket will be closed."),
         )
-        config = await self.cog.config.guild(ticket.guild).profiles.get_raw(ticket.profile)
+        config = await ticket.get_config()
         try:
             int(config["emojis"]["close"])
         except ValueError:
@@ -489,16 +497,17 @@ class OwnerCloseConfirmation(discord.ui.View):
         return message
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(),
-            channel=interaction.channel,
-        )
+        ticket = self.cog.get_ticket_from_channel(interaction.guild.id, interaction.channel_id)
         if ticket is None:
             await interaction.response.send_message(
                 _("⛔ This channel is not in the Config!"),
                 ephemeral=True,
             )
             return False
+        try:
+            await ticket.resolve_channel()
+        except discord.HTTPException:
+            pass
         interaction.data["ticket"] = ticket
         if not await self.cog.is_support.__func__().predicate(interaction):
             await interaction.response.send_message(
@@ -526,10 +535,7 @@ class OwnerCloseConfirmation(discord.ui.View):
             await interaction.message.delete()
         except discord.HTTPException:
             pass
-        ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(),
-            channel=interaction.channel,
-        )
+        ticket = self.cog.get_ticket_from_channel(interaction.guild.id, interaction.channel_id)
         try:
             reason = (
                 interaction.message.embeds[0].fields[0].value[4:].strip()
@@ -559,7 +565,7 @@ class ClosedTicketControls(discord.ui.View):
         ticket,
         interaction: discord.Interaction | None = None,
     ) -> discord.Message:
-        config = await self.cog.config.guild(ticket.guild).profiles.get_raw(ticket.profile)
+        config = await ticket.get_config()
         try:
             int(config["emojis"]["transcript"])
         except ValueError:
@@ -608,16 +614,17 @@ class ClosedTicketControls(discord.ui.View):
         return message
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(),
-            channel=interaction.channel,
-        )
+        ticket = self.cog.get_ticket_from_channel(interaction.guild.id, interaction.channel_id)
         if ticket is None:
             await interaction.response.send_message(
                 _("⛔ This channel is not in the Config!"),
                 ephemeral=True,
             )
             return False
+        try:
+            await ticket.resolve_channel()
+        except discord.HTTPException:
+            pass
         interaction.data["ticket"] = ticket
         if not await self.cog.is_support.__func__(
             ignore_owner=interaction.data["custom_id"] == "Tickets_delete",
@@ -635,12 +642,12 @@ class ClosedTicketControls(discord.ui.View):
         custom_id="Tickets_transcript",
     )
     async def transcript(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        await interaction.response.defer(thinking=True)
-        ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(),
-            channel=interaction.channel,
-        )
-        transcript = await ticket.export()
+        await interaction.response.defer(ephemeral=True, thinking=True)
+        ticket = self.cog.get_ticket_from_channel(interaction.guild.id, interaction.channel_id)
+        try:
+            transcript = await ticket.export()
+        except RuntimeError as e:
+            return await interaction.followup.send(f"⛔ {e}", ephemeral=True)
         message = await interaction.followup.send(
             _("📜 Here is the transcript of this ticket!"),
             file=transcript,
@@ -664,10 +671,7 @@ class ClosedTicketControls(discord.ui.View):
     )
     async def reopen(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         await interaction.response.defer(ephemeral=True, thinking=True)
-        ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(),
-            channel=interaction.channel,
-        )
+        ticket = self.cog.get_ticket_from_channel(interaction.guild.id, interaction.channel_id)
         try:
             await ticket.reopen(interaction.user)
             await interaction.followup.send(_("👐 This ticket has been reopened!"), ephemeral=True)
@@ -679,10 +683,7 @@ class ClosedTicketControls(discord.ui.View):
 
     @discord.ui.button(label="Delete", style=discord.ButtonStyle.danger, custom_id="Tickets_delete")
     async def delete(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        ticket = discord.utils.get(
-            self.cog.tickets.get(interaction.guild.id, {}).values(),
-            channel=interaction.channel,
-        )
+        ticket = self.cog.get_ticket_from_channel(interaction.guild.id, interaction.channel_id)
         await interaction.response.send_message(
             embed=discord.Embed(
                 title=_("🗑️ This ticket will be deleted in a few seconds..."),
@@ -690,7 +691,10 @@ class ClosedTicketControls(discord.ui.View):
             ),
         )
         await asyncio.sleep(5)
-        await ticket.delete_channel(interaction.user)
+        try:
+            await ticket.delete_channel(interaction.user)
+        except RuntimeError as e:
+            await interaction.followup.send(f"⛔ {e}", ephemeral=True)
 
 
 class CreateTicketView(discord.ui.View):
@@ -737,6 +741,8 @@ class CreateTicketView(discord.ui.View):
                     category_label=category_label,
                 )
             except commands.UserFeedbackCheckFailure as e:
+                if not interaction.response.is_done():
+                    return await interaction.response.send_message(f"⛔ {e}", ephemeral=True)
                 return await interaction.followup.send(
                     f"⛔ {e}",
                     ephemeral=True,

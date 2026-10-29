@@ -1,6 +1,7 @@
 import asyncio
 import copy
 import datetime
+import functools
 import io
 import typing
 from dataclasses import _is_dataclass_instance, dataclass, field, fields
@@ -53,6 +54,34 @@ def _asdict_inner(obj, dict_factory=dict):
     return copy.deepcopy(obj)
 
 
+def merge_dicts(
+    defaults: dict[str, typing.Any],
+    data: dict[str, typing.Any],
+) -> dict[str, typing.Any]:
+    result = copy.deepcopy(defaults)
+    for key, value in data.items():
+        if isinstance(value, dict) and isinstance(result.get(key), dict):
+            result[key] = merge_dicts(result[key], value)
+        else:
+            result[key] = value
+    return result
+
+
+def with_ticket_lock(func: typing.Callable) -> typing.Callable:
+    @functools.wraps(func)
+    async def wrapper(self, *args, **kwargs) -> typing.Any:
+        if self._lock_task is asyncio.current_task():  # `close` calls `delete_channel`.
+            return await func(self, *args, **kwargs)
+        async with self._lock:
+            self._lock_task = asyncio.current_task()
+            try:
+                return await func(self, *args, **kwargs)
+            finally:
+                self._lock_task = None
+
+    return wrapper
+
+
 @dataclass
 class Ticket:
     bot: Red
@@ -98,12 +127,103 @@ class Ticket:
 
     members_ids: list[int] = field(default_factory=list)
 
+    def __post_init__(self) -> None:
+        self._channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None = None
+        self._lock: asyncio.Lock = asyncio.Lock()
+        self._lock_task: asyncio.Task | None = None
+
     def to_dict(self) -> dict[str, typing.Any]:
         return _asdict_inner(self)
 
+    def restore(self, data: dict[str, typing.Any]) -> None:
+        for key, value in data.items():
+            setattr(self, key, value)
+
     async def save(self) -> None:
-        await self.cog.config.guild(self.guild).tickets.set_raw(str(self.id), value=self.to_dict())
+        await self.cog.config.guild_from_id(self.guild_id).tickets.set_raw(
+            str(self.id),
+            value=self.to_dict(),
+        )
         self.cog.tickets.setdefault(self.guild_id, {})[self.id] = self
+
+    async def get_config(self) -> dict[str, typing.Any]:
+        profiles = self.cog.config.guild_from_id(self.guild_id).profiles
+        try:
+            config = await profiles.get_raw(self.profile)
+        except KeyError:
+            if (self.guild_id, self.id) not in self.cog.missing_profile_warnings:
+                self.cog.missing_profile_warnings.add((self.guild_id, self.id))
+                self.cog.logger.warning(
+                    f"The profile `{self.profile}` of the ticket #{self.id} in the guild {self.guild_id} doesn't exist anymore. The `main` profile settings will be used instead.",
+                )
+            config = await profiles.get_raw("main")
+        return merge_dicts(self.cog.default_profile_settings, config)
+
+    async def resolve_channel(
+        self,
+    ) -> discord.TextChannel | discord.VoiceChannel | discord.Thread | None:
+        if (channel := self.channel) is not None:
+            return channel
+        if (guild := self.guild) is None or self.channel_id is None:
+            return None
+        try:
+            self._channel = await guild.fetch_channel(self.channel_id)
+        except discord.NotFound:
+            self._channel = None
+            raise
+        return self._channel
+
+    async def fetch_channel(self) -> discord.TextChannel | discord.VoiceChannel | discord.Thread:
+        try:
+            channel = await self.resolve_channel()
+        except discord.HTTPException:
+            channel = None
+        if channel is None:
+            raise RuntimeError(_("I can't find the channel of this ticket."))
+        return channel
+
+    def get_view(self) -> TicketView:
+        if (view := self.cog.views.get(self.message)) is None or view.is_finished():
+            view = TicketView(cog=self.cog, ticket=self)
+            view._message = self.message
+            self.cog.views[self.message] = view
+        view.ticket = self
+        return view
+
+    async def edit_channel(self, old_state: dict[str, typing.Any], **kwargs) -> None:
+        try:
+            channel = await self.channel.edit(**kwargs)
+        except discord.HTTPException as e:
+            self.restore(old_state)
+            raise RuntimeError(
+                _("I couldn't edit the channel of this ticket.\n{error}").format(
+                    error=box(str(e), lang="py"),
+                ),
+            )
+        if isinstance(channel, discord.Thread):
+            self._channel = channel
+
+    async def set_send_messages(
+        self,
+        old_state: dict[str, typing.Any],
+        send_messages: bool,
+        reason: str,
+    ) -> None:
+        try:
+            for member in [self.owner, *self.members]:
+                if member is None:
+                    continue
+                # Keep the other permissions of the overwrite (`read_messages`...).
+                overwrite = self.channel.overwrites_for(member)
+                overwrite.send_messages = send_messages
+                await self.channel.set_permissions(member, overwrite=overwrite, reason=reason)
+        except discord.HTTPException as e:
+            self.restore(old_state)
+            raise RuntimeError(
+                _("I couldn't edit the permissions of this ticket.\n{error}").format(
+                    error=box(str(e), lang="py"),
+                ),
+            )
 
     async def delete(self) -> None:
         try:
@@ -141,7 +261,11 @@ class Ticket:
     ) -> discord.TextChannel | discord.VoiceChannel | discord.Thread | None:
         if (guild := self.guild) is None:
             return None
-        return guild.get_channel_or_thread(self.channel_id)
+        if (channel := guild.get_channel_or_thread(self.channel_id)) is not None:
+            return channel
+        if self._channel is not None and self._channel.id == self.channel_id:
+            return self._channel
+        return None
 
     @channel.setter
     def channel(
@@ -150,14 +274,18 @@ class Ticket:
     ) -> None:
         self.guild_id = channel.guild.id
         self.channel_id = channel.id
+        self._channel = channel
 
     @property
-    def message(self) -> discord.Message | None:
-        if (channel := self.channel) is None:
+    def message(self) -> discord.PartialMessage | None:
+        if self.channel_id is None or self.message_id is None:
             return None
-        if self.message_id is None:
-            return None
-        return channel.get_partial_message(self.message_id)
+        if (channel := self.channel) is not None:
+            return channel.get_partial_message(self.message_id)
+        return self.bot.get_partial_messageable(
+            self.channel_id,
+            guild_id=self.guild_id,
+        ).get_partial_message(self.message_id)
 
     @message.setter
     def message(self, message: discord.Message) -> None:
@@ -350,10 +478,7 @@ class Ticket:
         return "🔒" if self.is_closed else ("👥" if self.is_claimed else "❓")
 
     async def channel_name(self, forum_channel: bool | None = None) -> str:
-        channel_name = await self.cog.config.guild(self.guild).profiles.get_raw(
-            self.profile,
-            "channel_name",
-        )
+        channel_name = (await self.get_config())["channel_name"]
         if channel_name is None:
             if forum_channel or (
                 self.channel is not None and isinstance(self.channel, discord.Thread)
@@ -520,7 +645,7 @@ class Ticket:
 
     async def get_embeds(self) -> list[discord.Embed]:
         embeds = [await self.get_embed()]
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        config = await self.get_config()
         if (
             self.category_label is not None and config["always_include_item_label"]
         ) or self.owner_answers:
@@ -562,7 +687,7 @@ class Ticket:
         typing.Literal["content", "embeds", "view", "allowed_mentions"],
         str | discord.Embed | discord.ui.View,
     ]:
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        config = await self.get_config()
         content = (
             f"[ {humanize_list([ping_role.mention for ping_role in ping_roles])} ]\n\n"
             if any(
@@ -597,9 +722,7 @@ class Ticket:
         }
 
     async def create(self) -> discord.TextChannel | discord.Thread:
-        config: dict[str, typing.Any] = await self.cog.config.guild(
-            self.guild,
-        ).profiles.get_raw(self.profile)
+        config: dict[str, typing.Any] = await self.get_config()
         if not config["enabled"]:
             raise RuntimeError(_("The creation of tickets is disabled for this profile."))
         forum_channel = (
@@ -655,6 +778,8 @@ class Ticket:
                 except discord.HTTPException:
                     pass
 
+        if not self.id:
+            self.id = await self.cog.get_ticket_id(self.guild)
         audit_reason = _(
             "Ticket creation for {ticket.owner.display_name} ({ticket.owner.id}) (profile `{ticket.profile}`).",
         ).format(ticket=self)
@@ -702,6 +827,10 @@ class Ticket:
                     invitable=False,
                     reason=audit_reason,
                 )
+                try:
+                    await self.channel.add_user(self.owner)
+                except discord.HTTPException:
+                    pass
                 view._message = await self.channel.send(**kwargs)
         else:
             if not category_open.permissions_for(self.guild.me).manage_channels:
@@ -745,9 +874,7 @@ class Ticket:
     async def get_channel_overwrites(
         self,
     ) -> dict[discord.Member | discord.Role, discord.PermissionOverwrite]:
-        config: dict[str, typing.Any] = await self.cog.config.guild(
-            self.guild,
-        ).profiles.get_raw(self.profile)
+        config: dict[str, typing.Any] = await self.get_config()
         overwrites = {
             self.guild.default_role: discord.PermissionOverwrite(
                 read_messages=False,
@@ -820,6 +947,7 @@ class Ticket:
                 )
         return overwrites
 
+    @with_ticket_lock
     async def close(
         self,
         closer: discord.Member | None = None,
@@ -827,7 +955,8 @@ class Ticket:
     ) -> None:
         if self.is_closed:
             raise RuntimeError(_("This ticket is already closed."))
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        await self.fetch_channel()
+        config = await self.get_config()
         if closer is not None and not config["owner_can_close"]:
             fake_context = type(
                 "FakeContext",
@@ -842,42 +971,25 @@ class Ticket:
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError(_("You aren't allowed to close this ticket!"))
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        old_state = self.to_dict()
         self.is_closed = True
         # self.reopened_by = None
         # self.reopened_at = None
         self.closed_by = closer
         self.closed_at = datetime.datetime.now(tz=datetime.timezone.utc)
-        await self.save()
 
-        await self.log_action(
-            action=_("❌ Ticket Closed"),
-            author=closer,
-            reason=reason,
-        )
         if closer is None:
             audit_reason = _("Ticket closed (profile `{self.profile}`).").format(self=self)
         else:
             audit_reason = _(
                 "Ticket closed by {closer.display_name} ({closer.id}) (profile `{self.profile}`).",
             ).format(closer=closer, self=self)
-        view = self.cog.views[self.message]
-        await view._update()
-        await self.message.edit(
-            embeds=await self.get_embeds(),
-            view=view,
-        )
-        view: ClosedTicketControls = ClosedTicketControls(cog=self.cog)
-        await view.start(self)
         if isinstance(self.channel, discord.Thread):
-            await self.channel.edit(
-                name=await self.channel_name(),
-                archived=True,
-                locked=True,
-                reason=audit_reason,
-            )
+            if (name := await self.channel_name()) != self.channel.name:
+                await self.edit_channel(old_state, name=name, reason=audit_reason)
         else:
-            await self.channel.edit(
+            await self.edit_channel(
+                old_state,
                 name=await self.channel_name(),
                 category=(
                     category_closed
@@ -891,6 +1003,33 @@ class Ticket:
                 overwrites=await self.get_channel_overwrites(),
                 reason=audit_reason,
             )
+        await self.save()
+
+        await self.log_action(
+            action=_("❌ Ticket Closed"),
+            author=closer,
+            reason=reason,
+        )
+        view = self.get_view()
+        await view._update()
+        await self.message.edit(
+            embeds=await self.get_embeds(),
+            view=view,
+        )
+        view: ClosedTicketControls = ClosedTicketControls(cog=self.cog)
+        await view.start(self)
+        if isinstance(self.channel, discord.Thread):
+            try:
+                self._channel = await self.channel.edit(
+                    archived=True,
+                    locked=True,
+                    reason=audit_reason,
+                )
+            except discord.HTTPException as e:
+                self.cog.logger.error(
+                    f"Error when archiving the thread of the ticket #{self.id} in the guild {self.guild_id}.",
+                    exc_info=e,
+                )
 
         self.bot.dispatch("ticket_close", self)
         if config["create_modlog_case"]:
@@ -916,6 +1055,7 @@ class Ticket:
             await asyncio.sleep(5)
             await self.delete_channel(None)  # That's a setting, so no deleter.
 
+    @with_ticket_lock
     async def reopen(
         self,
         reopener: discord.Member | None = None,
@@ -923,7 +1063,8 @@ class Ticket:
     ) -> None:
         if not self.is_closed:
             raise RuntimeError(_("This ticket is not closed."))
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        await self.fetch_channel()
+        config = await self.get_config()
         if reopener is not None and not config["owner_can_reopen"]:
             fake_context = type(
                 "FakeContext",
@@ -938,12 +1079,12 @@ class Ticket:
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError(_("You aren't allowed to reopen this ticket!"))
+        old_state = self.to_dict()
         self.is_closed = False
         # self.closed_by = None
         # self.closed_at = None
         self.reopened_by = reopener
         self.reopened_at = datetime.datetime.now(tz=datetime.timezone.utc)
-        await self.save()
 
         if reopener is None:
             audit_reason = _("Ticket reopened (profile `{self.profile}.`)").format(self=self)
@@ -952,14 +1093,16 @@ class Ticket:
                 "Ticket reopened by {reopener.display_name} ({reopener.id}) (profile `{self.profile}`).",
             ).format(reopener=reopener, self=self)
         if isinstance(self.channel, discord.Thread):
-            await self.channel.edit(
+            await self.edit_channel(
+                old_state,
                 name=await self.channel_name(),
                 archived=False,
                 locked=False,
                 reason=audit_reason,
             )
         else:
-            await self.channel.edit(
+            await self.edit_channel(
+                old_state,
                 name=await self.channel_name(),
                 category=(
                     category_open
@@ -972,14 +1115,16 @@ class Ticket:
                 overwrites=await self.get_channel_overwrites(),
                 reason=audit_reason,
             )
-        view = self.cog.views[self.message]
+        await self.save()
+
+        view = self.get_view()
         await view._update()
         await self.message.edit(
             embeds=await self.get_embeds(),
             view=view,
         )
 
-        self.bot.dispatch("ticket_reopene", self)
+        self.bot.dispatch("ticket_reopen", self)
         await self.log_action(
             action=_("👐 Ticket Reopened"),
             author=reopener,
@@ -998,22 +1143,27 @@ class Ticket:
             )
         await self.cog.send_ticket_log(self)
 
+    @with_ticket_lock
     async def claim(self, claimer: discord.Member) -> None:
         if self.is_claimed:
             raise RuntimeError(_("This ticket is already claimed."))
+        await self.fetch_channel()
+        old_state = self.to_dict()
         self.is_claimed = True
         self.claimed_by = claimer
         self.claimed_at = datetime.datetime.now(tz=datetime.timezone.utc)
-        await self.save()
 
         audit_reason = _(
             "Ticket claimed by {claimer.display_name} ({claimer.id}) (profile `{self.profile}`).",
         ).format(claimer=claimer, self=self)
-        await self.channel.edit(
+        await self.edit_channel(
+            old_state,
             name=await self.channel_name(),
             reason=audit_reason,
         )
-        view = self.cog.views[self.message]
+        await self.save()
+
+        view = self.get_view()
         await view._update()
         await self.message.edit(
             embeds=await self.get_embeds(),
@@ -1021,7 +1171,7 @@ class Ticket:
         )
 
         self.bot.dispatch("ticket_claimed", self)
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        config = await self.get_config()
         await self.log_action(
             action=_("👥 Ticket Claimed"),
             author=claimer,
@@ -1038,20 +1188,30 @@ class Ticket:
             )
         await self.cog.send_ticket_log(self)
 
-    async def unclaim(self) -> None:
+    @with_ticket_lock
+    async def unclaim(self, unclaimer: discord.Member | None = None) -> None:
         if not self.is_claimed:
             raise RuntimeError(_("This ticket is not claimed."))
+        await self.fetch_channel()
+        old_state = self.to_dict()
         self.is_claimed = False
         # self.claimed_by = None
         # self.claimed_at = None
-        await self.save()
 
-        audit_reason = _("Ticket unclaimed (profile `{self.profile}`).").format(self=self)
-        await self.channel.edit(
+        if unclaimer is None:
+            audit_reason = _("Ticket unclaimed (profile `{self.profile}`).").format(self=self)
+        else:
+            audit_reason = _(
+                "Ticket unclaimed by {unclaimer.display_name} ({unclaimer.id}) (profile `{self.profile}`).",
+            ).format(unclaimer=unclaimer, self=self)
+        await self.edit_channel(
+            old_state,
             name=await self.channel_name(),
             reason=audit_reason,
         )
-        view = self.cog.views[self.message]
+        await self.save()
+
+        view = self.get_view()
         await view._update()
         await self.message.edit(
             embeds=await self.get_embeds(),
@@ -1059,9 +1219,10 @@ class Ticket:
         )
 
         self.bot.dispatch("ticket_unclaim", self)
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        config = await self.get_config()
         await self.log_action(
             action=_("👤 Ticket Unclaimed"),
+            author=unclaimer,
         )
         if config["create_modlog_case"]:
             await modlog.create_case(
@@ -1070,15 +1231,17 @@ class Ticket:
                 created_at=datetime.datetime.now(tz=datetime.timezone.utc),
                 action_type="ticket_unclaimed",
                 user=self.owner or self.owner_id,
-                moderator=self.guild.me,
+                moderator=unclaimer or self.guild.me,
                 channel=self.channel,
             )
         await self.cog.send_ticket_log(self)
 
+    @with_ticket_lock
     async def lock(self, locker: discord.Member | None = None) -> None:
         if self.is_locked:
             raise RuntimeError(_("This ticket is already locked."))
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        await self.fetch_channel()
+        config = await self.get_config()
         if locker is not None:
             fake_context = type(
                 "FakeContext",
@@ -1093,10 +1256,10 @@ class Ticket:
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError(_("You aren't allowed to lock this ticket!"))
+        old_state = self.to_dict()
         self.is_locked = True
         self.locked_by = locker
         self.locked_at = datetime.datetime.now(tz=datetime.timezone.utc)
-        await self.save()
 
         if locker is None:
             audit_reason = _("Ticket locked (profile `{self.profile}`).").format(self=self)
@@ -1105,23 +1268,12 @@ class Ticket:
                 "Ticket locked by {locker.display_name} ({locker.id}) (profile `{self.profile}`).",
             ).format(locker=locker, self=self)
         if isinstance(self.channel, discord.Thread):
-            await self.channel.edit(
-                locked=True,
-                reason=audit_reason,
-            )
+            await self.edit_channel(old_state, locked=True, reason=audit_reason)
         else:
-            await self.channel.set_permissions(
-                self.owner,
-                send_messages=False,
-                reason=audit_reason,
-            )
-            for member in self.members:
-                await self.channel.set_permissions(
-                    member,
-                    send_messages=False,
-                    reason=audit_reason,
-                )
-        view = self.cog.views[self.message]
+            await self.set_send_messages(old_state, False, reason=audit_reason)
+        await self.save()
+
+        view = self.get_view()
         await view._update()
         await self.message.edit(
             embeds=await self.get_embeds(),
@@ -1144,10 +1296,12 @@ class Ticket:
                 channel=self.channel,
             )
 
+    @with_ticket_lock
     async def unlock(self, unlocker: discord.Member | None = None) -> None:
         if not self.is_locked:
             raise RuntimeError(_("This ticket is not locked."))
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        await self.fetch_channel()
+        config = await self.get_config()
         if unlocker is not None:
             fake_context = type(
                 "FakeContext",
@@ -1162,37 +1316,26 @@ class Ticket:
             )()
             if not await self.cog.is_support.__func__(ignore_owner=True).predicate(fake_context):
                 raise RuntimeError(_("You aren't allowed to unlock this ticket!"))
+        old_state = self.to_dict()
         self.is_locked = False
         # self.locked_by = None
         # self.locked_at = None
         self.unlocked_by = unlocker
         self.unlocked_at = datetime.datetime.now(tz=datetime.timezone.utc)
-        await self.save()
 
-        if unlocker is not None:
+        if unlocker is None:
             audit_reason = _("Ticket unlocked (profile `{self.profile}`).").format(self=self)
         else:
             audit_reason = _(
                 "Ticket unlocked by {unlocker.display_name} ({unlocker.id}) (profile `{self.profile}`).",
             ).format(unlocker=unlocker, self=self)
         if isinstance(self.channel, discord.Thread):
-            await self.channel.edit(
-                locked=False,
-                reason=audit_reason,
-            )
+            await self.edit_channel(old_state, locked=False, reason=audit_reason)
         else:
-            await self.channel.set_permissions(
-                self.owner,
-                send_messages=True,
-                reason=audit_reason,
-            )
-            for member in self.members:
-                await self.channel.set_permissions(
-                    member,
-                    send_messages=True,
-                    reason=audit_reason,
-                )
-        view = self.cog.views[self.message]
+            await self.set_send_messages(old_state, not self.is_closed, reason=audit_reason)
+        await self.save()
+
+        view = self.get_view()
         await view._update()
         await self.message.edit(
             embeds=await self.get_embeds(),
@@ -1215,10 +1358,12 @@ class Ticket:
                 channel=self.channel,
             )
 
+    @with_ticket_lock
     async def approve_appeal(self, approver: discord.Member | None = None) -> None:
         if self.appeal_approved:
             raise RuntimeError(_("This ticket appeal is already approved."))
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        await self.fetch_channel()
+        config = await self.get_config()
         if not config["appeals"]["enabled"]:
             raise RuntimeError(_("Appeals are not enabled for this profile."))
         if (guild := self.bot.get_guild(config["appeals"]["guild_id"])) is None:
@@ -1227,10 +1372,10 @@ class Ticket:
             raise RuntimeError(
                 _("I don't have the required permissions to unban users in the server."),
             )
+        old_state = self.to_dict()
         self.appeal_approved = True
         self.appeal_approved_by = approver
         self.appeal_approved_at = datetime.datetime.now(tz=datetime.timezone.utc)
-        await self.save()
 
         if approver is None:
             audit_reason = _("Ticket appeal approved.").format(self=self)
@@ -1241,7 +1386,7 @@ class Ticket:
 
         try:
             await guild.unban(
-                self.owner,
+                discord.Object(self.owner_id),
                 reason=audit_reason,
             )
         except discord.NotFound:
@@ -1252,9 +1397,12 @@ class Ticket:
                 ),
             )
         except discord.HTTPException as e:
+            self.restore(old_state)
             raise RuntimeError(
                 _("I couldn't unban the user.\n{error}").format(error=box(str(e), lang="py")),
             )
+        await self.save()
+
         await self.log_action(
             action=_("🛡️ Ticket Appeal Approved"),
             author=approver,
@@ -1271,17 +1419,14 @@ class Ticket:
             ),
         )
 
-        if isinstance(self.channel, discord.Thread):
+        try:
             await self.channel.edit(
                 name=await self.channel_name(),
                 reason=audit_reason,
             )
-        else:
-            await self.channel.edit(
-                name=await self.channel_name(),
-                reason=audit_reason,
-            )
-        view = self.cog.views[self.message]
+        except discord.HTTPException:
+            pass
+        view = self.get_view()
         await view._update()
         await self.message.edit(
             embeds=await self.get_embeds(),
@@ -1300,12 +1445,13 @@ class Ticket:
                 channel=self.channel,
             )
 
+    @with_ticket_lock
     async def add_member(
         self,
         member: discord.Member,
         author: discord.Member | None = None,
     ) -> None:
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        config = await self.get_config()
         if author is not None and not config["owner_can_add_members"]:
             fake_context = type(
                 "FakeContext",
@@ -1322,7 +1468,8 @@ class Ticket:
                 raise RuntimeError(_("You aren't allowed to add members to this ticket!"))
         if member.id in self.members_ids:
             raise RuntimeError(_("This member is already in the ticket."))
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        await self.fetch_channel()
+        config = await self.get_config()
         if (
             member == self.owner
             or any(
@@ -1336,8 +1483,8 @@ class Ticket:
                     "This member has a role that allows them to access the ticket without being added manually.",
                 ),
             )
+        old_state = self.to_dict()
         self.members_ids.append(member.id)
-        await self.save()
 
         if author is None:
             audit_reason = _(
@@ -1348,12 +1495,22 @@ class Ticket:
                 "Member added to the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id}).",
             ).format(author=author, member=member)
         if isinstance(self.channel, discord.Thread):
-            await self.channel.add_user(member)
+            try:
+                await self.channel.add_user(member)
+            except discord.HTTPException as e:
+                self.restore(old_state)
+                raise RuntimeError(
+                    _("I couldn't add the member to the thread.\n{error}").format(
+                        error=box(str(e), lang="py"),
+                    ),
+                )
         else:
-            await self.channel.edit(
+            await self.edit_channel(
+                old_state,
                 overwrites=await self.get_channel_overwrites(),
                 reason=audit_reason,
             )
+        await self.save()
 
         self.bot.dispatch("ticket_member_add", self)
         await self.log_action(
@@ -1372,12 +1529,13 @@ class Ticket:
                 channel=self.channel,
             )
 
+    @with_ticket_lock
     async def remove_member(
         self,
         member: discord.Member,
         author: discord.Member | None = None,
     ) -> None:
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        config = await self.get_config()
         if author is not None and not config["owner_can_remove_members"]:
             fake_context = type(
                 "FakeContext",
@@ -1394,8 +1552,9 @@ class Ticket:
                 raise RuntimeError(_("You aren't allowed to remove members from this ticket!"))
         if member.id not in self.members_ids:
             raise RuntimeError(_("This member is not in the ticket."))
+        await self.fetch_channel()
+        old_state = self.to_dict()
         self.members_ids.remove(member.id)
-        await self.save()
 
         if author is None:
             audit_reason = _(
@@ -1406,14 +1565,20 @@ class Ticket:
                 "Member removed from the ticket by {author.display_name} ({author.id}): {member.display_name} ({member.id}).",
             ).format(author=author, member=member)
         if isinstance(self.channel, discord.Thread):
-            await self.channel.remove_user(member)
+            try:
+                await self.channel.remove_user(member)
+            except discord.HTTPException as e:
+                self.restore(old_state)
+                raise RuntimeError(
+                    _("I couldn't remove the member from the thread.\n{error}").format(
+                        error=box(str(e), lang="py"),
+                    ),
+                )
         else:
             overwrites = await self.get_channel_overwrites()
             overwrites.pop(member, None)
-            await self.channel.edit(
-                overwrites=overwrites,
-                reason=audit_reason,
-            )
+            await self.edit_channel(old_state, overwrites=overwrites, reason=audit_reason)
+        await self.save()
 
         self.bot.dispatch("ticket_member_remove", self)
         await self.log_action(
@@ -1502,9 +1667,10 @@ class Ticket:
                 # attachment.proxy_url = attachment.url
                 return attachment
 
+        channel = await self.fetch_channel()
         transcript = await Transcript.export(
-            channel=self.channel,
-            messages=[message async for message in self.channel.history(limit=None)],
+            channel=channel,
+            messages=[message async for message in channel.history(limit=None)],
             tz_info="UTC",
             guild=self.guild,
             bot=self.bot,
@@ -1516,10 +1682,12 @@ class Ticket:
             fp=io.BytesIO(transcript.encode()),
         )
 
+    @with_ticket_lock
     async def delete_channel(self, deleter: discord.Member | None = None) -> None:
+        channel = await self.fetch_channel()
+        old_state = self.to_dict()
         self.deleted_by = deleter
         self.deleted_at = datetime.datetime.now(tz=datetime.timezone.utc)
-        await self.save()
         if deleter is None:
             audit_reason = _("Ticket deleted (profile `{self.profile}`).").format(self=self)
         else:
@@ -1527,32 +1695,52 @@ class Ticket:
                 "Ticket deleted by {deleter.display_name} ({deleter.id}) (profile `{self.profile}`).",
             ).format(deleter=deleter, self=self)
 
-        config = await self.cog.config.guild(self.guild).profiles.get_raw(self.profile)
+        config = await self.get_config()
         if (
-            logs_channel_id := await self.cog.config.guild(self.guild).profiles.get_raw(
-                self.profile,
-                "logs_channel",
-            )
-        ) and (logs_channel := self.guild.get_channel(logs_channel_id)) is not None:
-            await logs_channel.send(
-                embeds=[
-                    discord.Embed(
-                        title=_("🗑 Ticket Deleted"),
-                        description=_("<@{self.owner_id}>'s ticket has been deleted.").format(
-                            self=self,
+            logs_channel_id := config["logs_channel"]
+        ) and (logs_channel := self.guild.get_channel_or_thread(logs_channel_id)) is not None:
+            transcript = None
+            if config["transcripts"]:
+                try:
+                    transcript = await self.export()
+                except Exception as e:
+                    self.cog.logger.error(
+                        f"Error when exporting the transcript of the ticket #{self.id} in the guild {self.guild_id}.",
+                        exc_info=e,
+                    )
+            try:
+                await logs_channel.send(
+                    embeds=[
+                        discord.Embed(
+                            title=_("🗑 Ticket Deleted"),
+                            description=_("<@{self.owner_id}>'s ticket has been deleted.").format(
+                                self=self,
+                            ),
+                            color=discord.Color.red(),
+                            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
                         ),
-                        color=discord.Color.red(),
-                        timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
-                    ),
-                    await self.get_embed(for_logging=True),
-                ],
-                file=await self.export() if config["transcripts"] else None,
-            )
+                        await self.get_embed(for_logging=True),
+                    ],
+                    file=transcript,
+                )
+            except discord.HTTPException as e:
+                self.cog.logger.error(
+                    f"Error when sending the deletion log of the ticket #{self.id} in the channel `{logs_channel.name}` ({logs_channel.id}) in the guild `{self.guild.name}` ({self.guild.id}).",
+                    exc_info=e,
+                )
 
-        if isinstance(self.channel, discord.Thread):
-            await self.channel.delete(reason=audit_reason)
-        else:
-            await self.channel.delete(reason=audit_reason)
+        try:
+            await channel.delete(reason=audit_reason)
+        except discord.NotFound:
+            pass
+        except discord.HTTPException as e:
+            self.restore(old_state)
+            raise RuntimeError(
+                _("I couldn't delete the channel of this ticket.\n{error}").format(
+                    error=box(str(e), lang="py"),
+                ),
+            )
+        await self.delete()
 
         self.bot.dispatch("ticket_delete", self)
         if config["create_modlog_case"]:
@@ -1563,6 +1751,5 @@ class Ticket:
                 action_type="ticket_deleted",
                 user=self.owner or self.owner_id,
                 moderator=deleter,
-                channel=self.channel,
+                channel=channel,
             )
-        await self.delete()

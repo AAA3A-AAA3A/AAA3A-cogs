@@ -1,2 +1,26 @@
-*.pyc
+# Python
+__pycache__/
+*.py[cod]
+
+# Packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Tools caches
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+
+# IDE
 .idea/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -56,6 +56,7 @@ extend-select = [
 ]
 ignore = [
     "SIM105",   # Do not replace `try/except/pass` with `contextlib.suppress()`
+    "COM812",   # Conflicts with the formatter (trailing commas are handled by `ruff format`)
     "D100",     # Docstring rule
     "D101",     # Docstring rule
     "D102",     # Docstring rule

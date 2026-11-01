@@ -8,7 +8,7 @@ import aiohttp
 import discord
 from fuzzywuzzy import fuzz
 
-from AAA3A_utils import Cog, Menu
+from AAA3A_utils import Cog, CogsUtils, Menu
 from redbot.core import app_commands, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
@@ -28,6 +28,42 @@ from .types import (
 # General repo credits.
 
 _: Translator = Translator("RunCode", __file__)
+
+
+RAW_CODE_HOSTS = (
+    "raw.githubusercontent.com",
+    "gist.githubusercontent.com",
+    "gitlab.com",
+    "bitbucket.org",
+    "pastebin.com",
+    "hastebin.com",
+    "paste.rs",
+)
+MAX_CODE_SIZE = 20000  # Same limit as attachments.
+
+
+async def fetch_raw_code(
+    session: aiohttp.ClientSession,
+    url: str,
+    allowed_hosts: typing.Iterable[str] = RAW_CODE_HOSTS,
+    response_format: typing.Literal["text", "json"] = "text",
+    max_size: int = MAX_CODE_SIZE,
+) -> typing.Any:
+    """Fetch code from a known website only, to avoid requests to arbitrary (internal) hosts."""
+    try:
+        return await CogsUtils.safe_fetch(
+            session,
+            url,
+            allowed_hosts=allowed_hosts,
+            response_format=response_format,
+            max_size=max_size,
+        )
+    except ValueError as e:
+        raise commands.UserFeedbackCheckFailure(
+            _("I couldn't fetch the code from this URL: {error}").format(error=e),
+        )
+    except (aiohttp.ClientError, asyncio.TimeoutError):
+        raise commands.UserFeedbackCheckFailure(_("I couldn't fetch the code from this URL."))
 
 
 class WandboxLanguageConverter(commands.Converter):
@@ -274,7 +310,8 @@ class RunCode(Cog):
                     if language_extension in LANGUAGES_FILES_EXTENSIONS[language]:
                         _language = language
                         break
-                _language = ctx.message.attachments[0].filename.split(".")[-1]
+                else:
+                    _language = language_extension
         elif code is not None:
             if code.strip().startswith("url="):
                 url = code[4:].strip()
@@ -282,19 +319,24 @@ class RunCode(Cog):
                 regex_pastebin = r"^https:\/\/(www\.)?pastebin\.com\/(raw\/)?([a-zA-Z0-9]+)$"
                 if (match := re.match(regex_gist, url)) is not None:
                     __, gist_id = match.groups()
-                    api_url = f"https://api.github.com/gists/{gist_id}"
-                    async with self._session.get(api_url) as r:
-                        response = await r.json()
-                    code = response["files"][f"{gist_id}.txt"]["content"]
+                    response = await fetch_raw_code(
+                        self._session,
+                        f"https://api.github.com/gists/{gist_id}",
+                        allowed_hosts=("api.github.com",),
+                        response_format="json",
+                        max_size=1024 * 1024,
+                    )
+                    if not (files := response.get("files")):
+                        raise commands.UserFeedbackCheckFailure(_("This gist has no files."))
+                    code = next(iter(files.values()))["content"]
                 elif (match := re.match(regex_pastebin, url)) is not None:
                     paste_id = match[3]
-                    api_url = f"https://pastebin.com/raw/{paste_id}"
-                    async with self._session.get(api_url) as r:
-                        code = await r.text()
+                    code = await fetch_raw_code(
+                        self._session,
+                        f"https://pastebin.com/raw/{paste_id}",
+                    )
                 else:
-                    api_url = url
-                    async with self._session.get(api_url) as r:
-                        code = await r.text()
+                    code = await fetch_raw_code(self._session, url)
         else:
             raise commands.UserFeedbackCheckFailure(_("Please provide the code!"))
 
@@ -371,6 +413,7 @@ class RunCode(Cog):
 
         return _language, _code
 
+    @commands.cooldown(rate=3, per=30, type=commands.BucketType.user)
     @commands.hybrid_command(aliases=["executecode"])
     @app_commands.allowed_installs(guilds=True, users=True)
     async def runcode(
@@ -389,7 +432,7 @@ class RunCode(Cog):
         - `verbose`: Without this mode, only the programme output will be sent, without any additional information. In case of an error, it will be used automatically.
         - `language`: If not specified, the command will try to "guess" with the file extension or Discord Markdown syntax.
         - `parameters`: Optional option to send with the request. `engine:1/cpython-3.10.2`, `input:<input>`, `compiler_options:option1|option2|option3` and `runtime_options:option1|option2|option3`.
-        - `code`: May be normal code, but also an attached file, or a link from [pastebin](https://pastebin.com), [Github gist](https://gist.github.com) or another "raw" website.
+        - `code`: May be normal code, but also an attached file, or a link from [pastebin](https://pastebin.com), [Github gist](https://gist.github.com) or a raw link from GitHub, GitLab, Bitbucket, Pastebin, Hastebin or paste.rs.
                   If you use a link, your command must end with this syntax: `link=<link>` (no space around `=`). You may also not provide it and upload an attachment instead.
         """
         if parameters is None:
@@ -487,6 +530,7 @@ class RunCode(Cog):
         self.history[ctx.author].append(response)
         await response.send(ctx, verbose=verbose)
 
+    @commands.cooldown(rate=3, per=30, type=commands.BucketType.user)
     @commands.hybrid_command(aliases=["tiorun"])
     async def runtio(
         self,
@@ -504,7 +548,7 @@ class RunCode(Cog):
         - `verbose`: Without this mode, only the programme output will be sent, without any additional information. In case of an error, it will be used automatically.
         - `language`: If not specified, the command will try to "guess" with the file extension or Discord Markdown syntax.
         - `parameters`: Optional option to send with the request. `inputs:input1|input2|input3`, `compiler_flags:flag1|flag2|flag3`, `command_line_options:option1|option2|option3` and `args:arg1|arg2|arg3`.
-        - `code`: May be normal code, but also an attached file, or a link from [pastebin](https://pastebin.com), [Github gist](https://gist.github.com) or another "raw" website.
+        - `code`: May be normal code, but also an attached file, or a link from [pastebin](https://pastebin.com), [Github gist](https://gist.github.com) or a raw link from GitHub, GitLab, Bitbucket, Pastebin, Hastebin or paste.rs.
                   If you use a link, your command must end with this syntax: `link=<link>` (no space around `=`). You may also not provide it and upload an attachment instead.
         """
         if parameters is None:

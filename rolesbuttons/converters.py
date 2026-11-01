@@ -2,6 +2,7 @@ import re
 
 import discord
 
+from AAA3A_utils import CogsUtils
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
@@ -83,13 +84,13 @@ class RoleHierarchyConverter(commands.RoleConverter):
                         "The {role.mention} role is a premium subscriber role and can only be assigned or removed by Nitro boosting the server.",
                     ).format(role=role),
                 )
-            if role >= ctx.me.top_role:
+            if not role.is_assignable():
                 raise commands.BadArgument(
                     _(
                         "The {role.mention} role is higher than my highest role in the discord hierarchy.",
                     ).format(role=role),
                 )
-            if role >= ctx.author.top_role and ctx.author.id != ctx.guild.owner_id:
+            if not CogsUtils.can_manage_role(ctx.author, role):
                 raise commands.BadArgument(
                     _(
                         "The {role.mention} role is higher than your highest role in the discord hierarchy.",

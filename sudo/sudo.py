@@ -69,8 +69,6 @@ class Sudo(Cog):
         if context.prefix is None:
             return
         command = context.message.content[len(str(context.prefix)) :]
-        if len(command.split(" ")) == 0:
-            return
         command_name = command.split(" ")[0]
         if command_name not in ("su", "unsu", "sutimeout"):
             return
@@ -83,9 +81,9 @@ class Sudo(Cog):
             message=context.message,
         )
 
-    def decorator(self: bool | None, bot_owner_ids: bool | None):
+    def decorator(all_owner_ids: bool | None, bot_owner_ids: bool | None):  # noqa: N805
         async def pred(ctx: commands.Context) -> bool:
-            if self and (
+            if all_owner_ids and (
                 ctx.author.id in ctx.bot.get_cog("Sudo").all_owner_ids
                 and ctx.author.id not in ctx.bot.owner_ids
             ):
@@ -117,7 +115,7 @@ class Sudo(Cog):
 
         Use `[p]unsu`!
         """
-        ctx.bot.owner_ids.remove(ctx.author.id)
+        ctx.bot.owner_ids.discard(ctx.author.id)
         if ctx.author.id not in self.all_owner_ids:
             self.all_owner_ids.add(ctx.author.id)
 
@@ -138,10 +136,7 @@ class Sudo(Cog):
             message=ctx.message,
         )
         if ctx.bot.get_cog("Sudo") is not None:
-            try:
-                ctx.bot.owner_ids.remove(ctx.author.id)
-            except KeyError:
-                pass
+            ctx.bot.owner_ids.discard(ctx.author.id)
         await ctx.defer()
 
     # Thanks to red#5419 for this command.
@@ -162,4 +157,4 @@ class Sudo(Cog):
         ctx.bot.owner_ids.add(ctx.author.id)
         await asyncio.sleep(sleep)
         if ctx.bot.get_cog("Sudo") is not None:
-            ctx.bot.owner_ids.remove(ctx.author.id)
+            ctx.bot.owner_ids.discard(ctx.author.id)

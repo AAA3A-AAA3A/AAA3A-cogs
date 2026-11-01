@@ -280,6 +280,19 @@ class TempRoles(Cog):
         """Assign TempRoles roles to users, expiring after a set time."""
         pass
 
+    @staticmethod
+    def check_hierarchy(ctx: commands.Context, member: discord.Member, role: discord.Role) -> None:
+        if ctx.command.name in ("selfassign", "selfunassign") or ctx.author == ctx.guild.owner:
+            return
+        if member.top_role > ctx.author.top_role or member == ctx.guild.owner:
+            raise commands.UserFeedbackCheckFailure(
+                _("You can't assign this role to this member, due to the Discord role hierarchy."),
+            )
+        if not CogsUtils.can_manage_role(ctx.author, role):
+            raise commands.UserFeedbackCheckFailure(
+                _("You can't manage a role higher than or equal to your top role."),
+            )
+
     @commands.admin_or_permissions(manage_roles=True)
     @temproles.command(aliases=["add", "+"])
     async def assign(
@@ -317,14 +330,7 @@ class TempRoles(Cog):
             )
         if not role.is_assignable():
             raise commands.UserFeedbackCheckFailure(_("This role can't be assigned."))
-        if (
-            ctx.command.name != "selfassign"
-            and ctx.author != ctx.guild.owner
-            and (member.top_role > ctx.author.top_role or member == ctx.guild.owner)
-        ):
-            raise commands.UserFeedbackCheckFailure(
-                _("You can't assign this role to this member, due to the Discord role hierarchy."),
-            )
+        self.check_hierarchy(ctx, member=member, role=role)
         try:
             end_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc) + duration
         except OverflowError:
@@ -388,6 +394,7 @@ class TempRoles(Cog):
         member_temp_roles = await self.config.member(member).temp_roles()
         if str(role.id) not in member_temp_roles:
             raise commands.UserFeedbackCheckFailure(_("This role isn't a TempRole of this member."))
+        self.check_hierarchy(ctx, member=member, role=role)
         try:
             end_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc) + duration
         except OverflowError:
@@ -445,6 +452,7 @@ class TempRoles(Cog):
         member_temp_roles = await self.config.member(member).temp_roles()
         if str(role.id) not in member_temp_roles:
             raise commands.UserFeedbackCheckFailure(_("This role isn't a temprole of this member."))
+        self.check_hierarchy(ctx, member=member, role=role)
         try:
             await member.remove_roles(
                 role,
@@ -595,9 +603,7 @@ class TempRoles(Cog):
         - `min_duration`: The minimum duration for the self temp role. `none` to disable. Defaults is 1 day.
         - `max_duration`: The minimum duration for the self temp role. `none` to disable. Defaults is 365 days.
         """
-        if role >= ctx.guild.me.top_role or (
-            role >= ctx.author.top_role and ctx.author != ctx.guild.owner
-        ):
+        if not role.is_assignable() or not CogsUtils.can_manage_role(ctx.author, role):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy.",
@@ -716,9 +722,7 @@ class TempRoles(Cog):
         - `role`: The role to assign to new members.
         - `duration`: The duration of the role.
         """
-        if role >= ctx.guild.me.top_role or (
-            role >= ctx.author.top_role and ctx.author != ctx.guild.owner
-        ):
+        if not role.is_assignable() or not CogsUtils.can_manage_role(ctx.author, role):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy.",
@@ -780,9 +784,7 @@ class TempRoles(Cog):
         - `role`: The role to assign to new members.
         - `duration`: The duration of the role.
         """
-        if role >= ctx.guild.me.top_role or (
-            role >= ctx.author.top_role and ctx.author != ctx.guild.owner
-        ):
+        if not role.is_assignable() or not CogsUtils.can_manage_role(ctx.author, role):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "The role {role.mention} ({role.id}) cannot be assigned due to the Discord role hierarchy.",

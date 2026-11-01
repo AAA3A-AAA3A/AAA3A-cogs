@@ -345,7 +345,7 @@ class DevEnv(dict[str, typing.Any]):
         """Hides the bot's token from a string."""
         token = ctx.bot.http.token
         input_ = CogsUtils.replace_var_paths(input_)
-        return re.sub(re.escape(token), "[EXPUNGED]", input_, re.I)
+        return re.sub(re.escape(token), "[EXPUNGED]", input_, flags=re.I)
 
     @classmethod
     def get_env(

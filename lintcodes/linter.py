@@ -3,6 +3,7 @@ import datetime
 import json
 import os
 import re
+import shlex
 import tempfile
 import time
 import typing
@@ -66,11 +67,20 @@ class Linter:
         self.flags: commands.FlagConverter | str | None = flags
 
     async def execute_shell_command(self, shell_command: str, file: str) -> dict[str, str]:
-        proc = await asyncio.create_subprocess_shell(
-            f"{shell_command} {file}",
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
+        try:
+            proc = await asyncio.create_subprocess_exec(  # No shell, so flags can't chain commands.
+                *shlex.split(shell_command),
+                file,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+        except (FileNotFoundError, ValueError) as e:  # Missing executable or invalid quoting.
+            raise commands.UserFeedbackCheckFailure(
+                _("Unable to run `{shell_command}`: {error}").format(
+                    shell_command=shell_command,
+                    error=e,
+                ),
+            )
         stdout, stderr = await proc.communicate()
 
         cmd = re.sub(" +", " ", shell_command)  # remove extra spaces

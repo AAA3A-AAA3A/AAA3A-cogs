@@ -22,6 +22,8 @@ from .view import RecipesView
 
 _: Translator = Translator("Recipes", __file__)
 
+CACHE_MAX_SIZE = 1000
+
 
 def unquote(string: str):
     return unescape(unquote_plus(string))
@@ -142,6 +144,8 @@ class Recipes(Cog):
                 )
             ),
         )
+        if len(self.cache) >= CACHE_MAX_SIZE:  # Remove the oldest entry.
+            del self.cache[next(iter(self.cache))]
         self.cache[url] = recipe
         return recipe
 

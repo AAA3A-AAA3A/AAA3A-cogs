@@ -1,4 +1,5 @@
 import re
+from copy import copy
 
 import discord
 
@@ -171,16 +172,31 @@ class Webhook(Cog):
         ctx: commands.Context,
         channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
     ) -> bool:
-        # if (
-        #     not channel.permissions_for(ctx.author).manage_webhooks
-        #     and ctx.author.id != ctx.guild.owner.id
-        #     and ctx.author.id not in ctx.bot.owner_ids
-        # ):
-        #     raise commands.UserFeedbackCheckFailure(
-        #         _(
-        #             "I can not let you do that because you don't have the `manage_webhooks` permission."
-        #         ).format(channel=channel)
-        #     )
+        if channel.guild != ctx.guild:
+            raise commands.UserFeedbackCheckFailure(_("The channel must be in this server."))
+        # The command checks were run in the current channel: run them again in the target one.
+        fake_message = copy(ctx.message)
+        fake_message.channel = channel
+        fake_context = await ctx.bot.get_context(fake_message)
+        try:
+            can_run = await ctx.command.can_run(fake_context, check_all_parents=True)
+        except commands.CheckFailure:
+            can_run = False
+        permissions = channel.permissions_for(ctx.author)
+        if (
+            not can_run
+            or not permissions.view_channel
+            or not (
+                permissions.send_messages_in_threads
+                if isinstance(channel, discord.Thread)
+                else permissions.send_messages
+            )
+        ):
+            raise commands.UserFeedbackCheckFailure(
+                _("You aren't allowed to use this command in {channel.mention}.").format(
+                    channel=channel,
+                ),
+            )
         if not channel.permissions_for(ctx.me).manage_webhooks:
             raise commands.UserFeedbackCheckFailure(
                 _(
@@ -663,6 +679,11 @@ class Webhook(Cog):
         try:
             session: Session = self.webhook_sessions[message.channel.id]
         except KeyError:
+            return
+        # Only the session author can speak with a chosen identity (admin sessions).
+        if (session.username is not None or session.avatar_url is not None) and (
+            message.author != session.author
+        ):
             return
         files = await Tunnel.files_from_attach(message)
         await session.send(

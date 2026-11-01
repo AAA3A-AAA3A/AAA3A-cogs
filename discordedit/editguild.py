@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 
 import aiohttp
@@ -28,6 +29,8 @@ ERROR_MESSAGE = _(
 )
 
 _: Translator = Translator("DiscordEdit", __file__)
+
+MAX_IMAGE_SIZE = 10 * 1024 * 1024  # Discord's limit.
 
 
 class UrlConverter(commands.Converter):
@@ -204,11 +207,15 @@ class EditGuild(Cog):
             url = icon
             async with aiohttp.ClientSession() as session:
                 try:
-                    async with session.get(url) as r:
-                        icon = await r.read()  # Get URL data.
-                except aiohttp.InvalidURL:
-                    return await ctx.send("That URL is invalid.")
-                except aiohttp.ClientError:
+                    icon = await CogsUtils.safe_fetch(  # Get URL data.
+                        session,
+                        url,
+                        response_format="bytes",
+                        max_size=MAX_IMAGE_SIZE,
+                    )
+                except ValueError as e:
+                    return await ctx.send(f"That URL can't be used: {e}")
+                except (aiohttp.ClientError, asyncio.TimeoutError):
                     return await ctx.send("Something went wrong while trying to get the image.")
         # else:
         #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.
@@ -245,11 +252,15 @@ class EditGuild(Cog):
             url = banner
             async with aiohttp.ClientSession() as session:
                 try:
-                    async with session.get(url) as r:
-                        banner = await r.read()  # Get URL data.
-                except aiohttp.InvalidURL:
-                    return await ctx.send("That URL is invalid.")
-                except aiohttp.ClientError:
+                    banner = await CogsUtils.safe_fetch(  # Get URL data.
+                        session,
+                        url,
+                        response_format="bytes",
+                        max_size=MAX_IMAGE_SIZE,
+                    )
+                except ValueError as e:
+                    return await ctx.send(f"That URL can't be used: {e}")
+                except (aiohttp.ClientError, asyncio.TimeoutError):
                     return await ctx.send("Something went wrong while trying to get the image.")
         # else:
         #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.
@@ -286,11 +297,15 @@ class EditGuild(Cog):
             url = splash
             async with aiohttp.ClientSession() as session:
                 try:
-                    async with session.get(url) as r:
-                        splash = await r.read()  # Get URL data.
-                except aiohttp.InvalidURL:
-                    return await ctx.send("That URL is invalid.")
-                except aiohttp.ClientError:
+                    splash = await CogsUtils.safe_fetch(  # Get URL data.
+                        session,
+                        url,
+                        response_format="bytes",
+                        max_size=MAX_IMAGE_SIZE,
+                    )
+                except ValueError as e:
+                    return await ctx.send(f"That URL can't be used: {e}")
+                except (aiohttp.ClientError, asyncio.TimeoutError):
                     return await ctx.send("Something went wrong while trying to get the image.")
         # else:
         #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.
@@ -329,11 +344,15 @@ class EditGuild(Cog):
             url = discovery_splash
             async with aiohttp.ClientSession() as session:
                 try:
-                    async with session.get(url) as r:
-                        discovery_splash = await r.read()  # Get URL data.
-                except aiohttp.InvalidURL:
-                    return await ctx.send("That URL is invalid.")
-                except aiohttp.ClientError:
+                    discovery_splash = await CogsUtils.safe_fetch(  # Get URL data.
+                        session,
+                        url,
+                        response_format="bytes",
+                        max_size=MAX_IMAGE_SIZE,
+                    )
+                except ValueError as e:
+                    return await ctx.send(f"That URL can't be used: {e}")
+                except (aiohttp.ClientError, asyncio.TimeoutError):
                     return await ctx.send("Something went wrong while trying to get the image.")
         # else:
         #     raise commands.UserInputError()  # Send the command help if no attachment and no URL.

@@ -84,6 +84,11 @@ async def check_invite_links(
 
 NSFW_LINKS: set[str] = set()
 BAD_WORDS: set[str] = set()
+BAD_WORDS_RE: re.Pattern | None = None  # Compiled once, when the lists are loaded.
+
+
+def count_bad_words(content: str) -> int:
+    return 0 if BAD_WORDS_RE is None else len(BAD_WORDS_RE.findall(content))
 AUTO_MOD_FILTERS: dict[
     str,
     dict[
@@ -453,16 +458,7 @@ AUTO_MOD_FILTERS: dict[
                 "default_added_heat": 100.0,
                 "check": lambda message, filter_config: (
                     filter_config["added_heat"]
-                    * sum(
-                        [
-                            len(
-                                re.compile(rf"\b{bad_word}\b", re.IGNORECASE).findall(
-                                    message.content,
-                                ),
-                            )
-                            for bad_word in BAD_WORDS
-                        ],
-                    )
+                    * count_bad_words(message.content)
                 ),
                 "reason": lambda: _("**Auto Mod** - Bad words detected."),
             },
@@ -569,6 +565,12 @@ class AutoModModule(Module):
         for file in data_path.glob("bad_words/*.txt"):
             with open(file, encoding="utf-8") as f:
                 BAD_WORDS.update(word.strip().lower() for word in f.readlines() if word.strip())
+        global BAD_WORDS_RE
+        if BAD_WORDS:  # An empty alternation would match everywhere.
+            BAD_WORDS_RE = re.compile(  # Longest words first, so they are preferred.
+                rf"\b(?:{'|'.join(map(re.escape, sorted(BAD_WORDS, key=len, reverse=True)))})\b",
+                re.IGNORECASE,
+            )
         with open(data_path / "nsfw_links.txt", encoding="utf-8") as f:
             NSFW_LINKS.update(line.strip().lower() for line in f if line.strip())
         self.cog.bot.add_listener(self.on_message)

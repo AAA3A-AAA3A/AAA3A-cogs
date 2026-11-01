@@ -19,6 +19,7 @@ from .converters import (
     MyMessageConverter,
     PastebinConverter,
     PastebinListConverter,
+    ReadableMessageConverter,
     StrConverter,
     StringToEmbed,
 )
@@ -40,6 +41,16 @@ YAML_LIST_CONVERTER = ListStringToEmbed(conversion_type="yaml")
 PASTEBIN_CONVERTER = PastebinConverter(conversion_type="json", allow_content=False)
 PASTEBIN_CONTENT_CONVERTER = PastebinConverter(conversion_type="json")
 PASTEBIN_LIST_CONVERTER = PastebinListConverter(conversion_type="json")
+
+
+def can_mention_everyone(ctx: commands.Context, channel: discord.abc.Messageable) -> bool:
+    """Check the permission in the channel where the message is sent, not in the current one."""
+    if isinstance(channel, discord.abc.GuildChannel | discord.Thread) and isinstance(
+        ctx.author,
+        discord.Member,
+    ):
+        return channel.permissions_for(ctx.author).mention_everyone
+    return ctx.permissions.mention_everyone
 
 
 @cog_i18n(_)
@@ -142,7 +153,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                     **data,
                     allowed_mentions=(
                         discord.AllowedMentions(everyone=True, users=True, roles=True)
-                        if ctx.permissions.mention_everyone
+                        if can_mention_everyone(ctx, channel)
                         else discord.utils.MISSING
                     ),
                 )
@@ -184,7 +195,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                     **data,
                     allowed_mentions=(
                         discord.AllowedMentions(everyone=True, users=True, roles=True)
-                        if ctx.permissions.mention_everyone
+                        if can_mention_everyone(ctx, channel)
                         else discord.utils.MISSING
                     ),
                 )
@@ -231,7 +242,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                     **data,
                     allowed_mentions=(
                         discord.AllowedMentions(everyone=True, users=True, roles=True)
-                        if ctx.permissions.mention_everyone
+                        if can_mention_everyone(ctx, channel)
                         else discord.utils.MISSING
                     ),
                 )
@@ -274,7 +285,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                     **data,
                     allowed_mentions=(
                         discord.AllowedMentions(everyone=True, users=True, roles=True)
-                        if ctx.permissions.mention_everyone
+                        if can_mention_everyone(ctx, channel)
                         else discord.utils.MISSING
                     ),
                 )
@@ -316,7 +327,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                     **data,
                     allowed_mentions=(
                         discord.AllowedMentions(everyone=True, users=True, roles=True)
-                        if ctx.permissions.mention_everyone
+                        if can_mention_everyone(ctx, channel)
                         else discord.utils.MISSING
                     ),
                 )
@@ -330,7 +341,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         self,
         ctx: commands.Context,
         channel_or_message: MessageableOrMessageConverter | None,
-        message: discord.Message = None,
+        message: ReadableMessageConverter = None,
         index: int = None,
         include_content: bool | None = None,
     ):
@@ -379,7 +390,7 @@ class EmbedUtils(DashboardIntegration, Cog):
                     **data,
                     allowed_mentions=(
                         discord.AllowedMentions(everyone=True, users=True, roles=True)
-                        if ctx.permissions.mention_everyone
+                        if can_mention_everyone(ctx, channel)
                         else discord.utils.MISSING
                     ),
                 )
@@ -393,7 +404,7 @@ class EmbedUtils(DashboardIntegration, Cog):
     async def embed_download(
         self,
         ctx: commands.Context,
-        message: discord.Message = None,
+        message: ReadableMessageConverter = None,
         index: int = None,
         include_content: bool | None = None,
     ):
@@ -497,19 +508,19 @@ class EmbedUtils(DashboardIntegration, Cog):
             data = await PASTEBIN_LIST_CONVERTER.convert(ctx, argument=data)
         elif conversion_type in ("message", "frommessage", "msg", "frommsg"):
             if data is not None:
-                message = await commands.MessageConverter().convert(ctx, argument=data)
+                source_message = await ReadableMessageConverter().convert(ctx, argument=data)
             elif ctx.message.reference is not None and isinstance(
                 (reference := ctx.message.reference.resolved),
                 discord.Message,
             ):
-                message = reference
+                source_message = reference
             else:
                 raise commands.UserInputError()
             data = {}
-            if message.content:
-                data["content"] = message.content
-            if message.embeds:
-                data["embeds"] = message.embeds.copy()
+            if source_message.content:
+                data["content"] = source_message.content
+            if source_message.embeds:
+                data["embeds"] = source_message.embeds.copy()
             if not data:
                 raise commands.UserInputError()
         try:

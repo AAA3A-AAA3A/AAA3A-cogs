@@ -43,6 +43,7 @@ LATEST_LOG_RE = re.compile(r"latest(?:-part(?P<part>\d+))?\.log")
 CONSOLE_LOG_RE = re.compile(
     r"^\[(?P<time_str>.*?)\] \[(?P<level>.*?)\] (?P<logger_name>.*?): (?P<message>.*)",
 )
+DISCORD_TOKEN_RE = re.compile(r"[\w-]{23,28}\.[\w-]{6,7}\.[\w-]{27,40}")
 
 IGNORED_ERRORS = (
     commands.UserInputError,
@@ -492,6 +493,12 @@ class ConsoleLogs(DashboardIntegration, Cog):
                 stats += f"\n• {stat[1]} {stat[0]}"
         await Menu(pages=list(pagify(stats, page_length=500)), lang="py").start(ctx)
 
+    def redact_secrets(self, text: str) -> str:
+        """Like Red's `sanitize_output` (no context here), but also hide any Discord token."""
+        if (token := self.bot.http.token) is not None:
+            text = text.replace(token, "[EXPUNGED]")
+        return DISCORD_TOKEN_RE.sub("[EXPUNGED]", text)
+
     @consolelogs.command(aliases=["+"])
     async def addchannel(
         self,
@@ -543,7 +550,12 @@ class ConsoleLogs(DashboardIntegration, Cog):
                 ),
             },
         )
-        await ctx.send(_("Errors logging enabled in {channel.mention}.").format(channel=channel))
+        message = _("Errors logging enabled in {channel.mention}.").format(channel=channel)
+        if channel.permissions_for(channel.guild.default_role).view_channel:
+            message += "\n" + _(
+                "⚠️ Everyone can see this channel, and logs may contain sensitive data.",
+            )
+        await ctx.send(message)
 
     @consolelogs.command(aliases=["-"])
     async def removechannel(
@@ -678,7 +690,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
             "" if _traceback_error[0].endswith(":") else ":\n"
         )
         traceback_error = "\n".join(_traceback_error)
-        traceback_error = CogsUtils.replace_var_paths(traceback_error)
+        traceback_error = self.redact_secrets(CogsUtils.replace_var_paths(traceback_error))
         pages = [box(page, lang="py") for page in pagify(traceback_error, shorten_by=10)]
         for channel, settings in destinations.items():
             if not settings["global_errors"] and ctx.guild != channel.guild:
@@ -741,7 +753,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
                                 box(page, lang="py")
                                 for page in list(
                                     pagify(
-                                        "\n\n".join(pages_to_send),
+                                        self.redact_secrets("\n\n".join(pages_to_send)),
                                         shorten_by=10,
                                     ),
                                 )
@@ -759,7 +771,9 @@ class ConsoleLogs(DashboardIntegration, Cog):
                     box(page, lang="py")
                     for page in list(
                         pagify(
-                            console_log.__str__(with_ansi=False, with_extra_break_line=True),
+                            self.redact_secrets(
+                                console_log.__str__(with_ansi=False, with_extra_break_line=True),
+                            ),
                             shorten_by=10,
                         ),
                     )
@@ -774,7 +788,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
                         box(page, lang="py")
                         for page in list(
                             pagify(
-                                "\n\n".join(pages_to_send),
+                                self.redact_secrets("\n\n".join(pages_to_send)),
                                 shorten_by=10,
                             ),
                         )

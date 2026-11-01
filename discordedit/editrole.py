@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 
 import aiohttp
@@ -26,6 +27,8 @@ ERROR_MESSAGE = _(
 )
 
 _: Translator = Translator("DiscordEdit", __file__)
+
+MAX_IMAGE_SIZE = 10 * 1024 * 1024  # Discord's limit.
 
 
 class EmojiOrUrlConverter(commands.Converter):
@@ -96,8 +99,7 @@ class EditRole(Cog):
 
     async def check_role(self, ctx: commands.Context, role: discord.Role) -> bool:
         if (
-            not ctx.author.top_role > role
-            and ctx.author.id != ctx.guild.owner.id
+            not CogsUtils.can_manage_role(ctx.author, role)
             and ctx.author.id not in ctx.bot.owner_ids
         ):
             raise commands.UserFeedbackCheckFailure(
@@ -105,7 +107,7 @@ class EditRole(Cog):
                     "I can not let you edit @{role.name} ({role.id}) because that role is higher than or equal to your highest role in the Discord hierarchy.",
                 ).format(role=role),
             )
-        if not ctx.me.top_role > role:
+        if not CogsUtils.can_manage_role(ctx.me, role):
             raise commands.UserFeedbackCheckFailure(
                 _(
                     "I can not edit @{role.name} ({role.id}) because that role is higher than or equal to my highest role in the Discord hierarchy.",
@@ -255,11 +257,15 @@ class EditRole(Cog):
                 url = display_icon
                 async with aiohttp.ClientSession() as session:
                     try:
-                        async with session.get(url) as r:
-                            display_icon = await r.read()  # Get URL data.
-                    except aiohttp.InvalidURL:
-                        return await ctx.send("That URL is invalid.")
-                    except aiohttp.ClientError:
+                        display_icon = await CogsUtils.safe_fetch(  # Get URL data.
+                            session,
+                            url,
+                            response_format="bytes",
+                            max_size=MAX_IMAGE_SIZE,
+                        )
+                    except ValueError as e:
+                        return await ctx.send(f"That URL can't be used: {e}")
+                    except (aiohttp.ClientError, asyncio.TimeoutError):
                         return await ctx.send("Something went wrong while trying to get the image.")
         # else:
         #     raise commands.UserInputError()  # Send the command help if no attachment, no Unicode/custom emoji and no URL.

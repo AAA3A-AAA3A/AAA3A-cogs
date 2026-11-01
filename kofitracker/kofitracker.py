@@ -79,6 +79,7 @@ class KoFiTracker(Cog):
             requests.get,
             url=f"https://ko-fi.com/{kofi_page_url}",
             headers=HEADERS,
+            timeout=10,
         )
         data = r.text
         soup = BeautifulSoup(data, "lxml")

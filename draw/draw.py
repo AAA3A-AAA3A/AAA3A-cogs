@@ -170,7 +170,7 @@ class Draw(Cog):
             board = Board(
                 cog=self,
                 height=self.drawings[from_message].board.height,
-                width=self.drawings[from_message].width,
+                width=self.drawings[from_message].board.width,
                 background=background,
             )
             board.board_history = self.drawings[from_message].board.board_history.copy()

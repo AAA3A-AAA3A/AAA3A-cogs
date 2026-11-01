@@ -1,14 +1,17 @@
+import asyncio
 import io
 import json
 import re
 import textwrap
 import typing
+from copy import copy
 
 import aiohttp
 import discord
 import yaml
+import yarl
 
-from AAA3A_utils import Menu
+from AAA3A_utils import CogsUtils, Menu
 from redbot.core import commands, dev_commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
@@ -273,7 +276,26 @@ class MessageableConverter(commands.Converter):
         return channel
 
 
-class MyMessageConverter(commands.MessageConverter):
+class ReadableMessageConverter(commands.MessageConverter):
+    """A message from the current server, in a channel that the author can read."""
+
+    async def convert(self, ctx: commands.Context, argument: str) -> discord.Message:
+        message = await super().convert(ctx, argument=argument)
+        if ctx.guild is None or message.guild != ctx.guild:
+            raise commands.BadArgument(_("The message must be in this server."))
+        if (member := ctx.guild.get_member(ctx.author.id)) is None:
+            raise commands.BadArgument(_("You must be a member of this server."))
+        permissions = message.channel.permissions_for(member)
+        if not (permissions.view_channel and permissions.read_message_history):
+            raise commands.BadArgument(
+                _("You don't have permission to read messages in {channel.mention}.").format(
+                    channel=message.channel,
+                ),
+            )
+        return message
+
+
+class MyMessageConverter(ReadableMessageConverter):
     async def convert(self, ctx: commands.Context, argument: str) -> discord.Message:
         message = await super().convert(ctx, argument=argument)
         if message.author != ctx.me:
@@ -282,11 +304,15 @@ class MyMessageConverter(commands.MessageConverter):
                     "I have to be the author of the message. You can use the command without providing a message to send one.",
                 ),
             )
-        ctx.message.channel = message.channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all(
-            [check(fake_context) for check in ctx.bot.get_cog("EmbedUtils").embed_edit.checks],
-        ):
+        # Check the `[p]embed edit` permissions in the message channel, without altering `ctx`.
+        fake_message = copy(ctx.message)
+        fake_message.channel = message.channel
+        fake_context = await ctx.bot.get_context(fake_message)
+        try:
+            can_run = await ctx.bot.get_cog("EmbedUtils").embed_edit.can_run(fake_context)
+        except commands.CheckFailure:
+            can_run = False
+        if not can_run:
             raise commands.BadArgument(
                 _(
                     "You are not allowed to edit embeds of an existing message (bot owner can set the permissions with the cog Permissions on the command `[p]embed edit`).",
@@ -321,6 +347,13 @@ PASTEBIN_RE = re.compile(r"https://(?:www\.)?pastebin\.com/(?P<paste_id>[a-zA-Z0
 HASTEBIN_RE = re.compile(r"https://(?:www\.)?hastebin\.com/(?P<paste_id>[a-zA-Z0-9]+)/*")
 
 GITHUB_HEADERS = {"Accept": "application/vnd.github.v3.raw"}
+PASTEBIN_HOSTS = (
+    "api.github.com",
+    "gist.githubusercontent.com",
+    "pastebin.com",
+    "hastebin.com",
+)
+DOT_SEGMENT_RE = re.compile(r"(?:^|/)(?:\.|%2e){1,2}(?:/|$)", re.IGNORECASE)
 
 
 class PastebinMixin:
@@ -332,25 +365,29 @@ class PastebinMixin:
         typing.Literal["content", "embed", "embeds"],
         discord.Embed | list[discord.Embed] | str,
     ]:
-        async def _fetch_response(url: str, response_format: str, **kwargs) -> typing.Any:
-            if "github.com" in url:
+        async def _fetch_response(
+            url: str,
+            response_format: typing.Literal["text", "json"],
+            headers: dict[str, str] | None = None,
+        ) -> typing.Any:
+            if DOT_SEGMENT_RE.search(url.split("?", 1)[0]):
+                raise commands.BadArgument(_("Dot segments aren't allowed in the URL."))
+            headers = dict(headers or {})  # Never modify `GITHUB_HEADERS`.
+            if yarl.URL(url).host == "api.github.com":
                 api_tokens = await ctx.bot.get_shared_api_tokens(service_name="github")
                 if (token := api_tokens.get("token")) is not None:
-                    if "headers" not in kwargs:
-                        kwargs["headers"] = {}
-                    kwargs["headers"]["Authorization"] = f"Token {token}"
+                    headers["Authorization"] = f"Token {token}"
             try:
-                async with ctx.bot.get_cog("EmbedUtils")._session.get(
+                return await CogsUtils.safe_fetch(
+                    ctx.bot.get_cog("EmbedUtils")._session,
                     url,
-                    raise_for_status=True,
-                    **kwargs,
-                ) as response:
-                    if response_format == "text":
-                        return await response.text()
-                    return await response.json() if response_format == "json" else None
-            except (aiohttp.ClientResponseError, aiohttp.ClientError) as error:
+                    allowed_hosts=PASTEBIN_HOSTS,
+                    response_format=response_format,
+                    headers=headers,
+                )
+            except (ValueError, aiohttp.ClientError, asyncio.TimeoutError) as error:
                 raise commands.BadArgument(
-                    f"Failed to fetch the content from the URL: {url}\n{box(error.message, lang='py')}",
+                    f"Failed to fetch the content from the URL: {url}\n{box(str(error), lang='py')}",
                 )
 
         def _find_ref(path: str, refs: list[dict]) -> tuple[str, str]:
@@ -410,7 +447,7 @@ class PastebinMixin:
             argument = await _fetch_response(
                 f"https://hastebin.com/raw/{_match['paste_id']}",
                 response_format="text",
-                headers={"Authentification": f"Bearer {token}"},
+                headers={"Authorization": f"Bearer {token}"},
             )
         else:
             raise commands.BadArgument(

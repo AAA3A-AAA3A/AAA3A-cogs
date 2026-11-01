@@ -3,6 +3,7 @@ import typing
 from copy import copy
 
 import discord
+from discord.abc import _Overwrites
 
 from AAA3A_utils import Cog, CogsUtils, Menu
 from redbot.core import commands
@@ -460,17 +461,16 @@ class EditVoiceChannel(Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("You need to provide a role or user you want to edit permissions for."),
             )
-        # for target in targets:
-        #     if (
-        #         ctx.author != ctx.guild.owner
-        #         and (
-        #             target if isinstance(target, discord.Role) else target.top_role
-        #         )
-        #         >= ctx.author.top_role
-        #     ):
-        #         raise commands.UserFeedbackCheckFailure(_("You can't change the permissions of a role/member higher up the hierarchy than your top role."))
-        #     if (target if isinstance(target, discord.Role) else target.top_role) >= ctx.me.top_role:
-        #         raise commands.UserFeedbackCheckFailure(_("I can't change the permissions of a role/member higher up the hierarchy than my top role."))
+        for target in targets:
+            if not CogsUtils.can_manage_role(
+                ctx.author,
+                target if isinstance(target, discord.Role) else target.top_role,
+            ):
+                raise commands.UserFeedbackCheckFailure(
+                    _(
+                        "You can't change the permissions of a role/member higher up the hierarchy than your top role.",
+                    ),
+                )
         if not permissions:
             raise commands.UserFeedbackCheckFailure(
                 _("You need to provide at least one permission."),
@@ -496,6 +496,20 @@ class EditVoiceChannel(Cog):
                     **dict.fromkeys(permissions, true_or_false),
                 )
                 overwrites[target] = perm
+        # `overwrites` is a copy: apply it to the fake channel to compute the new permissions.
+        fake_channel_object._overwrites = [
+            _Overwrites(
+                {
+                    "id": target.id,
+                    "allow": str(overwrite.pair()[0].value),
+                    "deny": str(overwrite.pair()[1].value),
+                    "type": (
+                        _Overwrites.ROLE if isinstance(target, discord.Role) else _Overwrites.MEMBER
+                    ),
+                },
+            )
+            for target, overwrite in overwrites.items()
+        ]
         new_channel_permissions = fake_channel_object.permissions_for(ctx.author)
         if [
             permission

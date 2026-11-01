@@ -431,6 +431,8 @@ class MafiaGame(Cog):
             game.afk_players.pop(player, None)
 
     async def cog_check(self, ctx: commands.Context) -> bool:
+        if not await super().cog_check(ctx):
+            return False
         if (
             ctx.interaction is not None
             and ctx.interaction.is_user_integration()

@@ -1,5 +1,6 @@
 import discord
 
+from AAA3A_utils import CogsUtils
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
@@ -29,11 +30,7 @@ class RoleHierarchyConverter(commands.RoleConverter):
             raise
         if not role.is_assignable():
             raise commands.BadArgument(_("This role isn't assignable."))
-        if role >= ctx.me.top_role:
-            raise commands.BadArgument(
-                _("This role is higher than my highest role in the discord hierarchy."),
-            )
-        if role >= ctx.author.top_role and ctx.author.id != ctx.guild.owner_id:
+        if not CogsUtils.can_manage_role(ctx.author, role):
             raise commands.BadArgument(
                 _("This role is higher than your highest role in the discord hierarchy."),
             )

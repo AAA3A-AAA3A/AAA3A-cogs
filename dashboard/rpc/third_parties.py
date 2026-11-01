@@ -121,6 +121,8 @@ class DashboardRPC_ThirdParties:
             dict[str, tuple[typing.Callable, dict[str, bool]]],
         ] = {}
         self.third_parties_cogs: dict[str, commands.Cog] = {}
+        # Number of requests using the patched `Field.__init__`, restored when it reaches 0.
+        self._patched_fields_requests: int = 0
 
         self.bot.register_rpc_handler(self.oauth_receive)
         self.bot.register_rpc_handler(self.get_third_parties)
@@ -260,6 +262,17 @@ class DashboardRPC_ThirdParties:
                 "error_code": 404,
                 "error_message": "Looks like that page doesn't exist... Strange...",
             }
+        if missing_context_ids := [
+            key
+            for key in self.third_parties[name][page][1]["context_ids"]
+            if not isinstance(context_ids.get(key), int)
+        ]:
+            return {
+                "status": 1,
+                "message": "Forbidden access.",
+                "error_code": 403,
+                "error_message": f"Missing context: {', '.join(missing_context_ids)}.",
+            }
         if "user_id" in self.third_parties[name][page][1]["context_ids"]:
             if (user := self.bot.get_user(context_ids["user_id"])) is None:
                 return {
@@ -291,10 +304,10 @@ class DashboardRPC_ThirdParties:
                     "error_code": 404,
                     "error_message": "Looks like that I'm not in this server...",
                 }
-            if (
-                context_ids["user_id"] not in self.bot.owner_ids
-                and guild.get_member(context_ids["user_id"]) is None
-            ):
+            if (user_member := guild.get_member(context_ids["user_id"])) is not None:
+                # The authenticated user, as a member of the guild (bot owners may not be in it).
+                kwargs["user"] = user_member
+            elif context_ids["user_id"] not in self.bot.owner_ids:
                 return {
                     "status": 1,
                     "message": "Forbidden access.",
@@ -354,23 +367,29 @@ class DashboardRPC_ThirdParties:
         set_contextual_locale(kwargs["lang_code"].replace("_", "-"))
         set_contextual_regional_format(kwargs["lang_code"].replace("_", "-"))
 
-        (
-            kwargs["Form"],
-            kwargs["DpyObjectConverter"],
-            extra_notifications,
-            kwargs["get_sorted_channels"],
-            kwargs["get_sorted_roles"],
-        ) = await get_form_class(self, third_party_cog=self.third_parties_cogs[name], **kwargs)
-        kwargs["Pagination"] = Pagination
+        self._patched_fields_requests += 1
+        try:
+            (
+                kwargs["Form"],
+                kwargs["DpyObjectConverter"],
+                extra_notifications,
+                kwargs["get_sorted_channels"],
+                kwargs["get_sorted_roles"],
+            ) = await get_form_class(self, third_party_cog=self.third_parties_cogs[name], **kwargs)
+            kwargs["Pagination"] = Pagination
 
-        result = await self.third_parties[name][page][0](**kwargs)
-        if "web_content" in result and isinstance(result["web_content"], dict):
-            for key, value in result["web_content"].items():
-                if isinstance(value, kwargs["Form"]):
-                    result["web_content"][key] = str(value)
-                elif isinstance(value, Pagination):
-                    result["web_content"][key] = value.to_dict()
-        setattr(Field, "__init__", INITIAL_INIT_FIELD)
+            result = await self.third_parties[name][page][0](**kwargs)
+            if "web_content" in result and isinstance(result["web_content"], dict):
+                for key, value in result["web_content"].items():
+                    if isinstance(value, kwargs["Form"]):
+                        result["web_content"][key] = str(value)
+                    elif isinstance(value, Pagination):
+                        result["web_content"][key] = value.to_dict()
+        finally:
+            # Concurrent requests still need the patch: only restore it after the last one.
+            self._patched_fields_requests -= 1
+            if not self._patched_fields_requests:
+                setattr(Field, "__init__", INITIAL_INIT_FIELD)
         result.setdefault("notifications", [])
         result["notifications"].extend(extra_notifications)
         return result

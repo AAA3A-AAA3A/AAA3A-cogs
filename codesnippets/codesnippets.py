@@ -1,3 +1,4 @@
+import asyncio
 import re
 import textwrap
 import typing
@@ -6,8 +7,9 @@ from urllib.parse import quote_plus
 
 import aiohttp
 import discord
+import yarl
 
-from AAA3A_utils import Cog, Menu, Settings
+from AAA3A_utils import Cog, CogsUtils, Menu, Settings
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
@@ -52,12 +54,27 @@ HASTEBIN_RE = re.compile(
     r"((\?[^->]+)?(#L?(?P<start_line>\d+)(([-~:]|(\.\.))L?(?P<end_line>\d+))?))?",
 )
 GITEA_RE = re.compile(
-    r"https://(?:www\.)?gitea\.(?P<domain>[^/]+)/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/src/branch/(?P<path>[^#>]+)"
+    r"https://(?:www\.)?gitea\.(?P<domain>[a-zA-Z0-9.-]+)/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/src/branch/(?P<path>[^#>]+)"
     r"((\?[^#>]+)?(#L?L?(?P<start_line>\d+)(([-~:]|(\.\.))L?L?(?P<end_line>\d+))?))?",
 )
 
 
 GITHUB_HEADERS = {"Accept": "application/vnd.github.v3.raw"}
+GITHUB_API_HOST = "api.github.com"
+KNOWN_HOSTS = (
+    GITHUB_API_HOST,
+    "gist.githubusercontent.com",
+    "gitlab.com",
+    "bitbucket.org",
+    "pastebin.com",
+    "hastebin.com",
+)
+MAX_FILE_SIZE = 5 * 1024 * 1024
+DOT_SEGMENT_RE = re.compile(r"(?:^|/)(?:\.|%2e){1,2}(?:/|$)", re.IGNORECASE)
+
+
+class UnsafeURLError(Exception):
+    pass
 
 _: Translator = Translator("CodeSnippets", __file__)
 
@@ -120,17 +137,31 @@ class CodeSnippets(DashboardIntegration, Cog):
             await self._session.close()
         await super().cog_unload()
 
-    async def _fetch_response(self, url: str, response_format: str, **kwargs) -> typing.Any:
-        if "github.com" in url:
+    async def _fetch_response(
+        self,
+        url: str,
+        response_format: typing.Literal["text", "json"],
+        headers: dict[str, str] | None = None,
+    ) -> typing.Any:
+        if DOT_SEGMENT_RE.search(url.split("?", 1)[0]):
+            raise UnsafeURLError("Dot segments aren't allowed in the URL.")
+        headers = dict(headers or {})  # Never modify `GITHUB_HEADERS`.
+        host = yarl.URL(url).host
+        if host == GITHUB_API_HOST:
             api_tokens = await self.bot.get_shared_api_tokens(service_name="github")
             if (token := api_tokens.get("token")) is not None:
-                if "headers" not in kwargs:
-                    kwargs["headers"] = {}
-                kwargs["headers"]["Authorization"] = f"Token {token}"
-        async with self._session.get(url, raise_for_status=True, **kwargs) as response:
-            if response_format == "text":
-                return await response.text()
-            return await response.json() if response_format == "json" else None
+                headers["Authorization"] = f"Token {token}"
+        try:
+            return await CogsUtils.safe_fetch(
+                self._session,
+                url,
+                allowed_hosts=KNOWN_HOSTS if host in KNOWN_HOSTS else None,  # Else, Gitea.
+                response_format=response_format,
+                max_size=MAX_FILE_SIZE,
+                headers=headers,
+            )
+        except ValueError as e:
+            raise UnsafeURLError(str(e)) from e
 
     def _find_ref(self, path: str, refs: list[dict]) -> tuple[str, str]:
         ref, file_path = path.split("/", 1)
@@ -447,6 +478,8 @@ class CodeSnippets(DashboardIntegration, Cog):
                         snippet[3],
                     )
                     all_snippets[_match.group()] = snippet
+                except (UnsafeURLError, aiohttp.ClientConnectionError, asyncio.TimeoutError):
+                    continue
                 except (RuntimeError, aiohttp.ClientResponseError) as e:
                     if e.status == 404:
                         continue

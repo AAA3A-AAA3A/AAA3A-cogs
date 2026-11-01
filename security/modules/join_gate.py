@@ -25,11 +25,10 @@ def sum_dicts(*dicts: dict) -> dict:
 
 
 def check_regex_argument(argument: str) -> str:
-    argument = re.escape(argument)
     try:
         re.compile(argument)
     except re.error as e:
-        return ValueError(_("Invalid regex pattern: {error}").format(error=str(e)))
+        raise ValueError(_("Invalid regex pattern: {error}").format(error=str(e))) from e
     return argument
 
 
@@ -85,7 +84,7 @@ JOIN_GATE_OPTIONS: list[
         "check": lambda member, pattern: (
             pattern is not None
             and (
-                re.search(pattern, member.global_name) is not None
+                re.search(pattern, member.global_name or "") is not None
                 or re.search(pattern, member.name) is not None
             )
         ),

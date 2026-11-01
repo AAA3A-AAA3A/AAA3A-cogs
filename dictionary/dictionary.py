@@ -16,6 +16,8 @@ from .view import DictionaryView
 
 _: Translator = Translator("Dictionary", __file__)
 
+CACHE_MAX_SIZE = 1000
+
 
 @cog_i18n(_)
 class Dictionary(Cog):
@@ -72,6 +74,8 @@ class Dictionary(Cog):
                 for meaning in json_content["meanings"]
             },
         )
+        if len(self.cache) >= CACHE_MAX_SIZE:  # Remove the oldest entry.
+            del self.cache[next(iter(self.cache))]
         self.cache[query] = word
         return word
 

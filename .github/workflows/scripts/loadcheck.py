@@ -1,5 +1,6 @@
 import asyncio
 import os
+from pathlib import Path
 import subprocess
 import sys
 import time
@@ -14,7 +15,7 @@ load_dotenv(".env")
 
 token = os.environ.get("DISCORD_BOT_TOKEN")
 
-python_version = subprocess.check_output(["python", "-V"]).decode("utf-8")
+python_version = subprocess.check_output([sys.executable, "-V"]).decode("utf-8")
 
 print("=== Red's logs are available to view as an Artifact on the main matrix page ===\n")
 
@@ -22,37 +23,21 @@ print(f"Starting Red {red_str_ver} with {python_version}")
 
 file = open("red.log", "w")
 proc = subprocess.Popen(
-    f"redbot workflow --no-prompt --token {token} --rpc --debug",
+    ["redbot", "workflow", "--no-prompt", "--rpc", "--debug"],
     stdout=file,
     stderr=subprocess.STDOUT,
-    shell=True,
+    env={**os.environ, "RED_TOKEN": token},  # Not in the command line, visible to all processes.
 )
 
 # let Red boot up
 time.sleep(10)
 
-# not compatible with dpy 1.x
-# ["buttonpoll", "ghissues"]
-
-all_cogs = [
-    "AntiNuke",
-    "Calculator",
-    "ClearChannel",
-    "CmdChannel",
-    "CtxVar",
-    "EditFile",
-    "Ip",
-    "MemberPrefix",
-    "ReactToCommand",
-    "RolesButtons",
-    "SimpleSanction",
-    "Sudo",
-    "TicketTool",
-    "TransferChannel",
-]
-cogs = []
-for cog in cogs:
-    cogs.append(cog.lower())
+# All the cogs of the repo: the folders with an `info.json` file and an `__init__.py` file.
+cogs = sorted(
+    path.parent.name
+    for path in Path(__file__).parents[3].glob("*/info.json")
+    if (path.parent / "__init__.py").exists()
+)
 
 
 async def leswebsockets() -> tuple[dict[str, Any], dict[str, Any]]:

@@ -1,7 +1,8 @@
+import secrets
+import string
 import typing
 
 import discord
-from password_generator import PasswordGenerator
 from password_strength import PasswordStats
 from passwordgenerator import pwgenerator as pw
 
@@ -16,6 +17,14 @@ from .view import DEFAULT_INCLUDE_CHARACTERS, DEFAULT_LENGTHS, PasswordsGenerato
 # General repo credits.
 
 _: Translator = Translator("PasswordsGenerator", __file__)
+
+CHARACTERS: dict[str, str] = {
+    "upper": string.ascii_uppercase,
+    "lower": string.ascii_lowercase,
+    "digits": string.digits,
+    "special": "!#$%^&*(),.-_+=<>?",
+}
+SEPARATORS: str = "-_:;.=+%*"
 
 
 @cog_i18n(_)
@@ -33,37 +42,44 @@ class PasswordsGenerator(Cog):
         _lengths = DEFAULT_LENGTHS.copy()
         _lengths.update(lengths)
         lengths = _lengths
+        # `secrets` is used instead of `random`, which isn't suitable for passwords.
         if not easy_to_remember:
-            pwo: PasswordGenerator = PasswordGenerator()
-            pwo.minlen = pwo.maxlen = lengths["length"]
-            if "upper" not in include_characters:
-                pwo.minuchars = 0
-                pwo.excludeuchars = pwo.upper_chars
-            else:
-                pwo.minuchars = lengths["min_upper"]
-            if "lower" not in include_characters:
-                pwo.minlchars = 0
-                pwo.excludelchars = pwo.lower_chars
-            else:
-                pwo.minlchars = lengths["min_lower"]
-            if "digits" not in include_characters:
-                pwo.minnumbers = 0
-                pwo.excludenumbers = pwo.numbers_list
-            else:
-                pwo.minnumbers = lengths["min_digits"]
-            if "special" not in include_characters:
-                pwo.minschars = 0
-                pwo.excludeschars = pwo._schars
-            else:
-                pwo.minschars = lengths["min_special"]
-            password = pwo.generate()
+            characters = [
+                character_type
+                for character_type in CHARACTERS
+                if character_type in include_characters
+            ] or list(CHARACTERS)
+            password = [
+                secrets.choice(CHARACTERS[character_type])
+                for character_type in characters
+                for __ in range(lengths[f"min_{character_type}"])
+            ]
+            all_characters = "".join(CHARACTERS[character_type] for character_type in characters)
+            password += [
+                secrets.choice(all_characters) for __ in range(lengths["length"] - len(password))
+            ]
+            secrets.SystemRandom().shuffle(password)
+            password = "".join(password)
         else:
-            password = pw.pw(
-                min_word_length=lengths["min_word_length"],
-                max_word_length=lengths["max_word_length"],
-                max_int_value=lengths["max_int_value"],
-                number_of_elements=lengths["number_of_elements"],
-            )
+            words = [
+                word
+                for word in pw.load_dictionary()
+                if lengths["min_word_length"] <= len(word) <= lengths["max_word_length"]
+            ]
+            if not words:
+                raise commands.UserFeedbackCheckFailure(_("No word matches these lengths."))
+            int_position = secrets.randbelow(lengths["number_of_elements"])
+            elements = [
+                (
+                    str(secrets.randbelow(lengths["max_int_value"] + 1))
+                    if i == int_position
+                    else secrets.choice(words).title()
+                )
+                for i in range(lengths["number_of_elements"])
+            ]
+            password = elements[0]
+            for element in elements[1:]:
+                password += secrets.choice(SEPARATORS) + element
         return password, PasswordStats(password).strength()
 
     def get_embed(self, password: str, strength: float) -> discord.Embed:

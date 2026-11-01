@@ -7,45 +7,34 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9"]
+        python-version: ["3.11"]
         red-version:
-          # this workflow required pr #5453 commit d27dbde, which is in dev 3.4 & 3.5 & pypi 3.4.15+
-          - "git+https://github.com/Cog-Creators/Red-DiscordBot@3.4#egg=Red-DiscordBot"
+          - "Red-DiscordBot"
           - "git+https://github.com/Cog-Creators/Red-DiscordBot@V3/develop#egg=Red-DiscordBot"
-          - "Red-DiscordBot==3.4.16"
         include:
-          - red-version: "git+https://github.com/Cog-Creators/Red-DiscordBot@3.4#egg=Red-DiscordBot"
-            friendly-red: "Red 3.4 (dev version)"
+          - red-version: "Red-DiscordBot"
+            friendly-red: "Red (latest release)"
           - red-version: "git+https://github.com/Cog-Creators/Red-DiscordBot@V3/develop#egg=Red-DiscordBot"
-            friendly-red: "Red 3.5 (dev version)"
-          - red-version: "Red-DiscordBot==3.4.16"
-            friendly-red: "Red 3.4.16"
+            friendly-red: "Red (dev version)"
       fail-fast: false
 
     name: Cog load test - Python ${{ matrix.python-version }} & ${{ matrix.friendly-red }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Cache venv
-        id: cache-venv
-        uses: actions/cache@v2
-        with:
-          path: .venv
-          key: ${{ matrix.red-version }}-${{ matrix.python-version }}-${{ hashFiles('dev-requirements.txt') }}-${{ secrets.CACHE_V }}
-
-      - name: Maybe make venv
-        if: steps.cache-venv.outputs.cache-hit != 'true'
+      - name: Install Red and the cogs requirements
         run: |
           python3 -m venv .venv
           source .venv/bin/activate
           pip install setuptools wheel
-          pip install ${{ matrix.red-version }}
-          pip install -r dev-requirements.txt
+          pip install "${{ matrix.red-version }}"
+          python -c "import glob, json; print(*sorted({requirement for path in glob.glob('*/info.json') for requirement in json.load(open(path, encoding='utf-8')).get('requirements', [])}), sep=chr(10))" > cogs-requirements.txt
+          pip install -r cogs-requirements.txt
           pip install python-dotenv jsonrpc-websocket
 
       - name: Prepare files
@@ -62,7 +51,7 @@ jobs:
 
       - name: Save Red output as Artifact
         if: always() # still run if prev step failed
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: "Red log - Python ${{ matrix.python-version }} & ${{ matrix.friendly-red }}"
           path: red.log

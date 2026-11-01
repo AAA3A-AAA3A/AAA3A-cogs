@@ -44,12 +44,17 @@ class DashboardIntegration:
         description="Create rich Embeds and send them to a guild!",
         methods=("GET", "POST"),
     )
-    async def dashboard_guild(self, member: discord.Member, guild: discord.Guild, **kwargs) -> None:
-        is_owner = member.id in self.bot.owner_ids
+    async def dashboard_guild(
+        self,
+        user: discord.Member | discord.User,
+        guild: discord.Guild,
+        **kwargs,
+    ) -> None:
+        is_owner = user.id in self.bot.owner_ids
         if (
             not is_owner
-            and not await self.bot.is_mod(member)
-            and not member.guild_permissions.manage_guild
+            and not await self.bot.is_mod(user)
+            and not user.guild_permissions.manage_guild
         ):
             return {
                 "status": 0,
@@ -125,7 +130,7 @@ class DashboardIntegration:
                             },
                         )
                         continue
-                    if not is_owner and not channel.permissions_for(member).manage_webhooks:
+                    if not is_owner and not channel.permissions_for(user).manage_webhooks:
                         notifications.append(
                             {
                                 "message": f"{channel.name} ({channel.id}): You don't have permissions to manage webhooks in this channel.",
@@ -163,7 +168,7 @@ class DashboardIntegration:
                         )
             s = "s" if len(send_form.channels.data) > 1 else ""
             self.logger.trace(
-                f"{len(send_form.channels.data)} message{s} sent in {humanize_list([f'`#{channel.name}` ({channel.id})' for channel in send_form.channels.data])} in `{guild.name}` ({guild.id}), from the Dashboard by `{member.display_name}` ({member.id}).",
+                f"{len(send_form.channels.data)} message{s} sent in {humanize_list([f'`#{channel.name}` ({channel.id})' for channel in send_form.channels.data])} in `{guild.name}` ({guild.id}), from the Dashboard by `{user.display_name}` ({user.id}).",
             )
             if not notifications:
                 notifications.append(

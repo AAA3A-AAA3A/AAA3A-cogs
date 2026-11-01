@@ -45,8 +45,6 @@ class CmdChannel(Cog):
         if context.prefix is None:
             return
         command = context.message.content[len(str(context.prefix)) :]
-        if len(command.split(" ")) == 0:
-            return
         command_name = command.split(" ")[0]
         if command_name not in ("cmduser", "cmduserchannel"):
             return
@@ -70,6 +68,9 @@ class CmdChannel(Cog):
     ):
         """Use `[p]cmdchannel`, `[p]cmduser` and `[p]cmduserchannel`."""
         if ctx.invoked_subcommand is None:
+            # Calling the command object directly bypasses its checks.
+            if not await self.channel.can_run(ctx):
+                raise commands.CheckFailure()
             await self.channel(ctx, channel=channel, command=command)
 
     @commands.mod()
@@ -87,9 +88,16 @@ class CmdChannel(Cog):
         Use `[p]cmdchannel`!
         """
         guild = channel.guild
-        if ctx.author not in guild.members:
+        if (member := guild.get_member(ctx.author.id)) is None:
             raise commands.UserFeedbackCheckFailure(
                 _("To send commands to another server, you must be there."),
+            )
+        permissions = channel.permissions_for(member)
+        if not (permissions.view_channel and permissions.send_messages):
+            raise commands.UserFeedbackCheckFailure(
+                _("You don't have permission to send messages in {channel.mention}.").format(
+                    channel=channel,
+                ),
             )
         if not command and not ctx.message.embeds and not ctx.message.attachments:
             raise commands.UserInputError()

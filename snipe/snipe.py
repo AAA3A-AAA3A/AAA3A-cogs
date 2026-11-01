@@ -1,7 +1,7 @@
 import datetime
 import typing
 from collections import defaultdict, deque
-from copy import deepcopy
+from copy import copy, deepcopy
 from sys import getsizeof
 
 import discord
@@ -264,6 +264,25 @@ class Snipe(DashboardIntegration, Cog):
             return
         self.edited_messages[after.channel].append(SnipedMessage(message=before, after=after))
 
+    async def check_channel(
+        self,
+        ctx: commands.Context,
+        channel: discord.TextChannel | discord.VoiceChannel | discord.Thread,
+    ) -> None:
+        # The command checks were run in the current channel: run them again in the target one.
+        fake_message = copy(ctx.message)
+        fake_message.channel = channel
+        fake_context = await ctx.bot.get_context(fake_message)
+        try:
+            can_run = await ctx.command.can_run(fake_context, check_all_parents=True)
+        except commands.CheckFailure:
+            can_run = False
+        permissions = channel.permissions_for(ctx.author)
+        if not (can_run and permissions.view_channel and permissions.read_message_history):
+            raise commands.UserFeedbackCheckFailure(
+                _("You are not allowed to execute this command in this channel."),
+            )
+
     @commands.guild_only()
     @commands.mod_or_permissions(manage_messages=True)
     @commands.bot_has_permissions(embed_links=True)
@@ -287,12 +306,7 @@ class Snipe(DashboardIntegration, Cog):
         """Snipe a deleted message."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -321,12 +335,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe deleted messages."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -353,12 +362,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe deleted messages for the specified member."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -388,12 +392,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe deleted messages with embeds."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -423,12 +422,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe deleted messages with roles/users mentions."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -458,12 +452,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe deleted messages with roles mentions."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -493,12 +482,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe deleted messages with members mentions."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -530,12 +514,7 @@ class Snipe(DashboardIntegration, Cog):
         """List deleted messages."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -603,12 +582,7 @@ class Snipe(DashboardIntegration, Cog):
         """Snipe an edited message."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -637,12 +611,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe edited messages."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -669,12 +638,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe edited messages for the specified member."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -704,12 +668,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe edited messages with embeds."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -739,12 +698,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe edited messages with roles/users mentions."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -774,12 +728,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe edited messages with roles mentions."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -809,12 +758,7 @@ class Snipe(DashboardIntegration, Cog):
         """Bulk snipe edited messages with members mentions."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()
@@ -846,12 +790,7 @@ class Snipe(DashboardIntegration, Cog):
         """List edited messages."""
         if channel is None:
             channel = ctx.channel
-        ctx.message.channel = channel
-        fake_context = await ctx.bot.get_context(ctx.message)
-        if not await discord.utils.async_all([check(fake_context) for check in ctx.command.checks]):
-            raise commands.UserFeedbackCheckFailure(
-                _("You are not allowed to execute this command in this channel."),
-            )
+        await self.check_channel(ctx, channel=channel)
         if (
             getattr(channel, "parent", channel).id
             in await self.config.guild(ctx.guild).ignored_channels()

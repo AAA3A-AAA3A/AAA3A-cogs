@@ -13,8 +13,9 @@ import typing
 import aiohttp
 import discord
 import rich
-from AAA3A_utils import Cog, CogsUtils, Menu, Settings
 from pygments.styles import get_style_by_name
+
+from AAA3A_utils import Cog, CogsUtils, Menu, Settings
 from redbot.core import Config, app_commands, commands, dev_commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
@@ -342,7 +343,7 @@ class DevOutput(dev_commands.DevOutput):
                 "async def func():\n{}".format(textwrap.indent(self.raw_source, "  ")),
             )
             try:
-                return_found = [d for d in parse.body[0].body if isinstance(d, ast.Return)][0]
+                return_found = next(d for d in parse.body[0].body if isinstance(d, ast.Return))
             except IndexError:
                 line = len(self.raw_source.split("\n"))
             else:
@@ -731,7 +732,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
     @commands.hybrid_command()
     @app_commands.allowed_installs(guilds=True, users=True)
     # @discord.utils.copy_doc(dev_commands.Dev.debug.callback)
-    async def debug(self, ctx: commands.Context, *, code: str = None) -> None:
+    async def debug(self, ctx: commands.Context, *, code: str | None = None) -> None:
         """Evaluate a statement of python code.
 
         The bot will always respond with the return value of the code.
@@ -800,7 +801,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
     @commands.hybrid_command(name="eval")
     @app_commands.allowed_installs(guilds=True, users=True)
     # @discord.utils.copy_doc(dev_commands.Dev._eval.callback)
-    async def _eval(self, ctx: commands.Context, *, body: str = None) -> None:
+    async def _eval(self, ctx: commands.Context, *, body: str | None = None) -> None:
         """Execute asynchronous code.
 
         This command wraps code into the body of an async function and then
@@ -961,7 +962,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
 
     @commands.is_owner()
     @commands.hybrid_command(name="replpause", aliases=["replresume"])
-    async def pause(self, ctx: commands.Context, toggle: bool = None) -> None:
+    async def pause(self, ctx: commands.Context, toggle: bool | None = None) -> None:
         """Pauses/resumes the REPL running in the current channel."""
         if ctx.channel.id not in self.sessions:
             await ctx.send(_("There is no currently running REPL session in this channel."))
@@ -1031,7 +1032,7 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
         ctx: commands.Context,
         silent: bool | None = False,
         *,
-        command: str = None,
+        command: str | None = None,
     ) -> None:
         """Execute Shell commands.
 
@@ -1130,7 +1131,6 @@ class Dev(DashboardIntegration, Cog, dev_commands.Dev):
     @commands.hybrid_group(name="setdev")
     async def configuration(self, ctx: commands.Context) -> None:
         """Commands to configure Dev."""
-        pass
 
     @configuration.command(aliases=["getenv", "getformattedenvironment", "getformattedenv"])
     async def getenvironment(self, ctx: commands.Context, show_values: bool = True) -> None:

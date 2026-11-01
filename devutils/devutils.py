@@ -126,7 +126,6 @@ class DevUtils(Cog):
     @commands.hybrid_group()
     async def devutils(self, ctx: commands.Context) -> None:
         """Various development utilities."""
-        pass
 
     @devutils.command()
     async def do(
@@ -395,7 +394,7 @@ class DevUtils(Cog):
                 route=Route(method="GET", path="/users/{user_id}", user_id=thing.id),
             )
         elif isinstance(thing, discord.Role):
-            raw_content = [
+            raw_content = next(
                 role
                 for role in await ctx.bot.http.request(
                     route=Route(
@@ -405,7 +404,7 @@ class DevUtils(Cog):
                     ),
                 )
                 if int(role["id"]) == thing.id
-            ][0]
+            )
         elif isinstance(thing, discord.Emoji):
             raw_content = await ctx.bot.http.request(
                 route=Route(

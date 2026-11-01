@@ -133,7 +133,6 @@ class SimpleSanction(DashboardIntegration, Cog):
     @commands.hybrid_group(name="setsimplesanction", aliases=["simplesanctionset"])
     async def configuration(self, ctx: commands.Context) -> None:
         """Configure SimpleSanction for your server."""
-        pass
 
     @commands.guild_only()
     @commands.mod_or_permissions(administrator=True)
@@ -153,7 +152,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         fake_action: bool | None = False,
         duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
         Sanction a member quickly and easily.
@@ -198,7 +197,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         fake_action: bool | None = False,
         duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
         - Sanction a member quickly and easily.
@@ -233,7 +232,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         finish_message: bool | None = None,
         fake_action: bool | None = False,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
          - ℹ️ Show informations about a member.
@@ -269,7 +268,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         fake_action: bool | None = False,
         duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
          - ⚠️ Add a simple warning on a member.
@@ -304,7 +303,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         finish_message: bool | None = None,
         fake_action: bool | None = False,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
          - 🔨 Ban a member from this server.
@@ -341,7 +340,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         finish_message: bool | None = None,
         fake_action: bool | None = False,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
          - 🔂 SoftBan a member from this server.
@@ -379,7 +378,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         fake_action: bool | None = False,
         duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
          - 💨 TempBan a member from this server.
@@ -417,7 +416,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         finish_message: bool | None = None,
         fake_action: bool | None = False,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
          - 👢 Kick a member from this server.
@@ -452,7 +451,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         finish_message: bool | None = None,
         fake_action: bool | None = False,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
          - 🔇 Mute a member in all channels, including voice channels.
@@ -487,7 +486,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         finish_message: bool | None = None,
         fake_action: bool | None = False,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
          - 👊 Mute a member in this channel.
@@ -523,7 +522,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         fake_action: bool | None = False,
         duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
          - ⏳ TempMute a member in all channels, including voice channels.
@@ -561,7 +560,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         fake_action: bool | None = False,
         duration_for_mute_or_ban: TimeDeltaConverter | None = None,
         *,
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         """
          - ⌛ TempMute a member in this channel.
@@ -595,7 +594,7 @@ class SimpleSanction(DashboardIntegration, Cog):
         finish_message: bool | None = None,
         fake_action: bool | None = False,
         duration: typing.Optional[TimeDeltaConverter] = None,  # noqa: UP045
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         config = await self.config.guild(ctx.guild).all()
         if show_author is None:

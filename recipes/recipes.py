@@ -157,7 +157,7 @@ class Recipes(Cog):
         __, results = await self.get_query_results(query, limit=1)
         if not results.results:
             raise commands.UserFeedbackCheckFailure(_("No recipe found."))
-        url = list(results.results.values())[0]
+        url = next(iter(results.results.values()))
         try:
             recipe = await self.get_recipe(url)
         except json.JSONDecodeError as e:
@@ -219,7 +219,7 @@ class Recipes(Cog):
         __, results = await self.get_query_results(query, limit=1)
         if not results.results:
             return "No recipe found."
-        url = list(results.results.values())[0]
+        url = next(iter(results.results.values()))
         try:
             recipe = await self.get_recipe(url)
         except json.JSONDecodeError:

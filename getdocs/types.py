@@ -259,7 +259,7 @@ class Documentation:
             title=discord.utils.escape_markdown(self.name),
             url=self.url if self.url.startswith("http") else None,
             description=(
-                list(pagify(description, page_length=4000))[0] if description else "No description."
+                next(iter(pagify(description, page_length=4000))) if description else "No description."
             ),
             color=embed_color,
         )
@@ -279,11 +279,11 @@ class Documentation:
         for name, value in fields.items():
             if len(value) > field_limit:
                 if "-----" not in value:
-                    value = list(pagify(value, page_length=field_limit, shorten_by=6))[0] + "\n..."
+                    value = next(iter(pagify(value, page_length=field_limit, shorten_by=6))) + "\n..."
                 else:
                     value = (
                         box(
-                            list(pagify(value, page_length=field_limit, shorten_by=16))[0],
+                            next(iter(pagify(value, page_length=field_limit, shorten_by=16))),
                             lang="py",
                         )
                         + "\n..."

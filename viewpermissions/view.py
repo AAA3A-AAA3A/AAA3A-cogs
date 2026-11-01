@@ -14,10 +14,10 @@ class PermissionsView(discord.ui.View):
         self,
         cog: commands.Cog,
         guild: discord.Guild,
-        roles: list[discord.Role] = None,
-        members: list[discord.Member] = None,
+        roles: list[discord.Role] | None = None,
+        members: list[discord.Member] | None = None,
         channel: discord.abc.GuildChannel | None = None,
-        permissions: list[str] = None,
+        permissions: list[str] | None = None,
         advanced: bool = False,
     ) -> None:
         roles = [] if roles is None else roles.copy()

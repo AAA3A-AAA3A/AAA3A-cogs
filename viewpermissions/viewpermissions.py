@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import typing
 
 import discord
@@ -33,10 +33,10 @@ class ViewPermissions(Cog):
     async def get_permissions(
         self,
         guild: discord.Guild,
-        roles: list[discord.Role] = None,
-        members: list[discord.Member] = None,
+        roles: list[discord.Role] | None = None,
+        members: list[discord.Member] | None = None,
         channel: discord.abc.GuildChannel | None = None,
-        permissions: list[str] = None,
+        permissions: list[str] | None = None,
     ) -> dict[
         str,
         dict[typing.Literal["qualified_name", "value", "source"], str | bool],
@@ -169,10 +169,10 @@ class ViewPermissions(Cog):
     async def get_embeds(
         self,
         guild: discord.Guild,
-        roles: list[discord.Role] = None,
-        members: list[discord.Member] = None,
+        roles: list[discord.Role] | None = None,
+        members: list[discord.Member] | None = None,
         channel: discord.abc.GuildChannel | None = None,
-        permissions: list[str] = None,
+        permissions: list[str] | None = None,
         advanced: bool = False,
         embed_color: discord.Color = discord.Color.green(),
     ) -> list[discord.Embed]:
@@ -199,7 +199,7 @@ class ViewPermissions(Cog):
                 color=embed_color,
             )
             embed.set_author(name=guild.name, icon_url=guild.icon)
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
             description = ""
             if roles:
                 description += _("\n**Role(s):** {roles}").format(
@@ -249,7 +249,7 @@ class ViewPermissions(Cog):
         else:
             embed: discord.Embed = discord.Embed(title=_("View Permissions"), color=embed_color)
             embed.set_author(name=guild.name, icon_url=guild.icon)
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
             description = ""
             if roles:
                 description += _("\n**Role(s):** {roles}").format(

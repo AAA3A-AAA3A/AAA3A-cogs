@@ -390,10 +390,9 @@ class Dashboard(Cog):
     @commands.hybrid_group()
     async def setdashboard(self, ctx: commands.Context) -> None:
         """Configure Dashboard."""
-        pass
 
     @setdashboard.command()
-    async def secret(self, ctx: commands.Context, *, secret: str = None):
+    async def secret(self, ctx: commands.Context, *, secret: str | None = None):
         """Set the client secret needed for Discord OAuth."""
         if secret is not None:
             await self.config.webserver.core.secret.set(secret)

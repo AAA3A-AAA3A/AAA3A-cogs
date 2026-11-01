@@ -38,7 +38,6 @@ class settings(Cog):
     @commands.hybrid_group(name="settickettool", aliases=["tickettoolset"])
     async def configuration(self, ctx: commands.Context) -> None:
         """Configure TicketTool for your server."""
-        pass
 
     @configuration.command(name="message")
     async def message(

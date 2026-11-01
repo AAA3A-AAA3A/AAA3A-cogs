@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import random
 import string
 import typing
@@ -136,7 +136,7 @@ class AcronymGameView(discord.ui.View):
             color=await self.ctx.embed_color(),
         )
         embed.add_field(name=_("Random Acronym:"), value=self.acronym)
-        end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=120)
+        end_time = dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(seconds=120)
         embed.add_field(
             name=_("End time for joining:"),
             value=f"{discord.utils.format_dt(end_time, style='T')} ({discord.utils.format_dt(end_time, style='R')})",
@@ -167,7 +167,7 @@ class AcronymGameView(discord.ui.View):
             "Use the dropdown below to vote for the best answer for the random acronym. All guild members can vote.\n",
         ) + box(str(table), lang="py")
         embed.add_field(name="Random Acronym", value=self.acronym)
-        end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=60)
+        end_time = dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(seconds=60)
         embed.add_field(
             name=_("End time for voting:"),
             value=f"{discord.utils.format_dt(end_time, style='T')} ({discord.utils.format_dt(end_time, style='R')})",

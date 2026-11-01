@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import typing
 
 import discord
@@ -235,9 +235,9 @@ class Calculator(Cog):
             result_codeblock = await self.config.default_result_codeblock()
         if result is None:
             embed.description = (
-                box(f"{str(expression)}", lang="fix")
+                box(f"{expression!s}", lang="fix")
                 if result_codeblock
-                else f"`{str(expression)}`"
+                else f"`{expression!s}`"
             )
         else:
             expression = str(expression).replace("|", "")
@@ -257,7 +257,7 @@ class Calculator(Cog):
             embed.set_thumbnail(
                 url="https://cdn.pixabay.com/photo/2017/07/06/17/13/calculator-2478633_960_720.png",
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
             if ctx.guild:
                 embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon)
             else:
@@ -299,7 +299,7 @@ class Calculator(Cog):
     @commands.bot_has_permissions(embed_links=True)
     @commands.hybrid_command(name="calculate", aliases=["calc"])
     @app_commands.allowed_installs(guilds=True, users=True)
-    async def _calculate(self, ctx: commands.Context, *, calculation: str = None) -> None:
+    async def _calculate(self, ctx: commands.Context, *, calculation: str | None = None) -> None:
         """Calculate a simple expression."""
         if calculation is not None:
             calculation = calculation.replace(",", ".")
@@ -473,7 +473,6 @@ class Calculator(Cog):
     @commands.hybrid_group()
     async def setcalculator(self, ctx: commands.Context) -> None:
         """Commands to configure Calculator."""
-        pass
 
     @commands.is_owner()
     @setcalculator.command()

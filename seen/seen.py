@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import io
 import typing
 from copy import deepcopy
@@ -311,7 +311,7 @@ class Seen(Cog):
 
     def upsert_cache(
         self,
-        time: datetime.datetime | None,
+        time: dt.datetime | None,
         _type: typing.Literal["message", "message_edit", "reaction_add", "reaction_remove"],
         member: discord.Member,
         guild: discord.Guild,
@@ -320,7 +320,7 @@ class Seen(Cog):
         reaction: str | None = None,
     ) -> None:
         if time is None:
-            time = datetime.datetime.now(tz=datetime.timezone.utc)
+            time = dt.datetime.now(tz=dt.timezone.utc)
         if not isinstance(channel, discord.TextChannel):
             return
         custom_id = CogsUtils.generate_key(
@@ -625,7 +625,7 @@ class Seen(Cog):
         if not await self.config.listeners.message():
             return
         self.upsert_cache(
-            time=datetime.datetime.now(tz=datetime.timezone.utc),
+            time=dt.datetime.now(tz=dt.timezone.utc),
             _type="message",
             member=message.author,
             guild=message.guild,
@@ -667,7 +667,7 @@ class Seen(Cog):
         if not await self.config.listeners.message_edit():
             return
         self.upsert_cache(
-            time=datetime.datetime.now(tz=datetime.timezone.utc),
+            time=dt.datetime.now(tz=dt.timezone.utc),
             _type="message_edit",
             member=after.author,
             guild=after.guild,
@@ -705,7 +705,7 @@ class Seen(Cog):
         if not await self.config.listeners.reaction_add():
             return
         self.upsert_cache(
-            time=datetime.datetime.now(tz=datetime.timezone.utc),
+            time=dt.datetime.now(tz=dt.timezone.utc),
             _type="reaction_add",
             member=user,
             guild=user.guild,
@@ -735,7 +735,7 @@ class Seen(Cog):
         if not await self.config.listeners.reaction_remove():
             return
         self.upsert_cache(
-            time=datetime.datetime.now(tz=datetime.timezone.utc),
+            time=dt.datetime.now(tz=dt.timezone.utc),
             _type="reaction_remove",
             member=user,
             guild=user.guild,
@@ -805,14 +805,13 @@ class Seen(Cog):
             ]
             if not custom_ids:
                 return None
-            custom_id = sorted(
+            custom_id = max(
                 custom_ids,
                 key=lambda x: (
                     global_data[_type].get(x, {}).get("seen")
                     or self.cache["global"].get(_type, {}).get(x, {}).get("seen")
                 ),
-                reverse=True,
-            )[0]
+            )
             data = global_data[_type].get(custom_id, {}) or self.cache["global"][_type][custom_id]
             if data["seen"] is None or data["action"] is None:
                 return None
@@ -863,13 +862,13 @@ class Seen(Cog):
             all_data = all_data_config + all_data_cache
             if len(all_data) == 0:
                 return None
-            data = sorted(all_data, key=lambda x: x["seen"], reverse=True)[0]
+            data = max(all_data, key=lambda x: x["seen"])
             _type = data["_type"]
             del data["_type"]
         time = data["seen"]
-        now = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        now = int(dt.datetime.now(tz=dt.timezone.utc).timestamp())
         time_elapsed = int(now - time)
-        m, s = divmod(time_elapsed, 60)
+        m, _s = divmod(time_elapsed, 60)
         h, m = divmod(m, 60)
         d, h = divmod(h, 24)
         output = d, h, m
@@ -1083,7 +1082,7 @@ class Seen(Cog):
             )
         if show_details:
             embed.description += f"\n{action}"
-            embed.timestamp = datetime.datetime.fromtimestamp(time)
+            embed.timestamp = dt.datetime.fromtimestamp(time, tz=dt.timezone.utc)
         await ctx.send(embed=embed)
 
     async def send_board(
@@ -1164,7 +1163,7 @@ class Seen(Cog):
             )
             if result is None:
                 continue
-            time, seen, action = result
+            time, seen, _action = result
             data[x] = [time, seen]
         if not data:
             embed = discord.Embed()
@@ -1176,7 +1175,7 @@ class Seen(Cog):
         embed.title = f"Seen Board {_object.capitalize()}" + (
             f" - ({_type})" if _type is not None else ""
         )
-        embed.timestamp = datetime.datetime.now()
+        embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
         embeds = []
         description = []
         all_count = len(data)

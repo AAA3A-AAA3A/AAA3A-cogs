@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import functools
 import os
 import random
@@ -178,11 +178,11 @@ class JoinGameView(discord.ui.View):
                     "You are **temporarily banned for {duration}** from joining Mafia games in this server!",
                 ).format(
                     duration=humanize_timedelta(
-                        timedelta=datetime.datetime.fromtimestamp(
+                        timedelta=dt.datetime.fromtimestamp(
                             temp_banned_until,
-                            tz=datetime.timezone.utc,
+                            tz=dt.timezone.utc,
                         )
-                        - datetime.datetime.now(tz=datetime.timezone.utc),
+                        - dt.datetime.now(tz=dt.timezone.utc),
                     ),
                 ),
                 ephemeral=True,
@@ -666,7 +666,7 @@ class SelectTargetsView(discord.ui.View):
         mafia_allowed: bool = True,
         last_target_allowed: bool = True,
         dead_targets: bool = False,
-        condition: typing.Callable[[typing.Any, typing.Any], bool] = None,
+        condition: typing.Callable[[typing.Any, typing.Any], bool] | None = None,
         two_selects: bool = False,
         second_select_optional: bool = False,
     ) -> None:
@@ -867,7 +867,7 @@ class SelectRolesView(discord.ui.View):
         self_allowed: bool = True,
         mafia_allowed: bool = True,
         last_target_allowed: bool = True,
-        condition: typing.Callable[[typing.Any, typing.Any], bool] = None,
+        condition: typing.Callable[[typing.Any, typing.Any], bool] | None = None,
     ) -> None:
         if not isinstance(self, GuessTargetsRolesView):
             super().__init__(timeout=180)
@@ -986,7 +986,7 @@ class GuessTargetsRolesView(SelectTargetsView, SelectRolesView):
         self_allowed: bool = True,
         mafia_allowed: bool = True,
         last_target_allowed: bool = True,
-        condition: typing.Callable[[typing.Any, typing.Any], bool] = None,
+        condition: typing.Callable[[typing.Any, typing.Any], bool] | None = None,
     ) -> None:
         self.pages: int = targets_number
         self.page: int = 0
@@ -1997,7 +1997,7 @@ class PollView(JoinGameView):
                 ).format(
                     duration=humanize_timedelta(
                         timedelta=temp_banned_until
-                        - datetime.datetime.now(tz=datetime.timezone.utc),
+                        - dt.datetime.now(tz=dt.timezone.utc),
                     ),
                 ),
                 ephemeral=True,

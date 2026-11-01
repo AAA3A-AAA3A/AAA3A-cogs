@@ -69,7 +69,6 @@ class Ip(DashboardIntegration, Cog):
     @commands.hybrid_group(name="ip")
     async def ip_group(self, ctx: commands.Context) -> None:
         """Commands group for Ip."""
-        pass
 
     @ip_group.command()
     async def ip(self, ctx: commands.Context) -> None:

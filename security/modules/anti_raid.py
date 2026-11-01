@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import typing
 from collections import defaultdict
 from dataclasses import dataclass
@@ -26,7 +26,7 @@ _: Translator = Translator("Security", __file__)
 class Join:
     member: discord.Member
     avatar_hash: imagehash.ImageHash | None
-    timestamp: datetime.datetime
+    timestamp: dt.datetime
     action_taken: bool = False
 
     def __hash__(self) -> int:
@@ -67,7 +67,7 @@ FLAGS: dict[
         "name": _("Account Age"),
         "check": lambda join: (
             (
-                datetime.datetime.now(tz=datetime.timezone.utc) - join.member.created_at
+                dt.datetime.now(tz=dt.timezone.utc) - join.member.created_at
             ).total_seconds()
             < 60 * 60 * 24 * 7
         ),  # less than 7 days old
@@ -103,7 +103,7 @@ class AntiRaidModule(Module):
         super().__init__(cog)
         self.locks: dict[discord.Guild, asyncio.Lock] = defaultdict(asyncio.Lock)
         self.last_joins: dict[discord.Guild, list[Join]] = defaultdict(list)
-        self.triggered: dict[discord.Guild, datetime.datetime] = {}
+        self.triggered: dict[discord.Guild, dt.datetime] = {}
 
     async def load(self) -> None:
         self.cog.bot.add_listener(self.on_member_join)
@@ -287,7 +287,7 @@ class AntiRaidModule(Module):
         if await self.cog.is_trusted_admin_or_higher(member):
             return
         async with self.locks[member.guild]:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = dt.datetime.now(tz=dt.timezone.utc)
             join_window = await DurationConverter.convert(None, config["join_window"])
             trigger_duration = await DurationConverter.convert(None, config["trigger_duration"])
             min_time = utc_now - join_window
@@ -388,7 +388,7 @@ class AntiRaidModule(Module):
                         guild=join.member.guild,
                         author=join.member.guild.me,
                         user=join.member,
-                        until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
+                        until=dt.datetime.now(tz=dt.timezone.utc) + duration,
                         reason=audit_log_reason,
                     )
                 elif action_value == "kick" and member.guild.me.guild_permissions.kick_members:

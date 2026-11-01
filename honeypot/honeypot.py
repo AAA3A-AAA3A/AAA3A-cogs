@@ -192,7 +192,6 @@ class Honeypot(Cog):
     @commands.hybrid_group()
     async def sethoneypot(self, ctx: commands.Context) -> None:
         """Set the honeypot settings. Only the server owner can use this command for security reasons."""
-        pass
 
     @commands.bot_has_guild_permissions(manage_channels=True)
     @sethoneypot.command(aliases=["makechannel"])

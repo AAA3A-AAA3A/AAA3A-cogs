@@ -48,7 +48,7 @@ class BaseView(discord.ui.View):
         self,
         ctx: commands.Context,
         audit_logs: list[discord.AuditLogEntry],
-        displayed_actions: list[discord.AuditLogAction] = None,
+        displayed_actions: list[discord.AuditLogAction] | None = None,
     ) -> discord.Message:
         self.ctx: commands.Context = ctx
         self.audit_logs: list[discord.AuditLogEntry] = audit_logs

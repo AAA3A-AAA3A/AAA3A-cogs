@@ -228,7 +228,6 @@ class CommandsButtons(Cog):
     @commands.hybrid_group()
     async def commandsbuttons(self, ctx: commands.Context) -> None:
         """Group of commands to use CommandsButtons."""
-        pass
 
     @commandsbuttons.command(aliases=["+"])
     async def add(

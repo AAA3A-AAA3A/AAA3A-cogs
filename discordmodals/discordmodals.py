@@ -386,7 +386,7 @@ class DiscordModals(Cog):
             async with guild_group.all() as guilds_data:
                 _guilds_data = deepcopy(guilds_data)
                 for guild in _guilds_data:
-                    if "submit" in list(guilds_data[guild]["modals"].values())[0]["messages"]:
+                    if "submit" in next(iter(guilds_data[guild]["modals"].values()))["messages"]:
                         break
                     for modal in guilds_data[guild]["modals"]:
                         guilds_data[guild]["modals"][modal]["messages"]["submit"] = guilds_data[
@@ -644,7 +644,6 @@ class DiscordModals(Cog):
     @commands.hybrid_group()
     async def discordmodals(self, ctx: commands.Context) -> None:
         """Group of commands to use DiscordModals."""
-        pass
 
     @discordmodals.command(aliases=["+"])
     async def add(

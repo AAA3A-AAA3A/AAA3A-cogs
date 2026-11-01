@@ -1,6 +1,6 @@
 import asyncio
 import copy
-import datetime
+import datetime as dt
 import functools
 import io
 import typing
@@ -101,7 +101,7 @@ class Ticket:
 
     opened_at_timestamp: int = field(
         default_factory=lambda: int(
-            datetime.datetime.now(tz=datetime.timezone.utc)
+            dt.datetime.now(tz=dt.timezone.utc)
             .replace(second=0, microsecond=0)
             .timestamp(),
         ),
@@ -294,11 +294,11 @@ class Ticket:
         self.message_id = message.id
 
     @property
-    def opened_at(self) -> datetime.datetime:
-        return datetime.datetime.fromtimestamp(self.opened_at_timestamp, tz=datetime.timezone.utc)
+    def opened_at(self) -> dt.datetime:
+        return dt.datetime.fromtimestamp(self.opened_at_timestamp, tz=dt.timezone.utc)
 
     @opened_at.setter
-    def opened_at(self, opened_at: datetime.datetime) -> None:
+    def opened_at(self, opened_at: dt.datetime) -> None:
         self.opened_at_timestamp = int(opened_at.timestamp())
 
     @property
@@ -315,13 +315,13 @@ class Ticket:
             self.claimed_by_id = claimed_by.id
 
     @property
-    def claimed_at(self) -> datetime.datetime | None:
+    def claimed_at(self) -> dt.datetime | None:
         if self.claimed_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.claimed_at_timestamp, tz=datetime.timezone.utc)
+        return dt.datetime.fromtimestamp(self.claimed_at_timestamp, tz=dt.timezone.utc)
 
     @claimed_at.setter
-    def claimed_at(self, claimed_at: datetime.datetime | None) -> None:
+    def claimed_at(self, claimed_at: dt.datetime | None) -> None:
         self.claimed_at_timestamp = None if claimed_at is None else int(claimed_at.timestamp())
 
     @property
@@ -338,13 +338,13 @@ class Ticket:
             self.closed_by_id = closed_by.id
 
     @property
-    def closed_at(self) -> datetime.datetime | None:
+    def closed_at(self) -> dt.datetime | None:
         if self.closed_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.closed_at_timestamp, tz=datetime.timezone.utc)
+        return dt.datetime.fromtimestamp(self.closed_at_timestamp, tz=dt.timezone.utc)
 
     @closed_at.setter
-    def closed_at(self, closed_at: datetime.datetime | None) -> None:
+    def closed_at(self, closed_at: dt.datetime | None) -> None:
         self.closed_at_timestamp = None if closed_at is None else int(closed_at.timestamp())
 
     @property
@@ -374,13 +374,13 @@ class Ticket:
             self.locked_by_id = locked_by.id
 
     @property
-    def locked_at(self) -> datetime.datetime | None:
+    def locked_at(self) -> dt.datetime | None:
         if self.locked_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.locked_at_timestamp, tz=datetime.timezone.utc)
+        return dt.datetime.fromtimestamp(self.locked_at_timestamp, tz=dt.timezone.utc)
 
     @locked_at.setter
-    def locked_at(self, locked_at: datetime.datetime | None) -> None:
+    def locked_at(self, locked_at: dt.datetime | None) -> None:
         self.locked_at_timestamp = None if locked_at is None else int(locked_at.timestamp())
 
     @property
@@ -397,13 +397,13 @@ class Ticket:
             self.unlocked_by_id = unlocked_by.id
 
     @property
-    def unlocked_at(self) -> datetime.datetime | None:
+    def unlocked_at(self) -> dt.datetime | None:
         if self.unlocked_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.unlocked_at_timestamp, tz=datetime.timezone.utc)
+        return dt.datetime.fromtimestamp(self.unlocked_at_timestamp, tz=dt.timezone.utc)
 
     @unlocked_at.setter
-    def unlocked_at(self, unlocked_at: datetime.datetime | None) -> None:
+    def unlocked_at(self, unlocked_at: dt.datetime | None) -> None:
         self.unlocked_at_timestamp = None if unlocked_at is None else int(unlocked_at.timestamp())
 
     @property
@@ -420,16 +420,16 @@ class Ticket:
             self.appeal_approved_by_id = appeal_approved_by.id
 
     @property
-    def appeal_approved_at(self) -> datetime.datetime | None:
+    def appeal_approved_at(self) -> dt.datetime | None:
         if self.appeal_approved_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(
+        return dt.datetime.fromtimestamp(
             self.appeal_approved_at_timestamp,
-            tz=datetime.timezone.utc,
+            tz=dt.timezone.utc,
         )
 
     @appeal_approved_at.setter
-    def appeal_approved_at(self, appeal_approved_at: datetime.datetime | None) -> None:
+    def appeal_approved_at(self, appeal_approved_at: dt.datetime | None) -> None:
         self.appeal_approved_at_timestamp = (
             None if appeal_approved_at is None else int(appeal_approved_at.timestamp())
         )
@@ -448,13 +448,13 @@ class Ticket:
             self.deleted_by_id = deleted_by.id
 
     @property
-    def deleted_at(self) -> datetime.datetime | None:
+    def deleted_at(self) -> dt.datetime | None:
         if self.deleted_at_timestamp is None:
             return None
-        return datetime.datetime.fromtimestamp(self.deleted_at_timestamp, tz=datetime.timezone.utc)
+        return dt.datetime.fromtimestamp(self.deleted_at_timestamp, tz=dt.timezone.utc)
 
     @deleted_at.setter
-    def deleted_at(self, deleted_at: datetime.datetime | None) -> None:
+    def deleted_at(self, deleted_at: dt.datetime | None) -> None:
         self.deleted_at_timestamp = None if deleted_at is None else int(deleted_at.timestamp())
 
     @property
@@ -976,7 +976,7 @@ class Ticket:
         # self.reopened_by = None
         # self.reopened_at = None
         self.closed_by = closer
-        self.closed_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.closed_at = dt.datetime.now(tz=dt.timezone.utc)
 
         if closer is None:
             audit_reason = _("Ticket closed (profile `{self.profile}`).").format(self=self)
@@ -1084,7 +1084,7 @@ class Ticket:
         # self.closed_by = None
         # self.closed_at = None
         self.reopened_by = reopener
-        self.reopened_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.reopened_at = dt.datetime.now(tz=dt.timezone.utc)
 
         if reopener is None:
             audit_reason = _("Ticket reopened (profile `{self.profile}.`)").format(self=self)
@@ -1151,7 +1151,7 @@ class Ticket:
         old_state = self.to_dict()
         self.is_claimed = True
         self.claimed_by = claimer
-        self.claimed_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.claimed_at = dt.datetime.now(tz=dt.timezone.utc)
 
         audit_reason = _(
             "Ticket claimed by {claimer.display_name} ({claimer.id}) (profile `{self.profile}`).",
@@ -1228,7 +1228,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+                created_at=dt.datetime.now(tz=dt.timezone.utc),
                 action_type="ticket_unclaimed",
                 user=self.owner or self.owner_id,
                 moderator=unclaimer or self.guild.me,
@@ -1259,7 +1259,7 @@ class Ticket:
         old_state = self.to_dict()
         self.is_locked = True
         self.locked_by = locker
-        self.locked_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.locked_at = dt.datetime.now(tz=dt.timezone.utc)
 
         if locker is None:
             audit_reason = _("Ticket locked (profile `{self.profile}`).").format(self=self)
@@ -1321,7 +1321,7 @@ class Ticket:
         # self.locked_by = None
         # self.locked_at = None
         self.unlocked_by = unlocker
-        self.unlocked_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.unlocked_at = dt.datetime.now(tz=dt.timezone.utc)
 
         if unlocker is None:
             audit_reason = _("Ticket unlocked (profile `{self.profile}`).").format(self=self)
@@ -1375,7 +1375,7 @@ class Ticket:
         old_state = self.to_dict()
         self.appeal_approved = True
         self.appeal_approved_by = approver
-        self.appeal_approved_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.appeal_approved_at = dt.datetime.now(tz=dt.timezone.utc)
 
         if approver is None:
             audit_reason = _("Ticket appeal approved.").format(self=self)
@@ -1438,7 +1438,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+                created_at=dt.datetime.now(tz=dt.timezone.utc),
                 action_type="ticket_appeal_approved",
                 user=self.owner or self.owner_id,
                 moderator=self.guild.me,
@@ -1522,7 +1522,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+                created_at=dt.datetime.now(tz=dt.timezone.utc),
                 action_type="ticket_member_added",
                 user=member,
                 moderator=author,
@@ -1590,7 +1590,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+                created_at=dt.datetime.now(tz=dt.timezone.utc),
                 action_type="ticket_member_removed",
                 user=member,
                 moderator=author,
@@ -1610,7 +1610,7 @@ class Ticket:
                 + (_(" by {author.mention}").format(author=author) if author is not None else ""),
             ),
             color=await self.bot.get_embed_color(self.channel),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         if target is not None:
             embed.add_field(
@@ -1687,7 +1687,7 @@ class Ticket:
         channel = await self.fetch_channel()
         old_state = self.to_dict()
         self.deleted_by = deleter
-        self.deleted_at = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.deleted_at = dt.datetime.now(tz=dt.timezone.utc)
         if deleter is None:
             audit_reason = _("Ticket deleted (profile `{self.profile}`).").format(self=self)
         else:
@@ -1696,9 +1696,9 @@ class Ticket:
             ).format(deleter=deleter, self=self)
 
         config = await self.get_config()
-        if (
-            logs_channel_id := config["logs_channel"]
-        ) and (logs_channel := self.guild.get_channel_or_thread(logs_channel_id)) is not None:
+        if (logs_channel_id := config["logs_channel"]) and (
+            logs_channel := self.guild.get_channel_or_thread(logs_channel_id)
+        ) is not None:
             transcript = None
             if config["transcripts"]:
                 try:
@@ -1717,7 +1717,7 @@ class Ticket:
                                 self=self,
                             ),
                             color=discord.Color.red(),
-                            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                            timestamp=dt.datetime.now(tz=dt.timezone.utc),
                         ),
                         await self.get_embed(for_logging=True),
                     ],
@@ -1747,7 +1747,7 @@ class Ticket:
             await modlog.create_case(
                 bot=self.bot,
                 guild=self.guild,
-                created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+                created_at=dt.datetime.now(tz=dt.timezone.utc),
                 action_type="ticket_deleted",
                 user=self.owner or self.owner_id,
                 moderator=deleter,

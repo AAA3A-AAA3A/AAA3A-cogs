@@ -121,7 +121,6 @@ class FastClickGame(DashboardIntegration, Cog):
     @commands.hybrid_group(aliases=["fastclick", "fcg"])
     async def fastclickgame(self, ctx: commands.Context) -> None:
         """Play to click on the right button as fast as you can!"""
-        pass
 
     @fastclickgame.command()
     async def multi(
@@ -205,7 +204,6 @@ class FastClickGame(DashboardIntegration, Cog):
     @commands.hybrid_group()
     async def setfastclickgame(self, ctx: commands.Context) -> None:
         """Group of commands to set FastClickGame."""
-        pass
 
     @setfastclickgame.command()
     async def resetleaderboard(self, ctx: commands.Context) -> None:

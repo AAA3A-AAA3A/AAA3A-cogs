@@ -15,7 +15,7 @@ except ModuleNotFoundError:  # Lemon's fork.
     INTRO = ""
 
 import asyncio
-import datetime
+import datetime as dt
 import logging
 import re
 import traceback
@@ -69,7 +69,7 @@ class IdConverter(commands.Converter):
 @dataclass(frozen=False)
 class ConsoleLog:
     id: int
-    time: datetime.datetime
+    time: dt.datetime
     time_timestamp: int
     time_str: str
     level: typing.Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NODE"]
@@ -172,7 +172,7 @@ class ConsoleLogs(DashboardIntegration, Cog):
         )
 
         self._last_console_log_sent_timestamp: int = int(
-            datetime.datetime.now(tz=datetime.timezone.utc).timestamp(),
+            dt.datetime.now(tz=dt.timezone.utc).timestamp(),
         )
         self.loops.append(
             Loop(
@@ -213,7 +213,10 @@ class ConsoleLogs(DashboardIntegration, Cog):
                 console_logs[-1].exc_info = console_logs[-1].exc_info.strip()
                 continue
             kwargs = match.groupdict()
-            time = datetime.datetime.strptime(kwargs["time_str"], "%Y-%m-%d %H:%M:%S")
+            time = dt.datetime.strptime(  # Red logs are in local time.
+                kwargs["time_str"],
+                "%Y-%m-%d %H:%M:%S",
+            ).astimezone()
             kwargs["time"] = time
             kwargs["time_timestamp"] = int(time.timestamp())
             kwargs["message"] = kwargs["message"].strip()

@@ -281,7 +281,6 @@ class PersonalReact(DashboardIntegration, Cog):
     @commands.hybrid_group(aliases=["pr"])
     async def personalreact(self, ctx: commands.Context) -> None:
         """Make the bot react to messages with your mention, reply, your user ID or a custom trigger!"""
-        pass
 
     @personalreact.command()
     async def view(self, ctx: commands.Context) -> None:
@@ -432,7 +431,6 @@ class PersonalReact(DashboardIntegration, Cog):
     @commands.hybrid_group(aliases=["setpr"])
     async def setpersonalreact(self, ctx: commands.Context) -> None:
         """Set PersonalReact settings."""
-        pass
 
     @commands.bot_has_permissions(embed_links=True)
     @setpersonalreact.command(aliases=["view"])

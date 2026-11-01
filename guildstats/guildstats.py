@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import functools
 import io
 import typing
@@ -115,7 +115,7 @@ class GuildStats(Cog):
             dict[
                 discord.Guild,
                 discord.abc.GuildChannel,
-                dict[datetime.datetime, discord.Member],
+                dict[dt.datetime, discord.Member],
             ]
         ] = {}
 
@@ -123,11 +123,11 @@ class GuildStats(Cog):
         self.bold_font_path: Path = bundled_data_path(self) / "arial_bold.ttf"
         self.font: dict[int, ImageFont.ImageFont] = {
             size: ImageFont.truetype(str(self.font_path), size=size)
-            for size in {28, 30, 36, 40, 54}
+            for size in (28, 30, 36, 40, 54)
         }
         self.bold_font: dict[int, ImageFont.ImageFont] = {
             size: ImageFont.truetype(str(self.bold_font_path), size=size)
-            for size in {30, 36, 40, 50, 60}
+            for size in (30, 36, 40, 50, 60)
         }
         self.font_to_remove_unprintable_characters: TTFont = TTFont(self.font_path)
         self.icons: dict[str, Path] = {
@@ -150,7 +150,7 @@ class GuildStats(Cog):
         await super().cog_load()
         if await self.config.first_loading_time() is None:
             await self.config.first_loading_time.set(
-                int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp()),
+                int(dt.datetime.now(tz=dt.timezone.utc).timestamp()),
             )
         asyncio.create_task(self.load_data())
         self.loops.append(
@@ -455,9 +455,9 @@ class GuildStats(Cog):
                         ] += count_time
         await self.cleanup()
 
-    async def cleanup(self, utc_now: datetime.datetime = None) -> None:
+    async def cleanup(self, utc_now: dt.datetime | None = None) -> None:
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = dt.datetime.now(tz=dt.timezone.utc)
         channel_group = self.config._get_base_group(self.config.CHANNEL)
         async with channel_group.all() as channels_data:
             for channel in channels_data:
@@ -466,7 +466,7 @@ class GuildStats(Cog):
                         (
                             i + 1
                             for i, time in enumerate(channels_data[channel]["messages"][member])
-                            if time < (utc_now - datetime.timedelta(days=30)).timestamp()
+                            if time < (utc_now - dt.timedelta(days=30)).timestamp()
                         ),
                         0,
                     )
@@ -478,7 +478,7 @@ class GuildStats(Cog):
                         (
                             i + 1
                             for i, times in enumerate(channels_data[channel]["voice"][member])
-                            if times[1] < (utc_now - datetime.timedelta(days=30)).timestamp()
+                            if times[1] < (utc_now - dt.timedelta(days=30)).timestamp()
                         ),
                         0,
                     )
@@ -543,7 +543,7 @@ class GuildStats(Cog):
         if message.author not in self.cache[message.guild]["channels"][message.channel]["messages"]:
             self.cache[message.guild]["channels"][message.channel]["messages"][message.author] = []
         self.cache[message.guild]["channels"][message.channel]["messages"][message.author].append(
-            datetime.datetime.now(tz=datetime.timezone.utc),
+            dt.datetime.now(tz=dt.timezone.utc),
         )
 
     @commands.Cog.listener()
@@ -590,7 +590,7 @@ class GuildStats(Cog):
                     "voice_cache": {},
                 }
             self.cache[after.channel.guild]["channels"][after.channel]["voice_cache"][member] = (
-                datetime.datetime.now(tz=datetime.timezone.utc)
+                dt.datetime.now(tz=dt.timezone.utc)
             )
         if before.channel is not None:
             if isinstance(after.channel, discord.StageChannel):
@@ -604,7 +604,7 @@ class GuildStats(Cog):
             ignored_users = await self.config.ignored_users()
             if member.id in ignored_users:
                 return
-            end_time = datetime.datetime.now(tz=datetime.timezone.utc)
+            end_time = dt.datetime.now(tz=dt.timezone.utc)
             real_total_time = int((end_time - start_time).total_seconds())
             if round(real_total_time / 3600, 2) == 0:
                 return
@@ -674,7 +674,7 @@ class GuildStats(Cog):
                         "activities_cache": {},
                     }
                 self.cache[after.guild]["members"][after]["activities_cache"][activity.name] = (
-                    datetime.datetime.now(tz=datetime.timezone.utc)
+                    dt.datetime.now(tz=dt.timezone.utc)
                 )
         if before is not None:
             ignored_users = await self.config.ignored_users()
@@ -694,7 +694,7 @@ class GuildStats(Cog):
                     ].pop(activity.name)
                 except KeyError:
                     return
-                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
+                end_time = dt.datetime.now(tz=dt.timezone.utc)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if real_total_time < 10 * 60:
                     return
@@ -734,7 +734,7 @@ class GuildStats(Cog):
         | discord.TextChannel
         | discord.VoiceChannel,
         members_type: typing.Literal["humans", "bots", "both"],
-        utc_now: datetime.datetime,
+        utc_now: dt.datetime,
         all_channels_data: dict[int, dict],
         all_members_data: dict[int, dict],
         ignored_categories: list[int],
@@ -746,7 +746,7 @@ class GuildStats(Cog):
         else:
             _type = None
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = dt.datetime.now(tz=dt.timezone.utc)
         # Get cache data.
         all_channels_data = {
             channel_id: data
@@ -802,7 +802,7 @@ class GuildStats(Cog):
                 # already_seen.append(member)
                 if member not in channel.members:
                     continue
-                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
+                end_time = dt.datetime.now(tz=dt.timezone.utc)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if round(real_total_time / 3600, 2) == 0:
                     continue
@@ -844,7 +844,7 @@ class GuildStats(Cog):
             for activity_name, start_time in data["activities_cache"].items():
                 if discord.utils.get(member.activities, name=activity_name) is None:
                     continue
-                end_time = datetime.datetime.now(tz=datetime.timezone.utc)
+                end_time = dt.datetime.now(tz=dt.timezone.utc)
                 real_total_time = int((end_time - start_time).total_seconds())
                 if real_total_time < 10 * 60:
                     continue
@@ -988,7 +988,7 @@ class GuildStats(Cog):
                                     str(_object.id),
                                     [],
                                 )
-                                if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                if time >= (utc_now - dt.timedelta(days=delta)).timestamp()
                             ],
                         )
                         for delta in (1, 7, 30)
@@ -1003,7 +1003,7 @@ class GuildStats(Cog):
                                         - max(
                                             int(
                                                 (
-                                                    utc_now - datetime.timedelta(days=delta)
+                                                    utc_now - dt.timedelta(days=delta)
                                                 ).timestamp()
                                                 - times[0],
                                             ),
@@ -1015,7 +1015,7 @@ class GuildStats(Cog):
                                             [],
                                         )
                                         if times[1]
-                                        >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                        >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                     )
                                     / 3600,
                                     ndigits=2,
@@ -1110,9 +1110,9 @@ class GuildStats(Cog):
                                         str(_object.id),
                                         [],
                                     )
-                                    if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    if (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                     >= time
-                                    >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                    >= (utc_now - dt.timedelta(days=-day)).timestamp()
                                 ],
                             )
                             for day in range(-30, 0)
@@ -1127,7 +1127,7 @@ class GuildStats(Cog):
                                             - max(
                                                 int(
                                                     (
-                                                        utc_now - datetime.timedelta(days=-day)
+                                                        utc_now - dt.timedelta(days=-day)
                                                     ).timestamp()
                                                     - times[0],
                                                 ),
@@ -1136,7 +1136,7 @@ class GuildStats(Cog):
                                             - max(
                                                 int(
                                                     (
-                                                        utc_now - datetime.timedelta(days=-day - 1)
+                                                        utc_now - dt.timedelta(days=-day - 1)
                                                     ).timestamp()
                                                     - (utc_now.timestamp() - times[1]),
                                                 ),
@@ -1149,21 +1149,21 @@ class GuildStats(Cog):
                                             )
                                             if (
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day - 1)
+                                                    utc_now - dt.timedelta(days=-day - 1)
                                                 ).timestamp()
                                                 >= times[0]
                                                 >= (
-                                                    utc_now - datetime.timedelta(days=-day)
+                                                    utc_now - dt.timedelta(days=-day)
                                                 ).timestamp()
                                             )
                                             or (
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day)
+                                                    utc_now - dt.timedelta(days=-day)
                                                 ).timestamp()
                                             )
                                             <= times[1]
                                             <= (
-                                                utc_now - datetime.timedelta(days=-day - 1)
+                                                utc_now - dt.timedelta(days=-day - 1)
                                             ).timestamp()
                                         )
                                         / 3600,
@@ -1325,7 +1325,7 @@ class GuildStats(Cog):
                                 [],
                             )
                             if is_valid(member.id)
-                            and time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                            and time >= (utc_now - dt.timedelta(days=delta)).timestamp()
                         ],
                     )
                     for delta in (1, 7, 30)
@@ -1339,7 +1339,7 @@ class GuildStats(Cog):
                                     int(times[1] - times[0])
                                     - max(
                                         int(
-                                            (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                            (utc_now - dt.timedelta(days=delta)).timestamp()
                                             - times[0],
                                         ),
                                         0,
@@ -1352,7 +1352,7 @@ class GuildStats(Cog):
                                     )
                                     if is_valid(member.id)
                                     and times[1]
-                                    >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                    >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                 )
                                 / 3600,
                                 ndigits=2,
@@ -1447,9 +1447,9 @@ class GuildStats(Cog):
                                     [],
                                 )
                                 if is_valid(member.id)
-                                and (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                and (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                 >= time
-                                >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                >= (utc_now - dt.timedelta(days=-day)).timestamp()
                             ],
                         )
                         for day in range(-30, 0)
@@ -1464,7 +1464,7 @@ class GuildStats(Cog):
                                         - max(
                                             int(
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day)
+                                                    utc_now - dt.timedelta(days=-day)
                                                 ).timestamp()
                                                 - times[0],
                                             ),
@@ -1473,7 +1473,7 @@ class GuildStats(Cog):
                                         - max(
                                             int(
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day - 1)
+                                                    utc_now - dt.timedelta(days=-day - 1)
                                                 ).timestamp()
                                                 - (utc_now.timestamp() - times[1]),
                                             ),
@@ -1488,14 +1488,14 @@ class GuildStats(Cog):
                                         if is_valid(member.id)
                                         and (
                                             (
-                                                utc_now - datetime.timedelta(days=-day - 1)
+                                                utc_now - dt.timedelta(days=-day - 1)
                                             ).timestamp()
                                             >= times[0]
-                                            >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                            >= (utc_now - dt.timedelta(days=-day)).timestamp()
                                         )
-                                        or ((utc_now - datetime.timedelta(days=-day)).timestamp())
+                                        or ((utc_now - dt.timedelta(days=-day)).timestamp())
                                         <= times[1]
-                                        <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                        <= (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                     )
                                     / 3600,
                                     ndigits=2,
@@ -1576,7 +1576,7 @@ class GuildStats(Cog):
                                 for channel_id in all_channels_data
                                 for member_id in all_channels_data[channel_id]["messages"]
                                 for time in all_channels_data[channel_id]["messages"][member_id]
-                                if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                if time >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
                             ],
                         )
@@ -1592,7 +1592,7 @@ class GuildStats(Cog):
                                         - max(
                                             int(
                                                 (
-                                                    utc_now - datetime.timedelta(days=delta)
+                                                    utc_now - dt.timedelta(days=delta)
                                                 ).timestamp()
                                                 - times[0],
                                             ),
@@ -1604,7 +1604,7 @@ class GuildStats(Cog):
                                             member_id
                                         ]
                                         if times[1]
-                                        >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                        >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                         and is_valid(int(member_id))
                                     )
                                     / 3600,
@@ -1704,9 +1704,9 @@ class GuildStats(Cog):
                                     for channel_id in all_channels_data
                                     for member_id in all_channels_data[channel_id]["messages"]
                                     for time in all_channels_data[channel_id]["messages"][member_id]
-                                    if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    if (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                     >= time
-                                    >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                    >= (utc_now - dt.timedelta(days=-day)).timestamp()
                                     and is_valid(int(member_id))
                                 ],
                             )
@@ -1722,7 +1722,7 @@ class GuildStats(Cog):
                                             - max(
                                                 int(
                                                     (
-                                                        utc_now - datetime.timedelta(days=-day)
+                                                        utc_now - dt.timedelta(days=-day)
                                                     ).timestamp()
                                                     - times[0],
                                                 ),
@@ -1731,7 +1731,7 @@ class GuildStats(Cog):
                                             - max(
                                                 int(
                                                     (
-                                                        utc_now - datetime.timedelta(days=-day - 1)
+                                                        utc_now - dt.timedelta(days=-day - 1)
                                                     ).timestamp()
                                                     - (utc_now.timestamp() - times[1]),
                                                 ),
@@ -1744,21 +1744,21 @@ class GuildStats(Cog):
                                             ]
                                             if (
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day - 1)
+                                                    utc_now - dt.timedelta(days=-day - 1)
                                                 ).timestamp()
                                                 >= times[0]
                                                 >= (
-                                                    utc_now - datetime.timedelta(days=-day)
+                                                    utc_now - dt.timedelta(days=-day)
                                                 ).timestamp()
                                             )
                                             or (
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day)
+                                                    utc_now - dt.timedelta(days=-day)
                                                 ).timestamp()
                                             )
                                             <= times[1]
                                             <= (
-                                                utc_now - datetime.timedelta(days=-day - 1)
+                                                utc_now - dt.timedelta(days=-day - 1)
                                             ).timestamp()
                                             and is_valid(int(member_id))
                                         )
@@ -1786,7 +1786,7 @@ class GuildStats(Cog):
                                 for channel_id in all_channels_data
                                 for member_id in all_channels_data[channel_id]["messages"]
                                 for time in all_channels_data[channel_id]["messages"][member_id]
-                                if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                if time >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
                             ],
                         )
@@ -1801,7 +1801,7 @@ class GuildStats(Cog):
                                     "messages"
                                 ].items()
                                 for time in times
-                                if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                if time >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
                             },
                         )
@@ -1825,9 +1825,9 @@ class GuildStats(Cog):
                                     for channel_id in all_channels_data
                                     for member_id in all_channels_data[channel_id]["messages"]
                                     for time in all_channels_data[channel_id]["messages"][member_id]
-                                    if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    if (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                     >= time
-                                    >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                    >= (utc_now - dt.timedelta(days=-day)).timestamp()
                                     and is_valid(int(member_id))
                                 ],
                             )
@@ -1842,9 +1842,9 @@ class GuildStats(Cog):
                                         "messages"
                                     ].items()
                                     for time in times
-                                    if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    if (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                     >= time
-                                    >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                    >= (utc_now - dt.timedelta(days=-day)).timestamp()
                                     and is_valid(int(member_id))
                                 },
                             )
@@ -1879,7 +1879,7 @@ class GuildStats(Cog):
                                         - max(
                                             int(
                                                 (
-                                                    utc_now - datetime.timedelta(days=delta)
+                                                    utc_now - dt.timedelta(days=delta)
                                                 ).timestamp()
                                                 - times[0],
                                             ),
@@ -1891,7 +1891,7 @@ class GuildStats(Cog):
                                             member_id
                                         ]
                                         if times[1]
-                                        >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                        >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                         and is_valid(int(member_id))
                                     )
                                     / 3600,
@@ -1911,7 +1911,7 @@ class GuildStats(Cog):
                                 for member_id in all_channels_data[channel_id]["voice"]
                                 for times in all_channels_data[channel_id]["voice"][member_id]
                                 if times[1]
-                                >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
                             },
                         )
@@ -1946,7 +1946,7 @@ class GuildStats(Cog):
                                             - max(
                                                 int(
                                                     (
-                                                        utc_now - datetime.timedelta(days=-day)
+                                                        utc_now - dt.timedelta(days=-day)
                                                     ).timestamp()
                                                     - times[0],
                                                 ),
@@ -1955,7 +1955,7 @@ class GuildStats(Cog):
                                             - max(
                                                 int(
                                                     (
-                                                        utc_now - datetime.timedelta(days=-day - 1)
+                                                        utc_now - dt.timedelta(days=-day - 1)
                                                     ).timestamp()
                                                     - (utc_now.timestamp() - times[1]),
                                                 ),
@@ -1968,21 +1968,21 @@ class GuildStats(Cog):
                                             ]
                                             if (
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day - 1)
+                                                    utc_now - dt.timedelta(days=-day - 1)
                                                 ).timestamp()
                                                 >= times[0]
                                                 >= (
-                                                    utc_now - datetime.timedelta(days=-day)
+                                                    utc_now - dt.timedelta(days=-day)
                                                 ).timestamp()
                                             )
                                             or (
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day)
+                                                    utc_now - dt.timedelta(days=-day)
                                                 ).timestamp()
                                             )
                                             <= times[1]
                                             <= (
-                                                utc_now - datetime.timedelta(days=-day - 1)
+                                                utc_now - dt.timedelta(days=-day - 1)
                                             ).timestamp()
                                             and is_valid(int(member_id))
                                         )
@@ -2003,13 +2003,13 @@ class GuildStats(Cog):
                                     for member_id in all_channels_data[channel_id]["voice"]
                                     for times in all_channels_data[channel_id]["voice"][member_id]
                                     if (
-                                        (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                        (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                         >= times[0]
-                                        >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                        >= (utc_now - dt.timedelta(days=-day)).timestamp()
                                     )
-                                    or ((utc_now - datetime.timedelta(days=-day)).timestamp())
+                                    or ((utc_now - dt.timedelta(days=-day)).timestamp())
                                     <= times[1]
-                                    <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    <= (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                     and is_valid(int(member_id))
                                 },
                             )
@@ -2078,7 +2078,7 @@ class GuildStats(Cog):
                                         if _object.get_member(int(member_id)) is not None
                                         and is_valid(int(member_id))
                                         and time
-                                        >= (utc_now - datetime.timedelta(days=7)).timestamp()
+                                        >= (utc_now - dt.timedelta(days=7)).timestamp()
                                     ],
                                 )
                                 counter_to_use = members_messages_counter
@@ -2095,7 +2095,7 @@ class GuildStats(Cog):
                                             ]
                                             if is_valid(member_id)
                                             and time
-                                            >= (utc_now - datetime.timedelta(days=7)).timestamp()
+                                            >= (utc_now - dt.timedelta(days=7)).timestamp()
                                         )
                                         for channel_id in all_channels_data
                                     },
@@ -2116,7 +2116,7 @@ class GuildStats(Cog):
                                             - max(
                                                 int(
                                                     (
-                                                        utc_now - datetime.timedelta(days=7)
+                                                        utc_now - dt.timedelta(days=7)
                                                     ).timestamp()
                                                     - times[0],
                                                 ),
@@ -2125,7 +2125,7 @@ class GuildStats(Cog):
                                         )
                                         if is_valid(int(member_id))
                                         and times[1]
-                                        >= (utc_now - datetime.timedelta(days=7)).timestamp()
+                                        >= (utc_now - dt.timedelta(days=7)).timestamp()
                                     ],
                                 )
                                 counter_to_use = members_voice_counter
@@ -2140,7 +2140,7 @@ class GuildStats(Cog):
                                             ]
                                             if is_valid(member_id)
                                             and (
-                                                (utc_now - datetime.timedelta(days=7)).timestamp()
+                                                (utc_now - dt.timedelta(days=7)).timestamp()
                                                 <= times[1]
                                                 <= utc_now.timestamp()
                                             )
@@ -2163,7 +2163,7 @@ class GuildStats(Cog):
                                         if _object.get_member(int(member_id)) is not None
                                         and is_valid(int(member_id))
                                         and time
-                                        >= (utc_now - datetime.timedelta(days=30)).timestamp()
+                                        >= (utc_now - dt.timedelta(days=30)).timestamp()
                                     ],
                                 )
                                 counter_to_use = members_messages_counter
@@ -2180,7 +2180,7 @@ class GuildStats(Cog):
                                             ]
                                             if is_valid(member_id)
                                             and time
-                                            >= (utc_now - datetime.timedelta(days=30)).timestamp()
+                                            >= (utc_now - dt.timedelta(days=30)).timestamp()
                                         )
                                         for channel_id in all_channels_data
                                     },
@@ -2201,7 +2201,7 @@ class GuildStats(Cog):
                                             - max(
                                                 int(
                                                     (
-                                                        utc_now - datetime.timedelta(days=30)
+                                                        utc_now - dt.timedelta(days=30)
                                                     ).timestamp()
                                                     - times[0],
                                                 ),
@@ -2210,7 +2210,7 @@ class GuildStats(Cog):
                                         )
                                         if is_valid(int(member_id))
                                         and times[1]
-                                        >= (utc_now - datetime.timedelta(days=30)).timestamp()
+                                        >= (utc_now - dt.timedelta(days=30)).timestamp()
                                     ],
                                 )
                                 counter_to_use = members_voice_counter
@@ -2222,7 +2222,7 @@ class GuildStats(Cog):
                                             - max(
                                                 int(
                                                     (
-                                                        utc_now - datetime.timedelta(days=30)
+                                                        utc_now - dt.timedelta(days=30)
                                                     ).timestamp()
                                                     - times[0],
                                                 ),
@@ -2234,7 +2234,7 @@ class GuildStats(Cog):
                                             ]
                                             if is_valid(member_id)
                                             and times[1]
-                                            >= (utc_now - datetime.timedelta(days=30)).timestamp()
+                                            >= (utc_now - dt.timedelta(days=30)).timestamp()
                                         )
                                         for channel_id in all_channels_data
                                     },
@@ -2423,7 +2423,7 @@ class GuildStats(Cog):
                             ]
                             for member_id in all_channels_data[channel_id]["messages"]
                             for time in all_channels_data[channel_id]["messages"][member_id]
-                            if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                            if time >= (utc_now - dt.timedelta(days=delta)).timestamp()
                             and is_valid(int(member_id))
                         ],
                     )
@@ -2438,7 +2438,7 @@ class GuildStats(Cog):
                                     int(times[1] - times[0])
                                     - max(
                                         int(
-                                            (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                            (utc_now - dt.timedelta(days=delta)).timestamp()
                                             - times[0],
                                         ),
                                         0,
@@ -2451,7 +2451,7 @@ class GuildStats(Cog):
                                     for member_id in all_channels_data[channel_id]["voice"]
                                     for times in all_channels_data[channel_id]["voice"][member_id]
                                     if times[1]
-                                    >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                    >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                     and is_valid(int(member_id))
                                 )
                                 / 3600,
@@ -2553,9 +2553,9 @@ class GuildStats(Cog):
                                 ]
                                 for member_id in all_channels_data[channel_id]["messages"]
                                 for time in all_channels_data[channel_id]["messages"][member_id]
-                                if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                if (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                 >= time
-                                >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                >= (utc_now - dt.timedelta(days=-day)).timestamp()
                                 and is_valid(int(member_id))
                             ],
                         )
@@ -2571,7 +2571,7 @@ class GuildStats(Cog):
                                         - max(
                                             int(
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day)
+                                                    utc_now - dt.timedelta(days=-day)
                                                 ).timestamp()
                                                 - times[0],
                                             ),
@@ -2580,7 +2580,7 @@ class GuildStats(Cog):
                                         - max(
                                             int(
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day - 1)
+                                                    utc_now - dt.timedelta(days=-day - 1)
                                                 ).timestamp()
                                                 - (utc_now.timestamp() - times[1]),
                                             ),
@@ -2597,14 +2597,14 @@ class GuildStats(Cog):
                                         ]
                                         if (
                                             (
-                                                utc_now - datetime.timedelta(days=-day - 1)
+                                                utc_now - dt.timedelta(days=-day - 1)
                                             ).timestamp()
                                             >= times[0]
-                                            >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                            >= (utc_now - dt.timedelta(days=-day)).timestamp()
                                         )
-                                        or ((utc_now - datetime.timedelta(days=-day)).timestamp())
+                                        or ((utc_now - dt.timedelta(days=-day)).timestamp())
                                         <= times[1]
-                                        <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                        <= (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                         and is_valid(int(member_id))
                                     )
                                     / 3600,
@@ -2657,7 +2657,7 @@ class GuildStats(Cog):
                                 time
                                 for member_id in all_channels_data[_object.id]["messages"]
                                 for time in all_channels_data[_object.id]["messages"][member_id]
-                                if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                if time >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
                             ],
                         )
@@ -2675,7 +2675,7 @@ class GuildStats(Cog):
                                     "messages"
                                 ].items()
                                 for time in times
-                                if time >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                if time >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
                             },
                         )
@@ -2702,9 +2702,9 @@ class GuildStats(Cog):
                                     time
                                     for member_id in all_channels_data[_object.id]["messages"]
                                     for time in all_channels_data[_object.id]["messages"][member_id]
-                                    if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    if (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                     >= time
-                                    >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                    >= (utc_now - dt.timedelta(days=-day)).timestamp()
                                     and is_valid(int(member_id))
                                 ],
                             )
@@ -2722,9 +2722,9 @@ class GuildStats(Cog):
                                         "messages"
                                     ].items()
                                     for time in times
-                                    if (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    if (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                     >= time
-                                    >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                    >= (utc_now - dt.timedelta(days=-day)).timestamp()
                                     and is_valid(int(member_id))
                                 },
                             )
@@ -2789,7 +2789,7 @@ class GuildStats(Cog):
                                         - max(
                                             int(
                                                 (
-                                                    utc_now - datetime.timedelta(days=delta)
+                                                    utc_now - dt.timedelta(days=delta)
                                                 ).timestamp()
                                                 - times[0],
                                             ),
@@ -2800,7 +2800,7 @@ class GuildStats(Cog):
                                             member_id
                                         ]
                                         if times[1]
-                                        >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                        >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                         and is_valid(int(member_id))
                                     )
                                     / 3600,
@@ -2823,7 +2823,7 @@ class GuildStats(Cog):
                                 for member_id in all_channels_data[_object.id]["voice"]
                                 for times in all_channels_data[_object.id]["voice"][member_id]
                                 if times[1]
-                                >= (utc_now - datetime.timedelta(days=delta)).timestamp()
+                                >= (utc_now - dt.timedelta(days=delta)).timestamp()
                                 and is_valid(int(member_id))
                             },
                         )
@@ -2858,7 +2858,7 @@ class GuildStats(Cog):
                                             - max(
                                                 int(
                                                     (
-                                                        utc_now - datetime.timedelta(days=-day)
+                                                        utc_now - dt.timedelta(days=-day)
                                                     ).timestamp()
                                                     - times[0],
                                                 ),
@@ -2867,7 +2867,7 @@ class GuildStats(Cog):
                                             - max(
                                                 int(
                                                     (
-                                                        utc_now - datetime.timedelta(days=-day - 1)
+                                                        utc_now - dt.timedelta(days=-day - 1)
                                                     ).timestamp()
                                                     - (utc_now.timestamp() - times[1]),
                                                 ),
@@ -2879,21 +2879,21 @@ class GuildStats(Cog):
                                             ]
                                             if (
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day - 1)
+                                                    utc_now - dt.timedelta(days=-day - 1)
                                                 ).timestamp()
                                                 >= times[0]
                                                 >= (
-                                                    utc_now - datetime.timedelta(days=-day)
+                                                    utc_now - dt.timedelta(days=-day)
                                                 ).timestamp()
                                             )
                                             or (
                                                 (
-                                                    utc_now - datetime.timedelta(days=-day)
+                                                    utc_now - dt.timedelta(days=-day)
                                                 ).timestamp()
                                             )
                                             <= times[1]
                                             <= (
-                                                utc_now - datetime.timedelta(days=-day - 1)
+                                                utc_now - dt.timedelta(days=-day - 1)
                                             ).timestamp()
                                             and is_valid(int(member_id))
                                         )
@@ -2917,13 +2917,13 @@ class GuildStats(Cog):
                                     for member_id in all_channels_data[_object.id]["voice"]
                                     for times in all_channels_data[_object.id]["voice"][member_id]
                                     if (
-                                        (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                        (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                         >= times[0]
-                                        >= (utc_now - datetime.timedelta(days=-day)).timestamp()
+                                        >= (utc_now - dt.timedelta(days=-day)).timestamp()
                                     )
-                                    or ((utc_now - datetime.timedelta(days=-day)).timestamp())
+                                    or ((utc_now - dt.timedelta(days=-day)).timestamp())
                                     <= times[1]
-                                    <= (utc_now - datetime.timedelta(days=-day - 1)).timestamp()
+                                    <= (utc_now - dt.timedelta(days=-day - 1)).timestamp()
                                     and is_valid(int(member_id))
                                 },
                             )
@@ -2956,7 +2956,7 @@ class GuildStats(Cog):
         | discord.TextChannel
         | discord.VoiceChannel,
         members_type: typing.Literal["humans", "bots", "both"] = "humans",
-        utc_now: datetime.datetime = None,
+        utc_now: dt.datetime | None = None,
     ) -> dict[str, typing.Any]:
         if isinstance(_object, tuple):
             _object, _type = _object
@@ -3545,7 +3545,7 @@ class GuildStats(Cog):
         to_file: bool,
         img: Image.Image,
         default_state: bool,
-        first_loading_time: datetime.datetime,
+        first_loading_time: dt.datetime,
     ) -> Image.Image | discord.File:
         if isinstance(_object, tuple):
             _object = _object[0]
@@ -3803,7 +3803,7 @@ class GuildStats(Cog):
                 image = Image.open(self.icons["history"])
                 image = image.resize((50, 50))
                 img.paste(image, (30, 972, 80, 1022), mask=image.split()[3])
-                utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+                utc_now = dt.datetime.now(tz=dt.timezone.utc)
                 tracking_data_start_time = max(
                     first_loading_time,
                     (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at,
@@ -3813,19 +3813,19 @@ class GuildStats(Cog):
                     minute=(
                         utc_now.minute
                         if (utc_now - tracking_data_start_time)
-                        > datetime.timedelta(seconds=3600 * 24 * 7)
+                        > dt.timedelta(seconds=3600 * 24 * 7)
                         else tracking_data_start_time.minute
                     ),
                     hour=(
                         utc_now.hour
                         if (utc_now - tracking_data_start_time)
-                        > datetime.timedelta(seconds=3600 * 24 * 30)
+                        > dt.timedelta(seconds=3600 * 24 * 30)
                         else tracking_data_start_time.hour
                     ),
                     day=(
                         utc_now.day
                         if (utc_now - tracking_data_start_time)
-                        > datetime.timedelta(seconds=3600 * 24 * 365)
+                        > dt.timedelta(seconds=3600 * 24 * 365)
                         else tracking_data_start_time.day
                     ),
                 )
@@ -3922,9 +3922,9 @@ class GuildStats(Cog):
             to_file=to_file,
             img=img,
             default_state=await self.config.default_state(),
-            first_loading_time=datetime.datetime.fromtimestamp(
+            first_loading_time=dt.datetime.fromtimestamp(
                 await self.config.first_loading_time(),
-                tz=datetime.timezone.utc,
+                tz=dt.timezone.utc,
             ),
         )
 
@@ -3953,7 +3953,7 @@ class GuildStats(Cog):
         to_file: bool,
         img: Image.Image,
         default_state: bool,
-        first_loading_time: datetime.datetime,
+        first_loading_time: dt.datetime,
     ) -> Image.Image | discord.File:
         if isinstance(_object, tuple):
             _object, _type = _object
@@ -6057,7 +6057,7 @@ class GuildStats(Cog):
                 image = image.resize((1840, 464))
                 img.paste(image, (50, 1123, 1890, 1387 + 200))
 
-        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+        utc_now = dt.datetime.now(tz=dt.timezone.utc)
         tracking_data_start_time = max(
             first_loading_time,
             (_object if isinstance(_object, discord.Guild) else _object.guild).me.joined_at,
@@ -6066,18 +6066,18 @@ class GuildStats(Cog):
             second=utc_now.second,
             minute=(
                 utc_now.minute
-                if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 7)
+                if (utc_now - tracking_data_start_time) > dt.timedelta(seconds=3600 * 24 * 7)
                 else tracking_data_start_time.minute
             ),
             hour=(
                 utc_now.hour
-                if (utc_now - tracking_data_start_time) > datetime.timedelta(seconds=3600 * 24 * 30)
+                if (utc_now - tracking_data_start_time) > dt.timedelta(seconds=3600 * 24 * 30)
                 else tracking_data_start_time.hour
             ),
             day=(
                 utc_now.day
                 if (utc_now - tracking_data_start_time)
-                > datetime.timedelta(seconds=3600 * 24 * 365)
+                > dt.timedelta(seconds=3600 * 24 * 365)
                 else tracking_data_start_time.day
             ),
         )
@@ -6241,9 +6241,9 @@ class GuildStats(Cog):
             show_graphic=show_graphic,
             graphic=graphic,
             default_state=await self.config.default_state(),
-            first_loading_time=datetime.datetime.fromtimestamp(
+            first_loading_time=dt.datetime.fromtimestamp(
                 await self.config.first_loading_time(),
-                tz=datetime.timezone.utc,
+                tz=dt.timezone.utc,
             ),
         )
 

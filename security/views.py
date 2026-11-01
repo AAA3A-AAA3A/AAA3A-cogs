@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import functools
 import typing
 from io import BytesIO
@@ -55,8 +55,8 @@ async def get_or_fetch_member_or_user(
 
 
 DurationConverter: commands.converter.TimedeltaConverter = commands.converter.TimedeltaConverter(
-    minimum=datetime.timedelta(minutes=1),
-    maximum=datetime.timedelta(days=365),
+    minimum=dt.timedelta(minutes=1),
+    maximum=dt.timedelta(days=365),
     allowed_units=None,
     default_unit="hours",
 )
@@ -69,7 +69,7 @@ class WhitelistView(discord.ui.View):
         self.cog: commands.Cog = cog
 
         self._object: OBJECT_TYPING = None
-        self.duration: datetime.timedelta = None
+        self.duration: dt.timedelta = None
         self.whitelist_types = []
         self.whitelist = {}
         self.protected_roles_whitelist = []
@@ -94,7 +94,7 @@ class WhitelistView(discord.ui.View):
     ) -> discord.Message:
         self.ctx: commands.Context = ctx
         self._object: OBJECT_TYPING = _object
-        self.duration: datetime.timedelta = duration
+        self.duration: dt.timedelta = duration
         embed: discord.Embed = discord.Embed(
             title=_("{emoji} Security Whitelist").format(emoji=Emojis.WHITELIST.value),
             color=Colors.WHITELIST.value,
@@ -241,7 +241,7 @@ class WhitelistView(discord.ui.View):
         embed: discord.Embed = self._message.embeds[0]
         if self.saved:
             if self.duration is not None:
-                expires_at = datetime.datetime.now(tz=datetime.timezone.utc) + self.duration
+                expires_at = dt.datetime.now(tz=dt.timezone.utc) + self.duration
                 embed.description += _("\n⏲️ **Expiration:** {F_timestamp} ({R_timestamp})").format(
                     F_timestamp=discord.utils.format_dt(expires_at, style="F"),
                     R_timestamp=discord.utils.format_dt(expires_at, style="R"),
@@ -464,7 +464,7 @@ class SettingsView(discord.ui.View):
             logs = await self.cog.config.guild(self.ctx.guild).logs()
             logs.append(
                 {
-                    "timestamp": int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp()),
+                    "timestamp": int(dt.datetime.now(tz=dt.timezone.utc).timestamp()),
                     "issued_by_id": self.ctx.author.id,
                     "differences": differences,
                 },
@@ -638,9 +638,9 @@ class SettingsView(discord.ui.View):
                 + (
                     _("\n🕒 **Next Digest:** {next_digest}").format(
                         next_digest=discord.utils.format_dt(
-                            datetime.datetime.fromtimestamp(
+                            dt.datetime.fromtimestamp(
                                 next_timestamp,
-                                tz=datetime.timezone.utc,
+                                tz=dt.timezone.utc,
                             ),
                             style="F",
                         ),
@@ -1027,7 +1027,7 @@ class SettingsView(discord.ui.View):
             return
         embed: discord.Embed = discord.Embed(
             title=_("Security Logs"),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         embed.set_footer(
             text=_("{guild.name} | Developed by AAA3A").format(guild=self.ctx.guild),
@@ -1042,9 +1042,9 @@ class SettingsView(discord.ui.View):
                         "🕒 {timestamp} — Issued by {issued_by}\n{differences}",
                     ).format(
                         timestamp=discord.utils.format_dt(
-                            datetime.datetime.fromtimestamp(
+                            dt.datetime.fromtimestamp(
                                 log["timestamp"],
-                                tz=datetime.timezone.utc,
+                                tz=dt.timezone.utc,
                             ),
                             style="F",
                         ),
@@ -1069,9 +1069,9 @@ class SettingsView(discord.ui.View):
                                 [
                                     f"{'+' if d[0] == 'add' else ('-' if d[0] == 'remove' else '~')} `.{d[1] if d[1] else ' '}`: "
                                     + (
-                                        f"`{repr(d[2][0])}` -> `{repr(d[2][1])}`"
+                                        f"`{d[2][0]!r}` -> `{d[2][1]!r}`"
                                         if d[0] == "change"
-                                        else f"`{repr(d[2])}`"
+                                        else f"`{d[2]!r}`"
                                     )
                                     for d in log["differences"]
                                 ],
@@ -1274,8 +1274,8 @@ class ActionsView(discord.ui.View):
                 ),
             )
 
-    async def populate_again_after_duration(self, duration: datetime.timedelta) -> None:
-        await asyncio.sleep((duration + datetime.timedelta(seconds=5)).total_seconds())
+    async def populate_again_after_duration(self, duration: dt.timedelta) -> None:
+        await asyncio.sleep((duration + dt.timedelta(seconds=5)).total_seconds())
         await self.populate(include_actions=True)
         try:
             await self._message.edit(view=self)
@@ -1371,7 +1371,7 @@ class ActionsView(discord.ui.View):
                 guild=self.member.guild,
                 author=interaction.user,
                 user=self.member,
-                until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
+                until=dt.datetime.now(tz=dt.timezone.utc) + duration,
                 reason=reason,
             )
         elif action == "unmute":

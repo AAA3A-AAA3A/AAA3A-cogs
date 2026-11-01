@@ -106,7 +106,7 @@ class Session:
         except (ValueError, discord.HTTPException):
             await self.close()
 
-    async def channel_send(self, content: str = None, **kwargs) -> discord.Message | None:
+    async def channel_send(self, content: str | None = None, **kwargs) -> discord.Message | None:
         if self.channel.permissions_for(self.channel.guild.me).send_messages:
             return await self.channel.send(content, **kwargs)
         return None
@@ -211,7 +211,6 @@ class Webhook(Cog):
     @commands.hybrid_group(aliases=["webhooks"])
     async def webhook(self, ctx: commands.Context) -> None:
         """Various webhook commands to create and send messages along webhooks."""
-        pass
 
     @webhook.command(name="create")
     async def webhook_create(
@@ -219,7 +218,7 @@ class Webhook(Cog):
         ctx: commands.Context,
         channel: discord.TextChannel | discord.VoiceChannel | None,
         *,
-        webhook_name: str = None,
+        webhook_name: str | None = None,
     ) -> None:
         """Creates a webhook in the channel specified with the name specified.
 
@@ -520,7 +519,7 @@ class Webhook(Cog):
         ctx: commands.Context,
         message: discord.Message,
         *,
-        content: str = None,
+        content: str | None = None,
     ) -> None:
         """Edit a message sent by a webhook.
 

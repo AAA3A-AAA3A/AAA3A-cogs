@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 import discord
 
@@ -128,7 +128,7 @@ class SetRewardsView(discord.ui.View):
                             else ""
                         ),
                     ),
-                    value=f"{role.mention} ({role.id}) for {CogsUtils.get_interval_string(datetime.timedelta(seconds=reward['duration']))}",
+                    value=f"{role.mention} ({role.id}) for {CogsUtils.get_interval_string(dt.timedelta(seconds=reward['duration']))}",
                     inline=False,
                 )
             elif reward["type"] == "bank_credits":

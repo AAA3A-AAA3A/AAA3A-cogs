@@ -148,4 +148,3 @@ class RumbleNotifier(Cog):
     @commands.hybrid_group(aliases=["setrn"])
     async def setrumblenotifier(self, ctx: commands.Context) -> None:
         """Settings for the RumbleNotifier cog."""
-        pass

@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import random
 
 import discord
@@ -23,7 +23,7 @@ class GuessTheCandyGameView(discord.ui.View):
 
         self.candies: list[str] = []
         self.candy: str = None
-        self.start_time: datetime.datetime = None
+        self.start_time: dt.datetime = None
         self.lock: asyncio.Lock = asyncio.Lock()
         self.is_ended: bool = False
 
@@ -54,7 +54,7 @@ class GuessTheCandyGameView(discord.ui.View):
             file=discord.File(self.cog.shadows[self.candy], filename="shadow.png"),
         )
         self.cog.views[self._message] = self
-        self.start_time: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.start_time: dt.datetime = dt.datetime.now(tz=dt.timezone.utc)
 
     async def on_timeout(self) -> None:
         for child in self.children:
@@ -88,7 +88,7 @@ class GuessTheCandyGameView(discord.ui.View):
                     "**Congratulations!** You've correctly guessed it's **{candy}**, in **{time} seconds**!",
                 ).format(
                     candy=self.candy,
-                    time=f"{(datetime.datetime.now(tz=datetime.timezone.utc) - self.start_time).total_seconds():.2f}",
+                    time=f"{(dt.datetime.now(tz=dt.timezone.utc) - self.start_time).total_seconds():.2f}",
                 ),
                 color=await self.ctx.embed_color(),
             )

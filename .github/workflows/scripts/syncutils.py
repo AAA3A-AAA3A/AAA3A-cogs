@@ -1,7 +1,7 @@
 # Thanks to @Vexed01 on GitHub pour this code and this workflow! (https://github.com/Vexed01/Vex-Cogs)
 # copy the utils from https://github.com/AAA3A-AAA3A/AAA3A_utils to each cog in this repo
 
-import datetime
+import datetime as dt
 import json
 import shutil
 from pathlib import Path
@@ -31,7 +31,7 @@ utils_repo = Repo.clone_from(
 utils_location = utils_repo_clone_location / "AAA3A_utils"
 
 readme = README_MD_TEXT.format(
-    time=datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z"),
+    time=dt.datetime.now(tz=dt.timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z"),
     commit=utils_repo.head.commit,
 )
 

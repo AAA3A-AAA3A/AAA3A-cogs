@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import re
 import typing
 
@@ -70,7 +70,7 @@ JOIN_GATE_OPTIONS: list[
         "param": ("minimum_days", int, 7),
         "value": "account_age",
         "check": lambda member, minimum_days: (
-            (datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at).days
+            (dt.datetime.now(tz=dt.timezone.utc) - member.created_at).days
             < minimum_days
         ),
     },
@@ -328,17 +328,13 @@ class JoinGateModule(Module):
         if not triggered:
             return
 
-        option, option_config = sorted(
-            triggered,
-            key=lambda opt: next(
+        option, option_config = max(triggered, key=lambda opt: next(
                 (
                     i
                     for i, possible_action in enumerate(POSSIBLE_ACTIONS)
                     if possible_action["value"] == opt[1]["action"]
                 ),
-            ),
-            reverse=True,
-        )[0]
+            ))
         action = option_config["action"]
         if action in ("timeout", "mute"):
             duration = await DurationConverter.convert(None, config["timeout_mute_duration"])
@@ -349,9 +345,9 @@ class JoinGateModule(Module):
         reason = _("**Join Gate** - Triggered by {option}.").format(option=option["name"]) + (
             _("\n- Account Age: {account_age}\n- Minimum Age: {minimum_days} days").format(
                 account_age=CogsUtils.get_interval_string(
-                    datetime.timedelta(
+                    dt.timedelta(
                         days=(
-                            datetime.datetime.now(tz=datetime.timezone.utc) - member.created_at
+                            dt.datetime.now(tz=dt.timezone.utc) - member.created_at
                         ).days,
                     ),
                 ),
@@ -382,7 +378,7 @@ class JoinGateModule(Module):
                 guild=member.guild,
                 author=member.guild.me,
                 user=member,
-                until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
+                until=dt.datetime.now(tz=dt.timezone.utc) + duration,
                 reason=audit_log_reason,
             )
         elif action == "kick" and member.guild.me.guild_permissions.kick_members:

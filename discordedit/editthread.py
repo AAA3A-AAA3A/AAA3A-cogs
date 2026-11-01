@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import re
 import typing
 
@@ -20,8 +20,8 @@ from .view import DiscordEditView
 
 TimedeltaConverter = get_timedelta_converter(
     default_unit="s",
-    maximum=datetime.timedelta(seconds=21600),
-    minimum=datetime.timedelta(seconds=0),
+    maximum=dt.timedelta(seconds=21600),
+    minimum=dt.timedelta(seconds=0),
 )
 
 
@@ -137,7 +137,6 @@ class EditThread(Cog):
     @commands.hybrid_group()
     async def editthread(self, ctx: commands.Context) -> None:
         """Commands for edit a text channel."""
-        pass
 
     @commands.admin_or_permissions(manage_channels=True)
     @editthread.command(name="create", aliases=["new", "+"])
@@ -219,7 +218,7 @@ class EditThread(Cog):
         self,
         ctx: commands.Context,
         thread: discord.Thread | None,
-        archived: bool = None,
+        archived: bool | None = None,
     ) -> None:
         """Edit thread archived."""
         if thread is None:
@@ -244,7 +243,7 @@ class EditThread(Cog):
         self,
         ctx: commands.Context,
         thread: discord.Thread | None,
-        locked: bool = None,
+        locked: bool | None = None,
     ) -> None:
         """Edit thread locked."""
         if thread is None:
@@ -294,7 +293,7 @@ class EditThread(Cog):
         self,
         ctx: commands.Context,
         thread: discord.Thread | None,
-        invitable: bool = None,
+        invitable: bool | None = None,
     ) -> None:
         """Edit thread invitable."""
         if thread is None:
@@ -501,10 +500,10 @@ class EditThread(Cog):
                 title=f"Thread #{thread.name} ({thread.id})",
                 color=embed_color,
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
             embed.description = "\n".join(
                 [
-                    f"• `{parameter}`: {repr(getattr(thread, parameters[parameter].get('attribute_name', parameter)))}"
+                    f"• `{parameter}`: {getattr(thread, parameters[parameter].get('attribute_name', parameter))!r}"
                     for parameter in parameters
                     if hasattr(thread, parameter)
                 ],

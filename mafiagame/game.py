@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import io
 import random
 import typing
@@ -302,8 +302,8 @@ class Night(DayNight):
                         await self.game.cog.config.member(player.member).temp_banned_until.set(
                             int(
                                 (
-                                    datetime.datetime.now(tz=datetime.timezone.utc)
-                                    + datetime.timedelta(hours=afk_temp_ban_duration)
+                                    dt.datetime.now(tz=dt.timezone.utc)
+                                    + dt.timedelta(hours=afk_temp_ban_duration)
                                 )
                                 .replace(second=0, microsecond=0)
                                 .timestamp(),
@@ -772,7 +772,7 @@ class Game:
         self,
         cog: commands.Cog,
         mode: type[Mode] = Classic,
-        config: dict[str, typing.Any] = None,
+        config: dict[str, typing.Any] | None = None,
     ) -> None:
         self.cog: commands.Cog = cog
         self.ctx: commands.Context = None

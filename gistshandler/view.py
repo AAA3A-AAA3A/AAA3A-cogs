@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 
 import discord
 import gists
@@ -104,7 +104,7 @@ class CreateGistModal(discord.ui.Modal):
         self._parent.gist = gist
         self._parent.file = file
         self._parent._deleted: bool = False
-        self._parent._deleted_at: datetime.datetime = None
+        self._parent._deleted_at: dt.datetime = None
         await self._parent._update()
         await interaction.response.send_message(
             _("Gist `{gist.id}` created.").format(gist=gist),
@@ -234,7 +234,7 @@ class GistsHandlerView(discord.ui.View):
         self._embed: discord.Embed = None
 
         self._deleted: bool = False
-        self._deleted_at: datetime.datetime = None
+        self._deleted_at: dt.datetime = None
         self._files_select: FilesSelect = None
         self._button_url: discord.ui.Button = None
         self._ready: asyncio.Event = asyncio.Event()
@@ -396,7 +396,7 @@ class GistsHandlerView(discord.ui.View):
             )
             return
         self._deleted: bool = True
-        self._deleted_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
+        self._deleted_at: dt.datetime = dt.datetime.now(tz=dt.timezone.utc)
         await interaction.response.send_message(
             _("Gist `{gist.id}` deleted.").format(gist=self.gist),
             ephemeral=True,

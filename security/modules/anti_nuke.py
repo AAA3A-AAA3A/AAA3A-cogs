@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import typing
 from collections import defaultdict
 
@@ -646,7 +646,7 @@ class AntiNukeModule(Module):
             discord.Guild,
             dict[
                 discord.Member,
-                dict[str, list[tuple[datetime.datetime, str]]],
+                dict[str, list[tuple[dt.datetime, str]]],
             ],
         ] = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
 
@@ -904,14 +904,14 @@ class AntiNukeModule(Module):
                     member_actions[filter["value"]] = [
                         action
                         for action in member_actions[filter["value"]]
-                        if action[0] >= current_time - datetime.timedelta(hours=1)
+                        if action[0] >= current_time - dt.timedelta(hours=1)
                     ]
                     if (
                         len(
                             [
                                 action
                                 for action in member_actions[filter["value"]]
-                                if action[0] >= current_time - datetime.timedelta(minutes=1)
+                                if action[0] >= current_time - dt.timedelta(minutes=1)
                             ],
                         )
                         >= minute_limit

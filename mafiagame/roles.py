@@ -6,6 +6,7 @@ import typing
 from dataclasses import dataclass, field
 
 import discord
+
 from AAA3A_utils import CogsUtils
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
@@ -124,7 +125,7 @@ class Player:
             ],
             "Player",
         ] = "Mafia",
-        reason: str = None,
+        reason: str | None = None,
     ) -> None:
         try:
             await self.role.on_death(self)
@@ -372,7 +373,7 @@ class Player:
                         new_achievements.setdefault(location, []).append(achievement)
                 elif check(
                     self
-                    if list(inspect.signature(check).parameters.values())[0].name == "player"
+                    if next(iter(inspect.signature(check).parameters.values())).name == "player"
                     else data["wins"],
                 ):
                     new_achievements.setdefault(location, []).append(achievement)
@@ -603,7 +604,7 @@ def perform_action_select_targets(
     mafia_allowed: bool = True,
     last_target_allowed: bool = True,
     dead_targets: bool = False,
-    condition: typing.Callable[[Player, Player], bool] = None,
+    condition: typing.Callable[[Player, Player], bool] | None = None,
     two_selects: bool = False,
     second_select_optional: bool = False,
 ) -> None:
@@ -640,7 +641,7 @@ def perform_action_select_roles(
     self_allowed: bool = True,
     mafia_allowed: bool = True,
     last_target_allowed: bool = True,
-    condition: typing.Callable[[Player, Role], bool] = None,
+    condition: typing.Callable[[Player, Role], bool] | None = None,
 ) -> None:
     async def func(
         night,
@@ -671,7 +672,7 @@ def perform_action_guess_targets_roles(
     self_allowed: bool = True,
     mafia_allowed: bool = True,
     last_target_allowed: bool = True,
-    condition: typing.Callable[[Player, Player], bool] = None,
+    condition: typing.Callable[[Player, Player], bool] | None = None,
 ) -> None:
     async def func(
         night,
@@ -3836,10 +3837,7 @@ class Mortician(Role):
     async def action(cls, night, player: Player, target: Player) -> None:
         if target.death_cause == "Mafia":
             suspects = [
-                sorted(
-                    [p for p in player.game.alive_players if p.role.side == "Mafia"],
-                    key=lambda p: (p.role is not Mafia, p.role is not GodFather),
-                )[0],
+                min([p for p in player.game.alive_players if p.role.side == "Mafia"], key=lambda p: (p.role is not Mafia, p.role is not GodFather)),
             ]
         else:
             suspects = [target.death_cause]
@@ -4658,10 +4656,7 @@ class Builder(Role):
     async def on_other_player_death(cls, player: Player, other: Player) -> None:
         if (bricks := other.builder_bricks) > 0:
             if other.death_cause == "Mafia":
-                killer = sorted(
-                    [p for p in player.game.alive_players if p.role.side == "Mafia"],
-                    key=lambda p: (p.role is not Mafia, p.role is not GodFather),
-                )[0]
+                killer = min([p for p in player.game.alive_players if p.role.side == "Mafia"], key=lambda p: (p.role is not Mafia, p.role is not GodFather))
             elif isinstance(other.death_cause, Player):
                 killer = other.death_cause
             else:
@@ -4826,10 +4821,7 @@ class Farmer(Role):
         )
         if not any(p.role is GodFather for p in night.game.alive_players):
             if mafia_players := [p for p in night.game.alive_players if p.role.side == "Mafia"]:
-                new_god_father = sorted(
-                    mafia_players,
-                    key=lambda p: (MAFIA_HIERARCHY.index(p.role), player.game.players.index(p)),
-                )[0]
+                new_god_father = min(mafia_players, key=lambda p: (MAFIA_HIERARCHY.index(p.role), player.game.players.index(p)))
                 await new_god_father.change_role(
                     GodFather,
                     reason=_("The previous God Father lost his position in a duel against you..."),
@@ -5408,7 +5400,7 @@ ACHIEVEMENTS: dict[
 
 for i, achievements in enumerate([ACHIEVEMENTS] + [role.achievements for role in ROLES]):
     role = ROLES[i - 1] if i != 0 else None
-    for achievement, data in achievements.items():
+    for data in achievements.values():
         if "description" not in data:
             if data["check"] == "wins":
                 if data["value"] == 1:

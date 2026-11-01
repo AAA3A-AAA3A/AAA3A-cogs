@@ -1,13 +1,13 @@
-import datetime
+import datetime as dt
 import typing
 from dataclasses import asdict, dataclass
 
 import discord
+
 from redbot.core import commands
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box
-
 from security.constants import Colors, Emojis
 from security.utils import get_non_animated_asset
 from security.views import SettingsView, ToggleModuleButton, get_or_fetch_member_or_user
@@ -160,8 +160,8 @@ class Payout:
         )
 
     @property
-    def issued_at(self) -> datetime.datetime:
-        return datetime.datetime.fromtimestamp(self.issued_at_timestamp, tz=datetime.timezone.utc)
+    def issued_at(self) -> dt.datetime:
+        return dt.datetime.fromtimestamp(self.issued_at_timestamp, tz=dt.timezone.utc)
 
     @property
     def display_amount(self) -> str:
@@ -618,9 +618,9 @@ class DankPoolProtectionModule(Module):
         )
         last_payouts = [
             (
-                datetime.datetime.fromtimestamp(
+                dt.datetime.fromtimestamp(
                     last_payout["issued_at_timestamp"],
-                    tz=datetime.timezone.utc,
+                    tz=dt.timezone.utc,
                 ),
                 _(
                     "{member.mention} (`{member}`) executed `{slash_name}` ({jump_url}) {timestamp}.",
@@ -634,8 +634,8 @@ class DankPoolProtectionModule(Module):
             for last_payout in await self.cog.config.member(member).payouts()
         ]
         hour_ago, minute_ago = (
-            message.created_at - datetime.timedelta(hours=1),
-            message.created_at - datetime.timedelta(minutes=1),
+            message.created_at - dt.timedelta(hours=1),
+            message.created_at - dt.timedelta(minutes=1),
         )
         for option in DANK_POOL_PROTECTION_OPTIONS:
             if not config["options"][option["value"]]:
@@ -650,7 +650,7 @@ class DankPoolProtectionModule(Module):
                     logs = [log for (__, log) in last_payouts]
                     break
             elif option["value"] == "payout_cooldown":
-                if last_payouts and message.created_at - last_payouts[-1][0] < datetime.timedelta(
+                if last_payouts and message.created_at - last_payouts[-1][0] < dt.timedelta(
                     seconds=config["payout_cooldown"],
                 ):
                     logs = [log for (__, log) in last_payouts]

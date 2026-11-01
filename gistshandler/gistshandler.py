@@ -74,7 +74,7 @@ class GistsHandler(Cog):
         self,
         ctx: commands.Context,
         gist: GistConverter = None,
-        file_name: str = None,
+        file_name: str | None = None,
     ) -> None:
         """Create a new Gist and edit an existing one.
 

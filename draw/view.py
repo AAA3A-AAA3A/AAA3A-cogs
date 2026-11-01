@@ -586,7 +586,7 @@ class DrawView(discord.ui.View):
                     [
                         (
                             (
-                                f"{str(n.emoji)} "
+                                f"{n.emoji!s} "
                                 + (n.content if idx == 0 else n.get_truncated_content()).replace(
                                     "\n",
                                     "\n> ",

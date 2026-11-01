@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import random
 import re
 import typing
@@ -190,14 +190,14 @@ class OnePieceBounties(WelcomePlugin, Cog):
                     member.joined_at
                     if (accurate_joined_at := await self.config.member(member).accurate_joined_at())
                     is None
-                    else datetime.datetime.fromisoformat(accurate_joined_at).replace(
-                        tzinfo=datetime.timezone.utc,
+                    else dt.datetime.fromisoformat(accurate_joined_at).replace(
+                        tzinfo=dt.timezone.utc,
                     )
                 )
             )
             is not None
         ):
-            months = (datetime.datetime.now(tz=datetime.timezone.utc) - joined_at).days / 30
+            months = (dt.datetime.now(tz=dt.timezone.utc) - joined_at).days / 30
             for i in range(1, int(months) + 2):
                 random_obj.seed(f"{member.id}-month-{i}")
                 year = i // 12
@@ -262,7 +262,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
     async def generate_wanted_poster(
         self,
         member: discord.Member,
-        bounty: int = None,
+        bounty: int | None = None,
     ) -> discord.File:
         names = ["display_name", "global_name", "name"]
         for attr in names:
@@ -327,7 +327,7 @@ class OnePieceBounties(WelcomePlugin, Cog):
                 bounty_tier=bounty_tier,
             ),
             color=await self.bot.get_embed_color(member),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         embed.set_footer(
             text=member.guild.name,
@@ -405,7 +405,6 @@ class OnePieceBounties(WelcomePlugin, Cog):
     @commands.hybrid_group(aliases=["setopb"])
     async def setonepiecebounties(self, ctx: commands.Context) -> None:
         """Configure One Piece Bounties."""
-        pass
 
     @setonepiecebounties.command(aliases=["addbr"])
     async def addbonusrole(
@@ -605,11 +604,13 @@ class OnePieceBounties(WelcomePlugin, Cog):
         self,
         ctx: commands.Context,
         member: discord.Member = commands.Author,
-        date: str = None,
+        date: str | None = None,
     ) -> None:
         """Set the accurate joined at date of a member in the format `YYYY-MM-DD`."""
         try:
-            accurate_joined_at = datetime.datetime.strptime(date, "%Y-%m-%d")
+            accurate_joined_at = dt.datetime.strptime(date, "%Y-%m-%d").replace(
+                tzinfo=dt.timezone.utc,
+            )
         except ValueError:
             raise commands.UserFeedbackCheckFailure(
                 _("Please provide a date in the format `YYYY-MM-DD`."),

@@ -4,6 +4,7 @@ import typing
 from collections import Counter
 
 import discord
+
 from AAA3A_utils import Cog, CogsUtils, Menu
 from redbot.core import Config, commands
 from redbot.core.bot import Red
@@ -94,7 +95,6 @@ class Teams(Cog):
     @commands.hybrid_group(aliases=["teams"])
     async def team(self, ctx: commands.Context) -> None:
         """Make incredible teams, with a unique user experience to claim prizes!"""
-        pass
 
     @commands.admin_or_permissions(manage_guild=True)
     @commands.bot_has_permissions(embed_links=True)
@@ -109,7 +109,7 @@ class Teams(Cog):
         color: commands.ColorConverter | None = None,
         use_roles: bool = False,
         *,
-        description: str = None,
+        description: str | None = None,
     ) -> None:
         """Create a new team."""
         if any(captain in team.members for team in self.teams.get(ctx.guild.id, {}).values()):
@@ -498,7 +498,7 @@ class Teams(Cog):
             "image_url",
         ],
         *,
-        value: str = None,
+        value: str | None = None,
     ) -> None:
         """Edit a specific team."""
         if not value and key == "name":

@@ -46,7 +46,6 @@ class Reach(Cog):
     @commands.hybrid_group()
     async def reach(self, ctx: commands.Context) -> None:
         """Check the reach of ping roles in specific channels and find the closest ping roles for the number of members you want to ping!"""
-        pass
 
     @reach.command()
     async def check(
@@ -138,10 +137,12 @@ class Reach(Cog):
         channel: discord.TextChannel,
         amount: commands.Range[int, 1, None],
         possible_combinations: commands.Range[int, 1, 3] | None = 1,
-        possible_roles: commands.Greedy[discord.Role] = [],
+        possible_roles: commands.Greedy[discord.Role] = None,
         include_statuses: bool = False,
     ) -> None:
         """Find the closest ping roles for the amount of members you want to ping in a specific channel."""
+        if possible_roles is None:
+            possible_roles = []
         if possible_roles:
             roles = possible_roles
         elif not (roles_for_search := await self.config.guild(ctx.guild).roles_for_search()):

@@ -376,7 +376,6 @@ class LinkQuoter(DashboardIntegration, Cog):
     @commands.hybrid_group()
     async def setlinkquoter(self, ctx: commands.Context) -> None:
         """Commands to configure LinkQuoter."""
-        pass
 
     @commands.is_owner()
     @setlinkquoter.command(aliases=["migratefromlinkquoter"])

@@ -342,7 +342,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         ctx: commands.Context,
         channel_or_message: MessageableOrMessageConverter | None,
         message: ReadableMessageConverter = None,
-        index: int = None,
+        index: int | None = None,
         include_content: bool | None = None,
     ):
         """Post embed(s) from an existing message.
@@ -405,7 +405,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         self,
         ctx: commands.Context,
         message: ReadableMessageConverter = None,
-        index: int = None,
+        index: int | None = None,
         include_content: bool | None = None,
     ):
         """Download a JSON file for a message's embed(s).
@@ -468,7 +468,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             "frommsg",
         ],
         *,
-        data: str = None,
+        data: str | None = None,
     ):
         """Edit a message sent by [botname].
 
@@ -561,7 +561,7 @@ class EmbedUtils(DashboardIntegration, Cog):
             "frommsg",
         ],
         *,
-        data: str = None,
+        data: str | None = None,
     ):
         """Store an embed.
 
@@ -897,7 +897,7 @@ class EmbedUtils(DashboardIntegration, Cog):
         ]
         | None = None,
         *,
-        data: str = None,
+        data: str | None = None,
     ) -> None:
         """Get the link to the Dashboard."""
         if (dashboard_url := getattr(ctx.bot, "dashboard_url", None)) is None:

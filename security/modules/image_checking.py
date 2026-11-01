@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import typing
 from collections import defaultdict
 from io import BytesIO
@@ -485,7 +485,7 @@ class ImageCheckingModule(Module):
                     guild=message.guild,
                     author=message.guild.me,
                     user=message.author,
-                    until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
+                    until=dt.datetime.now(tz=dt.timezone.utc) + duration,
                     reason=audit_log_reason,
                 )
             elif action_value == "kick" and message.guild.me.guild_permissions.kick_members:

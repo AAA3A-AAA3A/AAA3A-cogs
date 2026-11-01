@@ -76,6 +76,7 @@ DOT_SEGMENT_RE = re.compile(r"(?:^|/)(?:\.|%2e){1,2}(?:/|$)", re.IGNORECASE)
 class UnsafeURLError(Exception):
     pass
 
+
 _: Translator = Translator("CodeSnippets", __file__)
 
 
@@ -220,7 +221,7 @@ class CodeSnippets(DashboardIntegration, Cog):
             headers=GITHUB_HEADERS,
         )
         if len(gist_json["files"]) == 1 and file_path is None:
-            file_path = list(gist_json["files"])[0].lower().replace(".", "-")
+            file_path = next(iter(gist_json["files"])).lower().replace(".", "-")
         for gist_file in gist_json["files"]:
             if file_path == gist_file.lower().replace(".", "-"):
                 file_contents = await self._fetch_response(
@@ -552,7 +553,6 @@ class CodeSnippets(DashboardIntegration, Cog):
     @commands.hybrid_group(name="setcodesnippets")
     async def configuration(self, ctx: commands.Context) -> None:
         """Configure CodeSnippets."""
-        pass
 
     @configuration.command()
     async def addchannel(

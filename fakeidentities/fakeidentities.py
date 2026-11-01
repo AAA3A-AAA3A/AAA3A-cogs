@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import hashlib
 import random
 import secrets
@@ -139,7 +139,7 @@ class FakeIdentities(Cog):
             thumbnail_url=f"https://randomuser.me/api/portraits/{'men' if gender is Gender.MALE else 'women'}/{random.randint(0, 99 if gender is Gender.MALE else 96)}.jpg",
             birth=Birth(
                 date=(birthdate := person_nationality.birthdate()),
-                age=int((datetime.date.today() - birthdate).days // 365.5),
+                age=int((dt.datetime.now(tz=dt.timezone.utc).date() - birthdate).days // 365.5),
             ),
             communication=Communication(
                 email=person_location.email(),
@@ -253,7 +253,9 @@ class FakeIdentities(Cog):
                     ),
                     birth=Birth(
                         date=(birthdate := person_location.birthdate()),
-                        age=int((datetime.date.today() - birthdate).days // 365.5),
+                        age=int(
+                            (dt.datetime.now(tz=dt.timezone.utc).date() - birthdate).days // 365.5
+                        ),
                     ),
                 )
                 if has_partner
@@ -275,7 +277,8 @@ class FakeIdentities(Cog):
                     ),
                     birth=Birth(
                         age=(child_age := random.randint(1, 18)),
-                        date=datetime.date.today() - datetime.timedelta(days=365.25 * child_age),
+                        date=dt.datetime.now(tz=dt.timezone.utc).date()
+                        - dt.timedelta(days=365.25 * child_age),
                     ),
                 )
                 for __ in range(children_number)

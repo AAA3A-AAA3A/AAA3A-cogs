@@ -156,7 +156,7 @@ class DashboardRPC:
                 )
             )
             is_private = redirect_uri is None and host in ("0.0.0.0", "127.0.0.1")
-            setattr(self.bot, "dashboard_url", (dashboard_url, not is_private))
+            self.bot.dashboard_url = dashboard_url, not is_private
         return variables
 
     @rpc_check()

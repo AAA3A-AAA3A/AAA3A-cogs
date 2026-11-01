@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import random
 import typing
 
@@ -35,7 +35,7 @@ class SplitOrStealGameView(discord.ui.View):
         embed.description = _(
             "Join the game by clicking on the button below. 2 players will be selected randomly.",
         )
-        end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=60)
+        end_time = dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(seconds=60)
         embed.add_field(
             name=_("End time for joining:"),
             value=f"{discord.utils.format_dt(end_time, style='T')} ({discord.utils.format_dt(end_time, style='R')})",
@@ -68,7 +68,7 @@ class SplitOrStealGameView(discord.ui.View):
             "• If you both choose `steal`, both of you loose.\n"
             "• if one of you chooses `split` and one of you chooses `steal`, the one who choose `steal` will win.",
         ).format(player_A=player_A, player_B=player_B)
-        end_time = datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=60)
+        end_time = dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(seconds=60)
         embed.add_field(
             name=_("End time for play:"),
             value=f"{discord.utils.format_dt(end_time, style='T')} ({discord.utils.format_dt(end_time, style='R')})",

@@ -208,7 +208,7 @@ class AcidRain(Anomaly):
     @classmethod
     async def start(cls, game) -> None:
         game.current_anomaly_players = dict.fromkeys([random.choice(game.alive_players)])
-        player = list(game.current_anomaly_players.keys())[0]
+        player = next(iter(game.current_anomaly_players.keys()))
         kwargs = cls.get_kwargs()
         embed: discord.Embed = discord.Embed(
             title=_("{player.member.display_name} is {the_or_a} **{player.role.name}**!").format(
@@ -240,7 +240,7 @@ class LivingDead(Anomaly):
     @classmethod
     async def start(cls, game) -> None:
         game.current_anomaly_players = dict.fromkeys([random.choice(game.dead_players)])
-        player = list(game.current_anomaly_players.keys())[0]
+        player = next(iter(game.current_anomaly_players.keys()))
         player.is_dead = False
         kwargs = cls.get_kwargs()
         embed: discord.Embed = discord.Embed(
@@ -262,7 +262,7 @@ class ScorchingSun(Anomaly):
     @classmethod
     async def start(cls, game) -> None:
         game.current_anomaly_players = dict.fromkeys([random.choice(game.alive_players)])
-        player = list(game.current_anomaly_players.keys())[0]
+        player = next(iter(game.current_anomaly_players.keys()))
         await game.send(**cls.get_kwargs())
         await player.kill(cause="scorching_sun")
 

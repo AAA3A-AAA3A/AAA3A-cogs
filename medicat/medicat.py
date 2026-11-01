@@ -422,7 +422,7 @@ class Medicat(Cog):
         channel: discord.TextChannel | None = None,
         ping_role: bool | None = True,
         force: bool | None = False,
-        version: str = None,
+        version: str | None = None,
     ) -> list[dict]:
         if channel is None:
             guild = self.bot.get_guild(MEDICAT_GUILD)
@@ -587,7 +587,7 @@ class Medicat(Cog):
             soup = BeautifulSoup(content, "lxml")
             _json = json.loads(soup.find("script", class_="yoast-schema-graph").text)
             x = _json["@graph"][0]["headline"]
-            regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
+            regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.IGNORECASE).findall(x)
             if regex == []:
                 continue
             regex = regex[0]
@@ -673,7 +673,6 @@ class Medicat(Cog):
     @commands.hybrid_group()
     async def medicat(self, ctx: commands.Context) -> None:
         """Commands of Medicat cog."""
-        pass
 
     async def add_custom_commands(self) -> None:
         # def get_function_from_str(bot: Red, command: str):
@@ -704,7 +703,7 @@ class Medicat(Cog):
                     await ctx.send(embed=embed)
 
                 CC.__qualname__ = f"{self.qualified_name}.CC_{name}"
-                setattr(CC, "__doc__", text["title"])  # Description, but translated with i18n.
+                CC.__doc__ = text["title"]  # Description, but translated with i18n.
                 command: commands.Command = commands.bot_has_permissions(embed_links=True)(
                     self.medicat.command(name=name, i18n=_)(CC),
                 )
@@ -793,7 +792,7 @@ class Medicat(Cog):
                 soup = BeautifulSoup(content, "lxml")
                 _json = json.loads(soup.find("script", class_="yoast-schema-graph").text)
                 x = _json["@graph"][0]["headline"]
-                regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
+                regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.IGNORECASE).findall(x)
                 regex = regex[0] if len(regex) > 0 else None
                 regex = regex[0] if isinstance(regex, tuple) and len(regex) > 0 else regex
                 result[tool] = regex
@@ -893,7 +892,7 @@ class Medicat(Cog):
         result["Search for the tool name"]["Tool name full"] = x
         if tool is not None:
             result["Find version"]["Regex used"] = BOOTABLES_TOOLS[tool]["regex"]
-            regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.I).findall(x)
+            regex = re.compile(BOOTABLES_TOOLS[tool]["regex"], re.IGNORECASE).findall(x)
             result["Find version"]["Result 1"] = regex
             regex = regex[0] if len(regex) > 0 else None
             result["Find version"]["Result 2"] = regex
@@ -984,10 +983,10 @@ class Medicat(Cog):
             message = copy(ctx.message)
             if ctx.guild is not None:
                 message.author = ctx.guild.get_member(
-                    list(ctx.bot.owner_ids)[0],
-                ) or ctx.bot.get_user(list(ctx.bot.owner_ids)[0])
+                    next(iter(ctx.bot.owner_ids)),
+                ) or ctx.bot.get_user(next(iter(ctx.bot.owner_ids)))
             else:
-                message.author = ctx.bot.get_user(list(ctx.bot.owner_ids)[0])
+                message.author = ctx.bot.get_user(next(iter(ctx.bot.owner_ids)))
             message.content = f"{ctx.prefix}cog update medicat"
             context = await ctx.bot.get_context(message)
             context.assume_yes = True

@@ -1,5 +1,5 @@
 import copy
-import datetime
+import datetime as dt
 import typing
 from dataclasses import _is_dataclass_instance, dataclass, field, fields
 from urllib.parse import quote_plus
@@ -41,7 +41,7 @@ class Point:
     managed_by_id: int | None = None
     managed_at_timestamp: int = field(
         default_factory=lambda: int(
-            datetime.datetime.now(tz=datetime.timezone.utc)
+            dt.datetime.now(tz=dt.timezone.utc)
             .replace(second=0, microsecond=0)
             .timestamp(),
         ),
@@ -61,8 +61,8 @@ class Point:
         return guild.get_member(self.managed_by_id)
 
     @property
-    def managed_at(self) -> datetime.datetime:
-        return datetime.datetime.fromtimestamp(self.managed_at_timestamp, tz=datetime.timezone.utc)
+    def managed_at(self) -> dt.datetime:
+        return dt.datetime.fromtimestamp(self.managed_at_timestamp, tz=dt.timezone.utc)
 
 
 @dataclass
@@ -86,7 +86,7 @@ class Team:
     image_url: str | None = None
     created_at_timestamp: int = field(
         default_factory=lambda: int(
-            datetime.datetime.now(tz=datetime.timezone.utc)
+            dt.datetime.now(tz=dt.timezone.utc)
             .replace(second=0, microsecond=0)
             .timestamp(),
         ),
@@ -191,11 +191,11 @@ class Team:
         self.member_ids = [member.id for member in members]
 
     @property
-    def created_at(self) -> datetime.datetime:
-        return datetime.datetime.fromtimestamp(self.created_at_timestamp, tz=datetime.timezone.utc)
+    def created_at(self) -> dt.datetime:
+        return dt.datetime.fromtimestamp(self.created_at_timestamp, tz=dt.timezone.utc)
 
     @created_at.setter
-    def created_at(self, created_at: datetime.datetime) -> None:
+    def created_at(self, created_at: dt.datetime) -> None:
         self.created_at_timestamp = int(created_at.timestamp())
 
     @property
@@ -271,7 +271,7 @@ class Team:
         embed: discord.Embed = discord.Embed(
             title=self.display_name,
             color=self.color or await self.bot.get_embed_color(self.guild.text_channels[0]),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         embed.set_thumbnail(url=self.display_logo_url)
         if not sample:

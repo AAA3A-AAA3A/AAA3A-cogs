@@ -4,13 +4,14 @@ import types
 import typing
 
 import discord
+from werkzeug.datastructures import ImmutableMultiDict
+
 from redbot.core import commands
 from redbot.core.i18n import (
     get_locale_from_guild,
     set_contextual_locale,
     set_contextual_regional_format,
 )
-from werkzeug.datastructures import ImmutableMultiDict
 
 from .form import INITIAL_INIT_FIELD, Field, get_form_class
 from .pagination import Pagination
@@ -24,9 +25,9 @@ def dashboard_page(
     name: str | None = None,
     description: str | None = None,
     methods: tuple[str] = ("GET",),
-    context_ids: list[str] = None,
-    required_kwargs: list[str] = None,
-    optional_kwargs: list[str] = None,
+    context_ids: list[str] | None = None,
+    required_kwargs: list[str] | None = None,
+    optional_kwargs: list[str] | None = None,
     is_owner: bool = False,
     hidden: bool | None = None,
 ):
@@ -223,10 +224,10 @@ class DashboardRPC_ThirdParties:
         csrf_token: tuple[str, str],
         wtf_csrf_secret_key: str,
         context_ids: dict[str, int] | None = None,
-        required_kwargs: dict[str, typing.Any] = None,
-        optional_kwargs: dict[str, typing.Any] = None,
-        extra_kwargs: dict[str, typing.Any] = None,
-        data: dict[typing.Literal["form", "json"], dict[str, typing.Any]] = None,
+        required_kwargs: dict[str, typing.Any] | None = None,
+        optional_kwargs: dict[str, typing.Any] | None = None,
+        extra_kwargs: dict[str, typing.Any] | None = None,
+        data: dict[typing.Literal["form", "json"], dict[str, typing.Any]] | None = None,
         lang_code: str | None = None,
     ) -> dict[str, typing.Any]:
         if context_ids is None:
@@ -389,7 +390,7 @@ class DashboardRPC_ThirdParties:
             # Concurrent requests still need the patch: only restore it after the last one.
             self._patched_fields_requests -= 1
             if not self._patched_fields_requests:
-                setattr(Field, "__init__", INITIAL_INIT_FIELD)
+                Field.__init__ = INITIAL_INIT_FIELD
         result.setdefault("notifications", [])
         result["notifications"].extend(extra_notifications)
         return result

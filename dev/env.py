@@ -1,7 +1,7 @@
 import asyncio
 import builtins
 import collections
-import datetime
+import datetime as dt
 import functools
 import importlib
 import inspect
@@ -21,8 +21,11 @@ from io import BytesIO, StringIO
 import aiohttp
 import discord
 import discord.ext
-import redbot
 import rich
+from rich.console import Console
+from rich.table import Table
+
+import redbot
 from AAA3A_utils.cog import Cog
 from AAA3A_utils.cogsutils import CogsUtils
 from AAA3A_utils.context import Context, is_dev
@@ -47,8 +50,6 @@ from redbot.core import utils as redutils
 from redbot.core.bot import Red
 from redbot.core.utils import chat_formatting as cf
 from redbot.core.utils.chat_formatting import box
-from rich.console import Console
-from rich.table import Table
 
 ctxconsole = ContextVar[rich.console.Console]("ctxconsole")
 
@@ -175,20 +176,15 @@ class DevEnv(dict[str, typing.Any]):
         use_extended_environment: bool = True,
     ) -> "DevEnv":
         env = cls(  # In Dev cog by Zeph.
-            **{
-                "me": ctx.me,
-                # Redirect builtin console functions to rich.
-                "print": rich.print,
-                "help": functools.partial(rich.inspect, help=True),
-                # Eval and exec automatically put this in, but types.FunctionType does not.
-                "__builtins__": builtins,
-                # Fill in various other environment keys that some code might expect.
-                "__builtin__": builtins,
-                "__doc__": ctx.command.help,
-                "__package__": None,
-                "__loader__": None,
-                "__spec__": None,
-            },
+            me=ctx.me,
+            print=rich.print,
+            help=functools.partial(rich.inspect, help=True),
+            __builtins__=builtins,
+            __builtin__=builtins,
+            __doc__=ctx.command.help,
+            __package__=None,
+            __loader__=None,
+            __spec__=None,
         )
         env["interaction"] = ctx.interaction
         if getattr(ctx.channel, "category", None) is not None:
@@ -345,7 +341,7 @@ class DevEnv(dict[str, typing.Any]):
         """Hides the bot's token from a string."""
         token = ctx.bot.http.token
         input_ = CogsUtils.replace_var_paths(input_)
-        return re.sub(re.escape(token), "[EXPUNGED]", input_, flags=re.I)
+        return re.sub(re.escape(token), "[EXPUNGED]", input_, flags=re.IGNORECASE)
 
     @classmethod
     def get_env(
@@ -625,15 +621,15 @@ class DevEnv(dict[str, typing.Any]):
                 # logging
                 "logging": lambda ctx: logging,
                 # Date & Time
-                "datetime": lambda ctx: datetime,
+                "datetime": lambda ctx: dt,
                 "time": lambda ctx: time,
-                "utc_now": lambda ctx: datetime.datetime.now(tz=datetime.timezone.utc),
-                "local_now": lambda ctx: datetime.datetime.now(),
+                "utc_now": lambda ctx: dt.datetime.now(tz=dt.timezone.utc),
+                "local_now": lambda ctx: dt.datetime.now().astimezone(),
                 "get_utc_now": lambda ctx: functools.partial(
-                    datetime.datetime.now,
-                    tz=datetime.timezone.utc,
+                    dt.datetime.now,
+                    tz=dt.timezone.utc,
                 ),
-                "get_local_now": lambda ctx: datetime.datetime.now,
+                "get_local_now": lambda ctx: dt.datetime.now,
                 # Os & Sys
                 "os": lambda ctx: os,
                 "sys": lambda ctx: sys,

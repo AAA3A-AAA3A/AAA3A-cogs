@@ -579,7 +579,6 @@ class GetDocs(DashboardIntegration, Cog):
         """
         Commands to configure GetDocs.
         """
-        pass
 
     @configuration.command(name="enablesources", aliases=["enablesource"])
     @app_commands.describe(sources="The source(s) to enable.")
@@ -663,7 +662,7 @@ class GetDocs(DashboardIntegration, Cog):
                         "documentations"
                     ],
                     (
-                        f"{str(self._caching_time[source])}s"
+                        f"{self._caching_time[source]!s}s"
                         if source in self._caching_time
                         else None
                     ),
@@ -867,8 +866,7 @@ class Source:
                 obj.uri.split("#")[0] for obj in self._rtfm_cache.objects if obj.domain != "std"
             }
             for manual in _manuals:
-                if manual.endswith("#$"):
-                    manual = manual[:-2]
+                manual = manual.removesuffix("#$")
                 manuals.append((manual, self.url + manual))
             if self.name == "python":
                 for i, manual in enumerate(
@@ -904,8 +902,7 @@ class Source:
         duration = int(end - start)
         self.cog._caching_time[self.name] = duration
         total_duration = end - self.cog._load_time
-        if total_duration > self.cog._caching_time["GLOBAL"]:
-            self.cog._caching_time["GLOBAL"] = total_duration
+        self.cog._caching_time["GLOBAL"] = max(self.cog._caching_time["GLOBAL"], total_duration)
         size = get_object_size(self._docs_cache)
         self.cog._docs_sizes[self.name] = size
         self.cog._docs_sizes["GLOBAL"] += size
@@ -967,7 +964,7 @@ class Source:
                         _current = None
                         for line in content.split("\n"):
                             if (
-                                line.startswith("### ") or line.startswith("## ")
+                                line.startswith(("### ", "## "))
                             ) and not line.startswith(
                                 ("### Guild Scheduled Event ", "### An ", "### Any "),
                             ):
@@ -990,9 +987,7 @@ class Source:
                             # Get name and signature.
                             _name = _documentation.split("\n")[0]
                             _documentation = "\n".join(_documentation.split("\n")[1:])
-                            if _documentation.startswith(
-                                f"## {_name}",
-                            ) or _documentation.startswith(f"### {_name}"):
+                            if _documentation.startswith((f"## {_name}", f"### {_name}")):
                                 _documentation = "\n".join(_documentation.split("\n")[1:])
                             if (line := _documentation.split("\n")[0]).startswith("<Route "):
                                 signature = f"{line.split('method=')[1:].split('>')[:-1]} {line.split('>')[1].split('<')[0]}"
@@ -1133,7 +1128,7 @@ class Source:
                                 uri=f"{self.url}{_subdir}/{_file}#{_name.lower().replace('_', '-').replace(' ', '-')}",
                                 dispname="-",
                             )
-                            setattr(_object, "fake", True)
+                            _object.fake = True
                             self._rtfm_cache.objects.append(_object)
                             self._raw_rtfm_cache_with_std.append(_object.name)
                             if _object.domain != "std":
@@ -1208,7 +1203,7 @@ class Source:
                     uri=manual[1],
                     dispname="-",
                 )
-                setattr(_object, "fake", True)
+                _object.fake = True
                 self._rtfm_cache.objects.append(_object)
                 self._raw_rtfm_cache_with_std.append(_object.name)
                 if _object.domain != "std":
@@ -1328,7 +1323,7 @@ class Source:
                     uri=manual[1],
                     dispname="-",
                 )
-                setattr(_object, "fake", True)
+                _object.fake = True
                 self._rtfm_cache.objects.append(_object)
                 self._raw_rtfm_cache_with_std.append(_object.name)
                 if _object.domain != "std":
@@ -1435,7 +1430,7 @@ class Source:
                     uri=page_url[len(self.url) :] + "#$",
                     dispname="-",
                 )
-                setattr(_object, "fake", True)
+                _object.fake = True
                 self._rtfm_cache.objects.append(_object)
                 self._raw_rtfm_cache_with_std.append(_object.name)
                 if _object.domain != "std":
@@ -1563,9 +1558,7 @@ class Source:
                 key = field.text
                 if key[-1] == ":":
                     key = key[:-1]
-                values: list[Tag] = [x for x in field.next_siblings if isinstance(x, Tag)][
-                    0
-                ].find_all("p")
+                values: list[Tag] = next(x for x in field.next_siblings if isinstance(x, Tag)).find_all("p")
                 elements: list[list[str]] = []
                 for value in values:
                     texts: list[str] = []
@@ -1671,7 +1664,7 @@ class Source:
                 field_odd = item.find_all(class_="field-odd")
                 if field_odd and field_odd[0].text == "Type":
                     elements = []
-                    for element in list(field_odd[1].children)[0].contents:
+                    for element in next(iter(field_odd[1].children)).contents:
                         text = self._get_text(element, parsed_url)
                         elements.append(text)
                     type = "".join(elements)
@@ -1930,10 +1923,8 @@ class Source:
         if self.name not in ("discordapi", "git", "warcraftapi") and documentation is None:
             item = discord.utils.get(self._rtfm_cache.objects, name=name)
             location = item.uri
-            if location.endswith("$"):
-                location = location[:-1]
-            if location.endswith("#"):
-                location = location[:-1]
+            location = location.removesuffix("$")
+            location = location.removesuffix("#")
             page_url = urljoin(self.url, location)
             documentation = await self._get_all_manual_documentations(
                 page_url=page_url,

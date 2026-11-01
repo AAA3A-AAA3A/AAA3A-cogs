@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 from random import choice
 
 import discord
@@ -197,8 +197,10 @@ class RolloutGameView(discord.ui.View):
         ctx: commands.Context,
         players: list[discord.Member],
         round: int = 1,
-        disabled_numbers: list[int] = [],
+        disabled_numbers: list[int] | None = None,
     ) -> discord.Message:
+        if disabled_numbers is None:
+            disabled_numbers = []
         self.ctx: commands.Context = ctx
         self.host: discord.Member = ctx.author
         self.players: list[discord.Member] = players
@@ -224,7 +226,7 @@ class RolloutGameView(discord.ui.View):
         embed.add_field(
             name="Time Left:",
             value=discord.utils.format_dt(
-                datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=30),
+                dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(seconds=30),
                 style="R",
             ),
         )

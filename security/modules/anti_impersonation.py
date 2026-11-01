@@ -4,9 +4,9 @@ from io import BytesIO
 import discord
 import imagehash
 from PIL import Image
+
 from redbot.core import commands
 from redbot.core.i18n import Translator
-
 from security.constants import DANGEROUS_PERMISSIONS, Emojis
 from security.utils import similarity_ratio_check
 from security.views import SettingsView, ToggleModuleButton

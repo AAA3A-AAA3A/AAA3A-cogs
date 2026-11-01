@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 import discord
 
@@ -18,19 +18,19 @@ class AuditLogActionConverter(commands.Converter):
 
 
 class DateTimeConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
+    async def convert(self, ctx: commands.Context, argument: str) -> dt.datetime:
         try:
-            date_time = datetime.datetime.fromisoformat(argument).replace(
-                tzinfo=datetime.timezone.utc,
+            date_time = dt.datetime.fromisoformat(argument).replace(
+                tzinfo=dt.timezone.utc,
             )
         except ValueError:
             raise commands.BadArgument(
                 _("Invalid datetime format. Expected format is ISO (`YYYY-MM-DDTHH:MM:SS`)."),
             )
         if (
-            not (datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=7))
+            not (dt.datetime.now(tz=dt.timezone.utc) - dt.timedelta(days=7))
             <= date_time
-            <= datetime.datetime.now(tz=datetime.timezone.utc)
+            <= dt.datetime.now(tz=dt.timezone.utc)
         ):
             raise commands.BadArgument(_("The date must be within the last 7 days."))
         return date_time

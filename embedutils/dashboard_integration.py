@@ -2,6 +2,7 @@ import os
 import typing
 
 import discord
+
 from AAA3A_utils import CogsUtils
 from redbot.core import commands
 from redbot.core.bot import Red
@@ -152,7 +153,7 @@ class DashboardIntegration:
                     except discord.HTTPException as error:
                         notifications.append(
                             {
-                                "message": f"{channel.name} ({channel.id}): {str(error)}",
+                                "message": f"{channel.name} ({channel.id}): {error!s}",
                                 "category": "danger",
                             },
                         )
@@ -162,7 +163,7 @@ class DashboardIntegration:
                     except (ValueError, TypeError, discord.HTTPException) as e:
                         notifications.append(
                             {
-                                "message": f"{channel.name} ({channel.id}): {str(e)}",
+                                "message": f"{channel.name} ({channel.id}): {e!s}",
                                 "category": "danger",
                             },
                         )

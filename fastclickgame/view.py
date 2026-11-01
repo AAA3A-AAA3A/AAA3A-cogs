@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import functools
 import time
 from collections import Counter
@@ -21,8 +21,10 @@ class FastClickGameView(discord.ui.View):
         cog: commands.Cog,
         rounds: int = 1,
         buttons: int = 5,
-        players: list[discord.Member] = [],
+        players: list[discord.Member] | None = None,
     ) -> None:
+        if players is None:
+            players = []
         super().__init__(timeout=60 * 10)
         self.ctx: commands.Context = None
         self.cog: commands.Cog = cog
@@ -58,7 +60,7 @@ class FastClickGameView(discord.ui.View):
             "⏳ The game will start {timestamp}, first one to click the 🟩 button wins.\n> **{rounds} round{s}** to play.",
         ).format(
             timestamp=discord.utils.format_dt(
-                datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=5),
+                dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(seconds=5),
                 "R",
             ),
             rounds=self.rounds,
@@ -102,7 +104,7 @@ class FastClickGameView(discord.ui.View):
                 winner=winner,
                 click_time=self.times[-1],
                 timestamp=discord.utils.format_dt(
-                    datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=3),
+                    dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(seconds=3),
                     "R",
                 ),
             )

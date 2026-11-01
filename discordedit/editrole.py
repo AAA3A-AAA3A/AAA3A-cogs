@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 
 import aiohttp
 import discord
@@ -121,7 +121,6 @@ class EditRole(Cog):
     @commands.hybrid_group()
     async def editrole(self, ctx: commands.Context) -> None:
         """Commands for edit a role."""
-        pass
 
     @editrole.command(name="create", aliases=["new", "+"])
     async def editrole_create(
@@ -208,7 +207,7 @@ class EditRole(Cog):
         self,
         ctx: commands.Context,
         role: discord.Role,
-        hoist: bool = None,
+        hoist: bool | None = None,
     ) -> None:
         """Edit role hoist."""
         await self.check_role(ctx, role)
@@ -284,7 +283,7 @@ class EditRole(Cog):
         self,
         ctx: commands.Context,
         role: discord.Role,
-        mentionable: bool = None,
+        mentionable: bool | None = None,
     ) -> None:
         """Edit role mentionable."""
         await self.check_role(ctx, role)
@@ -446,10 +445,10 @@ class EditRole(Cog):
                 title=f"Role {role.name} ({role.id})",
                 color=embed_color,
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
             embed.description = "\n".join(
                 [
-                    f"• `{parameter}`: {repr(getattr(role, parameters[parameter].get('attribute_name', parameter)))}"
+                    f"• `{parameter}`: {getattr(role, parameters[parameter].get('attribute_name', parameter))!r}"
                     for parameter in parameters
                 ],
             )

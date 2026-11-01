@@ -1,6 +1,6 @@
 import argparse
 import asyncio
-import datetime
+import datetime as dt
 import functools
 import multiprocessing
 import re
@@ -221,7 +221,7 @@ class DiscordSearch(Cog):
             embed: discord.Embed = discord.Embed()
             embed.title = _("Search in #{channel.name} ({channel.id})").format(channel=channel)
             embed.add_field(name="Result:", value=_("Sorry, I could not find any results."))
-            embed.timestamp = datetime.datetime.now()
+            embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
             embed.set_thumbnail(
                 url="https://us.123rf.com/450wm/sommersby/sommersby1610/sommersby161000062/66918773-recherche-ic%C3%B4ne-plate-recherche-ic%C3%B4ne-conception-recherche-ic%C3%B4ne-web-vecteur-loupe.jpg",
             )
@@ -243,7 +243,7 @@ class DiscordSearch(Cog):
 class DateConverter(commands.Converter):
     """Date converter which uses dateparser.parse()."""
 
-    async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
+    async def convert(self, ctx: commands.Context, argument: str) -> dt.datetime:
         parsed = dateparser.parse(argument)
         if parsed is None:
             raise commands.BadArgument(_("Unrecognized date/time."))

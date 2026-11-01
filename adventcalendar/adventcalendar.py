@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import functools
 import io
 import random
@@ -110,15 +110,15 @@ class AdventCalendar(Cog):
             bundled_data_path(self) / "MerryChristmasStar.ttf"
         )
         self.bold_font: dict[int, ImageFont.ImageFont] = {
-            size: ImageFont.truetype(str(self.bold_font_path), size=size) for size in {80, 100}
+            size: ImageFont.truetype(str(self.bold_font_path), size=size) for size in (80, 100)
         }
         self.merry_christmas_flake_font: dict[int, ImageFont.ImageFont] = {
             size: ImageFont.truetype(str(self.merry_christmas_flake_font_path), size=size)
-            for size in {200, 325}
+            for size in (200, 325)
         }
         self.merry_christmas_star_font: dict[int, ImageFont.ImageFont] = {
             size: ImageFont.truetype(str(self.merry_christmas_star_font_path), size=size)
-            for size in {200, 325}
+            for size in (200, 325)
         }
         self.christmas_tree_path: Path = bundled_data_path(self) / "christmas_tree.png"
         self.christmas_tree: Image.Image = Image.open(self.christmas_tree_path)
@@ -288,11 +288,13 @@ class AdventCalendar(Cog):
     async def generate_advent_calendar(
         self,
         today_day: int | None = None,
-        opened_days: list[int] = [],
+        opened_days: list[int] | None = None,
         to_file: bool = True,
     ) -> Image.Image | discord.File:
+        if opened_days is None:
+            opened_days = []
         if today_day is None:
-            today_day = datetime.date.today().day
+            today_day = dt.datetime.now(tz=dt.timezone.utc).date().day
         return await asyncio.to_thread(
             self._generate_advent_calendar,
             today_day=today_day,
@@ -434,11 +436,9 @@ class AdventCalendar(Cog):
             }
         if reward["type"] == "temp_role":
             role = member.guild.get_role(reward["role_id"])
-            duration = datetime.timedelta(seconds=reward["duration"])
+            duration = dt.timedelta(seconds=reward["duration"])
             try:
-                end_time: datetime.datetime = (
-                    datetime.datetime.now(tz=datetime.timezone.utc) + duration
-                )
+                end_time: dt.datetime = dt.datetime.now(tz=dt.timezone.utc) + duration
             except OverflowError:
                 return None, None
             end_time = end_time.replace(second=0 if end_time.second < 30 else 30)
@@ -499,7 +499,7 @@ class AdventCalendar(Cog):
                 ).format(member=member)
                 + (f" for **day {day}**!" if day is not None else " as **final reward**!"),
                 color=discord.Color.green(),
-                timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                timestamp=dt.datetime.now(tz=dt.timezone.utc),
             )
             embed.set_thumbnail(url=member.display_avatar)
             embed.add_field(name=_("Member:"), value=f"{member.mention} ({member.id})")
@@ -545,7 +545,7 @@ class AdventCalendar(Cog):
         return None
 
     async def cleanup_last_year_opened_days(self) -> None:
-        today = datetime.date.today()
+        today = dt.datetime.now(tz=dt.timezone.utc).date()
         if today.month == 12:
             return
         member_group = self.config._get_base_group(self.config.MEMBER)
@@ -557,7 +557,7 @@ class AdventCalendar(Cog):
     @commands.hybrid_command(aliases=["advent"])
     async def adventcalendar(self, ctx: commands.Context) -> None:
         """Open your Advent Calendar box for the day!"""
-        today = datetime.date.today()
+        today = dt.datetime.now(tz=dt.timezone.utc).date()
         if today.month != 12:
             first_december = today.replace(month=12, day=1)
             raise commands.UserFeedbackCheckFailure(
@@ -606,9 +606,9 @@ class AdventCalendar(Cog):
                     "You've already opened your box for the day, **come back {timestamp}!** 😉 Here's your current Advent Calendar!",
                 ).format(
                     timestamp=discord.utils.format_dt(
-                        datetime.datetime.combine(
-                            today + datetime.timedelta(days=1),
-                            datetime.time(0, 0, 0),
+                        dt.datetime.combine(
+                            today + dt.timedelta(days=1),
+                            dt.time(0, 0, 0),
                         ),
                         style="R",
                     ),
@@ -661,7 +661,6 @@ class AdventCalendar(Cog):
     @commands.hybrid_group(aliases=["setac"])
     async def setadventcalendar(self, ctx: commands.Context) -> None:
         """Set up the Advent Calendar for your server."""
-        pass
 
     @commands.bot_has_permissions(embed_links=True, attach_files=True)
     @setadventcalendar.command()
@@ -678,7 +677,7 @@ class AdventCalendar(Cog):
         member: discord.Member = commands.Author,
     ) -> None:
         """Get the Advent Calendar for a member."""
-        today = datetime.date.today()
+        today = dt.datetime.now(tz=dt.timezone.utc).date()
         if not today.month == 12:
             raise commands.UserFeedbackCheckFailure(
                 _("The Advent Calendar is only available in December."),
@@ -714,7 +713,7 @@ class AdventCalendar(Cog):
         member: discord.Member = commands.Author,
     ) -> None:
         """Get the stats of the Advent Calendar for a member."""
-        today = datetime.date.today()
+        today = dt.datetime.now(tz=dt.timezone.utc).date()
         if not today.month == 12:
             raise commands.UserFeedbackCheckFailure(
                 _("The Advent Calendar is only available in December."),
@@ -727,7 +726,7 @@ class AdventCalendar(Cog):
                 if len(opened_days) == today.day
                 else (discord.Color.orange() if opened_days else discord.Color.red())
             ),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         embed.set_author(
             name=member.display_name,
@@ -750,7 +749,7 @@ class AdventCalendar(Cog):
     @setadventcalendar.command()
     async def stats(self, ctx: commands.Context) -> None:
         """Get the stats of the Advent Calendar for the server."""
-        today = datetime.date.today()
+        today = dt.datetime.now(tz=dt.timezone.utc).date()
         if not today.month == 12:
             raise commands.UserFeedbackCheckFailure(
                 _("The Advent Calendar is only available in December."),
@@ -769,7 +768,7 @@ class AdventCalendar(Cog):
                 if members_all_boxes_opened
                 else (discord.Color.orange() if total_boxes_opened else discord.Color.red())
             ),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         embed.add_field(
             name=_("Total Boxes Opened:"),
@@ -844,7 +843,7 @@ class AdventCalendar(Cog):
     @setadventcalendar.command(aliases=["pingadmuy"])
     async def pingalldaysmembersuntilyesterday(self, ctx: commands.Context) -> None:
         """Ping all members who have opened all boxes until yesterday and have not opened today's box."""
-        today = datetime.date.today()
+        today = dt.datetime.now(tz=dt.timezone.utc).date()
         if not today.month == 12:
             raise commands.UserFeedbackCheckFailure(
                 _("The Advent Calendar is only available in December."),

@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import typing
 
 import dateutil
@@ -273,7 +273,7 @@ class ReminderView(discord.ui.View):
         reminder_id = 1
         while reminder_id in self.cog.cache.get(interaction.user.id, {}):
             reminder_id += 1
-        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+        utc_now = dt.datetime.now(tz=dt.timezone.utc)
         reminder = self.cog.Reminder(
             cog=self.cog,
             user_id=interaction.user.id,
@@ -631,7 +631,7 @@ class SnoozeView(discord.ui.View):
         reminder_id = 1
         while reminder_id in self.cog.cache.get(self.reminder.user_id, {}):
             reminder_id += 1
-        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+        utc_now = dt.datetime.now(tz=dt.timezone.utc)
         expires_at = utc_now + timedelta
         reminder = self.cog.Reminder(
             cog=self.cog,
@@ -722,7 +722,7 @@ class SnoozeView(discord.ui.View):
     async def tomorrow(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         timezone = (await self.cog.config.user_from_id(self.reminder.user_id).timezone()) or "UTC"
         tz = pytz.timezone(timezone)
-        now = datetime.datetime.now(tz=tz)
+        now = dt.datetime.now(tz=tz)
         tomorrow = (now + dateutil.relativedelta.relativedelta(days=1)).replace(
             hour=9,
             minute=0,
@@ -742,9 +742,9 @@ class SnoozeView(discord.ui.View):
     async def monday(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         timezone = (await self.cog.config.user_from_id(self.reminder.user_id).timezone()) or "UTC"
         tz = pytz.timezone(timezone)
-        now = datetime.datetime.now(tz=tz)
+        now = dt.datetime.now(tz=tz)
         next_monday = now + dateutil.relativedelta.relativedelta(days=(7 - now.weekday()))
-        next_monday_9am = datetime.datetime(
+        next_monday_9am = dt.datetime(
             next_monday.year,
             next_monday.month,
             next_monday.day,

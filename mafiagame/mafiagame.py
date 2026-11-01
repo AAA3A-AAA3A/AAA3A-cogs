@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import typing
 from copy import deepcopy
 
@@ -77,7 +77,7 @@ class AnomalyNameConverter(commands.Converter):
 
 
 DurationConverter: commands.converter.TimedeltaConverter = commands.converter.TimedeltaConverter(
-    minimum=datetime.timedelta(minutes=30),
+    minimum=dt.timedelta(minutes=30),
     maximum=None,
     allowed_units=["weeks", "days", "hours", "minutes"],
     default_unit="hours",
@@ -381,11 +381,11 @@ class MafiaGame(Cog):
                         temp_banned_until := _members_data[guild_id][member_id].get(
                             "temp_banned_until",
                         )
-                    ) is not None and datetime.datetime.now(
-                        tz=datetime.timezone.utc,
-                    ) > datetime.datetime.fromtimestamp(
+                    ) is not None and dt.datetime.now(
+                        tz=dt.timezone.utc,
+                    ) > dt.datetime.fromtimestamp(
                         temp_banned_until,
-                        tz=datetime.timezone.utc,
+                        tz=dt.timezone.utc,
                     ):
                         del members_data[guild_id][member_id]["temp_banned_until"]
 
@@ -449,7 +449,6 @@ class MafiaGame(Cog):
     @app_commands.allowed_installs(guilds=True, users=True)
     async def mafia(self, ctx: commands.Context) -> None:
         """Play the Mafia game, with many roles (Mafia/Villagers/Neutral), modes (including Random and Custom), anomalies..."""
-        pass
 
     # @commands.max_concurrency(1, per=commands.BucketType.channel)
     @commands.admin_or_permissions(manage_guild=True)
@@ -710,7 +709,7 @@ class MafiaGame(Cog):
             raise commands.UserFeedbackCheckFailure(_("A bot can't play a Mafia game."))
         await self.config.member(member).temp_banned_until.set(
             int(
-                (datetime.datetime.now(tz=datetime.timezone.utc) + duration)
+                (dt.datetime.now(tz=dt.timezone.utc) + duration)
                 .replace(second=0, microsecond=0)
                 .timestamp(),
             ),
@@ -781,11 +780,11 @@ class MafiaGame(Cog):
                     "You are **temporarily banned for {duration}** from joining Mafia games in this server!",
                 ).format(
                     duration=humanize_timedelta(
-                        timedelta=datetime.datetime.fromtimestamp(
+                        timedelta=dt.datetime.fromtimestamp(
                             temp_banned_until,
-                            tz=datetime.timezone.utc,
+                            tz=dt.timezone.utc,
                         )
-                        - datetime.datetime.now(tz=datetime.timezone.utc),
+                        - dt.datetime.now(tz=dt.timezone.utc),
                     ),
                 ),
             )
@@ -802,4 +801,3 @@ class MafiaGame(Cog):
     @commands.hybrid_group(alias="setmafiagame")
     async def setmafia(self, ctx: commands.Context) -> None:
         """Settings for MafiaGame."""
-        pass

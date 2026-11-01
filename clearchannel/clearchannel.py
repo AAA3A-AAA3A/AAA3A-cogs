@@ -187,4 +187,3 @@ class ClearChannel(DashboardIntegration, Cog):
     @commands.hybrid_group(name="setclearchannel", aliases=["clearchannelset"])
     async def configuration(self, ctx: commands.Context) -> None:
         """Configure ClearChannel for your server."""
-        pass

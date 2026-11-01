@@ -140,7 +140,7 @@ class AntiNuke(DashboardIntegration, Cog):
         actual_number_detected_member = config["number_detected_member"]
         actual_number_detected_bot = config["number_detected_bot"]
         logschannel = config["logschannel"]
-        perp, reason = await self.get_audit_log_reason(
+        perp, _reason = await self.get_audit_log_reason(
             old_channel.guild,
             old_channel,
             discord.AuditLogAction.channel_delete,

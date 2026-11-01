@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 import discord
 from fuzzywuzzy import StringMatcher
@@ -24,11 +24,11 @@ class WhitelistTypeConverter(commands.Converter):
 
 def get_correct_timeout_duration(
     member: discord.Member,
-    duration: datetime.timedelta,
-) -> datetime.timedelta:
+    duration: dt.timedelta,
+) -> dt.timedelta:
     if member.is_timed_out():
-        duration += member.timed_out_until - datetime.datetime.now(datetime.timezone.utc)
-    return min(duration, datetime.timedelta(days=28))
+        duration += member.timed_out_until - dt.datetime.now(dt.timezone.utc)
+    return min(duration, dt.timedelta(days=28))
 
 
 def get_non_animated_asset(
@@ -62,10 +62,10 @@ def get_health_grade(score: int) -> str:
     return "F"
 
 
-def get_next_monday_timestamp(from_time: datetime.datetime | None = None) -> int:
-    now = from_time or datetime.datetime.now(datetime.timezone.utc)
+def get_next_monday_timestamp(from_time: dt.datetime | None = None) -> int:
+    now = from_time or dt.datetime.now(dt.timezone.utc)
     days_ahead = (7 - now.weekday()) % 7 or 7
-    next_monday = (now + datetime.timedelta(days=days_ahead)).replace(
+    next_monday = (now + dt.timedelta(days=days_ahead)).replace(
         hour=0,
         minute=0,
         second=0,

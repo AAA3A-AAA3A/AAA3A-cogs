@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import json
 import time
 import typing
@@ -102,7 +102,7 @@ class WandboxRequest:
         ):
             embed.add_field(
                 name=f"{field.replace('_', ' ').title()}:",
-                value=box(f"{repr(getattr(self, field))}", lang="py"),
+                value=box(f"{getattr(self, field)!r}", lang="py"),
             )
         return embed
 
@@ -176,7 +176,7 @@ class WandboxResponse:
             title=_("RunCode Response (with Wandbox API)"),
             url=self.url,
         )
-        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+        embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
         run_time = format_timespan(self.run_time)
         embed.set_footer(text=f"Ran in {run_time}.")
         embed.set_author(
@@ -290,7 +290,7 @@ class TioRequest:
         for field in ("lang", "inputs", "compiler_flags", "command_line_options", "args"):
             embed.add_field(
                 name=f"{field.replace('_', ' ').title()}:",
-                value=box(f"{repr(getattr(self, field))}", lang="py"),
+                value=box(f"{getattr(self, field)!r}", lang="py"),
             )
         return embed
 
@@ -340,7 +340,7 @@ class TioResponse:
             title=_("RunCode Response (with Tio API)"),
             url=self.request.language.link,
         )
-        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+        embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
         run_time = format_timespan(self.run_time)
         embed.set_footer(text=f"Ran in {run_time}.")
         embed.set_author(name=f"{self.request.language.name.capitalize()} language")

@@ -1,11 +1,12 @@
 import asyncio
-import datetime
+import datetime as dt
 import re
 import typing
 import urllib
 from collections import defaultdict
 
 import discord
+
 from redbot.core import commands
 from redbot.core.data_manager import bundled_data_path
 from redbot.core.i18n import Translator
@@ -65,7 +66,7 @@ async def check_invite_links(
 ) -> int:
     count = 0
     for invite_url in re.findall(
-        re.compile(r"(discord\.(?:gg|io|me|li)|discord(?:app)?\.com\/invite)[\/\\](\S+)", re.I),
+        re.compile(r"(discord\.(?:gg|io|me|li)|discord(?:app)?\.com\/invite)[\/\\](\S+)", re.IGNORECASE),
         message.content,
     ):
         try:
@@ -89,6 +90,8 @@ BAD_WORDS_RE: re.Pattern | None = None  # Compiled once, when the lists are load
 
 def count_bad_words(content: str) -> int:
     return 0 if BAD_WORDS_RE is None else len(BAD_WORDS_RE.findall(content))
+
+
 AUTO_MOD_FILTERS: dict[
     str,
     dict[
@@ -457,8 +460,7 @@ AUTO_MOD_FILTERS: dict[
                 "value": "premade_bad_word_lists",
                 "default_added_heat": 100.0,
                 "check": lambda message, filter_config: (
-                    filter_config["added_heat"]
-                    * count_bad_words(message.content)
+                    filter_config["added_heat"] * count_bad_words(message.content)
                 ),
                 "reason": lambda: _("**Auto Mod** - Bad words detected."),
             },
@@ -545,7 +547,7 @@ class AutoModModule(Module):
             discord.Guild,
             dict[
                 discord.Member,
-                list[tuple[datetime.datetime, str, float, discord.Message]],
+                list[tuple[dt.datetime, str, float, discord.Message]],
             ],
         ] = defaultdict(lambda: defaultdict(list))
         self.strikes_cache: dict[discord.Guild, dict[discord.Member, int]] = defaultdict(
@@ -564,7 +566,7 @@ class AutoModModule(Module):
         data_path = bundled_data_path(self.cog)
         for file in data_path.glob("bad_words/*.txt"):
             with open(file, encoding="utf-8") as f:
-                BAD_WORDS.update(word.strip().lower() for word in f.readlines() if word.strip())
+                BAD_WORDS.update(word.strip().lower() for word in f if word.strip())
         global BAD_WORDS_RE
         if BAD_WORDS:  # An empty alternation would match everywhere.
             BAD_WORDS_RE = re.compile(  # Longest words first, so they are preferred.
@@ -681,7 +683,7 @@ class AutoModModule(Module):
                     "inline": True,
                 },
             )
-            first_state = list(category_config.values())[0]["enabled"]
+            first_state = next(iter(category_config.values()))["enabled"]
             if all(filter["enabled"] == first_state for filter in category_config.values()):
                 fields[-1]["value"] += _("\n**Enabled:** {state}").format(
                     state="✅" if first_state else "❌",
@@ -748,7 +750,7 @@ class AutoModModule(Module):
             degradation = await self.config_value(guild).heats.degradation()
             to_remove = (
                 degradation
-                * (datetime.datetime.now(tz=datetime.timezone.utc) - heats[0][0]).total_seconds()
+                * (dt.datetime.now(tz=dt.timezone.utc) - heats[0][0]).total_seconds()
             )
             while to_remove > 0 and heats:
                 if heats[0][2] <= to_remove:
@@ -830,12 +832,9 @@ class AutoModModule(Module):
                     {heat[3] for heat in heats},
                     key=lambda m: m.created_at,
                 )
-                filter_value = sorted(
-                    {
+                filter_value = max({
                         heat[1]: sum(h[2] for h in heats if h[1] == heat[1]) for heat in heats
-                    }.items(),
-                    key=lambda item: item[1],
-                )[-1]
+                    }.items(), key=lambda item: item[1])
                 if config["heats"]["reset_after_punishment"]:
                     heats.clear()
                 category_value, filter = next(
@@ -925,7 +924,7 @@ class AutoModModule(Module):
                             guild=message.guild,
                             author=message.guild.me,
                             user=message.author,
-                            until=datetime.datetime.now(tz=datetime.timezone.utc) + duration,
+                            until=dt.datetime.now(tz=dt.timezone.utc) + duration,
                             reason=audit_log_reason,
                         )
                     elif action_value == "kick" and message.guild.me.guild_permissions.kick_members:
@@ -1186,7 +1185,7 @@ class ConfigureFilterCategoryView(discord.ui.View):
                 for filter in AUTO_MOD_FILTERS[self.category]["filters"]
             ),
         )
-        first_state = list(config["filters"][self.category].values())[0]["enabled"]
+        first_state = next(iter(config["filters"][self.category].values()))["enabled"]
         if all(f["enabled"] == first_state for f in config["filters"][self.category].values()):
             self.toggle_filter_category.label = (
                 _("Enable All") if not first_state else _("Disable All")
@@ -1212,7 +1211,7 @@ class ConfigureFilterCategoryView(discord.ui.View):
         button: discord.ui.Button,
     ) -> None:
         config = await self.module.config_value(self.guild)()
-        new_state = not list(config["filters"][self.category].values())[0]["enabled"]
+        new_state = not next(iter(config["filters"][self.category].values()))["enabled"]
         for filter in config["filters"][self.category].values():
             filter["enabled"] = new_state
         await self.module.config_value(self.guild).set(config)

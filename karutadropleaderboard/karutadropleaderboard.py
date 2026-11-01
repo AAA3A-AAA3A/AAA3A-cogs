@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import typing
 
 import discord
@@ -101,7 +101,7 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
         await self.config.member(member).set(member_data)
 
     async def cleanup_last_drops(self) -> None:
-        now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        now_timestamp = int(dt.datetime.now(tz=dt.timezone.utc).timestamp())
         for guild_id, data in (await self.config.all_members()).items():
             for member_id, member_data in data.items():
                 if "last_drops" not in member_data:
@@ -174,9 +174,9 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
             icon_url=member.display_avatar,
         )
         member_data = await self.config.member(member).all()
-        now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        now_timestamp = int(dt.datetime.now(tz=dt.timezone.utc).timestamp())
         embed.description = "\n".join(
-            f"- {'✅' if int(drop) > (now_timestamp - 43200) else '⏲️'} {discord.utils.format_dt(datetime.datetime.fromtimestamp(int(drop)), style='R')} {message_jump_url}"
+            f"- {'✅' if int(drop) > (now_timestamp - 43200) else '⏲️'} {discord.utils.format_dt(dt.datetime.fromtimestamp(int(drop), tz=dt.timezone.utc), style='R')} {message_jump_url}"
             for drop, message_jump_url in list(member_data["last_drops"].items())[-10:]
         )
         within_last_12_hours = sum(
@@ -203,7 +203,6 @@ class KarutaDropLeaderboard(DashboardIntegration, Cog):
     @commands.hybrid_group()
     async def setkarutadropleaderboard(self, ctx: commands.Context) -> None:
         """Group of commands to set up Karuta Drop Leaderboard."""
-        pass
 
     @setkarutadropleaderboard.command()
     async def resetleaderboard(self, ctx: commands.Context) -> None:

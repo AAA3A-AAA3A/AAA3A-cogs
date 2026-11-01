@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import io
 import typing
 
@@ -136,8 +136,8 @@ class LastMentions(Cog):
                 retention_days = await self.config.guild_from_id(int(guild_id)).retention_days()
                 retention_timestamp = int(
                     (
-                        datetime.datetime.now(datetime.timezone.utc)
-                        - datetime.timedelta(days=retention_days)
+                        dt.datetime.now(dt.timezone.utc)
+                        - dt.timedelta(days=retention_days)
                     ).timestamp(),
                 )
                 for member_data in members_data[guild_id].values():
@@ -296,9 +296,9 @@ class LastMentions(Cog):
             for last_mention in reversed(last_mentions)
             if (channel := ctx.guild.get_channel(last_mention["channel_id"])) is not None
             and (
-                created_at := datetime.datetime.fromtimestamp(
+                created_at := dt.datetime.fromtimestamp(
                     last_mention["timestamp"],
-                    tz=datetime.timezone.utc,
+                    tz=dt.timezone.utc,
                 )
             )
         )
@@ -493,12 +493,12 @@ class LastMentions(Cog):
         for i in x:
             start = int(
                 (
-                    datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=-i + 1)
+                    dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=-i + 1)
                 ).timestamp(),
             )
             end = int(
                 (
-                    datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=-i)
+                    dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=-i)
                 ).timestamp(),
             )
             y.append(
@@ -540,7 +540,6 @@ class LastMentions(Cog):
     @commands.hybrid_group()
     async def setlastmentions(self, ctx: commands.Context) -> None:
         """Configure the Last Mentions settings."""
-        pass
 
     async def red_delete_data_for_user(
         self,

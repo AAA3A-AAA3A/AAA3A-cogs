@@ -6,12 +6,12 @@ from pathlib import Path
 
 import aiohttp
 import discord
+
 from redbot.cogs.downloader.downloader import Repo
 from redbot.core import commands
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list
-
 from security.constants import Emojis
 from security.utils import get_correct_timeout_duration
 from security.views import DurationConverter, SettingsView, ToggleModuleButton
@@ -68,9 +68,8 @@ class MessageAnalysisModule(Module):
         self.cog.bot.add_listener(self.on_message)
 
     async def _load_detoxify(self, download: bool = False) -> None:
-        if self.detoxify is not None:
-            if not download:
-                return
+        if self.detoxify is not None and not download:
+            return
         data_path = cog_data_path(self.cog)
         ckpt_path = data_path / "multilingual.ckpt"
         hf_path = data_path / "xlm-roberta-base"
@@ -182,7 +181,7 @@ class MessageAnalysisModule(Module):
                     hf_path,
                 )
                 self.detoxify_error = False
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             self.detoxify_error = True
             self.cog.logger.error(f"Failed to load MultilingualDetoxify: {e}", exc_info=e)
 

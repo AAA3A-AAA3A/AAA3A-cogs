@@ -1,14 +1,14 @@
-import datetime
+import datetime as dt
 import functools
 import typing
 from collections import defaultdict
 
 import discord
+
 from AAA3A_utils import CogsUtils, Loop
 from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, humanize_list, text_to_file
-
 from security.constants import Emojis
 from security.utils import clean_backticks, get_non_animated_asset
 from security.views import SettingsView, ToggleModuleButton
@@ -579,14 +579,14 @@ class LoggingModule(Module):
                     "inline": True,
                 },
             )
-            first_state = list(category_config.values())[0]["enabled"]
+            first_state = next(iter(category_config.values()))["enabled"]
             if all(event["enabled"] == first_state for event in category_config.values()):
                 fields[-1]["value"] += _("**Enabled:** {state}").format(
                     state="✅" if first_state else "❌",
                 )
             else:
                 fields[-1]["value"] += _("**Enabled:** 🔀 (Different States)")
-            first_channel_id = list(category_config.values())[0]["channel"]
+            first_channel_id = next(iter(category_config.values()))["channel"]
             if all(event["channel"] == first_channel_id for event in category_config.values()):
                 if (
                     first_channel_id is not None
@@ -599,7 +599,7 @@ class LoggingModule(Module):
                     fields[-1]["value"] += _("\n**Channel:** None")
             else:
                 fields[-1]["value"] += "\n**Channel:** 🔀 (Different Channels)"
-            first_ignore_bots = list(category_config.values())[0]["ignore_bots"]
+            first_ignore_bots = next(iter(category_config.values()))["ignore_bots"]
             if all(event["ignore_bots"] == first_ignore_bots for event in category_config.values()):
                 fields[-1]["value"] += _("\n**Ignore Bots:** {state}").format(
                     state="✅" if first_ignore_bots else "❌",
@@ -765,7 +765,7 @@ class LoggingModule(Module):
             style=discord.ButtonStyle.secondary,
             row=2,
         )
-        first_state = list(list(config["events"].values())[0].values())[0]["enabled"]
+        first_state = next(iter(next(iter(config["events"].values())).values()))["enabled"]
         if first_state:
             toggle_all_button.label = _("Disable All Events")
             toggle_all_button.style = discord.ButtonStyle.danger
@@ -774,7 +774,7 @@ class LoggingModule(Module):
             toggle_all_button.style = discord.ButtonStyle.success
 
         async def toggle_all_callback(interaction: discord.Interaction) -> None:
-            new_state = not list(list(config["events"].values())[0].values())[0]["enabled"]
+            new_state = not next(iter(next(iter(config["events"].values())).values()))["enabled"]
             for events in config["events"].values():
                 for event in events.values():
                     event["enabled"] = new_state
@@ -795,7 +795,7 @@ class LoggingModule(Module):
             style=discord.ButtonStyle.secondary,
             row=2,
         )
-        first_ignore_bots = list(list(config["events"].values())[0].values())[0]["ignore_bots"]
+        first_ignore_bots = next(iter(next(iter(config["events"].values())).values()))["ignore_bots"]
         if first_ignore_bots:
             ignore_bots_button.label = _("Ignore Bots")
             ignore_bots_button.style = discord.ButtonStyle.success
@@ -804,7 +804,7 @@ class LoggingModule(Module):
             ignore_bots_button.style = discord.ButtonStyle.danger
 
         async def ignore_bots_callback(interaction: discord.Interaction) -> None:
-            new_state = not list(list(config["events"].values())[0].values())[0]["ignore_bots"]
+            new_state = not next(iter(next(iter(config["events"].values())).values()))["ignore_bots"]
             for events in config["events"].values():
                 for event in events.values():
                     event["ignore_bots"] = new_state
@@ -972,7 +972,7 @@ class LoggingModule(Module):
             timestamp=(
                 entry.created_at
                 if entry is not None
-                else datetime.datetime.now(datetime.timezone.utc)
+                else dt.datetime.now(dt.timezone.utc)
             ),
         )
 
@@ -1699,7 +1699,7 @@ class ConfigureEventCategoryView(discord.ui.View):
                 for event in LOGGING_EVENTS[self.category]["events"]
             ),
         )
-        first_state = list(category_config.values())[0]["enabled"]
+        first_state = next(iter(category_config.values()))["enabled"]
         self.toggle_event_category.label = _("Enable All") if not first_state else _("Disable All")
         self.toggle_event_category.style = (
             discord.ButtonStyle.success if not first_state else discord.ButtonStyle.danger
@@ -1714,7 +1714,7 @@ class ConfigureEventCategoryView(discord.ui.View):
             self.select_logging_channel.default_values = [channel]
         else:
             self.select_logging_channel.default_values = []
-        first_ignore_bots = list(category_config.values())[0]["ignore_bots"]
+        first_ignore_bots = next(iter(category_config.values()))["ignore_bots"]
         self.ignore_bots.style = (
             discord.ButtonStyle.success if first_ignore_bots else discord.ButtonStyle.danger
         )
@@ -1733,7 +1733,7 @@ class ConfigureEventCategoryView(discord.ui.View):
         button: discord.ui.Button,
     ) -> None:
         category_config = await self.module.config_value(self.guild).events.get_raw(self.category)
-        new_state = not list(category_config.values())[0]["enabled"]
+        new_state = not next(iter(category_config.values()))["enabled"]
         for event in category_config.values():
             event["enabled"] = new_state
         await self.module.config_value(self.guild).events.set_raw(
@@ -1760,7 +1760,7 @@ class ConfigureEventCategoryView(discord.ui.View):
         button: discord.ui.Button,
     ) -> None:
         category_config = await self.module.config_value(self.guild).events.get_raw(self.category)
-        new_state = not list(category_config.values())[0]["ignore_bots"]
+        new_state = not next(iter(category_config.values()))["ignore_bots"]
         for event in category_config.values():
             event["ignore_bots"] = new_state
         await self.module.config_value(self.guild).events.set_raw(

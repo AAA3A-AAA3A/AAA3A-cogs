@@ -34,11 +34,13 @@ class PasswordsGenerator(Cog):
     def generate_password(
         self,
         easy_to_remember: bool = False,
-        lengths: dict[str, int] = {},
+        lengths: dict[str, int] | None = None,
         include_characters: list[
             typing.Literal["upper", "lower", "digits", "special"]
         ] = DEFAULT_INCLUDE_CHARACTERS,
     ) -> tuple[str, float]:
+        if lengths is None:
+            lengths = {}
         _lengths = DEFAULT_LENGTHS.copy()
         _lengths.update(lengths)
         lengths = _lengths

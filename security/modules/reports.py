@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import typing
 from collections import defaultdict
 
@@ -45,7 +45,7 @@ class ReportsModule(Module):
 
     def __init__(self, cog: commands.Cog) -> None:
         super().__init__(cog)
-        self.last_report_at: dict[int, dict[int, datetime.datetime]] = defaultdict(dict)
+        self.last_report_at: dict[int, dict[int, dt.datetime]] = defaultdict(dict)
 
     async def load(self) -> None:
         self.cog.bot.tree.add_command(report_member)
@@ -296,7 +296,7 @@ class ReportsModule(Module):
         ) is not None:
             cooldown = await DurationConverter.convert(None, config["cooldown"])
             retry_at = last_report_at + cooldown
-            if retry_at > datetime.datetime.now(tz=datetime.timezone.utc):
+            if retry_at > dt.datetime.now(tz=dt.timezone.utc):
                 await interaction.response.send_message(
                     _("⏳ You're reporting too often. You can report again {relative}.").format(
                         relative=discord.utils.format_dt(retry_at, style="R"),
@@ -377,7 +377,7 @@ class ReasonModal(discord.ui.Modal):
                 emoji=self.module.emoji,
             ),
             color=Colors.REPORTS.value,
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         embed.description = _("👤 **Member:** {member.mention} (`{member}`) {member_emoji}").format(
             member=member,
@@ -443,8 +443,8 @@ class ReasonModal(discord.ui.Modal):
         )
         self.module.cog.views[view._message] = view
         await self.module.cog.record_weekly_stat(self.guild, "report")
-        self.module.last_report_at[self.guild.id][interaction.user.id] = datetime.datetime.now(
-            tz=datetime.timezone.utc,
+        self.module.last_report_at[self.guild.id][interaction.user.id] = dt.datetime.now(
+            tz=dt.timezone.utc,
         )
         await interaction.followup.send(
             _("Your report has been submitted successfully. Thank you!"),

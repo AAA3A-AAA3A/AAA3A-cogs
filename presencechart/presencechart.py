@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import io
 import typing
 from copy import deepcopy
@@ -274,8 +274,8 @@ class PresenceChart(Cog):
                         changed_at = data[0]
                         if changed_at < int(
                             (
-                                datetime.datetime.now(tz=datetime.timezone.utc)
-                                - datetime.timedelta(days=100)
+                                dt.datetime.now(tz=dt.timezone.utc)
+                                - dt.timedelta(days=100)
                             ).timestamp(),
                         ):
                             del users_data[user_id]["presence_data"][i - deleted_count]
@@ -303,7 +303,7 @@ class PresenceChart(Cog):
             status,
         ):  # Discord dispatches this event for every guild the user is in.
             return
-        time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        time = int(dt.datetime.now(tz=dt.timezone.utc).timestamp())
         self.presence_data_cache[after._user.id] = (time, (old_status, status))
 
     @commands.guild_only()
@@ -346,9 +346,9 @@ class PresenceChart(Cog):
                 member.raw_status if member.raw_status in self.presence_map else "online"
             ] = 100
         else:
-            now_time = datetime.datetime.now(tz=datetime.timezone.utc)
+            now_time = dt.datetime.now(tz=dt.timezone.utc)
             if days_number is not None:
-                time_delta = now_time - datetime.timedelta(days=days_number)
+                time_delta = now_time - dt.timedelta(days=days_number)
                 time_delta_timestamp = int(time_delta.timestamp())
             else:
                 time_delta_timestamp = 0

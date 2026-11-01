@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import io
 import typing
 from collections import Counter
@@ -203,16 +203,16 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
         else:
             voters_role = None
 
-        utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
-        start_month = datetime.datetime(
+        utc_now = dt.datetime.now(tz=dt.timezone.utc)
+        start_month = dt.datetime(
             utc_now.year,
             utc_now.month,
             1,
-            tzinfo=datetime.timezone.utc,
+            tzinfo=dt.timezone.utc,
         )
         member_data = await self.config.member(member).all()
         number_member_votes = len(member_data["votes"]) + 1
-        start_month = datetime.datetime.now(tz=datetime.timezone.utc).replace(
+        start_month = dt.datetime.now(tz=dt.timezone.utc).replace(
             day=1,
             hour=0,
             minute=0,
@@ -224,7 +224,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                 [
                     vote
                     for vote in member_data["votes"]
-                    if datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc)
+                    if dt.datetime.fromtimestamp(vote, tz=dt.timezone.utc)
                     >= start_month
                 ],
             )
@@ -239,7 +239,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                 embed: discord.Embed = discord.Embed(
                     title=_("New vote for {guild.name}!").format(guild=guild),
                     color=discord.Color.green(),
-                    timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                    timestamp=dt.datetime.now(tz=dt.timezone.utc),
                 )
                 embed.set_author(
                     name=member.display_name,
@@ -322,12 +322,12 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             for member_id, member_data in (await self.config.all_members(guild)).items():
                 if member_data["last_reminder_sent"] or not (votes := member_data["votes"]):
                     continue
-                if datetime.datetime.now(
-                    tz=datetime.timezone.utc,
-                ) - datetime.datetime.fromtimestamp(
+                if dt.datetime.now(
+                    tz=dt.timezone.utc,
+                ) - dt.datetime.fromtimestamp(
                     votes[-1],
-                    tz=datetime.timezone.utc,
-                ) < datetime.timedelta(hours=12):
+                    tz=dt.timezone.utc,
+                ) < dt.timedelta(hours=12):
                     continue
                 await self.config.member_from_ids(guild_id, member_id).last_reminder_sent.set(True)
                 if (member := guild.get_member(member_id)) is None:
@@ -370,7 +370,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                             )
                         else:
                             number_member_votes = len(member_data["votes"])
-                            start_month = datetime.datetime.now(tz=datetime.timezone.utc).replace(
+                            start_month = dt.datetime.now(tz=dt.timezone.utc).replace(
                                 day=1,
                                 hour=0,
                                 minute=0,
@@ -381,7 +381,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                                 [
                                     vote
                                     for vote in member_data["votes"]
-                                    if datetime.datetime.now(tz=datetime.timezone.utc)
+                                    if dt.datetime.now(tz=dt.timezone.utc)
                                     >= start_month
                                 ],
                             )
@@ -426,7 +426,6 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
     @commands.hybrid_group(aliases=["dvt"])
     async def disurlvotestracker(self, ctx: commands.Context) -> None:
         """Commands to interact with DisurlVotesTracker."""
-        pass
 
     @disurlvotestracker.command()
     async def leaderboard(self, ctx: commands.Context) -> None:
@@ -489,7 +488,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
             raise commands.UserFeedbackCheckFailure(
                 _("DisurlVotesTracker is not enabled in this server."),
             )
-        start_month = datetime.datetime.now(tz=datetime.timezone.utc).replace(
+        start_month = dt.datetime.now(tz=dt.timezone.utc).replace(
             day=1,
             hour=0,
             minute=0,
@@ -503,7 +502,7 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
                     [
                         vote
                         for vote in member_data["votes"]
-                        if datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc)
+                        if dt.datetime.fromtimestamp(vote, tz=dt.timezone.utc)
                         >= start_month
                     ],
                 )
@@ -555,7 +554,6 @@ class DisurlVotesTracker(DashboardIntegration, Cog):
     @commands.hybrid_group(aliases=["setdvt"])
     async def setdisurlvotestracker(self, ctx: commands.Context) -> None:
         """Commands to configure DisurlVotesTracker."""
-        pass
 
     @commands.bot_has_permissions(embed_links=True)
     @setdisurlvotestracker.command()

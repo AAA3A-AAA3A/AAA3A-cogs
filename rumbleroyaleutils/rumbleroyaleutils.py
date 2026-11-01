@@ -268,4 +268,3 @@ class RumbleRoyaleUtils(Cog):
     @commands.hybrid_group()
     async def setrumbleroyaleutils(self, ctx: commands.Context) -> None:
         """Settings for the RumbleRoyaleUtils cog."""
-        pass

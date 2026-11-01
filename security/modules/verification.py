@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import math
 import random
 import string
@@ -8,10 +8,10 @@ from io import BytesIO
 
 import discord
 from PIL import Image, ImageDraw, ImageFont
+
 from redbot.core import commands
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
-
 from security.constants import DANGEROUS_PERMISSIONS, Colors, Emojis
 from security.modules.module import Module
 from security.views import DurationConverter, SettingsView, ToggleModuleButton
@@ -488,7 +488,7 @@ class VerificationModule(Module):
                     timeout=config["kick_timeout"],
                 ),
                 color=Colors.VERIFICATION.value,
-                timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                timestamp=dt.datetime.now(tz=dt.timezone.utc),
             )
             embed.set_author(
                 name=member.display_name,

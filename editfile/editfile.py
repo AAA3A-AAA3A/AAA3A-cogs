@@ -32,7 +32,6 @@ class EditFile(Cog):
     @commands.hybrid_group(aliases=["fileedit"])
     async def editfile(self, ctx: commands.Context) -> None:
         """Commands group to get a file and replace it from its path."""
-        pass
 
     @editfile.command()
     async def get(
@@ -96,7 +95,7 @@ class EditFile(Cog):
             line = (
                 f"#L1-L{len(lines)} (All)"
                 if line_span is None
-                else f"#L{str(line_span[0])}-L{str(line_span[1])}" + f" / {len_lines}"
+                else f"#L{line_span[0]!s}-L{line_span[1]!s}" + f" / {len_lines}"
             )
             header = box(f"File {path}, {'line' if len_lines == 1 else 'lines'} {line}.")
             pages = [
@@ -119,7 +118,7 @@ class EditFile(Cog):
             )
 
     @editfile.command()
-    async def replace(self, ctx: commands.Context, path: str, *, content: str = None) -> None:
+    async def replace(self, ctx: commands.Context, path: str, *, content: str | None = None) -> None:
         """Replace a file on the bot's host machine from its path.
         `#L10` or `#L10-L30` is supported.
         """

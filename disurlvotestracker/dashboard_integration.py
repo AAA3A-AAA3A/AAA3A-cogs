@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import typing
 from collections import Counter
 from pathlib import Path
@@ -113,9 +113,9 @@ class DashboardIntegration:
                     [
                         vote
                         for vote in member_data["votes"]
-                        if datetime.datetime.now(tz=datetime.timezone.utc)
-                        - datetime.datetime.fromtimestamp(vote, tz=datetime.timezone.utc)
-                        < datetime.timedelta(days=30)
+                        if dt.datetime.now(tz=dt.timezone.utc)
+                        - dt.datetime.fromtimestamp(vote, tz=dt.timezone.utc)
+                        < dt.timedelta(days=30)
                     ],
                 )
                 for member_id, member_data in members_data.items()

@@ -1,5 +1,5 @@
 import ast
-import datetime
+import datetime as dt
 import inspect
 import io
 import json
@@ -108,7 +108,6 @@ class CtxVar(Cog):
     @commands.hybrid_group()
     async def ctxvar(self, ctx: commands.Context) -> None:
         """Commands for CtxVar."""
-        pass
 
     @commands.is_owner()
     @commands.bot_has_permissions(embed_links=True)
@@ -394,11 +393,11 @@ class CtxVar(Cog):
                     f"{value.__class__.__name__} - {len(value)}"
                 )
                 continue
-            if isinstance(value, datetime.datetime):
+            if isinstance(value, dt.datetime):
                 _time = int(value.timestamp())
                 now = int(time.time())
                 time_elapsed = int(now - _time)
-                m, s = divmod(time_elapsed, 60)
+                m, _s = divmod(time_elapsed, 60)
                 h, m = divmod(m, 60)
                 d, h = divmod(h, 24)
                 output = d, h, m

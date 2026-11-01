@@ -221,7 +221,6 @@ class RolesButtons(Cog):
     @commands.hybrid_group()  # aliases=["rb"]
     async def rolesbuttons(self, ctx: commands.Context) -> None:
         """Group of commands to use RolesButtons."""
-        pass
 
     @rolesbuttons.command(aliases=["+"])
     async def add(

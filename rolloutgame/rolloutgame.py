@@ -193,7 +193,6 @@ class RolloutGame(Cog):
     @commands.hybrid_group()
     async def setrolloutgame(self, ctx: commands.Context) -> None:
         """Group of commands to set RollOutGame."""
-        pass
 
     @setrolloutgame.command()
     async def resetleaderboard(self, ctx: commands.Context) -> None:

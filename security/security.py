@@ -1,6 +1,6 @@
 import asyncio
 import base64
-import datetime
+import datetime as dt
 import functools
 import secrets
 import typing
@@ -11,8 +11,9 @@ import discord
 import numpy as np
 import onetimepass
 import qrcode
-from AAA3A_utils import Cog, CogsUtils, Loop, Menu
 from PIL import Image, ImageDraw, ImageFont
+
+from AAA3A_utils import Cog, CogsUtils, Loop, Menu
 from redbot.core import Config, commands, modlog
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
@@ -269,9 +270,9 @@ class Security(Cog):
             return Levels.ADMIN
         if member.guild_permissions.manage_messages or await self.bot.is_mod(member):
             return Levels.MODERATOR
-        if datetime.datetime.now(
-            tz=datetime.timezone.utc,
-        ) - member.joined_at >= datetime.timedelta(days=7):
+        if dt.datetime.now(
+            tz=dt.timezone.utc,
+        ) - member.joined_at >= dt.timedelta(days=7):
             return Levels.MEMBER
         return Levels.NEW
 
@@ -505,7 +506,7 @@ class Security(Cog):
                         prefix=(await self.bot.get_valid_prefixes(guild))[-1],
                     ),
                     color=discord.Color.red(),
-                    timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+                    timestamp=dt.datetime.now(tz=dt.timezone.utc),
                 )
                 embed.set_author(
                     name=guild.owner.display_name,
@@ -555,12 +556,14 @@ class Security(Cog):
         member: discord.Member,
         issued_by: discord.Member | None = None,
         reason: str | None = None,
-        logs: list[str] = None,
-        trigger_messages: list[discord.Message] = [],
+        logs: list[str] | None = None,
+        trigger_messages: list[discord.Message] | None = None,
         image_file: discord.File | None = None,
         current_ctx: commands.Context | None = None,
         context_message: discord.Message | None = None,
     ) -> None:
+        if trigger_messages is None:
+            trigger_messages = []
         member_config = await self.config.member(member).all()
         if member_config["quarantined"]:
             raise RuntimeError(_("This member is already quarantined."))
@@ -650,12 +653,14 @@ class Security(Cog):
         member: discord.Member,
         issued_by: discord.Member | None = None,
         reason: str | None = None,
-        logs: list[str] = None,
-        trigger_messages: list[discord.Message] = [],
+        logs: list[str] | None = None,
+        trigger_messages: list[discord.Message] | None = None,
         image_file: discord.File | None = None,
         context_message: discord.Message | None = None,
         current_ctx: commands.Context | None = None,
     ) -> None:
+        if trigger_messages is None:
+            trigger_messages = []
         member_config = await self.config.member(member).all()
         if not member_config["quarantined"]:
             raise RuntimeError(_("This member is not quarantined."))
@@ -748,7 +753,7 @@ class Security(Cog):
         embed: discord.Embed = discord.Embed(
             title=_("Weekly Security Digest {emoji}").format(emoji=Emojis.WEEKLY_DIGEST.value),
             color=Colors.WEEKLY_DIGEST.value,
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         if weekly_stats:
             embed.description = "\n".join(
@@ -769,7 +774,7 @@ class Security(Cog):
         await self.config.guild(guild).weekly_stats.clear()
 
     async def check_weekly_digest(self) -> None:
-        now_timestamp = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())
+        now_timestamp = int(dt.datetime.now(tz=dt.timezone.utc).timestamp())
         for guild_id in await self.config.all_guilds():
             if (guild := self.bot.get_guild(guild_id)) is None:
                 continue
@@ -804,8 +809,8 @@ class Security(Cog):
         member: discord.Member,
         issued_by: discord.Member | None = None,
         reason: str | None = None,
-        logs: list[str] = None,
-        duration: datetime.timedelta | None = None,
+        logs: list[str] | None = None,
+        duration: dt.timedelta | None = None,
         member_emoji: str | None = None,  # Because quarantining changes the status.
     ) -> discord.Embed:
         embed: discord.Embed = discord.Embed(
@@ -856,7 +861,7 @@ class Security(Cog):
                 if action == "unquarantine"
                 else getattr(Colors, action.upper().removeprefix("UN")).value
             ),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         embed.set_thumbnail(url=member.display_avatar)
         embed.set_footer(text=member.guild.name, icon_url=get_non_animated_asset(member.guild.icon))
@@ -924,14 +929,16 @@ class Security(Cog):
         member: discord.Member,
         issued_by: discord.Member | None = None,
         reason: str | None = None,
-        logs: list[str] = None,
-        duration: datetime.timedelta | None = None,
-        trigger_messages: list[discord.Message] = [],
+        logs: list[str] | None = None,
+        duration: dt.timedelta | None = None,
+        trigger_messages: list[discord.Message] | None = None,
         image_file: discord.File | None = None,
         context_message: discord.Message | None = None,
         current_ctx: commands.Context | discord.Message | None = None,
         member_emoji: str | None = None,  # Because quarantining changes the status.
     ) -> None:
+        if trigger_messages is None:
+            trigger_messages = []
         if logs is None and trigger_messages:
             logs = [
                 _("{member.mention} (`{member}`) sent {count} trigger message{s}.").format(
@@ -998,7 +1005,7 @@ class Security(Cog):
         await modlog.create_case(
             bot=self.bot,
             guild=member.guild,
-            created_at=datetime.datetime.now(tz=datetime.timezone.utc),
+            created_at=dt.datetime.now(tz=dt.timezone.utc),
             action_type=action
             if action not in ("mute", "unmute")
             else f"s{action}",  # server mute/unmute
@@ -1318,7 +1325,7 @@ class Security(Cog):
                 "**The Security system can't function properly without me! If you're not responsible for this, you must check what is happening in your server IMMEDIATELY!**",
             ),
             color=discord.Color.red(),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         embed.set_thumbnail(url=get_non_animated_asset(guild.icon))
         embed.set_footer(
@@ -1392,9 +1399,11 @@ class Security(Cog):
         ctx: commands.Context,
         _object: ObjectConverter,
         duration: typing.Optional[DurationConverter] = None,  # noqa: UP045
-        whitelist_types: commands.Greedy[WhitelistTypeConverter] = [],
+        whitelist_types: commands.Greedy[WhitelistTypeConverter] = None,
     ) -> None:
         """Whitelist a member, role, text channel, voice channel, category channel, or webhook from Security."""
+        if whitelist_types is None:
+            whitelist_types = []
         if isinstance(_object, discord.Member) and await self.is_trusted_admin_or_higher(_object):
             raise commands.UserFeedbackCheckFailure(
                 _(
@@ -1549,7 +1558,7 @@ class Security(Cog):
         embed: discord.Embed = discord.Embed(
             title=_("Last Payouts ({number})").format(number=len(payouts)),
             color=Colors.DANK_POOL_PROTECTION.value,
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
 
         async def format_member_user(

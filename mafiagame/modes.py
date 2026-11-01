@@ -125,12 +125,10 @@ class Mode:
     def get_roles(
         cls,
         players_number: int,
-        config: dict[str, typing.Any] = {
-            "disabled_roles": [],
-            "more_roles": False,
-            "custom_roles": [],
-        },
+        config: dict[str, typing.Any] | None = None,
     ) -> list[type[Role]]:
+        if config is None:
+            config = {"disabled_roles": [], "more_roles": False, "custom_roles": []}
         specificities = next(
             (
                 roles
@@ -469,12 +467,10 @@ class Random(Mode):
     def get_roles(
         cls,
         players_number: int,
-        config: dict[str, typing.Any] = {
-            "disabled_roles": [],
-            "more_roles": False,
-            "custom_roles": [],
-        },
+        config: dict[str, typing.Any] | None = None,
     ) -> list[type[Role]]:
+        if config is None:
+            config = {"disabled_roles": [], "more_roles": False, "custom_roles": []}
         roles = [GodFather]
         possible_roles = [
             role
@@ -517,12 +513,10 @@ class Custom(Mode):
     def get_roles(
         cls,
         players_number: int,
-        config: dict[str, typing.Any] = {
-            "disabled_roles": [],
-            "more_roles": False,
-            "custom_roles": [],
-        },
+        config: dict[str, typing.Any] | None = None,
     ) -> list[type[Role]]:
+        if config is None:
+            config = {"disabled_roles": [], "more_roles": False, "custom_roles": []}
         roles = [discord.utils.get(ROLES, name=role) for role in config["custom_roles"]]
         if GodFather not in roles:
             roles.insert(0, GodFather)

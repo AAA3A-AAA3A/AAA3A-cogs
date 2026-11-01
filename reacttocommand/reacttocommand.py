@@ -245,7 +245,6 @@ class ReactToCommand(Cog):
     @commands.hybrid_group(aliases=["rtc"])
     async def reacttocommand(self, ctx: commands.Context) -> None:
         """Group of commands to use ReactToCommand."""
-        pass
 
     @reacttocommand.command(aliases=["+"])
     async def add(

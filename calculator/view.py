@@ -288,8 +288,8 @@ class CalculatorView(discord.ui.View):
                     _expression, _result = entry
                     embed.add_field(
                         name=f"Entry {count}:",
-                        value=box(f"> {str(_expression)}", lang="fix")
-                        + box(f"= {str(_result)}", lang="fix")
+                        value=box(f"> {_expression!s}", lang="fix")
+                        + box(f"= {_result!s}", lang="fix")
                         + "\n",
                     )
             await interaction.response.send_message(embed=embed, ephemeral=True)

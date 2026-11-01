@@ -93,7 +93,6 @@ class UrlButtons(Cog):
     @commands.hybrid_group()
     async def urlbuttons(self, ctx: commands.Context) -> None:
         """Group of commands to use UrlButtons."""
-        pass
 
     @urlbuttons.command(aliases=["+"])
     async def add(

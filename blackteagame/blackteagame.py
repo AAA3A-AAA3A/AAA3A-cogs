@@ -138,7 +138,7 @@ class BlackTeaGame(Cog):
             else:
                 _task.cancel()
 
-        winner = list(players)[0]
+        winner = next(iter(players))
         embed: discord.Embed = discord.Embed(
             title=_("Congratulations **{winner.display_name}**! You won the game!").format(
                 winner=winner,

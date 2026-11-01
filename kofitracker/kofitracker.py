@@ -288,7 +288,6 @@ class KoFiTracker(Cog):
     @commands.hybrid_group()
     async def setkofitracker(self, ctx: commands.Context) -> None:
         """Commands to configure KoFiTracker."""
-        pass
 
     @setkofitracker.command(aliases=["+"])
     async def add(
@@ -297,11 +296,7 @@ class KoFiTracker(Cog):
         channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         kofi_page_url: str,
         verification_token: str,
-        types: commands.Greedy[typing.Literal["Donation", "Subscription", "Shop Order"]] = [
-            "Donation",
-            "Subscription",
-            "Shop Order",
-        ],
+        types: commands.Greedy[typing.Literal["Donation", "Subscription", "Shop Order"]] = None,
         show_private: bool = False,
         show_personal_details: bool = False,
     ) -> None:
@@ -309,6 +304,8 @@ class KoFiTracker(Cog):
 
         ⚠ **Note:** If you choose to show personal details, the user's email and shipping details will be shown to everyone in the channel.
         """
+        if types is None:
+            types = ["Donation", "Subscription", "Shop Order"]
         if channel is None:
             channel = ctx.channel
         kofi_pages = await self.config.channel(channel).kofi_pages()

@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import functools
 import typing
 
@@ -306,7 +306,7 @@ class MembersView(discord.ui.View):
                 s="s" if len(self.ticket.members_ids) != 1 else "",
             ),
             color=await self.cog.bot.get_embed_color(self.ticket.channel),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         embed.description = "\n".join(
             _("**{i}.** {member.mention} ({member.id})").format(i=i, member=member)
@@ -663,6 +663,7 @@ class ClosedTicketControls(discord.ui.View):
             ),
         )
         await interaction.edit_original_response(view=view)
+        return None
 
     @discord.ui.button(
         label="Reopen",

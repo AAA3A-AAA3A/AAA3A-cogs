@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import io
 import typing
 from copy import deepcopy
@@ -492,19 +492,19 @@ class TicketTool(settings, DashboardIntegration, Cog):
         ticket.members = []
         ticket.members.extend(channel.guild.get_member(m) for m in members)
         if ticket.created_at is not None:
-            ticket.created_at = datetime.datetime.fromtimestamp(ticket.created_at)
+            ticket.created_at = dt.datetime.fromtimestamp(ticket.created_at, tz=dt.timezone.utc)
         if ticket.opened_at is not None:
-            ticket.opened_at = datetime.datetime.fromtimestamp(ticket.opened_at)
+            ticket.opened_at = dt.datetime.fromtimestamp(ticket.opened_at, tz=dt.timezone.utc)
         if ticket.closed_at is not None:
-            ticket.closed_at = datetime.datetime.fromtimestamp(ticket.closed_at)
+            ticket.closed_at = dt.datetime.fromtimestamp(ticket.closed_at, tz=dt.timezone.utc)
         if ticket.deleted_at is not None:
-            ticket.deleted_at = datetime.datetime.fromtimestamp(ticket.deleted_at)
+            ticket.deleted_at = dt.datetime.fromtimestamp(ticket.deleted_at, tz=dt.timezone.utc)
         if ticket.renamed_at is not None:
-            ticket.renamed_at = datetime.datetime.fromtimestamp(ticket.renamed_at)
+            ticket.renamed_at = dt.datetime.fromtimestamp(ticket.renamed_at, tz=dt.timezone.utc)
         if ticket.locked_at is not None:
-            ticket.locked_at = datetime.datetime.fromtimestamp(ticket.locked_at)
+            ticket.locked_at = dt.datetime.fromtimestamp(ticket.locked_at, tz=dt.timezone.utc)
         if ticket.unlocked_at is not None:
-            ticket.unlocked_at = datetime.datetime.fromtimestamp(ticket.unlocked_at)
+            ticket.unlocked_at = dt.datetime.fromtimestamp(ticket.unlocked_at, tz=dt.timezone.utc)
         if ticket.first_message is not None:
             ticket.first_message = ticket.channel.get_partial_message(ticket.first_message)
         return ticket
@@ -540,7 +540,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         embed.description = f"{description}"
         embed.set_thumbnail(url=actual_thumbnail)
         embed.color = actual_color
-        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+        embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
         embed.set_author(
             name=author,
             url=author.display_avatar,
@@ -617,7 +617,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         )
         embed.description = f"{action}"
         embed.color = actual_color
-        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+        embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
         embed.set_author(
             name=author,
             url=author.display_avatar,
@@ -682,7 +682,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
         claim_staff: bool | None = False,
         members: bool | None = False,
         locked: bool | None = None,
-    ) -> None:  # noqa: N805
+    ) -> None:
         async def pred(ctx: commands.Context) -> bool:
             if not self:
                 return True
@@ -784,7 +784,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
             profiles = await self.config.guild(ctx.guild).profiles()
             if profiles:
                 if len(profiles) == 1:
-                    profile = list(profiles)[0]
+                    profile = next(iter(profiles))
                 else:
                     raise commands.UserFeedbackCheckFailure(_("Please provide a profile."))
             else:
@@ -1653,7 +1653,7 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 ephemeral=True,
             )
             return
-        option = [option for option in select_menu.options if option.value == options[0]][0]
+        option = next(option for option in select_menu.options if option.value == options[0])
         reason = f"{option.emoji} - {option.label}"
         config = await self.get_config(guild=interaction.guild, profile=profile)
         if config["custom_modal"] is not None:
@@ -1804,7 +1804,6 @@ class TicketTool(settings, DashboardIntegration, Cog):
                 getattr(ticket.owner, "id", ticket.owner) == member.id and ticket.status == "open"
             ):
                 await ticket.close(ticket.guild.me)
-        return
 
     def get_buttons(self, buttons: list[dict]) -> discord.ui.View:
         view = discord.ui.View(timeout=None)

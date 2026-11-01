@@ -70,8 +70,10 @@ class ExportChannel(Cog):
         after: discord.Message | discord.Object | None = None,
         user_id: int | None = None,
         bot: bool | None = None,
-        exclude_users_and_roles: list[discord.User | discord.Role] = [],
+        exclude_users_and_roles: list[discord.User | discord.Role] | None = None,
     ) -> tuple[int, list[discord.Message]]:
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         messages = []
         async for message in channel.history(
             limit=(
@@ -187,13 +189,15 @@ class ExportChannel(Cog):
         ctx: commands.Context,
         channel: discord.TextChannel | discord.VoiceChannel | discord.Thread = None,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Export all of a channel's messages to an html file.
 
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         Remember that exporting other users' messages from Discord does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
@@ -276,7 +280,7 @@ class ExportChannel(Cog):
         channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         limit: int,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -284,6 +288,8 @@ class ExportChannel(Cog):
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         Remember that exporting other users' messages from Discord does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
@@ -324,7 +330,7 @@ class ExportChannel(Cog):
         channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         before: MessageOrObjectConverter,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -332,6 +338,8 @@ class ExportChannel(Cog):
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         Remember that exporting other users' messages from Discord does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
@@ -372,7 +380,7 @@ class ExportChannel(Cog):
         channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | None,
         after: MessageOrObjectConverter,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -380,6 +388,8 @@ class ExportChannel(Cog):
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         Remember that exporting other users' messages from Discord does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
@@ -421,7 +431,7 @@ class ExportChannel(Cog):
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -429,6 +439,8 @@ class ExportChannel(Cog):
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         Remember that exporting other users' messages from Discord does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)
@@ -519,7 +531,7 @@ class ExportChannel(Cog):
         bot: bool | None = True,
         limit: int | None = None,
         mode: typing.Literal["html", "txt"] = "html",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Export a part of the messages of a channel in an html file.
 
@@ -527,6 +539,8 @@ class ExportChannel(Cog):
         Please note: all attachments and user avatars are saved with the Discord link in this file.
         Remember that exporting other users' messages from Discord does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if channel is None:
             channel = ctx.channel
         await self.check_channel(ctx, channel)

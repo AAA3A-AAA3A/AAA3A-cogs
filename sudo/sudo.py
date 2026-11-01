@@ -15,7 +15,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import asyncio
-import datetime
+import datetime as dt
 from copy import copy
 
 import discord
@@ -31,8 +31,8 @@ from redbot.core.i18n import Translator, cog_i18n
 _: Translator = Translator("Sudo", __file__)
 
 TimeDeltaConverter: commands.converter.timedelta = commands.TimedeltaConverter(
-    minimum=datetime.timedelta(seconds=10),
-    maximum=datetime.timedelta(days=1),
+    minimum=dt.timedelta(seconds=10),
+    maximum=dt.timedelta(days=1),
     default_unit="m",
 )
 
@@ -146,7 +146,7 @@ class Sudo(Cog):
         self,
         ctx: commands.Context,
         *,
-        interval: TimeDeltaConverter = datetime.timedelta(minutes=5),
+        interval: TimeDeltaConverter = dt.timedelta(minutes=5),
     ):
         """Sudo as the owner of the bot for the specified timeout.
         The time should be between 10 seconds and 1 day.

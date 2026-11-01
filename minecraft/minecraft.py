@@ -193,14 +193,12 @@ class Minecraft(Cog):
                 status=status,
                 players_list=(
                     box(
-                        list(
-                            pagify(
+                        next(iter(pagify(
                                 await self.clear_mcformatting(
                                     "\n".join([p.name for p in status.players.sample]),
                                 ),
                                 page_length=992,
-                            ),
-                        )[0],
+                            ))),
                     )
                     if status.players.sample
                     else ""
@@ -241,7 +239,6 @@ class Minecraft(Cog):
     @commands.hybrid_group()
     async def minecraft(self, ctx: commands.Context):
         """Get informations about Minecraft Java."""
-        pass
 
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
     @minecraft.command()

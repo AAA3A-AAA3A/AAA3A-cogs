@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import typing
 from collections import defaultdict, deque
 from copy import copy, deepcopy
@@ -56,8 +56,8 @@ class SnipedMessage:
             message.channel
         )
 
-        self.created_at: datetime.datetime = message.created_at
-        self.deleted_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.created_at: dt.datetime = message.created_at
+        self.deleted_at: dt.datetime = dt.datetime.now(tz=dt.timezone.utc)
 
         if message.reference is not None and isinstance(
             (reference := message.reference.resolved),
@@ -550,7 +550,7 @@ class Snipe(DashboardIntegration, Cog):
             title=_("Deleted Messages"),
             color=await ctx.embed_color(),
         )
-        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+        embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
         embed.set_footer(text=f"#{channel.name}", icon_url=channel.guild.icon)
         embeds = []
         for page in pagify(content, delims=("\n\n",)):
@@ -826,7 +826,7 @@ class Snipe(DashboardIntegration, Cog):
             title=_("Edited Messages"),
             color=await ctx.embed_color(),
         )
-        embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+        embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
         embed.set_footer(text=f"#{channel.name}", icon_url=channel.guild.icon)
         embeds = []
         for page in pagify(content, delims=("\n\n",)):
@@ -840,7 +840,6 @@ class Snipe(DashboardIntegration, Cog):
     @commands.hybrid_group()
     async def setsnipe(self, ctx: commands.Context) -> None:
         """Commands to configure Snipe."""
-        pass
 
     @commands.is_owner()
     @setsnipe.command()

@@ -21,8 +21,7 @@ _: Translator = Translator("EmbedUtils", __file__)
 
 def cleanup_code(code: str) -> str:
     code = dev_commands.cleanup_code(textwrap.dedent(code)).strip()
-    if code.startswith("json\n"):
-        code = code[5:]
+    code = code.removeprefix("json\n")
     with io.StringIO(code) as codeio:
         for line in codeio:
             line = line.strip()
@@ -126,7 +125,7 @@ class StringToEmbed(commands.Converter):
         self,
         data: dict[str, typing.Any],
         *,
-        content: str = None,
+        content: str | None = None,
     ) -> str | None:
         content = data.pop("content", content)
         if content is not None and not self.allow_content:
@@ -138,7 +137,7 @@ class StringToEmbed(commands.Converter):
         ctx: commands.Context,
         data: dict[str, typing.Any],
         *,
-        content: str = None,
+        content: str | None = None,
     ) -> dict[typing.Literal["content", "embed"], discord.Embed | str]:
         content = self.get_content(data, content=content)
 
@@ -426,7 +425,7 @@ class PastebinMixin:
                 headers=GITHUB_HEADERS,
             )
             if len(gist_json["files"]) == 1 and _match["file_path"] is None:
-                file_path = list(gist_json["files"])[0].lower().replace(".", "-")
+                file_path = next(iter(gist_json["files"])).lower().replace(".", "-")
             for gist_file in gist_json["files"]:
                 if file_path == gist_file.lower().replace(".", "-"):
                     argument = await _fetch_response(

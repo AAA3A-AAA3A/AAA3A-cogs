@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import functools
 import re
 import typing
@@ -68,9 +68,9 @@ class RepeatRule:
     type: str
     value: dict[str, int] | None
 
-    start_trigger: datetime.datetime | None
-    first_trigger: datetime.datetime | None
-    last_trigger: datetime.datetime | None
+    start_trigger: dt.datetime | None
+    first_trigger: dt.datetime | None
+    last_trigger: dt.datetime | None
 
     def to_json(self) -> dict[str, str | dict[str, int]]:
         return {
@@ -95,19 +95,19 @@ class RepeatRule:
         if data["type"] == "date":
             return cls(
                 type=data["type"],
-                value=datetime.datetime.fromtimestamp(int(data["value"]), tz=datetime.timezone.utc),
+                value=dt.datetime.fromtimestamp(int(data["value"]), tz=dt.timezone.utc),
                 start_trigger=(
-                    datetime.datetime.fromtimestamp(data["start_trigger"], tz=datetime.timezone.utc)
+                    dt.datetime.fromtimestamp(data["start_trigger"], tz=dt.timezone.utc)
                     if data.get("start_trigger") is not None
                     else None
                 ),
                 first_trigger=(
-                    datetime.datetime.fromtimestamp(data["first_trigger"], tz=datetime.timezone.utc)
+                    dt.datetime.fromtimestamp(data["first_trigger"], tz=dt.timezone.utc)
                     if data.get("first_trigger") is not None
                     else None
                 ),
                 last_trigger=(
-                    datetime.datetime.fromtimestamp(data["last_trigger"], tz=datetime.timezone.utc)
+                    dt.datetime.fromtimestamp(data["last_trigger"], tz=dt.timezone.utc)
                     if data.get("last_trigger") is not None
                     else None
                 ),
@@ -116,17 +116,17 @@ class RepeatRule:
             type=data["type"],
             value=data["value"],
             start_trigger=(
-                datetime.datetime.fromtimestamp(data["start_trigger"], tz=datetime.timezone.utc)
+                dt.datetime.fromtimestamp(data["start_trigger"], tz=dt.timezone.utc)
                 if data.get("start_trigger") is not None
                 else None
             ),
             first_trigger=(
-                datetime.datetime.fromtimestamp(data["first_trigger"], tz=datetime.timezone.utc)
+                dt.datetime.fromtimestamp(data["first_trigger"], tz=dt.timezone.utc)
                 if data.get("first_trigger") is not None
                 else None
             ),
             last_trigger=(
-                datetime.datetime.fromtimestamp(data["last_trigger"], tz=datetime.timezone.utc)
+                dt.datetime.fromtimestamp(data["last_trigger"], tz=dt.timezone.utc)
                 if data.get("last_trigger") is not None
                 else None
             ),
@@ -135,15 +135,15 @@ class RepeatRule:
     @executor()
     def next_trigger(
         self,
-        last_expires_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc),
-        utc_now: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc),
+        last_expires_at: dt.datetime = dt.datetime.now(tz=dt.timezone.utc),
+        utc_now: dt.datetime = dt.datetime.now(tz=dt.timezone.utc),
         timezone: str = "UTC",
-    ) -> datetime.datetime | None:
+    ) -> dt.datetime | None:
         self.last_trigger = self.last_trigger or last_expires_at
         if self.last_trigger > last_expires_at and self.last_trigger >= utc_now:
             return self.last_trigger
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = dt.datetime.now(tz=dt.timezone.utc)
         if self.type == "sample":
             repeat_delta = dateutil.relativedelta.relativedelta(**self.value)
             next_expires_at = last_expires_at + repeat_delta
@@ -162,7 +162,7 @@ class RepeatRule:
                 )
                 if next_expires_at is None:
                     return None
-                next_expires_at = next_expires_at.astimezone(tz=datetime.timezone.utc)
+                next_expires_at = next_expires_at.astimezone(tz=dt.timezone.utc)
         elif self.type == "rrule":
             tz = pytz.timezone(timezone)
             rrule = dateutil.rrule.rrulestr(
@@ -179,7 +179,7 @@ class RepeatRule:
             if next_expires_at is None:
                 return None
             next_expires_at = next_expires_at.astimezone(
-                tz=datetime.timezone.utc,
+                tz=dt.timezone.utc,
             )  # `astimezone` is not required
         elif self.type == "date":
             return self.value
@@ -201,7 +201,7 @@ class RepeatRule:
                 if "days" not in value:
                     value["days"] = 0
                 value["days"] += value.pop("months") * 7 * 4
-            return f"[{self.type.upper()}] Every {CogsUtils.get_interval_string(datetime.timedelta(**value))}."
+            return f"[{self.type.upper()}] Every {CogsUtils.get_interval_string(dt.timedelta(**value))}."
         if self.type == "cron":
             descriptor = ExpressionDescriptor(
                 expression=self.value,
@@ -238,12 +238,12 @@ class Repeat:
 
     async def next_trigger(
         self,
-        last_expires_at: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc),
-        utc_now: datetime.datetime = None,
+        last_expires_at: dt.datetime = dt.datetime.now(tz=dt.timezone.utc),
+        utc_now: dt.datetime | None = None,
         timezone: str = "UTC",
-    ) -> datetime.datetime | None:
+    ) -> dt.datetime | None:
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = dt.datetime.now(tz=dt.timezone.utc)
         next_triggers = [
             await rule.next_trigger(
                 last_expires_at=last_expires_at,
@@ -275,10 +275,10 @@ class Reminder:
     destination: int | None  # channel or dm
     targets: list[dict[str, int | str]] | None
 
-    created_at: datetime.datetime
-    expires_at: datetime.datetime
-    last_expires_at: datetime.datetime | None
-    next_expires_at: datetime.datetime
+    created_at: dt.datetime
+    expires_at: dt.datetime
+    last_expires_at: dt.datetime | None
+    next_expires_at: dt.datetime
     repeat: Repeat | None
 
     def __hash__(self) -> str:
@@ -297,28 +297,28 @@ class Reminder:
         )
 
     def __eq__(self, other: "Reminder") -> bool:
-        return (self.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)) == (
-            other.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)
+        return (self.next_expires_at or dt.datetime.now(tz=dt.timezone.utc)) == (
+            other.next_expires_at or dt.datetime.now(tz=dt.timezone.utc)
         )
 
     def __lt__(self, other: "Reminder") -> bool:
-        return (self.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)) < (
-            other.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)
+        return (self.next_expires_at or dt.datetime.now(tz=dt.timezone.utc)) < (
+            other.next_expires_at or dt.datetime.now(tz=dt.timezone.utc)
         )
 
     def __le__(self, other: "Reminder") -> bool:
-        return (self.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)) <= (
-            other.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)
+        return (self.next_expires_at or dt.datetime.now(tz=dt.timezone.utc)) <= (
+            other.next_expires_at or dt.datetime.now(tz=dt.timezone.utc)
         )
 
     def __gt__(self, other: "Reminder") -> bool:
-        return (self.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)) > (
-            other.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)
+        return (self.next_expires_at or dt.datetime.now(tz=dt.timezone.utc)) > (
+            other.next_expires_at or dt.datetime.now(tz=dt.timezone.utc)
         )
 
     def __ge__(self, other: "Reminder") -> bool:
-        return (self.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)) >= (
-            other.next_expires_at or datetime.datetime.now(tz=datetime.timezone.utc)
+        return (self.next_expires_at or dt.datetime.now(tz=dt.timezone.utc)) >= (
+            other.next_expires_at or dt.datetime.now(tz=dt.timezone.utc)
         )
 
     def to_json(self, clean: bool = True) -> Data:
@@ -365,25 +365,25 @@ class Reminder:
                 "targets",
                 [data.get("target")] if data.get("target") is not None else None,
             ),
-            created_at=datetime.datetime.fromtimestamp(
+            created_at=dt.datetime.fromtimestamp(
                 int(data["created_at"]),
-                tz=datetime.timezone.utc,
+                tz=dt.timezone.utc,
             ),
-            expires_at=datetime.datetime.fromtimestamp(
+            expires_at=dt.datetime.fromtimestamp(
                 int(data["expires_at"]),
-                tz=datetime.timezone.utc,
+                tz=dt.timezone.utc,
             ),
             last_expires_at=(
-                datetime.datetime.fromtimestamp(
+                dt.datetime.fromtimestamp(
                     int(data["last_expires_at"]),
-                    tz=datetime.timezone.utc,
+                    tz=dt.timezone.utc,
                 )
                 if data.get("last_expires_at") is not None
                 else None
             ),
-            next_expires_at=datetime.datetime.fromtimestamp(
+            next_expires_at=dt.datetime.fromtimestamp(
                 int(data["next_expires_at"]),
-                tz=datetime.timezone.utc,
+                tz=dt.timezone.utc,
             ),
             repeat=(
                 Repeat.from_json(data.get("repeat") or data.get("intervals"))
@@ -392,9 +392,9 @@ class Reminder:
             ),
         )
 
-    def __str__(self, utc_now: datetime.datetime = None) -> str:
+    def __str__(self, utc_now: dt.datetime | None = None) -> str:
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = dt.datetime.now(tz=dt.timezone.utc)
         and_every = ""
         if self.repeat is not None:
             if len(self.repeat.rules) == 1:
@@ -583,11 +583,11 @@ class Reminder:
 
     def to_embed(
         self,
-        utc_now: datetime.datetime = None,
+        utc_now: dt.datetime | None = None,
         embed_color: discord.Color = discord.Color.green(),
     ) -> discord.Embed:
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = dt.datetime.now(tz=dt.timezone.utc)
         delayed = int(
             utc_now.timestamp() - (self.last_expires_at or self.next_expires_at).timestamp(),
         )
@@ -662,11 +662,11 @@ class Reminder:
 
     async def process(
         self,
-        utc_now: datetime.datetime = None,
+        utc_now: dt.datetime | None = None,
         testing: bool = False,
     ) -> None:
         if utc_now is None:
-            utc_now = datetime.datetime.now(tz=datetime.timezone.utc)
+            utc_now = dt.datetime.now(tz=dt.timezone.utc)
         if not testing:
             self.last_expires_at = self.next_expires_at
             timezone = (await self.cog.config.user_from_id(self.user_id).timezone()) or "UTC"

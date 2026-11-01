@@ -171,7 +171,7 @@ class LintCodes(Cog):
         pass
 
     @lintcode.command(name="flake8", aliases=["f8", "flake"])
-    async def flake8_shortcut(self, ctx: commands.Context, *, code: str = None):
+    async def flake8_shortcut(self, ctx: commands.Context, *, code: str | None = None):
         """Format code with Flake8, without flags, just the code."""
         code = await self.get_code_from_context(ctx, code=code)
         await Linter(linter="flake8", flags=None).lint(ctx, code=code)
@@ -203,7 +203,7 @@ class LintCodes(Cog):
         await Linter(linter="flake8", flags=flags).lint(ctx, code=code)
 
     @lintcode.command(name="pylint", aliases=["pyl"])
-    async def pylint_shortcut(self, ctx: commands.Context, *, code: str = None):
+    async def pylint_shortcut(self, ctx: commands.Context, *, code: str | None = None):
         """Format code with PyLint, without flags, just the code."""
         code = await self.get_code_from_context(ctx, code=code)
         await Linter(linter="pylint", flags=None).lint(ctx, code=code)
@@ -226,7 +226,7 @@ class LintCodes(Cog):
         await Linter(linter="pylint", flags=flags).lint(ctx, code=code)
 
     @lintcode.command(name="mypy", aliases=["mp"])
-    async def mypy_shortcut(self, ctx: commands.Context, *, code: str = None):
+    async def mypy_shortcut(self, ctx: commands.Context, *, code: str | None = None):
         """Format code with MyPy, without flags, just the code."""
         code = await self.get_code_from_context(ctx, code=code)
         await Linter(linter="mypy", flags=None).lint(ctx, code=code)
@@ -315,7 +315,7 @@ class LintCodes(Cog):
         await Linter(linter="mypy", flags=flags).lint(ctx, code=code)
 
     @lintcode.command(name="bandit", aliases=["bd"])
-    async def bandit_shortcut(self, ctx: commands.Context, *, code: str = None):
+    async def bandit_shortcut(self, ctx: commands.Context, *, code: str | None = None):
         """Format code with Bandit, without flags, just the code."""
         code = await self.get_code_from_context(ctx, code=code)
         await Linter(linter="bandit", flags=None).lint(ctx, code=code)
@@ -341,31 +341,31 @@ class LintCodes(Cog):
         await Linter(linter="bandit", flags=flags).lint(ctx, code=code)
 
     @lintcode.command(name="black", aliases=["fmt"])
-    async def black_shortcut(self, ctx: commands.Context, *, code: str = None):
+    async def black_shortcut(self, ctx: commands.Context, *, code: str | None = None):
         """Format code with Black, without flags, just the code."""
         code = await self.get_code_from_context(ctx, code=code)
         await Linter(linter="black", flags=None).lint(ctx, code=code)
 
     @lintcode.command(name="isort", aliases=["is"])
-    async def isort_shortcut(self, ctx: commands.Context, *, code: str = None):
+    async def isort_shortcut(self, ctx: commands.Context, *, code: str | None = None):
         """Format code with Isort, without flags, just the code."""
         code = await self.get_code_from_context(ctx, code=code)
         await Linter(linter="isort", flags=None).lint(ctx, code=code)
 
     @lintcode.command(name="yapf", aliases=["yf"])
-    async def yapf_shortcut(self, ctx: commands.Context, *, code: str = None):
+    async def yapf_shortcut(self, ctx: commands.Context, *, code: str | None = None):
         """Format code with Yapf, without flags, just the code."""
         code = await self.get_code_from_context(ctx, code=code)
         await Linter(linter="yapf", flags=None).lint(ctx, code=code)
 
     @lintcode.command(name="autopep8", aliases=["ap8"])
-    async def autopep8_shortcut(self, ctx: commands.Context, *, code: str = None):
+    async def autopep8_shortcut(self, ctx: commands.Context, *, code: str | None = None):
         """Format code with AutoPep8, without flags, just the code."""
         code = await self.get_code_from_context(ctx, code=code)
         await Linter(linter="autopep8", flags=None).lint(ctx, code=code)
 
     @lintcode.command(name="pyright", aliases=["pyr"])
-    async def pyright_shortcut(self, ctx: commands.Context, *, code: str = None):
+    async def pyright_shortcut(self, ctx: commands.Context, *, code: str | None = None):
         """Format code with PyRight, without flags, just the code.
 
         **Supported flags:**
@@ -383,7 +383,7 @@ class LintCodes(Cog):
         await Linter(linter="pyright", flags=flags).lint(ctx, code=code)
 
     @lintcode.command(name="ruff", aliases=["rf"])
-    async def ruff_shortcut(self, ctx: commands.Context, *, code: str = None):
+    async def ruff_shortcut(self, ctx: commands.Context, *, code: str | None = None):
         """Format code with Ruff, without flags, just the code."""
         code = await self.get_code_from_context(ctx, code=code)
         await Linter(linter="ruff", flags=None).lint(ctx, code=code)

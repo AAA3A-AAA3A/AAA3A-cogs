@@ -174,7 +174,6 @@ class DropdownsTexts(Cog):
     @commands.hybrid_group()
     async def dropdownstexts(self, ctx: commands.Context) -> None:
         """Group of commands to use DropdownsTexts."""
-        pass
 
     @dropdownstexts.command(aliases=["+"])
     async def add(

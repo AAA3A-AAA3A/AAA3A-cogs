@@ -44,7 +44,6 @@ class Tool(discord.ui.Button):
 
     async def use(self, *, interaction: discord.Interaction) -> bool:
         """The method that is called when the tool is used."""
-        pass
 
     async def callback(self, interaction: discord.Interaction) -> None:
         await interaction.response.defer()

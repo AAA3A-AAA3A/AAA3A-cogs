@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 
 import aiohttp
 import discord
@@ -15,8 +15,8 @@ from .view import DiscordEditView
 
 TimedeltaConverter = get_timedelta_converter(
     default_unit="s",
-    maximum=datetime.timedelta(seconds=21600),
-    minimum=datetime.timedelta(seconds=0),
+    maximum=dt.timedelta(seconds=21600),
+    minimum=dt.timedelta(seconds=0),
 )
 
 
@@ -106,7 +106,6 @@ class EditGuild(Cog):
     @commands.hybrid_group()
     async def editguild(self, ctx: commands.Context) -> None:
         """Commands for edit a guild."""
-        pass
 
     @commands.is_owner()
     @editguild.command(name="create", aliases=["new", "+"])
@@ -651,7 +650,7 @@ class EditGuild(Cog):
     async def editguild_premium_progress_bar_enabled(
         self,
         ctx: commands.Context,
-        premium_progress_bar_enabled: bool = None,
+        premium_progress_bar_enabled: bool | None = None,
     ) -> None:
         """Edit guild premium progress bar enabled."""
         guild = ctx.guild
@@ -844,10 +843,10 @@ class EditGuild(Cog):
                 title=f"Guild {guild.name} ({guild.id})",
                 color=embed_color,
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
             embed.description = "\n".join(
                 [
-                    f"• `{parameter}`: {repr(getattr(guild, parameters[parameter].get('attribute_name', parameter)))}"
+                    f"• `{parameter}`: {getattr(guild, parameters[parameter].get('attribute_name', parameter))!r}"
                     for parameter in parameters
                     if hasattr(guild, parameter)
                 ],

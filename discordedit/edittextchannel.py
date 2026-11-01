@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import typing
 from copy import copy
 
@@ -16,8 +16,8 @@ from .view import DiscordEditView
 
 TimedeltaConverter = get_timedelta_converter(
     default_unit="s",
-    maximum=datetime.timedelta(seconds=21600),
-    minimum=datetime.timedelta(seconds=0),
+    maximum=dt.timedelta(seconds=21600),
+    minimum=dt.timedelta(seconds=0),
 )
 
 
@@ -104,7 +104,6 @@ class EditTextChannel(Cog):
     @commands.hybrid_group()
     async def edittextchannel(self, ctx: commands.Context) -> None:
         """Commands for edit a text channel."""
-        pass
 
     @edittextchannel.command(name="create", aliases=["new", "+"])
     async def edittextchannel_create(
@@ -295,7 +294,7 @@ class EditTextChannel(Cog):
         self,
         ctx: commands.Context,
         channel: discord.TextChannel | None,
-        nsfw: bool = None,
+        nsfw: bool | None = None,
     ) -> None:
         """Edit text channel nsfw."""
         if channel is None:
@@ -321,7 +320,7 @@ class EditTextChannel(Cog):
         self,
         ctx: commands.Context,
         channel: discord.TextChannel | None,
-        sync_permissions: bool = None,
+        sync_permissions: bool | None = None,
     ) -> None:
         """Edit text channel syncpermissions with category."""
         if channel is None:
@@ -698,10 +697,10 @@ class EditTextChannel(Cog):
                 title=f"Text Channel #{channel.name} ({channel.id})",
                 color=embed_color,
             )
-            embed.timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
+            embed.timestamp = dt.datetime.now(tz=dt.timezone.utc)
             embed.description = "\n".join(
                 [
-                    f"• `{parameter}`: {repr(getattr(channel, parameters[parameter].get('attribute_name', parameter)))}"
+                    f"• `{parameter}`: {getattr(channel, parameters[parameter].get('attribute_name', parameter))!r}"
                     for parameter in parameters
                 ],
             )

@@ -28,7 +28,7 @@ class PasswordsGeneratorView(discord.ui.View):
         self,
         cog: commands.Cog,
         easy_to_remember: bool = False,
-        lengths: dict[str, int] = None,
+        lengths: dict[str, int] | None = None,
         include_characters: list[
             typing.Literal["upper", "lower", "digits", "special"]
         ] = DEFAULT_INCLUDE_CHARACTERS,

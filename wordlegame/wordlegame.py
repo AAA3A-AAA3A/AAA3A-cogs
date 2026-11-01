@@ -67,9 +67,11 @@ class WordleGame(Cog):
     async def generate_image(
         self,
         word: str,
-        attempts: list[str] = [],
+        attempts: list[str] | None = None,
         max_attempts: int = 6,
     ) -> discord.File:
+        if attempts is None:
+            attempts = []
         length, size, between, border = len(word), 70, 10, 5
         image = Image.new(
             "RGB",
@@ -140,12 +142,14 @@ class WordleGame(Cog):
         ctx: commands.Context,
         lang: Lang,
         word: str,
-        attempts: list[str] = [],
+        attempts: list[str] | None = None,
         max_attempts: int = 6,
     ) -> dict[
         typing.Literal["embed", "file", "allowed_mentions"],
         discord.Embed | discord.File | discord.AllowedMentions,
     ]:
+        if attempts is None:
+            attempts = []
         embed: discord.Embed = discord.Embed(
             title=_("{flag} Wordle Game - {attempts}/{max_attempts} attempts").format(
                 flag=f":flag_{'gb' if lang is Lang.ENGLISH else lang.value}:",

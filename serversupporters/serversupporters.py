@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import re
 import typing
 from collections import defaultdict
@@ -98,7 +98,7 @@ class ServerSupporters(Cog):
         self._startup_sync_task: asyncio.Task | None = None
         self._invite_regex = re.compile(
             r"(discord\.(?:gg|io|me|li)|discord(?:app)?\.com\/invite|\.gg)\/(\S+)",
-            re.I,
+            re.IGNORECASE,
         )
         self.cache: dict[discord.Member, bool] = defaultdict(bool)
 
@@ -160,7 +160,7 @@ class ServerSupporters(Cog):
                 else _("Server {_type} Supporter Removed...")
             ).format(_type=_("Tag") if _type == "tag" else _("Status")),
             color=discord.Color.green() if enabled else discord.Color.red(),
-            timestamp=datetime.datetime.now(tz=datetime.timezone.utc),
+            timestamp=dt.datetime.now(tz=dt.timezone.utc),
         )
         embed.set_author(
             name=member.display_name,
@@ -426,7 +426,6 @@ class ServerSupporters(Cog):
     @commands.hybrid_group()
     async def setserversupporters(self, ctx: commands.Context) -> None:
         """Settings for the Server Supporters system."""
-        pass
 
     @setserversupporters.command(aliases=["list"])
     async def listsupporters(

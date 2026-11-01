@@ -1,5 +1,5 @@
 import copy
-import datetime
+import datetime as dt
 import typing
 from dataclasses import _is_dataclass_instance, dataclass, fields
 
@@ -112,7 +112,7 @@ def _asdict_inner(obj, dict_factory=dict):
         return type(obj)(
             (_asdict_inner(k, dict_factory), _asdict_inner(v, dict_factory)) for k, v in obj.items()
         )
-    if isinstance(obj, datetime.date):
+    if isinstance(obj, dt.date):
         return obj.isoformat()
     if hasattr(obj, "value"):
         return obj.value

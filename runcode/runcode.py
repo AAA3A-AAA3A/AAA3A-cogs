@@ -193,8 +193,7 @@ class RunCode(Cog):
         for info in result:
             language = info["language"]
             if language not in ("CPP", "OpenSSL"):
-                if language.endswith(" script"):  # Bash and Vim
-                    language = language[:-7]
+                language = language.removesuffix(" script")
                 if language not in self.wandbox_languages:
                     self.wandbox_languages[language] = {}
                 # info["template"] is a list but it only contains one element at the moment.
@@ -250,9 +249,7 @@ class RunCode(Cog):
                         break
                 else:
                     raise RuntimeError("Language not found.")
-            engine: WandboxEngine = list(
-                list(self.wandbox_languages[language].values())[0].values(),
-            )[0]
+            engine: WandboxEngine = next(iter(next(iter(self.wandbox_languages[language].values())).values()))
         return WandboxRequest(
             cog=self,
             engine=engine,
@@ -487,9 +484,7 @@ class RunCode(Cog):
                     ).format(engine=engine, code_language=code_language, ctx=ctx),
                 )
         else:
-            raw_request["engine"]: WandboxEngine = list(
-                list(self.wandbox_languages[code_language].values())[0].values(),
-            )[0]
+            raw_request["engine"]: WandboxEngine = next(iter(next(iter(self.wandbox_languages[code_language].values())).values()))
         raw_request["stdin"] = " ".join(_parameters.get("input", [""]))
         if "compiler_options" in _parameters:
             if not raw_request["engine"].compiler_option_raw:
@@ -645,7 +640,6 @@ class RunCode(Cog):
         """
         View RunCode options.
         """
-        pass
 
     @configuration.command(name="listlanguages")
     async def _languages_list(
@@ -692,7 +686,7 @@ class RunCode(Cog):
             else:
                 raise RuntimeError("Language not found.")
         keys: str = humanize_list(
-            [f"`{key}`" for key in list(self.wandbox_languages[language].values())[0]],
+            [f"`{key}`" for key in next(iter(self.wandbox_languages[language].values()))],
         )
         embed = discord.Embed(
             title=_("RunCode — Wandbox API Engines"),

@@ -123,8 +123,10 @@ class TransferChannel(Cog):
         after: discord.Message | discord.Object | None = None,
         user_id: int | None = None,
         bot: bool | None = None,
-        exclude_users_and_roles: list[discord.User | discord.Role] = [],
+        exclude_users_and_roles: list[discord.User | discord.Role] | None = None,
     ) -> tuple[int, list[discord.Message]]:
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         messages = []
         async for message in channel.history(
             limit=(
@@ -303,12 +305,14 @@ class TransferChannel(Cog):
         source: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Transfer all messages from a channel to another channel. This might take a long time.
 
         Remember that transfering other users' messages does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
@@ -368,13 +372,15 @@ class TransferChannel(Cog):
         destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         limit: int,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
         Specify the number of messages since the end of the channel.
         Remember that transfering other users' messages does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
@@ -400,13 +406,15 @@ class TransferChannel(Cog):
         destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         before: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
         Specify the before message (id or link) or a valid Discord snowflake.
         Remember that transfering other users' messages does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
@@ -434,13 +442,15 @@ class TransferChannel(Cog):
         destination: discord.TextChannel | discord.VoiceChannel | discord.Thread,
         after: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
         Specify the after message (id or link) or a valid Discord snowflake.
         Remember that transfering other users' messages does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
@@ -469,13 +479,15 @@ class TransferChannel(Cog):
         before: MessageOrObjectConverter,
         after: MessageOrObjectConverter,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
         Specify the between messages (id or link) or a valid snowflake.
         Remember that transfering other users' messages does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)
@@ -539,13 +551,15 @@ class TransferChannel(Cog):
         bot: bool | None = True,
         limit: int | None = None,
         way: typing.Literal["webhooks", "embeds", "messages"] = "webhooks",
-        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = [],
+        exclude_users_and_roles: commands.Greedy[discord.User | discord.Role] = None,
     ) -> None:
         """Transfer a part of the messages from a channel to another channel. This might take a long time.
 
         Specify the bool option.
         Remember that transfering other users' messages does not respect the TOS.
         """
+        if exclude_users_and_roles is None:
+            exclude_users_and_roles = []
         if ctx.guild is None and ctx.author.id not in ctx.bot.owner_ids:
             raise commands.UserInputError()
         await self.check_channels(source=source, destination=destination, way=way)

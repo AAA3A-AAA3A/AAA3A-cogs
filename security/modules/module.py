@@ -1,8 +1,8 @@
 import typing
 
 import discord
-from redbot.core import commands
 
+from redbot.core import commands
 from security.views import SettingsView
 
 

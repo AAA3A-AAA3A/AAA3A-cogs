@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import io
 import typing
 
@@ -69,13 +69,13 @@ class Ticket:
 
         self.members: list[discord.Member] = members
 
-        self.created_at: datetime.datetime = created_at
-        self.opened_at: datetime.datetime = opened_at
-        self.closed_at: datetime.datetime = closed_at
-        self.deleted_at: datetime.datetime = deleted_at
-        self.renamed_at: datetime.datetime = renamed_at
-        self.locked_at: datetime.datetime = locked_at
-        self.unlocked_at: datetime.datetime = unlocked_at
+        self.created_at: dt.datetime = created_at
+        self.opened_at: dt.datetime = opened_at
+        self.closed_at: dt.datetime = closed_at
+        self.deleted_at: dt.datetime = deleted_at
+        self.renamed_at: dt.datetime = renamed_at
+        self.locked_at: dt.datetime = locked_at
+        self.unlocked_at: dt.datetime = unlocked_at
 
         self.status: str = status
         self.reason: str = reason
@@ -107,7 +107,7 @@ class Ticket:
             locked_by=None,
             unlocked_by=None,
             members=[],
-            created_at=datetime.datetime.now(),
+            created_at=dt.datetime.now(tz=dt.timezone.utc),
             opened_at=None,
             closed_at=None,
             deleted_at=None,
@@ -187,19 +187,19 @@ class Ticket:
         members = self.members
         self.members = [int(m.id) for m in members]
         if self.created_at is not None:
-            self.created_at = float(datetime.datetime.timestamp(self.created_at))
+            self.created_at = float(dt.datetime.timestamp(self.created_at))
         if self.opened_at is not None:
-            self.opened_at = float(datetime.datetime.timestamp(self.opened_at))
+            self.opened_at = float(dt.datetime.timestamp(self.opened_at))
         if self.closed_at is not None:
-            self.closed_at = float(datetime.datetime.timestamp(self.closed_at))
+            self.closed_at = float(dt.datetime.timestamp(self.closed_at))
         if self.deleted_at is not None:
-            self.deleted_at = float(datetime.datetime.timestamp(self.deleted_at))
+            self.deleted_at = float(dt.datetime.timestamp(self.deleted_at))
         if self.renamed_at is not None:
-            self.renamed_at = float(datetime.datetime.timestamp(self.renamed_at))
+            self.renamed_at = float(dt.datetime.timestamp(self.renamed_at))
         if self.locked_at is not None:
-            self.locked_at = float(datetime.datetime.timestamp(self.locked_at))
+            self.locked_at = float(dt.datetime.timestamp(self.locked_at))
         if self.unlocked_at is not None:
-            self.unlocked_at = float(datetime.datetime.timestamp(self.unlocked_at))
+            self.unlocked_at = float(dt.datetime.timestamp(self.unlocked_at))
         if self.first_message is not None:
             self.first_message = int(self.first_message.id)
         json = self.__dict__
@@ -484,7 +484,7 @@ class Ticket:
         emoji_close = config["emoji_close"]
         self.status = "open"
         self.opened_by = author
-        self.opened_at = datetime.datetime.now()
+        self.opened_at = dt.datetime.now(tz=dt.timezone.utc)
         self.closed_by = None
         self.closed_at = None
         new_name = f"{self.channel.name}"
@@ -587,7 +587,7 @@ class Ticket:
         emoji_close = config["emoji_close"]
         self.status = "close"
         self.closed_by = author
-        self.closed_at = datetime.datetime.now()
+        self.closed_at = dt.datetime.now(tz=dt.timezone.utc)
         new_name = f"{self.channel.name}"
         new_name = new_name.replace(f"{emoji_open}-", "", 1)
         new_name = f"{emoji_close}-{new_name}"
@@ -697,7 +697,7 @@ class Ticket:
         )
         logschannel = config["logschannel"]
         self.locked_by = author
-        self.locked_at = datetime.datetime.now()
+        self.locked_at = dt.datetime.now(tz=dt.timezone.utc)
         if self.logs_messages:
             embed = await self.cog.get_embed_action(
                 self,
@@ -739,7 +739,7 @@ class Ticket:
         )
         logschannel = config["logschannel"]
         self.unlocked_by = author
-        self.unlocked_at = datetime.datetime.now()
+        self.unlocked_at = dt.datetime.now(tz=dt.timezone.utc)
         if self.logs_messages:
             embed = await self.cog.get_embed_action(
                 self,
@@ -781,7 +781,7 @@ class Ticket:
         await self.channel.edit(name=new_name, reason=_reason)
         if author is not None:
             self.renamed_by = author
-            self.renamed_at = datetime.datetime.now()
+            self.renamed_at = dt.datetime.now(tz=dt.timezone.utc)
             if self.logs_messages:
                 embed = await self.cog.get_embed_action(
                     self,
@@ -801,7 +801,7 @@ class Ticket:
         config = await self.cog.get_config(self.guild, self.profile)
         logschannel = config["logschannel"]
         self.deleted_by = author
-        self.deleted_at = datetime.datetime.now()
+        self.deleted_at = dt.datetime.now(tz=dt.timezone.utc)
         if self.logs_messages and logschannel is not None:
             embed = await self.cog.get_embed_important(
                 self,

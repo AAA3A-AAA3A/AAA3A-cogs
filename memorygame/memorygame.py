@@ -205,7 +205,6 @@ class MemoryGame(DashboardIntegration, Cog):
     @commands.hybrid_group()
     async def setmemorygame(self, ctx: commands.Context) -> None:
         """Group of commands to set MemoryGame."""
-        pass
 
     @setmemorygame.command()
     async def resetleaderboard(self, ctx: commands.Context) -> None:

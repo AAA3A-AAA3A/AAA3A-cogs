@@ -109,7 +109,6 @@ class OnlyAllow(Cog):
 
         If nothing is set in a server, all cogs/commands are permitted.
         """
-        pass
 
     @onlyallow.command()
     async def addcog(

@@ -114,8 +114,10 @@ class OnePieceGame(Cog):
         self,
         mode: typing.Literal["classic", "devil_fruit", "wanted_poster"],
         character: Character,
-        attempts: list[Character] = [],
+        attempts: list[Character] | None = None,
     ) -> discord.File:
+        if attempts is None:
+            attempts = []
         length, width, height, between, between_characters, border, header = (
             len(attempts),
             400,
@@ -372,13 +374,15 @@ class OnePieceGame(Cog):
         ctx: commands.Context,
         mode: typing.Literal["classic", "devil_fruit", "wanted_poster"],
         character: Character,
-        attempts: list[Character] = [],
+        attempts: list[Character] | None = None,
         each_attempt_decreases_blurry_level: bool = True,
         show_colors: bool = False,
     ) -> dict[
         typing.Literal["embeds", "files", "allowed_mentions"],
         discord.Embed | discord.File | discord.AllowedMentions,
     ]:
+        if attempts is None:
+            attempts = []
         embeds: list[discord.Embed] = [
             discord.Embed(
                 title=_("One Piece Game - {mode}").format(
@@ -502,7 +506,6 @@ class OnePieceGame(Cog):
     @commands.hybrid_group(aliases=["onepiecegame", "opg"])
     async def onepiece(self, ctx: commands.Context) -> None:
         """Guess One Piece characters from their characteristics, their devil fruit, or their blury wanted poster."""
-        pass
 
     @onepiece.command()
     async def classic(self, ctx: commands.Context) -> None:

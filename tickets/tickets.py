@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import re
 import typing
 
@@ -558,8 +558,8 @@ class Tickets(DashboardIntegration, Cog):
             ticket.is_closed
             and config["auto_delete_on_close"] is not None
             and ticket.closed_at is not None
-            and datetime.datetime.now(tz=datetime.timezone.utc) - ticket.closed_at
-            > datetime.timedelta(hours=config["auto_delete_on_close"])
+            and dt.datetime.now(tz=dt.timezone.utc) - ticket.closed_at
+            > dt.timedelta(hours=config["auto_delete_on_close"])
         ):
             await ticket.delete_channel(None)  # That's a setting, so no deleter.
 
@@ -853,7 +853,6 @@ class Tickets(DashboardIntegration, Cog):
     @commands.hybrid_group(aliases=["tickets"])
     async def ticket(self, ctx: commands.Context) -> None:
         """Create, manage and list tickets."""
-        pass
 
     @ticket.command(aliases=["+"])
     async def create(
@@ -882,7 +881,7 @@ class Tickets(DashboardIntegration, Cog):
     @commands.bot_has_permissions(embed_links=True)
     @is_support(ignore_owner=True)
     @ticket.command()
-    async def settings(self, ctx: commands.Context, profile: str = None) -> None:
+    async def settings(self, ctx: commands.Context, profile: str | None = None) -> None:
         """Show Tickets settings."""
         profiles = await self.config.guild(ctx.guild).profiles()
         if profile is None:
@@ -1430,7 +1429,7 @@ class Tickets(DashboardIntegration, Cog):
             None,
         )
         answers_embed = next((e for e in first_message.embeds[1:] if e.fields or e.title), None)
-        now = datetime.datetime.now(tz=datetime.timezone.utc)
+        now = dt.datetime.now(tz=dt.timezone.utc)
         is_claimed = embed.color == discord.Color.blue()
         is_closed = embed.color == discord.Color.red()
         ticket: Ticket = Ticket(
@@ -1442,9 +1441,7 @@ class Tickets(DashboardIntegration, Cog):
             channel_id=channel.id,
             message_id=first_message.id,
             profile=profile,
-            reason=(
-                reason_field.value.removeprefix(">>> ") if reason_field is not None else None
-            ),
+            reason=(reason_field.value.removeprefix(">>> ") if reason_field is not None else None),
             category_label=answers_embed.title if answers_embed is not None else None,
             owner_answers=(
                 {field.name: field.value.removeprefix(">>> ") for field in answers_embed.fields}
@@ -1513,7 +1510,6 @@ class Tickets(DashboardIntegration, Cog):
     @commands.hybrid_group()
     async def settickets(self, ctx: commands.Context) -> None:
         """Commands to configure Tickets."""
-        pass
 
     @commands.bot_has_permissions(embed_links=True)
     @settickets.command()

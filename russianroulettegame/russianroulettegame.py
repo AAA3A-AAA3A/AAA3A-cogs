@@ -89,7 +89,7 @@ class RussianRouletteGame(Cog):
                     break
                 await ctx.send(_("Click. Nothing happened."))
 
-        winner = list(players)[0]
+        winner = next(iter(players))
         embed = discord.Embed(
             title=_("Congratulations **{winner.display_name}**! You won the game!").format(
                 winner=winner,

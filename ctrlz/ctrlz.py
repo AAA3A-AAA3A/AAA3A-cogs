@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import json
 import typing
 
@@ -231,11 +231,11 @@ class CtrlZ(Cog):
         self,
         guild: discord.Guild,
         user: discord.User | None = None,
-        after: datetime.datetime | None = None,
-        before: datetime.datetime | None = None,
+        after: dt.datetime | None = None,
+        before: dt.datetime | None = None,
         include_already_reverted: bool = True,
     ) -> list[discord.AuditLogEntry]:
-        _after = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=7)
+        _after = dt.datetime.now(tz=dt.timezone.utc) - dt.timedelta(days=7)
         after = max(after, _after) if after is not None else _after
         reverted_audit_logs = await self.config.guild(guild).reverted_audit_logs()
         return [
@@ -431,10 +431,10 @@ class CtrlZ(Cog):
                 audit_log_id
                 for audit_log_id in guild_data["reverted_audit_logs"]
                 if (
-                    datetime.datetime.now(tz=datetime.timezone.utc)
+                    dt.datetime.now(tz=dt.timezone.utc)
                     - discord.utils.snowflake_time(audit_log_id)
                 )
-                < datetime.timedelta(days=7)
+                < dt.timedelta(days=7)
             ]
             await self.config.guild_from_id(guild_id).reverted_audit_logs.set(reverted_audit_logs)
 
@@ -444,7 +444,6 @@ class CtrlZ(Cog):
     @commands.hybrid_group()
     async def ctrlz(self, ctx: commands.Context) -> None:
         """Revert some actions in servers, from the audit logs."""
-        pass
 
     @ctrlz.command()
     async def view(

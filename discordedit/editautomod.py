@@ -115,7 +115,6 @@ class EditAutoMod(Cog):
     @commands.hybrid_group()
     async def editautomod(self, ctx: commands.Context) -> None:
         """Commands for edit an AutoMod rule."""
-        pass
 
     @editautomod.command(name="create", aliases=["new", "+"])
     async def editautomod_create(

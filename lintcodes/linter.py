@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import datetime as dt
 import json
 import os
 import re
@@ -89,10 +89,7 @@ class Linter:
         command = f"{Fore.GREEN}{command}"
         rest = []
         for arg in args[1:]:
-            if arg.startswith("-") or arg.startswith("--"):
-                arg = f"{Fore.BLUE}{arg}"
-            else:
-                arg = f"{Fore.YELLOW}{arg}"
+            arg = f"{Fore.BLUE}{arg}" if arg.startswith(("-", "--")) else f"{Fore.YELLOW}{arg}"
             rest.append(arg)
         filename = f"{Fore.CYAN}{file}"
         complete_cmd_str = f"$ {command} {' '.join(rest)} {filename}"
@@ -363,10 +360,14 @@ class Linter:
             json_data: dict = json.loads(data["stdout"])
 
             # Generated at: Ex format 2023-06-11T17:51:53Z.
-            generated_at = datetime.datetime.strptime(
-                json_data["generated_at"],
-                "%Y-%m-%dT%H:%M:%SZ",
-            ).strftime("%d/%m/%Y %H:%M:%S")
+            generated_at = (
+                dt.datetime.strptime(
+                    json_data["generated_at"],
+                    "%Y-%m-%dT%H:%M:%SZ",
+                )
+                .replace(tzinfo=dt.timezone.utc)
+                .strftime("%d/%m/%Y %H:%M:%S")
+            )
             _result_str += f"{Fore.MAGENTA}Generated at: {Fore.MAGENTA}{generated_at}\n"
 
             confidence_high = json_data["metrics"]["_totals"]["CONFIDENCE.HIGH"]

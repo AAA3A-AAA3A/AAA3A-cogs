@@ -153,7 +153,7 @@ class AdventCalendar(Cog):
         text_size = font.getbbox(text)
         x = int((x2 - x1 - text_size[2]) / 2)
         x = max(x, 0)
-        y = int((y2 - y1 - text_size[3]) / 2)
+        y = int((y2 - y1 - sum(font.getmetrics())) / 2)  # Font height: same baseline for a row.
         y = max(y, 0)
         if font in self.bold_font.values():
             y -= 5
